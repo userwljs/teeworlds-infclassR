@@ -332,7 +332,7 @@ bool CMapConverter::Load()
 	long long TimeShiftUnit = 0;
 	if(pEnvPoints)
 	{
-		static const int Quant = 100;
+		static const int Quant = 200;
 		QuantizeAnimation(Quant);
 
 		int Start, Num;
