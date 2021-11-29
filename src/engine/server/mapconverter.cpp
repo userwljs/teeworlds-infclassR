@@ -340,7 +340,7 @@ bool CMapConverter::Load()
 		for(int i = 0; i < Num; i++)
 		{
 			CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, nullptr, nullptr);
-			if(pItem->m_NumPoints > 0)
+			if(pItem->m_NumPoints > 0 && pItem->m_Synchronized)
 			{
 				int Duration = pEnvPoints[pItem->m_StartPoint + pItem->m_NumPoints - 1].m_Time - pEnvPoints[pItem->m_StartPoint].m_Time;
 				if(Duration)
