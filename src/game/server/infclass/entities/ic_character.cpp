@@ -21,8 +21,8 @@
 
 MACRO_ALLOC_POOL_ID_IMPL(CIcCharacter, MAX_CLIENTS)
 
-CIcCharacter::CIcCharacter(CIcGameController *pGameController) :
-	CCharacter(pGameController->GameWorld()), m_pGameController(pGameController)
+CIcCharacter::CIcCharacter(CIcGameController *pGameController, CNetObj_PlayerInput LastInput) :
+	CCharacter(pGameController->GameWorld(), LastInput), m_pGameController(pGameController)
 {
 	m_FlagId = Server()->SnapNewId();
 	m_HeartId = Server()->SnapNewId();

@@ -34,7 +34,7 @@ class CCharacter : public CEntity
 public:
 	static int EntityId;
 
-	CCharacter(CGameWorld *pWorld);
+	CCharacter(CGameWorld *pWorld, CNetObj_PlayerInput LastInput);
 	~CCharacter() override;
 
 	int GetCid() const;

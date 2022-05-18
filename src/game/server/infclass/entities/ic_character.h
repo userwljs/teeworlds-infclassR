@@ -82,7 +82,7 @@ class CIcCharacter : public CCharacter
 {
 	MACRO_ALLOC_POOL_ID()
 public:
-	CIcCharacter(CIcGameController *pGameController);
+	CIcCharacter(CIcGameController *pGameController, CNetObj_PlayerInput LastInput);
 	~CIcCharacter() override;
 
 	static const CIcCharacter *GetInstance(const CCharacter *pCharacter);

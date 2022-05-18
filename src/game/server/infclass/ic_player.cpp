@@ -46,7 +46,7 @@ void CIcPlayer::TryRespawn()
 		return;
 
 	m_Spawning = false;
-	CIcCharacter *pCharacter = new(m_ClientId) CIcCharacter(GameController());
+	CIcCharacter *pCharacter = new(m_ClientId) CIcCharacter(GameController(), GameServer()->GetLastPlayerInput(m_ClientId));
 
 	m_pCharacter = pCharacter;
 	m_pCharacter->Spawn(this, Context.SpawnPos);
