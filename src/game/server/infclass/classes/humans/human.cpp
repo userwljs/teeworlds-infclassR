@@ -52,6 +52,8 @@ constexpr int SniperLaserRangeUpgradeLevel = 2;
 constexpr int ScientistLaserAmmoUpgradeLevel = 1;
 constexpr int ScientistTeleportGunUpgradeLevel = 2;
 constexpr int ScientistExtraMineUpgradeLevel = 3;
+constexpr int BiologistShotgunSpreadUpgradeLevel = 1;
+constexpr int BiologistMineChargesUpgradeLevel = 2;
 constexpr int LooperLaserAmmoUpgradeLevel = 1;
 constexpr int LooperGrenadesUpgradeLevel = 2;
 
@@ -317,6 +319,16 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		else if(m_UpgradeLevel < ScientistExtraMineUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_HAMMER);
+		}
+		break;
+	case EPlayerClass::Biologist:
+		if(m_UpgradeLevel < BiologistShotgunSpreadUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
+		}
+		else if(m_UpgradeLevel < BiologistMineChargesUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
 		}
 		break;
 	case EPlayerClass::Looper:
@@ -1042,6 +1054,11 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 	{
 	case EInfclassWeapon::RICOCHET_SHOTGUN:
 		ShotSpread = 1;
+		if(m_UpgradeLevel >= BiologistShotgunSpreadUpgradeLevel)
+		{
+			ShotSpread = 2;
+			SpreadingValue *= 0.5f;
+		}
 		break;
 	case EInfclassWeapon::MEDIC_SHOTGUN:
 		DamageType = EDamageType::MEDIC_SHOTGUN;
@@ -1154,7 +1171,14 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		CBlindingLaser::OnFired(m_pCharacter, pFireContext);
 		return;
 	case EInfclassWeapon::BIOLOGIST_MINE_LASER:
-		CBiologistMine::OnFired(m_pCharacter, pFireContext, Config()->m_InfBioMineLasers);
+	{
+		int Lasers = Config()->m_InfBioMineLasers;
+		if(GameController()->GetRoundType() == ERoundType::Survival)
+		{
+			Lasers = m_UpgradeLevel >= BiologistMineChargesUpgradeLevel ? 12 : 8;
+		}
+		CBiologistMine::OnFired(m_pCharacter, pFireContext, Lasers);
+	}
 		return;
 	case EInfclassWeapon::EXPLOSIVE_LASER:
 		StartEnergy *= 0.6f;
@@ -2466,6 +2490,16 @@ void CInfClassHuman::GiveUpgrade()
 		else if(m_UpgradeLevel == ScientistExtraMineUpgradeLevel)
 		{
 			pMessage2 = _("From now on, you can place an extra mine");
+		}
+		break;
+	case EPlayerClass::Biologist:
+		if(m_UpgradeLevel == BiologistShotgunSpreadUpgradeLevel)
+		{
+			pMessage2 = _("The shotgun now fires more bullets per shot");
+		}
+		if(m_UpgradeLevel == BiologistMineChargesUpgradeLevel)
+		{
+			pMessage2 = _("The mines now have more charges");
 		}
 		break;
 	case EPlayerClass::Looper:
