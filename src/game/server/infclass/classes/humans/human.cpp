@@ -36,6 +36,14 @@
 
 static const int s_SniperPositionLockTimeLimit = 15;
 
+constexpr int SniperLaserAmmoUpgradeLevel = 1;
+constexpr int SniperLaserRangeUpgradeLevel = 2;
+constexpr int ScientistLaserAmmoUpgradeLevel = 1;
+constexpr int BiologistShotgunSpreadUpgradeLevel = 1;
+constexpr int BiologistMineChargesUpgradeLevel = 2;
+constexpr int LooperLaserAmmoUpgradeLevel = 1;
+constexpr int LooperGrenadesUpgradeLevel = 2;
+
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassHuman, MAX_CLIENTS)
 
 CInfClassHuman::CInfClassHuman(CIcPlayer *pPlayer)
@@ -223,6 +231,34 @@ bool CInfClassHuman::CanBeHit() const
 
 SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 {
+	switch(GetPlayerClass())
+	{
+	case EPlayerClass::Sniper:
+		if(m_UpgradeLevel < SniperLaserRangeUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
+		}
+		break;
+	case EPlayerClass::Scientist:
+		if(m_UpgradeLevel < ScientistLaserAmmoUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
+		}
+		break;
+	case EPlayerClass::Looper:
+		if(m_UpgradeLevel < LooperLaserAmmoUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
+		}
+		else if(m_UpgradeLevel < LooperGrenadesUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
+		}
+		break;
+	default:
+		break;
+	}
+
 	return SClassUpgrade::Invalid();
 }
 
@@ -2142,5 +2178,61 @@ void CInfClassHuman::OnWhiteHoleSpawned(CWhiteHole *pWhiteHole)
 
 void CInfClassHuman::GiveUpgrade()
 {
+	const char *pMessage1 = _("You have found a weapon upgrade!");
+	const char *pMessage2{};
+	const char *pMessage3{};
+
 	m_UpgradeLevel++;
+
+	switch(GetPlayerClass())
+	{
+	case EPlayerClass::Sniper:
+		if(m_UpgradeLevel == SniperLaserAmmoUpgradeLevel)
+		{
+			pMessage2 = _("The laser rifle reload and ammo regeneration speed increased by 20%");
+			m_WeaponReloadIntervalModifier[WEAPON_LASER] = 0.8f;
+			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.8f;
+		}
+		else if(m_UpgradeLevel == SniperLaserRangeUpgradeLevel)
+		{
+			pMessage2 = _("The laser rifle range increased by 50%");
+			// TODO:
+			// pMessage3 = _("Also the attack from locked position now pierces the targets");
+			m_LaserReachModifier = 1.5f;
+		}
+		break;
+	case EPlayerClass::Scientist:
+		if(m_UpgradeLevel == ScientistLaserAmmoUpgradeLevel)
+		{
+			pMessage2 = _("The laser rifle reload and ammo regeneration speed increased by 30%");
+			m_WeaponReloadIntervalModifier[WEAPON_LASER] = 0.7f;
+			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.7f;
+		}
+		break;
+	case EPlayerClass::Looper:
+		if(m_UpgradeLevel == LooperLaserAmmoUpgradeLevel)
+		{
+			pMessage2 = _("The laser rifle ammo regeneration speed increased by 25%");
+			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.75f;
+		}
+		else if(m_UpgradeLevel == LooperGrenadesUpgradeLevel)
+		{
+			pMessage2 = _("The grenades regeneration speed increased by 50%");
+			m_WeaponRegenIntervalModifier[WEAPON_GRENADE] = 0.5f;
+		}
+		break;
+	default:
+		return;
+	}
+
+	GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage1, nullptr);
+
+	if(pMessage2)
+	{
+		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage2, nullptr);
+	}
+	if(pMessage3)
+	{
+		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage3, nullptr);
+	}
 }
