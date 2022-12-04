@@ -15,6 +15,7 @@ enum class EICPickupType
 	Health,
 	Armor,
 	ClassUpgrade,
+	ClassUpgradeFlag,
 };
 
 struct SClassUpgrade;
@@ -30,7 +31,9 @@ public:
 	void Tick() override;
 	void TickPaused() override;
 	void Snap(int SnappingClient) override;
-	
+
+	void SnapAsFlag();
+
 	void Spawn(float Delay = 0);
 	void SetRespawnInterval(float Seconds);
 	void SetUpgrade(const SClassUpgrade &Upgrade);

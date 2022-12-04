@@ -29,6 +29,7 @@ CIcPickup::CIcPickup(CGameContext *pGameContext, EICPickupType Type, vec2 Pos, i
 		m_NetworkType = POWERUP_ARMOR;
 		break;
 	case EICPickupType::ClassUpgrade:
+	case EICPickupType::ClassUpgradeFlag:
 	case EICPickupType::Invalid:
 		break;
 	}
@@ -97,6 +98,7 @@ void CIcPickup::Tick()
 			}
 			break;
 		case EICPickupType::ClassUpgrade:
+		case EICPickupType::ClassUpgradeFlag:
 			pChr->GetClass()->GiveUpgrade();
 
 			if(m_NetworkType == POWERUP_ARMOR)
@@ -162,6 +164,9 @@ void CIcPickup::Snap(int SnappingClient)
 		NetworkType = m_NetworkType;
 		Subtype = m_NetworkSubtype;
 		break;
+	case EICPickupType::ClassUpgradeFlag:
+		SnapAsFlag();
+		break;
 	case EICPickupType::Invalid:
 		break;
 	}
@@ -171,6 +176,17 @@ void CIcPickup::Snap(int SnappingClient)
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 	GameServer()->SnapPickup(CSnapContext(SnappingClientVersion), GetId(), m_Pos, NetworkType, Subtype);
+}
+
+void CIcPickup::SnapAsFlag()
+{
+	CNetObj_Flag *pFlag = Server()->SnapNewItem<CNetObj_Flag>(GetId());
+	if(!pFlag)
+		return;
+
+	pFlag->m_X = round_to_int(m_Pos.x);
+	pFlag->m_Y = round_to_int(m_Pos.y) + 16;
+	pFlag->m_Team = TEAM_RED;
 }
 
 void CIcPickup::Spawn(float Delay)
@@ -185,6 +201,12 @@ void CIcPickup::SetRespawnInterval(float Seconds)
 
 void CIcPickup::SetUpgrade(const SClassUpgrade &Upgrade)
 {
+	if(Upgrade.IsFlagPowerup())
+	{
+		m_Type = EICPickupType::ClassUpgradeFlag;
+		return;
+	}
+
 	m_NetworkType = Upgrade.Type;
 	m_NetworkSubtype = Upgrade.Subtype;
 }

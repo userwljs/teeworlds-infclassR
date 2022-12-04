@@ -464,3 +464,15 @@ void CIcPlayerClass::UpdateSkin()
 
 	m_pPlayer->UpdateSkin();
 }
+
+const int FlagPowerupType = NUM_POWERUPS + 1;
+
+bool SClassUpgrade::IsFlagPowerup() const
+{
+	return Type == FlagPowerupType;
+}
+
+SClassUpgrade SClassUpgrade::FlagPowerup()
+{
+	return SClassUpgrade(FlagPowerupType);
+}

@@ -41,6 +41,7 @@ constexpr int MercGrenadesUpgradeLevel = 2;
 constexpr int MercBombUpgrade2Level = 2;
 constexpr int MedicShotgunSpreadUpgradeLevel = 1;
 constexpr int MedicShotgunAmmoUpgradeLevel = 2;
+constexpr int HeroFlagGiftUpgradeLevel = 1;
 constexpr int NinjaSlashBreaksHooksUpgradeLevel = 1;
 constexpr int NinjaFlashGrenadeUpgradeLevel = 2;
 constexpr int NinjaSlashComboUpgradeLevel = 3;
@@ -255,6 +256,12 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		if(m_UpgradeLevel < MedicShotgunAmmoUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
+		}
+		break;
+	case EPlayerClass::Hero:
+		if(m_UpgradeLevel < HeroFlagGiftUpgradeLevel)
+		{
+			return SClassUpgrade::FlagPowerup();
 		}
 		break;
 	case EPlayerClass::Ninja:
@@ -1407,7 +1414,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 		}
 		else if(Turrets > 0)
 		{
-			int MaxTurrets = Config()->m_InfTurretMaxPerPlayer;
+			int MaxTurrets = GetMaxTurrets();
 			if(MaxTurrets == 1)
 			{
 				GameServer()->SendBroadcast_Localization(GetCid(),
@@ -2157,6 +2164,30 @@ bool CInfClassHuman::PositionLockAvailable() const
 	return true;
 }
 
+int CInfClassHuman::GetTurretGive() const
+{
+	int TurretGive = Config()->m_InfTurretGive;
+
+	if(m_UpgradeLevel >= HeroFlagGiftUpgradeLevel)
+	{
+		TurretGive += 1;
+	}
+
+	return TurretGive;
+}
+
+int CInfClassHuman::GetMaxTurrets() const
+{
+	int TurretMax = Config()->m_InfTurretMaxPerPlayer;
+
+	if(m_UpgradeLevel >= HeroFlagGiftUpgradeLevel)
+	{
+		TurretMax += 2;
+	}
+
+	return TurretMax;
+}
+
 void CInfClassHuman::OnSlimeEffect(int Owner, int Damage, float DamageInterval)
 {
 	if(GetPlayerClass() == EPlayerClass::Biologist)
@@ -2226,7 +2257,10 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 
 		if(GameController()->AreTurretsEnabled())
 		{
-			int NewNumberOfTurrets = clamp<int>(m_TurretCount + Config()->m_InfTurretGive, 0, Config()->m_InfTurretMaxPerPlayer);
+			int TurretGive = GetTurretGive();
+			int MaxTurrets = GetMaxTurrets();
+
+			int NewNumberOfTurrets = clamp<int>(m_TurretCount + TurretGive, 0, MaxTurrets);
 			if(m_TurretCount != NewNumberOfTurrets)
 			{
 				if(m_TurretCount == 0)
@@ -2309,6 +2343,13 @@ void CInfClassHuman::GiveUpgrade()
 		{
 			pMessage2 = _("The shotgun ammo regeneration speed increased by 33%");
 			m_WeaponRegenIntervalModifier[WEAPON_SHOTGUN] = 0.67f;
+		}
+		break;
+	case EPlayerClass::Hero:
+		if(m_UpgradeLevel == HeroFlagGiftUpgradeLevel)
+		{
+			pMessage1 = _("From now on, each flag will give you an extra turret");
+			pMessage2 = _("Plus, you can carry an extra pair of turrets, just for a case");
 		}
 		break;
 	case EPlayerClass::Ninja:

@@ -39,6 +39,9 @@ struct SClassUpgrade
 	int Subtype = 0;
 
 	bool IsValid() const { return Type >= 0; }
+	bool IsFlagPowerup() const;
+
+	static SClassUpgrade FlagPowerup();
 
 	static SClassUpgrade Invalid()
 	{

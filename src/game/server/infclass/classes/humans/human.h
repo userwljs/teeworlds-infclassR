@@ -104,6 +104,8 @@ protected:
 	void OnMercLaserFired(WeaponFireContext *pFireContext);
 
 	bool PositionLockAvailable() const;
+	int GetTurretGive() const;
+	int GetMaxTurrets() const;
 
 private:
 	icArray<int, 2> m_BarrierHintIds;
