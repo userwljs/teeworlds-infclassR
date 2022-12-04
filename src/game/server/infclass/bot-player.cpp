@@ -35,6 +35,11 @@ void CBaseBotPlayer::SetMaxLives(int Lives)
 	}
 }
 
+void CBaseBotPlayer::SetDropLevel(int Level)
+{
+	m_DropLevel = Level;
+}
+
 void CBaseBotPlayer::SetRespawnInterval(float Interval)
 {
 	m_RespawnInterval = Interval;

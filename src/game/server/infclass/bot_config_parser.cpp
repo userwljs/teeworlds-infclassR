@@ -88,6 +88,30 @@ int ParseHP(const char *pStr, bool *pOk)
 	return 0;
 }
 
+int ParseDropLevel(const char *pStr, bool *pOk)
+{
+	bool ownOk;
+	if(!pOk)
+		pOk = &ownOk;
+
+	*pOk = false;
+
+	const char aPrefix[] = "drop_level=";
+	if(!str_startswith(pStr, aPrefix))
+		return 0;
+
+	pStr += strlen(aPrefix);
+
+	int ReadValue = str_toint(pStr);
+	if((ReadValue > 0) && (ReadValue < 1000))
+	{
+		*pOk = true;
+		return ReadValue;
+	}
+
+	return 0;
+}
+
 float ParseRespawn(const char *pStr, bool *pOk)
 {
 	bool ownOk;

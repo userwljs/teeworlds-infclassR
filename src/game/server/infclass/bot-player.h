@@ -83,6 +83,9 @@ public:
 	int MaxLives() const { return m_MaxLives; }
 	void SetMaxLives(int Lives);
 
+	int GetDropLevel() const { return m_DropLevel; }
+	void SetDropLevel(int Level);
+
 	float GetRespawnInterval() const { return m_RespawnInterval; }
 	void SetRespawnInterval(float Interval);
 
@@ -92,6 +95,7 @@ public:
 protected:
 	int m_SpawnMinTick = -1;
 	int m_MaxLives = 0;
+	int m_DropLevel = 0;
 	int m_Lives = 0;
 
 	float m_RespawnInterval = 0;

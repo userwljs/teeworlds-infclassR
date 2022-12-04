@@ -15,6 +15,7 @@ public:
 	int SpawnMinTick{};
 	int Lives{};
 	int HP{};
+	int DropLevel{};
 	float RespawnInterval{};
 };
 
