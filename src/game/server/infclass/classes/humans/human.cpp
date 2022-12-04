@@ -36,6 +36,8 @@
 
 static const int s_SniperPositionLockTimeLimit = 15;
 
+constexpr int MedicShotgunSpreadUpgradeLevel = 1;
+constexpr int MedicShotgunAmmoUpgradeLevel = 2;
 constexpr int SniperLaserAmmoUpgradeLevel = 1;
 constexpr int SniperLaserRangeUpgradeLevel = 2;
 constexpr int ScientistLaserAmmoUpgradeLevel = 1;
@@ -233,6 +235,12 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 {
 	switch(GetPlayerClass())
 	{
+	case EPlayerClass::Medic:
+		if(m_UpgradeLevel < MedicShotgunAmmoUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
+		}
+		break;
 	case EPlayerClass::Sniper:
 		if(m_UpgradeLevel < SniperLaserRangeUpgradeLevel)
 		{
@@ -961,6 +969,11 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 		break;
 	case EInfclassWeapon::MEDIC_SHOTGUN:
 		DamageType = EDamageType::MEDIC_SHOTGUN;
+		if(m_UpgradeLevel >= MedicShotgunSpreadUpgradeLevel)
+		{
+			ShotSpread = 5;
+			SpreadingValue *= 0.8f;
+		}
 		break;
 	default:
 		break;
@@ -2186,6 +2199,19 @@ void CInfClassHuman::GiveUpgrade()
 
 	switch(GetPlayerClass())
 	{
+	case EPlayerClass::Medic:
+		if(m_UpgradeLevel == MedicShotgunSpreadUpgradeLevel)
+		{
+			pMessage2 = _("The shotgun bullets number increased");
+			pMessage3 = _("The pistol ammo regeneration speed increased by 50%");
+			m_WeaponRegenIntervalModifier[WEAPON_GUN] = 0.5f;
+		}
+		else if(m_UpgradeLevel == MedicShotgunAmmoUpgradeLevel)
+		{
+			pMessage2 = _("The shotgun ammo regeneration speed increased by 33%");
+			m_WeaponRegenIntervalModifier[WEAPON_SHOTGUN] = 0.67f;
+		}
+		break;
 	case EPlayerClass::Sniper:
 		if(m_UpgradeLevel == SniperLaserAmmoUpgradeLevel)
 		{
