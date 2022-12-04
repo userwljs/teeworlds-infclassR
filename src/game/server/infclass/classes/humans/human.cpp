@@ -50,8 +50,8 @@ constexpr int NinjaSlashComboUpgradeLevel = 3;
 constexpr int SniperLaserAmmoUpgradeLevel = 1;
 constexpr int SniperLaserRangeUpgradeLevel = 2;
 constexpr int ScientistLaserAmmoUpgradeLevel = 1;
-constexpr int BiologistShotgunSpreadUpgradeLevel = 1;
-constexpr int BiologistMineChargesUpgradeLevel = 2;
+constexpr int ScientistTeleportGunUpgradeLevel = 2;
+constexpr int ScientistExtraMineUpgradeLevel = 3;
 constexpr int LooperLaserAmmoUpgradeLevel = 1;
 constexpr int LooperGrenadesUpgradeLevel = 2;
 
@@ -309,6 +309,14 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		if(m_UpgradeLevel < ScientistLaserAmmoUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
+		}
+		else if(m_UpgradeLevel < ScientistTeleportGunUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
+		}
+		else if(m_UpgradeLevel < ScientistExtraMineUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_HAMMER);
 		}
 		break;
 	case EPlayerClass::Looper:
@@ -1089,7 +1097,14 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 		OnPoisonGrenadeFired(pFireContext);
 		return;
 	case EInfclassWeapon::TELEPORT_GUN:
-		CLaserTeleport::OnFired(m_pCharacter, pFireContext, Config()->m_InfScientistTpSelfharm);
+	{
+		int SelfDamage = Config()->m_InfScientistTpSelfharm;
+		if(m_UpgradeLevel >= ScientistTeleportGunUpgradeLevel)
+		{
+			SelfDamage = 0;
+		}
+		CLaserTeleport::OnFired(m_pCharacter, pFireContext, SelfDamage);
+	}
 		return;
 	case EInfclassWeapon::HEALING_GRENADE:
 		OnMedicGrenadeFired(pFireContext);
@@ -2046,7 +2061,7 @@ void CInfClassHuman::PlaceScientistMine(WeaponFireContext *pFireContext)
 
 	if(pIntersectMine) // Move the mine
 		GameWorld()->DestroyEntity(pIntersectMine);
-	else if(NbMine >= g_Config.m_InfMineLimit && pOlderMine)
+	else if(NbMine >= GetMaxSciMines() && pOlderMine)
 		GameWorld()->DestroyEntity(pOlderMine);
 
 	new CScientistMine(GameServer(), ProjStartPos, GetCid());
@@ -2207,6 +2222,16 @@ int CInfClassHuman::GetMaxTurrets() const
 	}
 
 	return TurretMax;
+}
+
+int CInfClassHuman::GetMaxSciMines() const
+{
+	int MaxMines = Config()->m_InfMineLimit;
+	if(m_UpgradeLevel >= ScientistExtraMineUpgradeLevel)
+	{
+		MaxMines += 1;
+	}
+	return MaxMines;
 }
 
 void CInfClassHuman::OnSlimeEffect(int Owner, int Damage, float DamageInterval)
@@ -2433,6 +2458,14 @@ void CInfClassHuman::GiveUpgrade()
 			pMessage2 = _("The laser rifle reload and ammo regeneration speed increased by 30%");
 			m_WeaponReloadIntervalModifier[WEAPON_LASER] = 0.7f;
 			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.7f;
+		}
+		else if(m_UpgradeLevel == ScientistTeleportGunUpgradeLevel)
+		{
+			pMessage2 = _("The teleport gun does not hurt you anymore");
+		}
+		else if(m_UpgradeLevel == ScientistExtraMineUpgradeLevel)
+		{
+			pMessage2 = _("From now on, you can place an extra mine");
 		}
 		break;
 	case EPlayerClass::Looper:

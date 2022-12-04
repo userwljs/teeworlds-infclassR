@@ -107,6 +107,8 @@ protected:
 	int GetTurretGive() const;
 	int GetMaxTurrets() const;
 
+	int GetMaxSciMines() const;
+
 private:
 	icArray<int, 2> m_BarrierHintIds;
 
