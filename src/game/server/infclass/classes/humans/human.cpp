@@ -41,6 +41,9 @@ constexpr int MercGrenadesUpgradeLevel = 2;
 constexpr int MercBombUpgrade2Level = 2;
 constexpr int MedicShotgunSpreadUpgradeLevel = 1;
 constexpr int MedicShotgunAmmoUpgradeLevel = 2;
+constexpr int NinjaSlashBreaksHooksUpgradeLevel = 1;
+constexpr int NinjaFlashGrenadeUpgradeLevel = 2;
+constexpr int NinjaSlashComboUpgradeLevel = 3;
 constexpr int SniperLaserAmmoUpgradeLevel = 1;
 constexpr int SniperLaserRangeUpgradeLevel = 2;
 constexpr int ScientistLaserAmmoUpgradeLevel = 1;
@@ -252,6 +255,20 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		if(m_UpgradeLevel < MedicShotgunAmmoUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
+		}
+		break;
+	case EPlayerClass::Ninja:
+		if(m_UpgradeLevel < NinjaSlashBreaksHooksUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_NINJA);
+		}
+		else if(m_UpgradeLevel < NinjaFlashGrenadeUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
+		}
+		else if(m_UpgradeLevel < NinjaSlashComboUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_NINJA);
 		}
 		break;
 	case EPlayerClass::Sniper:
@@ -1062,7 +1079,12 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 	if(pFireContext->InfClassWeapon == EInfclassWeapon::NINJA_GRENADE)
 	{
 		CIcProjectile *pProj = CIcProjectile::MakeGrenade(GameContext(), ProjStartPos, Direction, GetCid(), EDamageType::STUNNING_GRENADE);
-		pProj->SetFlashRadius(8);
+		int FlashRadius = 8;
+		if(m_UpgradeLevel >= NinjaFlashGrenadeUpgradeLevel)
+		{
+			FlashRadius = 10;
+		}
+		pProj->SetFlashRadius(FlashRadius);
 	}
 	else
 	{
@@ -1135,6 +1157,7 @@ void CInfClassHuman::GiveClassAttributes()
 	m_NinjaVelocityBuff = 0;
 	m_NinjaExtraDamage = 0;
 	m_NinjaAmmoBuff = 0;
+	m_NinjaComboFirstTick = 0;
 
 	RemoveWhiteHole();
 
@@ -1794,6 +1817,21 @@ void CInfClassHuman::ActivateNinja(WeaponFireContext *pFireContext)
 		m_pCharacter->m_DartOldVelAmount = length(m_pCharacter->Velocity());
 
 		GameServer()->CreateSound(GetPos(), SOUND_NINJA_HIT);
+
+		if(m_UpgradeLevel >= NinjaSlashBreaksHooksUpgradeLevel)
+		{
+			GameWorld()->ReleaseHooked(GetCid());
+		}
+
+		if(m_UpgradeLevel >= NinjaSlashComboUpgradeLevel)
+		{
+			const float Reload = pFireContext->ReloadInterval;
+			if(Server()->Tick() > m_NinjaComboFirstTick + Reload * 2 * Server()->TickSpeed())
+			{
+				m_NinjaComboFirstTick = Server()->Tick();
+				pFireContext->ReloadInterval = 0.1f;
+			}
+		}
 	}
 }
 
@@ -2271,6 +2309,20 @@ void CInfClassHuman::GiveUpgrade()
 		{
 			pMessage2 = _("The shotgun ammo regeneration speed increased by 33%");
 			m_WeaponRegenIntervalModifier[WEAPON_SHOTGUN] = 0.67f;
+		}
+		break;
+	case EPlayerClass::Ninja:
+		if(m_UpgradeLevel == NinjaSlashBreaksHooksUpgradeLevel)
+		{
+			pMessage2 = _("Ninja slash now releases hooks");
+		}
+		else if(m_UpgradeLevel == NinjaFlashGrenadeUpgradeLevel)
+		{
+			pMessage2 = _("Flash grenade area increased to 150%");
+		}
+		else if(m_UpgradeLevel == NinjaSlashComboUpgradeLevel)
+		{
+			pMessage2 = _("Now you can do two slashes in a combo!");
 		}
 		break;
 	case EPlayerClass::Sniper:

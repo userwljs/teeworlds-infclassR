@@ -125,6 +125,7 @@ private:
 	int m_NinjaVelocityBuff = 0;
 	int m_NinjaExtraDamage = 0;
 	int m_NinjaAmmoBuff = 0;
+	int m_NinjaComboFirstTick = 0;
 	icArray<CEntity *, 24> m_apHitObjects;
 	bool m_HasWhiteHole = false;
 
