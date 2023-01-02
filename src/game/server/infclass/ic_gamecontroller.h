@@ -298,6 +298,9 @@ public:
 	static void ConWeaponForce(IConsole::IResult *pResult, void *pUserData);
 	static void ConListWeapons(IConsole::IResult *pResult, void *pUserData);
 
+	static void ConStartSurvivalScenario(IConsole::IResult *pResult, void *pUserData);
+	void ConStartSurvivalScenario(IConsole::IResult *pResult);
+
 	static void ConSetClientName(IConsole::IResult *pResult, void *pUserData);
 	static void ConRestoreClientName(IConsole::IResult *pResult, void *pUserData);
 	static void ConLockClientName(IConsole::IResult *pResult, void *pUserData);

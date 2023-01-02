@@ -1556,6 +1556,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("survival_clear_conf", "", CFGFLAG_SERVER, ConSurvivalClearConf, this, "");
 	pConsole->Register("survival_add_wave", "i[wave] ?s[name]", CFGFLAG_SERVER, ConSurvivalAddWave, this, "");
 	pConsole->Register("survival_conf_wave", "i[wave] s[action] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec] ?s[drop_level=<>]", CFGFLAG_SERVER, ConSurvivalConfWave, this, "");
+	pConsole->Register("start_survival_scenario", "r[file]", CFGFLAG_SERVER | CFGFLAG_CLIENT, ConStartSurvivalScenario, this, "Start survival with scenario loaded from the specified file");
 }
 
 EInfclassWeapon CIcGameController::GetWeaponIdFromConArgument(IConsole::IResult *pResult, unsigned int Index)
@@ -1706,6 +1707,58 @@ void CIcGameController::ConListWeapons(IConsole::IResult *pResult, void *pUserDa
 
 		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", line.c_str());
 	} while(!LastWeaponProcessed);
+}
+
+void CIcGameController::ConStartSurvivalScenario(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConStartSurvivalScenario(pResult);
+}
+
+void CIcGameController::ConStartSurvivalScenario(IConsole::IResult *pResult)
+{
+	if(GetRoundType() == ERoundType::Survival && IsInfectionStarted())
+	{
+		int ClientID = pResult->GetClientId();
+		const char *pErrorMessage = _("The survival is already triggered");
+		if(ClientID >= 0)
+		{
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", pErrorMessage);
+		}
+		else
+		{
+			GameServer()->SendChatTarget(-1, pErrorMessage);
+		}
+
+		return;
+	}
+
+	m_SurvivalWaves.Clear();
+
+	ExecuteFileEx(pResult->GetString(0));
+
+	if(m_SurvivalWaves.IsEmpty())
+	{
+		int ClientID = pResult->GetClientId();
+		const char *pErrorMessage = "Unable to load the survival configuration";
+		if(ClientID >= 0)
+		{
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", pErrorMessage);
+		}
+		else
+		{
+			GameServer()->SendChatTarget(-1, pErrorMessage);
+		}
+
+		return;
+	}
+
+	QueueRoundType(ERoundType::Survival);
+
+	if(!m_Warmup)
+	{
+		StartRound();
+	}
 }
 
 void CIcGameController::ConRestoreClientName(IConsole::IResult *pResult, void *pUserData)
