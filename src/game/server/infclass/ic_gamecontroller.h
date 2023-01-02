@@ -96,6 +96,12 @@ enum SURVIVAL_MODE
 	SURVIVAL_MODE_TIME_BASED,
 };
 
+enum class ETextArticle
+{
+	Indefinite,
+	Definite,
+};
+
 class CIcGameController : public IGameController
 {
 public:
@@ -283,7 +289,7 @@ public:
 	static const char *GetClassName(EPlayerClass PlayerClass);
 	static const char *GetClassPluralName(EPlayerClass PlayerClass);
 	static const char *GetClassDisplayName(EPlayerClass PlayerClass, const char *pDefaultText = nullptr);
-	static const char *GetClassDisplayNameForKilledBy(EPlayerClass PlayerClass, const char *pDefaultText = nullptr);
+	static const char *GetClassDisplayNameForKilledBy(EPlayerClass PlayerClass, ETextArticle Article = ETextArticle::Indefinite);
 	static const char *GetClanForClass(EPlayerClass PlayerClass, const char *pDefaultText = nullptr);
 	static const char *GetClassPluralDisplayName(EPlayerClass PlayerClass);
 	static EPlayerClass MenuClassToPlayerClass(int MenuClass);

@@ -1333,39 +1333,39 @@ const char *CIcGameController::GetClassDisplayName(EPlayerClass PlayerClass, con
 	return pDefaultText ? pDefaultText : "Unknown";
 }
 
-const char *CIcGameController::GetClassDisplayNameForKilledBy(EPlayerClass PlayerClass, const char *pDefaultText)
+const char *CIcGameController::GetClassDisplayNameForKilledBy(EPlayerClass PlayerClass, ETextArticle Article)
 {
 	switch(PlayerClass)
 	{
 		// Only the infected classes are used for now; do not add others to keep the translations smaller
 	case EPlayerClass::Smoker:
-		return _C_NOOP("For 'Killed by <>'", "a Smoker");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Smoker") : _C_NOOP("For 'Killed by <>'", "the Smoker");
 	case EPlayerClass::Boomer:
-		return _C_NOOP("For 'Killed by <>'", "a Boomer");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Boomer") : _C_NOOP("For 'Killed by <>'", "the Boomer");
 	case EPlayerClass::Hunter:
-		return _C_NOOP("For 'Killed by <>'", "a Hunter");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Hunter") : _C_NOOP("For 'Killed by <>'", "the Hunter");
 	case EPlayerClass::Bat:
-		return _C_NOOP("For 'Killed by <>'", "a Bat");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Bat") : _C_NOOP("For 'Killed by <>'", "the Bat");
 	case EPlayerClass::Ghost:
-		return _C_NOOP("For 'Killed by <>'", "a Ghost");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Ghost") : _C_NOOP("For 'Killed by <>'", "the Ghost");
 	case EPlayerClass::Spider:
-		return _C_NOOP("For 'Killed by <>'", "a Spider");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Spider") : _C_NOOP("For 'Killed by <>'", "the Spider");
 	case EPlayerClass::Ghoul:
-		return _C_NOOP("For 'Killed by <>'", "a Ghoul");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Ghoul") : _C_NOOP("For 'Killed by <>'", "the Ghoul");
 	case EPlayerClass::Slug:
-		return _C_NOOP("For 'Killed by <>'", "a Slug");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Slug") : _C_NOOP("For 'Killed by <>'", "the Slug");
 	case EPlayerClass::Voodoo:
-		return _C_NOOP("For 'Killed by <>'", "a Voodoo");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Voodoo") : _C_NOOP("For 'Killed by <>'", "the Voodoo");
 	case EPlayerClass::Witch:
-		return _C_NOOP("For 'Killed by <>'", "a Witch");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Witch") : _C_NOOP("For 'Killed by <>'", "the Witch");
 	case EPlayerClass::Undead:
-		return _C_NOOP("For 'Killed by <>'", "an Undead");
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "an Undead") : _C_NOOP("For 'Killed by <>'", "the Undead");
 
 	default:
 		break;
 	}
 
-	return pDefaultText ? pDefaultText : "Unknown";
+	return nullptr;
 }
 
 const char *CIcGameController::GetClanForClass(EPlayerClass PlayerClass, const char *pDefaultText)
@@ -3791,7 +3791,32 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 	const CIcCharacter *pVictimCharacter = pVictim->GetCharacter();
 	if(pKiller && pKiller != pVictim)
 	{
+		ETextArticle Article = ETextArticle::Indefinite;
 		const EPlayerClass KillerClass = pKiller->GetClass();
+
+		switch(KillerClass)
+		{
+		case EPlayerClass::Witch:
+		case EPlayerClass::Undead:
+		{
+			const SurvivalWaveConfiguration *pCurrentWave = GetCurrentSurvivalWaveConfiguration();
+			if(pCurrentWave)
+			{
+				const auto KillerClassCounter = [KillerClass](const SurvivalBotConfiguration &BotConfig) {
+					return BotConfig.Class == KillerClass;
+				};
+				int Count = std::count_if(pCurrentWave->BotConfigurations.begin(), pCurrentWave->BotConfigurations.end(), KillerClassCounter);
+				if(Count == 1)
+				{
+					Article = ETextArticle::Definite;
+				}
+			}
+			break;
+		}
+		default:
+			break;
+		}
+
 		icArray<const char *, 20> PossibleMessages;
 		switch(Context.DamageType)
 		{
@@ -3903,7 +3928,7 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 		const char *pMessage = PossibleMessages.At(random_int(0, PossibleMessages.Size() - 1));
 		m_LastUsedKillMessage = pMessage;
 
-		const char *pKillerText = GetClassDisplayNameForKilledBy(KillerClass);
+		const char *pKillerText = GetClassDisplayNameForKilledBy(KillerClass, Article);
 		dbg_assert(pKillerText, "Killer class has no display name");
 		if(!pKillerText)
 		{
@@ -4239,6 +4264,9 @@ SurvivalGameConfiguration *CIcGameController::SurvivalGetMutableGameConfiguratio
 
 void CIcGameController::TickBeforeWorld()
 {
+	if(GameWorld()->m_Paused)
+		return;
+
 	// update core properties important for hook
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
