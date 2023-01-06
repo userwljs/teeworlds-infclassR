@@ -3325,19 +3325,13 @@ void CIcGameController::OnInfectionTriggered()
 			EnsureSurvivalPlayerScore(pPlayer->GetCid());
 		}
 
-		const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.SurvivalWaves.At(m_SurvivalState.Wave);
-		for(const SurvivalBotConfiguration &BotConf : WaveConf.BotConfigurations)
+		const SurvivalWaveConfiguration *WaveConf = GetCurrentSurvivalWaveConfiguration();
+		int TotalBotLives = WaveConf->GetTotalInfectedLives();
+		if(TotalBotLives > 0 && !Config()->m_InfSurvivalMode)
 		{
-			CBaseBotPlayer *pBot = AddBot(BotConf);
-			if(!pBot)
-			{
-				GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTION, _("Unable to allocate a player slot for a bot: too many players!"));
-				EndRound();
-				break;
-			}
-
-			// Make the bots spawn a bit less predictable
-			pBot->m_RespawnTick += Server()->TickSpeed() * random_float();
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTION, _("Total infected lives for this round: {int:InfectedNumber}"),
+				"InfectedNumber", &TotalBotLives,
+				nullptr);
 		}
 	}
 }
