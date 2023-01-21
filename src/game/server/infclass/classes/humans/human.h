@@ -36,7 +36,7 @@ public:
 	CAmmoParams GetAmmoParams(int Weapon) const override;
 	int GetJumps() const override;
 
-	void GiveGift(EGiftType GiftType);
+	void GiveGift(EGiftType GiftType, int Level = 0);
 
 	bool CanBeHit() const override;
 	SClassUpgrade GetNextUpgrade() const override;

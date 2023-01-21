@@ -201,13 +201,24 @@ int CInfClassHuman::GetJumps() const
 	}
 }
 
-void CInfClassHuman::GiveGift(EGiftType GiftType)
+void CInfClassHuman::GiveGift(EGiftType GiftType, int Level)
 {
 	if(!m_pCharacter)
 		return;
 
-	m_pCharacter->IncreaseHealth(1);
-	m_pCharacter->GiveArmor(4);
+	switch(Level)
+	{
+	case 0:
+		m_pCharacter->IncreaseHealth(1);
+		m_pCharacter->GiveArmor(4);
+		break;
+	case 1:
+	default:
+		m_pCharacter->IncreaseHealth(2);
+		m_pCharacter->GiveArmor(5);
+		break;
+	}
+
 
 	const EWeapon AllWeaponsWithAmmo[] =
 		{
@@ -2253,7 +2264,7 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 
 	if(pHero != m_pCharacter)
 	{
-		GiveGift(EGiftType::HeroFlag);
+		GiveGift(EGiftType::HeroFlag, GetUpgradeLevel());
 		return;
 	}
 
@@ -2358,7 +2369,7 @@ void CInfClassHuman::GiveUpgrade()
 	case EPlayerClass::Hero:
 		if(m_UpgradeLevel == HeroFlagGiftUpgradeLevel)
 		{
-			pMessage1 = _("From now on, each flag will give you an extra turret");
+			pMessage1 = _("From now on, each flag will give you an extra turret and extra HP for the teammates");
 			pMessage2 = _("Plus, you can carry an extra pair of turrets, just for a case");
 		}
 		else if(m_UpgradeLevel == HeroWeaponsUpgradeLevel)
