@@ -248,8 +248,7 @@ protected:
 	float m_JumpExtraProbability = 0;
 
 	int m_LastTarget = -1;
-	vec2 m_LastTargetPosition;
-	vec2 m_LastTargetSeenAt;
+	vec2 m_LastTargetSeenAtPos;
 	int m_LastFireTick = -1;
 	int m_NextRandomFireTick = -1;
 	int m_HookUntilTick = -1;

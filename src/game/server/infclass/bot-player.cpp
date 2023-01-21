@@ -284,7 +284,6 @@ void CBotPlayer::UpdateTarget()
 			}
 
 			TargetId = CandidateId;
-			m_LastTargetSeenAt = pChar->GetPos();
 			break;
 		}
 	}
@@ -294,13 +293,34 @@ void CBotPlayer::UpdateTarget()
 		if(m_BotState != BOTSTATE_ROAMING)
 		{
 			SetState(BOTSTATE_ROAMING);
-			SetRoamingDirection(m_LastTargetSeenAt.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+			const CIcCharacter *pExTarget = GameController()->GetCharacter(TargetId);
+			SetRoamingDirection(m_LastTargetSeenAtPos.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+
+			if(pExTarget && pExTarget->IsAlive())
+			{
+				int SolidBelowTheTarget = m_pUtils->GetSolidBelow(m_LastTargetSeenAtPos);
+				int SolidBelowTheBot = m_pUtils->GetSolidBelow(Pos);
+
+				if(SolidBelowTheTarget == SolidBelowTheBot)
+				{
+					m_RoamingObjection = EObjection::CheckTheMid;
+				}
+				else if(m_LastTargetSeenAtPos.y > Pos.y)
+				{
+					m_RoamingObjection = EObjection::CheckTheBottom;
+				}
+				else
+				{
+					m_RoamingObjection = EObjection::CheckTheTop;
+				}
+			}
 		}
 		return;
 	}
 
 	m_LastTarget = TargetId;
-	m_LastTargetPosition = GameController()->GetCharacter(TargetId)->GetPos();
+	m_LastTargetSeenAtPos = GameController()->GetCharacter(TargetId)->GetPos();
+
 	SetState(BOTSTATE_HUNTING);
 }
 
@@ -723,29 +743,29 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	bool WantGoDown = false;
 
 	const float ProximityRadius = m_pCharacter->GetProximityRadius();
-	if(Pos.y > m_LastTargetPosition.y + ProximityRadius)
+	if(Pos.y > m_LastTargetSeenAtPos.y + ProximityRadius)
 	{
 		if(IsGrounded() || (FallingDown && AvailableJumps > 0))
 		{
-			vec2 VectorToTarget = m_LastTargetPosition - Pos;
+			vec2 VectorToTarget = m_LastTargetSeenAtPos - Pos;
 			int NeedJumps = GetJumpsToReachTarget(VectorToTarget);
 			m_WantedJumps = std::min<int>(AvailableJumps, NeedJumps);
 		}
 
 		WantToJump = m_WantedJumps > 0;
 	}
-	else if(Pos.y < m_LastTargetPosition.y)
+	else if(Pos.y < m_LastTargetSeenAtPos.y)
 	{
 		WantGoDown = true;
 	}
 
 	DIRECTION DirectionToTarget = DIRECTION_NONE;
 
-	if(Pos.x + ProximityRadius < m_LastTargetPosition.x)
+	if(Pos.x + ProximityRadius < m_LastTargetSeenAtPos.x)
 	{
 		DirectionToTarget = DIRECTION_RIGHT;
 	}
-	else if(Pos.x > m_LastTargetPosition.x + ProximityRadius)
+	else if(Pos.x > m_LastTargetSeenAtPos.x + ProximityRadius)
 	{
 		DirectionToTarget = DIRECTION_LEFT;
 	}
@@ -778,14 +798,14 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		}
 	}
 
-	const float Distance = distance(Pos, m_LastTargetPosition);
+	const float Distance = distance(Pos, m_LastTargetSeenAtPos);
 	const float GroundControlSpeed = GameServer()->Tuning()->m_GroundControlSpeed;
 
 	bool ConsiderHookingOut = false;
 
 	if(CanHook() && !WeakHook() && (Distance < GetMaxHookDistance() - TileSize * 1))
 	{
-		vec2 ToTarget = m_LastTargetPosition - Pos;
+		vec2 ToTarget = m_LastTargetSeenAtPos - Pos;
 		const float Len2 = ToTarget.x * ToTarget.x + ToTarget.y * ToTarget.y;
 		static const int MaxLookupDistance = TileSize * 4;
 		static const int MaxLookup_2 = MaxLookupDistance * MaxLookupDistance;
@@ -862,8 +882,8 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	BotDebugMessage(WantToJump ? "WantToJump: yes" : "WantToJump: no");
 
 	pInput->m_Direction = m_RoamingDirection;
-	pInput->m_TargetX = m_LastTargetPosition.x - Pos.x;
-	pInput->m_TargetY = m_LastTargetPosition.y - Pos.y;
+	pInput->m_TargetX = m_LastTargetSeenAtPos.x - Pos.x;
+	pInput->m_TargetY = m_LastTargetSeenAtPos.y - Pos.y;
 
 	float FirePerSecond = 0.3f;
 	// TODO: This should be the target proximity radius
@@ -961,8 +981,8 @@ const char *CBotPlayer::DumpBot()
 	case BOTSTATE_HUNTING:
 		str_format(aBuf, sizeof(aBuf), "Hunting | Target: %d (%.2f, %.2f)",
 			m_LastTarget,
-			m_LastTargetPosition.x / 32,
-			m_LastTargetPosition.y / 32);
+			m_LastTargetSeenAtPos.x / 32,
+			m_LastTargetSeenAtPos.y / 32);
 		break;
 	}
 
