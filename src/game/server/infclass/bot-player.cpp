@@ -244,11 +244,13 @@ void CBotPlayer::UpdateTarget()
 
 	// Lookup for humans
 	ClientsArray Targets;
-	const float LookupDistance = 500;
-	const float LookupDistanceBackward = 250;
 
+	const vec2 &Pos = pCharacter->GetPos();
 	if(!pCharacter->IsBlind())
 	{
+		const float LookupRadius = 600;
+		const float LookupOffset = 300;
+		const vec2 LookupFromPos = Pos + pCharacter->GetDirection() * LookupOffset;
 		for(int i = 0; i < MAX_CLIENTS; ++i)
 		{
 			const CIcCharacter *pChar = GameController()->GetCharacter(i);
@@ -258,11 +260,10 @@ void CBotPlayer::UpdateTarget()
 			}
 		}
 
-		GameController()->SortCharactersByDistance(&Targets, pCharacter->GetPos(), LookupDistance);
+		GameController()->SortCharactersByDistance(&Targets, LookupFromPos, LookupRadius);
 	}
 
 	int TargetId = -1;
-	const vec2 &Pos = pCharacter->GetPos();
 
 	const int HookedPlayer = m_pCharacter->Core()->HookedPlayer();
 	if(Targets.Contains(HookedPlayer))
