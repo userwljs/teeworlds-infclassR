@@ -67,6 +67,7 @@ enum class EObjection : uint8_t
 	CheckTheTop,
 	CheckTheMid,
 	CheckTheBottom,
+	CheckTheLastSeen,
 	// SECURE_POSITION,
 	Count,
 	Invalid = Count,
@@ -219,8 +220,8 @@ public:
 	bool IsGrounded() const;
 
 	bool MaybeFallDown() const;
-	bool MaybeJumpOverWall() const;
-	bool MaybeJumpOn() const;
+	bool MaybeJumpOverWall(const vec2 &JumpTargetPosition) const;
+	bool MaybeJumpOn(const vec2 &JumpTargetPosition) const;
 	bool MaybeRandomJumpUp() const;
 	bool MaybeJumpToAvoidDanger() const;
 
@@ -240,6 +241,7 @@ protected:
 	BOTSTATE m_BotState = BOTSTATE_ROAMING;
 	DIRECTION m_RoamingDirection = DIRECTION_NONE;
 	EObjection m_RoamingObjection = EObjection::Relax;
+	EObjection m_TargetLastSeenDirObjection = EObjection::Invalid;
 	int m_RoamingBehaviorTick = 0;
 	icArray<EObjection, 5> m_RecentObjections;
 	icArray<SBotDecision, 64> m_RecentDecisions;
@@ -249,6 +251,7 @@ protected:
 
 	int m_LastTarget = -1;
 	vec2 m_LastTargetSeenAtPos;
+	int m_LastSeenTick = -1;
 	int m_LastFireTick = -1;
 	int m_NextRandomFireTick = -1;
 	int m_HookUntilTick = -1;

@@ -105,6 +105,7 @@ static const char *gs_aObjectionNames[] = {
 	"check-top",
 	"check-mid",
 	"check-bottom",
+	"check-last-seen",
 	"invalid",
 };
 
@@ -214,6 +215,7 @@ void CBotPlayer::TickPaused()
 {
 	m_RoamingBehaviorTick++;
 	m_LastJumpTick++;
+	m_LastSeenTick++;
 	m_LastFireTick++;
 	m_NextRandomFireTick++;
 	m_HookUntilTick++;
@@ -293,26 +295,34 @@ void CBotPlayer::UpdateTarget()
 		if(m_BotState != BOTSTATE_ROAMING)
 		{
 			SetState(BOTSTATE_ROAMING);
-			const CIcCharacter *pExTarget = GameController()->GetCharacter(TargetId);
-			SetRoamingDirection(m_LastTargetSeenAtPos.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
-
-			if(pExTarget && pExTarget->IsAlive())
+			const CIcCharacter *pExTarget = GameController()->GetCharacter(m_LastTarget);
+			EObjection SameDirObjection = EObjection::Invalid;
 			{
 				int SolidBelowTheTarget = m_pUtils->GetSolidBelow(m_LastTargetSeenAtPos);
 				int SolidBelowTheBot = m_pUtils->GetSolidBelow(Pos);
 
 				if(SolidBelowTheTarget == SolidBelowTheBot)
 				{
-					m_RoamingObjection = EObjection::CheckTheMid;
+					SameDirObjection = EObjection::CheckTheMid;
 				}
 				else if(m_LastTargetSeenAtPos.y > Pos.y)
 				{
-					m_RoamingObjection = EObjection::CheckTheBottom;
+					SameDirObjection = EObjection::CheckTheBottom;
 				}
 				else
 				{
-					m_RoamingObjection = EObjection::CheckTheTop;
+					SameDirObjection = EObjection::CheckTheTop;
 				}
+			}
+
+			if(pExTarget && pExTarget->IsAlive())
+			{
+				m_RoamingObjection = EObjection::CheckTheLastSeen;
+				m_TargetLastSeenDirObjection = SameDirObjection;
+			}
+			else
+			{
+				m_RoamingObjection = SameDirObjection;
 			}
 		}
 		return;
@@ -320,6 +330,7 @@ void CBotPlayer::UpdateTarget()
 
 	m_LastTarget = TargetId;
 	m_LastTargetSeenAtPos = GameController()->GetCharacter(TargetId)->GetPos();
+	m_LastSeenTick = Server()->Tick();
 
 	SetState(BOTSTATE_HUNTING);
 }
@@ -426,7 +437,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			const int WantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition);
 			if(WantJumps)
 			{
-				if(MaybeJumpOverWall())
+				if(MaybeJumpOverWall(m_JumpTargetPosition))
 				{
 					BotDebugMessage("Decide to jump over the wall", VERBOSE_STEPS);
 					WantToJump = true;
@@ -453,7 +464,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				const int WantJumps = GetJumpsNeededToJumpOn(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition);
 				if(WantJumps)
 				{
-					if(MaybeJumpOn())
+					if(MaybeJumpOn(m_JumpTargetPosition))
 					{
 						BotDebugMessage("Decided to jump on", VERBOSE_STEPS);
 						WantToJump = true;
@@ -544,12 +555,12 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				int MaybeWantJumps = 0;
 				if(HasWallInRoamingDirection)
 				{
-					if((MaybeWantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection)))
+					if((MaybeWantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition)))
 					{
 						if(m_pCharacter->Core()->m_Vel.y < 0)
 						{
 							// We're moving up
-							if(MaybeJumpOverWall())
+							if(MaybeJumpOverWall(m_JumpTargetPosition))
 							{
 								BotDebugMessage("Jump over from the air", VERBOSE_STEPS);
 								m_WantedJumps = MaybeWantJumps;
@@ -571,7 +582,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				}
 				else if((MaybeWantJumps = GetJumpsNeededToJumpOn(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition)))
 				{
-					if(MaybeJumpOn())
+					if(MaybeJumpOn(m_JumpTargetPosition))
 					{
 						BotDebugMessage("Jump on from the air", VERBOSE_STEPS);
 						m_JumpFromPosition = Pos;
@@ -1502,7 +1513,18 @@ void CBotPlayer::SetRoamingDirection(DIRECTION Direction)
 
 void CBotPlayer::MaybeChangeRoamingBehavior()
 {
-	if(Server()->Tick() > m_RoamingBehaviorTick + Server()->TickSpeed() * 30)
+	const float BehaviorChangeInterval = 30.0;
+	const float LastSeenTrackingDuration = 5.0;
+	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
+	{
+		if(Server()->Tick() > m_LastSeenTick + Server()->TickSpeed() * LastSeenTrackingDuration)
+		{
+			m_RoamingObjection = m_TargetLastSeenDirObjection;
+		}
+
+		return;
+	}
+	if(Server()->Tick() > m_RoamingBehaviorTick + Server()->TickSpeed() * BehaviorChangeInterval)
 	{
 		if(random_prob(0.6f))
 		{
@@ -1528,6 +1550,7 @@ void CBotPlayer::ChangeRoamingBehavior()
 	case EObjection::Relax:
 	case EObjection::Jump:
 	case EObjection::Lookup:
+	case EObjection::CheckTheLastSeen:
 		GetNewObjection();
 		break;
 	case EObjection::CheckTheTop:
@@ -1571,6 +1594,7 @@ void CBotPlayer::ChangeRoamingBehavior()
 		m_JumpExtraProbability = -1;
 		break;
 	case EObjection::Lookup:
+	case EObjection::CheckTheLastSeen:
 	case EObjection::Invalid:
 		break;
 	}
@@ -1813,6 +1837,11 @@ int CBotPlayer::GetJumpsToReachTarget(const vec2 &VectorToTarget) const
 
 bool CBotPlayer::MaybeFallDown() const
 {
+	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
+	{
+		return m_pUtils->IsReachableByGround(m_pCharacter->GetPos(), m_LastTargetSeenAtPos, GetMaxJumps());
+	}
+
 	EDecision PreviousDecision = GetPreviousDecision();
 	if(PreviousDecision == EDecision::Jump)
 	{
@@ -1839,7 +1868,7 @@ bool CBotPlayer::MaybeFallDown() const
 	return !Jump;
 }
 
-bool CBotPlayer::MaybeJumpOverWall() const
+bool CBotPlayer::MaybeJumpOverWall(const vec2 &JumpTargetPosition) const
 {
 	if(m_RoamingObjection == EObjection::Relax)
 	{
@@ -1849,8 +1878,13 @@ bool CBotPlayer::MaybeJumpOverWall() const
 	return true;
 }
 
-bool CBotPlayer::MaybeJumpOn() const
+bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition) const
 {
+	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
+	{
+		return m_LastTargetSeenAtPos.y < JumpTargetPosition.y + TileSizeF / 2;
+	}
+
 	EDecision PreviousDecision = GetPreviousDecision();
 	if(PreviousDecision == EDecision::Jump)
 	{
