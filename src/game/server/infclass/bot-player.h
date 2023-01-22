@@ -208,6 +208,7 @@ public:
 
 	void SetState(BOTSTATE NewState);
 	void SetRoamingDirection(DIRECTION Direction);
+	void SetObjection(EObjection Objection);
 	void MaybeChangeRoamingBehavior();
 	void ChangeRoamingBehavior();
 	void GetNewObjection();
@@ -240,7 +241,7 @@ protected:
 	CBotUtils *m_pUtils = nullptr;
 	BOTSTATE m_BotState = BOTSTATE_ROAMING;
 	DIRECTION m_RoamingDirection = DIRECTION_NONE;
-	EObjection m_RoamingObjection = EObjection::Relax;
+	EObjection m_RoamingObjection = EObjection::Lookup;
 	EObjection m_TargetLastSeenDirObjection = EObjection::Invalid;
 	int m_RoamingBehaviorTick = 0;
 	icArray<EObjection, 5> m_RecentObjections;

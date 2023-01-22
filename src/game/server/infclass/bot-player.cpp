@@ -232,7 +232,7 @@ void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	m_RecentObjections.Clear();
 	m_RecentDecisions.Clear();
 
-	m_RoamingObjection = EObjection::Lookup;
+	SetObjection(EObjection::Lookup);
 	ChangeRoamingBehavior();
 }
 
@@ -317,12 +317,12 @@ void CBotPlayer::UpdateTarget()
 
 			if(pExTarget && pExTarget->IsAlive())
 			{
-				m_RoamingObjection = EObjection::CheckTheLastSeen;
+				SetObjection(EObjection::CheckTheLastSeen);
 				m_TargetLastSeenDirObjection = SameDirObjection;
 			}
 			else
 			{
-				m_RoamingObjection = SameDirObjection;
+				SetObjection(SameDirObjection);
 			}
 		}
 		return;
@@ -1511,6 +1511,15 @@ void CBotPlayer::SetRoamingDirection(DIRECTION Direction)
 	m_RoamingDirection = Direction;
 }
 
+void CBotPlayer::SetObjection(EObjection Objection)
+{
+	if(m_RoamingObjection == Objection)
+		return;
+
+	m_pUtils->GetDebugSink()->SendMessage(VERBOSE_STEPS, "Objection: %s", toString(Objection));
+	m_RoamingObjection = Objection;
+}
+
 void CBotPlayer::MaybeChangeRoamingBehavior()
 {
 	const float BehaviorChangeInterval = 30.0;
@@ -1519,7 +1528,7 @@ void CBotPlayer::MaybeChangeRoamingBehavior()
 	{
 		if(Server()->Tick() > m_LastSeenTick + Server()->TickSpeed() * LastSeenTrackingDuration)
 		{
-			m_RoamingObjection = m_TargetLastSeenDirObjection;
+			SetObjection(m_TargetLastSeenDirObjection);
 		}
 
 		return;
@@ -1558,7 +1567,7 @@ void CBotPlayer::ChangeRoamingBehavior()
 	case EObjection::CheckTheBottom:
 		if(random_prob(0.5f))
 		{
-			m_RoamingObjection = EObjection::Lookup;
+			SetObjection(EObjection::Lookup);
 			GetNewObjection();
 		}
 		else
@@ -1619,6 +1628,7 @@ void CBotPlayer::GetNewObjection()
 		DisabledObjections.Add(m_RecentObjections.Last());
 	}
 
+	EObjection NewObjection = EObjection::Invalid;
 	if(m_RoamingObjection == EObjection::Lookup)
 	{
 		int PlayersAbove = 0;
@@ -1665,19 +1675,27 @@ void CBotPlayer::GetNewObjection()
 		double Probas[3] = {PlayersAbove * 1.0, PlayersMid * 1.0, PlayersBelow * 1.0};
 		int Obj = random_distribution(std::begin(Probas), std::end(Probas));
 		if(Obj == 0)
-			m_RoamingObjection = EObjection::CheckTheTop;
+		{
+			NewObjection = EObjection::CheckTheTop;
+		}
 		else if(Obj == 1)
-			m_RoamingObjection = EObjection::CheckTheMid;
+		{
+			NewObjection = EObjection::CheckTheMid;
+		}
 		else
-			m_RoamingObjection = EObjection::CheckTheBottom;
+		{
+			NewObjection = EObjection::CheckTheBottom;
+		}
 	}
 	else
 	{
 		do
 		{
-			m_RoamingObjection = EObjection(random_int(0, static_cast<int>(EObjection::Count) > -1));
-		} while(DisabledObjections.Contains(m_RoamingObjection));
+			NewObjection = EObjection(random_int(0, static_cast<int>(EObjection::Count) > -1));
+		} while(DisabledObjections.Contains(NewObjection));
 	}
+
+	SetObjection(NewObjection);
 
 	if(m_RecentObjections.Size() == m_RecentObjections.Capacity())
 	{
