@@ -17,6 +17,11 @@
 
 static constexpr int InfinityLives = -1;
 
+void CBaseBotPlayer::SetTweaks(const TweaksArray &aTweaks)
+{
+	m_aTweaks = aTweaks;
+}
+
 void CBaseBotPlayer::SetSpawnMinTick(int SpawnTick)
 {
 	m_SpawnMinTick = SpawnTick;
@@ -773,12 +778,11 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	}
 
 	const float Distance = distance(Pos, m_LastTargetPosition);
-	const float MaxHookDistance = GameServer()->Tuning()->m_HookLength;
 	const float GroundControlSpeed = GameServer()->Tuning()->m_GroundControlSpeed;
 
 	bool ConsiderHookingOut = false;
 
-	if(Distance < MaxHookDistance - TileSize * 1)
+	if(CanHook() && !WeakHook() && (Distance < GetMaxHookDistance() - TileSize * 1))
 	{
 		vec2 ToTarget = m_LastTargetPosition - Pos;
 		const float Len2 = ToTarget.x * ToTarget.x + ToTarget.y * ToTarget.y;
@@ -1639,16 +1643,27 @@ void CBotPlayer::GetNewObjection()
 
 void CBotPlayer::MaybeHookTheTarget(float Distance)
 {
-	if(IsHuman())
+	if(!CanHook())
 	{
 		m_HookUntilTick = -1;
 		return;
 	}
 
-	float HookLength = GameServer()->Tuning()->m_HookLength;
 	float HookDuration = GameServer()->Tuning()->m_HookDuration;
 	float BaseDelay = 0.3f;
 	float ExtraDelay = 0.75f;
+
+	if(StrongHook())
+	{
+		BaseDelay *= 0.75f;
+		ExtraDelay *= 0.75;
+	}
+	else if(WeakHook())
+	{
+		HookDuration *= 0.75f;
+		BaseDelay *= 1.5f;
+		ExtraDelay *= 1.5f;
+	}
 
 	if(aHookyClasses.Contains(GetClass()))
 	{
@@ -1665,10 +1680,6 @@ void CBotPlayer::MaybeHookTheTarget(float Distance)
 			return;
 		}
 	}
-	else
-	{
-		HookLength *= 0.9f;
-	}
 
 	const int Tick = Server()->Tick();
 	if(m_pCharacter->Core()->m_HookState == HOOK_GRABBED)
@@ -1681,7 +1692,7 @@ void CBotPlayer::MaybeHookTheTarget(float Distance)
 		}
 	}
 
-	if(Distance < HookLength)
+	if(Distance < GetMaxHookDistance())
 	{
 		if(m_HookUntilTick <= Tick)
 		{
@@ -1696,12 +1707,6 @@ void CBotPlayer::MaybeHookTheTarget(float Distance)
 			{
 				// ... and we delayed the hook until this tick
 				// then hook
-
-				if(!aHookyClasses.Contains(GetClass()))
-				{
-					HookDuration *= random_float() * 0.25f + 0.75f;
-				}
-
 				m_HookUntilTick = Tick + Server()->TickSpeed() * HookDuration;
 			}
 		}
@@ -1995,4 +2000,41 @@ void CBotPlayer::UpdateCharacterState()
 
 	const CIcCharacter *pCharacter = GetCharacter();
 	m_CachedGrounded = pCharacter && pCharacter->IsGrounded();
+}
+
+bool CBotPlayer::CanHook() const
+{
+	if(IsHuman())
+		return false;
+
+	if(m_aTweaks.Contains(EBotTweak::NoHook))
+		return false;
+
+	return true;
+}
+
+bool CBotPlayer::WeakHook() const
+{
+	return m_aTweaks.Contains(EBotTweak::WeakHook);
+}
+
+bool CBotPlayer::StrongHook() const
+{
+	return m_aTweaks.Contains(EBotTweak::StrongHook);
+}
+
+float CBotPlayer::GetMaxHookDistance() const
+{
+	if(!CanHook())
+		return 0;
+
+	float Distance = GameServer()->Tuning()->m_HookLength;
+
+	if(!aHookyClasses.Contains(GetClass()))
+		Distance *= 0.9f;
+
+	if(WeakHook())
+		Distance *= 0.9f;
+
+	return Distance;
 }

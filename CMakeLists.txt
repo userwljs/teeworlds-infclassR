@@ -1234,6 +1234,7 @@ if(BUILD_TESTS)
   enable_testing()
   set(TESTS
     "test_CGameWorld"
+    "test_bot_config_parser"
     "test_bot_utils"
     "test_icArray"
     "test_icFifoArray"

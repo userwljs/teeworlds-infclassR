@@ -1,6 +1,21 @@
 #include "bot_config_parser.h"
+#include "game/server/infclass/bot-player.h"
 
-#include <base/system.h>
+#include <base/tl/ic_enum.h>
+
+static const char *gs_aTweakNames[] = {
+	"no-hook",
+	"weak-hook",
+	"strong-hook",
+	"invalid",
+};
+
+const char *toString(EBotTweak Tweak)
+{
+	return toStringImpl(Tweak, gs_aTweakNames);
+}
+
+template EBotTweak fromString<EBotTweak>(const char *pString);
 
 int ParseSpawnTime(const char *pStr, bool *pOk)
 {
@@ -136,4 +151,32 @@ float ParseRespawn(const char *pStr, bool *pOk)
 		}
 	}
 	return 0;
+}
+
+bool ParseTweaks(const char *pStr, TweaksArray *pTweaks)
+{
+	const char aPrefix[] = "tweaks=";
+	if(!str_startswith(pStr, aPrefix))
+		return false;
+
+	pTweaks->Clear();
+	pStr += strlen(aPrefix);
+
+	while(pStr)
+	{
+		const char *pTweakStr = pStr;
+		const char *pDelimiter = str_find(pStr, ",");
+		int TweakLength = pDelimiter ? pDelimiter - pTweakStr : str_length(pTweakStr);
+		char aBuf[64];
+		str_copy(aBuf, pTweakStr);
+		aBuf[TweakLength] = '\0';
+
+		EBotTweak Tweak = fromString<EBotTweak>(aBuf);
+		if(Tweak != EBotTweak::Invalid)
+			pTweaks->Add(Tweak);
+
+		pStr = pDelimiter ? pDelimiter + 1 : nullptr;
+	}
+
+	return true;
 }

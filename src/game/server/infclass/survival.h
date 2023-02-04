@@ -17,6 +17,7 @@ public:
 	int HP{};
 	int DropLevel{};
 	float RespawnInterval{};
+	TweaksArray Tweaks;
 };
 
 class SurvivalWaveConfiguration

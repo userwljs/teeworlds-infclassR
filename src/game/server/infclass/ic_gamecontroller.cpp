@@ -1630,7 +1630,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("witch", "", CFGFLAG_CHAT, ChatWitch, this, "Call Witch");
 	pConsole->Register("santa", "", CFGFLAG_CHAT, ChatWitch, this, "Call the Santa");
 
-	pConsole->Register("add_bot", "i[number] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec] ?s[drop_level=<>]", CFGFLAG_SERVER, ConAddBot, this, "Add a bot");
+	pConsole->Register("add_bot", "i[number] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec] ?s[drop_level=<>] ?s[tweaks=<>]", CFGFLAG_SERVER, ConAddBot, this, "Add a bot");
 	pConsole->Register("remove_bot", "i[CID or -1]", CFGFLAG_SERVER, ConRemoveBot, this, "Remove a bot");
 	pConsole->Register("dump_bot", "i", CFGFLAG_SERVER, ConDumpBot, this, "Dump bot state");
 	pConsole->Register("ai", "s[enable|disable|debug|danger] ?i[clientid]", CFGFLAG_SERVER, ConCheckAI, this, "Debug bot AI from the caller PoV");
@@ -1638,7 +1638,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 
 	pConsole->Register("survival_clear_conf", "", CFGFLAG_SERVER, ConSurvivalClearConf, this, "");
 	pConsole->Register("survival_add_wave", "i[wave] ?s[name]", CFGFLAG_SERVER, ConSurvivalAddWave, this, "");
-	pConsole->Register("survival_conf_wave", "i[wave] s[action] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec] ?s[drop_level=<>]", CFGFLAG_SERVER, ConSurvivalConfWave, this, "");
+	pConsole->Register("survival_conf_wave", "i[wave] s[action] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec] ?s[drop_level=<>] ?s[tweaks=<>]", CFGFLAG_SERVER, ConSurvivalConfWave, this, "");
 	pConsole->Register("start_survival_scenario", "r[file]", CFGFLAG_SERVER | CFGFLAG_CLIENT, ConStartSurvivalScenario, this, "Start survival with scenario loaded from the specified file");
 }
 
@@ -2010,6 +2010,7 @@ void CIcGameController::ConAddBot(IConsole::IResult *pResult)
 	int HP = 0;
 	int DropLevel = 0;
 	float RespawnInterval = 0;
+	TweaksArray Tweaks;
 
 	for(int Arg = 2; Arg < pResult->NumArguments(); ++Arg)
 	{
@@ -2044,6 +2045,8 @@ void CIcGameController::ConAddBot(IConsole::IResult *pResult)
 			RespawnInterval = Value;
 			continue;
 		}
+
+		ParseTweaks(pStr, &Tweaks);
 	}
 
 	for(int i = 0; i < BotsNumber; ++i)
@@ -2066,6 +2069,7 @@ void CIcGameController::ConAddBot(IConsole::IResult *pResult)
 		pBot->SetMaxHP(HP);
 		pBot->SetDropLevel(DropLevel);
 		pBot->SetRespawnInterval(RespawnInterval);
+		pBot->SetTweaks(Tweaks);
 	}
 
 	char aBuf[256];
@@ -2530,6 +2534,7 @@ void CIcGameController::ConSurvivalConfWaveAddBots(IConsole::IResult *pResult, S
 	int HP = 0;
 	int DropLevel = 0;
 	float RespawnInterval = 0;
+	TweaksArray Tweaks;
 
 	for(int Arg = 3; Arg < pResult->NumArguments(); ++Arg)
 	{
@@ -2572,6 +2577,12 @@ void CIcGameController::ConSurvivalConfWaveAddBots(IConsole::IResult *pResult, S
 			continue;
 		}
 
+		Ok = ParseTweaks(pStr, &Tweaks);
+		if(Ok)
+		{
+			continue;
+		}
+
 		char aBuffer[256];
 		str_format(aBuffer, sizeof(aBuffer), "Invalid wave specification, unable to parse argument '%s'", pStr);
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuffer);
@@ -2584,6 +2595,7 @@ void CIcGameController::ConSurvivalConfWaveAddBots(IConsole::IResult *pResult, S
 	pBotConfiguration->HP = HP;
 	pBotConfiguration->DropLevel = DropLevel;
 	pBotConfiguration->RespawnInterval = RespawnInterval;
+	pBotConfiguration->Tweaks = Tweaks;
 
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "survival wave configuration changed");
 }
@@ -4378,6 +4390,7 @@ CBaseBotPlayer *CIcGameController::AddBot(const SurvivalBotConfiguration &Config
 	pBot->SetMaxHP(Configuration.HP);
 	pBot->SetDropLevel(Configuration.DropLevel);
 	pBot->SetRespawnInterval(Configuration.RespawnInterval);
+	pBot->SetTweaks(Configuration.Tweaks);
 	pBot->UpdateName();
 
 	return pBot;

@@ -80,6 +80,18 @@ enum class EThreatLevel : uint8_t
 	Deadly,
 };
 
+enum class EBotTweak : uint8_t
+{
+	NoHook,
+	WeakHook,
+	StrongHook,
+	Count,
+	Invalid = Count,
+};
+
+using TweaksArray = icArray<EBotTweak, static_cast<int>(EBotTweak::Count)>;
+
+const char *toString(EBotTweak Tweak);
 const char *toString(EObjection Objection);
 
 struct SBotDecision
@@ -97,6 +109,7 @@ public:
 
 	virtual void UpdateControls() {}
 
+	void SetTweaks(const TweaksArray &aTweaks);
 	void SetSpawnMinTick(int SpawnTick);
 	int Lives() const { return m_Lives; }
 	void SetLives(int Lives);
@@ -113,6 +126,7 @@ public:
 	virtual void UpdateName() {}
 
 protected:
+	TweaksArray m_aTweaks;
 	int m_SpawnMinTick = -1;
 	int m_MaxLives = 0;
 	int m_DropLevel = 0;
@@ -216,6 +230,11 @@ public:
 protected:
 	CGameWorld *GameWorld() const;
 	void UpdateCharacterState();
+
+	bool CanHook() const;
+	bool WeakHook() const;
+	bool StrongHook() const;
+	float GetMaxHookDistance() const;
 
 	CBotUtils *m_pUtils = nullptr;
 	BOTSTATE m_BotState = BOTSTATE_ROAMING;
