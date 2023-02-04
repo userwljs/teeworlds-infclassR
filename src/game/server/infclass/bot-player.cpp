@@ -518,14 +518,13 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 		if(!WantToJump)
 		{
-			bool JumpToAvoidDanger = MaybeJumpToAvoidDanger();
-			if(JumpToAvoidDanger)
+			int JumpsToAvoidDanger = GetJumpsToAvoidDanger(&m_JumpTargetPosition);
+			if(JumpsToAvoidDanger)
 			{
 				WantToJump = true;
 
-				m_WantedJumps = 1;
+				m_WantedJumps = JumpsToAvoidDanger;
 				m_JumpFromPosition = Pos;
-				m_JumpTargetPosition.x = std::numeric_limits<float>::quiet_NaN();
 			}
 		}
 	}
@@ -617,14 +616,13 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 			if(!WantToJump)
 			{
-				bool JumpToAvoidDanger = MaybeJumpToAvoidDanger();
-				if(JumpToAvoidDanger)
+				int JumpsToAvoidDanger = GetJumpsToAvoidDanger(&m_JumpTargetPosition);
+				if(JumpsToAvoidDanger)
 				{
 					WantToJump = true;
 
-					m_WantedJumps = 1;
+					m_WantedJumps = JumpsToAvoidDanger;
 					m_JumpFromPosition = Pos;
-					m_JumpTargetPosition.x = std::numeric_limits<float>::quiet_NaN();
 				}
 			}
 		}
@@ -1122,6 +1120,24 @@ bool CBotPlayer::HasDangerInTheDirection(DIRECTION Direction) const
 
 	int DamageIndex1 = GameController()->GetDamageZoneValueAt(Pos + vec2(XOffset, -ProximityRadius / 2));
 	int DamageIndex2 = GameController()->GetDamageZoneValueAt(Pos + vec2(XOffset, +ProximityRadius / 2));
+
+	const icArray<int, 5> BadIndices = {
+		ZONE_DAMAGE_DEATH,
+	};
+
+	if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2))
+		return true;
+
+	return false;
+}
+
+bool CBotPlayer::HasDangerBelow() const
+{
+	const vec2 &Pos = m_pCharacter->GetPos();
+	static const float ProximityRadius = m_pCharacter->GetProximityRadius();
+
+	int DamageIndex1 = GameController()->GetDamageZoneValueAt(Pos + vec2(TileSize / 2, +ProximityRadius / 2 + TileSize * 0.9f));
+	int DamageIndex2 = GameController()->GetDamageZoneValueAt(Pos + vec2(-TileSize / 2, +ProximityRadius / 2 + TileSize * 0.9f));
 
 	const icArray<int, 5> BadIndices = {
 		ZONE_DAMAGE_DEATH,
@@ -1937,16 +1953,32 @@ bool CBotPlayer::MaybeRandomJumpUp() const
 	return random_prob(m_JumpExtraProbability);
 }
 
-bool CBotPlayer::MaybeJumpToAvoidDanger() const
+int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 {
-	return false;
+	if(HasDangerBelow())
+	{
+		if(HasWallInTheDirection(m_RoamingDirection))
+		{
+			int MaxJumps = GetAvailableJumps();
+			return GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, pTargetPosition);
+		}
+
+		if(pTargetPosition)
+		{
+			pTargetPosition->x = std::numeric_limits<float>::quiet_NaN();
+		}
+
+		return 1;
+	}
+
+	return 0;
 
 	CIcEntity *pThreatEntity = nullptr;
 	vec2 ThreatIntersectPos;
 	bool HasMineInRoamingHorizontalDirection = GetDangerLevelAhead(&ThreatIntersectPos, &pThreatEntity) >= EThreatLevel::Dangerous;
 	if(!HasMineInRoamingHorizontalDirection || !pThreatEntity) // pThreatEntity should point to an object if there is a threat
 	{
-		return false;
+		return 0;
 	}
 
 	const vec2 Pos = m_pCharacter->GetPos();
@@ -1989,7 +2021,7 @@ bool CBotPlayer::MaybeJumpToAvoidDanger() const
 		}
 	}
 
-	return MakesSenseToJump;
+	return MakesSenseToJump ? 1 : 0;
 }
 
 void CBotPlayer::PushDecision(EDecision Decision)

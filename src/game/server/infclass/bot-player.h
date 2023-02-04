@@ -194,6 +194,7 @@ public:
 
 	bool HasWallInTheDirection(DIRECTION Direction) const;
 	bool HasDangerInTheDirection(DIRECTION Direction) const;
+	bool HasDangerBelow() const;
 	EThreatLevel GetDangerLevelAhead(vec2 *pThreatPosition = nullptr, CIcEntity **ppThreatEntity = nullptr) const;
 	EThreatLevel GetDangerLevelOnLine(const vec2 &From, vec2 To, vec2 *pThreatPosition = nullptr, CIcEntity **ppThreatEntity = nullptr) const;
 	int GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps = -1, vec2 *pTargetPosition = nullptr) const;
@@ -225,7 +226,7 @@ public:
 	bool MaybeJumpOverWall(const vec2 &JumpTargetPosition) const;
 	bool MaybeJumpOn(const vec2 &JumpTargetPosition) const;
 	bool MaybeRandomJumpUp() const;
-	bool MaybeJumpToAvoidDanger() const;
+	int GetJumpsToAvoidDanger(vec2 *pTargetPosition = nullptr) const;
 
 	void PushDecision(EDecision Decision);
 	EDecision GetPreviousDecision() const;
