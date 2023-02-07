@@ -30,6 +30,11 @@ struct STilePosition
 	{
 	}
 
+	static STilePosition fromPos(const vec2 &Pos)
+	{
+		return STilePosition(Pos.x / 32, Pos.y / 32);
+	}
+
 	static STilePosition fromPosXY(float PosX, float PosY)
 	{
 		return STilePosition(PosX / 32, PosY / 32);
@@ -231,6 +236,8 @@ public:
 	void PushDecision(EDecision Decision);
 	EDecision GetPreviousDecision() const;
 
+	void PushCheckedPosition(const vec2 &Pos);
+
 protected:
 	CGameWorld *GameWorld() const;
 	void UpdateCharacterState();
@@ -248,6 +255,7 @@ protected:
 	int m_RoamingBehaviorTick = 0;
 	icArray<EObjection, 5> m_RecentObjections;
 	icArray<SBotDecision, 64> m_RecentDecisions;
+	icArray<STilePosition, 12> m_CheckedPositions;
 	int m_AirJumps = 0;
 
 	float m_JumpExtraProbability = 0;

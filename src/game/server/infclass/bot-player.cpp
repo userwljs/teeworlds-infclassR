@@ -470,6 +470,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 						WantToJump = true;
 						m_JumpFromPosition = Pos;
 						m_WantedJumps = WantJumps;
+
+						PushCheckedPosition(m_JumpTargetPosition);
 					}
 					else
 					{
@@ -587,6 +589,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 						BotDebugMessage(VERBOSE_STEPS, "Jump on from the air");
 						m_JumpFromPosition = Pos;
 						m_WantedJumps = MaybeWantJumps;
+
+						PushCheckedPosition(m_JumpTargetPosition);
 					}
 				}
 				else if(m_AirJumps == 0)
@@ -1915,6 +1919,12 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition) const
 		return m_LastTargetSeenAtPos.y < JumpTargetPosition.y + TileSizeF / 2;
 	}
 
+	if(m_CheckedPositions.Contains(STilePosition::fromPos(JumpTargetPosition)))
+	{
+		if(random_prob(0.75f))
+			return false;
+	}
+
 	EDecision PreviousDecision = GetPreviousDecision();
 	if(PreviousDecision == EDecision::Jump)
 	{
@@ -2081,6 +2091,14 @@ EDecision CBotPlayer::GetPreviousDecision() const
 	}
 
 	return EDecision::Invalid;
+}
+
+void CBotPlayer::PushCheckedPosition(const vec2 &Pos)
+{
+	if(m_CheckedPositions.Size() == m_CheckedPositions.Capacity())
+		m_CheckedPositions.RemoveAt(0);
+
+	m_CheckedPositions.Add(STilePosition::fromPos(Pos));
 }
 
 CGameWorld *CBotPlayer::GameWorld() const
