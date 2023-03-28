@@ -959,7 +959,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 void CBotPlayer::UpdateHumanBotControls()
 {
-	m_BotState = BOTSTATE_HUNTING;
 	m_pCharacter->SetWeapon(WEAPON_HAMMER);
 }
 
@@ -1494,12 +1493,6 @@ void CBotPlayer::SetState(CBotPlayer::BOTSTATE NewState)
 		return;
 	}
 
-	if(IsHuman())
-	{
-		GameServer()->SendEmoticon(GetCid(), EMOTICON_HEARTS);
-		return;
-	}
-
 	if(NewState == BOTSTATE_ROAMING)
 	{
 		BotDebugMessage(VERBOSE_MAIN, "SwitchState: ROAMING");
@@ -1520,6 +1513,11 @@ void CBotPlayer::SetState(CBotPlayer::BOTSTATE NewState)
 			EMOTICON_ZOMG,
 		};
 		GameServer()->SendEmoticon(GetCid(), HuntingEmotes[random_int(0, 2)]);
+	}
+
+	if(IsHuman())
+	{
+		GameServer()->SendEmoticon(GetCid(), EMOTICON_HEARTS);
 	}
 
 	m_BotState = NewState;
