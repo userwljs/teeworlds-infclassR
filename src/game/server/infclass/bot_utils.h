@@ -107,6 +107,7 @@ public:
 
 	void SendMessage(int Verbosity, const char *fmt, ...)
 		GNUC_ATTRIBUTE((format(printf, 3, 4)));
+	virtual void HighlightPosition(const vec2 &Position) = 0;
 };
 
 template<typename T, T DefaultValue>

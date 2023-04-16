@@ -2167,4 +2167,5 @@ void CBotPlayer::SetJumpTargetPosition(const vec2 &JumpTarget)
 {
 	// JumpTarget should be the edge of the tile (x % 32 == 0)
 	m_JumpTargetPosition = JumpTarget;
+	m_pUtils->GetDebugSink()->HighlightPosition(JumpTarget);
 }

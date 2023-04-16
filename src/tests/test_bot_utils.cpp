@@ -76,6 +76,7 @@ class CMockDebugSink : public IDebugSink
 public:
 	bool IsVerbosityEnabled(int VerbosityLevel) const override { return false; }
 	void SendFormattedMessage(int VerbosityLevel, const char *pMessage) const override {}
+	void HighlightPosition(const vec2 &Position) override {}
 };
 
 float operator"" _t(long double LengthInTiles)

@@ -207,6 +207,14 @@ public:
 		m_pGameContext->SendChat(-1, CGameContext::CHAT_ALL, pMessage);
 	}
 
+	void HighlightPosition(const vec2 &Position) override
+	{
+		if(!IsVerbosityEnabled(VERBOSE_MAIN))
+			return;
+
+		m_pGameContext->CreateHammerDotEvent(Position, m_pGameContext->Server()->TickSpeed() * 2.5);
+	}
+
 protected:
 	CGameContext *m_pGameContext = nullptr;
 };
