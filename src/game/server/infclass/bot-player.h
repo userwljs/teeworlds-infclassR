@@ -203,7 +203,7 @@ public:
 	EThreatLevel GetDangerLevelAhead(vec2 *pThreatPosition = nullptr, CIcEntity **ppThreatEntity = nullptr) const;
 	EThreatLevel GetDangerLevelOnLine(const vec2 &From, vec2 To, vec2 *pThreatPosition = nullptr, CIcEntity **ppThreatEntity = nullptr) const;
 	int GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps = -1, vec2 *pTargetPosition = nullptr) const;
-	int GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition = nullptr) const;
+	int GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition = nullptr) const;
 	int GetAirTilesAbove(DIRECTION Direction, int MaxJumpsMaxJumps) const;
 	float GetAirTilesAboveAtX(int MaxTiles, float CheckPosX) const;
 
@@ -246,6 +246,8 @@ protected:
 	bool WeakHook() const;
 	bool StrongHook() const;
 	float GetMaxHookDistance() const;
+
+	void SetJumpTargetPosition(const vec2 &JumpTarget);
 
 	CBotUtils *m_pUtils = nullptr;
 	BOTSTATE m_BotState = BOTSTATE_ROAMING;

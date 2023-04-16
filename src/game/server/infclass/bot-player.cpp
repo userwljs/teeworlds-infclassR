@@ -434,13 +434,15 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		if(HasWallInRoamingDirection)
 		{
 			BotDebugMessage(VERBOSE_STEPS, "Has wall");
-			const int WantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition);
+			vec2 JumpTarget;
+			const int WantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &JumpTarget);
 			if(WantJumps)
 			{
-				if(MaybeJumpOverWall(m_JumpTargetPosition))
+				if(MaybeJumpOverWall(JumpTarget))
 				{
 					BotDebugMessage(VERBOSE_STEPS, "Decide to jump over the wall in %d jumps", WantJumps);
 					WantToJump = true;
+					SetJumpTargetPosition(JumpTarget);
 					m_JumpFromPosition = Pos;
 					m_WantedJumps = WantJumps;
 				}
@@ -461,11 +463,13 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			BotDebugMessage(VERBOSE_TRACE1, "No wall");
 			if(m_DecisionTileX != TileX)
 			{
-				const int WantJumps = GetJumpsNeededToJumpOn(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition);
+				vec2 JumpTarget;
+				const int WantJumps = GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget);
 				if(WantJumps)
 				{
-					if(MaybeJumpOn(m_JumpTargetPosition))
+					if(MaybeJumpOn(JumpTarget))
 					{
+						SetJumpTargetPosition(JumpTarget);
 						BotDebugMessage(VERBOSE_STEPS, "Decided to 'jump on' to %.2fx%.2f", m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
 						WantToJump = true;
 						m_JumpFromPosition = Pos;
@@ -550,19 +554,21 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 		if(CanJump)
 		{
+			vec2 JumpTarget;
 			if((m_WantedJumps <= 0) && (m_DecisionTileX != TileX) && (m_pCharacter->Core()->m_Vel.y > -3))
 			{
 				BotDebugMessage(VERBOSE_TRACE1, "Considering jump from the air");
 				int MaybeWantJumps = 0;
 				if(HasWallInRoamingDirection)
 				{
-					if((MaybeWantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition)))
+					if((MaybeWantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &JumpTarget)))
 					{
 						if(m_pCharacter->Core()->m_Vel.y < 0)
 						{
 							// We're moving up
-							if(MaybeJumpOverWall(m_JumpTargetPosition))
+							if(MaybeJumpOverWall(JumpTarget))
 							{
+								SetJumpTargetPosition(JumpTarget);
 								BotDebugMessage(VERBOSE_STEPS, "'jump over' from the air to %.2fx%.2f",
 									m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
 								m_WantedJumps = MaybeWantJumps;
@@ -582,10 +588,11 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 						}
 					}
 				}
-				else if((MaybeWantJumps = GetJumpsNeededToJumpOn(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition)))
+				else if((MaybeWantJumps = GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget)))
 				{
-					if(MaybeJumpOn(m_JumpTargetPosition))
+					if(MaybeJumpOn(JumpTarget))
 					{
+						SetJumpTargetPosition(JumpTarget);
 						BotDebugMessage(VERBOSE_STEPS, "Jump on from the air");
 						m_JumpFromPosition = Pos;
 						m_WantedJumps = MaybeWantJumps;
@@ -1332,7 +1339,7 @@ int CBotPlayer::GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps, v
 	return NeedJumps;
 }
 
-int CBotPlayer::GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition) const
+int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition) const
 {
 	BotDebugMessage(VERBOSE_TRACE1, "Evaluating jump on a platform...");
 
@@ -2154,4 +2161,10 @@ float CBotPlayer::GetMaxHookDistance() const
 		Distance *= 0.9f;
 
 	return Distance;
+}
+
+void CBotPlayer::SetJumpTargetPosition(const vec2 &JumpTarget)
+{
+	// JumpTarget should be the edge of the tile (x % 32 == 0)
+	m_JumpTargetPosition = JumpTarget;
 }

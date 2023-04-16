@@ -2182,7 +2182,7 @@ void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
 		int AirTilesAbove = pPlayer->GetAirTilesAbove(Direction, MaxJumps);
 		bool HasWall = pPlayer->HasWallInTheDirection(Direction);
 		int JumpsToGetOver = HasWall ? pPlayer->GetJumpsNeededToGetOverWall(Direction, MaxJumps, &OverWallTargetPosition) : 0;
-		int JumpsToJumpOn = pPlayer->GetJumpsNeededToJumpOn(Direction, MaxJumps, &OnPlatformTargetPosition);
+		int JumpsToJumpOn = pPlayer->GetJumpsNeededToJumpOnPlatform(Direction, MaxJumps, &OnPlatformTargetPosition);
 
 		if(JumpsToGetOver)
 		{
