@@ -722,7 +722,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			{
 				vec2 CurrentTargetTile = m_JumpTargetPosition;
 				float CurrentY = Pos.y;
-				for(int i = 0; i < 5; ++i)
+				constexpr int MaxHorizontalTiles = 10;
+				for(int i = 0; i < MaxHorizontalTiles; ++i)
 				{
 					float TryX = SecondWantedXPos + TileSize * DirectionFromJumpToTarget;
 					if(m_pUtils->GetCollision()->IsSolid(vec2(TryX, CurrentY)))
@@ -736,8 +737,9 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					}
 
 					vec2 NextTile(TryX, Pos.y);
-					float Gnd = m_pUtils->GetSolidBelow(NextTile, 8);
-					if(Gnd > Pos.y + TileSize * 7)
+					constexpr int MaxFault = 5;
+					float Gnd = m_pUtils->GetSolidBelow(NextTile, MaxFault);
+					if(Gnd >= Pos.y + TileSize * MaxFault)
 					{
 						break;
 					}
