@@ -74,15 +74,8 @@ static icArray<EObjection, static_cast<int>(EObjection::Count)> AiBannedObjectio
 
 static int c_JumpsHardLimit = 8;
 
-constexpr float c_GroundJumpImpulse = 13.2f; // Tuning -> GroundJumpImpulse
-constexpr float c_GroundControlSpeed = 10.0f; // Tuning -> GroundControlSpeed
-constexpr float c_GroundControlAccel = 100.0f / SERVER_TICK_SPEED; // Tuning -> GroundControlAccel
-
-constexpr float c_AirJumpImpulse = 12.0f; // Tuning -> AirJumpImpulse
 constexpr float c_AirControlSpeed = 250.0f / SERVER_TICK_SPEED; // Tuning -> AirControlSpeed
 constexpr float c_AirControlAccel = 1.5f; // Tuning -> AirControlAccel
-
-constexpr float c_Gravity = 0.5f; // Tuning -> Gravity
 
 static constexpr icArray<EPlayerClass, 3> aHookyClasses = {
 	EPlayerClass::Spider,
@@ -802,6 +795,10 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 	if(WantToJump)
 	{
+		const float Gravity = m_NextTuningParams.m_Gravity;
+		const float GroundJumpImpulse = m_NextTuningParams.m_GroundJumpImpulse;
+		const float AirJumpImpulse = m_NextTuningParams.m_AirJumpImpulse;
+
 		const float dYTiles = (Pos.y - m_JumpTargetPosition.y) / TileSizeF;
 		bool MaximizeJump = true;
 		if(!IsGrounded())
@@ -816,7 +813,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		bool Jump = false;
 		if(MaximizeJump)
 		{
-			Jump = m_pCharacter->Core()->m_Vel.y > -c_Gravity;
+			Jump = m_pCharacter->Core()->m_Vel.y > -Gravity;
 		}
 		else
 		{
@@ -832,9 +829,9 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 		if(m_WantedJumps == 0)
 		{
-			float Impulse = IsGrounded() ? c_GroundJumpImpulse : c_AirJumpImpulse;
+			float Impulse = IsGrounded() ? GroundJumpImpulse : AirJumpImpulse;
 			float Velocity = m_pCharacter->Core()->m_Vel.y;
-			int TicksToFall = CBotUtils::GetTicksToFallToHeight(Velocity - Impulse, c_Gravity, m_JumpTargetPosition.y - Pos.y, SERVER_TICK_SPEED * 3);
+			int TicksToFall = CBotUtils::GetTicksToFallToHeight(Velocity - Impulse, Gravity, m_JumpTargetPosition.y - Pos.y, SERVER_TICK_SPEED * 3);
 
 			BotDebugMessage(VERBOSE_STEPS, "Ticks to fall: %d", TicksToFall);
 
@@ -1488,8 +1485,10 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 
 	// const float MaxControlSpeed = IsGrounded() ? c_GroundControlSpeed : c_AirControlSpeed;
 	// float MaxHSpeed = std::max<float>(MaxControlSpeed, fabs(m_pCharacter->Core()->m_Vel.x));
-	float Acceleration = c_AirControlAccel * DirectionSign;
-	float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(m_pCharacter->Core()->m_Vel.x, Acceleration, Server()->TickSpeed() * 1.0f, c_AirControlSpeed);
+	const float AirControlAccel = m_NextTuningParams.m_AirControlAccel;
+	const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
+	const float Acceleration = AirControlAccel * DirectionSign;
+	const float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(m_pCharacter->Core()->m_Vel.x, Acceleration, Server()->TickSpeed() * 1.0f, AirControlSpeed);
 	int MaxHTiles = fabs(MaxHDistance / TileSize);
 	int MaxTiles = GetMaxTilesForJumps(MaxJumps);
 
