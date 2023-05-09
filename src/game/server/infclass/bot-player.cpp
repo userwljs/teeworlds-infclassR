@@ -2381,6 +2381,11 @@ bool CBotPlayer::CanHook() const
 	if(m_aTweaks.Contains(EBotTweak::NoHook))
 		return false;
 
+	int Tick = Server()->Tick();
+	constexpr float NoHookInterval = 2.0f;
+	if(Tick < m_RespawnTick + Server()->TickSpeed() * NoHookInterval)
+		return false;
+
 	return true;
 }
 
