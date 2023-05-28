@@ -943,6 +943,17 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 				// TODO: Find another way
 			}
 		}
+
+		if(!WantToJump)
+		{
+			bool HasDangerInRoamingHorizontalDirection = false;
+
+			HasDangerInRoamingHorizontalDirection = HasDangerInTheDirection(m_RoamingDirection);
+			if(HasDangerInRoamingHorizontalDirection)
+			{
+				WantToJump = true;
+			}
+		}
 	}
 
 	const float Distance = distance(Pos, m_LastTargetSeenAtPos);
