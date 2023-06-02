@@ -966,6 +966,17 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	DIRECTION Direction = DirectionToTarget;
 
+	if((AbsXToTarget < TileSize * 3) && WantGoDown)
+	{
+		int YDiff = (m_LastTargetSeenAtPos.y - Pos.y) / TileSizeF;
+		float AirTilesAboveTarget = m_pUtils->GetAirTilesAbove(m_LastTargetSeenAtPos, YDiff + 1);
+		if(YDiff > AirTilesAboveTarget)
+		{
+			// float GroundLevelBelow = m_pUtils->GetSolidBelow(Pos, YDiff);
+			Direction = OppositeDirection(Direction);
+		}
+	}
+
 	if(Direction != DIRECTION_NONE)
 	{
 		bool HasWall = HasWallInTheDirection(Direction);
