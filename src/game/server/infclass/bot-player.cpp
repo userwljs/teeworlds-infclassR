@@ -72,7 +72,7 @@ inline float distance2(const vec2 &from, const vec2 &to)
 static bool AiEnabled = 1;
 static icArray<EObjection, static_cast<int>(EObjection::Count)> AiBannedObjections;
 
-static int c_JumpsHardLimit = 8;
+static int c_JumpsHardLimit = 10;
 
 constexpr float c_AirControlSpeed = 250.0f / SERVER_TICK_SPEED; // Tuning -> AirControlSpeed
 constexpr float c_AirControlAccel = 1.5f; // Tuning -> AirControlAccel
@@ -1631,7 +1631,11 @@ int CBotPlayer::GetMaxJumps() const
 		return 0;
 	}
 
-	return m_pCharacter->Core()->m_Jumps;
+	int Result = m_pCharacter->Core()->m_Jumps;
+	if(Result > c_JumpsHardLimit)
+		Result = c_JumpsHardLimit;
+
+	return Result;
 }
 
 void CBotPlayer::SetState(EBotState NewState)
