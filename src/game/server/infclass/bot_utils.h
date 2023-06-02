@@ -1,6 +1,8 @@
 #pragma once
 
 #include <base/vmath.h>
+
+#include <optional>
 #include <vector>
 
 #ifndef GNUC_ATTRIBUTE
@@ -170,7 +172,7 @@ public:
 
 	float GetFirstSolidAbovePosition(const vec2 &Position, int MaxTiles) const;
 	float GetFirstAirAbovePosition(const vec2 &Position, int MaxTiles) const;
-	int GetFirstAirTileAbovePosition(CTileRoundedPosition TilePosition, int MaxTiles) const;
+	std::optional<int> GetFirstAirTileAbovePosition(CTileRoundedPosition TilePosition, int MaxTiles) const;
 
 	float GetAirTilesAbove(const vec2 &Position, int MaxTiles) const;
 	int GetAirTilesAbove(const CTileRoundedPosition &TilePosition, int MaxTiles) const;

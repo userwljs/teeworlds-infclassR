@@ -273,19 +273,26 @@ float CBotUtils::GetFirstAirAbovePosition(const vec2 &Position, int MaxTiles) co
 	return Position.y;
 }
 
-int CBotUtils::GetFirstAirTileAbovePosition(CTileRoundedPosition TilePosition, int MaxTiles) const
+std::optional<int> CBotUtils::GetFirstAirTileAbovePosition(CTileRoundedPosition TilePosition, int MaxTiles) const
 {
+	dbg_assert(MaxTiles > 0, "Invalid limit for first air lookup");
 	// The initial Position should be a solid tile
-	while(MaxTiles > 0)
+	const int TilesAbove = TilePosition.Y + 1;
+	if(MaxTiles > TilesAbove)
 	{
-		TilePosition.Y -= 1;
+		MaxTiles = TilesAbove;
+	}
+
+	for(int i = 0; i < MaxTiles; ++i)
+	{
+		--TilePosition.Y;
 		if(!m_pCollision->IsSolid(TilePosition))
 		{
-			break;
+			return TilePosition.Y;
 		}
 	}
 
-	return TilePosition.Y;
+	return std::nullopt;
 }
 
 float CBotUtils::GetAirTilesAbove(const vec2 &Position, int MaxTiles) const
@@ -376,13 +383,13 @@ bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJum
 
 		if(POIisSolid)
 		{
-			int FirstAirAbove = GetFirstAirTileAbovePosition(CurrentTile, MaxTiles + 1);
-			if(FirstAirAbove + MaxTiles < CurrentTile.Y)
+			std::optional<int> FirstAirAbove = GetFirstAirTileAbovePosition(CurrentTile, MaxTiles + 1);
+			if(!FirstAirAbove.has_value())
 			{
 				// Too high to jump
 				return false;
 			}
-			CTileRoundedPosition PreviousPOI(CurrentTile.X - DirectionSign, FirstAirAbove);
+			CTileRoundedPosition PreviousPOI(CurrentTile.X - DirectionSign, FirstAirAbove.value());
 			if(m_pCollision->IsSolid(PreviousPOI))
 			{
 				// Unreachable (for now)
@@ -397,7 +404,7 @@ bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJum
 				return false;
 			}
 
-			CurrentTile.Y = FirstAirAbove;
+			CurrentTile.Y = FirstAirAbove.value();
 		}
 
 		SanityCheckSteps++;
