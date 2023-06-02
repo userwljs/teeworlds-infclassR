@@ -708,7 +708,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		if(AbsYToJumpTarget > MaxOffset)
 		{
 			const int DirectionFromJumpToTarget = m_JumpTargetPosition.x >= m_JumpFromPosition.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
-			const float WantedXPos = GoingDown ? m_JumpTargetPosition.x : m_JumpTargetPosition.x - (TileSize - ProximityRadius) * 0.5f * DirectionFromJumpToTarget;
+			const float WantedXPos = GoingDown ? m_JumpTargetPosition.x : (m_JumpTargetPosition.x - TileSize * 0.5f * DirectionFromJumpToTarget);
 			float SecondWantedXPos = WantedXPos;
 
 			if(GoingDown)
@@ -760,7 +760,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 			if(!GoingDown)
 			{
-				const float MaxDiff = (TileSize - ProximityRadius) * 0.375f;
+				const float MaxDiff = 1; // (TileSize - ProximityRadius) * 0.375f;
 				if(DirectionFromJumpToTarget == DIRECTION_RIGHT)
 				{
 					MinWantedX -= MaxDiff;
@@ -771,23 +771,64 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				}
 			}
 
-			if(Pos.x > MaxWantedX)
+			if(AbsXToJumpTarget > TileSize * 4)
 			{
-				pInput->m_Direction = DIRECTION_LEFT;
-			}
-			else if(Pos.x < MinWantedX)
-			{
-				pInput->m_Direction = DIRECTION_RIGHT;
-			}
-			else
-			{
-				if(GoingDown)
+				// Rought math
+				if(Pos.x > MaxWantedX)
 				{
-					pInput->m_Direction = DirectionFromJumpToTarget;
+					pInput->m_Direction = DIRECTION_LEFT;
+				}
+				else if(Pos.x < MinWantedX)
+				{
+					pInput->m_Direction = DIRECTION_RIGHT;
 				}
 				else
 				{
-					pInput->m_Direction = DIRECTION_NONE;
+					if(GoingDown)
+					{
+						pInput->m_Direction = DirectionFromJumpToTarget;
+					}
+					else
+					{
+						pInput->m_Direction = DIRECTION_NONE;
+					}
+				}
+			}
+			else
+			{
+				const float AirControlAccel = m_NextTuningParams.m_AirControlAccel;
+				const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
+				const float Acceleration = AirControlAccel * DirectionSign;
+
+				const int ApproxTicks = AbsXToJumpTarget / VelX;
+				const float PredictedXDistance = m_pUtils->GetDistanceForVelocityAccelerationTicks(VelX, Acceleration, ApproxTicks, AirControlSpeed);
+
+				if(Pos.x + PredictedXDistance > MaxWantedX)
+				{
+					pInput->m_Direction = DIRECTION_LEFT;
+				}
+				else if(Pos.x + PredictedXDistance < MinWantedX)
+				{
+					pInput->m_Direction = DIRECTION_RIGHT;
+				}
+				else
+				{
+					if(GoingDown)
+					{
+						pInput->m_Direction = DirectionFromJumpToTarget;
+					}
+					else
+					{
+						pInput->m_Direction = DIRECTION_NONE;
+					}
+				}
+
+				if(!GoingDown && pInput->m_Direction)
+				{
+					if(ApproxTicks > Server()->TickSpeed() * 0.75f)
+					{
+						pInput->m_Direction = DIRECTION_NONE;
+					}
 				}
 			}
 		}
@@ -879,6 +920,8 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	const vec2 &Pos = GetCharacter()->GetPos();
 	int TileX = Pos.x / TileSize;
 
+	const vec2 VectorToTarget = m_LastTargetSeenAtPos - Pos;
+	const float AbsXToTarget = fabs(VectorToTarget.x);
 	const bool FallingDown = m_pCharacter->Core()->m_Vel.y > 0;
 	const int AvailableJumps = GetAvailableJumps();
 
