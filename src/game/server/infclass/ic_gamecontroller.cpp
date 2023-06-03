@@ -3774,7 +3774,7 @@ void CIcGameController::StartRound()
 void CIcGameController::ResetRoundData()
 {
 	Server()->ResetStatistics();
-	CBotPlayer::ResetAllDecisions();
+	CBotPlayer::OnNewRound();
 
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{

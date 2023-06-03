@@ -21,6 +21,113 @@ static icFifoArray<STilePosition, 320> sa_CheckedPos;
 
 static icFifoArray<SBotDecision, 8> sa_GoodDecisions;
 
+class CHiveMind
+{
+public:
+	void Reset();
+	void UpdateTick(int Tick);
+
+	bool TryAttack(int ClientID);
+	bool TryHook(int ClientID);
+
+protected:
+	static constexpr int MaxAttacksInTimespan = 2;
+	static constexpr float Timespan = 0.75f; // in seconds
+
+	struct HiveVictim
+	{
+		int ClientID = -1;
+		icArray <int, MaxAttacksInTimespan> aAttacks;
+		int Hooks = 0;
+	};
+
+	HiveVictim *GetVictim(int ClientID);
+
+	int m_Tick = 0;
+	icArray<HiveVictim, MAX_CLIENTS> m_aVictims;
+};
+
+void CHiveMind::Reset()
+{
+	m_Tick = -1;
+	m_aVictims.Clear();
+}
+
+void CHiveMind::UpdateTick(int Tick)
+{
+	if(Tick == m_Tick)
+		return;
+
+	m_Tick = Tick;
+	for(int i = m_aVictims.Size() - 1; i >= 0; --i)
+	{
+		HiveVictim &Victim = m_aVictims[i];
+
+		while(!Victim.aAttacks.IsEmpty())
+		{
+			int OldAttack = Victim.aAttacks.First();
+			if(OldAttack + SERVER_TICK_SPEED * Timespan <= m_Tick)
+			{
+				Victim.aAttacks.RemoveAt(0);
+			}
+			else
+			{
+				break;
+			}
+		}
+
+		if(Victim.aAttacks.IsEmpty())
+		{
+			m_aVictims.RemoveAt(i);
+			continue;
+		}
+
+		Victim.Hooks = 0;
+	}
+}
+
+bool CHiveMind::TryAttack(int ClientID)
+{
+	HiveVictim *pVictim = GetVictim(ClientID);
+	auto aAttacks = pVictim->aAttacks;
+	if(aAttacks.Size() == aAttacks.Capacity())
+		return false;
+
+	pVictim->aAttacks.Add(m_Tick);
+	return true;
+}
+
+bool CHiveMind::TryHook(int ClientID)
+{
+	HiveVictim *pVictim = GetVictim(ClientID);
+
+	if(pVictim->Hooks >= g_Config.m_InfMaxHiveHooks)
+	{
+		return false;
+	}
+
+	pVictim->Hooks++;
+	return true;
+}
+
+CHiveMind::HiveVictim *CHiveMind::GetVictim(int ClientID)
+{
+	for(HiveVictim &Victim : m_aVictims)
+	{
+		if(Victim.ClientID == ClientID)
+		{
+			return &Victim;
+		}
+	}
+
+	m_aVictims.Add({});
+	m_aVictims.Last().ClientID = ClientID;
+
+	return &m_aVictims.Last();
+}
+
+static CHiveMind s_HiveMind;
+
 void CBaseBotPlayer::SetTweaks(const TweaksArray &aTweaks)
 {
 	m_aTweaks = aTweaks;
@@ -142,10 +249,11 @@ CBotPlayer::~CBotPlayer()
 {
 }
 
-void CBotPlayer::ResetAllDecisions()
+void CBotPlayer::OnNewRound()
 {
 	sa_CheckedPos.Clear();
 	sa_GoodDecisions.Clear();
+	s_HiveMind.Reset();
 }
 
 void CBotPlayer::SetBotUtils(CBotUtils *pUtils)
@@ -179,6 +287,8 @@ void CBotPlayer::Tick()
 {
 	if(GameController()->IsGameOver())
 		return;
+
+	s_HiveMind.UpdateTick(Server()->Tick());
 
 	UpdateCharacterState();
 
@@ -1152,6 +1262,15 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	if(m_HookUntilTick >= Tick)
 	{
 		pInput->m_Hook = 1;
+	}
+
+	if(pInput->m_Fire)
+	{
+		pInput->m_Fire = s_HiveMind.TryAttack(m_LastTarget);
+	}
+	if(pInput->m_Hook)
+	{
+		pInput->m_Hook = s_HiveMind.TryHook(m_LastTarget);
 	}
 }
 

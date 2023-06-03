@@ -168,7 +168,7 @@ public:
 	CBotPlayer(CIcGameController *pGameController, int UniqueClientId, int ClientID, int Team);
 	~CBotPlayer() override;
 
-	static void ResetAllDecisions();
+	static void OnNewRound();
 
 	void SetBotUtils(CBotUtils *pUtils);
 	void Snap(int SnappingClient) override;
