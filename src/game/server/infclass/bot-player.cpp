@@ -2273,31 +2273,6 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition)
 		return m_LastTargetSeenAtPos.y < JumpTargetPosition.y + TileSizeF / 2;
 	}
 
-	{
-		EDecision GoodDecision = GetGoodDecision();
-		if(GoodDecision != EDecision::Invalid)
-		{
-			// Definitely go!
-			if(random_prob(0.9f))
-			{
-				GameServer()->SendEmoticon(GetCid(), EMOTICON_EXCLAMATION);
-
-				// Good decision:
-				switch(GoodDecision)
-				{
-				case EDecision::Jump:
-					BotDebugMessage(VERBOSE_STEPS, "Someone jumped previously and it was good. Jump.");
-					return true;
-				case EDecision::NoJump:
-					BotDebugMessage(VERBOSE_STEPS, "Someone did not jump here previously and it was good. Do not jump.");
-					return false;
-				default:
-					break;
-				}
-			}
-		}
-	}
-
 	STilePosition ShortPos = STilePosition::fromPos(JumpTargetPosition);
 	for(auto &CheckPoint : ma_IgnorePoints)
 	{
@@ -2326,6 +2301,31 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition)
 		if(random_prob(ChanceToIgnoreAlreadyCheckedPosition))
 		{
 			return false;
+		}
+	}
+
+	{
+		EDecision GoodDecision = GetGoodDecision();
+		if(GoodDecision != EDecision::Invalid)
+		{
+			// Definitely go!
+			if(random_prob(0.9f))
+			{
+				GameServer()->SendEmoticon(GetCid(), EMOTICON_EXCLAMATION);
+
+				// Good decision:
+				switch(GoodDecision)
+				{
+				case EDecision::Jump:
+					BotDebugMessage(VERBOSE_STEPS, "Someone jumped previously and it was good. Jump.");
+					return true;
+				case EDecision::NoJump:
+					BotDebugMessage(VERBOSE_STEPS, "Someone did not jump here previously and it was good. Do not jump.");
+					return false;
+				default:
+					break;
+				}
+			}
 		}
 	}
 
