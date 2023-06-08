@@ -1032,9 +1032,10 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	const vec2 &Pos = GetCharacter()->GetPos();
 	int TileX = Pos.x / TileSize;
 
+	const float Gravity = m_NextTuningParams.m_Gravity;
 	const vec2 VectorToTarget = m_LastTargetSeenAtPos - Pos;
 	const float AbsXToTarget = fabs(VectorToTarget.x);
-	const bool FallingDown = m_pCharacter->Core()->m_Vel.y > 0;
+	const bool FallingDown = m_pCharacter->Core()->m_Vel.y > -Gravity;
 	const int AvailableJumps = GetAvailableJumps();
 
 	bool WantToJump = false;
@@ -1181,20 +1182,28 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	if(WantToJump)
 	{
-		const float JumpIntervalForMaxHeight = 1 / 32.0f * 13; // 0.40625;
-		float JumpInterval = JumpIntervalForMaxHeight;
-
+		const float dYTiles = (Pos.y - m_JumpTargetPosition.y) / TileSizeF;
+		bool MaximizeJump = true;
 		if(!IsGrounded())
 		{
-			const float dYTiles = (Pos.y - m_JumpTargetPosition.y) / TileSizeF;
 			if(dYTiles < m_pUtils->GetAirJumpTiles())
 			{
+				MaximizeJump = false;
 				// Reduce the interval for the last jump that fits
-				JumpInterval = 0.2f;
 			}
 		}
 
-		if(Tick > m_LastJumpTick + Server()->TickSpeed() * JumpInterval)
+		bool Jump = false;
+		if(MaximizeJump)
+		{
+			Jump = m_pCharacter->Core()->m_Vel.y > -Gravity;
+		}
+		else
+		{
+			Jump = true;
+		}
+
+		if(Jump)
 		{
 			pInput->m_Jump = 1;
 			m_LastJumpTick = Tick;
