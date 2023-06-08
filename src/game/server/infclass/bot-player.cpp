@@ -1047,10 +1047,11 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		{
 			vec2 VectorToTarget = m_LastTargetSeenAtPos - Pos;
 			const float HorizontalDistance = std::fabs(VectorToTarget.x);
-			if(HorizontalDistance < GetMaxHookDistance())
+			if(!CanHook() || (HorizontalDistance < GetMaxHookDistance()))
 			{
 				int NeedJumps = GetJumpsToReachTarget(VectorToTarget);
 				m_WantedJumps = std::min<int>(AvailableJumps, NeedJumps);
+				SetJumpTargetPosition(m_LastTargetSeenAtPos, Pos);
 			}
 		}
 
