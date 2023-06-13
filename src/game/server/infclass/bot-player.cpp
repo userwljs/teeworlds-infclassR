@@ -1489,8 +1489,6 @@ bool CBotPlayer::HasDangerBelow() const
 
 EThreatLevel CBotPlayer::GetDangerLevelAhead(vec2 *pThreatPosition, CIcEntity **ppThreatEntity) const
 {
-	return EThreatLevel::Zero;
-
 	if(!m_pCharacter)
 	{
 		return EThreatLevel::Zero;
@@ -2403,12 +2401,10 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 		return 1;
 	}
 
-	return 0;
-
 	CIcEntity *pThreatEntity = nullptr;
 	vec2 ThreatIntersectPos;
-	bool HasMineInRoamingHorizontalDirection = GetDangerLevelAhead(&ThreatIntersectPos, &pThreatEntity) >= EThreatLevel::Dangerous;
-	if(!HasMineInRoamingHorizontalDirection || !pThreatEntity) // pThreatEntity should point to an object if there is a threat
+	const EThreatLevel ThreatLevel = GetDangerLevelAhead(&ThreatIntersectPos, &pThreatEntity);
+	if(!pThreatEntity || ThreatLevel < EThreatLevel::Dangerous)
 	{
 		return 0;
 	}
