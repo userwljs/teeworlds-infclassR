@@ -351,6 +351,7 @@ void CBotPlayer::Tick()
 void CBotPlayer::TickPaused()
 {
 	m_RoamingBehaviorTick++;
+	m_FleeingSinceTick++;
 	m_LastJumpTick++;
 	m_LastSeenTick++;
 	m_LastFireTick++;
@@ -384,6 +385,11 @@ void CBotPlayer::UpdateTarget()
 {
 	const CIcCharacter *pCharacter = GetCharacter();
 	if(!pCharacter)
+	{
+		return;
+	}
+
+	if(m_BotState == EBotState::Fleeing)
 	{
 		return;
 	}
@@ -518,6 +524,7 @@ void CBotPlayer::UpdateControls()
 	switch(m_BotState)
 	{
 	case EBotState::Roaming:
+	case EBotState::Fleeing:
 		UpdateControlsRoaming(&NewInput);
 		break;
 	case EBotState::Hunting:
@@ -1294,6 +1301,57 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 void CBotPlayer::UpdateHumanBotControls()
 {
 	m_pCharacter->SetWeapon(WEAPON_HAMMER);
+
+	const float LookupRadius = GetLookupRadius();
+	const vec2 &Pos = m_pCharacter->GetPos();
+	const vec2 LookupFromPos = Pos + m_pCharacter->GetDirection() * GetLookupOffset();
+	int Tick = Server()->Tick();
+
+	icArray<CIcCharacter *, MAX_CLIENTS> aCharacters;
+	int Results = GameWorld()->FindEntities(LookupFromPos, LookupRadius, reinterpret_cast<CEntity **>(aCharacters.Data()), aCharacters.Capacity(), CIcCharacter::EntityId);
+	aCharacters.Resize(Results);
+
+	vec2 Out;
+	vec2 Before;
+
+	float Distance2ToTheEnemy = LookupRadius * LookupRadius + 1;
+	const CIcCharacter *pClosestSeenEnemy = nullptr;
+	for(const CIcCharacter *pCharacter : aCharacters)
+	{
+		if(pCharacter->IsHuman() || pCharacter->IsInvisible())
+		{
+			continue;
+		}
+
+		float Distance2ToTheCharacter = distance2(Pos, pCharacter->GetPos());
+		if(Distance2ToTheCharacter > Distance2ToTheEnemy)
+			continue;
+
+		if(GameServer()->Collision()->IntersectLine(Pos, pCharacter->GetPos(), &Out, &Before))
+		{
+			continue;
+		}
+
+		pClosestSeenEnemy = pCharacter;
+		Distance2ToTheEnemy = Distance2ToTheCharacter;
+	}
+
+	if(pClosestSeenEnemy)
+	{
+		SetState(EBotState::Fleeing);
+		SetRoamingDirection(pClosestSeenEnemy->GetPos().x < Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+		m_LastTargetSeenAtPos = pClosestSeenEnemy->GetPos();
+		m_LastTarget = pClosestSeenEnemy->GetCid();
+		m_FleeingSinceTick = Tick;
+	}
+	else if(m_BotState == EBotState::Fleeing)
+	{
+		float FleeingDuration = 0.5f;
+		if(Tick >= m_FleeingSinceTick + Server()->TickSpeed() * FleeingDuration)
+		{
+			SetState(EBotState::Roaming);
+		}
+	}
 }
 
 void CBotPlayer::ScheduleRandomFire()
@@ -1469,9 +1527,14 @@ bool CBotPlayer::HasDangerInTheDirection(DIRECTION Direction) const
 	int DamageIndex1 = GameController()->GetDamageZoneValueAt(Pos + vec2(XOffset, -ProximityRadius / 2));
 	int DamageIndex2 = GameController()->GetDamageZoneValueAt(Pos + vec2(XOffset, +ProximityRadius / 2));
 
-	const icArray<int, 5> BadIndices = {
+	icArray<int, 5> BadIndices = {
 		ZONE_DAMAGE_DEATH,
 	};
+
+	if(IsHuman())
+	{
+		BadIndices.Add(ZONE_DAMAGE_INFECTION);
+	}
 
 	if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2))
 		return true;
@@ -1487,9 +1550,14 @@ bool CBotPlayer::HasDangerBelow() const
 	int DamageIndex1 = GameController()->GetDamageZoneValueAt(Pos + vec2(TileSize / 2, +ProximityRadius / 2 + TileSize * 0.9f));
 	int DamageIndex2 = GameController()->GetDamageZoneValueAt(Pos + vec2(-TileSize / 2, +ProximityRadius / 2 + TileSize * 0.9f));
 
-	const icArray<int, 5> BadIndices = {
+	icArray<int, 5> BadIndices = {
 		ZONE_DAMAGE_DEATH,
 	};
+
+	if(IsHuman())
+	{
+		BadIndices.Add(ZONE_DAMAGE_INFECTION);
+	}
 
 	if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2))
 		return true;

@@ -289,6 +289,7 @@ protected:
 
 	int m_LastTarget = -1;
 	vec2 m_LastTargetSeenAtPos;
+	int m_FleeingSinceTick = -1;
 	int m_LastSeenTick = -1;
 	int m_LastFireTick = -1;
 	int m_NextRandomFireTick = 0;
