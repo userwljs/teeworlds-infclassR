@@ -88,48 +88,66 @@ float operator"" _t(long double LengthInTiles)
 	return LengthInTiles * 32;
 }
 
-TEST(BotUtils, GetTicksToReachDistance)
+TEST(BotUtils, GetTicksToMoveDistance)
 {
 	{
 		float Velocity = 10;
 		float Acceleration = 0;
 		float Distance = 10;
-		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 1);
+		EXPECT_EQ(CBotUtils::GetTicksToMoveDistance(Velocity, Acceleration, Distance), 1);
 	}
 
 	{
 		float Velocity = 10;
 		float Acceleration = 0;
 		float Distance = 20;
-		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 2);
+		EXPECT_EQ(CBotUtils::GetTicksToMoveDistance(Velocity, Acceleration, Distance), 2);
 	}
 
 	{
 		float Velocity = 10;
 		float Acceleration = 2;
 		float Distance = 22;
-		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 2);
+		EXPECT_EQ(CBotUtils::GetTicksToMoveDistance(Velocity, Acceleration, Distance), 2);
 	}
 
 	{
 		float Velocity = 10;
 		float Acceleration = 2;
 		float Distance = 23;
-		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 3);
+		EXPECT_EQ(CBotUtils::GetTicksToMoveDistance(Velocity, Acceleration, Distance), 3);
 	}
 
 	{
 		float Velocity = -10;
 		float Acceleration = 5;
 		float Distance = 20;
-		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 7);
+		EXPECT_EQ(CBotUtils::GetTicksToMoveDistance(Velocity, Acceleration, Distance), 7);
 	}
 
 	{
 		float Velocity = -10;
 		float Acceleration = 5;
 		float Distance = -10;
-		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 4);
+		EXPECT_EQ(CBotUtils::GetTicksToMoveDistance(Velocity, Acceleration, Distance), 4);
+	}
+
+	{
+		float Velocity = -10;
+		float Acceleration = 5;
+		float Distance = 35;
+		float MaxVelocity = 15;
+		int MaxTicks = 100;
+		EXPECT_EQ(CBotUtils::GetTicksToMoveDistance(Velocity, Acceleration, Distance, MaxTicks, MaxVelocity), 8);
+	}
+
+	{
+		float Velocity = -10;
+		float Acceleration = 5;
+		float Distance = 35;
+		float MaxVelocity = 20;
+		int MaxTicks = 100;
+		EXPECT_EQ(CBotUtils::GetTicksToMoveDistance(Velocity, Acceleration, Distance, MaxTicks, MaxVelocity), 7);
 	}
 }
 
