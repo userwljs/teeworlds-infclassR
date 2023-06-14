@@ -424,19 +424,83 @@ void CBotPlayer::UpdateTarget()
 	}
 	else
 	{
-		for(int CandidateId : Targets)
+		if (IsHuman())
 		{
-			const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
-			vec2 Out;
-			vec2 Before;
+			int AvailableMedicID = -1;
+			int CanHealID = -1;
+			int NearestHumanID = -1;
+			int NeedTargets = 3;
 
-			if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos(), &Out, &Before))
+			for(int CandidateId : Targets)
 			{
-				continue;
+				const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
+				vec2 Out;
+				vec2 Before;
+
+				if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos(), &Out, &Before))
+				{
+					continue;
+				}
+
+				if(NearestHumanID < 0)
+				{
+					NearestHumanID = CandidateId;
+					NeedTargets -=1;
+				}
+
+				if(AvailableMedicID < 0)
+				{
+					if(pChar->GetPlayerClass() == EPlayerClass::Medic)
+					{
+						AvailableMedicID = CandidateId;
+						NeedTargets -=1;
+					}
+				}
+
+				if(CanHealID < 0)
+				{
+					if((pChar->GetPlayerClass() != EPlayerClass::Hero) && pChar->GetArmor() < 10)
+					{
+						CanHealID = CandidateId;
+						NeedTargets -=1;
+					}
+				}
+
+				if (NeedTargets == 0)
+				{
+					break;
+				}
 			}
 
-			TargetId = CandidateId;
-			break;
+			if ((AvailableMedicID >= 0) && (GetCharacter()->GetArmor() < 10))
+			{
+				TargetId = AvailableMedicID;
+			}
+			else if (CanHealID >= 0)
+			{
+				TargetId = CanHealID;
+			}
+			else
+			{
+				TargetId = NearestHumanID;
+			}
+		}
+		else
+		{
+			for(int CandidateId : Targets)
+			{
+				const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
+				vec2 Out;
+				vec2 Before;
+
+				if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos(), &Out, &Before))
+				{
+					continue;
+				}
+
+				TargetId = CandidateId;
+				break;
+			}
 		}
 	}
 
