@@ -2414,10 +2414,10 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 
 	float MaxTiles = (IsGrounded() ? m_pUtils->GetGroundJumpTiles() : m_pUtils->GetAirJumpTiles()) + 1;
 	float TopLineY = Pos.y - MaxTiles * TileSize + 5;
-	float MaybeTheFirstSolidAbove = m_pUtils->GetFirstSolidAbovePosition(ThreatPos, MaxTiles);
-	if(MaybeTheFirstSolidAbove > TopLineY)
+	std::optional<float> MaybeTheFirstSolidAbove = m_pUtils->GetFirstSolidAbovePosition(ThreatPos, MaxTiles);
+	if(MaybeTheFirstSolidAbove.has_value() && MaybeTheFirstSolidAbove.value() > TopLineY)
 	{
-		TopLineY = MaybeTheFirstSolidAbove;
+		TopLineY = MaybeTheFirstSolidAbove.value();
 	}
 	bool ExpectSolid = IsSolidTile(ThreatPos.x, TopLineY);
 

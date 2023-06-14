@@ -13,6 +13,8 @@
 #endif
 #endif
 
+class CTuningParams;
+
 class CTilePosition
 {
 public:
@@ -169,9 +171,12 @@ public:
 
 	float GetAirJumpTiles() const;
 	float GetGroundJumpTiles() const;
+	int GetAirJumpTicks() const;
+	int GetGroundJumpTicks() const;
+	int GetJumpTicksInAir(int MaxJumps, bool FromGround, float JumpMaxHeight = 0, float Velocity = 0) const;
 
-	float GetFirstSolidAbovePosition(const vec2 &Position, int MaxTiles) const;
-	float GetFirstAirAbovePosition(const vec2 &Position, int MaxTiles) const;
+	std::optional<float> GetFirstSolidAbovePosition(const vec2 &Position, int MaxTiles) const;
+	std::optional<float> GetFirstAirAbovePosition(const vec2 &Position, int MaxTiles) const;
 	std::optional<int> GetFirstAirTileAbovePosition(CTileRoundedPosition TilePosition, int MaxTiles) const;
 
 	float GetAirTilesAbove(const vec2 &Position, int MaxTiles) const;
@@ -183,6 +188,7 @@ public:
 protected:
 	ICollision *m_pCollision = nullptr;
 	IDebugSink *m_pDebugSink = nullptr;
+	const CTuningParams *m_pTuningParams = nullptr;
 
 	mutable DataCache<char, -1> m_AirTilesAboveCache;
 };

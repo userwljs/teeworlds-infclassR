@@ -236,11 +236,69 @@ float CBotUtils::GetGroundJumpTiles() const
 	return c_GroundJumpTiles;
 }
 
-float CBotUtils::GetFirstSolidAbovePosition(const vec2 &Position, int MaxTiles) const
+int CBotUtils::GetAirJumpTicks() const
+{
+	return c_AirJumpImpulse / c_Gravity;
+}
+
+int CBotUtils::GetGroundJumpTicks() const
+{
+	return c_GroundJumpImpulse / c_Gravity;
+}
+
+int CBotUtils::GetJumpTicksInAir(int MaxJumps, bool FromGround, float JumpMaxHeight, float Velocity) const
+{
+	if ((MaxJumps == 0) && (Velocity == 0.0f))
+		return 0;
+
+	dbg_assert(MaxJumps >= 0, "MaxJumps can't be a negative number");
+	dbg_assert(!FromGround || Velocity == 0.0f, "Ground jump can't have initial velocity");
+
+	int MaxTicks = 0;
+	if(FromGround && (MaxJumps > 0))
+	{
+		MaxTicks += GetGroundJumpTicks();
+		MaxJumps -= 1;
+	}
+	else if(Velocity < 0)
+	{
+		int ExtraTicks = -Velocity / c_Gravity;
+		MaxTicks += ExtraTicks;
+	}
+
+	MaxTicks += GetAirJumpTicks() * MaxJumps;
+
+	if(JumpMaxHeight)
+	{
+		float PositiveVelocity = std::max<float>(-Velocity, FromGround ? c_GroundJumpImpulse : c_AirJumpImpulse);
+		float S = 0;
+		// There is a ceiling
+		for(int i = 0; i < MaxTicks; ++i)
+		{
+			S += PositiveVelocity;
+			PositiveVelocity -= c_Gravity;
+
+			if(S > JumpMaxHeight)
+			{
+				return i;
+			}
+			if(PositiveVelocity < 0)
+			{
+				// Falling down, didn't hit the ceiling
+				break;
+			}
+		}
+	}
+
+	return MaxTicks;
+}
+
+std::optional<float> CBotUtils::GetFirstSolidAbovePosition(const vec2 &Position, int MaxTiles) const
 {
 	// The Position should be an air tile
 	for(int i = 0; i <= MaxTiles; ++i)
 	{
+		// TODO: Can use air cache here
 		const float CheckPosY = Position.y - i * TileSize;
 		int TileIndex = m_pCollision->GetTile(Position.x, CheckPosY);
 		m_pDebugSink->SendMessage(VERBOSE_TRACE2, "GetFirstSolidAbovePosition: Checking tile at %.2f x %.2f: %d", Position.x / TileSize, CheckPosY / TileSize, TileIndex);
@@ -252,10 +310,10 @@ float CBotUtils::GetFirstSolidAbovePosition(const vec2 &Position, int MaxTiles) 
 	}
 
 	m_pDebugSink->SendMessage(VERBOSE_TRACE1, "GetFirstSolidAbovePosition(): no solid, MaxTiles: %d", MaxTiles);
-	return Position.y;
+	return std::nullopt;
 }
 
-float CBotUtils::GetFirstAirAbovePosition(const vec2 &Position, int MaxTiles) const
+std::optional<float> CBotUtils::GetFirstAirAbovePosition(const vec2 &Position, int MaxTiles) const
 {
 	// The Position should be a solid tile
 	for(int i = 0; i <= MaxTiles; ++i)
@@ -270,7 +328,7 @@ float CBotUtils::GetFirstAirAbovePosition(const vec2 &Position, int MaxTiles) co
 	}
 
 	m_pDebugSink->SendMessage(VERBOSE_TRACE1, "GetFirstAirAbovePosition(): no air, MaxTiles: %d", MaxTiles);
-	return Position.y;
+	return std::nullopt;
 }
 
 std::optional<int> CBotUtils::GetFirstAirTileAbovePosition(CTileRoundedPosition TilePosition, int MaxTiles) const
@@ -307,7 +365,7 @@ int CBotUtils::GetAirTilesAbove(const CTileRoundedPosition &TilePosition, int Ma
 {
 	char CachedValue = m_AirTilesAboveCache.Get(TilePosition.X, TilePosition.Y);
 	if(CachedValue >= 0)
-		return CachedValue;
+		return std::min<int>(MaxTiles, CachedValue);
 
 	int AirTilesAbove = 0;
 
