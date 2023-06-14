@@ -102,6 +102,7 @@ enum class EBotTweak : uint8_t
 	NoHook,
 	WeakHook,
 	StrongHook,
+	ThreatAware,
 	Count,
 	Invalid = Count,
 };
@@ -267,6 +268,7 @@ protected:
 	bool CanHook() const;
 	bool WeakHook() const;
 	bool StrongHook() const;
+	bool IsThreatAware() const;
 	float GetMaxHookDistance() const;
 	float GetLookupRadius() const;
 	float GetLookupOffset() const;

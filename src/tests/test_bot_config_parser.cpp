@@ -24,4 +24,12 @@ TEST(BotConfigParser, Tweaks)
 		EXPECT_EQ(Tweaks.Size(), 1);
 		EXPECT_EQ(Tweaks.At(0), EBotTweak::StrongHook);
 	}
+
+	{
+		TweaksArray Tweaks;
+		ParseTweaks("tweaks=strong-hook,threat-aware", &Tweaks);
+		EXPECT_EQ(Tweaks.Size(), 2);
+		EXPECT_TRUE(Tweaks.Contains(EBotTweak::StrongHook));
+		EXPECT_TRUE(Tweaks.Contains(EBotTweak::ThreatAware));
+	}
 }

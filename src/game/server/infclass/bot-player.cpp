@@ -2578,6 +2578,11 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 		return 1;
 	}
 
+	if(!IsThreatAware())
+	{
+		return 0;
+	}
+
 	constexpr int MaxJumpsToAvoid = 1;
 	if (MaxJumps > MaxJumpsToAvoid)
 	{
@@ -2790,6 +2795,11 @@ bool CBotPlayer::WeakHook() const
 bool CBotPlayer::StrongHook() const
 {
 	return m_aTweaks.Contains(EBotTweak::StrongHook);
+}
+
+bool CBotPlayer::IsThreatAware() const
+{
+	return m_aTweaks.Contains(EBotTweak::ThreatAware);
 }
 
 float CBotPlayer::GetMaxHookDistance() const
