@@ -757,10 +757,14 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			int JumpsToAvoidDanger = GetJumpsToAvoidDanger(&JumpTarget);
 			if(JumpsToAvoidDanger)
 			{
-				WantToJump = true;
+				constexpr float AvoidDangerProba = 1.0f;
+				if(random_prob(AvoidDangerProba) && m_pUtils->IsReachableByGround(Pos, JumpTarget, MaxJumps))
+				{
+					WantToJump = true;
 
-				m_WantedJumps = JumpsToAvoidDanger;
-				SetJumpTargetPosition(JumpTarget, Pos);
+					m_WantedJumps = JumpsToAvoidDanger;
+					SetJumpTargetPosition(JumpTarget, Pos);
+				}
 			}
 		}
 	}
@@ -856,13 +860,18 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 			if(!WantToJump)
 			{
-				int JumpsToAvoidDanger = GetJumpsToAvoidDanger(&m_JumpTargetPosition);
+				vec2 JumpTarget;
+				int JumpsToAvoidDanger = GetJumpsToAvoidDanger(&JumpTarget);
 				if(JumpsToAvoidDanger)
 				{
-					WantToJump = true;
+					constexpr float AvoidDangerProba = 1.0f;
+					if(random_prob(AvoidDangerProba))
+					{
+						WantToJump = true;
 
-					m_WantedJumps = JumpsToAvoidDanger;
-					m_JumpFromPosition = Pos;
+						m_WantedJumps = JumpsToAvoidDanger;
+						SetJumpTargetPosition(JumpTarget, Pos);
+					}
 				}
 			}
 		}
@@ -1631,17 +1640,18 @@ bool CBotPlayer::HasDangerBelow() const
 
 EThreatLevel CBotPlayer::GetDangerLevelAhead(vec2 *pThreatPosition, CIcEntity **ppThreatEntity) const
 {
-	if(!m_pCharacter)
+	const CIcCharacter *pCharacter = GetCharacter();
+	if(!pCharacter || pCharacter->IsBlind())
 	{
 		return EThreatLevel::Zero;
 	}
 
 	const float PredictTime = 0.25f; // Predict 1/4 of the next second
 
-	const vec2 &Pos = m_pCharacter->GetPos();
+	const vec2 &Pos = pCharacter->GetPos();
 	const int DirectionSign = m_RoamingDirection;
 	const float Acceleration = c_AirControlAccel * DirectionSign;
-	const float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(m_pCharacter->Core()->m_Vel.x, Acceleration, Server()->TickSpeed() * PredictTime, c_AirControlSpeed);
+	const float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(pCharacter->Core()->m_Vel.x, Acceleration, Server()->TickSpeed() * PredictTime, c_AirControlSpeed);
 	const vec2 EndPos = Pos + vec2(MaxHDistance, 0);
 
 	return GetDangerLevelOnLine(Pos, EndPos, pThreatPosition, ppThreatEntity);
@@ -1652,6 +1662,7 @@ EThreatLevel CBotPlayer::GetDangerLevelOnLine(const vec2 &From, vec2 To, vec2 *p
 	if(IsHuman())
 	{
 		// Bot-human feels no fear
+		// TODO: ENTTYPE_SLUG_SLIME
 		return EThreatLevel::Zero;
 	}
 
@@ -1694,7 +1705,7 @@ EThreatLevel CBotPlayer::GetDangerLevelOnLine(const vec2 &From, vec2 To, vec2 *p
 
 			if(ThreatSpec.first == CScientistMine::EntityId)
 			{
-				// Typical mine damage is up to 18
+				// Typical mine damage is up to 6 + 6 * 2
 				if(m_pCharacter->GetHealthArmorSum() > 18)
 				{
 					Result = EThreatLevel::Dangerous;
@@ -2551,11 +2562,11 @@ bool CBotPlayer::MaybeRandomJumpUp() const
 
 int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 {
+	int MaxJumps = GetAvailableJumps();
 	if(HasDangerBelow())
 	{
 		if(HasWallInTheDirection(m_RoamingDirection))
 		{
-			int MaxJumps = GetAvailableJumps();
 			return GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, pTargetPosition);
 		}
 
@@ -2567,6 +2578,12 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 		return 1;
 	}
 
+	constexpr int MaxJumpsToAvoid = 1;
+	if (MaxJumps > MaxJumpsToAvoid)
+	{
+		MaxJumps = MaxJumpsToAvoid;
+	}
+
 	CIcEntity *pThreatEntity = nullptr;
 	vec2 ThreatIntersectPos;
 	const EThreatLevel ThreatLevel = GetDangerLevelAhead(&ThreatIntersectPos, &pThreatEntity);
@@ -2575,47 +2592,57 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 		return 0;
 	}
 
+	int DirectionSign = m_RoamingDirection;
+
+	const float VelX = m_pCharacter->Core()->m_Vel.x;
+	const float VelY = IsGrounded() ? 0 : m_pCharacter->Core()->m_Vel.y;
 	const vec2 Pos = m_pCharacter->GetPos();
 	const vec2 ThreatPos = pThreatEntity->GetPos();
+	const float ThreatRadius = pThreatEntity->GetProximityRadius();
 
-	float MaxTiles = (IsGrounded() ? m_pUtils->GetGroundJumpTiles() : m_pUtils->GetAirJumpTiles()) + 1;
-	float TopLineY = Pos.y - MaxTiles * TileSize + 5;
-	std::optional<float> MaybeTheFirstSolidAbove = m_pUtils->GetFirstSolidAbovePosition(ThreatPos, MaxTiles);
-	if(MaybeTheFirstSolidAbove.has_value() && MaybeTheFirstSolidAbove.value() > TopLineY)
+	const float MaxTiles = (IsGrounded() ? m_pUtils->GetGroundJumpTiles() : m_pUtils->GetAirJumpTiles()) + 1;
+	const float AirTilesAbovePos = m_pUtils->GetAirTilesAbove(Pos, MaxTiles);
+	std::optional<float> FirstAirAboveThreat = m_pUtils->GetFirstAirAbovePosition(ThreatPos, MaxTiles);
+	if(!FirstAirAboveThreat.has_value())
 	{
-		TopLineY = MaybeTheFirstSolidAbove.value();
-	}
-	bool ExpectSolid = IsSolidTile(ThreatPos.x, TopLineY);
-
-	// There should be no sky higher than that
-
-	float CurrentX = ThreatIntersectPos.x; // + DirectionSign * TileSize
-	float CheckToX = Pos.x;
-	bool MakesSenseToJump = true;
-	while(true)
-	{
-		bool Solid = IsSolidTile(CurrentX, TopLineY);
-
-		if(!ExpectSolid)
-		{
-			float GroundY = m_pUtils->GetSolidBelow(vec2(CurrentX, TopLineY), MaxTiles + 1);
-			if(GroundY < Pos.y)
-			{
-			}
-		}
-		// Check air at (CheckFromX, FirstSolidAbove + TileSize)
-		if(!Solid)
-		{
-			MakesSenseToJump = false;
-			break;
-		}
-
-		if(ThreatIntersectPos.x > Pos.x)
-		{
-		}
+		return 0;
 	}
 
-	return MakesSenseToJump ? 1 : 0;
+	const float AirControlAccel = m_NextTuningParams.m_AirControlAccel;
+	const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
+	const float Acceleration = AirControlAccel * DirectionSign;
+
+	const int ApproxTicks = m_pUtils->GetJumpTicksInAir(MaxJumps, IsGrounded(), AirTilesAbovePos * TileSize, VelY);
+	const float PredictedXDistance = m_pUtils->GetDistanceForVelocityAccelerationTicks(VelX, Acceleration, ApproxTicks, AirControlSpeed);
+	const float PredictedXDistanceAbs = std::abs(PredictedXDistance);
+	const float ReachablePosX = Pos.x + PredictedXDistance;
+
+	// Fixing up the DirectionSign (we need this because the initial VelX can exceed 'acceleration * ticks')
+	DirectionSign = PredictedXDistance > 0 ? 1 : -1;
+
+	float Distance2 = distance2(ThreatPos, vec2(ReachablePosX, Pos.y));
+	if(Distance2 < ThreatRadius * ThreatRadius)
+	{
+		// Can't avoid the danger
+		return 0;
+	}
+
+	float Distance = 0;
+	while (Distance < PredictedXDistanceAbs)
+	{
+		// There should be at least the same tiles above AirTilesAbovePos
+		const float AirTilesAboveX = m_pUtils->GetAirTilesAbove(Pos + vec2(Distance * DirectionSign, 0), MaxTiles);
+		if(AirTilesAboveX < AirTilesAbovePos)
+		{
+			// Do not jump: going to hit the head otherwise
+			return 0;
+		}
+		Distance += TileSizeF;
+	}
+
+	*pTargetPosition = vec2(ReachablePosX, FirstAirAboveThreat.value());
+
+	return MaxJumps;
 }
 
 void CBotPlayer::PushDecision(EDecision Decision)
