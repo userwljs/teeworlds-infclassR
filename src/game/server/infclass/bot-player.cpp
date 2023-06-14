@@ -1686,7 +1686,11 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 	const float AirControlAccel = m_NextTuningParams.m_AirControlAccel;
 	const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
 	const float Acceleration = AirControlAccel * DirectionSign;
-	const float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(m_pCharacter->Core()->m_Vel.x, Acceleration, Server()->TickSpeed() * 1.0f, AirControlSpeed);
+	int Ticks = m_pUtils->GetJumpTicksInAir(MaxJumps, IsGrounded());
+	const int MaxTicks = Server()->TickSpeed() * 1.5f;
+	if(Ticks > MaxTicks)
+		Ticks = MaxTicks;
+	const float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(m_pCharacter->Core()->m_Vel.x, Acceleration, Ticks, AirControlSpeed);
 	int MaxHTiles = fabs(MaxHDistance / TileSize);
 	int MaxTiles = GetMaxTilesForJumps(MaxJumps);
 
