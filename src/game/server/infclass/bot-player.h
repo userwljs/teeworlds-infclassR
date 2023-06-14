@@ -131,6 +131,7 @@ struct SBotDecision
 	STilePosition Position;
 	uint32_t Tick = 0;
 	int8_t Direction = 0;
+	int8_t Uses = 0;
 	EObjection Objection = EObjection::Invalid;
 	EDecision Decision = EDecision::Invalid;
 };

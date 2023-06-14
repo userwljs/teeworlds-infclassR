@@ -31,7 +31,7 @@ public:
 	std::optional<vec2> PickPOI(const vec2 &FromPos) const;
 	bool HasPOI() const;
 
-	EDecision GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CBotPlayer::DIRECTION> OptDirection = std::nullopt) const;
+	EDecision GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CBotPlayer::DIRECTION> OptDirection = std::nullopt);
 
 	void PushCheckedPosition(STilePosition ShortPos);
 	bool IsPositionChecked(STilePosition ShortPos) const;
@@ -109,6 +109,15 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 
 		m_aPOIs.Add(p->GetPos());
 	}
+
+	constexpr int MaxDecisionUses = 4;
+	for(int i = m_aGoodDecisions.Size() - 1; i >= 0; --i)
+	{
+		if(m_aGoodDecisions.At(i).Uses > MaxDecisionUses)
+		{
+			m_aGoodDecisions.RemoveAt(i);
+		}
+	}
 }
 
 void CHiveMind::ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetPos)
@@ -171,14 +180,14 @@ bool CHiveMind::HasPOI() const
 	return !m_aPOIs.IsEmpty();
 }
 
-EDecision CHiveMind::GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CBotPlayer::DIRECTION> OptDirection) const
+EDecision CHiveMind::GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CBotPlayer::DIRECTION> OptDirection)
 {
 	CBotPlayer::DIRECTION Direction = OptDirection.has_value() ? OptDirection.value() : pPlayer->GetRoamingDirection();
 	const vec2 &Pos = pPlayer->GetCharacter()->GetPos();
 	const STilePosition Position = STilePosition::fromPos(Pos);
 	for(int i = 0; i < m_aGoodDecisions.Size(); ++i)
 	{
-		const SBotDecision &BotDecision = m_aGoodDecisions.At(i);
+		SBotDecision &BotDecision = m_aGoodDecisions[i];
 
 		if(BotDecision.Position != Position)
 			continue;
@@ -186,6 +195,7 @@ EDecision CHiveMind::GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CB
 		if(BotDecision.Direction != Direction)
 			continue;
 
+		BotDecision.Uses++;
 		return BotDecision.Decision;
 	}
 
