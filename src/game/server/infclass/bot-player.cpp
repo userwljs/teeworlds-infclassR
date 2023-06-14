@@ -221,6 +221,7 @@ const char *toString(EObjection Objection)
 static const char *gs_aBotStateNames[] = {
 	"roaming",
 	"hunting",
+	"fleeing",
 	"invalid",
 };
 
@@ -1333,6 +1334,12 @@ const char *CBotPlayer::DumpBot()
 			m_LastTargetSeenAtPos.x / 32,
 			m_LastTargetSeenAtPos.y / 32);
 		break;
+	case EBotState::Fleeing:
+		str_format(aBuf, sizeof(aBuf), "Fleeing from target: %d (%.2f, %.2f)",
+			m_LastTarget,
+			m_LastTargetSeenAtPos.x / 32,
+			m_LastTargetSeenAtPos.y / 32);
+		break;
 	case EBotState::Invalid:
 		break;
 	}
@@ -1841,23 +1848,43 @@ void CBotPlayer::SetState(EBotState NewState)
 
 	if(NewState == EBotState::Roaming)
 	{
-		BotDebugMessage(VERBOSE_MAIN, "SwitchState: ROAMING");
+		if(IsHuman())
+		{
+			GameServer()->SendEmoticon(GetCid(), EMOTICON_MUSIC);
+		}
+		else
+		{
+			BotDebugMessage(VERBOSE_MAIN, "SwitchState: ROAMING");
+		}
 	}
 	else if(NewState == EBotState::Hunting)
 	{
 		BotDebugMessage(VERBOSE_MAIN, "SwitchState: HUNTING");
 
-		static const int HuntingEmotes[] = {
-			EMOTICON_SPLATTEE,
-			EMOTICON_DEVILTEE,
-			EMOTICON_ZOMG,
-		};
-		GameServer()->SendEmoticon(GetCid(), HuntingEmotes[random_int(0, 2)]);
+		if(IsHuman())
+		{
+			GameServer()->SendEmoticon(GetCid(), EMOTICON_HEARTS);
+		}
+		else
+		{
+			static const int HuntingEmotes[] = {
+				EMOTICON_SPLATTEE,
+				EMOTICON_DEVILTEE,
+				EMOTICON_ZOMG,
+			};
+			GameServer()->SendEmoticon(GetCid(), HuntingEmotes[random_int(0, 2)]);
+		}
 	}
-
-	if(IsHuman())
+	else if(NewState == EBotState::Fleeing)
 	{
-		GameServer()->SendEmoticon(GetCid(), EMOTICON_HEARTS);
+		if(IsHuman())
+		{
+			GameServer()->SendEmoticon(GetCid(), EMOTICON_DROP);
+		}
+		else
+		{
+			GameServer()->SendEmoticon(GetCid(), EMOTICON_DOTDOT);
+		}
 	}
 
 	m_BotState = NewState;

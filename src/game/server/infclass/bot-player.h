@@ -110,6 +110,7 @@ enum EBotState : uint8_t
 {
 	Roaming,
 	Hunting,
+	Fleeing,
 	Count,
 	Invalid = Count,
 };
