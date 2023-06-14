@@ -1209,11 +1209,29 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	}
 
 	const float Distance = distance(Pos, m_LastTargetSeenAtPos);
+	const float HookMaxDistance = GetMaxHookDistance();
 	const float GroundControlSpeed = GameServer()->Tuning()->m_GroundControlSpeed;
+
+	if(!WantToJump && Distance > HookMaxDistance && (Distance > TileSize * 5))
+	{
+		vec2 JumpTarget;
+		int JumpsToAvoidDanger = GetJumpsToAvoidDanger(&JumpTarget);
+		if(JumpsToAvoidDanger)
+		{
+			constexpr float AvoidDangerProba = 1.0f;
+			if(random_prob(AvoidDangerProba) && m_pUtils->IsReachableByGround(Pos, JumpTarget, AvailableJumps))
+			{
+				WantToJump = true;
+
+				m_WantedJumps = JumpsToAvoidDanger;
+				SetJumpTargetPosition(JumpTarget, Pos);
+			}
+		}
+	}
 
 	bool ConsiderHookingOut = false;
 
-	if(CanHook() && !WeakHook() && (Distance < GetMaxHookDistance() - TileSize * 1))
+	if(CanHook() && !WeakHook() && (Distance < HookMaxDistance - TileSize * 1))
 	{
 		vec2 ToTarget = m_LastTargetSeenAtPos - Pos;
 		const float Len2 = ToTarget.x * ToTarget.x + ToTarget.y * ToTarget.y;
