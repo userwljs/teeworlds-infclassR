@@ -393,8 +393,8 @@ void CBotPlayer::UpdateTarget()
 	const vec2 &Pos = pCharacter->GetPos();
 	if(!pCharacter->IsBlind())
 	{
-		const float LookupRadius = 600;
-		const float LookupOffset = 300;
+		const float LookupRadius = GetLookupRadius();
+		const float LookupOffset = GetLookupOffset();
 		const vec2 LookupFromPos = Pos + pCharacter->GetDirection() * LookupOffset;
 		for(int i = 0; i < MAX_CLIENTS; ++i)
 		{
@@ -2620,6 +2620,16 @@ float CBotPlayer::GetMaxHookDistance() const
 		Distance *= 0.9f;
 
 	return Distance;
+}
+
+float CBotPlayer::GetLookupRadius() const
+{
+	return 600.0f;
+}
+
+float CBotPlayer::GetLookupOffset() const
+{
+	return 300.0f;
 }
 
 void CBotPlayer::SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpFromPosition)

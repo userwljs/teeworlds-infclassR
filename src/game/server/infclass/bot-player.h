@@ -267,6 +267,8 @@ protected:
 	bool WeakHook() const;
 	bool StrongHook() const;
 	float GetMaxHookDistance() const;
+	float GetLookupRadius() const;
+	float GetLookupOffset() const;
 
 	void SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpFromPosition);
 
