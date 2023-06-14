@@ -2610,7 +2610,7 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 	CIcEntity *pThreatEntity = nullptr;
 	vec2 ThreatIntersectPos;
 	const EThreatLevel ThreatLevel = GetDangerLevelAhead(&ThreatIntersectPos, &pThreatEntity);
-	if(!pThreatEntity || ThreatLevel < EThreatLevel::Dangerous)
+	if(!pThreatEntity || ThreatLevel < CareAboutThreatLevel())
 	{
 		return 0;
 	}
@@ -2834,6 +2834,16 @@ float CBotPlayer::GetMaxHookDistance() const
 		Distance *= 0.9f;
 
 	return Distance;
+}
+
+EThreatLevel CBotPlayer::CareAboutThreatLevel() const
+{
+	if(GetClass() == EPlayerClass::Witch)
+	{
+		return EThreatLevel::Suspicious;
+	}
+
+	return EThreatLevel::Dangerous;
 }
 
 float CBotPlayer::GetLookupRadius() const

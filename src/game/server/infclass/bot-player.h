@@ -270,6 +270,7 @@ protected:
 	bool StrongHook() const;
 	bool IsThreatAware() const;
 	float GetMaxHookDistance() const;
+	EThreatLevel CareAboutThreatLevel() const;
 	float GetLookupRadius() const;
 	float GetLookupOffset() const;
 
