@@ -106,6 +106,14 @@ enum class EBotTweak : uint8_t
 	Invalid = Count,
 };
 
+enum EBotState : uint8_t
+{
+	Roaming,
+	Hunting,
+	Count,
+	Invalid = Count,
+};
+
 using TweaksArray = icArray<EBotTweak, static_cast<int>(EBotTweak::Count)>;
 
 const char *toString(EBotTweak Tweak);
@@ -194,12 +202,6 @@ public:
 	void OnCharacterHPChanged() override;
 
 public:
-	enum BOTSTATE
-	{
-		BOTSTATE_ROAMING,
-		BOTSTATE_HUNTING,
-	};
-
 	enum DIRECTION : int8_t
 	{
 		DIRECTION_LEFT = -1,
@@ -227,7 +229,10 @@ public:
 	int GetJumpsToReachTarget(float TileY) const;
 	int GetJumpsToReachTarget(const vec2 &VectorToTarget) const;
 
-	void SetState(BOTSTATE NewState);
+	EBotState GetState() const { return m_BotState; }
+	void SetState(EBotState NewState);
+
+	DIRECTION GetRoamingDirection() const { return m_RoamingDirection; }
 	void SetRoamingDirection(DIRECTION Direction);
 	void SetObjection(EObjection Objection);
 	void MaybeChangeRoamingBehavior();
@@ -266,7 +271,7 @@ protected:
 	void SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpFromPosition);
 
 	CBotUtils *m_pUtils = nullptr;
-	BOTSTATE m_BotState = BOTSTATE_ROAMING;
+	EBotState m_BotState = EBotState::Roaming;
 	DIRECTION m_RoamingDirection = DIRECTION_NONE;
 	EObjection m_RoamingObjection = EObjection::Lookup;
 	EObjection m_TargetLastSeenDirObjection = EObjection::Invalid;

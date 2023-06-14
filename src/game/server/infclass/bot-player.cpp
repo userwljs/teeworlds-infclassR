@@ -118,6 +118,17 @@ const char *toString(EObjection Objection)
 	return toStringImpl(Objection, gs_aObjectionNames);
 }
 
+static const char *gs_aBotStateNames[] = {
+	"roaming",
+	"hunting",
+	"invalid",
+};
+
+const char *toString(EBotState State)
+{
+	return toStringImpl(State, gs_aBotStateNames);
+}
+
 template EObjection fromString<EObjection>(const char *pString);
 
 static CBotPlayer::DIRECTION OppositeDirection(CBotPlayer::DIRECTION Direction)
@@ -258,7 +269,7 @@ void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	m_NextRandomFireTick = -1;
 	m_RecentObjections.Clear();
 	m_RecentDecisions.Clear();
-	m_BotState = BOTSTATE_ROAMING;
+	m_BotState = EBotState::Roaming;
 
 	SetObjection(EObjection::Lookup);
 	ChangeRoamingBehavior();
@@ -320,9 +331,9 @@ void CBotPlayer::UpdateTarget()
 
 	if(TargetId < 0)
 	{
-		if(m_BotState != BOTSTATE_ROAMING)
+		if(m_BotState != EBotState::Roaming)
 		{
-			SetState(BOTSTATE_ROAMING);
+			SetState(EBotState::Roaming);
 			const CIcCharacter *pExTarget = GameController()->GetCharacter(m_LastTarget);
 			EObjection SameDirObjection = EObjection::Invalid;
 			{
@@ -356,7 +367,7 @@ void CBotPlayer::UpdateTarget()
 		return;
 	}
 
-	if(IsInfected() && (m_BotState == BOTSTATE_ROAMING))
+	if(IsInfected() && (m_BotState == EBotState::Roaming))
 	{
 		int Tick = Server()->Tick();
 
@@ -372,7 +383,7 @@ void CBotPlayer::UpdateTarget()
 	m_LastTargetSeenAtPos = GameController()->GetCharacter(TargetId)->GetPos();
 	m_LastSeenTick = Server()->Tick();
 
-	SetState(BOTSTATE_HUNTING);
+	SetState(EBotState::Hunting);
 }
 
 void CBotPlayer::UpdateControls()
@@ -399,11 +410,11 @@ void CBotPlayer::UpdateControls()
 		UpdateHumanBotControls();
 	}
 
-	if(m_BotState == BOTSTATE_ROAMING)
+	if(m_BotState == EBotState::Roaming)
 	{
 		UpdateControlsRoaming(&NewInput);
 	}
-	else if(m_BotState == BOTSTATE_HUNTING)
+	else if(m_BotState == EBotState::Hunting)
 	{
 		UpdateControlsHunting(&NewInput);
 	}
@@ -1110,15 +1121,17 @@ const char *CBotPlayer::DumpBot()
 	static char aBuf[200];
 	switch(m_BotState)
 	{
-	case BOTSTATE_ROAMING:
+	case EBotState::Roaming:
 		str_format(aBuf, sizeof(aBuf), "Roaming | Direction: %d, objection: %s, extra jumps proba: %.2f",
 			m_RoamingDirection, toString(m_RoamingObjection), m_JumpExtraProbability);
 		break;
-	case BOTSTATE_HUNTING:
+	case EBotState::Hunting:
 		str_format(aBuf, sizeof(aBuf), "Hunting | Target: %d (%.2f, %.2f)",
 			m_LastTarget,
 			m_LastTargetSeenAtPos.x / 32,
 			m_LastTargetSeenAtPos.y / 32);
+		break;
+	case EBotState::Invalid:
 		break;
 	}
 
@@ -1609,18 +1622,18 @@ int CBotPlayer::GetMaxJumps() const
 	return m_pCharacter->Core()->m_Jumps;
 }
 
-void CBotPlayer::SetState(CBotPlayer::BOTSTATE NewState)
+void CBotPlayer::SetState(EBotState NewState)
 {
 	if(m_BotState == NewState)
 	{
 		return;
 	}
 
-	if(NewState == BOTSTATE_ROAMING)
+	if(NewState == EBotState::Roaming)
 	{
 		BotDebugMessage(VERBOSE_MAIN, "SwitchState: ROAMING");
 	}
-	else if(NewState == BOTSTATE_HUNTING)
+	else if(NewState == EBotState::Hunting)
 	{
 		BotDebugMessage(VERBOSE_MAIN, "SwitchState: HUNTING");
 
