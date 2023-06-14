@@ -399,6 +399,9 @@ public:
 	static void ChatWitch(IConsole::IResult *pResult, void *pUserData);
 	void ChatWitch(IConsole::IResult *pResult);
 
+	static void ConSayBot(IConsole::IResult *pResult, void *pUserData);
+	void ConSayBot(IConsole::IResult *pResult);
+
 	static void ConAddBot(IConsole::IResult *pResult, void *pUserData);
 	void ConAddBot(IConsole::IResult *pResult);
 

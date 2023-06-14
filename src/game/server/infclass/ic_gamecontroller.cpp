@@ -1657,6 +1657,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("witch", "", CFGFLAG_CHAT, ChatWitch, this, "Call Witch");
 	pConsole->Register("santa", "", CFGFLAG_CHAT, ChatWitch, this, "Call the Santa");
 
+	pConsole->Register("say_bot", "i[clientid] r[message]", CFGFLAG_SERVER, ConSayBot, this, "Send a message on a bot behalf");
 	pConsole->Register("add_bot", "i[number] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec] ?s[drop_level=<>] ?s[tweaks=<>]", CFGFLAG_SERVER, ConAddBot, this, "Add a bot");
 	pConsole->Register("remove_bot", "i[CID or -1]", CFGFLAG_SERVER, ConRemoveBot, this, "Remove a bot");
 	pConsole->Register("dump_bot", "i", CFGFLAG_SERVER, ConDumpBot, this, "Dump bot state");
@@ -3339,6 +3340,24 @@ void CIcGameController::ChatWitch(IConsole::IResult *pResult)
 
 		m_WitchCallers.Clear();
 	}
+}
+
+void CIcGameController::ConSayBot(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConSayBot(pResult);
+}
+
+void CIcGameController::ConSayBot(IConsole::IResult *pResult)
+{
+	int BotID = pResult->GetInteger(0);
+	CIcPlayer *pPlayer = GetPlayer(BotID);
+	if(!pPlayer || !pPlayer->IsBot())
+	{
+		return;
+	}
+
+	GameServer()->SendChat(BotID, CGameContext::CHAT_ALL, pResult->GetString(1));
 }
 
 CDoor *CIcGameController::AddDoor(const vec2 &From, const vec2 &To)
