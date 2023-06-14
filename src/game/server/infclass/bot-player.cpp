@@ -514,13 +514,16 @@ void CBotPlayer::UpdateControls()
 		UpdateHumanBotControls();
 	}
 
-	if(m_BotState == EBotState::Roaming)
+	switch(m_BotState)
 	{
+	case EBotState::Roaming:
 		UpdateControlsRoaming(&NewInput);
-	}
-	else if(m_BotState == EBotState::Hunting)
-	{
+		break;
+	case EBotState::Hunting:
 		UpdateControlsHunting(&NewInput);
+		break;
+	case EBotState::Invalid:
+		break;
 	}
 
 	if(!AiEnabled)
