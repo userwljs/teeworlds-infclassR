@@ -993,9 +993,11 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			{
 				const float AirControlAccel = m_NextTuningParams.m_AirControlAccel;
 				const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
-				const float Acceleration = AirControlAccel * DirectionSign;
+				int ActualDirection = VelX > 0 ? 1 : -1;
+				const float Acceleration = AirControlAccel * ActualDirection;
 
-				const int ApproxTicks = AbsXToJumpTarget / VelX;
+				int MaxTicks = 500;
+				const int ApproxTicks = m_pUtils->GetTicksToMoveDistance(VelX, AirControlAccel, VectorToTarget.x, MaxTicks, AirControlSpeed);
 				const float PredictedXDistance = m_pUtils->GetDistanceForVelocityAccelerationTicks(VelX, Acceleration, ApproxTicks, AirControlSpeed);
 
 				if(Pos.x + PredictedXDistance > MaxWantedX)
@@ -1020,9 +1022,12 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 				if(!GoingDown && pInput->m_Direction)
 				{
-					if(ApproxTicks > Server()->TickSpeed() * 0.75f)
+					if(AbsXToJumpTarget < TileSize)
 					{
-						pInput->m_Direction = DIRECTION_NONE;
+						if(ApproxTicks > Server()->TickSpeed() * 0.75f)
+						{
+							pInput->m_Direction = DIRECTION_NONE;
+						}
 					}
 				}
 			}
