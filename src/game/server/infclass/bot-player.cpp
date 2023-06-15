@@ -634,6 +634,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	MaybeChangeRoamingBehavior();
 
 	const int Tick = Server()->Tick();
+	const int TickSpeed = Server()->TickSpeed();
 	const vec2 &Pos = GetCharacter()->GetPos();
 	const float Radius = GetCharacter()->GetProximityRadius();
 
@@ -1061,7 +1062,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			Jump = true;
 		}
 
-		if(Jump)
+		if(Jump && Tick > m_LastJumpTick + TickSpeed * 0.15f)
 		{
 			pInput->m_Jump = 1;
 			m_LastJumpTick = Tick;
@@ -1118,6 +1119,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 {
 	const int Tick = Server()->Tick();
+	const int TickSpeed = Server()->TickSpeed();
 	const vec2 &Pos = GetCharacter()->GetPos();
 	int TileX = Pos.x / TileSize;
 
@@ -1310,7 +1312,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			Jump = true;
 		}
 
-		if(Jump)
+		if(Jump && Tick > m_LastJumpTick + TickSpeed * 0.15f)
 		{
 			pInput->m_Jump = 1;
 			m_LastJumpTick = Tick;
