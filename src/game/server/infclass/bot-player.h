@@ -138,6 +138,7 @@ public:
 	using CIcPlayer::CIcPlayer;
 
 	virtual void UpdateControls() {}
+	virtual void OnKilled() {}
 
 	void SetTweaks(const TweaksArray &aTweaks);
 	void SetSpawnMinTick(int SpawnTick);
@@ -188,6 +189,7 @@ public:
 	std::optional<vec2> GetNewPOI() const;
 	void UpdatePOITarget();
 	void UpdateControls() override;
+	void OnKilled() override;
 	void UpdateControlsRoaming(CNetObj_PlayerInput *pInput);
 	void UpdateControlsHunting(CNetObj_PlayerInput *pInput);
 	void UpdateHumanBotControls();

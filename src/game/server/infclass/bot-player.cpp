@@ -724,6 +724,14 @@ void CBotPlayer::UpdateControls()
 	OnDirectInput(&NewInput);
 }
 
+void CBotPlayer::OnKilled()
+{
+	if(m_Lives >= 1)
+	{
+		SetLives(m_Lives - 1);
+	}
+}
+
 void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 {
 	if(m_RoamingDirection == DIRECTION_NONE)

@@ -6615,11 +6615,7 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 				pBot->m_RespawnTick = Server()->Tick() + Server()->TickSpeed() * Delay;
 			}
 
-			const int Lives = pBot->Lives() - 1;
-			if(Lives >= 0)
-			{
-				pBot->SetLives(Lives);
-			}
+			pBot->OnKilled();
 		}
 	}
 }
