@@ -174,6 +174,9 @@ class CBotPlayer : public CBaseBotPlayer
 {
 	MACRO_ALLOC_POOL_ID()
 public:
+	using CRecentDecisions = icArray<SBotDecision, 64>;
+	using CCheckPoints = icFifoArray<SCheckPoint, 32>;
+
 	CBotPlayer(CIcGameController *pGameController, int UniqueClientId, int ClientID, int Team);
 	~CBotPlayer() override;
 
@@ -272,10 +275,12 @@ public:
 	EDecision GetPreviousDecision() const;
 	EDecision GetGoodDecision(std::optional<DIRECTION> OptDirection = std::nullopt) const;
 
-	const icArray<SBotDecision, 64> &GetRecentDecisions() const { return m_RecentDecisions; }
+	const CRecentDecisions &GetRecentDecisions() const { return m_RecentDecisions; }
+	const CCheckPoints &GetRecentCheckPoints() const { return ma_CheckPoints; }
 
-	void PushCheckedPosition(const vec2 &Pos);
+	void PushCheckedPosition(const STilePosition &ShortPos);
 	void PushIgnoredPosition(const vec2 &Pos);
+	void PushIgnoredPosition(const STilePosition &ShortPos);
 
 protected:
 	CGameWorld *GameWorld() const;
@@ -291,6 +296,7 @@ protected:
 	float GetLookupRadius() const;
 	float GetLookupOffset() const;
 
+	STilePosition JumpPosToShortPos(const vec2 &JumpTarget, const vec2 &JumpFromPosition) const;
 	void SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpFromPosition);
 	void SetPOI(std::optional<vec2> newPOI);
 
@@ -301,8 +307,8 @@ protected:
 	EObjection m_TargetLastSeenDirObjection = EObjection::Invalid;
 	int m_RoamingBehaviorTick = 0;
 	icArray<EObjection, 5> m_RecentObjections;
-	icArray<SBotDecision, 64> m_RecentDecisions;
-	icFifoArray<SCheckPoint, 12> ma_CheckPoints;
+	CRecentDecisions m_RecentDecisions;
+	CCheckPoints ma_CheckPoints;
 	icArray<SCheckPoint, 4> ma_IgnorePoints;
 	int m_AirJumps = 0;
 

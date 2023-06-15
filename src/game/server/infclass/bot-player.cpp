@@ -40,6 +40,8 @@ protected:
 	static constexpr int MaxAttacksInTimespan = 2;
 	static constexpr float Timespan = 0.75f; // in seconds
 
+	void CleanupUncheckedPositions();
+
 	struct HiveVictim
 	{
 		int ClientID = -1;
@@ -53,6 +55,7 @@ protected:
 	icArray<HiveVictim, MAX_CLIENTS> m_aVictims;
 	icArray<vec2, 10> m_aPOIs;
 	icFifoArray<STilePosition, 320> m_aCheckedPos;
+	icFifoArray<STilePosition, 32> m_aUncheckedPos;
 	icFifoArray<SBotDecision, 8> m_aGoodDecisions;
 };
 
@@ -132,6 +135,20 @@ void CHiveMind::ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetP
 		}
 		m_aGoodDecisions.Last().Tick = m_Tick;
 	}
+
+	const auto &aRecentCheckPoints = pPlayer->GetRecentCheckPoints();
+	for(int i = 0; i < aRecentCheckPoints.Size(); ++i)
+	{
+		STilePosition Pos = aRecentCheckPoints.At(i).TilePos;
+		if(m_aUncheckedPos.Contains(Pos))
+			continue;
+
+		if(m_aUncheckedPos.Capacity() == m_aUncheckedPos.Size())
+		{
+			CleanupUncheckedPositions();
+		}
+		m_aUncheckedPos.Add(Pos);
+	}
 }
 
 bool CHiveMind::TryAttack(int ClientID)
@@ -209,7 +226,21 @@ void CHiveMind::PushCheckedPosition(STilePosition ShortPos)
 
 bool CHiveMind::IsPositionChecked(STilePosition ShortPos) const
 {
-	return m_aCheckedPos.Contains(ShortPos);
+	return m_aCheckedPos.Contains(ShortPos) && !m_aUncheckedPos.Contains(ShortPos);
+}
+
+void CHiveMind::CleanupUncheckedPositions()
+{
+	for(int i = m_aCheckedPos.Size() - 1; i >= 0; --i)
+	{
+		STilePosition Pos = m_aCheckedPos.At(i);
+		if(m_aUncheckedPos.Contains(Pos))
+		{
+			m_aCheckedPos.RemoveAt(i);
+		}
+	}
+
+	m_aUncheckedPos.Clear();
 }
 
 CHiveMind::HiveVictim *CHiveMind::GetVictim(int ClientID)
@@ -556,6 +587,7 @@ void CBotPlayer::UpdateTarget()
 	if(IsInfected())
 	{
 		s_HiveMind.ReportTargetFound(this, m_LastTargetSeenAtPos);
+		ma_CheckPoints.Clear();
 	}
 
 	SetState(EBotState::Hunting);
@@ -860,6 +892,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					BotDebugMessage(VERBOSE_STEPS, "Decide to jump over the wall in %d jumps", WantJumps);
 					WantToJump = true;
 					SetJumpTargetPosition(JumpTarget, Pos);
+					PushCheckedPosition(JumpPosToShortPos(m_JumpTargetPosition, Pos));
 					m_WantedJumps = WantJumps;
 				}
 			}
@@ -883,39 +916,48 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				const int WantJumps = NoWantedJump ? 0 : GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget);
 				if(WantJumps)
 				{
+					STilePosition DecisionPos = JumpPosToShortPos(JumpTarget, Pos);
 					if(MaybeJumpOn(JumpTarget))
 					{
 						SetJumpTargetPosition(JumpTarget, Pos);
-						BotDebugMessage(VERBOSE_STEPS, "Decided to 'jump on' to %.2fx%.2f", m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
+						PushCheckedPosition(DecisionPos);
+						BotDebugMessage(VERBOSE_STEPS, "Decided to 'jump on' to %.2fx%.2f", JumpTarget.x / TileSizeF, JumpTarget.y / TileSizeF);
 						WantToJump = true;
 						m_WantedJumps = WantJumps;
-
-						PushCheckedPosition(m_JumpTargetPosition);
 					}
 					else
 					{
-						PushIgnoredPosition(JumpTarget);
-						BotDebugMessage(VERBOSE_STEPS, "Ignore 'jump on' to %.2fx%.2f", m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
+						PushIgnoredPosition(DecisionPos);
+						BotDebugMessage(VERBOSE_STEPS, "Ignore 'jump on' to %.2fx%.2f", JumpTarget.x / TileSizeF, JumpTarget.y / TileSizeF);
 					}
 
 					PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump);
 				}
-				else if(!IsSolidTile(Pos.x + (2 + Radius / 2) * m_RoamingDirection, Pos.y + Radius + 5))
+
+				if(!WantJumps && IsSolidTile(Pos.x, Pos.y + Radius + 5))
 				{
-					BotDebugMessage(VERBOSE_TRACE1, "Going to fall");
+					CTileRoundedPosition CheckTile = Pos;
+					CheckTile.X += 1 * m_RoamingDirection;
 
-					if(MaybeFallDown())
+					std::optional<int> SolidInTheNextTile = m_pUtils->GetSolidTileBelow(CheckTile, 2);
+					if(!SolidInTheNextTile.has_value())
 					{
-						BotDebugMessage(VERBOSE_STEPS, "Decide to fall down");
-						m_FallingDown = true;
-					}
-					else
-					{
-						BotDebugMessage(VERBOSE_STEPS, "Decide to jump over");
-						WantToJump = true;
-					}
+						BotDebugMessage(VERBOSE_TRACE1, "Going to fall");
 
-					PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump);
+						if(MaybeFallDown())
+						{
+							BotDebugMessage(VERBOSE_STEPS, "Decide to fall down");
+							m_FallingDown = true;
+						}
+						else
+						{
+							BotDebugMessage(VERBOSE_STEPS, "Decide to jump over");
+							WantToJump = true;
+						}
+
+						PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump);
+						PushCheckedPosition(STilePosition::fromPos(Pos));
+					}
 				}
 
 				if(!WantToJump)
@@ -992,6 +1034,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 							if(MaybeJumpOverWall(JumpTarget))
 							{
 								SetJumpTargetPosition(JumpTarget, Pos);
+								PushCheckedPosition(JumpPosToShortPos(m_JumpTargetPosition, Pos));
 								BotDebugMessage(VERBOSE_STEPS, "'jump over' from the air to %.2fx%.2f",
 									m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
 								m_WantedJumps = MaybeWantJumps;
@@ -1013,17 +1056,17 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				}
 				else if((MaybeWantJumps = NoWantedJump ? 0 : GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget)))
 				{
+					STilePosition DecisionPos = JumpPosToShortPos(JumpTarget, Pos);
 					if(MaybeJumpOn(JumpTarget))
 					{
 						SetJumpTargetPosition(JumpTarget, Pos);
+						PushCheckedPosition(DecisionPos);
 						BotDebugMessage(VERBOSE_STEPS, "Jump on from the air");
 						m_WantedJumps = MaybeWantJumps;
-
-						PushCheckedPosition(m_JumpTargetPosition);
 					}
 					else
 					{
-						PushIgnoredPosition(JumpTarget);
+						PushIgnoredPosition(DecisionPos);
 					}
 				}
 				else if(m_AirJumps == 0)
@@ -1137,6 +1180,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					}
 					else
 					{
+						// GameController()->GameServer()->CreateLoveEvent(vec2(NextTile.x, Gnd));
 						break;
 					}
 				}
@@ -2719,7 +2763,8 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition, bool ForceIgnoreIfC
 		return m_LastTargetSeenAtPos.y < JumpTargetPosition.y + TileSizeF / 2;
 	}
 
-	STilePosition ShortPos = STilePosition::fromPos(JumpTargetPosition);
+	const vec2 &Pos = m_pCharacter->GetPos();
+	STilePosition ShortPos = JumpPosToShortPos(JumpTargetPosition, Pos);
 	for(auto &CheckPoint : ma_IgnorePoints)
 	{
 		if(CheckPoint.TilePos == ShortPos)
@@ -2756,7 +2801,7 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition, bool ForceIgnoreIfC
 
 	if(!IsHuman())
 	{
-		DIRECTION CheckDirection = JumpTargetPosition.x > m_pCharacter->GetPos().x ? DIRECTION_RIGHT : DIRECTION_LEFT;
+		DIRECTION CheckDirection = JumpTargetPosition.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
 		EDecision GoodDecision = s_HiveMind.GetGoodDecision(this, CheckDirection);
 		if(GoodDecision != EDecision::Invalid)
 		{
@@ -2992,9 +3037,8 @@ EDecision CBotPlayer::GetPreviousDecision() const
 	return EDecision::Invalid;
 }
 
-void CBotPlayer::PushCheckedPosition(const vec2 &Pos)
+void CBotPlayer::PushCheckedPosition(const STilePosition &ShortPos)
 {
-	STilePosition ShortPos = STilePosition::fromPos(Pos);
 	ma_CheckPoints.Add({ShortPos, Server()->Tick()});
 	if(!IsHuman())
 	{
@@ -3004,10 +3048,14 @@ void CBotPlayer::PushCheckedPosition(const vec2 &Pos)
 
 void CBotPlayer::PushIgnoredPosition(const vec2 &Pos)
 {
+	PushIgnoredPosition(STilePosition::fromPos(Pos));
+}
+
+void CBotPlayer::PushIgnoredPosition(const STilePosition &ShortPos)
+{
 	if(ma_IgnorePoints.Size() == ma_IgnorePoints.Capacity())
 		ma_IgnorePoints.RemoveAt(0);
 
-	STilePosition ShortPos = STilePosition::fromPos(Pos);
 	ma_IgnorePoints.Add({ShortPos, Server()->Tick()});
 }
 
@@ -3110,6 +3158,18 @@ float CBotPlayer::GetLookupRadius() const
 float CBotPlayer::GetLookupOffset() const
 {
 	return 300.0f;
+}
+
+STilePosition CBotPlayer::JumpPosToShortPos(const vec2 &JumpTarget, const vec2 &JumpFromPosition) const
+{
+	if(JumpTarget.x > JumpFromPosition.x)
+	{
+		return STilePosition::fromPosXY(JumpTarget.x + 16, JumpTarget.y);
+	}
+	else
+	{
+		return STilePosition::fromPosXY(JumpTarget.x - 16, JumpTarget.y);
+	}
 }
 
 void CBotPlayer::SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpFromPosition)
