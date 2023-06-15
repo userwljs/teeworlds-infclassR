@@ -24,6 +24,7 @@ public:
 	void Reset();
 	void UpdateTick(CIcGameController *pGameController, int Tick);
 
+	void ReportKilled(CBotPlayer *pPlayer);
 	void ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetPos);
 
 	bool TryAttack(int ClientID);
@@ -121,6 +122,24 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 			m_aGoodDecisions.RemoveAt(i);
 		}
 	}
+}
+
+void CHiveMind::ReportKilled(CBotPlayer *pPlayer)
+{
+	// Does not work
+//	const auto &aRecentCheckPoints = pPlayer->GetRecentCheckPoints();
+//	for(int i = 0; i < aRecentCheckPoints.Size(); ++i)
+//	{
+//		STilePosition Pos = aRecentCheckPoints.At(i).TilePos;
+//		if(m_aUncheckedPos.Contains(Pos))
+//			continue;
+
+//		if(m_aUncheckedPos.Capacity() == m_aUncheckedPos.Size())
+//		{
+//			CleanupUncheckedPositions();
+//		}
+//		m_aUncheckedPos.Add(Pos);
+//	}
 }
 
 void CHiveMind::ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetPos)
@@ -837,6 +856,11 @@ void CBotPlayer::OnKilled()
 	if(m_Lives >= 1)
 	{
 		SetLives(m_Lives - 1);
+	}
+
+	if(!IsHuman())
+	{
+		s_HiveMind.ReportKilled(this);
 	}
 }
 
