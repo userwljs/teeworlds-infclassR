@@ -433,13 +433,13 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 		if(HasWallInRoamingDirection)
 		{
-			BotDebugMessage("Has wall", VERBOSE_STEPS);
+			BotDebugMessage(VERBOSE_STEPS, "Has wall");
 			const int WantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition);
 			if(WantJumps)
 			{
 				if(MaybeJumpOverWall(m_JumpTargetPosition))
 				{
-					BotDebugMessage("Decide to jump over the wall", VERBOSE_STEPS);
+					BotDebugMessage(VERBOSE_STEPS, "Decide to jump over the wall in %d jumps", WantJumps);
 					WantToJump = true;
 					m_JumpFromPosition = Pos;
 					m_WantedJumps = WantJumps;
@@ -454,11 +454,11 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		else if(HasDangerInRoamingHorizontalDirection)
 		{
 			ChangeRoamingBehavior();
-			BotDebugMessage("Change the direction to avoid the danger", VERBOSE_STEPS);
+			BotDebugMessage(VERBOSE_STEPS, "Change the direction to avoid the danger");
 		}
 		else
 		{
-			BotDebugMessage("No wall", VERBOSE_TRACE1);
+			BotDebugMessage(VERBOSE_TRACE1, "No wall");
 			if(m_DecisionTileX != TileX)
 			{
 				const int WantJumps = GetJumpsNeededToJumpOn(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition);
@@ -466,30 +466,30 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				{
 					if(MaybeJumpOn(m_JumpTargetPosition))
 					{
-						BotDebugMessage("Decided to jump on", VERBOSE_STEPS);
+						BotDebugMessage(VERBOSE_STEPS, "Decided to 'jump on' to %.2fx%.2f", m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
 						WantToJump = true;
 						m_JumpFromPosition = Pos;
 						m_WantedJumps = WantJumps;
 					}
 					else
 					{
-						BotDebugMessage("Ignore 'jump on' option", VERBOSE_STEPS);
+						BotDebugMessage(VERBOSE_STEPS, "Ignore 'jump on' to %.2fx%.2f", m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
 					}
 
 					PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump);
 				}
 				else if(!IsSolidTile(Pos.x + (2 + Radius / 2) * m_RoamingDirection, Pos.y + Radius + 5))
 				{
-					BotDebugMessage("Going to fall", VERBOSE_TRACE1);
+					BotDebugMessage(VERBOSE_TRACE1, "Going to fall");
 
 					if(MaybeFallDown())
 					{
-						BotDebugMessage("Decide to fall down", VERBOSE_STEPS);
+						BotDebugMessage(VERBOSE_STEPS, "Decide to fall down");
 						m_FallingDown = true;
 					}
 					else
 					{
-						BotDebugMessage("Decide to jump over", VERBOSE_STEPS);
+						BotDebugMessage(VERBOSE_STEPS, "Decide to jump over");
 						WantToJump = true;
 					}
 
@@ -503,7 +503,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 						int TilesAbove = GetAirTilesAbove(m_RoamingDirection, MaxJumps);
 						if(TilesAbove > m_pUtils->GetGroundJumpTiles() && random_prob(m_JumpExtraProbability))
 						{
-							BotDebugMessage("Jump just because!", VERBOSE_STEPS);
+							BotDebugMessage(VERBOSE_STEPS, "Jump just because!");
 							WantToJump = true;
 							m_JumpFromPosition = Pos;
 							m_WantedJumps = std::max(MaxJumps, 3);
@@ -536,7 +536,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		{
 			if(VelX * DirectionSign > 0.1)
 			{
-				BotDebugMessage("Brake!", VERBOSE_TRACE1);
+				BotDebugMessage(VERBOSE_TRACE1, "Brake!");
 				pInput->m_Direction = KeepMoving = -1;
 			}
 			else
@@ -544,14 +544,14 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				KeepMoving = 0;
 			}
 
-			BotDebugMessage("Hold on! The danger is there", VERBOSE_STEPS);
+			BotDebugMessage(VERBOSE_STEPS, "Hold on! The danger is there");
 		}
 
 		if(CanJump)
 		{
 			if((m_WantedJumps <= 0) && (m_DecisionTileX != TileX) && (m_pCharacter->Core()->m_Vel.y > -3))
 			{
-				BotDebugMessage("Considering jump from the air", VERBOSE_TRACE1);
+				BotDebugMessage(VERBOSE_TRACE1, "Considering jump from the air");
 				int MaybeWantJumps = 0;
 				if(HasWallInRoamingDirection)
 				{
@@ -562,7 +562,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 							// We're moving up
 							if(MaybeJumpOverWall(m_JumpTargetPosition))
 							{
-								BotDebugMessage("Jump over from the air", VERBOSE_STEPS);
+								BotDebugMessage(VERBOSE_STEPS, "'jump over' from the air to %.2fx%.2f",
+									m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
 								m_WantedJumps = MaybeWantJumps;
 							}
 						}
@@ -570,11 +571,11 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 						{
 							if(MaybeFallDown())
 							{
-								BotDebugMessage("Decide to fall down", VERBOSE_STEPS);
+								BotDebugMessage(VERBOSE_STEPS, "Decide to fall down");
 							}
 							else
 							{
-								BotDebugMessage("Jump over from the air", VERBOSE_STEPS);
+								BotDebugMessage(VERBOSE_STEPS, "Jump over from the air");
 								m_WantedJumps = MaybeWantJumps;
 							}
 						}
@@ -584,7 +585,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				{
 					if(MaybeJumpOn(m_JumpTargetPosition))
 					{
-						BotDebugMessage("Jump on from the air", VERBOSE_STEPS);
+						BotDebugMessage(VERBOSE_STEPS, "Jump on from the air");
 						m_JumpFromPosition = Pos;
 						m_WantedJumps = MaybeWantJumps;
 					}
@@ -593,7 +594,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				{
 					if(MaybeRandomJumpUp())
 					{
-						BotDebugMessage("Random jump from the air", VERBOSE_STEPS);
+						BotDebugMessage(VERBOSE_STEPS, "Random jump from the air");
 						m_WantedJumps = 1; // GetAvailableJumps();
 						m_JumpFromPosition = Pos;
 						m_JumpTargetPosition = Pos + m_pCharacter->Core()->m_Vel * Server()->TickSpeed();
@@ -791,7 +792,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		bool HasWall = HasWallInTheDirection(Direction);
 
-		BotDebugMessage(HasWall ? "HasWall" : "HasNoWall", VERBOSE_TRACE1);
+		BotDebugMessage(VERBOSE_TRACE1, HasWall ? "HasWall" : "HasNoWall");
 
 		if(WantToJump && HasWall)
 		{
@@ -890,7 +891,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	SetRoamingDirection(Direction);
 
-	BotDebugMessage(WantToJump ? "WantToJump: yes" : "WantToJump: no");
+	BotDebugMessage(VERBOSE_TRACE1, WantToJump ? "WantToJump: yes" : "WantToJump: no");
 
 	pInput->m_Direction = m_RoamingDirection;
 	pInput->m_TargetX = m_LastTargetSeenAtPos.x - Pos.x;
@@ -1071,12 +1072,23 @@ bool CBotPlayer::IsDebugEnabled(int Verbosity) const
 	return (Verbosity < g_Config.m_InfBotDebugLevel) && (g_Config.m_InfDebugBot < 0 || g_Config.m_InfDebugBot == GetCid());
 }
 
-void CBotPlayer::BotDebugMessage(const char *pMessage, int Verbosity) const
+void CBotPlayer::BotDebugMessage(int VerbosityLevel, const char *fmt, ...) const
 {
-	if(!IsDebugEnabled(Verbosity))
+	if(!IsDebugEnabled(VerbosityLevel))
 		return;
 
-	GameServer()->SendChat(-1, CGameContext::CHAT_ALL, pMessage);
+	va_list args;
+	char aBuf[1024];
+
+	va_start(args, fmt);
+#if defined(CONF_FAMILY_WINDOWS)
+	_vsnprintf(aBuf, sizeof(aBuf), fmt, args);
+#else
+	vsnprintf(aBuf, sizeof(aBuf), fmt, args);
+#endif
+	va_end(args);
+
+	m_pUtils->GetDebugSink()->SendFormattedMessage(VerbosityLevel, aBuf);
 }
 
 bool CBotPlayer::HasWallInTheDirection(DIRECTION Direction) const
@@ -1237,7 +1249,7 @@ int CBotPlayer::GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps, v
 		return 0;
 	}
 
-	BotDebugMessage("Evaluating jump over...", VERBOSE_TRACE1);
+	BotDebugMessage(VERBOSE_TRACE1, "Evaluating jump over...");
 	int AvailableJumpY = GetAirTilesAbove(Direction, MaxJumps);
 	if(AvailableJumpY <= 0)
 	{
@@ -1250,14 +1262,12 @@ int CBotPlayer::GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps, v
 
 	const int XOffset = DirectionSign * (HalfProximityRadius + TileSize * 0.5);
 	const float WallPosX = Pos.x + XOffset;
-	char aBuf[300];
 
 	int NeedJumps = 0;
 	for(int i = 1; i <= AvailableJumpY; ++i)
 	{
 		int CheckPosY = Pos.y - i * TileSize;
-		str_format(aBuf, sizeof(aBuf), "Check the wall at %.2f x %.2f: ", WallPosX / TileSizeF, CheckPosY / TileSizeF);
-		BotDebugMessage(aBuf, VERBOSE_TRACE2);
+		BotDebugMessage(VERBOSE_TRACE2, "Check the wall at %.2f x %.2f: ", WallPosX / TileSizeF, CheckPosY / TileSizeF);
 
 		int Tile = GameServer()->Collision()->GetCollisionAt(WallPosX, CheckPosY);
 		static const icArray<int, 2> SolidTiles = {TILE_SOLID, TILE_NOHOOK};
@@ -1280,8 +1290,7 @@ int CBotPlayer::GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps, v
 
 			if(NeedJumps <= MaxJumps)
 			{
-				str_format(aBuf, sizeof(aBuf), "Can! jump over: av: %d, jump at %d", AvailableJumpY, i);
-				BotDebugMessage(aBuf, VERBOSE_TRACE1);
+				BotDebugMessage(VERBOSE_TRACE1, "Can! jump over: av: %d, jump at %d", AvailableJumpY, i);
 
 				if(pTargetPosition)
 				{
@@ -1294,11 +1303,11 @@ int CBotPlayer::GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps, v
 
 	if(NeedJumps)
 	{
-		BotDebugMessage("Can jump over", VERBOSE_TRACE1);
+		BotDebugMessage(VERBOSE_TRACE1, "Can jump over");
 	}
 	else
 	{
-		BotDebugMessage("Can't jump over", VERBOSE_TRACE1);
+		BotDebugMessage(VERBOSE_TRACE1, "Can't jump over");
 	}
 
 	return NeedJumps;
@@ -1306,7 +1315,7 @@ int CBotPlayer::GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps, v
 
 int CBotPlayer::GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition) const
 {
-	BotDebugMessage("Evaluating jump on a platform...", VERBOSE_TRACE1);
+	BotDebugMessage(VERBOSE_TRACE1, "Evaluating jump on a platform...");
 
 	if(MaxJumps < 0)
 	{
@@ -1329,13 +1338,11 @@ int CBotPlayer::GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *
 
 	const float CharHorOffset = DirectionSign * HalfProximityRadius;
 	const float CharPosX = Pos.x + CharHorOffset;
-	char aBuf[200];
 	int NeedJumps = 0;
 
 	if(IsDebugEnabled(VERBOSE_TRACE2))
 	{
-		str_format(aBuf, sizeof(aBuf), "jump max H tiles: %.2f", MaxHDistance);
-		BotDebugMessage(aBuf, VERBOSE_TRACE2);
+		BotDebugMessage(VERBOSE_TRACE2, "jump max H tiles: %.2f", MaxHDistance);
 	}
 
 	int MaxReachableTilesAbove = MaxTiles;
@@ -1362,8 +1369,7 @@ int CBotPlayer::GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *
 
 			if(IsDebugEnabled(VERBOSE_TRACE2))
 			{
-				str_format(aBuf, sizeof(aBuf), "Check the wall at %.2f x %.2f: %s", WallPosX / TileSize, CheckPosY / TileSize, HasAirThere ? "air" : "solid");
-				BotDebugMessage(aBuf, VERBOSE_TRACE2);
+				BotDebugMessage(VERBOSE_TRACE2, "Check the wall at %.2f x %.2f: %s", WallPosX / TileSize, CheckPosY / TileSize, HasAirThere ? "air" : "solid");
 			}
 
 			if(HasAirThere)
@@ -1374,8 +1380,7 @@ int CBotPlayer::GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *
 				{
 					if(IsDebugEnabled(VERBOSE_TRACE1))
 					{
-						str_format(aBuf, sizeof(aBuf), "Found a platform at %.2f x %.2f: ", WallPosX / TileSize, CheckPosY / TileSize + 1);
-						BotDebugMessage(aBuf, VERBOSE_TRACE1);
+						BotDebugMessage(VERBOSE_TRACE1, "Found a platform at %.2f x %.2f: ", WallPosX / TileSize, CheckPosY / TileSize + 1);
 					}
 
 					const int PlatformX = WallPosX / TileSize;
@@ -1390,8 +1395,7 @@ int CBotPlayer::GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *
 						NeedJumps = JumpsToReach;
 						if(IsDebugEnabled(VERBOSE_TRACE1))
 						{
-							str_format(aBuf, sizeof(aBuf), "Can! jump on: av: %d, jump at %d", MaxReachableTilesAbove, i);
-							BotDebugMessage(aBuf, VERBOSE_TRACE1);
+							BotDebugMessage(VERBOSE_TRACE1, "Can! jump on: av: %d, jump at %d", MaxReachableTilesAbove, i);
 						}
 
 						if(pTargetPosition)
@@ -1412,15 +1416,11 @@ int CBotPlayer::GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *
 
 	if(NeedJumps)
 	{
-		if(IsDebugEnabled(VERBOSE_TRACE1))
-		{
-			str_format(aBuf, sizeof(aBuf), "Can jump on in %d jumps", NeedJumps);
-			BotDebugMessage(aBuf, VERBOSE_TRACE1);
-		}
+		BotDebugMessage(VERBOSE_TRACE1, "Can jump on in %d jumps", NeedJumps);
 	}
 	else
 	{
-		BotDebugMessage("Can't jump on", VERBOSE_TRACE1);
+		BotDebugMessage(VERBOSE_TRACE1, "Can't jump on");
 	}
 
 	return NeedJumps;
@@ -1482,7 +1482,7 @@ void CBotPlayer::SetState(CBotPlayer::BOTSTATE NewState)
 
 	if(NewState == BOTSTATE_ROAMING)
 	{
-		BotDebugMessage("SwitchState: ROAMING", VERBOSE_MAIN);
+		BotDebugMessage(VERBOSE_MAIN, "SwitchState: ROAMING");
 
 		static const int RoamingEmotes[] = {
 			EMOTICON_WTF,
@@ -1492,7 +1492,7 @@ void CBotPlayer::SetState(CBotPlayer::BOTSTATE NewState)
 	}
 	else if(NewState == BOTSTATE_HUNTING)
 	{
-		BotDebugMessage("SwitchState: HUNTING", VERBOSE_MAIN);
+		BotDebugMessage(VERBOSE_MAIN, "SwitchState: HUNTING");
 
 		static const int HuntingEmotes[] = {
 			EMOTICON_SPLATTEE,
@@ -1516,7 +1516,7 @@ void CBotPlayer::SetObjection(EObjection Objection)
 	if(m_RoamingObjection == Objection)
 		return;
 
-	m_pUtils->GetDebugSink()->SendMessage(VERBOSE_STEPS, "Objection: %s", toString(Objection));
+	BotDebugMessage(VERBOSE_MAIN, "Objection: %s", toString(Objection));
 	m_RoamingObjection = Objection;
 }
 
@@ -1608,10 +1608,8 @@ void CBotPlayer::ChangeRoamingBehavior()
 		break;
 	}
 
-	char aBuf[200];
-	str_format(aBuf, sizeof(aBuf), "ChangeRoaming| Direction: %d, objection: %s, extra jumps: %.2f",
+	BotDebugMessage(VERBOSE_STEPS, "ChangeRoaming| Direction: %d, objection: %s, extra jumps: %.2f",
 		m_RoamingDirection, toString(m_RoamingObjection), m_JumpExtraProbability);
-	BotDebugMessage(aBuf, VERBOSE_STEPS);
 }
 
 void CBotPlayer::GetNewObjection()
@@ -1668,9 +1666,7 @@ void CBotPlayer::GetNewObjection()
 			}
 		}
 
-		char aBuf[100];
-		str_format(aBuf, sizeof(aBuf), "Looking up. PlayersAbove: %d, PlayersMid: %d, PlayersBelow: %d", PlayersAbove, PlayersMid, PlayersBelow);
-		BotDebugMessage(aBuf, VERBOSE_STEPS);
+		BotDebugMessage(VERBOSE_STEPS, "Looking up. PlayersAbove: %d, PlayersMid: %d, PlayersBelow: %d", PlayersAbove, PlayersMid, PlayersBelow);
 
 		double Probas[3] = {PlayersAbove * 1.0, PlayersMid * 1.0, PlayersBelow * 1.0};
 		int Obj = random_distribution(std::begin(Probas), std::end(Probas));
@@ -1863,12 +1859,12 @@ bool CBotPlayer::MaybeFallDown() const
 	EDecision PreviousDecision = GetPreviousDecision();
 	if(PreviousDecision == EDecision::Jump)
 	{
-		BotDebugMessage("Jumped previously, do not jump now", VERBOSE_STEPS);
+		BotDebugMessage(VERBOSE_STEPS, "Jumped previously, do not jump now");
 		return true;
 	}
 	if(PreviousDecision == EDecision::NoJump)
 	{
-		BotDebugMessage("Didn't jump previously, jump now", VERBOSE_STEPS);
+		BotDebugMessage(VERBOSE_STEPS, "Didn't jump previously, jump now");
 		return false;
 	}
 
@@ -1906,30 +1902,30 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition) const
 	EDecision PreviousDecision = GetPreviousDecision();
 	if(PreviousDecision == EDecision::Jump)
 	{
-		BotDebugMessage("Jumped previously, do not jump now", VERBOSE_STEPS);
+		BotDebugMessage(VERBOSE_STEPS, "Jumped previously, do not jump now");
 		return false;
 	}
 	if(PreviousDecision == EDecision::NoJump)
 	{
-		BotDebugMessage("Didn't jump previously, jump now", VERBOSE_STEPS);
+		BotDebugMessage(VERBOSE_STEPS, "Didn't jump previously, jump now");
 		return true;
 	}
 
 	if(m_RoamingObjection == EObjection::CheckTheBottom)
 	{
-		BotDebugMessage("Do not jump (check the bottom)", VERBOSE_STEPS);
+		BotDebugMessage(VERBOSE_STEPS, "Do not jump (check the bottom)");
 		return false;
 	}
 
 	if(m_RoamingObjection == EObjection::CheckTheMid)
 	{
-		BotDebugMessage("Do not jump (check the mid)", VERBOSE_STEPS);
+		BotDebugMessage(VERBOSE_STEPS, "Do not jump (check the mid)");
 		return false;
 	}
 
 	if(m_RoamingObjection == EObjection::CheckTheTop)
 	{
-		BotDebugMessage("Do jump (check the top)", VERBOSE_STEPS);
+		BotDebugMessage(VERBOSE_STEPS, "Do jump (check the top)");
 		return true;
 	}
 
@@ -2012,11 +2008,9 @@ void CBotPlayer::PushDecision(EDecision Decision)
 	};
 	SBotDecision *pSameContext = std::find_if(m_RecentDecisions.begin(), m_RecentDecisions.end(), SameContextLambda);
 
-	char aBuf[200];
 	if(pSameContext != m_RecentDecisions.end())
 	{
-		str_format(aBuf, sizeof(aBuf), "Overwrite decision at %d %d", Position.X, Position.Y);
-		BotDebugMessage(aBuf, VERBOSE_STEPS);
+		BotDebugMessage(VERBOSE_STEPS, "Overwrite decision at %d %d", Position.X, Position.Y);
 		m_RecentDecisions.erase(pSameContext);
 	}
 
@@ -2032,8 +2026,7 @@ void CBotPlayer::PushDecision(EDecision Decision)
 	BotDecision.Decision = Decision;
 	m_RecentDecisions.Add(BotDecision);
 
-	str_format(aBuf, sizeof(aBuf), "Add decision %s at %d %d", toString(Decision), Position.X, Position.Y);
-	BotDebugMessage(aBuf, VERBOSE_STEPS);
+	BotDebugMessage(VERBOSE_STEPS, "Add decision %s at %d %d", toString(Decision), Position.X, Position.Y);
 }
 
 EDecision CBotPlayer::GetPreviousDecision() const

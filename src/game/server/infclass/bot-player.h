@@ -189,7 +189,8 @@ public:
 	};
 
 	bool IsDebugEnabled(int Verbosity) const;
-	void BotDebugMessage(const char *pMessage, int Verbosity = VERBOSE_TRACE1) const;
+	void BotDebugMessage(int VerbosityLevel, const char *fmt, ...) const
+		GNUC_ATTRIBUTE((format(printf, 3, 4)));
 
 	bool HasWallInTheDirection(DIRECTION Direction) const;
 	bool HasDangerInTheDirection(DIRECTION Direction) const;
