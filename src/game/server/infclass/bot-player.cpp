@@ -943,6 +943,10 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 						PushCheckedPosition(m_JumpTargetPosition);
 					}
+					else
+					{
+						PushIgnoredPosition(JumpTarget);
+					}
 				}
 				else if(m_AirJumps == 0)
 				{
