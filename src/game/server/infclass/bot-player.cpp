@@ -2224,7 +2224,17 @@ void CBotPlayer::GetNewObjection()
 			}
 		}
 
-		BotDebugMessage(VERBOSE_STEPS, "Looking up. PlayersAbove: %d, PlayersMid: %d, PlayersBelow: %d", PlayersAbove, PlayersMid, PlayersBelow);
+		if(PlayersAbove + PlayersMid + PlayersBelow == 0)
+		{
+			BotDebugMessage(VERBOSE_STEPS, "Looking up. No players online. Hack the numbers!");
+			PlayersAbove = 1;
+			PlayersMid = 1;
+			PlayersBelow = 1;
+		}
+		else
+		{
+			BotDebugMessage(VERBOSE_STEPS, "Looking up. PlayersAbove: %d, PlayersMid: %d, PlayersBelow: %d", PlayersAbove, PlayersMid, PlayersBelow);
+		}
 
 		double Probas[3] = {PlayersAbove * 1.0, PlayersMid * 1.0, PlayersBelow * 1.0};
 		int Obj = random_distribution(std::begin(Probas), std::end(Probas));
