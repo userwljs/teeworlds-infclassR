@@ -105,7 +105,7 @@ void CIcPickup::Tick()
 			{
 				GameServer()->CreateSound(m_Pos, SOUND_PICKUP_ARMOR);
 			}
-			else if(m_NetworkSubtype == WEAPON_GRENADE)
+			else if(m_CurrentNetworkSubtype == WEAPON_GRENADE)
 			{
 				GameServer()->CreateSound(m_Pos, SOUND_PICKUP_GRENADE);
 			}
@@ -135,6 +135,13 @@ void CIcPickup::Tick()
 			}
 		}
 	}
+
+	if(m_NetworkSubtypes.Size() > 1)
+	{
+		int Index = (Server()->Tick() - m_SpawnTick) / Server()->TickSpeed();
+
+		m_CurrentNetworkSubtype = m_NetworkSubtypes.At(Index % m_NetworkSubtypes.Size());
+	}
 }
 
 void CIcPickup::TickPaused()
@@ -162,7 +169,7 @@ void CIcPickup::Snap(int SnappingClient)
 	case EICPickupType::Armor:
 	case EICPickupType::ClassUpgrade:
 		NetworkType = m_NetworkType;
-		Subtype = m_NetworkSubtype;
+		Subtype = m_CurrentNetworkSubtype;
 		break;
 	case EICPickupType::ClassUpgradeFlag:
 		SnapAsFlag();
@@ -208,5 +215,13 @@ void CIcPickup::SetUpgrade(const SClassUpgrade &Upgrade)
 	}
 
 	m_NetworkType = Upgrade.Type;
-	m_NetworkSubtype = Upgrade.Subtype;
+	m_NetworkSubtypes = Upgrade.Subtypes;
+	if(m_NetworkSubtypes.IsEmpty())
+	{
+		m_CurrentNetworkSubtype = 0;
+	}
+	else if(m_NetworkSubtypes.Size() == 1)
+	{
+		m_CurrentNetworkSubtype = m_NetworkSubtypes.First();
+	}
 }

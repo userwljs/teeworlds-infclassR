@@ -43,7 +43,8 @@ private:
 	int m_SpawnTick = 0;
 	float m_SpawnInterval = -1;
 	int m_NetworkType = 0;
-	int m_NetworkSubtype = 0;
+	int m_CurrentNetworkSubtype = 0;
+	icArray<int, 6> m_NetworkSubtypes;
 };
 
 #endif

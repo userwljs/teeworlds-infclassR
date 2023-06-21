@@ -42,6 +42,7 @@ constexpr int MercBombUpgrade2Level = 2;
 constexpr int MedicShotgunSpreadUpgradeLevel = 1;
 constexpr int MedicShotgunAmmoUpgradeLevel = 2;
 constexpr int HeroFlagGiftUpgradeLevel = 1;
+constexpr int HeroWeaponsUpgradeLevel = 2;
 constexpr int NinjaSlashBreaksHooksUpgradeLevel = 1;
 constexpr int NinjaFlashGrenadeUpgradeLevel = 2;
 constexpr int NinjaSlashComboUpgradeLevel = 3;
@@ -262,6 +263,10 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		if(m_UpgradeLevel < HeroFlagGiftUpgradeLevel)
 		{
 			return SClassUpgrade::FlagPowerup();
+		}
+		else if(m_UpgradeLevel < HeroWeaponsUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, {WEAPON_GUN, WEAPON_SHOTGUN, WEAPON_GRENADE, WEAPON_LASER});
 		}
 		break;
 	case EPlayerClass::Ninja:
@@ -2350,6 +2355,20 @@ void CInfClassHuman::GiveUpgrade()
 		{
 			pMessage1 = _("From now on, each flag will give you an extra turret");
 			pMessage2 = _("Plus, you can carry an extra pair of turrets, just for a case");
+		}
+		else if(m_UpgradeLevel == HeroWeaponsUpgradeLevel)
+		{
+			pMessage2 = _("Fire rate and ammo regeneration speed of all weapons increased by 20%");
+
+			for(float &Modifier : m_WeaponRegenIntervalModifier)
+			{
+				Modifier = 0.80f;
+			}
+
+			for(float &Modifier : m_WeaponReloadIntervalModifier)
+			{
+				Modifier = 0.80f;
+			}
 		}
 		break;
 	case EPlayerClass::Ninja:

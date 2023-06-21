@@ -1,6 +1,7 @@
 #ifndef GAME_SERVER_INFCLASS_CLASSES_PLAYER_CLASS_H
 #define GAME_SERVER_INFCLASS_CLASSES_PLAYER_CLASS_H
 
+#include <base/tl/ic_array.h>
 #include <base/vmath.h>
 #include <game/server/entity.h>
 #include <game/server/skininfo.h>
@@ -20,10 +21,14 @@ struct WeaponFireContext;
 struct CAmmoParams;
 
 enum class EDamageType;
+enum class IC_PICKUP_TYPE;
 
 struct SClassUpgrade
 {
+	using TSubtypes = icArray<int, 6>;
+
 	SClassUpgrade() = default;
+
 	explicit SClassUpgrade(int T) :
 		Type(T)
 	{
@@ -32,11 +37,17 @@ struct SClassUpgrade
 	explicit SClassUpgrade(int T, int S) :
 		Type(T)
 	{
-		Subtype = S;
+		Subtypes.Add(S);
+	}
+
+	explicit SClassUpgrade(int T, TSubtypes S) :
+		Type(T),
+		Subtypes(S)
+	{
 	}
 
 	int Type = 0;
-	int Subtype = 0;
+	TSubtypes Subtypes;
 
 	bool IsValid() const { return Type >= 0; }
 	bool IsFlagPowerup() const;
