@@ -20,6 +20,7 @@
 #include <game/server/gamecontext.h>
 #include <game/version.h>
 
+#include <engine/lua.h>
 #include <engine/message.h>
 #include <engine/server/mapconverter.h>
 #include <engine/server/roundstatistics.h>
@@ -1457,6 +1458,9 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("give_upgrade", "i[ClientId]", CFGFLAG_SERVER, ConGiveUpgrade, this, "Give an upgrade to the player");
 	pConsole->Register("inf_set_drop", "i[ClientId] ?i[level]", CFGFLAG_SERVER, ConSetDrop, this, "Make the character drop an upgrade on killed or died");
 
+	pConsole->Register("exec_lua", "r[filename]", CFGFLAG_SERVER, ConExecLua, this, "Execute LUA file");
+	pConsole->Register("lua", "r[code]", CFGFLAG_SERVER, ConLua, this, "Execute LUA code");
+
 	pConsole->Register("inf_set_class", "i[ClientId] s[classname]", CFGFLAG_SERVER, ConSetClass, this, "Set the class of a player");
 	pConsole->Register("queue_round", "s[type]", CFGFLAG_SERVER, ConQueueSpecialRound, this, "Start a special round");
 	pConsole->Register("start_round", "?s[type]", CFGFLAG_SERVER, ConStartRound, this, "Start a special round");
@@ -1854,6 +1858,20 @@ void CIcGameController::ConSetClass(IConsole::IResult *pResult)
 	}
 
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "inf_set_class", "Unknown class");
+}
+
+void CIcGameController::ConExecLua(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	const char *pFileName = pResult->GetString(0);
+	pSelf->GameServer()->Lua()->ExecScriptFile(pFileName);
+}
+
+void CIcGameController::ConLua(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	const char *pCode = pResult->GetString(0);
+	pSelf->GameServer()->Lua()->ExecScript(pCode);
 }
 
 FunRoundConfiguration CIcGameController::ParseFunRoundConfigArguments(IConsole::IResult *pResult)

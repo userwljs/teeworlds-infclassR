@@ -290,6 +290,9 @@ public:
 	static void ConSetClass(IConsole::IResult *pResult, void *pUserData);
 	void ConSetClass(IConsole::IResult *pResult);
 
+	static void ConExecLua(IConsole::IResult *pResult, void *pUserData);
+	static void ConLua(IConsole::IResult *pResult, void *pUserData);
+
 	static FunRoundConfiguration ParseFunRoundConfigArguments(IConsole::IResult *pResult);
 
 	static void ConQueueSpecialRound(IConsole::IResult *pResult, void *pUserData);
