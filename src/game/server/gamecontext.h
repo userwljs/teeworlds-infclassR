@@ -61,6 +61,7 @@ class CConfig;
 class CPlayer;
 class IEngine;
 class IGameController;
+class ILua;
 
 struct CViewParams
 {
@@ -71,6 +72,7 @@ struct CViewParams
 class CGameContext : public IGameServer
 {
 	IServer *m_pServer;
+	ILua *m_pLua;
 	CConfig *m_pConfig;
 	IConsole *m_pConsole;
 	IEngine *m_pEngine;
@@ -127,6 +129,7 @@ public:
 
 public:
 	IServer *Server() const { return m_pServer; }
+	ILua *Lua() const { return m_pLua; }
 	CConfig *Config() { return m_pConfig; }
 	IStorage *Storage() const { return m_pStorage; }
 	class IConsole *Console() { return m_pConsole; }

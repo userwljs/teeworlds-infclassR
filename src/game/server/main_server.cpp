@@ -1,6 +1,7 @@
 #include <engine/server/server.h>
 #include <engine/server/server_logger.h>
 
+#include <engine/lua.h>
 #include <engine/shared/assertion_logger.h>
 #include <engine/shared/config.h>
 #include <engine/storage.h>
@@ -105,6 +106,9 @@ int main(int argc, const char **argv) // ignore_convention
 	pKernel->RegisterInterface(pEngineMap); // IEngineMap
 	pKernel->RegisterInterface(static_cast<IMap *>(pEngineMap), false);
 
+	ILua *pLua = CreateLua();
+	pKernel->RegisterInterface(pLua);
+
 	// create the components
 	IGameServer *pGameServer = CreateGameServer();
 	pKernel->RegisterInterface(pGameServer);
@@ -120,6 +124,7 @@ int main(int argc, const char **argv) // ignore_convention
 	pEngine->Init();
 	pConfigManager->Init();
 	pConsole->Init();
+	pLua->Init();
 
 	// register all console commands
 	pServer->RegisterCommands();

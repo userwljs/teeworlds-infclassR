@@ -8,6 +8,7 @@
 #include <engine/map.h>
 #include <engine/console.h>
 #include <engine/storage.h>
+#include <engine/server/lua.h>
 #include <engine/server/roundstatistics.h>
 #include <engine/server/sql_server.h>
 #include <engine/shared/json.h>
@@ -4428,6 +4429,7 @@ void CGameContext::ConReloadChangeLog(IConsole::IResult *pResult, void *pUserDat
 void CGameContext::OnConsoleInit()
 {
 	m_pServer = Kernel()->RequestInterface<IServer>();
+	m_pLua = Kernel()->RequestInterface<ILua>();
 	m_pConfig = Kernel()->RequestInterface<IConfigManager>()->Values();
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
@@ -4537,12 +4539,15 @@ void CGameContext::OnInit(const void *pPersistentData)
 	[[maybe_unused]] const CPersistentData *pPersistent = (const CPersistentData *)pPersistentData;
 
 	m_pServer = Kernel()->RequestInterface<IServer>();
+	m_pLua = Kernel()->RequestInterface<ILua>();
 	m_pConfig = Kernel()->RequestInterface<IConfigManager>()->Values();
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 	m_pEngine = nullptr;
 	m_pStorage = Kernel()->RequestInterface<IStorage>();
 	m_World.SetGameServer(this);
 	m_Events.SetGameServer(this);
+
+	CLua::SetStaticVars(m_pServer, this);
 
 	m_GameUuid = RandomUuid();
 
@@ -4563,6 +4568,7 @@ void CGameContext::OnInit(const void *pPersistentData)
 	m_Layers.Init(Kernel());
 	m_Collision.Init(&m_Layers);
 
+	Lua()->StartupLua();
 	// select gametype
 	if(!str_comp(Config()->m_SvGametype, "mod"))
 		m_pController = CreateInfclassModController(this);

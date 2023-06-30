@@ -662,6 +662,7 @@ set_glob(ENGINE_INTERFACE GLOB src/engine
   graphics.h
   http.h
   kernel.h
+  lua.h
   map.h
   masterserver.h
   message.h
@@ -853,6 +854,11 @@ set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
   databases/connection_pool.h
   databases/mysql.cpp
   databases/sqlite.cpp
+  lua.cpp
+  lua.h
+  lua_apidef.cpp
+  luabinding.cpp
+  luabinding.h
   mapconverter.cpp
   mapconverter.h
   #measure_ticks.cpp
