@@ -301,6 +301,8 @@ function(is_bundled VARIABLE PATH)
   endif()
 endfunction()
 
+include(FetchContent)
+
 if(NOT CMAKE_CROSSCOMPILING)
   # Check for PkgConfig once so all the other `find_package` calls can do it
   # quietly.
@@ -323,6 +325,13 @@ find_package(Python3)
 find_package(SQLite3)
 find_package(Threads)
 find_package(LuaJIT REQUIRED)
+
+FetchContent_Declare(
+  LuaBridge
+  GIT_REPOSITORY https://github.com/kunitoki/LuaBridge3
+  GIT_TAG a8f60e53e4e49d83fa7249f8111dadbbda3c76b1
+)
+FetchContent_MakeAvailable(LuaBridge)
 
 if(GEOLOCATION)
   find_package(MaxMindDB REQUIRED)
@@ -978,6 +987,8 @@ set(LIBS_SERVER
   ${LIBS}
   SQLite::SQLite3
   ${MYSQL_LIBRARIES}
+  LuaJIT::LuaJIT
+  LuaBridge
   # Add pthreads (on non-Windows) at the end, so that other libraries can depend
   # on it.
   ${CMAKE_THREAD_LIBS_INIT}
