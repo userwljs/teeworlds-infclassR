@@ -22,6 +22,7 @@
 
 #include <engine/lua.h>
 #include <engine/message.h>
+#include <engine/server/lua_callback.h>
 #include <engine/server/mapconverter.h>
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
@@ -218,6 +219,7 @@ CIcGameController::CIcGameController(class CGameContext *pGameServer)
 	RegisterEntityTypes();
 	InitWeapons();
 	ReservePlayerOwnSnapItems();
+	RegisterLuaBindings();
 
 	ResetPlayerClassesEnablement();
 }
@@ -656,6 +658,16 @@ void CIcGameController::HandleLastHookers()
 		}
 		pHookedCharacter->UpdateLastHookers(HookedBy, CurrentTick);
 	}
+}
+
+float CIcGameController::GetSecondsElapsed() const
+{
+	return (Server()->Tick() - m_RoundStartTick) / (static_cast<float>(Server()->TickSpeed()));
+}
+
+float CIcGameController::GetSecondsRemaining() const
+{
+	return GetTimeLimitMinutes() * 60 - GetSecondsElapsed();
 }
 
 bool CIcGameController::CanSeeDetails(int Who, int Whom) const
@@ -1858,20 +1870,6 @@ void CIcGameController::ConSetClass(IConsole::IResult *pResult)
 	}
 
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "inf_set_class", "Unknown class");
-}
-
-void CIcGameController::ConExecLua(IConsole::IResult *pResult, void *pUserData)
-{
-	CIcGameController *pSelf = (CIcGameController *)pUserData;
-	const char *pFileName = pResult->GetString(0);
-	pSelf->GameServer()->Lua()->ExecScriptFile(pFileName);
-}
-
-void CIcGameController::ConLua(IConsole::IResult *pResult, void *pUserData)
-{
-	CIcGameController *pSelf = (CIcGameController *)pUserData;
-	const char *pCode = pResult->GetString(0);
-	pSelf->GameServer()->Lua()->ExecScript(pCode);
 }
 
 FunRoundConfiguration CIcGameController::ParseFunRoundConfigArguments(IConsole::IResult *pResult)
@@ -3515,6 +3513,8 @@ void CIcGameController::Tick()
 
 	if(NumPlayers)
 		SendHintMessage();
+
+	RunCallback(Lua()->GetLuaState(), "on_tick");
 }
 
 void CIcGameController::RoundTickBeforeInitialInfection()

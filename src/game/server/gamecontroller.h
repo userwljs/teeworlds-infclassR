@@ -20,6 +20,7 @@ class CMapInfoEx;
 class CPlayer;
 class CPlayerRaceData;
 class IConsole;
+class ILua;
 
 enum class EClientDropType;
 
@@ -48,6 +49,7 @@ protected:
 	
 public:
 /* INFECTION MODIFICATION START ***************************************/
+	ILua *Lua() const;
 
 	CMapInfoEx *AddMapInfo(const char *pMapName);
 	void OnMapAdded(const char *pMapName);

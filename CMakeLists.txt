@@ -957,6 +957,7 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/ic_entities.cpp
   infclass/ic_gamecontroller.cpp
   infclass/ic_gamecontroller.h
+  infclass/ic_lua.cpp
   infclass/ic_player.cpp
   infclass/ic_player.h
   infclass/snap_filter.cpp
