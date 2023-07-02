@@ -1,8 +1,10 @@
 #ifndef ENGINE_CLIENT_LUABINDING_H
 #define ENGINE_CLIENT_LUABINDING_H
 
+#include <base/system.h>
 #include <base/vmath.h>
 
+#include <engine/shared/protocol.h>
 #include <engine/shared/config.h>
 
 #include <string>
@@ -46,17 +48,22 @@ public:
 struct CConfigProperties
 {
 #define MACRO_CONFIG_STR(Name,ScriptName,Len,Def,Save,Desc) \
-		static std::string GetConfig_##Name() { if(!((Save)&CFGFLAG_CLIENT)) throw "invalid config type (this is not a client variable)"; return g_Config.m_##Name; } \
-		static void SetConfig_##Name(std::string var) { if(!((Save)&CFGFLAG_CLIENT)) throw "invalid config type (this is not a client variable)"; str_copy(g_Config.m_##Name, var.c_str(), sizeof(g_Config.m_##Name)); }
+		static std::string GetConfig_##Name() { if(!((Save)&CFGFLAG_SERVER)) throw "invalid config type (this is not a server variable)"; return g_Config.m_##Name; } \
+		static void SetConfig_##Name(std::string var) { if(!((Save)&CFGFLAG_SERVER)) throw "invalid config type (this is not a server variable)"; str_copy(g_Config.m_##Name, var.c_str(), sizeof(g_Config.m_##Name)); }
 
 #define MACRO_CONFIG_INT(Name,ScriptName,Def,Min,Max,Save,Desc) \
-		static int GetConfig_##Name() { if(!((Save)&CFGFLAG_CLIENT)) throw "invalid config type (this is not a client variable)"; return g_Config.m_##Name; } \
-		static void SetConfig_##Name(int var) { if(!((Save)&CFGFLAG_CLIENT)) throw "invalid config type (this is not a client variable)"; if (var < Min || var > Max) throw "config int override out of range"; g_Config.m_##Name = var; }
+		static int GetConfig_##Name() { if(!((Save)&CFGFLAG_SERVER)) throw "invalid config type (this is not a server variable)"; return g_Config.m_##Name; } \
+		static void SetConfig_##Name(int var) { if(!((Save)&CFGFLAG_SERVER)) throw "invalid config type (this is not a server variable)"; if (var < Min || var > Max) throw "config int override out of range"; g_Config.m_##Name = var; }
+
+#define MACRO_CONFIG_FLOAT(Name,ScriptName,Def,Min,Max,Save,Desc) \
+		static float GetConfig_##Name() { if(!((Save)&CFGFLAG_SERVER)) throw "invalid config type (this is not a server variable)"; return g_Config.m_##Name; } \
+		static void SetConfig_##Name(float var) { if(!((Save)&CFGFLAG_SERVER)) throw "invalid config type (this is not a server variable)"; if (var < Min || var > Max) throw "config float override out of range"; g_Config.m_##Name = var; }
 
 #include <engine/shared/config_variables.h>
 
 #undef MACRO_CONFIG_STR
 #undef MACRO_CONFIG_INT
+#undef MACRO_CONFIG_FLOAT
 };
 
 #endif

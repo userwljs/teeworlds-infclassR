@@ -177,14 +177,14 @@ void CLua::RegisterLuaBindings()
 			// .addFunction("Players", &CGameContext::GetPlayer)
 		.endNamespace()
 
-		// g_Config stuff... EVERYTHING AT ONCE!
 		/// Config.<var_name>
 #define MACRO_CONFIG_STR(Name,ScriptName,Len,Def,Save,Desc) \
-			.addStaticProperty(#Name, &CConfigProperties::GetConfig_##Name, &CConfigProperties::SetConfig_##Name) \
 			.addStaticProperty(#ScriptName, &CConfigProperties::GetConfig_##Name, &CConfigProperties::SetConfig_##Name)
 
 #define MACRO_CONFIG_INT(Name,ScriptName,Def,Min,Max,Save,Desc) \
-			.addStaticProperty(#Name, &CConfigProperties::GetConfig_##Name, &CConfigProperties::SetConfig_##Name) \
+			.addStaticProperty(#ScriptName, &CConfigProperties::GetConfig_##Name, &CConfigProperties::SetConfig_##Name)
+
+#define MACRO_CONFIG_FLOAT(Name,ScriptName,Def,Min,Max,Save,Desc) \
 			.addStaticProperty(#ScriptName, &CConfigProperties::GetConfig_##Name, &CConfigProperties::SetConfig_##Name)
 
 		.beginClass<CConfigProperties>("Config")
@@ -193,6 +193,7 @@ void CLua::RegisterLuaBindings()
 
 #undef MACRO_CONFIG_STR
 #undef MACRO_CONFIG_INT
+#undef MACRO_CONFIG_FLOAT
 		// OOP ENDS HERE
 	;
 
