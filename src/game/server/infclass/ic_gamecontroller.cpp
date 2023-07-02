@@ -4467,6 +4467,35 @@ CBaseBotPlayer *CIcGameController::AddBot(const SurvivalBotConfiguration &Config
 	return pBot;
 }
 
+CBaseBotPlayer *CIcGameController::AddBot_Lua(const char *pClass)
+{
+	EPlayerClass Class = GetClassByName(pClass);
+	if(Class == EPlayerClass::Invalid)
+		return nullptr;
+
+	CBaseBotPlayer *pPlayer = AddBot();
+	if(!pPlayer)
+	{
+		return nullptr;
+	}
+
+	pPlayer->SetClass(Class);
+
+	return m_Bots.Last();
+}
+
+CBaseBotPlayer *CIcGameController::GetBot(int ClientId)
+{
+	CIcPlayer *pPlayer = GetPlayer(ClientId);
+	if(!pPlayer || !pPlayer->IsBot())
+	{
+		return nullptr;
+	}
+
+	CBaseBotPlayer *pBot = static_cast<CBaseBotPlayer *>(pPlayer);
+	return pBot;
+}
+
 bool CIcGameController::RemoveBot(CBaseBotPlayer *pBot, const char *pReason)
 {
 	std::optional<std::size_t> BotIndex = m_Bots.IndexOf(pBot);
@@ -4490,14 +4519,12 @@ bool CIcGameController::RemoveBot(CBaseBotPlayer *pBot, const char *pReason)
 
 bool CIcGameController::RemoveBot(int ClientId, const char *pReason)
 {
-	CIcPlayer *pPlayer = GetPlayer(ClientId);
-	if(!pPlayer || !pPlayer->IsBot())
-	{
-		return false;
-	}
+	return RemoveBot(GetBot(ClientId), pReason);
+}
 
-	CBaseBotPlayer *pBot = static_cast<CBaseBotPlayer *>(pPlayer);
-	return RemoveBot(pBot, pReason);
+bool CInfClassGameController::RemoveBot_Lua(int ClientId)
+{
+	return RemoveBot(ClientId);
 }
 
 void CIcGameController::RegisterBotsContext()

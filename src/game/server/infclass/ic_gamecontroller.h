@@ -482,8 +482,11 @@ private:
 	int RequestBotID();
 	CBaseBotPlayer *AddBot(int Team = 0);
 	CBaseBotPlayer *AddBot(const SurvivalBotConfiguration &Configuration);
+	CBaseBotPlayer *AddBot_Lua(const char *pClass);
+	CBaseBotPlayer *GetBot(int ClientId);
 	bool RemoveBot(CBaseBotPlayer *pBot, const char *pReason = nullptr);
 	bool RemoveBot(int ClientId, const char *pReason = nullptr);
+	bool RemoveBot_Lua(int ClientId);
 	void RegisterBotsContext();
 
 	icArray<CBaseBotPlayer *, MaxBots> m_Bots;

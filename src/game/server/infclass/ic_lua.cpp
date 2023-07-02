@@ -1,6 +1,7 @@
 #include "ic_gamecontroller.h"
 
 #if CONF_LUA
+#include <game/server/infclass/bot-player.h>
 #include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/hero-flag.h>
 #include <game/server/infclass/entities/ic_character.h>
@@ -332,6 +333,15 @@ void CIcGameController::RegisterLuaBindings()
 			.addProperty("Name", &CMapInfoEx::Name)
 		.endClass();
 
+	luabridge::getGlobalNamespace(L)
+		.deriveClass<CBaseBotPlayer, CIcPlayer>("CBaseBotPlayer")
+			.addProperty("Lives", &CBaseBotPlayer::Lives, &CBaseBotPlayer::SetLives)
+			.addProperty("MaxLives", &CBaseBotPlayer::MaxLives, &CBaseBotPlayer::SetMaxLives)
+			.addProperty("RespawnInterval", &CBaseBotPlayer::GetRespawnInterval, &CBaseBotPlayer::SetRespawnInterval)
+		.endClass();
+
+	luabridge::getGlobalNamespace(L).deriveClass<CBotPlayer, CBaseBotPlayer>("CBotPlayer");
+
 	static CIcGameController *pGameController = nullptr;
 	pGameController = this;
 
@@ -418,6 +428,11 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("AddLaserWall", &AddLaserWall)
 			.addFunction("AddLooperWall", &AddLooperWall)
 			.addFunction("AddTurret", &AddTurret)
+
+			.addFunction("AddBot", &CIcGameController::AddBot_Lua)
+			.addFunction("GetBot", &CIcGameController::GetBot)
+			.addFunction("RemoveBot", &CIcGameController::RemoveBot_Lua)
+			.addFunction("RemoveAllBots", &CIcGameController::RemoveBots)
 		.endClass()
 		.beginNamespace("Game")
 			.addProperty("Controller", &pGameController, false)
