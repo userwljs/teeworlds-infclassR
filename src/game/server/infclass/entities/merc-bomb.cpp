@@ -44,6 +44,12 @@ void CMercenaryBomb::SetLoad(float Load)
 		GameServer()->CreateSound(GetPos(), SOUND_PICKUP_ARMOR);
 
 	m_Load = Load;
+
+	float Factor = static_cast<float>(m_Load) / Config()->m_InfMercBombs;
+	if (Factor > 1)
+	{
+		m_ProximityRadius = s_MercBombRadius * Factor;
+	}
 }
 
 float CMercenaryBomb::GetLaserHitRadius() const

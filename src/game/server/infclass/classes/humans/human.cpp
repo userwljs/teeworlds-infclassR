@@ -1128,6 +1128,7 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 void CInfClassHuman::GiveClassAttributes()
 {
 	m_ResetKillsTick = -1;
+	m_MercBombs = 0;
 	m_TurretCount = 0;
 	m_NinjaTargetTick = 0;
 	m_NinjaTargetCid = -1;
@@ -1163,7 +1164,10 @@ void CInfClassHuman::GiveClassAttributes()
 		m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
 		m_pCharacter->GiveWeapon(WEAPON_GUN, -1);
 		if(GameController()->MercBombsEnabled())
+		{
 			m_pCharacter->GiveWeapon(WEAPON_LASER, -1);
+			m_MercBombs = Config()->m_InfMercBombs;
+		}
 		m_pCharacter->SetActiveWeapon(WEAPON_GUN);
 		break;
 	case EPlayerClass::Sniper:
@@ -1327,9 +1331,11 @@ void CInfClassHuman::BroadcastWeaponState() const
 
 		if(pCurrentBomb)
 		{
-			float BombLevel = pCurrentBomb->GetLoad() / static_cast<float>(Config()->m_InfMercBombs);
+			const float Load = pCurrentBomb->GetLoad();
+			const float NormalBombs = Config()->m_InfMercBombs;
+			const float BombLevel = Load / NormalBombs;
 
-			if(BombLevel < 1.0)
+			if(Load < m_MercBombs)
 			{
 				dynamic_string Line1;
 				Server()->Localization()->Format_L(Line1, GetPlayer()->GetLanguage(),
@@ -1619,7 +1625,9 @@ void CInfClassHuman::BroadcastWeaponState() const
 
 		if(pOwnBomb)
 		{
-			float BombLevel = pOwnBomb->GetLoad() / static_cast<float>(Config()->m_InfMercBombs);
+			const float Load = pOwnBomb->GetLoad();
+			const float NormalBombs = Config()->m_InfMercBombs;
+			const float BombLevel = Load / NormalBombs;
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Mercenary", "Explosive yield: {percent:BombLevel}"),
@@ -1908,7 +1916,8 @@ void CInfClassHuman::FireMercenaryBomb(WeaponFireContext *pFireContext)
 	{
 		float Distance = distance(pOwnBomb->GetPos(), GetPos());
 		const float SafeDistance = 16;
-		if(pOwnBomb->IsReadyToExplode() || Distance > pOwnBomb->GetProximityRadius() + SafeDistance)
+		bool BombIsLoaded = pOwnBomb->GetLoad() >= m_MercBombs;
+		if((BombIsLoaded && pOwnBomb->IsReadyToExplode()) || Distance > pOwnBomb->GetProximityRadius() + SafeDistance)
 		{
 			pOwnBomb->Explode(GetCid());
 		}
@@ -2145,17 +2154,13 @@ void CInfClassHuman::RemoveWhiteHole()
 
 void CInfClassHuman::UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints)
 {
-	if(m_UpgradeLevel >= MercBombUpgrade2Level)
-	{
-		UpgradePoints *= 2.5;
-	}
-	else if(m_UpgradeLevel >= MercBombUpgradeLevel)
+	if(m_UpgradeLevel >= MercBombUpgradeLevel)
 	{
 		UpgradePoints *= 1.5;
 	}
 
 	float Load = pBomb->GetLoad();
-	float NewLoad = minimum<float>(Config()->m_InfMercBombs, Load + UpgradePoints);
+	float NewLoad = minimum<float>(m_MercBombs, Load + UpgradePoints);
 	pBomb->SetLoad(NewLoad);
 }
 
@@ -2238,9 +2243,9 @@ void CInfClassHuman::GiveUpgrade()
 	case EPlayerClass::Mercenary:
 		if(m_UpgradeLevel == MercBombUpgradeLevel)
 		{
-			pMessage1 = _("You have found a shield and the bomb upgrade");
+			pMessage1 = _("You have found an upgrade!");
 			pMessage2 = _("Your bombs won't damage you anymore");
-			pMessage3 = _("And now you can charge them twice faster");
+			pMessage3 = _("And now you can charge them much faster");
 		}
 		else
 		{
@@ -2250,7 +2255,8 @@ void CInfClassHuman::GiveUpgrade()
 			}
 			if(m_UpgradeLevel == MercBombUpgrade2Level)
 			{
-				pMessage3 = _("And the bomb can be charged faster than ever");
+				pMessage3 = _("And the bomb can be charged to 150%");
+				m_MercBombs *= 1.5f;
 			}
 		}
 		break;

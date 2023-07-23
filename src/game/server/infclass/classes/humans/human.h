@@ -114,6 +114,8 @@ private:
 	float m_WeaponRegenIntervalModifier[NUM_WEAPONS];
 	float m_WeaponReloadIntervalModifier[NUM_WEAPONS];
 	float m_LaserReachModifier = 1.0f;
+
+	float m_MercBombs = 0;
 	int m_TurretCount = 0;
 	int m_BroadcastWhiteHoleReady; // used to broadcast "WhiteHole ready" for a short period of time
 	int m_PositionLockTicksRemaining = 0;
