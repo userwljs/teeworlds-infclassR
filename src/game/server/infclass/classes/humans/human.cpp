@@ -36,6 +36,9 @@
 
 static const int s_SniperPositionLockTimeLimit = 15;
 
+constexpr int MercBombUpgradeLevel = 1;
+constexpr int MercGrenadesUpgradeLevel = 2;
+constexpr int MercBombUpgrade2Level = 2;
 constexpr int MedicShotgunSpreadUpgradeLevel = 1;
 constexpr int MedicShotgunAmmoUpgradeLevel = 2;
 constexpr int SniperLaserAmmoUpgradeLevel = 1;
@@ -235,6 +238,16 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 {
 	switch(GetPlayerClass())
 	{
+	case EPlayerClass::Mercenary:
+		if(m_UpgradeLevel < MercBombUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_ARMOR);
+		}
+		else if(m_UpgradeLevel < MercGrenadesUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
+		}
+		break;
 	case EPlayerClass::Medic:
 		if(m_UpgradeLevel < MedicShotgunAmmoUpgradeLevel)
 		{
@@ -616,6 +629,16 @@ void CInfClassHuman::OnCharacterDamage(SDamageContext *pContext)
 		{
 			pContext->Mode = TAKEDAMAGEMODE::NOINFECTION;
 			pContext->Damage = 12;
+		}
+		break;
+	case EPlayerClass::Mercenary:
+		if(pContext->Mode == TAKEDAMAGEMODE::ALLOW_SELFHARM)
+		{
+			if(m_UpgradeLevel >= MercBombUpgradeLevel)
+			{
+				pContext->Damage = 0;
+				pContext->Force *= 0.5f;
+			}
 		}
 		break;
 	default:
@@ -2021,6 +2044,10 @@ void CInfClassHuman::OnPoisonGrenadeFired(WeaponFireContext *pFireContext)
 		float a = BaseAngle + random_float() / 3.0f;
 
 		[[maybe_unused]] CScatterGrenade *pProj = new CScatterGrenade(GameServer(), GetCid(), GetPos(), vec2(cosf(a), sinf(a)));
+		if(m_UpgradeLevel >= MercGrenadesUpgradeLevel)
+		{
+			pProj->ExplodeOnContact();
+		}
 	}
 
 	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
@@ -2118,6 +2145,15 @@ void CInfClassHuman::RemoveWhiteHole()
 
 void CInfClassHuman::UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints)
 {
+	if(m_UpgradeLevel >= MercBombUpgrade2Level)
+	{
+		UpgradePoints *= 2.5;
+	}
+	else if(m_UpgradeLevel >= MercBombUpgradeLevel)
+	{
+		UpgradePoints *= 1.5;
+	}
+
 	float Load = pBomb->GetLoad();
 	float NewLoad = minimum<float>(Config()->m_InfMercBombs, Load + UpgradePoints);
 	pBomb->SetLoad(NewLoad);
@@ -2199,6 +2235,25 @@ void CInfClassHuman::GiveUpgrade()
 
 	switch(GetPlayerClass())
 	{
+	case EPlayerClass::Mercenary:
+		if(m_UpgradeLevel == MercBombUpgradeLevel)
+		{
+			pMessage1 = _("You have found a shield and the bomb upgrade");
+			pMessage2 = _("Your bombs won't damage you anymore");
+			pMessage3 = _("And now you can charge them twice faster");
+		}
+		else
+		{
+			if(m_UpgradeLevel == MercGrenadesUpgradeLevel)
+			{
+				pMessage2 = _("Your grenades now explode automatically");
+			}
+			if(m_UpgradeLevel == MercBombUpgrade2Level)
+			{
+				pMessage3 = _("And the bomb can be charged faster than ever");
+			}
+		}
+		break;
 	case EPlayerClass::Medic:
 		if(m_UpgradeLevel == MedicShotgunSpreadUpgradeLevel)
 		{
