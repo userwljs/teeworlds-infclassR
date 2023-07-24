@@ -682,7 +682,6 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	float AbsXToJumpTarget = fabs(VectorToTarget.x);
 	float AbsYToJumpTarget = fabs(VectorToTarget.y);
 
-	pInput->m_Direction = m_RoamingDirection * KeepMoving;
 
 	if(m_JumpTargetingTicks)
 	{
@@ -692,7 +691,12 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		}
 	}
 
-	if(WantToJump || m_JumpTargetingTicks)
+	pInput->m_Direction = m_RoamingDirection * KeepMoving;
+	if (KeepMoving != 1)
+	{
+		// We're stopping or braking and can't not do the landing maneuvers
+	}
+	else if(WantToJump || m_JumpTargetingTicks)
 	{
 		const float ProximityRadius = m_pCharacter->GetProximityRadius();
 		const bool GoingDown = VectorToTarget.y > 0;
