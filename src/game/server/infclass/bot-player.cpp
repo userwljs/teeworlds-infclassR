@@ -776,7 +776,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			if(VelX * DirectionSign > 0.1)
 			{
 				BotDebugMessage(VERBOSE_TRACE1, "Brake!");
-				pInput->m_Direction = KeepMoving = -1;
+				KeepMoving = -1;
 			}
 			else
 			{
