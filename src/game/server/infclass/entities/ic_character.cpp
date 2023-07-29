@@ -1893,6 +1893,13 @@ void CIcCharacter::HandleMapMenu()
 				pClassName, nullptr);
 		}
 		break;
+		case CLASS_AVAILABILITY::PICKED_PREVIOUSLY:
+		{
+			GameServer()->SendBroadcast_Localization(GetCid(),
+				EBroadcastPriority::INTERFACE, BROADCAST_DURATION_REALTIME,
+				_("You can't pick the same class again"), nullptr);
+		}
+		break;
 		case CLASS_AVAILABILITY::DISABLED:
 			GameServer()->SendBroadcast_Localization(GetCid(),
 				EBroadcastPriority::INTERFACE, BROADCAST_DURATION_REALTIME,

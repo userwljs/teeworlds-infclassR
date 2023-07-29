@@ -61,6 +61,7 @@ const char *toString(ERoundType RoundType);
 enum class CLASS_AVAILABILITY
 {
 	AVAILABLE,
+	PICKED_PREVIOUSLY,
 	DISABLED,
 	NEED_MORE_PLAYERS,
 	LIMIT_EXCEEDED,
@@ -245,6 +246,7 @@ public:
 	float GetWhiteHoleLifeSpan() const;
 	int MinimumInfectedForRevival() const;
 	bool IsClassChooserEnabled() const;
+	bool HumanCanPickSameClass() const;
 	int GetTaxiMode() const;
 	int GetGhoulStomackSize() const;
 	EPlayerScoreMode GetPlayerScoreMode(int SnappingClient) const;

@@ -57,6 +57,7 @@ MACRO_CONFIG_INT(InfShockwaveAffectHumans, inf_shock_wave_affect_humans, 0, 0, 1
 MACRO_CONFIG_INT(InfSpawnProtectionTime, inf_spawn_protection_time, 2000, 0, 60000, CFGFLAG_SERVER, "Time zombies stay invincible while spawning")
 MACRO_CONFIG_INT(InfAntiFireTime, inf_anti_fire_time, 700, 0, 10000, CFGFLAG_SERVER, "Time players can't attack after spawning (in ms)")
 MACRO_CONFIG_INT(InfClassChooser, inf_class_chooser, 1, 0, 1, CFGFLAG_SERVER, "Enable the class chooser")
+MACRO_CONFIG_INT(InfAllowPickingSameClass, inf_allow_picking_same_class, 1, 0, 1, CFGFLAG_SERVER, "Allow a player to pick the same class again")
 MACRO_CONFIG_INT(InfTaxi, inf_taxi, 1, 0, 2, CFGFLAG_SERVER, "Toggle taxi mode (disabled, enabled (without passengers ammo regen), enabled")
 MACRO_CONFIG_INT(InfTaxiCollisions, inf_taxi_collisions, 0, 0, 3, CFGFLAG_SERVER, "Set taxi collision flags (1 for attach collisions, 2 for move collisions")
 

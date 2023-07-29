@@ -5255,6 +5255,11 @@ bool CIcGameController::IsClassChooserEnabled() const
 	return Config()->m_InfClassChooser && Server()->GetTimeShiftUnit();
 }
 
+bool CIcGameController::HumanCanPickSameClass() const
+{
+	return Config()->m_InfAllowPickingSameClass || (Server()->GetActivePlayerCount() == 1);
+}
+
 int CIcGameController::GetTaxiMode() const
 {
 	if(GetRoundType() == ERoundType::Survival)
@@ -6913,8 +6918,14 @@ EPlayerClass CIcGameController::ChooseHumanClass(const CIcPlayer *pPlayer) const
 		if(GetRoundType() != ERoundType::Fun)
 		{
 			CLASS_AVAILABILITY Availability = GetPlayerClassAvailability(PlayerClass, pPlayer);
-			if(Availability != CLASS_AVAILABILITY::AVAILABLE)
+			switch(Availability)
 			{
+			case CLASS_AVAILABILITY::PICKED_PREVIOUSLY:
+				ClassProbability *= 0.125f;
+				break;
+			case CLASS_AVAILABILITY::AVAILABLE:
+				break;
+			default:
 				ClassProbability = 0.0f;
 			}
 		}
@@ -7611,6 +7622,15 @@ CLASS_AVAILABILITY CIcGameController::GetPlayerClassAvailability(EPlayerClass Pl
 			{
 				if(!EnabledEarlyClasses.Contains(PlayerClass))
 					ClassLimit -=1;
+			}
+		}
+
+		if((EnabledHumansClasses > 1) && !HumanCanPickSameClass())
+		{
+			EPlayerClass PrevClass = pForPlayer ? pForPlayer->GetPreviouslyPickedClass() : EPlayerClass::Invalid;
+			if(PlayerClass == PrevClass)
+			{
+				return CLASS_AVAILABILITY::PICKED_PREVIOUSLY;
 			}
 		}
 	}
