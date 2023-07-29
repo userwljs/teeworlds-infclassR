@@ -3632,6 +3632,11 @@ void CIcGameController::StartInfectionGameplay(int PlayersToInfect)
 			pPlayer->m_DieTick = m_RoundStartTick;
 			continue;
 		}
+		else if(pPlayer->IsHuman())
+		{
+			// Ignore pPlayer->RandomClassChoosen()
+			pPlayer->SetPreviouslyPickedClass(pPlayer->GetClass());
+		}
 	}
 }
 

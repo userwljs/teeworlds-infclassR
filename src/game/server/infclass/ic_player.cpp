@@ -378,10 +378,6 @@ void CIcPlayer::SetClass(EPlayerClass NewClass)
 
 	if(m_class != EPlayerClass::Invalid)
 	{
-		if(IsHumanClass(NewClass) && (NewClass != EPlayerClass::None))
-		{
-			SetPreviouslyPickedClass(NewClass);
-		}
 		if(m_PreviousClasses.Size() == m_PreviousClasses.Capacity())
 		{
 			m_PreviousClasses.RemoveAt(0);
