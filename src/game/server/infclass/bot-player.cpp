@@ -1202,17 +1202,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 				// TODO: Find another way
 			}
 		}
-
-		if(!WantToJump)
-		{
-			bool HasDangerInRoamingHorizontalDirection = false;
-
-			HasDangerInRoamingHorizontalDirection = HasDangerInTheDirection(m_RoamingDirection);
-			if(HasDangerInRoamingHorizontalDirection)
-			{
-				WantToJump = true;
-			}
-		}
 	}
 
 	const float Distance = distance(Pos, m_LastTargetSeenAtPos);
@@ -1320,11 +1309,30 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		}
 	}
 
+	int KeepMoving = 1;
+	const float VelX = m_pCharacter->Core()->m_Vel.x;
+
+	if(HasDangerInTheDirection(Direction))
+	{
+		const int DirectionSign = Direction;
+		if(VelX * DirectionSign > 0.1)
+		{
+			BotDebugMessage(VERBOSE_TRACE1, "Brake!");
+			KeepMoving = -1;
+		}
+		else
+		{
+			KeepMoving = 0;
+		}
+
+		BotDebugMessage(VERBOSE_STEPS, "Hold on! The danger is there");
+	}
+
 	SetRoamingDirection(Direction);
 
 	BotDebugMessage(VERBOSE_TRACE1, WantToJump ? "WantToJump: yes" : "WantToJump: no");
 
-	pInput->m_Direction = m_RoamingDirection;
+	pInput->m_Direction = m_RoamingDirection * KeepMoving;
 	pInput->m_TargetX = m_LastTargetSeenAtPos.x - Pos.x;
 	pInput->m_TargetY = m_LastTargetSeenAtPos.y - Pos.y;
 
