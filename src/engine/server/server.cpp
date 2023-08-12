@@ -5539,7 +5539,7 @@ uint32_t CServer::GetActivePlayerCount()
 	uint32_t PlayerCount = 0;
 	for(int i=0; i<MAX_CLIENTS; i++)
 	{
-		if(m_aClients[i].m_State == CClient::STATE_INGAME)
+		if(m_aClients[i].m_State == CClient::STATE_INGAME && !m_aClients[i].m_IsBot)
 		{
 			if(GameServer()->IsClientPlayer(i))
 				PlayerCount++;
