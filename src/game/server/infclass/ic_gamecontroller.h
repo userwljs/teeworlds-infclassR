@@ -14,6 +14,7 @@
 
 class CBaseBotPlayer;
 class CBotUtils;
+class CControlPoint;
 class CDoor;
 class CGameWorld;
 class CHintMessage;
@@ -235,6 +236,9 @@ public:
 	void OnHeroFlagCollected(int ClientId);
 	float GetHeroFlagCooldown() const;
 
+	void ApplyControlPointEffect(CControlPoint *pControlPoint);
+	void OnControlPointCaptured(CControlPoint *pControlPoint);
+
 	bool IsInfectionStarted() const;
 	bool MapRotationEnabled() const override;
 	void OnTeamChangeRequested(int ClientId, int Team) override;
@@ -321,6 +325,8 @@ public:
 	void SetPreferredClass(int ClientId, const char *pClassName);
 	void SetPreferredClass(int ClientId, EPlayerClass Class);
 	static void ConAntiPing(IConsole::IResult *pResult, void *pUserData);
+
+	static void ConAddControlPoint(IConsole::IResult *pResult, void *pUserData);
 
 	static void ConUserSetClass(IConsole::IResult *pResult, void *pUserData);
 	void ConUserSetClass(IConsole::IResult *pResult);
@@ -419,6 +425,7 @@ public:
 	static void ConAiObjection(IConsole::IResult *pResult, void *pUserData);
 	void ConAiObjection(IConsole::IResult *pResult);
 
+	CControlPoint *AddControlPoint(const vec2 &At);
 	CDoor *AddDoor(const vec2 &From, const vec2 &To);
 
 	using IGameController::GameServer;
@@ -559,6 +566,7 @@ private:
 	bool m_RoundStarted = false;
 	bool m_SuggestMoreRounds = false;
 	bool m_MoreRoundsSuggested = false;
+	bool m_ControlPointHintSent[2] = {};
 	bool m_VanillaMapLoaded = false;
 
 	int m_InfAmmoRegenTime[NB_INFWEAPON]{};

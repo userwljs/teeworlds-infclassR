@@ -2,6 +2,7 @@
 
 #include <game/server/infclass/entities/biologist-mine.h>
 #include <game/server/infclass/entities/bouncing-bullet.h>
+#include <game/server/infclass/entities/control-point.h>
 #include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/flyingpoint.h>
 #include <game/server/infclass/entities/growingexplosion.h>
@@ -24,6 +25,7 @@ void CIcGameController::RegisterEntityTypes()
 {
 	GameWorld()->RegisterEntityType<CBiologistMine>();
 	GameWorld()->RegisterEntityType<CBouncingBullet>();
+	GameWorld()->RegisterEntityType<CControlPoint>();
 	GameWorld()->RegisterEntityType<CDoor>();
 	GameWorld()->RegisterEntityType<CEngineerWall>();
 	GameWorld()->RegisterEntityType<CFlyingPoint>();

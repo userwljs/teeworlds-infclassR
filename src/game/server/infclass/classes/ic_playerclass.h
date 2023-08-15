@@ -162,6 +162,7 @@ protected:
 	int m_NormalEmote;
 
 	int m_UpgradeLevel = 0;
+	int m_ControlPointEffectAppliedTick = 0;
 	int m_HealingDisabledTicks = 0;
 };
 

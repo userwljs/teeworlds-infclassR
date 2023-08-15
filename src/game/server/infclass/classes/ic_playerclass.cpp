@@ -355,6 +355,7 @@ void CIcPlayerClass::OnCharacterSnap(int SnappingClient)
 
 void CIcPlayerClass::OnCharacterSpawned(const SpawnContext &Context)
 {
+	m_ControlPointEffectAppliedTick = 0;
 	m_HealingDisabledTicks = 0;
 
 	UpdateSkin();

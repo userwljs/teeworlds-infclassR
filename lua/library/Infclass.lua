@@ -238,6 +238,10 @@ function CIcCharacter:ResetPoisonEffect() end
 ---@field inf_slow_motion_hook_accel number Factor that manipulates the slowmotion hook acceleration
 ---@field inf_slow_motion_max_speed number Create a speed limit while in slowmotion, make it 0 to disable it
 ---@field inf_slow_motion_gravity number Modify gravity while in slowmotion
+---@field inf_cp_caption_radius number Control Point inner (proximity) radius
+---@field inf_cp_visual_radius number Control Point outer (effect) radius
+---@field inf_cp_local_effect_interval number Control Point local effect rate (1HP every N seconds)
+---@field inf_cp_global_effect_interval number Control Point global effect rate (1HP every N seconds)
 ---@field inf_min_players_for_turrets number Minimum number of players that are needed to enable turrets
 ---@field inf_turret_enable number If turrets are available
 ---@field inf_turret_give number Gives hero extra turrets

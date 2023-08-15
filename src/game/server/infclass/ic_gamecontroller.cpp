@@ -8,6 +8,7 @@
 #include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/server/infclass/classes/infected/infected.h>
 #include <game/server/infclass/death_context.h>
+#include <game/server/infclass/entities/control-point.h>
 #include <game/server/infclass/entities/flyingpoint.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_door.h>
@@ -83,6 +84,7 @@ template ERoundType fromString<ERoundType>(const char *pString);
 static const char *gs_aCharacterSpawnTypes[] = {
 	"map",
 	"witch",
+	"control-point",
 	"invalid",
 };
 
@@ -503,6 +505,9 @@ void CIcGameController::OnReset()
 		}
 	}
 
+	for (bool &Sent : m_ControlPointHintSent)
+		Sent = false;
+
 	RunCallback(Lua()->GetLuaState(), "on_world_reset");
 }
 
@@ -622,6 +627,42 @@ float CIcGameController::GetHeroFlagCooldown() const
 		t = 0.0f;
 
 	return 15 + (120 * t);
+}
+
+void CIcGameController::ApplyControlPointEffect(CControlPoint *pControlPoint)
+{
+	pControlPoint->SetNextEffectTime(Config()->m_InfControlPointGlobalInterval);
+
+	RunCallback(Lua()->GetLuaState(), "on_control_point_effect", pControlPoint);
+}
+
+void CIcGameController::OnControlPointCaptured(CControlPoint *pControlPoint)
+{
+	pControlPoint->SetNextEffectTime(Config()->m_InfControlPointGlobalInterval);
+
+	const char *pText = pControlPoint->IsInfected() ? _("Control Point is captured by the infected") : _("Control Point is captured by humans");
+	GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, pText, nullptr);
+	GameServer()->CreateSoundGlobal(SOUND_CTF_GRAB_PL);
+
+	RunCallback(Lua()->GetLuaState(), "on_control_point_captured", pControlPoint);
+
+	int Index = pControlPoint->IsInfected() ? 0 : 1;
+	if(m_ControlPointHintSent[Index])
+		return;
+
+	m_ControlPointHintSent[Index] = true;
+
+	if(pControlPoint->IsInfected())
+	{
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTED, _("The infected can now spawn at a Control Point"));
+	}
+	else
+	{
+		int Seconds = Config()->m_InfControlPointGlobalInterval;
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_HUMANS, _("The control point gives a bonus to all humans every {sec:GlobalEffectInterval}"),
+			"GlobalEffectInterval", &Seconds,
+			nullptr);
+	}
 }
 
 bool CIcGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv)
@@ -1647,6 +1688,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	Console()->Register("prefer_class", "s[classname]", CFGFLAG_CHAT, ConPreferClass, this, "Set the preferred human class to <classname>");
 	Console()->Register("alwaysrandom", "i['0'|'1']", CFGFLAG_CHAT, ConAlwaysRandom, this, "Set the preferred class to Random");
 	Console()->Register("antiping", "i['0'|'1']", CFGFLAG_CHAT, ConAntiPing, this, "Try to improve your ping (reduce the traffic)");
+	Console()->Register("add_control_point", "f[x] f[y]", CFGFLAG_SERVER, ConAddControlPoint, this, "Add a control point at given tile");
 
 	pConsole->Register("set_class", "s[classname]", CFGFLAG_CHAT, ConUserSetClass, this, "Set the class of a player");
 	pConsole->Register("save_position", "", CFGFLAG_CHAT, ConSavePosition, this, "Save the current character position");
@@ -2320,6 +2362,14 @@ void CIcGameController::ConAntiPing(IConsole::IResult *pResult, void *pUserData)
 
 	CIcPlayer *pPlayer = pSelf->GetPlayer(ClientId);
 	pPlayer->SetAntiPingEnabled(Arg > 0);
+}
+
+void CIcGameController::ConAddControlPoint(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	float X = pResult->GetFloat(0) * 32.0f;
+	float Y = pResult->GetFloat(1) * 32.0f;
+	pSelf->AddControlPoint(vec2(X, Y));
 }
 
 void CIcGameController::ConUserSetClass(IConsole::IResult *pResult, void *pUserData)
@@ -3350,13 +3400,18 @@ void CIcGameController::ConSayBot(IConsole::IResult *pResult, void *pUserData)
 void CIcGameController::ConSayBot(IConsole::IResult *pResult)
 {
 	int BotID = pResult->GetInteger(0);
-	CIcPlayer *pPlayer = GetPlayer(BotID);
+	const CIcPlayer *pPlayer = GetPlayer(BotID);
 	if(!pPlayer || !pPlayer->IsBot())
 	{
 		return;
 	}
 
 	GameServer()->SendChat(BotID, CGameContext::CHAT_ALL, pResult->GetString(1));
+}
+
+CControlPoint *CIcGameController::AddControlPoint(const vec2 &At)
+{
+	return new CControlPoint(GameServer(), At);
 }
 
 CDoor *CIcGameController::AddDoor(const vec2 &From, const vec2 &To)
@@ -4521,7 +4576,7 @@ bool CIcGameController::RemoveBot(int ClientId, const char *pReason)
 	return RemoveBot(GetBot(ClientId), pReason);
 }
 
-bool CInfClassGameController::RemoveBot_Lua(int ClientId)
+bool CIcGameController::RemoveBot_Lua(int ClientId)
 {
 	return RemoveBot(ClientId);
 }
@@ -6888,6 +6943,32 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 	{
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", "The map has no spawn points");
 		return false;
+	}
+
+	icArray<CControlPoint *, 10> aControlPoints;
+
+	// Find control points
+	for(TEntityPtr<CControlPoint> p = GameWorld()->FindFirst<CControlPoint>(); p; ++p)
+	{
+		if(p->IsMarkedForDestroy())
+			continue;
+		if(!p->IsTaken() || !p->IsReady() || p->IsBlocked())
+			continue;
+		if(pPlayer->IsInfected() != p->IsInfected())
+			continue;
+
+		aControlPoints.Add(p);
+		if(aControlPoints.Size() == aControlPoints.Capacity())
+			break;
+	}
+
+	std::size_t Val = aControlPoints.IsEmpty() ? 0 : random_int(0, aControlPoints.Size());
+	if (Val < aControlPoints.Size())
+	{
+		// Picked a CP
+		pContext->SpawnPos = aControlPoints.At(Val)->GetPos();
+		pContext->SpawnType = SpawnContext::ControlPoint;
+		return true;
 	}
 
 	// get spawn point

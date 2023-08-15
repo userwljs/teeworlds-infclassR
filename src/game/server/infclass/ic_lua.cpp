@@ -2,6 +2,7 @@
 
 #if CONF_LUA
 #include <game/server/infclass/bot-player.h>
+#include <game/server/infclass/entities/control-point.h>
 #include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/hero-flag.h>
 #include <game/server/infclass/entities/ic_character.h>
@@ -442,6 +443,11 @@ void CIcGameController::RegisterLuaBindings()
 			.addProperty("SecondPosition", &CPlacedObject::SecondPosition, &CPlacedObject::SetSecondPosition)
 			.addProperty("MaxLength", &CPlacedObject::MaxLength, &CPlacedObject::SetMaxLength)
 		.endClass()
+		.deriveClass<CControlPoint, CPlacedObject>("CControlPoint")
+			.addFunction("IsTaken", &CControlPoint::IsTaken)
+			.addFunction("IsInfected", &CControlPoint::IsInfected)
+			.addFunction("SetNextEffectTime", &CControlPoint::SetNextEffectTime)
+		.endClass()
 		.deriveClass<CDoor, CPlacedObject>("CDoor")
 			.addFunction("SetOpen", &CDoor::SetOpen)
 		.endClass()
@@ -506,6 +512,7 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("ResetPlayerClassEnabled", &ResetPlayerClassEnabled_Lua)
 			.addFunction("ResetPlayerClassesEnablement", &CIcGameController::ResetPlayerClassesEnablement)
 
+			.addFunction("AddControlPoint", &CIcGameController::AddControlPoint)
 			.addFunction("AddDoor", &CIcGameController::AddDoor)
 			.addFunction("AddSciMine", &AddSciMine)
 			.addFunction("AddLaserWall", &AddLaserWall)

@@ -66,6 +66,7 @@ struct SpawnContext
 	{
 		MapSpawn,
 		WitchSpawn,
+		ControlPoint,
 		Count,
 		Invalid = Count
 	};
