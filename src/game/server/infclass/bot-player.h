@@ -6,6 +6,7 @@
 #include <base/tl/ic_array.h>
 
 #include <cstdint>
+#include <optional>
 
 template<typename T>
 T fromString(const char *pString);
@@ -84,6 +85,7 @@ enum class EObjection : uint8_t
 	CheckTheMid,
 	CheckTheBottom,
 	CheckTheLastSeen,
+	CheckPOI,
 	// SECURE_POSITION,
 	Count,
 	Invalid = Count,
@@ -183,6 +185,8 @@ public:
 	void OnCharacterSpawned(const SpawnContext &Context) override;
 
 	void UpdateTarget();
+	std::optional<vec2> GetNewPOI() const;
+	void UpdatePOITarget();
 	void UpdateControls() override;
 	void UpdateControlsRoaming(CNetObj_PlayerInput *pInput);
 	void UpdateControlsHunting(CNetObj_PlayerInput *pInput);
@@ -264,6 +268,7 @@ public:
 protected:
 	CGameWorld *GameWorld() const;
 	void UpdateCharacterState();
+	void UpdatePOIState();
 
 	bool CanHook() const;
 	bool WeakHook() const;
@@ -275,6 +280,7 @@ protected:
 	float GetLookupOffset() const;
 
 	void SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpFromPosition);
+	void SetPOI(std::optional<vec2> newPOI);
 
 	CBotUtils *m_pUtils = nullptr;
 	EBotState m_BotState = EBotState::Roaming;
@@ -292,6 +298,8 @@ protected:
 
 	int m_LastTarget = -1;
 	vec2 m_LastTargetSeenAtPos;
+	std::optional<vec2> m_POIPos;
+	int m_LookForPoiDisabledUntilTick = -1;
 	int m_FleeingSinceTick = -1;
 	int m_LastSeenTick = -1;
 	int m_LastFireTick = -1;
@@ -310,6 +318,7 @@ protected:
 
 	int m_StateUpdateTick = 0;
 	bool m_CachedGrounded = false;
+	bool m_CachedPOIReachableByGround = false;
 
 	char m_Name[16];
 };

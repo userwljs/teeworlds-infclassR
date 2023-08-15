@@ -7,6 +7,7 @@
 #include <game/server/infclass/bot_utils.h>
 #include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/server/infclass/entities/biologist-mine.h>
+#include <game/server/infclass/entities/control-point.h>
 #include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_entity.h>
@@ -25,10 +26,12 @@ class CHiveMind
 {
 public:
 	void Reset();
-	void UpdateTick(int Tick);
+	void UpdateTick(CIcGameController *pGameController, int Tick);
 
 	bool TryAttack(int ClientID);
 	bool TryHook(int ClientID);
+	std::optional<vec2> PickPOI(const vec2 &FromPos) const;
+	bool HasPOI() const;
 
 protected:
 	static constexpr int MaxAttacksInTimespan = 2;
@@ -45,15 +48,17 @@ protected:
 
 	int m_Tick = 0;
 	icArray<HiveVictim, MAX_CLIENTS> m_aVictims;
+	icArray<vec2, 10> m_aPOIs;
 };
 
 void CHiveMind::Reset()
 {
 	m_Tick = -1;
 	m_aVictims.Clear();
+	m_aPOIs.Clear();
 }
 
-void CHiveMind::UpdateTick(int Tick)
+void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 {
 	if(Tick == m_Tick)
 		return;
@@ -84,6 +89,19 @@ void CHiveMind::UpdateTick(int Tick)
 
 		Victim.Hooks = 0;
 	}
+
+	m_aPOIs.Clear();
+	CGameWorld *pGameWorld = pGameController->GameWorld();
+	// Find other players
+	for(TEntityPtr<CControlPoint> p = pGameWorld->FindFirst<CControlPoint>(); p; ++p)
+	{
+		if(p->IsMarkedForDestroy())
+			continue;
+		if(p->IsTaken() && p->IsInfected())
+			continue;
+
+		m_aPOIs.Add(p->GetPos());
+	}
 }
 
 bool CHiveMind::TryAttack(int ClientID)
@@ -108,6 +126,28 @@ bool CHiveMind::TryHook(int ClientID)
 
 	pVictim->Hooks++;
 	return true;
+}
+
+std::optional<vec2> CHiveMind::PickPOI(const vec2 &FromPos) const
+{
+	float BestDistance2 = 800 * 800;
+	std::optional<vec2> BestPOI;
+	for (const vec2 &POIPos : m_aPOIs)
+	{
+		vec2 VectorToPOI = POIPos - FromPos;
+		const float Distance2 = length_squared(VectorToPOI);
+		if (Distance2 > BestDistance2)
+			continue;
+		BestDistance2 = Distance2;
+		BestPOI = POIPos;
+	}
+
+	return BestPOI;
+}
+
+bool CHiveMind::HasPOI() const
+{
+	return !m_aPOIs.IsEmpty();
 }
 
 CHiveMind::HiveVictim *CHiveMind::GetVictim(int ClientID)
@@ -210,6 +250,7 @@ static const char *gs_aObjectionNames[] = {
 	"check-mid",
 	"check-bottom",
 	"check-last-seen",
+	"check-poi",
 	"invalid",
 };
 
@@ -289,7 +330,7 @@ void CBotPlayer::Tick()
 	if(GameController()->IsGameOver())
 		return;
 
-	s_HiveMind.UpdateTick(Server()->Tick());
+	s_HiveMind.UpdateTick(GameController(), Server()->Tick());
 
 	UpdateCharacterState();
 
@@ -506,7 +547,11 @@ void CBotPlayer::UpdateTarget()
 
 	if(TargetId < 0)
 	{
-		if(m_BotState != EBotState::Roaming)
+		if(m_BotState == EBotState::Roaming)
+		{
+			UpdatePOITarget();
+		}
+		else
 		{
 			SetState(EBotState::Roaming);
 			const CIcCharacter *pExTarget = GameController()->GetCharacter(m_LastTarget);
@@ -559,6 +604,62 @@ void CBotPlayer::UpdateTarget()
 	m_LastSeenTick = Server()->Tick();
 
 	SetState(EBotState::Hunting);
+}
+
+std::optional<vec2> CBotPlayer::GetNewPOI() const
+{
+	if (IsHuman())
+		return std::nullopt;
+
+	if (!s_HiveMind.HasPOI())
+		return std::nullopt;
+
+	float TargetCooldown = 2.0f;
+	if (Server()->Tick() < m_LastSeenTick + Server()->TickSpeed() * TargetCooldown)
+	{
+		return std::nullopt;
+	}
+
+	const vec2 &Pos = GetCharacter()->GetPos();
+	std::optional<vec2> newPOI = s_HiveMind.PickPOI(Pos);
+	if(!newPOI.has_value())
+		return std::nullopt;
+
+	bool HasObstruction = GameServer()->Collision()->IntersectLine(Pos, newPOI.value());
+	if(HasObstruction)
+		return std::nullopt;
+
+	return newPOI;
+}
+
+void CBotPlayer::UpdatePOITarget()
+{
+	std::optional<vec2> newPOI = GetNewPOI();
+	if(newPOI.has_value() && (m_RoamingObjection != EObjection::CheckPOI))
+	{
+		const int Tick = Server()->Tick();
+		if(Tick > m_LookForPoiDisabledUntilTick)
+		{
+			const float MaxLookingForPOI = 5.0f;
+			m_LookForPoiDisabledUntilTick = Tick + Server()->TickSpeed() * MaxLookingForPOI;
+			SetObjection(EObjection::CheckPOI);
+		}
+	}
+
+	if(m_RoamingObjection == EObjection::CheckPOI)
+	{
+		if(newPOI.has_value())
+		{
+			const vec2 &Pos = GetCharacter()->GetPos();
+			SetRoamingDirection(newPOI.value().x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+		}
+		else
+		{
+			GetNewObjection();
+		}
+	}
+
+	SetPOI(newPOI);
 }
 
 void CBotPlayer::UpdateControls()
@@ -657,6 +758,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	const int DirectionSign = m_RoamingDirection;
 	const float VelX = m_pCharacter->Core()->m_Vel.x;
 
+	const bool NoWantedJump = m_RoamingObjection == EObjection::CheckPOI && m_CachedPOIReachableByGround;
 	if(IsGrounded())
 	{
 		m_WantedJumps = 0;
@@ -694,7 +796,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			if(m_DecisionTileX != TileX)
 			{
 				vec2 JumpTarget;
-				const int WantJumps = GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget);
+				const int WantJumps = NoWantedJump ? 0 : GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget);
 				if(WantJumps)
 				{
 					if(MaybeJumpOn(JumpTarget))
@@ -796,7 +898,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				int MaybeWantJumps = 0;
 				if(HasWallInRoamingDirection)
 				{
-					if((MaybeWantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &JumpTarget)))
+					if((MaybeWantJumps = NoWantedJump ? 0 : GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &JumpTarget)))
 					{
 						if(m_pCharacter->Core()->m_Vel.y < 0)
 						{
@@ -823,7 +925,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 						}
 					}
 				}
-				else if((MaybeWantJumps = GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget)))
+				else if((MaybeWantJumps = NoWantedJump ? 0 : GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget)))
 				{
 					if(MaybeJumpOn(JumpTarget))
 					{
@@ -2022,6 +2124,11 @@ void CBotPlayer::SetState(EBotState NewState)
 		return;
 	}
 
+	if(NewState != EBotState::Roaming)
+	{
+		SetPOI(std::nullopt);
+	}
+
 	if(NewState == EBotState::Roaming)
 	{
 		if(IsHuman())
@@ -2121,6 +2228,7 @@ void CBotPlayer::ChangeRoamingBehavior()
 	case EObjection::Jump:
 	case EObjection::Lookup:
 	case EObjection::CheckTheLastSeen:
+	case EObjection::CheckPOI:
 		GetNewObjection();
 		break;
 	case EObjection::CheckTheTop:
@@ -2163,9 +2271,14 @@ void CBotPlayer::ChangeRoamingBehavior()
 	case EObjection::CheckTheBottom:
 		m_JumpExtraProbability = -1;
 		break;
+	case EObjection::CheckPOI:
+		m_JumpExtraProbability = 0;
+		Emoticon = EMOTICON_QUESTION;
+		break;
 	case EObjection::Lookup:
 	case EObjection::CheckTheLastSeen:
 	case EObjection::Invalid:
+		m_JumpExtraProbability = 0;
 		break;
 	}
 
@@ -2430,6 +2543,10 @@ bool CBotPlayer::MaybeFallDown() const
 	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
 	{
 		return m_pUtils->IsReachableByGround(m_pCharacter->GetPos(), m_LastTargetSeenAtPos, GetMaxJumps());
+	}
+	if (m_RoamingObjection == EObjection::CheckPOI)
+	{
+		return m_CachedPOIReachableByGround;
 	}
 
 	{
@@ -2809,6 +2926,20 @@ void CBotPlayer::UpdateCharacterState()
 
 	const CIcCharacter *pCharacter = GetCharacter();
 	m_CachedGrounded = pCharacter && pCharacter->IsGrounded();
+	UpdatePOIState();
+}
+
+void CBotPlayer::UpdatePOIState()
+{
+	if(m_POIPos.has_value() && m_pCharacter)
+	{
+		constexpr int MaxSteps = 100;
+		m_CachedPOIReachableByGround = m_pUtils->IsReachableByGround(m_pCharacter->GetPos(), m_POIPos.value(), GetMaxJumps(), MaxSteps);
+	}
+	else
+	{
+		m_CachedPOIReachableByGround = false;
+	}
 }
 
 bool CBotPlayer::CanHook() const
@@ -2888,4 +3019,13 @@ void CBotPlayer::SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpF
 	m_JumpFromPosition = JumpFromPosition;
 
 	m_pUtils->GetDebugSink()->HighlightPosition(JumpTarget);
+}
+
+void CBotPlayer::SetPOI(std::optional<vec2> newPOI)
+{
+	if(m_POIPos == newPOI)
+		return;
+
+	m_POIPos = newPOI;
+	UpdatePOIState();
 }
