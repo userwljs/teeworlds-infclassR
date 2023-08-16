@@ -183,7 +183,7 @@ public:
 	int GetAirTilesAbove(const CTileRoundedPosition &TilePosition, int MaxTiles) const;
 	float GetSolidBelow(const vec2 &Position, int MaxTiles = 16) const;
 	int GetSolidBelow(const CTileRoundedPosition &TilePosition, int MaxTiles = 16) const;
-	bool IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJumps) const;
+	bool IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps = 1000) const;
 
 protected:
 	ICollision *m_pCollision = nullptr;

@@ -415,7 +415,7 @@ int CBotUtils::GetSolidBelow(const CTileRoundedPosition &TilePosition, int MaxTi
 	return TilePosition.Y + MaxTiles;
 }
 
-bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJumps) const
+bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps) const
 {
 	CTileRoundedPosition FromTile(From);
 	CTileRoundedPosition ToTile(To);
@@ -429,7 +429,7 @@ bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJum
 	//	int TileY = TileFrom.Y;
 	int MaxTiles = GetMaxTilesForJumps(MaxJumps, true);
 
-	int SanityCheckSteps = 0;
+	int Steps = 0;
 
 	CTileRoundedPosition CurrentTile = FromTile;
 
@@ -465,11 +465,10 @@ bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJum
 			CurrentTile.Y = FirstAirAbove.value();
 		}
 
-		SanityCheckSteps++;
+		Steps++;
 
-		if(SanityCheckSteps > 1000)
+		if(Steps > MaxSteps)
 		{
-			dbg_msg("BotUtils", "IsReachableByGround: Seems to stuck");
 			return false;
 		}
 	}
