@@ -1515,13 +1515,16 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		pInput->m_Hook = 1;
 	}
 
-	if(pInput->m_Fire)
+	if(!IsHuman())
 	{
-		pInput->m_Fire = s_HiveMind.TryAttack(m_LastTarget);
-	}
-	if(pInput->m_Hook)
-	{
-		pInput->m_Hook = s_HiveMind.TryHook(m_LastTarget);
+		if(pInput->m_Fire)
+		{
+			pInput->m_Fire = s_HiveMind.TryAttack(m_LastTarget);
+		}
+		if(pInput->m_Hook)
+		{
+			pInput->m_Hook = s_HiveMind.TryHook(m_LastTarget);
+		}
 	}
 
 	if(m_NextRandomFireTick && Tick > m_NextRandomFireTick)
@@ -2575,6 +2578,7 @@ bool CBotPlayer::MaybeFallDown() const
 		return m_CachedPOIReachableByGround;
 	}
 
+	if(!IsHuman())
 	{
 		EDecision GoodDecision = GetGoodDecision();
 		// Good decision:
@@ -2654,7 +2658,7 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition)
 		}
 	}
 
-	const bool Checked = HasPosition || sa_CheckedPos.Contains(ShortPos);
+	const bool Checked = HasPosition || (!IsHuman() && sa_CheckedPos.Contains(ShortPos));
 	constexpr float ChanceToIgnoreAlreadyCheckedPosition = 0.75f;
 	constexpr float ChanceToCheckUncheckedPosition = 0.15f;
 
@@ -2666,6 +2670,7 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition)
 		}
 	}
 
+	if(!IsHuman())
 	{
 		EDecision GoodDecision = GetGoodDecision();
 		if(GoodDecision != EDecision::Invalid)
@@ -2924,7 +2929,10 @@ void CBotPlayer::PushCheckedPosition(const vec2 &Pos)
 {
 	STilePosition ShortPos = STilePosition::fromPos(Pos);
 	ma_CheckPoints.Add({ShortPos, Server()->Tick()});
-	sa_CheckedPos.Add(ShortPos);
+	if(!IsHuman())
+	{
+		sa_CheckedPos.Add(ShortPos);
+	}
 }
 
 void CBotPlayer::PushIgnoredPosition(const vec2 &Pos)
