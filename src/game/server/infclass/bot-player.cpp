@@ -2242,6 +2242,7 @@ void CBotPlayer::MaybeChangeRoamingBehavior()
 
 void CBotPlayer::ChangeRoamingBehavior()
 {
+	BotDebugMessage(VERBOSE_MAIN, "Changing roaming behavior");
 	SetRoamingDirection(OppositeDirection(m_RoamingDirection));
 
 	m_DecisionTileX = -1;
