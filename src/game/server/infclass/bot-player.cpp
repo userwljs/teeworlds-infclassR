@@ -2215,7 +2215,7 @@ void CBotPlayer::SetObjection(EObjection Objection)
 
 void CBotPlayer::MaybeChangeRoamingBehavior()
 {
-	const float BehaviorChangeInterval = 30.0;
+	const float BehaviorChangeInterval = 45.0;
 	const float LastSeenTrackingDuration = 5.0;
 	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
 	{
