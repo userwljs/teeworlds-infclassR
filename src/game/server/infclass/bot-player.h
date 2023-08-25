@@ -4,6 +4,7 @@
 #include "ic_player.h"
 
 #include <base/tl/ic_array.h>
+#include <base/tl/ic_fifo.h>
 
 #include <cstdint>
 #include <optional>
@@ -292,7 +293,7 @@ protected:
 	int m_RoamingBehaviorTick = 0;
 	icArray<EObjection, 5> m_RecentObjections;
 	icArray<SBotDecision, 64> m_RecentDecisions;
-	icArray<SCheckPoint, 12> ma_CheckPoints;
+	icFifoArray<SCheckPoint, 12> ma_CheckPoints;
 	icArray<SCheckPoint, 4> ma_IgnorePoints;
 	int m_AirJumps = 0;
 

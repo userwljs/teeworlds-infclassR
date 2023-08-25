@@ -1,7 +1,6 @@
 #include "bot-player.h"
 
 #include <base/tl/ic_enum.h>
-#include <base/tl/ic_fifo.h>
 #include <engine/shared/config.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/bot_utils.h>
@@ -2630,8 +2629,9 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition)
 	}
 
 	bool HasPosition = false;
-	for(const auto &CheckPoint : ma_CheckPoints)
+	for(int i = 0; i < ma_CheckPoints.Size(); ++i)
 	{
+		const auto &CheckPoint = ma_CheckPoints.At(i);
 		if(CheckPoint.TilePos == ShortPos)
 		{
 			HasPosition = true;
@@ -2906,9 +2906,6 @@ EDecision CBotPlayer::GetGoodDecision() const
 
 void CBotPlayer::PushCheckedPosition(const vec2 &Pos)
 {
-	if(ma_CheckPoints.Size() == ma_CheckPoints.Capacity())
-		ma_CheckPoints.RemoveAt(0);
-
 	STilePosition ShortPos = STilePosition::fromPos(Pos);
 	ma_CheckPoints.Add({ShortPos, Server()->Tick()});
 	sa_CheckedPos.Add(ShortPos);
