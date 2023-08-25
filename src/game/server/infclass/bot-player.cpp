@@ -913,8 +913,37 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			if(m_DecisionTileX != TileX)
 			{
 				vec2 JumpTarget;
+				if(!NoWantedJump && g_Config.m_InfBotBackjump)
+				{
+					constexpr float MaxBackjumpXDistance = TileSizeF * 5;
+					DIRECTION BackwardDirection = OppositeDirection(m_RoamingDirection);
+					const int WantBackJumps = GetJumpsNeededToJumpOnPlatform(BackwardDirection, MaxJumps, &JumpTarget, MaxBackjumpXDistance);
+
+					if(WantBackJumps && !m_pUtils->IsReachableByGround(Pos, JumpTarget, MaxJumps))
+					{
+						STilePosition DecisionPos = JumpPosToShortPos(JumpTarget, Pos);
+						constexpr bool IgnoreIfChecked = true;
+						if(MaybeJumpOn(JumpTarget, IgnoreIfChecked))
+						{
+							SetJumpTargetPosition(JumpTarget, Pos);
+							PushCheckedPosition(DecisionPos);
+							BotDebugMessage(VERBOSE_STEPS, "Decided to 'back jump on' to %.2fx%.2f", JumpTarget.x / TileSizeF, JumpTarget.y / TileSizeF);
+							WantToJump = true;
+							m_WantedJumps = WantBackJumps;
+							SetRoamingDirection(BackwardDirection);
+						}
+						else
+						{
+							PushIgnoredPosition(DecisionPos);
+							BotDebugMessage(VERBOSE_STEPS, "Ignore 'back jump on' to %.2fx%.2f", JumpTarget.x / TileSizeF, JumpTarget.y / TileSizeF);
+						}
+
+						PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump, BackwardDirection);
+					}
+				}
+
 				const int WantJumps = NoWantedJump ? 0 : GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget);
-				if(WantJumps)
+				if(!WantToJump && WantJumps)
 				{
 					STilePosition DecisionPos = JumpPosToShortPos(JumpTarget, Pos);
 					if(MaybeJumpOn(JumpTarget))
@@ -934,7 +963,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump);
 				}
 
-				if(!WantJumps && IsSolidTile(Pos.x, Pos.y + Radius + 5))
+				if(!WantToJump && IsSolidTile(Pos.x, Pos.y + Radius + 5))
 				{
 					CTileRoundedPosition CheckTile = Pos;
 					CheckTile.X += 1 * m_RoamingDirection;

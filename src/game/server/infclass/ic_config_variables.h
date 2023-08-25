@@ -199,6 +199,7 @@ MACRO_CONFIG_INT(InfBotLives, inf_bot_lives, 0, 0, 30, CFGFLAG_SERVER, "The numb
 MACRO_CONFIG_INT(InfDebugBot, inf_debug_bot, -1, -1, MAX_CLIENTS, CFGFLAG_SERVER, "Filter the bot debug by one bot Id (-1 to unset)")
 MACRO_CONFIG_INT(InfBotDebugLevel, inf_bot_debug_level, 0, 0, 4, CFGFLAG_SERVER, "Set the bots debug level (0 = off, 4 = max)")
 MACRO_CONFIG_INT(InfBotRemoveDelay, inf_bot_remove_delay, 7, 0, 30, CFGFLAG_SERVER, "Delay the bots removal (on lives==0) for X seconds")
+MACRO_CONFIG_INT(InfBotBackjump, inf_bot_backjump, 0, 1, 1, CFGFLAG_SERVER, "Enable backjumps")
 MACRO_CONFIG_INT(InfSurvivalInfectedSpawningDelay, inf_survival_infected_spawning_delay, 7, 0, 30, CFGFLAG_SERVER, "The number of seconds for humans to pull themselves together")
 
 MACRO_CONFIG_INT(InfMaxHiveHooks, inf_hive_hooks, 3, 0, 64, CFGFLAG_SERVER, "Max concurrent hooks per player for Survival rounds")
