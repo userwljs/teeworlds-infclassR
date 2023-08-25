@@ -265,9 +265,9 @@ public:
 	bool MaybeRandomJumpUp() const;
 	int GetJumpsToAvoidDanger(vec2 *pTargetPosition = nullptr) const;
 
-	void PushDecision(EDecision Decision);
+	void PushDecision(EDecision Decision, std::optional<DIRECTION> OptDirection = std::nullopt);
 	EDecision GetPreviousDecision() const;
-	EDecision GetGoodDecision() const;
+	EDecision GetGoodDecision(std::optional<DIRECTION> OptDirection = std::nullopt) const;
 
 	void PushCheckedPosition(const vec2 &Pos);
 	void PushIgnoredPosition(const vec2 &Pos);

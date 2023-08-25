@@ -2837,11 +2837,11 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 	return MaxJumps;
 }
 
-void CBotPlayer::PushDecision(EDecision Decision)
+void CBotPlayer::PushDecision(EDecision Decision, std::optional<DIRECTION> OptDirection)
 {
+	DIRECTION Direction = OptDirection.has_value() ? OptDirection.value() : m_RoamingDirection;
 	const vec2 &Pos = GetCharacter()->GetPos();
 	const STilePosition Position = STilePosition::fromPosXY(Pos.x, Pos.y);
-	int Direction = m_RoamingDirection;
 
 	const auto SameContextLambda = [Position, Direction](const SBotDecision &BotDecision) -> bool {
 		if(BotDecision.Position != Position)
@@ -2899,8 +2899,9 @@ EDecision CBotPlayer::GetPreviousDecision() const
 	return EDecision::Invalid;
 }
 
-EDecision CBotPlayer::GetGoodDecision() const
+EDecision CBotPlayer::GetGoodDecision(std::optional<DIRECTION> OptDirection) const
 {
+	DIRECTION Direction = OptDirection.has_value() ? OptDirection.value() : m_RoamingDirection;
 	const vec2 &Pos = GetCharacter()->GetPos();
 	const STilePosition Position = STilePosition::fromPos(Pos);
 	for(int i = 0; i < sa_GoodDecisions.Size(); ++i)
@@ -2910,7 +2911,7 @@ EDecision CBotPlayer::GetGoodDecision() const
 		if(BotDecision.Position != Position)
 			continue;
 
-		if(BotDecision.Direction != m_RoamingDirection)
+		if(BotDecision.Direction != Direction)
 			continue;
 
 		return BotDecision.Decision;
