@@ -487,8 +487,8 @@ void CBotPlayer::UpdateTarget()
 			const CIcCharacter *pExTarget = GameController()->GetCharacter(m_LastTarget);
 			EObjection SameDirObjection = EObjection::Invalid;
 			{
-				int SolidBelowTheTarget = m_pUtils->GetSolidBelow(m_LastTargetSeenAtPos);
-				int SolidBelowTheBot = m_pUtils->GetSolidBelow(Pos);
+				std::optional<int> SolidBelowTheTarget = m_pUtils->GetSolidTileBelow(m_LastTargetSeenAtPos);
+				std::optional<int> SolidBelowTheBot = m_pUtils->GetSolidTileBelow(Pos);
 
 				if(SolidBelowTheTarget == SolidBelowTheBot)
 				{
@@ -1054,26 +1054,23 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 					vec2 NextTile(TryX, Pos.y);
 					constexpr int MaxFault = 5;
-					float Gnd = m_pUtils->GetSolidBelow(NextTile, MaxFault);
-					if(Gnd >= Pos.y + TileSize * MaxFault)
+					std::optional<float> Gnd = m_pUtils->GetSolidBelow(NextTile, MaxFault);
+					if(!Gnd.has_value())
 					{
 						break;
 					}
+
+					float GroundValue = Gnd.value() - ProximityRadius / 2;
+
+					if(m_pUtils->IsReachableByGround(CurrentTargetTile, vec2(NextTile.x, GroundValue), 1))
+					{
+						CurrentTargetTile = vec2(NextTile.x, GroundValue);
+						m_pUtils->GetDebugSink()->HighlightLineSegment(Pos, CurrentTargetTile);
+						SecondWantedXPos = NextTile.x;
+					}
 					else
 					{
-						Gnd -= ProximityRadius / 2;
-
-						if(m_pUtils->IsReachableByGround(CurrentTargetTile, vec2(NextTile.x, Gnd), 1))
-						{
-							CurrentTargetTile = vec2(NextTile.x, Gnd);
-							m_pUtils->GetDebugSink()->HighlightLineSegment(Pos, CurrentTargetTile);
-							SecondWantedXPos = NextTile.x;
-						}
-						else
-						{
-							// GameController()->GameServer()->CreateLoveEvent(vec2(NextTile.x, Gnd));
-							break;
-						}
+						break;
 					}
 				}
 			}
