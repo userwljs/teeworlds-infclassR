@@ -37,6 +37,11 @@ public:
 	void PushCheckedPosition(STilePosition ShortPos);
 	bool IsPositionChecked(STilePosition ShortPos) const;
 
+	const icArray<vec2, MAX_CLIENTS> &GetHumanPositions()
+	{
+		return m_aHumanPositions;
+	}
+
 protected:
 	static constexpr int MaxAttacksInTimespan = 2;
 	static constexpr float Timespan = 0.75f; // in seconds
@@ -55,6 +60,8 @@ protected:
 	int m_Tick = 0;
 	icArray<HiveVictim, MAX_CLIENTS> m_aVictims;
 	icArray<vec2, 10> m_aPOIs;
+	int m_HumansTick = 0;
+	icArray<vec2, MAX_CLIENTS> m_aHumanPositions;
 	icFifoArray<STilePosition, 320> m_aCheckedPos;
 	icFifoArray<STilePosition, 32> m_aUncheckedPos;
 	icFifoArray<SBotDecision, 8> m_aGoodDecisions;
@@ -63,6 +70,7 @@ protected:
 void CHiveMind::Reset()
 {
 	m_Tick = -1;
+	m_HumansTick = -1;
 	m_aVictims.Clear();
 	m_aPOIs.Clear();
 	m_aCheckedPos.Clear();
@@ -121,6 +129,20 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 		{
 			m_aGoodDecisions.RemoveAt(i);
 		}
+	}
+
+	m_aHumanPositions.Clear();
+	for(int i = 0; i < MAX_CLIENTS; ++i)
+	{
+		const CInfClassPlayer *pPlayer = pGameController->GetPlayer(i);
+		if(!pPlayer || !pPlayer->GetCharacter() || !pPlayer->GetCharacter()->IsAlive())
+			continue;
+
+		// Different team?
+		if(!pPlayer->IsHuman())
+			continue;
+
+		m_aHumanPositions.Add(pPlayer->GetCharacter()->GetPos());
 	}
 }
 
@@ -2553,32 +2575,23 @@ void CBotPlayer::GetNewObjection()
 
 		const vec2 &OwnPos = GetCharacter()->GetPos();
 
-		for(int i = 0; i < MAX_CLIENTS; ++i)
+		for(const vec2 &HumanPos : s_HiveMind.GetHumanPositions())
 		{
-			const CIcPlayer *pPlayer = GameController()->GetPlayer(i);
-			if(!pPlayer || !pPlayer->GetCharacter() || !pPlayer->GetCharacter()->IsAlive())
-				continue;
-
-			// Different team?
-			if(pPlayer->IsHuman() != IsHuman())
+			if(HumanPos.y > OwnPos.y)
 			{
-				vec2 TargetPos = pPlayer->GetCharacter()->GetPos();
-				if(TargetPos.y > OwnPos.y)
+				PlayersBelow++;
+			}
+			else
+			{
+				bool Reachable = m_pUtils->IsReachableByGround(OwnPos, HumanPos, GetMaxJumps());
+
+				if(Reachable)
 				{
-					PlayersBelow++;
+					PlayersMid++;
 				}
 				else
 				{
-					bool Reachable = m_pUtils->IsReachableByGround(OwnPos, TargetPos, GetMaxJumps());
-
-					if(Reachable)
-					{
-						PlayersMid++;
-					}
-					else
-					{
-						PlayersAbove++;
-					}
+					PlayersAbove++;
 				}
 			}
 		}
