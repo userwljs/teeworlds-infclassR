@@ -261,7 +261,7 @@ public:
 
 	bool MaybeFallDown() const;
 	bool MaybeJumpOverWall(const vec2 &JumpTargetPosition) const;
-	bool MaybeJumpOn(const vec2 &JumpTargetPosition);
+	bool MaybeJumpOn(const vec2 &JumpTargetPosition, bool ForceIgnoreIfChecked = false);
 	bool MaybeRandomJumpUp() const;
 	int GetJumpsToAvoidDanger(vec2 *pTargetPosition = nullptr) const;
 

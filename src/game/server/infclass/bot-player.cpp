@@ -2631,7 +2631,7 @@ bool CBotPlayer::MaybeJumpOverWall(const vec2 &JumpTargetPosition) const
 	return true;
 }
 
-bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition)
+bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition, bool ForceIgnoreIfChecked)
 {
 	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
 	{
@@ -2659,6 +2659,9 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition)
 	}
 
 	const bool Checked = HasPosition || (!IsHuman() && sa_CheckedPos.Contains(ShortPos));
+	if(Checked && ForceIgnoreIfChecked)
+		return false;
+
 	constexpr float ChanceToIgnoreAlreadyCheckedPosition = 0.75f;
 	constexpr float ChanceToCheckUncheckedPosition = 0.15f;
 
