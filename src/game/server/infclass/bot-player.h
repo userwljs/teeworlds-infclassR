@@ -193,6 +193,7 @@ public:
 	int UpdateInfectedTarget(const ClientsArray &Targets);
 	std::optional<vec2> GetNewPOI() const;
 	void UpdatePOITarget();
+	void OnTargetLost();
 	void UpdateControls() override;
 	void OnKilled() override;
 	void UpdateControlsRoaming(CNetObj_PlayerInput *pInput);

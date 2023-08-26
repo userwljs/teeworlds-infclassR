@@ -481,38 +481,9 @@ void CBotPlayer::UpdateTarget()
 		{
 			UpdatePOITarget();
 		}
-		else
+		else if (m_BotState == EBotState::Hunting)
 		{
-			SetState(EBotState::Roaming);
-			const CIcCharacter *pExTarget = GameController()->GetCharacter(m_LastTarget);
-			EObjection SameDirObjection = EObjection::Invalid;
-			{
-				std::optional<int> SolidBelowTheTarget = m_pUtils->GetSolidTileBelow(m_LastTargetSeenAtPos);
-				std::optional<int> SolidBelowTheBot = m_pUtils->GetSolidTileBelow(Pos);
-
-				if(SolidBelowTheTarget == SolidBelowTheBot)
-				{
-					SameDirObjection = EObjection::CheckTheMid;
-				}
-				else if(m_LastTargetSeenAtPos.y > Pos.y)
-				{
-					SameDirObjection = EObjection::CheckTheBottom;
-				}
-				else
-				{
-					SameDirObjection = EObjection::CheckTheTop;
-				}
-			}
-
-			if(pExTarget && pExTarget->IsAlive())
-			{
-				SetObjection(EObjection::CheckTheLastSeen);
-				m_TargetLastSeenDirObjection = SameDirObjection;
-			}
-			else
-			{
-				SetObjection(SameDirObjection);
-			}
+			OnTargetLost();
 		}
 		return;
 	}
@@ -673,6 +644,43 @@ void CBotPlayer::UpdatePOITarget()
 	}
 
 	SetPOI(newPOI);
+}
+
+void CBotPlayer::OnTargetLost()
+{
+	BotDebugMessage(VERBOSE_MAIN, "Target lost");
+	const vec2 &Pos = m_pCharacter->GetPos();
+
+	SetState(EBotState::Roaming);
+	const CIcCharacter *pExTarget = GameController()->GetCharacter(m_LastTarget);
+	EObjection SameDirObjection = EObjection::Invalid;
+	{
+		std::optional<int> SolidBelowTheTarget = m_pUtils->GetSolidTileBelow(m_LastTargetSeenAtPos);
+		std::optional<int> SolidBelowTheBot = m_pUtils->GetSolidTileBelow(Pos);
+
+		if(SolidBelowTheTarget == SolidBelowTheBot)
+		{
+			SameDirObjection = EObjection::CheckTheMid;
+		}
+		else if(m_LastTargetSeenAtPos.y > Pos.y)
+		{
+			SameDirObjection = EObjection::CheckTheBottom;
+		}
+		else
+		{
+			SameDirObjection = EObjection::CheckTheTop;
+		}
+	}
+
+	if(pExTarget && pExTarget->IsAlive())
+	{
+		SetObjection(EObjection::CheckTheLastSeen);
+		m_TargetLastSeenDirObjection = SameDirObjection;
+	}
+	else
+	{
+		SetObjection(SameDirObjection);
+	}
 }
 
 void CBotPlayer::UpdateControls()
