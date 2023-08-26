@@ -16,6 +16,8 @@ class CGameWorld;
 class CIcEntity;
 class CBotUtils;
 
+using ClientsArray = icArray<int, MAX_CLIENTS>;
+
 enum Verbosity
 {
 	VERBOSE_MAIN,
@@ -187,6 +189,8 @@ public:
 	void OnCharacterSpawned(const SpawnContext &Context) override;
 
 	void UpdateTarget();
+	int UpdateHumanTarget(const ClientsArray &Targets);
+	int UpdateInfectedTarget(const ClientsArray &Targets);
 	std::optional<vec2> GetNewPOI() const;
 	void UpdatePOITarget();
 	void UpdateControls() override;
