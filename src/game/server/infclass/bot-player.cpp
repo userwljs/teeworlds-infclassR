@@ -676,6 +676,7 @@ void CBotPlayer::OnTargetLost()
 	{
 		SetObjection(EObjection::CheckTheLastSeen);
 		m_TargetLastSeenDirObjection = SameDirObjection;
+		SetRoamingDirection(m_LastTargetSeenAtPos.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
 	}
 	else
 	{
