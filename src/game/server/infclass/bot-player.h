@@ -234,6 +234,7 @@ public:
 	EThreatLevel GetDangerLevelOnLine(const vec2 &From, vec2 To, vec2 *pThreatPosition = nullptr, CIcEntity **ppThreatEntity = nullptr) const;
 	int GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps = -1, vec2 *pTargetPosition = nullptr) const;
 	int GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition = nullptr) const;
+	int GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition, float MaxHDistance) const;
 	int GetAirTilesAbove(DIRECTION Direction, int MaxJumpsMaxJumps) const;
 	float GetAirTilesAboveAtX(int MaxTiles, float CheckPosX) const;
 

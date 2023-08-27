@@ -1996,15 +1996,9 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 		MaxJumps = GetAvailableJumps();
 	}
 
-	const vec2 &Pos = m_pCharacter->GetPos();
-	static const float HalfProximityRadius = m_pCharacter->GetProximityRadius() / 2;
-	const int DirectionSign = Direction;
-
-	// float HVelocity = absolute(m_pCharacter->Core()->m_Vel.x);
-	int MinHTile = 0; // Dep on velocity
-
 	// const float MaxControlSpeed = IsGrounded() ? c_GroundControlSpeed : c_AirControlSpeed;
 	// float MaxHSpeed = std::max<float>(MaxControlSpeed, fabs(m_pCharacter->Core()->m_Vel.x));
+	const int DirectionSign = Direction;
 	const float AirControlAccel = m_NextTuningParams.m_AirControlAccel;
 	const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
 	const float Acceleration = AirControlAccel * DirectionSign;
@@ -2013,8 +2007,21 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 	if(Ticks > MaxTicks)
 		Ticks = MaxTicks;
 	const float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(m_pCharacter->Core()->m_Vel.x, Acceleration, Ticks, AirControlSpeed);
+
+	return GetJumpsNeededToJumpOnPlatform(Direction, MaxJumps, pTargetPosition, MaxHDistance);
+}
+
+int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition, float MaxHDistance) const
+{
+	static const float HalfProximityRadius = m_pCharacter->GetProximityRadius() / 2;
+	const int DirectionSign = Direction;
+
+	const vec2 &Pos = m_pCharacter->GetPos();
 	int MaxHTiles = fabs(MaxHDistance / TileSize);
 	int MaxTiles = GetMaxTilesForJumps(MaxJumps);
+
+	// float HVelocity = absolute(m_pCharacter->Core()->m_Vel.x);
+	int MinHTile = 0; // Dep on velocity
 
 	const float CharHorOffset = DirectionSign * HalfProximityRadius;
 	const float CharPosX = Pos.x + CharHorOffset;
