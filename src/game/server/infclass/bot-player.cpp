@@ -897,6 +897,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 					m_WantedJumps = JumpsToAvoidDanger;
 					SetJumpTargetPosition(JumpTarget, Pos);
+					DIRECTION NewDirection = JumpTarget.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
+					m_RoamingDirection = NewDirection;
 				}
 			}
 		}
@@ -1008,6 +1010,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 						m_WantedJumps = JumpsToAvoidDanger;
 						SetJumpTargetPosition(JumpTarget, Pos);
+						DIRECTION NewDirection = JumpTarget.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
+						m_RoamingDirection = NewDirection;
 					}
 				}
 			}
@@ -1354,6 +1358,8 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 				m_WantedJumps = JumpsToAvoidDanger;
 				SetJumpTargetPosition(JumpTarget, Pos);
+				DIRECTION NewDirection = JumpTarget.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
+				m_RoamingDirection = NewDirection;
 			}
 		}
 	}
@@ -1789,9 +1795,6 @@ bool CBotPlayer::HasDangerBelow() const
 	const vec2 &Pos = m_pCharacter->GetPos();
 	static const float ProximityRadius = m_pCharacter->GetProximityRadius();
 
-	int DamageIndex1 = GameController()->GetDamageZoneValueAt(Pos + vec2(TileSize / 2, +ProximityRadius / 2 + TileSize * 0.9f));
-	int DamageIndex2 = GameController()->GetDamageZoneValueAt(Pos + vec2(-TileSize / 2, +ProximityRadius / 2 + TileSize * 0.9f));
-
 	icArray<int, 5> BadIndices = {
 		ZONE_DAMAGE_DEATH,
 	};
@@ -1801,8 +1804,19 @@ bool CBotPlayer::HasDangerBelow() const
 		BadIndices.Add(ZONE_DAMAGE_INFECTION);
 	}
 
-	if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2))
-		return true;
+	const float X1 = Pos.x + TileSize / 2;
+	const float X2 = Pos.x - TileSize / 2;
+	const float Y1 = Pos.y + ProximityRadius / 2 + TileSize * 0.9f;
+	for (int i = 0 ; i < 3; ++i)
+	{
+		int DamageIndex1 = GameController()->GetDamageZoneValueAt(vec2(X1, Y1 + i * TileSize));
+		int DamageIndex2 = GameController()->GetDamageZoneValueAt(vec2(X2, Y1 + i * TileSize));
+
+		if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2))
+		{
+			return true;
+		}
+	}
 
 	return false;
 }
@@ -2773,17 +2787,20 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 	int MaxJumps = GetAvailableJumps();
 	if(HasDangerBelow())
 	{
-		if(HasWallInTheDirection(m_RoamingDirection))
+		int NeedJumps = 0;
+		bool CheckAnotherDir = true;
+		float MaxHDistance = TileSizeF * 3;
+		NeedJumps = GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, pTargetPosition, MaxHDistance);
+		if(NeedJumps == 0 || NeedJumps > MaxJumps)
 		{
-			return GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, pTargetPosition);
+			DIRECTION OppositeDir = OppositeDirection(m_RoamingDirection);
+			NeedJumps = GetJumpsNeededToJumpOnPlatform(OppositeDir, MaxJumps, pTargetPosition, MaxHDistance);
 		}
 
-		if(pTargetPosition)
-		{
-			pTargetPosition->x = std::numeric_limits<float>::quiet_NaN();
-		}
+		bool Doable = NeedJumps > 0 && NeedJumps <= MaxJumps;
+		BotDebugMessage(VERBOSE_STEPS, "Has danger tiles below, %s avoid", Doable ? "can" : "can't");
 
-		return 1;
+		return NeedJumps;
 	}
 
 	if(!IsThreatAware())
