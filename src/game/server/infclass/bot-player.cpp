@@ -18,6 +18,8 @@
 
 static constexpr int InfinityLives = -1;
 
+#define THROTTLE_BOTS
+
 class CHiveMind
 {
 public:
@@ -29,6 +31,7 @@ public:
 
 	bool TryAttack(int ClientID);
 	bool TryHook(int ClientID);
+	bool TryToComputeDecision(CBotPlayer *pPlayer);
 	std::optional<vec2> PickPOI(const vec2 &FromPos) const;
 	bool HasPOI() const;
 
@@ -64,6 +67,8 @@ protected:
 	icArray<vec2, 10> m_aPOIs;
 	int m_HumansTick = 0;
 	icArray<vec2, MAX_CLIENTS> m_aHumanPositions;
+	icArray<int, MAX_CLIENTS> m_aInfectedBots;
+	icArray<int, MAX_CLIENTS> m_aBotsProcessingQueue;
 	icFifoArray<STilePosition, 320> m_aCheckedPos;
 	icFifoArray<STilePosition, 32> m_aUncheckedPos;
 	icFifoArray<SBotDecision, 8> m_aGoodDecisions;
@@ -134,17 +139,21 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 	}
 
 	m_aHumanPositions.Clear();
+	m_aInfectedBots.Clear();
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
 		const CInfClassPlayer *pPlayer = pGameController->GetPlayer(i);
 		if(!pPlayer || !pPlayer->GetCharacter() || !pPlayer->GetCharacter()->IsAlive())
 			continue;
 
-		// Different team?
-		if(!pPlayer->IsHuman())
-			continue;
-
-		m_aHumanPositions.Add(pPlayer->GetCharacter()->GetPos());
+		if (pPlayer->IsHuman())
+		{
+			m_aHumanPositions.Add(pPlayer->GetCharacter()->GetPos());
+		}
+		else if (pPlayer->IsBot())
+		{
+			m_aInfectedBots.Add(i);
+		}
 	}
 }
 
@@ -218,6 +227,28 @@ bool CHiveMind::TryHook(int ClientID)
 	return true;
 }
 
+bool CHiveMind::TryToComputeDecision(CBotPlayer *pPlayer)
+{
+#ifdef THROTTLE_BOTS
+	if((m_Tick % 3) == 0)
+		return false;
+#endif
+
+	if(pPlayer->IsHuman())
+		return true;
+
+	const STilePosition Pos = STilePosition::fromPos(pPlayer->GetCharacter()->GetPos());
+	if(pPlayer->m_DecisionPos == Pos)
+		return false;
+
+	// m_aBotsProcessingQueue.Add(pPlayer->GetCID());
+	// m_aInfectedBots?
+
+	pPlayer->m_DecisionPos = Pos;
+
+	return true;
+}
+
 std::optional<vec2> CHiveMind::PickPOI(const vec2 &FromPos) const
 {
 	float BestDistance2 = 800 * 800;
@@ -274,6 +305,11 @@ bool CHiveMind::IsPositionChecked(STilePosition ShortPos) const
 
 void CHiveMind::ValidateDirection(CBotPlayer *pPlayer)
 {
+#ifdef THROTTLE_BOTS
+	if(m_Tick % 3)
+		return;
+#endif
+
 	if(m_aHumanPositions.IsEmpty() && m_aPOIs.IsEmpty())
 		return;
 
@@ -991,8 +1027,6 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	int MaxJumps = GetAvailableJumps();
 
 	bool WantToJump = false;
-	int TileX = Pos.x / TileSize;
-	int TileY = Pos.y / TileSize;
 
 	const bool HasWallInRoamingDirection = HasWallInTheDirection(m_RoamingDirection);
 	bool HasDangerInRoamingHorizontalDirection = false;
@@ -1042,10 +1076,10 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		else
 		{
 			BotDebugMessage(VERBOSE_TRACE1, "No wall");
-			if(m_DecisionTileX != TileX)
+			if(s_HiveMind.TryToComputeDecision(this))
 			{
 				vec2 JumpTarget;
-				if(!NoWantedJump && g_Config.m_InfBotBackjump)
+				if(!NoWantedJump && g_Config.m_InfBotBackjump && !IsHuman())
 				{
 					constexpr float MaxBackjumpXDistance = TileSizeF * 5;
 					DIRECTION BackwardDirection = OppositeDirection(m_RoamingDirection);
@@ -1136,8 +1170,6 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 						}
 					}
 				}
-
-				m_DecisionTileX = TileX;
 			}
 		}
 
@@ -1181,7 +1213,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		if(CanJump)
 		{
 			vec2 JumpTarget;
-			if((m_WantedJumps <= 0) && (m_DecisionTileX != TileX) && (m_pCharacter->Core()->m_Vel.y > -3))
+			if((m_WantedJumps <= 0) && (m_pCharacter->Core()->m_Vel.y > -3) && s_HiveMind.TryToComputeDecision(this))
 			{
 				BotDebugMessage(VERBOSE_TRACE1, "Considering jump from the air");
 				int MaybeWantJumps = 0;
@@ -1245,8 +1277,6 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				{
 					PushDecision(m_WantedJumps > 0 ? EDecision::Jump : EDecision::NoJump);
 				}
-
-				m_DecisionTileX = TileX;
 			}
 
 			if(m_WantedJumps > 0)
@@ -2584,8 +2614,7 @@ void CBotPlayer::ChangeRoamingBehavior()
 	BotDebugMessage(VERBOSE_MAIN, "Changing roaming behavior");
 	SetRoamingDirection(OppositeDirection(m_RoamingDirection));
 
-	m_DecisionTileX = -1;
-	m_DecisionTileY = -1;
+	m_DecisionPos = {};
 
 	switch(m_RoamingObjection)
 	{

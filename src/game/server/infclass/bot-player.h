@@ -286,6 +286,7 @@ public:
 	void PushIgnoredPosition(const vec2 &Pos);
 	void PushIgnoredPosition(const STilePosition &ShortPos);
 
+	STilePosition m_DecisionPos{};
 protected:
 	CGameWorld *GameWorld() const;
 	void UpdateCharacterState();
@@ -330,8 +331,6 @@ protected:
 	int m_HookUntilTick = -1;
 	int m_DelayHookUntilTick = -1;
 
-	int m_DecisionTileX = -1;
-	int m_DecisionTileY = -1;
 	bool m_FallingDown = false;
 	int m_WantedJumps = 0;
 	int m_LastJumpTick = 0;
