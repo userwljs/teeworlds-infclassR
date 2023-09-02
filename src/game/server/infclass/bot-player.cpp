@@ -2125,6 +2125,9 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 
 int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition, float MaxHDistance) const
 {
+	if(!Direction)
+		return 0;
+
 	static const float HalfProximityRadius = m_pCharacter->GetProximityRadius() / 2;
 	const int DirectionSign = Direction;
 
@@ -2144,6 +2147,18 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 		BotDebugMessage(VERBOSE_TRACE2, "jump max H tiles: %.2f", MaxHDistance);
 	}
 
+	const CCollision *pCollision = GameServer()->Collision();
+	const int MapWidth = pCollision->GetWidth();
+	const int MapHeight = pCollision->GetHeight();
+	const int BottomRowIndex = MapWidth * (MapHeight - 1);
+
+	const auto GetMapIndexBelow = [MapWidth, BottomRowIndex](int ReferenceIndex) {
+		if (ReferenceIndex > BottomRowIndex)
+			return ReferenceIndex;
+
+		return ReferenceIndex + MapWidth;
+	};
+
 	int MaxReachableTilesAbove = MaxTiles;
 	for(int horTile = MinHTile; horTile < MaxHTiles; horTile++)
 	{
@@ -2159,12 +2174,26 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 		if(AirTilesAbove < MaxReachableTilesAbove)
 			MaxReachableTilesAbove = AirTilesAbove;
 
+		int PrevRefMapIndex = -1;
 		// horTile + 1 because we're looking for the next tile after current air
 		const float WallPosX = CharPosX + (horTile + 1) * TileSize * DirectionSign;
 		for(int i = MaxReachableTilesAbove; i > 0; --i)
 		{
 			float CheckPosY = Pos.y - i * TileSize;
-			bool HasAirThere = !IsSolidTile(WallPosX, CheckPosY);
+			int ReferenceMapIndex;
+			if(PrevRefMapIndex < 0)
+			{
+				ReferenceMapIndex = pCollision->GetPureMapIndex(WallPosX, CheckPosY);
+			}
+			else
+			{
+				ReferenceMapIndex = PrevRefMapIndex;
+				ReferenceMapIndex = CheckPosY < TileSize ? ReferenceMapIndex : GetMapIndexBelow(ReferenceMapIndex);
+			}
+
+			PrevRefMapIndex = ReferenceMapIndex;
+			int TileIndex = pCollision->GetTileIndex(ReferenceMapIndex);
+			bool HasAirThere = !(TileIndex == TILE_SOLID || TileIndex == TILE_NOHOOK);
 
 			if(IsDebugEnabled(VERBOSE_TRACE2))
 			{
@@ -2173,7 +2202,9 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 
 			if(HasAirThere)
 			{
-				bool HasSolidBelow = IsSolidTile(WallPosX, CheckPosY + TileSize);
+				int MapIndexBelow = CheckPosY < TileSize ? ReferenceMapIndex : GetMapIndexBelow(ReferenceMapIndex);
+				const int TileIndexBelow = pCollision->GetTileIndex(MapIndexBelow);
+				const bool HasSolidBelow = TileIndexBelow == TILE_SOLID || TileIndexBelow == TILE_NOHOOK;
 
 				if(HasSolidBelow)
 				{
