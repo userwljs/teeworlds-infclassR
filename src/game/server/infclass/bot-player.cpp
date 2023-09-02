@@ -17,9 +17,6 @@
 #include <game/server/infclass/ic_gamecontroller.h>
 
 static constexpr int InfinityLives = -1;
-static icFifoArray<STilePosition, 320> sa_CheckedPos;
-
-static icFifoArray<SBotDecision, 8> sa_GoodDecisions;
 
 class CHiveMind
 {
@@ -27,10 +24,17 @@ public:
 	void Reset();
 	void UpdateTick(CIcGameController *pGameController, int Tick);
 
+	void ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetPos);
+
 	bool TryAttack(int ClientID);
 	bool TryHook(int ClientID);
 	std::optional<vec2> PickPOI(const vec2 &FromPos) const;
 	bool HasPOI() const;
+
+	EDecision GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CBotPlayer::DIRECTION> OptDirection = std::nullopt) const;
+
+	void PushCheckedPosition(STilePosition ShortPos);
+	bool IsPositionChecked(STilePosition ShortPos) const;
 
 protected:
 	static constexpr int MaxAttacksInTimespan = 2;
@@ -48,6 +52,8 @@ protected:
 	int m_Tick = 0;
 	icArray<HiveVictim, MAX_CLIENTS> m_aVictims;
 	icArray<vec2, 10> m_aPOIs;
+	icFifoArray<STilePosition, 320> m_aCheckedPos;
+	icFifoArray<SBotDecision, 8> m_aGoodDecisions;
 };
 
 void CHiveMind::Reset()
@@ -55,6 +61,8 @@ void CHiveMind::Reset()
 	m_Tick = -1;
 	m_aVictims.Clear();
 	m_aPOIs.Clear();
+	m_aCheckedPos.Clear();
+	m_aGoodDecisions.Clear();
 }
 
 void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
@@ -103,6 +111,20 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 	}
 }
 
+void CHiveMind::ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetPos)
+{
+	if(pPlayer->GetState() == EBotState::Roaming)
+	{
+		const auto &aRecentDecisions = pPlayer->GetRecentDecisions();
+		int MaxCheckpoints = std::max<int>(aRecentDecisions.Size(), 10);
+		for(int i = aRecentDecisions.Size() - MaxCheckpoints; i < aRecentDecisions.Size(); ++i)
+		{
+			m_aGoodDecisions.Add(aRecentDecisions.At(i));
+		}
+		m_aGoodDecisions.Last().Tick = m_Tick;
+	}
+}
+
 bool CHiveMind::TryAttack(int ClientID)
 {
 	HiveVictim *pVictim = GetVictim(ClientID);
@@ -147,6 +169,37 @@ std::optional<vec2> CHiveMind::PickPOI(const vec2 &FromPos) const
 bool CHiveMind::HasPOI() const
 {
 	return !m_aPOIs.IsEmpty();
+}
+
+EDecision CHiveMind::GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CBotPlayer::DIRECTION> OptDirection) const
+{
+	CBotPlayer::DIRECTION Direction = OptDirection.has_value() ? OptDirection.value() : pPlayer->GetRoamingDirection();
+	const vec2 &Pos = pPlayer->GetCharacter()->GetPos();
+	const STilePosition Position = STilePosition::fromPos(Pos);
+	for(int i = 0; i < m_aGoodDecisions.Size(); ++i)
+	{
+		const SBotDecision &BotDecision = m_aGoodDecisions.At(i);
+
+		if(BotDecision.Position != Position)
+			continue;
+
+		if(BotDecision.Direction != Direction)
+			continue;
+
+		return BotDecision.Decision;
+	}
+
+	return EDecision::Invalid;
+}
+
+void CHiveMind::PushCheckedPosition(STilePosition ShortPos)
+{
+	m_aCheckedPos.Add(ShortPos);
+}
+
+bool CHiveMind::IsPositionChecked(STilePosition ShortPos) const
+{
+	return m_aCheckedPos.Contains(ShortPos);
 }
 
 CHiveMind::HiveVictim *CHiveMind::GetVictim(int ClientID)
@@ -292,8 +345,6 @@ CBotPlayer::~CBotPlayer()
 
 void CBotPlayer::OnNewRound()
 {
-	sa_CheckedPos.Clear();
-	sa_GoodDecisions.Clear();
 	s_HiveMind.Reset();
 }
 
@@ -488,21 +539,14 @@ void CBotPlayer::UpdateTarget()
 		return;
 	}
 
-	if(IsInfected() && (m_BotState == EBotState::Roaming))
-	{
-		int Tick = Server()->Tick();
-
-		int MaxCheckpoints = std::max<int>(m_RecentDecisions.Size(), 10);
-		for(int i = m_RecentDecisions.Size() - MaxCheckpoints; i < m_RecentDecisions.Size(); ++i)
-		{
-			sa_GoodDecisions.Add(m_RecentDecisions.At(i));
-		}
-		sa_GoodDecisions.Last().Tick = Tick;
-	}
-
 	m_LastTarget = TargetId;
 	m_LastTargetSeenAtPos = GameController()->GetCharacter(TargetId)->GetPos();
 	m_LastSeenTick = Server()->Tick();
+
+	if(IsInfected())
+	{
+		s_HiveMind.ReportTargetFound(this, m_LastTargetSeenAtPos);
+	}
 
 	SetState(EBotState::Hunting);
 }
@@ -2607,7 +2651,7 @@ bool CBotPlayer::MaybeFallDown() const
 
 	if(!IsHuman())
 	{
-		EDecision GoodDecision = GetGoodDecision();
+		EDecision GoodDecision = s_HiveMind.GetGoodDecision(this);
 		// Good decision:
 		switch(GoodDecision)
 		{
@@ -2685,7 +2729,7 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition, bool ForceIgnoreIfC
 		}
 	}
 
-	const bool Checked = HasPosition || (!IsHuman() && sa_CheckedPos.Contains(ShortPos));
+	const bool Checked = HasPosition || (!IsHuman() && s_HiveMind.IsPositionChecked(ShortPos));
 	if(Checked && ForceIgnoreIfChecked)
 		return false;
 
@@ -2702,7 +2746,8 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition, bool ForceIgnoreIfC
 
 	if(!IsHuman())
 	{
-		EDecision GoodDecision = GetGoodDecision();
+		DIRECTION CheckDirection = JumpTargetPosition.x > m_pCharacter->GetPos().x ? DIRECTION_RIGHT : DIRECTION_LEFT;
+		EDecision GoodDecision = s_HiveMind.GetGoodDecision(this, CheckDirection);
 		if(GoodDecision != EDecision::Invalid)
 		{
 			// Definitely go!
@@ -2937,34 +2982,13 @@ EDecision CBotPlayer::GetPreviousDecision() const
 	return EDecision::Invalid;
 }
 
-EDecision CBotPlayer::GetGoodDecision(std::optional<DIRECTION> OptDirection) const
-{
-	DIRECTION Direction = OptDirection.has_value() ? OptDirection.value() : m_RoamingDirection;
-	const vec2 &Pos = GetCharacter()->GetPos();
-	const STilePosition Position = STilePosition::fromPos(Pos);
-	for(int i = 0; i < sa_GoodDecisions.Size(); ++i)
-	{
-		const SBotDecision &BotDecision = sa_GoodDecisions.At(i);
-
-		if(BotDecision.Position != Position)
-			continue;
-
-		if(BotDecision.Direction != Direction)
-			continue;
-
-		return BotDecision.Decision;
-	}
-
-	return EDecision::Invalid;
-}
-
 void CBotPlayer::PushCheckedPosition(const vec2 &Pos)
 {
 	STilePosition ShortPos = STilePosition::fromPos(Pos);
 	ma_CheckPoints.Add({ShortPos, Server()->Tick()});
 	if(!IsHuman())
 	{
-		sa_CheckedPos.Add(ShortPos);
+		s_HiveMind.PushCheckedPosition(ShortPos);
 	}
 }
 

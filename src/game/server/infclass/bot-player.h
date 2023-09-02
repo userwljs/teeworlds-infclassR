@@ -271,6 +271,8 @@ public:
 	EDecision GetPreviousDecision() const;
 	EDecision GetGoodDecision(std::optional<DIRECTION> OptDirection = std::nullopt) const;
 
+	const icArray<SBotDecision, 64> &GetRecentDecisions() const { return m_RecentDecisions; }
+
 	void PushCheckedPosition(const vec2 &Pos);
 	void PushIgnoredPosition(const vec2 &Pos);
 
