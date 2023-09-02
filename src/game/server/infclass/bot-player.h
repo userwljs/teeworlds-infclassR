@@ -254,6 +254,10 @@ public:
 	DIRECTION GetRoamingDirection() const { return m_RoamingDirection; }
 	void SetRoamingDirection(DIRECTION Direction);
 	void SetObjection(EObjection Objection);
+
+	bool IsBehaviorChangeQueued() const;
+	void QueueBehaviorChange();
+	void QueueBehaviorChange(float Delay);
 	void MaybeChangeRoamingBehavior();
 	void ChangeRoamingBehavior();
 	void GetNewObjection();
@@ -306,6 +310,7 @@ protected:
 	EObjection m_RoamingObjection = EObjection::Lookup;
 	EObjection m_TargetLastSeenDirObjection = EObjection::Invalid;
 	int m_RoamingBehaviorTick = 0;
+	int m_RoamingBehaviorChangeTick = 0;
 	icArray<EObjection, 5> m_RecentObjections;
 	CRecentDecisions m_RecentDecisions;
 	CCheckPoints ma_CheckPoints;

@@ -37,6 +37,8 @@ public:
 	void PushCheckedPosition(STilePosition ShortPos);
 	bool IsPositionChecked(STilePosition ShortPos) const;
 
+	void ValidateDirection(CBotPlayer *pPlayer);
+
 	const icArray<vec2, MAX_CLIENTS> &GetHumanPositions()
 	{
 		return m_aHumanPositions;
@@ -268,6 +270,87 @@ void CHiveMind::PushCheckedPosition(STilePosition ShortPos)
 bool CHiveMind::IsPositionChecked(STilePosition ShortPos) const
 {
 	return m_aCheckedPos.Contains(ShortPos) && !m_aUncheckedPos.Contains(ShortPos);
+}
+
+void CHiveMind::ValidateDirection(CBotPlayer *pPlayer)
+{
+	if(m_aHumanPositions.IsEmpty() && m_aPOIs.IsEmpty())
+		return;
+
+	if(!pPlayer->GetCharacter())
+		return;
+
+	if(pPlayer->GetState() != EBotState::Roaming)
+		return;
+
+	if(pPlayer->IsBehaviorChangeQueued())
+		return;
+
+	const vec2 Pos = pPlayer->GetCharacter()->GetPos();
+	const int DirectionSign = pPlayer->GetRoamingDirection();
+	const int Limit = TileSize * 30;
+
+	int TargetsOnLeft = 0;
+	int TargetsOnRight = 0;
+	int TargetsInMid = 0;
+
+	float LeftPos = Pos.x - Limit;
+	float RightPos = Pos.x + Limit;
+
+	for(const vec2 &HumanPos : m_aHumanPositions)
+	{
+		if(HumanPos.x > RightPos)
+		{
+			TargetsOnRight++;
+		}
+		else if(HumanPos.x < LeftPos)
+		{
+			TargetsOnLeft++;
+		}
+		else
+		{
+			TargetsInMid++;
+		}
+	}
+
+	if(pPlayer->IsInfected())
+	{
+		for(const vec2 &PoiPos : m_aPOIs)
+		{
+			if(PoiPos.x > RightPos)
+			{
+				TargetsOnRight++;
+			}
+			else if(PoiPos.x < LeftPos)
+			{
+				TargetsOnLeft++;
+			}
+			else
+			{
+				TargetsInMid++;
+			}
+		}
+	}
+
+	bool OutOfBoundaries = false;
+	if(DirectionSign == CBotPlayer::DIRECTION_LEFT)
+	{
+		OutOfBoundaries = !TargetsOnLeft && !TargetsInMid;
+	}
+	if(DirectionSign == CBotPlayer::DIRECTION_RIGHT)
+	{
+		OutOfBoundaries = !TargetsOnRight && !TargetsInMid;
+	}
+
+	if(OutOfBoundaries)
+	{
+		float RandomValue = random_float();
+		if(RandomValue > 0.9)
+		{
+			RandomValue += 10;
+		}
+		pPlayer->QueueBehaviorChange(0.5f + RandomValue * 5.0f);
+	}
 }
 
 void CHiveMind::CleanupUncheckedPositions()
@@ -509,6 +592,7 @@ void CBotPlayer::Tick()
 			if(m_pCharacter->IsAlive())
 			{
 				UpdateTarget();
+				s_HiveMind.ValidateDirection(this);
 			}
 		}
 	}
@@ -524,6 +608,8 @@ void CBotPlayer::Tick()
 void CBotPlayer::TickPaused()
 {
 	m_RoamingBehaviorTick++;
+	if(m_RoamingBehaviorChangeTick)
+		m_RoamingBehaviorChangeTick++;
 	m_FleeingSinceTick++;
 	m_LastJumpTick++;
 	m_LastSeenTick++;
@@ -2435,6 +2521,7 @@ void CBotPlayer::SetState(EBotState NewState)
 void CBotPlayer::SetRoamingDirection(DIRECTION Direction)
 {
 	m_RoamingBehaviorTick = Server()->Tick();
+	m_RoamingBehaviorChangeTick = 0;
 	m_RoamingDirection = Direction;
 }
 
@@ -2447,30 +2534,48 @@ void CBotPlayer::SetObjection(EObjection Objection)
 	m_RoamingObjection = Objection;
 }
 
+bool CBotPlayer::IsBehaviorChangeQueued() const
+{
+	return m_RoamingBehaviorChangeTick;
+}
+
+void CBotPlayer::QueueBehaviorChange()
+{
+	QueueBehaviorChange(0.125f + random_float());
+}
+
+void CBotPlayer::QueueBehaviorChange(float Delay)
+{
+	const int Tick = Server()->Tick();
+	m_RoamingBehaviorChangeTick = Tick + Delay * Server()->TickSpeed();
+}
+
 void CBotPlayer::MaybeChangeRoamingBehavior()
 {
 	const float BehaviorChangeInterval = 45.0;
 	const float LastSeenTrackingDuration = 5.0;
+	const int Tick = Server()->Tick();
+
 	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
 	{
-		if(Server()->Tick() > m_LastSeenTick + Server()->TickSpeed() * LastSeenTrackingDuration)
+		if(Tick > m_LastSeenTick + Server()->TickSpeed() * LastSeenTrackingDuration)
 		{
 			SetObjection(m_TargetLastSeenDirObjection);
 		}
 
 		return;
 	}
-	if(Server()->Tick() > m_RoamingBehaviorTick + Server()->TickSpeed() * BehaviorChangeInterval)
+
+	if(m_RoamingBehaviorChangeTick)
 	{
-		if(random_prob(0.6f))
-		{
-			// Dirty delay
-			m_RoamingBehaviorTick += Server()->TickSpeed() * (0.125f + random_float());
-		}
-		else
+		if(Tick >= m_RoamingBehaviorChangeTick)
 		{
 			ChangeRoamingBehavior();
 		}
+	}
+	else if(Tick > m_RoamingBehaviorTick + Server()->TickSpeed() * BehaviorChangeInterval)
+	{
+		QueueBehaviorChange();
 	}
 }
 
