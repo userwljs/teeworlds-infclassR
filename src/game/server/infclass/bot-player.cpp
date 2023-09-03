@@ -1043,9 +1043,6 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	const bool NoWantedJump = m_RoamingObjection == EObjection::CheckPOI && m_CachedPOIReachableByGround;
 	if(IsGrounded())
 	{
-		m_WantedJumps = 0;
-		m_AirJumps = 0;
-
 		if(HasWallInRoamingDirection)
 		{
 			BotDebugMessage(VERBOSE_STEPS, "Has wall");
@@ -3170,6 +3167,10 @@ void CBotPlayer::UpdateCharacterState()
 
 	const CIcCharacter *pCharacter = GetCharacter();
 	m_CachedGrounded = pCharacter && pCharacter->IsGrounded();
+
+	m_WantedJumps = 0;
+	m_AirJumps = 0;
+
 	UpdatePOIState();
 }
 
