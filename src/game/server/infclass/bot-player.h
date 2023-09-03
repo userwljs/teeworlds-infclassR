@@ -292,6 +292,8 @@ protected:
 	void UpdateCharacterState();
 	void UpdatePOIState();
 
+	DIRECTION DoLandingManeuves() const;
+
 	bool CanHook() const;
 	bool WeakHook() const;
 	bool StrongHook() const;

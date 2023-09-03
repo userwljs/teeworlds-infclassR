@@ -1307,10 +1307,6 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	}
 
 	const vec2 VectorToTarget = m_JumpTargetPosition - Pos;
-	float AbsXToJumpTarget = fabs(VectorToTarget.x);
-	float AbsYToJumpTarget = fabs(VectorToTarget.y);
-
-
 	if(m_JumpTargetingTicks)
 	{
 		if(IsGrounded())
@@ -1326,144 +1322,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	}
 	else if(WantToJump || m_JumpTargetingTicks)
 	{
-		const float ProximityRadius = m_pCharacter->GetProximityRadius();
-		const bool GoingDown = VectorToTarget.y > 0;
-		const float MaxOffset = GoingDown ? 2 : TileSize + ProximityRadius * 1.75f;
-		if(AbsYToJumpTarget > MaxOffset)
-		{
-			const int DirectionFromJumpToTarget = m_JumpTargetPosition.x >= m_JumpFromPosition.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
-			const float WantedXPos = GoingDown ? m_JumpTargetPosition.x : (m_JumpTargetPosition.x - TileSize * 0.5f * DirectionFromJumpToTarget);
-			float SecondWantedXPos = WantedXPos;
-
-			if(GoingDown)
-			{
-				vec2 CurrentTargetTile = m_JumpTargetPosition;
-				float CurrentY = Pos.y;
-				constexpr int MaxHorizontalTiles = 10;
-				for(int i = 0; i < MaxHorizontalTiles; ++i)
-				{
-					float TryX = SecondWantedXPos + TileSize * DirectionFromJumpToTarget;
-					if(m_pUtils->GetCollision()->IsSolid(vec2(TryX, CurrentY)))
-					{
-						// Allow only one tile jump for now
-						CurrentY -= TileSize;
-						if(m_pUtils->GetCollision()->IsSolid(vec2(TryX, CurrentY)))
-						{
-							break;
-						}
-					}
-
-					vec2 NextTile(TryX, Pos.y);
-					constexpr int MaxFault = 5;
-					std::optional<float> Gnd = m_pUtils->GetSolidBelow(NextTile, MaxFault);
-					if(!Gnd.has_value())
-					{
-						break;
-					}
-
-					float GroundValue = Gnd.value() - ProximityRadius / 2;
-
-					if(m_pUtils->IsReachableByGround(CurrentTargetTile, vec2(NextTile.x, GroundValue), 1))
-					{
-						CurrentTargetTile = vec2(NextTile.x, GroundValue);
-						SecondWantedXPos = NextTile.x;
-					}
-					else
-					{
-						// GameController()->GameServer()->CreateLoveEvent(vec2(NextTile.x, Gnd));
-						break;
-					}
-				}
-			}
-
-			float MaxWantedX = std::max<float>(WantedXPos, SecondWantedXPos);
-			float MinWantedX = std::min<float>(WantedXPos, SecondWantedXPos);
-
-			if(!GoingDown)
-			{
-				const float MaxDiff = 1; // (TileSize - ProximityRadius) * 0.375f;
-				if(DirectionFromJumpToTarget == DIRECTION_RIGHT)
-				{
-					MinWantedX -= MaxDiff;
-				}
-				else
-				{
-					MaxWantedX += MaxDiff;
-				}
-			}
-
-			m_pUtils->GetDebugSink()->HighlightLineSegment(vec2(MinWantedX, Pos.y), vec2(MinWantedX, m_JumpTargetPosition.y));
-			if(MinWantedX != MaxWantedX)
-			{
-				m_pUtils->GetDebugSink()->HighlightLineSegment(vec2(MaxWantedX, Pos.y), vec2(MaxWantedX, m_JumpTargetPosition.y));
-			}
-
-			if(AbsXToJumpTarget > TileSize * 4)
-			{
-				// Rought math
-				if(Pos.x > MaxWantedX)
-				{
-					pInput->m_Direction = DIRECTION_LEFT;
-				}
-				else if(Pos.x < MinWantedX)
-				{
-					pInput->m_Direction = DIRECTION_RIGHT;
-				}
-				else
-				{
-					if(GoingDown)
-					{
-						pInput->m_Direction = DirectionFromJumpToTarget;
-					}
-					else
-					{
-						pInput->m_Direction = DIRECTION_NONE;
-					}
-				}
-			}
-			else
-			{
-				const float AirControlAccel = m_NextTuningParams.m_AirControlAccel;
-				const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
-				int ActualDirection = VelX > 0 ? 1 : -1;
-				const float Acceleration = AirControlAccel * ActualDirection;
-
-				int MaxTicks = 500;
-				const int ApproxTicks = m_pUtils->GetTicksToMoveDistance(VelX, AirControlAccel, VectorToTarget.x, MaxTicks, AirControlSpeed);
-				const float PredictedXDistance = m_pUtils->GetDistanceForVelocityAccelerationTicks(VelX, Acceleration, ApproxTicks, AirControlSpeed);
-
-				if(Pos.x + PredictedXDistance > MaxWantedX)
-				{
-					pInput->m_Direction = DIRECTION_LEFT;
-				}
-				else if(Pos.x + PredictedXDistance < MinWantedX)
-				{
-					pInput->m_Direction = DIRECTION_RIGHT;
-				}
-				else
-				{
-					if(GoingDown)
-					{
-						pInput->m_Direction = DirectionFromJumpToTarget;
-					}
-					else
-					{
-						pInput->m_Direction = DIRECTION_NONE;
-					}
-				}
-
-				if(!GoingDown && pInput->m_Direction)
-				{
-					if(AbsXToJumpTarget < TileSize)
-					{
-						if(ApproxTicks > Server()->TickSpeed() * 0.75f)
-						{
-							pInput->m_Direction = DIRECTION_NONE;
-						}
-					}
-				}
-			}
-		}
+		DIRECTION LandingDir = DoLandingManeuves();
+		pInput->m_Direction = LandingDir;
 	}
 
 	if(WantToJump)
@@ -3324,6 +3184,145 @@ void CBotPlayer::UpdatePOIState()
 	{
 		m_CachedPOIReachableByGround = false;
 	}
+}
+
+CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const
+{
+	const vec2 &Pos = GetCharacter()->GetPos();
+	const float VelX = m_pCharacter->Core()->m_Vel.x;
+	const vec2 VectorToTarget = m_JumpTargetPosition - Pos;
+	float AbsXToJumpTarget = fabs(VectorToTarget.x);
+	float AbsYToJumpTarget = fabs(VectorToTarget.y);
+
+	const float ProximityRadius = m_pCharacter->GetProximityRadius();
+	const bool GoingDown = VectorToTarget.y > 0;
+	const float MaxOffset = GoingDown ? 2 : TileSize + ProximityRadius * 1.75f;
+	if(AbsYToJumpTarget > MaxOffset)
+	{
+		const DIRECTION DirectionFromJumpToTarget = m_JumpTargetPosition.x >= m_JumpFromPosition.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
+		const float WantedXPos = GoingDown ? m_JumpTargetPosition.x : (m_JumpTargetPosition.x - TileSize * 0.5f * DirectionFromJumpToTarget);
+		float SecondWantedXPos = WantedXPos;
+
+		if(GoingDown)
+		{
+			vec2 CurrentTargetTile = m_JumpTargetPosition;
+			float CurrentY = Pos.y;
+			constexpr int MaxHorizontalTiles = 10;
+			for(int i = 0; i < MaxHorizontalTiles; ++i)
+			{
+				float TryX = SecondWantedXPos + TileSize * DirectionFromJumpToTarget;
+				if(m_pUtils->GetCollision()->IsSolid(vec2(TryX, CurrentY)))
+				{
+					// Allow only one tile jump for now
+					CurrentY -= TileSize;
+					if(m_pUtils->GetCollision()->IsSolid(vec2(TryX, CurrentY)))
+					{
+						break;
+					}
+				}
+
+				vec2 NextTile(TryX, Pos.y);
+				constexpr int MaxFault = 5;
+				std::optional<float> Gnd = m_pUtils->GetSolidBelow(NextTile, MaxFault);
+				if(!Gnd.has_value())
+				{
+					break;
+				}
+
+				float GroundValue = Gnd.value() - ProximityRadius / 2;
+
+				if(m_pUtils->IsReachableByGround(CurrentTargetTile, vec2(NextTile.x, GroundValue), 1))
+				{
+					CurrentTargetTile = vec2(NextTile.x, GroundValue);
+					SecondWantedXPos = NextTile.x;
+				}
+				else
+				{
+					// GameController()->GameServer()->CreateLoveEvent(vec2(NextTile.x, Gnd));
+					break;
+				}
+			}
+		}
+
+		float MaxWantedX = std::max<float>(WantedXPos, SecondWantedXPos);
+		float MinWantedX = std::min<float>(WantedXPos, SecondWantedXPos);
+
+		if(!GoingDown)
+		{
+			const float MaxDiff = 1; // (TileSize - ProximityRadius) * 0.375f;
+			if(DirectionFromJumpToTarget == DIRECTION_RIGHT)
+			{
+				MinWantedX -= MaxDiff;
+			}
+			else
+			{
+				MaxWantedX += MaxDiff;
+			}
+		}
+
+		m_pUtils->GetDebugSink()->HighlightLineSegment(vec2(MinWantedX, Pos.y), vec2(MinWantedX, m_JumpTargetPosition.y));
+		if(MinWantedX != MaxWantedX)
+		{
+			m_pUtils->GetDebugSink()->HighlightLineSegment(vec2(MaxWantedX, Pos.y), vec2(MaxWantedX, m_JumpTargetPosition.y));
+		}
+
+		if(AbsXToJumpTarget > TileSize * 4)
+		{
+			// Rought math
+			if(Pos.x > MaxWantedX)
+			{
+				return DIRECTION_LEFT;
+			}
+			else if(Pos.x < MinWantedX)
+			{
+				return DIRECTION_RIGHT;
+			}
+			else
+			{
+				if(GoingDown)
+				{
+					return DirectionFromJumpToTarget;
+				}
+				else
+				{
+					return DIRECTION_NONE;
+				}
+			}
+		}
+		else
+		{
+			const float AirControlAccel = m_NextTuningParams.m_AirControlAccel;
+			const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
+			int ActualDirection = VelX > 0 ? 1 : -1;
+			const float Acceleration = AirControlAccel * ActualDirection;
+
+			int MaxTicks = 500;
+			const int ApproxTicks = m_pUtils->GetTicksToMoveDistance(VelX, AirControlAccel, VectorToTarget.x, MaxTicks, AirControlSpeed);
+			const float PredictedXDistance = m_pUtils->GetDistanceForVelocityAccelerationTicks(VelX, Acceleration, ApproxTicks, AirControlSpeed);
+
+			if(Pos.x + PredictedXDistance > MaxWantedX)
+			{
+				return DIRECTION_LEFT;
+			}
+			else if(Pos.x + PredictedXDistance < MinWantedX)
+			{
+				return DIRECTION_RIGHT;
+			}
+			else
+			{
+				if(GoingDown)
+				{
+					return DirectionFromJumpToTarget;
+				}
+				else
+				{
+					return DIRECTION_NONE;
+				}
+			}
+		}
+	}
+
+	return m_RoamingDirection;
 }
 
 bool CBotPlayer::CanHook() const
