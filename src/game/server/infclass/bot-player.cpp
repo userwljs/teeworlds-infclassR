@@ -1086,7 +1086,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					{
 						STilePosition DecisionPos = JumpPosToShortPos(JumpTarget, Pos);
 						constexpr bool IgnoreIfChecked = true;
-						if(MaybeJumpOn(JumpTarget, IgnoreIfChecked))
+						if(MaybeJumpOnPlatform(JumpTarget, IgnoreIfChecked))
 						{
 							SetJumpTargetPosition(JumpTarget, Pos);
 							PushCheckedPosition(DecisionPos);
@@ -1109,7 +1109,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				if(!WantToJump && WantJumps)
 				{
 					STilePosition DecisionPos = JumpPosToShortPos(JumpTarget, Pos);
-					if(MaybeJumpOn(JumpTarget))
+					if(MaybeJumpOnPlatform(JumpTarget))
 					{
 						SetJumpTargetPosition(JumpTarget, Pos);
 						PushCheckedPosition(DecisionPos);
@@ -1247,7 +1247,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				else if((MaybeWantJumps = NoWantedJump ? 0 : GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, &JumpTarget)))
 				{
 					STilePosition DecisionPos = JumpPosToShortPos(JumpTarget, Pos);
-					if(MaybeJumpOn(JumpTarget))
+					if(MaybeJumpOnPlatform(JumpTarget))
 					{
 						SetJumpTargetPosition(JumpTarget, Pos);
 						PushCheckedPosition(DecisionPos);
@@ -2849,7 +2849,7 @@ bool CBotPlayer::MaybeJumpOverWall(const vec2 &JumpTargetPosition) const
 	return true;
 }
 
-bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition, bool ForceIgnoreIfChecked)
+bool CBotPlayer::MaybeJumpOnPlatform(const vec2 &JumpTargetPosition, bool ForceIgnoreIfChecked)
 {
 	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
 	{
