@@ -353,7 +353,8 @@ void CBotPlayer::TickPaused()
 	m_LastJumpTick++;
 	m_LastSeenTick++;
 	m_LastFireTick++;
-	m_NextRandomFireTick++;
+	if(m_NextRandomFireTick)
+		m_NextRandomFireTick++;
 	m_HookUntilTick++;
 	m_DelayHookUntilTick++;
 
@@ -369,7 +370,7 @@ void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	GetCharacter()->SetDropLevel(m_DropLevel);
 
 	m_LastFireTick = -1;
-	m_NextRandomFireTick = -1;
+	m_NextRandomFireTick = 0;
 	m_RecentObjections.Clear();
 	m_RecentDecisions.Clear();
 	m_BotState = EBotState::Roaming;
@@ -536,12 +537,12 @@ void CBotPlayer::UpdateControls()
 		NewInput.m_PrevWeapon = 0;
 	}
 
-	if(NewInput.m_Fire || (m_LastFireTick < 0))
+	if(NewInput.m_Fire)
 	{
 		m_LastFireTick = Tick;
-
-		ScheduleRandomFire();
 	}
+
+	ScheduleRandomFire();
 
 	m_pCharacter->OnPredictedInput(&NewInput);
 	OnDirectInput(&NewInput);
@@ -1008,9 +1009,10 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		}
 	}
 
-	if(m_NextRandomFireTick >= 0 && Tick > m_NextRandomFireTick)
+	if(m_NextRandomFireTick && Tick > m_NextRandomFireTick)
 	{
 		pInput->m_Fire = true;
+		m_NextRandomFireTick = 0;
 	}
 
 	if(GetClass() == EPlayerClass::Ghost)
@@ -1231,11 +1233,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		pInput->m_TargetX = m_RoamingDirection * TileSize * 4;
 		pInput->m_TargetY = TileSize * 2;
-
-		if(m_NextRandomFireTick >= 0 && Tick > m_NextRandomFireTick)
-		{
-			pInput->m_Fire = true;
-		}
 	}
 	else if(Distance < HitDistance * 4)
 	{
@@ -1272,6 +1269,12 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		pInput->m_Hook = s_HiveMind.TryHook(m_LastTarget);
 	}
+
+	if(m_NextRandomFireTick && Tick > m_NextRandomFireTick)
+	{
+		pInput->m_Fire = true;
+		m_NextRandomFireTick = 0;
+	}
 }
 
 void CBotPlayer::UpdateHumanBotControls()
@@ -1285,6 +1288,9 @@ void CBotPlayer::ScheduleRandomFire()
 	{
 		return;
 	}
+
+	if(m_NextRandomFireTick)
+		return;
 
 	float FireInterval = 0.2f + random_float();
 

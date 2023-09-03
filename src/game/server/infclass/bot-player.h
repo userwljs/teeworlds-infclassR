@@ -288,7 +288,7 @@ protected:
 	vec2 m_LastTargetSeenAtPos;
 	int m_LastSeenTick = -1;
 	int m_LastFireTick = -1;
-	int m_NextRandomFireTick = -1;
+	int m_NextRandomFireTick = 0;
 	int m_HookUntilTick = -1;
 	int m_DelayHookUntilTick = -1;
 
