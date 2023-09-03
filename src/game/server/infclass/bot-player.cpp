@@ -1366,7 +1366,6 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					if(m_pUtils->IsReachableByGround(CurrentTargetTile, vec2(NextTile.x, GroundValue), 1))
 					{
 						CurrentTargetTile = vec2(NextTile.x, GroundValue);
-						m_pUtils->GetDebugSink()->HighlightLineSegment(Pos, CurrentTargetTile);
 						SecondWantedXPos = NextTile.x;
 					}
 					else
@@ -1391,6 +1390,12 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				{
 					MaxWantedX += MaxDiff;
 				}
+			}
+
+			m_pUtils->GetDebugSink()->HighlightLineSegment(vec2(MinWantedX, Pos.y), vec2(MinWantedX, m_JumpTargetPosition.y));
+			if(MinWantedX != MaxWantedX)
+			{
+				m_pUtils->GetDebugSink()->HighlightLineSegment(vec2(MaxWantedX, Pos.y), vec2(MaxWantedX, m_JumpTargetPosition.y));
 			}
 
 			if(AbsXToJumpTarget > TileSize * 4)
