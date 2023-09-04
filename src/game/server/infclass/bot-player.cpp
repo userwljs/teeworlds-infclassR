@@ -822,21 +822,53 @@ int CBotPlayer::UpdateHumanTarget(const ClientsArray &Targets)
 int CBotPlayer::UpdateInfectedTarget(const ClientsArray &Targets)
 {
 	const vec2 &Pos = m_pCharacter->GetPos();
+
+	int BestTarget = -1;
+
+	const std::set<int> &aAttachedPlayers = m_pCharacter->Core()->m_AttachedPlayers;
+	const auto PlayerAttached = [&aAttachedPlayers](int ClientID) -> bool {
+		for(int AttachedCID : aAttachedPlayers)
+		{
+			if(ClientID == AttachedCID)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	};
+
 	for(int CandidateId : Targets)
 	{
 		const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
-		vec2 Out;
-		vec2 Before;
+		if(BestTarget >= 0)
+		{
+			if(!PlayerAttached(CandidateId))
+				continue;
+		}
 
-		if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos(), &Out, &Before))
+		if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos()))
 		{
 			continue;
 		}
 
-		return CandidateId;
+		if(BestTarget < 0)
+		{
+			BestTarget = CandidateId;
+			if(aAttachedPlayers.empty())
+			{
+				break;
+			}
+		}
+
+		if(PlayerAttached(CandidateId))
+		{
+			BestTarget = CandidateId;
+			break;
+		}
 	}
 
-	return -1;
+	return BestTarget;
 }
 
 std::optional<vec2> CBotPlayer::GetNewPOI() const
