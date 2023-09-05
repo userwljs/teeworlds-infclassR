@@ -37,7 +37,7 @@ public:
 
 	EDecision GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CBotPlayer::DIRECTION> OptDirection = std::nullopt);
 
-	void PushCheckedPosition(STilePosition ShortPos);
+	void PushCheckedPosition(STilePosition ShortPos, int Tick);
 	bool IsPositionChecked(STilePosition ShortPos) const;
 
 	void ValidateDirection(CBotPlayer *pPlayer);
@@ -293,7 +293,7 @@ EDecision CHiveMind::GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CB
 	return EDecision::Invalid;
 }
 
-void CHiveMind::PushCheckedPosition(STilePosition ShortPos)
+void CHiveMind::PushCheckedPosition(STilePosition ShortPos, int Tick)
 {
 	m_aCheckedPos.Add(ShortPos);
 }
@@ -3164,10 +3164,15 @@ EDecision CBotPlayer::GetPreviousDecision() const
 
 void CBotPlayer::PushCheckedPosition(const STilePosition &ShortPos)
 {
-	ma_CheckPoints.Add({ShortPos, Server()->Tick()});
+	if(!g_Config.m_InfBotCheckPos)
+	{
+		return;
+	}
+	const int Tick = Server()->Tick();
+	ma_CheckPoints.Add({ShortPos, Tick});
 	if(!IsHuman())
 	{
-		s_HiveMind.PushCheckedPosition(ShortPos);
+		s_HiveMind.PushCheckedPosition(ShortPos, Tick);
 	}
 }
 
