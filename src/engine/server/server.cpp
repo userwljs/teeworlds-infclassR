@@ -3032,6 +3032,7 @@ int CServer::Run()
 
 	// process pending commands
 	m_pConsole->StoreCommands(false);
+	m_pConsole->ExecuteFile("init.cfg");
 	m_pRegister->OnConfigChange();
 
 	// start game
