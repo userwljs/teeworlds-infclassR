@@ -4744,6 +4744,7 @@ void CIcGameController::Tick()
 				{
 					continue;
 				}
+#if 0
 				if(pPlayer->MapMenu())
 				{
 					// One of the players didn't choose the class yet
@@ -4754,6 +4755,7 @@ void CIcGameController::Tick()
 						_("Waiting for players to choose a class"), nullptr);
 					break;
 				}
+#endif
 			}
 		}
 		// Move infected players to spec
