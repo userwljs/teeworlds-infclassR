@@ -5183,6 +5183,10 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 
 	// Do not infect on disconnect or joining spec
 	bool Infect = DamageType != EDamageType::GAME;
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		Infect = false;
+	}
 	if(Infect)
 	{
 		pVictim->GetPlayer()->StartInfection(pContext->Killer, InfectionType);
@@ -5497,7 +5501,7 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 		return false;
 	}
 
-	bool Infect = m_InfectedStarted;
+	bool Infect = m_InfectedStarted && (GetRoundType() != ERoundType::HideAndSeek);
 	if(Infect)
 		pPlayer->StartInfection();
 
