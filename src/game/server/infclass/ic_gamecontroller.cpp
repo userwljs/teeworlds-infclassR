@@ -2362,6 +2362,10 @@ void CIcGameController::ChatWitch(IConsole::IResult *pResult)
 		{
 			CanCallWitch = false;
 		}
+		if(GetRoundType() == ERoundType::HideAndSeek)
+		{
+			CanCallWitch = false;
+		}
 
 		if(!CanCallWitch)
 		{
@@ -4138,6 +4142,42 @@ void CIcGameController::EndHideAndSeekRound()
 {
 }
 
+void CIcGameController::ApplyHideAndSeekAttributes(CIcPlayer *pPlayer)
+{
+	CIcCharacter *pCharacter = pPlayer->GetCharacter();
+	if(pCharacter)
+	{
+		pCharacter->TakeAllWeapons();
+		pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
+		pCharacter->SetActiveWeapon(WEAPON_HAMMER);
+
+		pCharacter->CancelLoveEffect();
+		if(pPlayer->IsInfected())
+		{
+			pCharacter->LoveEffect(GetTimeLimitSeconds() + 5);
+			float SpawnProtectionDuration = Config()->m_HsGhostsProtection;
+			pCharacter->SetSoloForDuration(SpawnProtectionDuration);
+		}
+		else
+		{
+			pCharacter->GiveWeapon(WEAPON_GUN, -1);
+			const int InfectionTick = GetInfectionStartTick();
+			const float SecondsToInfection = (InfectionTick - Server()->Tick()) * 1.0f / Server()->TickSpeed();
+			pCharacter->LoveEffect(SecondsToInfection);
+			pCharacter->SetInvincible(2);
+		}
+	}
+
+	CIcPlayerClass *pClass = pPlayer->GetCharacterClass();
+	if(pClass)
+	{
+		if(pPlayer->IsHuman())
+		{
+			pClass->SetNormalEmote(EMOTE_ANGRY);
+		}
+	}
+}
+
 void CIcGameController::StartFunRound()
 {
 	if(m_FunRoundConfigurations.empty())
@@ -5177,6 +5217,11 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 		RespawnDelay *= 0.5;
 	}
 
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		RespawnDelay *= 0.5;
+	}
+
 	if(m_Warmup > 0)
 	{
 		RespawnDelay = Server()->TickSpeed() * 0.2f;
@@ -5204,11 +5249,10 @@ void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const Spa
 		pCharacter->GiveRandomClassSelectionBonus();
 	}
 
-	if(pCharacter->IsInfected())
+	if(pCharacter->IsInfected() && (GetRoundType() != ERoundType::HideAndSeek))
 	{
 		FallInLoveIfInfectedEarly(pCharacter);
 		pCharacter->SetHealthArmor(10, InfectedBonusArmor());
-
 		if(Context.SpawnType == SpawnContext::MapSpawn)
 		{
 			float Duration = g_Config.m_InfSpawnProtectionTime / 1000.0f;
@@ -5216,9 +5260,22 @@ void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const Spa
 		}
 	}
 
-	if((GetRoundType() == ERoundType::Fun) && !IsInfectionStarted() && pCharacter->GetPlayerClass() == EPlayerClass::None)
+	if(GetRoundType() == ERoundType::Fun)
 	{
-		pPlayer->SetClass(ChooseHumanClass(pPlayer));
+		int InfectionTick = GetInfectionStartTick();
+		if((Server()->Tick() < InfectionTick) && pCharacter->GetPlayerClass() == EPlayerClass::None)
+		{
+			pPlayer->SetClass(ChooseHumanClass(pPlayer));
+		}
+	}
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		if(!IsInfectionStarted() && pCharacter->GetPlayerClass() == EPlayerClass::None)
+		{
+			pPlayer->SetClass(ChooseHumanClass(pPlayer));
+		}
+
+		ApplyHideAndSeekAttributes(pPlayer);
 	}
 }
 
@@ -6322,5 +6379,11 @@ void CIcGameController::OnPlayerVoteCommand(int ClientId, int Vote)
 void CIcGameController::OnPlayerClassChanged(CIcPlayer *pPlayer)
 {
 	SetPlayerInfected(pPlayer->GetCid(), pPlayer->IsInfected());
+
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		ApplyHideAndSeekAttributes(pPlayer);
+	}
+
 	Server()->ExpireServerInfo();
 }

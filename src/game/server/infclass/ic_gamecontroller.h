@@ -247,6 +247,7 @@ public:
 
 	void StartHideAndSeekRound();
 	void EndHideAndSeekRound();
+	void ApplyHideAndSeekAttributes(CIcPlayer *pPlayer);
 
 	void StartFunRound();
 	void EndFunRound();
