@@ -6376,6 +6376,13 @@ void CIcGameController::OnPlayerVoteCommand(int ClientId, int Vote)
 	}
 	else
 	{
+		if(GetRoundType() == ERoundType::HideAndSeek)
+		{
+			GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT,
+				_("Hook protection is always disabled in this round type"), nullptr);
+			return;
+		}
+
 		pPlayer->SetHookProtection(!pPlayer->HookProtectionEnabled(), false);
 	}
 }
