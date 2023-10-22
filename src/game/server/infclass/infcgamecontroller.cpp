@@ -181,6 +181,7 @@ CInfClassGameController::CInfClassGameController(class CGameContext *pGameServer
 	m_RoundType = GetDefaultRoundType();
 	m_QueuedRoundType = ERoundType::Invalid;
 	m_InfectedStarted = false;
+	m_VanillaMapLoaded = !str_startswith(Config()->m_SvMap, "infc_");
 
 	for(int j=0; j<m_MapHeight; j++)
 	{
@@ -716,7 +717,23 @@ int CInfClassGameController::GetZoneValueAt(int ZoneHandle, const vec2 &Pos, Zon
 
 int CInfClassGameController::GetDamageZoneValueAt(const vec2 &Pos, ZoneData *pData) const
 {
-	return GetZoneValueAt(m_ZoneHandle_icDamage, Pos, pData);
+	int DamageIndex = GetZoneValueAt(m_ZoneHandle_icDamage, Pos, pData);
+	if(!DamageIndex && m_VanillaMapLoaded)
+	{
+		int GameTile = GameServer()->Collision()->GetCollisionAt(Pos.x, Pos.y);
+		if(GameTile == TILE_DEATH)
+		{
+			DamageIndex = ZONE_DAMAGE_DEATH;
+
+			if(pData)
+			{
+				pData->Index = DamageIndex;
+				pData->ExtraData = 0;
+			}
+		}
+	}
+
+	return DamageIndex;
 }
 
 EZoneTele CInfClassGameController::GetTeleportZoneValueAt(const vec2 &Pos, ZoneData *pData) const

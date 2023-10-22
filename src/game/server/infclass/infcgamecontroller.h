@@ -435,6 +435,7 @@ private:
 	bool m_RoundStarted = false;
 	bool m_SuggestMoreRounds = false;
 	bool m_MoreRoundsSuggested = false;
+	bool m_VanillaMapLoaded = false;
 
 	int m_InfAmmoRegenTime[NB_INFWEAPON]{};
 	int m_InfFireDelay[NB_INFWEAPON]{};
