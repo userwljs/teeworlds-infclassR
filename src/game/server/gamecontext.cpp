@@ -4497,6 +4497,26 @@ void CGameContext::OnInit(const void *pPersistentData)
 
 void CGameContext::CreateAllEntities(bool Initial)
 {
+	const CMapItemLayerTilemap *pTileMap = m_Layers.GameLayer();
+	const CTile *pTiles = static_cast<CTile *>(Kernel()->RequestInterface<IMap>()->GetData(pTileMap->m_Data));
+
+	for(int y = 0; y < pTileMap->m_Height; y++)
+	{
+		for(int x = 0; x < pTileMap->m_Width; x++)
+		{
+			const int Index = y * pTileMap->m_Width + x;
+
+			// Game layer
+			{
+				const int GameIndex = pTiles[Index].m_Index;
+				if(GameIndex >= ENTITY_OFFSET)
+				{
+					m_pController->OnEntity(GameIndex - ENTITY_OFFSET, x, y, LAYER_GAME, pTiles[Index].m_Flags, Initial);
+				}
+			}
+		}
+	}
+
 	// create all entities from entity layers
 	if(m_Layers.EntityGroup())
 	{

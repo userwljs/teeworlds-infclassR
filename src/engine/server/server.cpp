@@ -2736,7 +2736,28 @@ int CServer::LoadMap(const char *pMapName)
 		}
 		else
 		{
-			continue;
+			// Standard map (no infclass features)
+			if(!m_pMap->Load(aBuf))
+				continue;
+
+			m_TimeShiftUnit = 0;
+
+			// get the crc of the map
+			m_aCurrentMapSha256[MAP_TYPE_SIX] = m_pMap->Sha256();
+			m_aCurrentMapCrc[MAP_TYPE_SIX] = m_pMap->Crc();
+			char aBufMsg[256];
+			char aSha256[SHA256_MAXSTRSIZE];
+			sha256_str(m_aCurrentMapSha256[MAP_TYPE_SIX], aSha256, sizeof(aSha256));
+			str_format(aBufMsg, sizeof(aBufMsg), "%s sha256 is %s", aBuf, aSha256);
+			Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "server", aBufMsg);
+
+			// load complete map into memory for download
+			{
+				free(m_apCurrentMapData[MAP_TYPE_SIX]);
+				void *pData;
+				Storage()->ReadFile(aBuf, IStorage::TYPE_ALL, &pData, &m_aCurrentMapSize[MAP_TYPE_SIX]);
+				m_apCurrentMapData[MAP_TYPE_SIX] = (unsigned char *)pData;
+			}
 		}
 
 		pLoadedMapFileName = pMapFileName;

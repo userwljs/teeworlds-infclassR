@@ -3890,7 +3890,7 @@ int CInfClassGameController::MinimumInfectedForRevival() const
 
 bool CInfClassGameController::IsClassChooserEnabled() const
 {
-	return Config()->m_InfClassChooser;
+	return Config()->m_InfClassChooser && Server()->GetTimeShiftUnit();
 }
 
 int CInfClassGameController::GetTaxiMode() const

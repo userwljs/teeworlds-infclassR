@@ -207,6 +207,34 @@ void IGameController::DoActivityCheck()
 	}
 }
 
+bool IGameController::OnEntity(int Index, int x, int y, int Layer, int Flags, bool Initial, int Number)
+{
+	dbg_assert(Index >= 0, "Invalid entity index");
+
+	const vec2 Pos(x * 32.0f + 16.0f, y * 32.0f + 16.0f);
+
+	if(Index >= ENTITY_SPAWN && Index <= ENTITY_SPAWN_BLUE && Initial)
+	{
+		switch(Index)
+		{
+		case ENTITY_SPAWN:
+			m_avSpawnPoints[0].push_back(Pos);
+			m_avSpawnPoints[1].push_back(Pos);
+			break;
+		case ENTITY_SPAWN_RED:
+			m_avSpawnPoints[0].push_back(Pos);
+			break;
+		case ENTITY_SPAWN_BLUE:
+			m_avSpawnPoints[1].push_back(Pos);
+			break;
+		default:
+			break;
+		}
+	}
+
+	return false;
+}
+
 bool IGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv)
 {
 	return false;
