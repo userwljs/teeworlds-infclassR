@@ -50,6 +50,7 @@ enum class ERoundType
 	Fun,
 	Fast,
 	Survival,
+	HideAndSeek,
 	Count,
 	Invalid = Count,
 };
@@ -243,6 +244,9 @@ public:
 	bool HeroGiftAvailable() const;
 	std::optional<vec2> GetHeroFlagPosition() const;
 	bool IsPositionAvailableForHumans(const vec2 &FlagPosition) const;
+
+	void StartHideAndSeekRound();
+	void EndHideAndSeekRound();
 
 	void StartFunRound();
 	void EndFunRound();

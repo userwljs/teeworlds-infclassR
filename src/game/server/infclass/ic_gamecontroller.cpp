@@ -56,6 +56,7 @@ static const char *gs_aRoundNames[] = {
 	"fun",
 	"fast",
 	"survival",
+	"hide-and-seek",
 	"invalid",
 };
 
@@ -2824,6 +2825,9 @@ void CIcGameController::StartRound()
 		GameServer()->SendChatTarget(-1, "Starting the 'fast' round. Good luck everyone!");
 		break;
 	case ERoundType::Survival:
+	case ERoundType::HideAndSeek:
+		StartHideAndSeekRound();
+		break;
 	case ERoundType::Invalid:
 		break;
 	}
@@ -2924,6 +2928,9 @@ void CIcGameController::EndRound(ERoundEndReason Reason)
 		break;
 	case ERoundType::Survival:
 		EndSurvivalRound();
+		break;
+	case ERoundType::HideAndSeek:
+		EndHideAndSeekRound();
 		break;
 	case ERoundType::Invalid:
 		break;
@@ -3976,6 +3983,9 @@ int CIcGameController::MinimumInfectedForRevival() const
 
 bool CIcGameController::IsClassChooserEnabled() const
 {
+	if(GetRoundType() == ERoundType::HideAndSeek)
+		return false;
+
 	return Config()->m_InfClassChooser && Server()->GetTimeShiftUnit();
 }
 
@@ -4103,6 +4113,29 @@ bool CIcGameController::IsPositionAvailableForHumans(const vec2 &Position) const
 	default:
 		return true;
 	}
+}
+
+void CIcGameController::StartHideAndSeekRound()
+{
+	GameServer()->CreateSoundGlobal(SOUND_CTF_CAPTURE);
+	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("Hide and Seek round!"));
+	GameServer()->SendBroadcast_Localization(-1,
+		EBroadcastPriority::GAMEANNOUNCE, Server()->TickSpeed() * (GetInfectionDelay() + 2),
+		_("Hide and Seek round!"), nullptr);
+
+	for(int i = 0; i < MAX_CLIENTS; ++i)
+	{
+		CIcPlayer *pPlayer = GetPlayer(i);
+		if(!pPlayer)
+			continue;
+
+		const EPlayerClass HumanClass = ChooseHumanClass(pPlayer);
+		pPlayer->SetClass(HumanClass);
+	}
+}
+
+void CIcGameController::EndHideAndSeekRound()
+{
 }
 
 void CIcGameController::StartFunRound()
@@ -5505,6 +5538,11 @@ EPlayerClass CIcGameController::ChooseHumanClass(const CIcPlayer *pPlayer) const
 		}
 	}
 
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		return EPlayerClass::Medic;
+	}
+
 	double Probability[NB_PLAYERCLASS]{};
 	auto GetClassProbabilityRef = [&Probability](EPlayerClass PlayerClass) -> double & {
 		return Probability[static_cast<int>(PlayerClass)];
@@ -5577,6 +5615,11 @@ EPlayerClass CIcGameController::ChooseInfectedClass(const CIcPlayer *pPlayer) co
 				dbg_msg("lua/cb", "choose_infected_class() exists but return invalid value '%s'", c.value().c_str());
 			}
 		}
+	}
+
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		return EPlayerClass::Ghost;
 	}
 
 	// if(pPlayer->InfectionType() == INFECTION_TYPE::RESTORE_INF_CLASS)
