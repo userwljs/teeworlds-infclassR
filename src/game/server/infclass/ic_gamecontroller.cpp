@@ -3862,7 +3862,11 @@ void CIcGameController::CancelTheRound(ROUND_CANCELATION_REASON Reason)
 
 void CIcGameController::AnnounceTheWinner(int NumHumans)
 {
-	if(NumHumans)
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		AnnounceHideAndSeekWinner();
+	}
+	else if(NumHumans)
 	{
 		GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_HUMANS, NumHumans,
 			_P("One human won the round",
@@ -3894,6 +3898,69 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 	}
 
 	EndRound(ERoundEndReason::FINISHED);
+}
+
+void CIcGameController::AnnounceHideAndSeekWinner()
+{
+	struct CPlayerScore
+	{
+		char aPlayerName[MAX_NAME_LENGTH];
+		int Kills;
+		int Deaths;
+		bool Human;
+	};
+
+	icArray<CPlayerScore, MAX_CLIENTS> Scores;
+	int HumansScore = 0;
+
+	CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+	while(Iter.Next())
+	{
+		const CIcPlayer *pPlayer = Iter.Player();
+		CPlayerScore Score;
+
+		Score.Human = pPlayer->IsHuman();
+		Score.Kills = pPlayer->GetKills();
+		Score.Deaths = pPlayer->GetDeaths();
+		str_copy(Score.aPlayerName, Server()->ClientName(pPlayer->GetCid()));
+
+		if(Score.Human)
+		{
+			HumansScore += Score.Kills;
+		}
+		Scores.Add(Score);
+	}
+
+	const auto Sorter = [](const CPlayerScore &s1, const CPlayerScore &s2) -> bool {
+		if (s1.Kills == s2.Kills)
+			return s1.Deaths < s2.Deaths;
+
+		return s1.Kills > s2.Kills;
+	};
+
+	std::stable_sort(Scores.begin(), Scores.end(), Sorter);
+
+	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Score", nullptr);
+	for(const CPlayerScore &Score : Scores)
+	{
+		if(Score.Human)
+		{
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "- {str:PlayerName}: {int:Score} kills",
+				"PlayerName", Score.aPlayerName,
+				"Score", &Score.Kills,
+				nullptr);
+		}
+		else
+		{
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "- {str:PlayerName}: {int:Score} deaths",
+				"PlayerName", Score.aPlayerName,
+				"Score", &Score.Deaths,
+				nullptr);
+		}
+	}
+	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Total humans team score: {int:Score}",
+		"Score", &HumansScore,
+		nullptr);
 }
 
 void CIcGameController::BroadcastInfectionComing(int InfectionTick)
