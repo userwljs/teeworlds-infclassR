@@ -1266,6 +1266,8 @@ install(
   FILES
     "ChangeLog.txt"
     "autoexec.cfg"
+    "hide-include.cfg"
+    "hide.cfg"
     "reset.cfg"
   DESTINATION
     "."
