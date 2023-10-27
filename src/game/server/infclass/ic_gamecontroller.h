@@ -406,6 +406,7 @@ private:
 	void OnInfectionTriggered();
 
 	void StartInfectionGameplay(int PlayersToInfect);
+	void StartHideAndSeekGameplay(int SeekingPlayers);
 
 	void MaybeSuggestMoreRounds();
 	void SnapMapMenu(int SnappingClient, CNetObj_GameInfo *pGameInfoObj);

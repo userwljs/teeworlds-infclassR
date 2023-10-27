@@ -260,7 +260,15 @@ void CIcGameController::DoTeamBalance()
 
 	const int NumPlayers = NumHumans + NumInfected;
 	const int NumFirstPickedPlayers = GetMinimumInfectedForPlayers(NumPlayers);
-	const int PlayersToBalance = maximum<int>(0, NumFirstPickedPlayers - NumInfected);
+	int PlayersToBalance = 0;
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		PlayersToBalance = maximum<int>(0, NumFirstPickedPlayers - NumHumans);
+	}
+	else
+	{
+		PlayersToBalance = maximum<int>(0, NumFirstPickedPlayers - NumInfected);
+	}
 
 	if(PlayersToBalance == 0)
 	{
@@ -2734,8 +2742,16 @@ void CIcGameController::OnInfectionTriggered()
 	const int NumPlayers = NumHumans + NumInfected;
 	const int NumFirstPickedPlayers = GetMinimumInfectedForPlayers(NumPlayers);
 
-	const int PlayersToInfect = maximum<int>(0, NumFirstPickedPlayers - NumInfected);
-	StartInfectionGameplay(PlayersToInfect);
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		const int SeekingPlayers = NumFirstPickedPlayers;
+		StartHideAndSeekGameplay(SeekingPlayers);
+	}
+	else
+	{
+		const int PlayersToInfect = maximum<int>(0, NumFirstPickedPlayers - NumInfected);
+		StartInfectionGameplay(PlayersToInfect);
+	}
 
 	m_InfUnbalancedTick = -1;
 	MaybeSuggestMoreRounds();
@@ -2764,6 +2780,45 @@ void CIcGameController::StartInfectionGameplay(int PlayersToInfect)
 			pPlayer->KillCharacter(); // Infect the player
 			pPlayer->m_DieTick = m_RoundStartTick;
 			continue;
+		}
+	}
+}
+
+void CIcGameController::StartHideAndSeekGameplay(int SeekingPlayers)
+{
+	icArray<CIcPlayer *, MAX_CLIENTS> AllPlayers;
+
+	CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+	while(Iter.Next())
+		AllPlayers.Add(Iter.Player());
+
+	const auto Sorter = [](const CIcPlayer *p1, const CIcPlayer *p2) -> bool {
+		return p1->GetInfectionTimestamp() < p2->GetInfectionTimestamp();
+	};
+	std::stable_sort(AllPlayers.begin(), AllPlayers.end(), Sorter);
+
+	int Timestamp = time_timestamp();
+	for(CIcPlayer *pPlayer : AllPlayers)
+	{
+		if(SeekingPlayers > 0)
+		{
+			SetPlayerPickedTimestamp(pPlayer, Timestamp);
+
+			const EPlayerClass NewClass = ChooseHumanClass(pPlayer);
+			pPlayer->SetClass(NewClass);
+			pPlayer->m_DieTick = m_RoundStartTick;
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTION,
+				_("{str:VictimName} has been revived by the game"),
+				"VictimName", Server()->ClientName(pPlayer->GetCid()),
+				nullptr);
+
+			--SeekingPlayers;
+		}
+		else
+		{
+			pPlayer->KillCharacter(); // Infect the player
+			pPlayer->StartInfection();
+			pPlayer->m_DieTick = m_RoundStartTick;
 		}
 	}
 }
@@ -3668,6 +3723,39 @@ uint32_t CIcGameController::InfectHumans(uint32_t NumHumansToInfect)
 
 void CIcGameController::ForcePlayersBalance(uint32_t PlayersToBalance)
 {
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		icArray<CIcPlayer *, MAX_CLIENTS> Infected;
+		CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+		while(Iter.Next())
+			Infected.Add(Iter.Player());
+
+		const auto Sorter = [](const CIcPlayer *p1, const CIcPlayer *p2) -> bool {
+			return p1->GetInfectionTimestamp() < p2->GetInfectionTimestamp();
+		};
+		std::stable_sort(Infected.begin(), Infected.end(), Sorter);
+
+		int Timestamp = time_timestamp();
+		for(CIcPlayer *pPlayer : Infected)
+		{
+			SetPlayerPickedTimestamp(pPlayer, Timestamp);
+
+			const EPlayerClass NewClass = ChooseHumanClass(pPlayer);
+			pPlayer->SetClass(NewClass);
+			pPlayer->m_DieTick = m_RoundStartTick;
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTION,
+				_("{str:VictimName} has been revived to balance the game"),
+				"VictimName", Server()->ClientName(pPlayer->GetCid()),
+				nullptr);
+
+			--PlayersToBalance;
+			if(PlayersToBalance == 0)
+			{
+				return;
+			}
+		}
+	}
+
 	// Force balance
 	InfectHumans(PlayersToBalance);
 	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTION,
@@ -4162,8 +4250,9 @@ void CIcGameController::ApplyHideAndSeekAttributes(CIcPlayer *pPlayer)
 		{
 			pCharacter->GiveWeapon(WEAPON_GUN, -1);
 			const int InfectionTick = GetInfectionStartTick();
-			const float SecondsToInfection = (InfectionTick - Server()->Tick()) * 1.0f / Server()->TickSpeed();
-			pCharacter->LoveEffect(SecondsToInfection);
+			const float DisabledAttackBeforeInfection = (InfectionTick - Server()->Tick()) * 1.0f / Server()->TickSpeed();
+			const float DisabledAttackOnSpawn = 2.0f;
+			pCharacter->LoveEffect(IsInfectionStarted() ? DisabledAttackOnSpawn : DisabledAttackBeforeInfection);
 			pCharacter->SetInvincible(2);
 		}
 	}
