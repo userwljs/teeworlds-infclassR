@@ -3638,6 +3638,40 @@ void CIcGameController::RoundTickAfterInitialInfection()
 
 void CIcGameController::PreparePlayerToJoin(CIcPlayer *pPlayer)
 {
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		// Make the player Medic initially
+		bool MakeHuman = true;
+
+		if(IsInfectionStarted())
+		{
+			int NumHumans = 0;
+			int NumInfected = 0;
+			GetPlayerCounter(pPlayer->GetCid(), NumHumans, NumInfected);
+
+			const int NumPlayers = NumHumans + NumInfected + 1;
+			const int NumFirstPickedPlayers = GetMinimumInfectedForPlayers(NumPlayers);
+			const int NeededMedics = maximum<int>(0, NumFirstPickedPlayers - NumHumans);
+
+			// If the gameplay already started then make the player Medic if medics needed
+			// and make it a ghost otherwise.
+			MakeHuman = NeededMedics > 0;
+		}
+
+		if(MakeHuman)
+		{
+			const EPlayerClass NewClass = ChooseHumanClass(pPlayer);
+			pPlayer->SetClass(NewClass);
+		}
+		else
+		{
+			EPlayerClass c = ChooseInfectedClass(pPlayer);
+			pPlayer->SetClass(c);
+		}
+
+		return;
+	}
+
 	if(IsInfectionStarted())
 	{
 		if (!pPlayer->IsInfected())
