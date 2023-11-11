@@ -1,6 +1,7 @@
 #include "bot-player.h"
 
 #include <base/tl/ic_enum.h>
+#include <base/tl/ic_fifo.h>
 #include <engine/shared/config.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/bot_utils.h>
@@ -16,6 +17,9 @@
 #include <game/server/infclass/ic_gamecontroller.h>
 
 static constexpr int InfinityLives = -1;
+static icFifoArray<STilePosition, 320> sa_CheckedPos;
+
+static icFifoArray<SBotDecision, 8> sa_GoodDecisions;
 
 void CBaseBotPlayer::SetTweaks(const TweaksArray &aTweaks)
 {
@@ -134,6 +138,12 @@ CBotPlayer::~CBotPlayer()
 {
 }
 
+void CBotPlayer::ResetAllDecisions()
+{
+	sa_CheckedPos.Clear();
+	sa_GoodDecisions.Clear();
+}
+
 void CBotPlayer::SetBotUtils(CBotUtils *pUtils)
 {
 	m_pUtils = pUtils;
@@ -194,6 +204,18 @@ void CBotPlayer::Tick()
 			m_JumpTargetingTicks--;
 		}
 
+		const int T = Server()->Tick();
+		const int TickSpeed = Server()->TickSpeed();
+		float IgnoreForTime = 5.0f;
+
+		for(int i = ma_IgnorePoints.Size() - 1; i >= 0; --i)
+		{
+			if(T >= ma_IgnorePoints.At(i).Tick + TickSpeed * IgnoreForTime)
+			{
+				ma_IgnorePoints.RemoveAt(i);
+			}
+		}
+
 		if(m_pCharacter)
 		{
 			if(m_pCharacter->IsAlive())
@@ -220,6 +242,11 @@ void CBotPlayer::TickPaused()
 	m_NextRandomFireTick++;
 	m_HookUntilTick++;
 	m_DelayHookUntilTick++;
+
+	for(auto &IgnoredPosition : ma_IgnorePoints)
+	{
+		IgnoredPosition.Tick++;
+	}
 }
 
 void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
@@ -231,6 +258,7 @@ void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	m_NextRandomFireTick = -1;
 	m_RecentObjections.Clear();
 	m_RecentDecisions.Clear();
+	m_BotState = BOTSTATE_ROAMING;
 
 	SetObjection(EObjection::Lookup);
 	ChangeRoamingBehavior();
@@ -326,6 +354,18 @@ void CBotPlayer::UpdateTarget()
 			}
 		}
 		return;
+	}
+
+	if(IsInfected() && (m_BotState == BOTSTATE_ROAMING))
+	{
+		int Tick = Server()->Tick();
+
+		int MaxCheckpoints = std::max<int>(m_RecentDecisions.Size(), 10);
+		for(int i = m_RecentDecisions.Size() - MaxCheckpoints; i < m_RecentDecisions.Size(); ++i)
+		{
+			sa_GoodDecisions.Add(m_RecentDecisions.At(i));
+		}
+		sa_GoodDecisions.Last().Tick = Tick;
 	}
 
 	m_LastTarget = TargetId;
@@ -442,8 +482,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				{
 					BotDebugMessage(VERBOSE_STEPS, "Decide to jump over the wall in %d jumps", WantJumps);
 					WantToJump = true;
-					SetJumpTargetPosition(JumpTarget);
-					m_JumpFromPosition = Pos;
+					SetJumpTargetPosition(JumpTarget, Pos);
 					m_WantedJumps = WantJumps;
 				}
 			}
@@ -469,16 +508,16 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				{
 					if(MaybeJumpOn(JumpTarget))
 					{
-						SetJumpTargetPosition(JumpTarget);
+						SetJumpTargetPosition(JumpTarget, Pos);
 						BotDebugMessage(VERBOSE_STEPS, "Decided to 'jump on' to %.2fx%.2f", m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
 						WantToJump = true;
-						m_JumpFromPosition = Pos;
 						m_WantedJumps = WantJumps;
 
 						PushCheckedPosition(m_JumpTargetPosition);
 					}
 					else
 					{
+						PushIgnoredPosition(JumpTarget);
 						BotDebugMessage(VERBOSE_STEPS, "Ignore 'jump on' to %.2fx%.2f", m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
 					}
 
@@ -524,13 +563,14 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 		if(!WantToJump)
 		{
-			int JumpsToAvoidDanger = GetJumpsToAvoidDanger(&m_JumpTargetPosition);
+			vec2 JumpTarget;
+			int JumpsToAvoidDanger = GetJumpsToAvoidDanger(&JumpTarget);
 			if(JumpsToAvoidDanger)
 			{
 				WantToJump = true;
 
 				m_WantedJumps = JumpsToAvoidDanger;
-				m_JumpFromPosition = Pos;
+				SetJumpTargetPosition(JumpTarget, Pos);
 			}
 		}
 	}
@@ -568,7 +608,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 							// We're moving up
 							if(MaybeJumpOverWall(JumpTarget))
 							{
-								SetJumpTargetPosition(JumpTarget);
+								SetJumpTargetPosition(JumpTarget, Pos);
 								BotDebugMessage(VERBOSE_STEPS, "'jump over' from the air to %.2fx%.2f",
 									m_JumpTargetPosition.x / TileSizeF, m_JumpTargetPosition.y / TileSizeF);
 								m_WantedJumps = MaybeWantJumps;
@@ -592,9 +632,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 				{
 					if(MaybeJumpOn(JumpTarget))
 					{
-						SetJumpTargetPosition(JumpTarget);
+						SetJumpTargetPosition(JumpTarget, Pos);
 						BotDebugMessage(VERBOSE_STEPS, "Jump on from the air");
-						m_JumpFromPosition = Pos;
 						m_WantedJumps = MaybeWantJumps;
 
 						PushCheckedPosition(m_JumpTargetPosition);
@@ -606,8 +645,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					{
 						BotDebugMessage(VERBOSE_STEPS, "Random jump from the air");
 						m_WantedJumps = 1; // GetAvailableJumps();
-						m_JumpFromPosition = Pos;
-						m_JumpTargetPosition = Pos + m_pCharacter->Core()->m_Vel * Server()->TickSpeed();
+						JumpTarget = Pos + m_pCharacter->Core()->m_Vel * Server()->TickSpeed();
+						SetJumpTargetPosition(JumpTarget, Pos);
 					}
 				}
 
@@ -645,25 +684,81 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 	pInput->m_Direction = m_RoamingDirection * KeepMoving;
 
+	if(m_JumpTargetingTicks)
+	{
+		if(IsGrounded())
+		{
+			m_JumpTargetingTicks = 0;
+		}
+	}
+
 	if(WantToJump || m_JumpTargetingTicks)
 	{
 		const float ProximityRadius = m_pCharacter->GetProximityRadius();
-		const float MaxOffset = VectorToTarget.y > 0 ? ProximityRadius : TileSize + ProximityRadius * 1.75f;
+		const bool GoingDown = VectorToTarget.y > 0;
+		const float MaxOffset = GoingDown ? 2 : TileSize + ProximityRadius * 1.75f;
 		if(AbsYToJumpTarget > MaxOffset)
 		{
 			const int DirectionFromJumpToTarget = m_JumpTargetPosition.x >= m_JumpFromPosition.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
-			const float WantedXPos = m_JumpTargetPosition.x - (ProximityRadius + 3.0f) * DirectionFromJumpToTarget;
-			float MaxWantedX = WantedXPos;
-			float MinWantedX = WantedXPos;
+			const float WantedXPos = GoingDown ? m_JumpTargetPosition.x : m_JumpTargetPosition.x - (TileSize - ProximityRadius) * 0.5f * DirectionFromJumpToTarget;
+			float SecondWantedXPos = WantedXPos;
 
-			const float MaxDiff = 4;
-			if(m_JumpTargetPosition.x >= m_JumpFromPosition.x)
+			if(GoingDown)
 			{
-				MinWantedX -= MaxDiff;
+				vec2 CurrentTargetTile = m_JumpTargetPosition;
+				float CurrentY = Pos.y;
+				for(int i = 0; i < 5; ++i)
+				{
+					float TryX = SecondWantedXPos + TileSize * DirectionFromJumpToTarget;
+					if(m_pUtils->GetCollision()->IsSolid(vec2(TryX, CurrentY)))
+					{
+						// Allow only one tile jump for now
+						CurrentY -= TileSize;
+						if(m_pUtils->GetCollision()->IsSolid(vec2(TryX, CurrentY)))
+						{
+							break;
+						}
+					}
+
+					vec2 NextTile(TryX, Pos.y);
+					float Gnd = m_pUtils->GetSolidBelow(NextTile, 8);
+					if(Gnd > Pos.y + TileSize * 7)
+					{
+						break;
+					}
+					else
+					{
+						Gnd -= ProximityRadius / 2;
+
+						if(m_pUtils->IsReachableByGround(CurrentTargetTile, vec2(NextTile.x, Gnd), 1))
+						{
+							CurrentTargetTile = vec2(NextTile.x, Gnd);
+							m_pUtils->GetDebugSink()->HighlightLineSegment(Pos, CurrentTargetTile);
+							SecondWantedXPos = NextTile.x;
+						}
+						else
+						{
+							// GameController()->GameServer()->CreateLoveEvent(vec2(NextTile.x, Gnd));
+							break;
+						}
+					}
+				}
 			}
-			else
+
+			float MaxWantedX = std::max<float>(WantedXPos, SecondWantedXPos);
+			float MinWantedX = std::min<float>(WantedXPos, SecondWantedXPos);
+
+			if(!GoingDown)
 			{
-				MaxWantedX += MaxDiff;
+				const float MaxDiff = (TileSize - ProximityRadius) * 0.375f;
+				if(DirectionFromJumpToTarget == DIRECTION_RIGHT)
+				{
+					MinWantedX -= MaxDiff;
+				}
+				else
+				{
+					MaxWantedX += MaxDiff;
+				}
 			}
 
 			if(Pos.x > MaxWantedX)
@@ -676,17 +771,24 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			}
 			else
 			{
-				pInput->m_Direction = DIRECTION_NONE;
+				if(GoingDown)
+				{
+					pInput->m_Direction = DirectionFromJumpToTarget;
+				}
+				else
+				{
+					pInput->m_Direction = DIRECTION_NONE;
+				}
 			}
 		}
 	}
 
 	if(WantToJump)
 	{
+		const float dYTiles = (Pos.y - m_JumpTargetPosition.y) / TileSizeF;
 		bool MaximizeJump = true;
 		if(!IsGrounded())
 		{
-			const float dYTiles = (Pos.y - m_JumpTargetPosition.y) / TileSizeF;
 			if(dYTiles < m_pUtils->GetAirJumpTiles())
 			{
 				MaximizeJump = false;
@@ -713,7 +815,13 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 		if(m_WantedJumps == 0)
 		{
-			m_JumpTargetingTicks = AbsYToJumpTarget / c_AirJumpImpulse; // Not quite correct
+			float Impulse = IsGrounded() ? c_GroundJumpImpulse : c_AirJumpImpulse;
+			float Velocity = m_pCharacter->Core()->m_Vel.y;
+			int TicksToFall = CBotUtils::GetTicksToFallToHeight(Velocity - Impulse, c_Gravity, m_JumpTargetPosition.y - Pos.y, SERVER_TICK_SPEED * 3);
+
+			BotDebugMessage(VERBOSE_STEPS, "Ticks to fall: %d", TicksToFall);
+
+			m_JumpTargetingTicks = TicksToFall;
 		}
 	}
 
@@ -764,13 +872,17 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	bool WantGoDown = false;
 
 	const float ProximityRadius = m_pCharacter->GetProximityRadius();
-	if(Pos.y > m_LastTargetSeenAtPos.y + ProximityRadius)
+	if(Pos.y > m_LastTargetSeenAtPos.y + ProximityRadius * 2)
 	{
 		if(IsGrounded() || (FallingDown && AvailableJumps > 0))
 		{
 			vec2 VectorToTarget = m_LastTargetSeenAtPos - Pos;
-			int NeedJumps = GetJumpsToReachTarget(VectorToTarget);
-			m_WantedJumps = std::min<int>(AvailableJumps, NeedJumps);
+			const float HorizontalDistance = std::fabs(VectorToTarget.x);
+			if(HorizontalDistance < GetMaxHookDistance())
+			{
+				int NeedJumps = GetJumpsToReachTarget(VectorToTarget);
+				m_WantedJumps = std::min<int>(AvailableJumps, NeedJumps);
+			}
 		}
 
 		WantToJump = m_WantedJumps > 0;
@@ -1308,9 +1420,9 @@ int CBotPlayer::GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps, v
 
 			const int PlatformX = WallPosX / TileSize;
 			const int PlatformY = CheckPosY / TileSize + 1;
-			const int ExtraLenght = 2;
+			const int ExtraLength = 2;
 
-			vec2 TargetPos(PlatformX * TileSize + TileSize * 0.5 - (TileSize * 0.5 + HalfProximityRadius - ExtraLenght) * DirectionSign, PlatformY * TileSize - HalfProximityRadius - ExtraLenght);
+			vec2 TargetPos(PlatformX * TileSize + TileSize * 0.5 - (TileSize * 0.5) * DirectionSign, PlatformY * TileSize - HalfProximityRadius - ExtraLength);
 			vec2 VectorToTarget = TargetPos - Pos;
 			NeedJumps = GetJumpsToReachTarget(VectorToTarget);
 
@@ -1413,7 +1525,7 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 					const int PlatformY = CheckPosY / TileSize + 1;
 					const int ExtraLength = 2;
 
-					vec2 TargetPos(PlatformX * TileSize + TileSize * 0.5 - (TileSize * 0.5 + HalfProximityRadius - ExtraLength) * DirectionSign, PlatformY * TileSize - HalfProximityRadius - ExtraLength);
+					vec2 TargetPos(PlatformX * TileSize + TileSize * 0.5 - (TileSize * 0.5) * DirectionSign, PlatformY * TileSize - HalfProximityRadius - ExtraLength);
 					vec2 VectorToTarget = TargetPos - Pos;
 					int JumpsToReach = GetJumpsToReachTarget(VectorToTarget);
 					if(JumpsToReach <= MaxJumps)
@@ -1503,12 +1615,6 @@ void CBotPlayer::SetState(CBotPlayer::BOTSTATE NewState)
 	if(NewState == BOTSTATE_ROAMING)
 	{
 		BotDebugMessage(VERBOSE_MAIN, "SwitchState: ROAMING");
-
-		static const int RoamingEmotes[] = {
-			EMOTICON_WTF,
-			EMOTICON_QUESTION,
-		};
-		GameServer()->SendEmoticon(GetCid(), RoamingEmotes[random_int(0, 1)]);
 	}
 	else if(NewState == BOTSTATE_HUNTING)
 	{
@@ -1605,32 +1711,37 @@ void CBotPlayer::ChangeRoamingBehavior()
 		break;
 	}
 
+	ma_IgnorePoints.Clear();
+
+	int Emoticon = -1;
 	switch(m_RoamingObjection)
 	{
 	case EObjection::Relax:
-		GameServer()->SendEmoticon(GetCid(), EMOTICON_ZZZ);
 		m_JumpExtraProbability = random_float() - 0.5f;
+		Emoticon = EMOTICON_ZZZ;
 		break;
 	case EObjection::Jump:
-		GameServer()->SendEmoticon(GetCid(), EMOTICON_MUSIC);
+		Emoticon = EMOTICON_MUSIC;
 		m_JumpExtraProbability = random_float();
 		break;
 	case EObjection::CheckTheTop:
-		GameServer()->SendEmoticon(GetCid(), EMOTICON_EXCLAMATION);
 		m_JumpExtraProbability = 0;
 		break;
 	case EObjection::CheckTheMid:
-		GameServer()->SendEmoticon(GetCid(), EMOTICON_EYES);
 		m_JumpExtraProbability = 0;
 		break;
 	case EObjection::CheckTheBottom:
-		GameServer()->SendEmoticon(GetCid(), EMOTICON_OOP);
 		m_JumpExtraProbability = -1;
 		break;
 	case EObjection::Lookup:
 	case EObjection::CheckTheLastSeen:
 	case EObjection::Invalid:
 		break;
+	}
+
+	if(Emoticon >= 0)
+	{
+		GameServer()->SendEmoticon(GetCid(), Emoticon);
 	}
 
 	BotDebugMessage(VERBOSE_STEPS, "ChangeRoaming| Direction: %d, objection: %s, extra jumps: %.2f",
@@ -1751,8 +1862,8 @@ void CBotPlayer::MaybeHookTheTarget(float Distance)
 
 	if(aHookyClasses.Contains(GetClass()))
 	{
-		BaseDelay *= 0.5f;
-		ExtraDelay *= 0.5;
+		BaseDelay *= 0.66f;
+		ExtraDelay *= 0.66f;
 
 		if(m_pCharacter->Core()->HookedPlayer() == m_LastTarget)
 		{
@@ -1881,6 +1992,22 @@ bool CBotPlayer::MaybeFallDown() const
 		return m_pUtils->IsReachableByGround(m_pCharacter->GetPos(), m_LastTargetSeenAtPos, GetMaxJumps());
 	}
 
+	{
+		EDecision GoodDecision = GetGoodDecision();
+		// Good decision:
+		switch(GoodDecision)
+		{
+		case EDecision::Jump:
+			BotDebugMessage(VERBOSE_STEPS, "Someone jumped previously and it was good. Jump.");
+			return false;
+		case EDecision::NoJump:
+			BotDebugMessage(VERBOSE_STEPS, "Someone did not jump here previously and it was good. Do not jump.");
+			return true;
+		default:
+			break;
+		}
+	}
+
 	EDecision PreviousDecision = GetPreviousDecision();
 	if(PreviousDecision == EDecision::Jump)
 	{
@@ -1917,17 +2044,67 @@ bool CBotPlayer::MaybeJumpOverWall(const vec2 &JumpTargetPosition) const
 	return true;
 }
 
-bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition) const
+bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition)
 {
 	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
 	{
 		return m_LastTargetSeenAtPos.y < JumpTargetPosition.y + TileSizeF / 2;
 	}
 
-	if(m_CheckedPositions.Contains(STilePosition::fromPos(JumpTargetPosition)))
 	{
-		if(random_prob(0.75f))
+		EDecision GoodDecision = GetGoodDecision();
+		if(GoodDecision != EDecision::Invalid)
+		{
+			// Definitely go!
+			if(random_prob(0.9f))
+			{
+				GameServer()->SendEmoticon(GetCid(), EMOTICON_EXCLAMATION);
+
+				// Good decision:
+				switch(GoodDecision)
+				{
+				case EDecision::Jump:
+					BotDebugMessage(VERBOSE_STEPS, "Someone jumped previously and it was good. Jump.");
+					return true;
+				case EDecision::NoJump:
+					BotDebugMessage(VERBOSE_STEPS, "Someone did not jump here previously and it was good. Do not jump.");
+					return false;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	STilePosition ShortPos = STilePosition::fromPos(JumpTargetPosition);
+	for(auto &CheckPoint : ma_IgnorePoints)
+	{
+		if(CheckPoint.TilePos == ShortPos)
+		{
 			return false;
+		}
+	}
+
+	bool HasPosition = false;
+	for(const auto &CheckPoint : ma_CheckPoints)
+	{
+		if(CheckPoint.TilePos == ShortPos)
+		{
+			HasPosition = true;
+			break;
+		}
+	}
+
+	const bool Checked = HasPosition || sa_CheckedPos.Contains(ShortPos);
+	constexpr float ChanceToIgnoreAlreadyCheckedPosition = 0.75f;
+	constexpr float ChanceToCheckUncheckedPosition = 0.15f;
+
+	if(Checked)
+	{
+		if(random_prob(ChanceToIgnoreAlreadyCheckedPosition))
+		{
+			return false;
+		}
 	}
 
 	EDecision PreviousDecision = GetPreviousDecision();
@@ -1944,12 +2121,30 @@ bool CBotPlayer::MaybeJumpOn(const vec2 &JumpTargetPosition) const
 
 	if(m_RoamingObjection == EObjection::CheckTheBottom)
 	{
+		if(!Checked)
+		{
+			if(random_prob(ChanceToCheckUncheckedPosition))
+			{
+				BotDebugMessage(VERBOSE_STEPS, "Jump by a chance (check the bottom)");
+				return true;
+			}
+		}
+
 		BotDebugMessage(VERBOSE_STEPS, "Do not jump (check the bottom)");
 		return false;
 	}
 
 	if(m_RoamingObjection == EObjection::CheckTheMid)
 	{
+		if(!Checked)
+		{
+			if(random_prob(ChanceToCheckUncheckedPosition))
+			{
+				BotDebugMessage(VERBOSE_STEPS, "Jump by a chance (check the mid)");
+				return true;
+			}
+		}
+
 		BotDebugMessage(VERBOSE_STEPS, "Do not jump (check the mid)");
 		return false;
 	}
@@ -2066,7 +2261,10 @@ void CBotPlayer::PushDecision(EDecision Decision)
 		m_RecentDecisions.RemoveAt(0);
 	}
 
+	int Tick = Server()->Tick();
+
 	SBotDecision BotDecision;
+	BotDecision.Tick = Tick;
 	BotDecision.Position = Position;
 	BotDecision.Direction = Direction;
 	BotDecision.Objection = m_RoamingObjection;
@@ -2079,7 +2277,7 @@ void CBotPlayer::PushDecision(EDecision Decision)
 EDecision CBotPlayer::GetPreviousDecision() const
 {
 	const vec2 &Pos = GetCharacter()->GetPos();
-	const STilePosition Position = STilePosition::fromPosXY(Pos.x, Pos.y);
+	const STilePosition Position = STilePosition::fromPos(Pos);
 
 	for(const SBotDecision &BotDecision : m_RecentDecisions)
 	{
@@ -2098,12 +2296,43 @@ EDecision CBotPlayer::GetPreviousDecision() const
 	return EDecision::Invalid;
 }
 
+EDecision CBotPlayer::GetGoodDecision() const
+{
+	const vec2 &Pos = GetCharacter()->GetPos();
+	const STilePosition Position = STilePosition::fromPos(Pos);
+	for(int i = 0; i < sa_GoodDecisions.Size(); ++i)
+	{
+		const SBotDecision &BotDecision = sa_GoodDecisions.At(i);
+
+		if(BotDecision.Position != Position)
+			continue;
+
+		if(BotDecision.Direction != m_RoamingDirection)
+			continue;
+
+		return BotDecision.Decision;
+	}
+
+	return EDecision::Invalid;
+}
+
 void CBotPlayer::PushCheckedPosition(const vec2 &Pos)
 {
-	if(m_CheckedPositions.Size() == m_CheckedPositions.Capacity())
-		m_CheckedPositions.RemoveAt(0);
+	if(ma_CheckPoints.Size() == ma_CheckPoints.Capacity())
+		ma_CheckPoints.RemoveAt(0);
 
-	m_CheckedPositions.Add(STilePosition::fromPos(Pos));
+	STilePosition ShortPos = STilePosition::fromPos(Pos);
+	ma_CheckPoints.Add({ShortPos, Server()->Tick()});
+	sa_CheckedPos.Add(ShortPos);
+}
+
+void CBotPlayer::PushIgnoredPosition(const vec2 &Pos)
+{
+	if(ma_IgnorePoints.Size() == ma_IgnorePoints.Capacity())
+		ma_IgnorePoints.RemoveAt(0);
+
+	STilePosition ShortPos = STilePosition::fromPos(Pos);
+	ma_IgnorePoints.Add({ShortPos, Server()->Tick()});
 }
 
 CGameWorld *CBotPlayer::GameWorld() const
@@ -2163,9 +2392,11 @@ float CBotPlayer::GetMaxHookDistance() const
 	return Distance;
 }
 
-void CBotPlayer::SetJumpTargetPosition(const vec2 &JumpTarget)
+void CBotPlayer::SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpFromPosition)
 {
 	// JumpTarget should be the edge of the tile (x % 32 == 0)
 	m_JumpTargetPosition = JumpTarget;
+	m_JumpFromPosition = JumpFromPosition;
+
 	m_pUtils->GetDebugSink()->HighlightPosition(JumpTarget);
 }

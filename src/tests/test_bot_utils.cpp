@@ -6,35 +6,38 @@
 
 const int c_MapData1[] = {
 	// clang-format off
-	1, 1, 1, 1, 1,
-	1, 0, 0, 0, 1,
-	1, 0, 0, 1, 1,
-	1, 0, 0, 1, 1,
-	1, 1, 1, 1, 1,
+	// y\x  0  1  2  3  4
+	/* 0 */ 1, 1, 1, 1, 1,
+	/* 1 */ 1, 0, 0, 0, 1,
+	/* 2 */ 1, 0, 0, 1, 1,
+	/* 3 */ 1, 0, 0, 1, 1,
+	/* 4 */ 1, 1, 1, 1, 1,
 	// clang-format on
 };
 
 const int c_MapData2[] = {
 	// clang-format off
-	1, 1, 1, 1, 1, 1,
-	1, 0, 0, 0, 0, 1,
-	1, 0, 0, 0, 0, 1,
-	1, 0, 0, 1, 0, 1,
-	1, 0, 0, 1, 0, 1,
-	1, 1, 1, 1, 1, 1,
+	// y\x  0  1  2  3  4  5
+	/* 0 */ 1, 1, 1, 1, 1, 1,
+	/* 1 */ 1, 0, 0, 0, 0, 1,
+	/* 2 */ 1, 0, 0, 0, 0, 1,
+	/* 3 */ 1, 0, 0, 1, 0, 1,
+	/* 4 */ 1, 0, 0, 1, 0, 1,
+	/* 5 */ 1, 1, 1, 1, 1, 1,
 	// clang-format on
 };
 
-// const int c_MapData3[] = {
-//	// clang-format off
-//	1, 1, 1, 1, 1, 1,
-//	1, 0, 0, 0, 0, 1,
-//	1, 0, 0, 0, 0, 1,
-//	1, 0, 0, 1, 0, 1,
-//	1, 0, 0, 1, 0, 1,
-//	1, 1, 1, 1, 1, 1,
-//	// clang-format on
-// };
+const int c_MapData3[] = {
+	// clang-format off
+	// y\x  0  1  2  3  4  5  6
+	/* 0 */ 1, 1, 1, 1, 1, 1, 1,
+	/* 1 */ 1, 0, 0, 0, 0, 0, 1,
+	/* 2 */ 1, 0, 0, 0, 0, 0, 1,
+	/* 3 */ 1, 0, 0, 1, 1, 0, 1,
+	/* 4 */ 1, 0, 0, 1, 0, 0, 1,
+	/* 5 */ 1, 1, 1, 1, 1, 1, 1,
+	// clang-format on
+};
 
 class CMockCollision : public ICollision
 {
@@ -77,11 +80,57 @@ public:
 	bool IsVerbosityEnabled(int VerbosityLevel) const override { return false; }
 	void SendFormattedMessage(int VerbosityLevel, const char *pMessage) const override {}
 	void HighlightPosition(const vec2 &Position) override {}
+	void HighlightLineSegment(const vec2 &From, const vec2 &To) override {}
 };
 
 float operator"" _t(long double LengthInTiles)
 {
 	return LengthInTiles * 32;
+}
+
+TEST(BotUtils, GetTicksToReachDistance)
+{
+	{
+		float Velocity = 10;
+		float Acceleration = 0;
+		float Distance = 10;
+		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 1);
+	}
+
+	{
+		float Velocity = 10;
+		float Acceleration = 0;
+		float Distance = 20;
+		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 2);
+	}
+
+	{
+		float Velocity = 10;
+		float Acceleration = 2;
+		float Distance = 22;
+		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 2);
+	}
+
+	{
+		float Velocity = 10;
+		float Acceleration = 2;
+		float Distance = 23;
+		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 3);
+	}
+
+	{
+		float Velocity = -10;
+		float Acceleration = 5;
+		float Distance = 20;
+		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 7);
+	}
+
+	{
+		float Velocity = -10;
+		float Acceleration = 5;
+		float Distance = -10;
+		EXPECT_EQ(CBotUtils::GetTicksToFallToHeight(Velocity, Acceleration, Distance), 4);
+	}
 }
 
 TEST(BotUtils, Collisions)
@@ -192,7 +241,7 @@ TEST(BotUtils, SolidTiles)
 //	EXPECT_TRUE(Utils.GetJumpsNeededToJumpOn(CTilePosition(1, 4), CTilePosition(1, 4), MaxJumps));
 //}
 
-TEST(BotUtils, ReachableByGround)
+TEST(BotUtils, ReachableByGround1)
 {
 	CMockDebugSink DebugSink;
 	CMockCollision Collision;
@@ -219,4 +268,33 @@ TEST(BotUtils, ReachableByGround)
 	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(2, 4), CTilePosition(1, 4), MaxJumps));
 	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(3, 2), CTilePosition(1, 4), MaxJumps));
 	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(4, 4), CTilePosition(1, 4), MaxJumps));
+}
+
+TEST(BotUtils, ReachableByGround2)
+{
+	CMockDebugSink DebugSink;
+	CMockCollision Collision;
+	Collision.SetMapData(c_MapData3, 7, 6);
+	static_assert(std::size(c_MapData3) == 7 * 6);
+
+	CBotUtils Utils;
+	Utils.SetDebugSing(&DebugSink);
+	Utils.SetCollision(&Collision);
+
+	// Sanity check for the map:
+	EXPECT_EQ(Collision.IsSolid(CTilePosition(1, 4)), false);
+	EXPECT_EQ(Collision.IsSolid(CTilePosition(1, 5)), true);
+	EXPECT_EQ(Collision.IsSolid(CTilePosition(4, 4)), false);
+	EXPECT_EQ(Collision.IsSolid(CTilePosition(4, 5)), true);
+
+	int MaxJumps = 1;
+	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(1, 4), CTilePosition(1, 4), MaxJumps));
+
+	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(1, 4), CTilePosition(2, 4), MaxJumps));
+	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(1, 4), CTilePosition(3, 2), MaxJumps));
+	// Currently unreachable (requires direction change)
+	// EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(1, 4), CTilePosition(4, 4), MaxJumps));
+	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(1, 4), CTilePosition(5, 4), MaxJumps));
+
+	EXPECT_FALSE(Utils.IsReachableByGround(CTilePosition(5, 4), CTilePosition(1, 4), MaxJumps));
 }

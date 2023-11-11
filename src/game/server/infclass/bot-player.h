@@ -40,6 +40,11 @@ struct STilePosition
 		return STilePosition(PosX / 32, PosY / 32);
 	}
 
+	vec2 toVec2() const
+	{
+		return vec2(X * 32 + 16, Y * 32 + 16);
+	}
+
 	int16_t X = 0;
 	int16_t Y = 0;
 };
@@ -53,6 +58,12 @@ inline bool operator!=(const STilePosition &lhs, const STilePosition &rhs)
 {
 	return lhs.X != rhs.X || lhs.Y != rhs.Y;
 }
+
+struct SCheckPoint
+{
+	STilePosition TilePos;
+	int Tick = 0;
+};
 
 enum class EDecision : uint8_t
 {
@@ -103,6 +114,7 @@ const char *toString(EObjection Objection);
 struct SBotDecision
 {
 	STilePosition Position;
+	uint32_t Tick = 0;
 	int8_t Direction = 0;
 	EObjection Objection = EObjection::Invalid;
 	EDecision Decision = EDecision::Invalid;
@@ -147,6 +159,8 @@ class CBotPlayer : public CBaseBotPlayer
 public:
 	CBotPlayer(CIcGameController *pGameController, int UniqueClientId, int ClientID, int Team);
 	~CBotPlayer() override;
+
+	static void ResetAllDecisions();
 
 	void SetBotUtils(CBotUtils *pUtils);
 	void Snap(int SnappingClient) override;
@@ -229,14 +243,16 @@ public:
 
 	bool MaybeFallDown() const;
 	bool MaybeJumpOverWall(const vec2 &JumpTargetPosition) const;
-	bool MaybeJumpOn(const vec2 &JumpTargetPosition) const;
+	bool MaybeJumpOn(const vec2 &JumpTargetPosition);
 	bool MaybeRandomJumpUp() const;
 	int GetJumpsToAvoidDanger(vec2 *pTargetPosition = nullptr) const;
 
 	void PushDecision(EDecision Decision);
 	EDecision GetPreviousDecision() const;
+	EDecision GetGoodDecision() const;
 
 	void PushCheckedPosition(const vec2 &Pos);
+	void PushIgnoredPosition(const vec2 &Pos);
 
 protected:
 	CGameWorld *GameWorld() const;
@@ -247,7 +263,7 @@ protected:
 	bool StrongHook() const;
 	float GetMaxHookDistance() const;
 
-	void SetJumpTargetPosition(const vec2 &JumpTarget);
+	void SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpFromPosition);
 
 	CBotUtils *m_pUtils = nullptr;
 	BOTSTATE m_BotState = BOTSTATE_ROAMING;
@@ -257,7 +273,8 @@ protected:
 	int m_RoamingBehaviorTick = 0;
 	icArray<EObjection, 5> m_RecentObjections;
 	icArray<SBotDecision, 64> m_RecentDecisions;
-	icArray<STilePosition, 12> m_CheckedPositions;
+	icArray<SCheckPoint, 12> ma_CheckPoints;
+	icArray<SCheckPoint, 4> ma_IgnorePoints;
 	int m_AirJumps = 0;
 
 	float m_JumpExtraProbability = 0;

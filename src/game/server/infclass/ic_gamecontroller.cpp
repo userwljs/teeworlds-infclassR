@@ -212,7 +212,15 @@ public:
 		if(!IsVerbosityEnabled(VERBOSE_MAIN))
 			return;
 
-		m_pGameContext->CreateHammerDotEvent(Position, m_pGameContext->Server()->TickSpeed() * 2.5);
+		m_pGameContext->CreateHammerDotEvent(Position, m_pGameContext->Server()->TickSpeed() * 3.0f);
+	}
+
+	void HighlightLineSegment(const vec2 &From, const vec2 &To) override
+	{
+		if(!IsVerbosityEnabled(VERBOSE_MAIN))
+			return;
+
+		m_pGameContext->CreateLaserDotEvent(From, To, m_pGameContext->Server()->TickSpeed() * 2.0f);
 	}
 
 protected:
@@ -3755,6 +3763,7 @@ void CIcGameController::StartRound()
 void CIcGameController::ResetRoundData()
 {
 	Server()->ResetStatistics();
+	CBotPlayer::ResetAllDecisions();
 
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
