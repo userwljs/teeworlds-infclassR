@@ -1120,7 +1120,8 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 		{
 			SelfDamage = 0;
 		}
-		CLaserTeleport::OnFired(m_pCharacter, pFireContext, SelfDamage);
+		bool ReleaseHooks = GameController()->GetRoundType() == ERoundType::Survival;
+		CLaserTeleport::OnFired(m_pCharacter, pFireContext, SelfDamage, ReleaseHooks);
 	}
 		return;
 	case EInfclassWeapon::HEALING_GRENADE:

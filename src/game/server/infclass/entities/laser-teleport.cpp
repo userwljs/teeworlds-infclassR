@@ -10,7 +10,7 @@
 
 int CLaserTeleport::EntityId{};
 
-void CLaserTeleport::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext, int SelfDamage)
+void CLaserTeleport::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext, int SelfDamage, bool ReleaseHooks)
 {
 	if(pFireContext->NoAmmo)
 		return;
@@ -27,6 +27,10 @@ void CLaserTeleport::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireC
 	pCharacter->SetPosition(PortalPos.value());
 	pCharacter->ResetHook();
 
+	if(ReleaseHooks)
+	{
+		pCharacter->GameWorld()->ReleaseHooked(OwnerCid);
+	}
 	if(SelfDamage)
 	{
 		pCharacter->TakeDamage(vec2(0.0f, 0.0f), SelfDamage * 2, OwnerCid, EDamageType::SCIENTIST_TELEPORT);
