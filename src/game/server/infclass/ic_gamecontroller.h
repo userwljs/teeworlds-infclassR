@@ -150,6 +150,7 @@ public:
 	void CreateExplosion(const vec2 &Pos, int Owner, EDamageType DamageType, float DamageFactor = 1.0f);
 	void CreateExplosionDisk(vec2 Pos, float InnerRadius, float DamageRadius, int Damage, float Force, int Owner, EDamageType DamageType);
 	void CreateExplosionDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner);
+	void CreateDeathEffectDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner);
 
 	void SendHammerDot(const vec2 &Pos, int SnapId);
 	void SendServerParams(int ClientId) const;

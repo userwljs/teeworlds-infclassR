@@ -30,7 +30,6 @@ enum
 };
 
 /* INFECTION MODIFICATION START ***************************************/
-
 enum
 {
 	CLIENTMEMORY_LANGUAGESELECTION=0,

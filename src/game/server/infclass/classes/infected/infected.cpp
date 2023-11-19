@@ -1,5 +1,5 @@
 #include "infected.h"
-#include "game/generated/protocol.h"
+
 #include "game/server/entity.h"
 #include "game/server/gameworld.h"
 #include "game/server/infclass/classes/ic_playerclass.h"
@@ -777,7 +777,35 @@ void CInfClassInfected::DoBoomerExplosion()
 	}
 
 	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_EXPLODE);
-	GameController()->CreateExplosionDiskGfx(GetPos(), InnerRadius, DamageRadius, m_pPlayer->GetCid());
+
+	if(SlimeExplosion)
+	{
+		static constexpr float MinDistance = 32.0f;
+		GameController()->CreateDeathEffectDiskGfx(GetPos(), InnerRadius, DamageRadius, m_pPlayer->GetCid());
+
+		int Rays = 12;
+		int CurrentTick = Server()->Tick();
+		float AngleStep = 2.0f * pi / Rays;
+		float RandomShift = random_float() * 2.0f * pi;
+		const vec2 From = GetPos();
+		for(int i = 0; i < Rays; i++)
+		{
+			vec2 Dir = direction(AngleStep * i + RandomShift);
+			vec2 To = From + Dir * DamageRadius;
+			CSlugSlime *pSlime = PlaceSlime(To, MinDistance);
+			if(!pSlime)
+				continue;
+
+			const float Distance = distance(From, pSlime->GetPos());
+			int LifeSpan = Server()->TickSpeed() * (2 + 3.0f * Distance / DamageRadius + 3.0f * std::clamp(Dir.y, 0.0f, 1.0f));
+			pSlime->Replenish(GetCid(), CurrentTick + LifeSpan);
+			pSlime->SetDamage(SlimeDamage, SlimeDamageInterval);
+		}
+	}
+	else
+	{
+		GameController()->CreateExplosionDiskGfx(GetPos(), InnerRadius, DamageRadius, m_pPlayer->GetCid());
+	}
 
 	if(pBestBFTarget)
 	{

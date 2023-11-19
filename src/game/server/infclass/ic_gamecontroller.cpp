@@ -1025,6 +1025,22 @@ void CIcGameController::CreateExplosionDiskGfx(vec2 Pos, float InnerRadius, floa
 	}
 }
 
+void CIcGameController::CreateDeathEffectDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner)
+{
+	GameServer()->CreateDeath(Pos, Owner);
+
+	float CircleLength = 2.0 * pi * maximum(DamageRadius - 135.0f, 0.0f);
+	int NumSuroundingExplosions = CircleLength / 32.0f;
+	float AngleStart = random_float() * pi * 2.0f;
+	float AngleStep = pi * 2.0f / static_cast<float>(NumSuroundingExplosions);
+	const float Radius = (DamageRadius - 135.0f);
+	for(int i = 0; i < NumSuroundingExplosions; i++)
+	{
+		vec2 Offset = vec2(Radius * cos(AngleStart + i * AngleStep), Radius * sin(AngleStart + i * AngleStep));
+		GameServer()->CreateDeath(Pos + Offset, Owner);
+	}
+}
+
 void CIcGameController::SendHammerDot(const vec2 &Pos, int SnapId)
 {
 	CNetObj_Projectile *pObj = Server()->SnapNewItem<CNetObj_Projectile>(SnapId);
