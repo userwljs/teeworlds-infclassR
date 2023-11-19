@@ -4610,10 +4610,12 @@ void CIcGameController::Tick()
 			RoundTickBeforeInitialInfection();
 		}
 
+		const int CurrentTick = Server()->Tick();
+		const int BotRemoveDelay = Server()->TickSpeed() * Config()->m_InfBotRemoveDelay;
 		const auto Bots = m_Bots;
 		for(CBaseBotPlayer *pBot : Bots)
 		{
-			if(pBot->Lives() == 0)
+			if((pBot->Lives() == 0) && (CurrentTick > pBot->DieTick() + BotRemoveDelay))
 			{
 				RemoveBot(pBot, "Rage quit");
 			}

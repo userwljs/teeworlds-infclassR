@@ -192,6 +192,7 @@ MACRO_CONFIG_INT(InfWhiteHolePullStrength, inf_white_hole_pull_strength, 30, 0, 
 MACRO_CONFIG_INT(InfBotLives, inf_bot_lives, 0, 0, 30, CFGFLAG_SERVER, "The number of bot lives (for survive rounds)")
 MACRO_CONFIG_INT(InfDebugBot, inf_debug_bot, -1, -1, MAX_CLIENTS, CFGFLAG_SERVER, "Filter the bot debug by one bot Id (-1 to unset)")
 MACRO_CONFIG_INT(InfBotDebugLevel, inf_bot_debug_level, 0, 0, 4, CFGFLAG_SERVER, "Set the bots debug level (0 = off, 4 = max)")
+MACRO_CONFIG_INT(InfBotRemoveDelay, inf_bot_remove_delay, 7, 0, 30, CFGFLAG_SERVER, "Delay the bots removal (on lives==0) for X seconds")
 MACRO_CONFIG_INT(InfSurvivalInfectedSpawningDelay, inf_survival_infected_spawning_delay, 7, 0, 30, CFGFLAG_SERVER, "The number of seconds for humans to pull themselves together")
 
 MACRO_CONFIG_INT(InfSurvivalMode, inf_survival_mode, 0, 0, 2, CFGFLAG_SERVER, "Survival mode (0 = off, 1 = kill-based, 2 = time-based)")
