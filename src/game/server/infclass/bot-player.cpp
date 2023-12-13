@@ -1658,7 +1658,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	pInput->m_TargetX = m_LastTargetSeenAtPos.x - Pos.x;
 	pInput->m_TargetY = m_LastTargetSeenAtPos.y - Pos.y;
 
-	float FirePerSecond = 0.3f;
+	float FirePerSecond = 0.35f;
 	// TODO: This should be the target proximity radius
 	const float HitDistance = GetCharacterClass()->GetHammerProjOffset() + GetCharacterClass()->GetHammerRange() + m_pCharacter->GetProximityRadius();
 
@@ -1666,7 +1666,10 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		if(GetCharacter()->GetReloadTimer() <= 0)
 		{
-			pInput->m_Fire = true;
+			if(Tick > m_LastFireTick + Server()->TickSpeed() * FirePerSecond)
+			{
+				pInput->m_Fire = true;
+			}
 		}
 	}
 	else if(Distance < HitDistance * 2)
