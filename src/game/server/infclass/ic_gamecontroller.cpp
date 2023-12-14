@@ -502,7 +502,12 @@ void CIcGameController::DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfect
 
 void CIcGameController::OnHeroFlagCollected(int ClientId)
 {
-	GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, _("The Hero found the flag!"), NULL);
+	const char *pText = _("The Hero found the flag!");
+	if(GetRoundType() == ERoundType::Survival)
+	{
+		pText = _("The Hero got the flag!");
+	}
+	GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, pText, NULL);
 	GameServer()->CreateSoundGlobal(SOUND_CTF_CAPTURE);
 
 	int Tick = Server()->Tick();
