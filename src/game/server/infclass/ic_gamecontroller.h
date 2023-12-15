@@ -315,6 +315,8 @@ public:
 	static void ConWeaponForce(IConsole::IResult *pResult, void *pUserData);
 	static void ConListWeapons(IConsole::IResult *pResult, void *pUserData);
 
+	static void ConGetActivePlayersNumber(IConsole::IResult *pResult, void *pUserData);
+
 	static void ConStartSurvivalScenario(IConsole::IResult *pResult, void *pUserData);
 	void ConStartSurvivalScenario(IConsole::IResult *pResult);
 

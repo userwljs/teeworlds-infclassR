@@ -1667,6 +1667,8 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	Console()->Register("inf_weapon_force", "s[weapon] ?f[force]", CFGFLAG_SERVER, ConWeaponForce, this, "Set InfClass weapon (base) force");
 	Console()->Register("inf_list_weapons", "", CFGFLAG_SERVER, ConListWeapons, this, "List InfClass weapon names");
 
+	pConsole->Register("active_players_number", "", CFGFLAG_SERVER, ConGetActivePlayersNumber, this, "Get the number of active players (excluding spectators and bots)");
+
 	pConsole->Register("restore_client_name", "i[ClientId]", CFGFLAG_SERVER, ConRestoreClientName, this, "Set the name of a player");
 	pConsole->Register("set_client_name", "i[ClientId] r[name]", CFGFLAG_SERVER, ConSetClientName, this, "Set the name of a player (and also lock it)");
 	pConsole->Register("lock_client_name", "i[ClientId] i[lock]", CFGFLAG_SERVER, ConLockClientName, this, "Set the name of a player");
@@ -1880,6 +1882,23 @@ void CIcGameController::ConListWeapons(IConsole::IResult *pResult, void *pUserDa
 
 		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", line.c_str());
 	} while(!LastWeaponProcessed);
+}
+
+void CIcGameController::ConGetActivePlayersNumber(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+
+	int NumHumans = 0;
+	int NumInfected = 0;
+	pSelf->GetPlayerCounter(-1, NumHumans, NumInfected);
+
+	const int ActivePlayerCounter = NumHumans + NumInfected;
+
+	char aBuf[64];
+	str_format(aBuf, sizeof(aBuf), "Active players number: %d", ActivePlayerCounter);
+	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+
+	pResult->m_Value = ActivePlayerCounter;
 }
 
 void CIcGameController::ConStartSurvivalScenario(IConsole::IResult *pResult, void *pUserData)
