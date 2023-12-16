@@ -1237,7 +1237,8 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		break;
 	case EInfclassWeapon::SNIPER_RIFLE:
 	{
-		Damage = m_pCharacter->PositionIsLocked() ? 30 : random_int(10, 13);
+		int LockedPosDamage = m_UpgradeLevel >= SniperLaserPiercingUpgradeLevel ? 40 : 30;
+		Damage = m_pCharacter->PositionIsLocked() ? LockedPosDamage : random_int(10, 13);
 		CIcLaser *pLaser = new CIcLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
 		pLaser->SetPiercing(m_UpgradeLevel >= SniperLaserPiercingUpgradeLevel);
 		pLaser->DoBounce();
@@ -2539,6 +2540,7 @@ void CInfClassHuman::GiveUpgrade()
 		else if(m_UpgradeLevel == SniperLaserPiercingUpgradeLevel)
 		{
 			pMessage2 = _("The laser now pierces the targets");
+			pMessage3 = _("The damage in locked position increased to 40 hit points");
 		}
 		break;
 	case EPlayerClass::Scientist:
