@@ -40,6 +40,7 @@ static const int s_SniperPositionLockTimeLimit = 15;
 constexpr int MercBombUpgradeLevel = 1;
 constexpr int MercGrenadesUpgradeLevel = 2;
 constexpr int MercBombUpgrade2Level = 2;
+constexpr int MercGunRegenUpgradeLevel = 3;
 constexpr int MedicShotgunSpreadUpgradeLevel = 1;
 constexpr int MedicShotgunAmmoUpgradeLevel = 2;
 constexpr int MedicHealingHoseUpgradeLevel = 3;
@@ -184,7 +185,7 @@ CAmmoParams CInfClassHuman::GetAmmoParams(int Weapon) const
 		Params.MaxAmmo = minimum(Params.MaxAmmo + m_NinjaAmmoBuff, 10);
 		break;
 	case EInfclassWeapon::MERCENARY_GUN:
-		if(m_pCharacter->GetInAirTick() > Server()->TickSpeed() * 4)
+		if(m_pCharacter->GetInAirTick() > Server()->TickSpeed() * m_MercInAirAmmoRegenMaxTime)
 		{
 			Params.RegenInterval = 0;
 		}
@@ -1789,6 +1790,7 @@ void CInfClassHuman::ResetUpgrades()
 	}
 
 	m_LaserReachModifier = 1.0f;
+	m_MercInAirAmmoRegenMaxTime = 4.0f;
 }
 
 void CInfClassHuman::OnNinjaTargetKiller(bool Assisted)
@@ -2440,6 +2442,11 @@ void CInfClassHuman::GiveUpgrade()
 				pMessage3 = _("And the bomb can be charged to 150%");
 				m_MercBombs *= 1.5f;
 			}
+		}
+		if(m_UpgradeLevel == MercGunRegenUpgradeLevel)
+		{
+			pMessage3 = _("In air gun ammo regeneration now works for 12 seconds (3x longer)");
+			m_MercInAirAmmoRegenMaxTime = 12.0f;
 		}
 		break;
 	case EPlayerClass::Medic:
