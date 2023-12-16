@@ -12,6 +12,8 @@
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 
+#include "growingexplosion.h"
+
 CIcLaser::CIcLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon) :
 	CIcEntity(pGameContext, CGameWorld::ENTTYPE_LASER, Pos, Owner), m_Weapon(InfClassWeapon)
 {
@@ -77,6 +79,11 @@ void CIcLaser::DoBounce()
 
 	if(m_Energy < 0)
 	{
+		if(m_Explosive)
+		{
+			new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), GetOwner(), 1, GetDamageType());
+		}
+
 		GameWorld()->DestroyEntity(this);
 		return;
 	}

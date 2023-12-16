@@ -54,6 +54,9 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 		case EDamageType::SCIENTIST_MINE:
 			m_ExplosionEffect = EGrowingExplosionEffect::ELECTRIFY_INFECTED;
 			break;
+		case EDamageType::LOOPER_LASER:
+			m_ExplosionEffect = EGrowingExplosionEffect::SHOCK_INFECTED;
+			break;
 		case EDamageType::WHITE_HOLE:
 			m_ExplosionEffect = EGrowingExplosionEffect::BOOM_INFECTED;
 			break;
@@ -144,6 +147,7 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 		}
 		break;
 	case EGrowingExplosionEffect::ELECTRIFY_INFECTED:
+	case EGrowingExplosionEffect::SHOCK_INFECTED:
 	{
 		//~ GameServer()->CreateHammerHit(m_SeedPos);
 
@@ -221,6 +225,7 @@ void CGrowingExplosion::Tick()
 						}
 						break;
 					case EGrowingExplosionEffect::ELECTRIFY_INFECTED:
+					case EGrowingExplosionEffect::SHOCK_INFECTED:
 					{
 						vec2 EndPoint = m_SeedPos + vec2(32.0f*(i-m_MaxGrowing) - 16.0f + random_float()*32.0f, 32.0f*(j-m_MaxGrowing) - 16.0f + random_float()*32.0f);
 						m_pGrowingMapVec[j*m_GrowingMap_Length+i] = EndPoint;
@@ -377,6 +382,21 @@ void CGrowingExplosion::Tick()
 				case EGrowingExplosionEffect::ELECTRIFY_INFECTED:
 				{
 					int Damage = GetActualDamage();
+					if(Damage)
+					{
+						p->TakeDamage(normalize(p->m_Pos - m_SeedPos) * 4.0f, Damage, GetOwner(), m_DamageType);
+					}
+					m_Hit[p->GetCid()] = true;
+					break;
+				}
+				case EGrowingExplosionEffect::SHOCK_INFECTED:
+				{
+					float Distance = distance(p->m_Pos, m_SeedPos);
+					float MaxDistance = (m_MaxGrowing + 1) * TileSizeF;
+					float Rate = 1.0f - (Distance / MaxDistance) * 0.75f;
+					p->SlowMotionEffect(0.3 * Rate, m_Owner);
+
+					float Damage = 3 * Rate;
 					if(Damage)
 					{
 						p->TakeDamage(normalize(p->m_Pos - m_SeedPos) * 4.0f, Damage, GetOwner(), m_DamageType);

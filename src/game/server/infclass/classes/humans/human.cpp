@@ -58,6 +58,7 @@ constexpr int BiologistShotgunSpreadUpgradeLevel = 1;
 constexpr int BiologistMineChargesUpgradeLevel = 2;
 constexpr int LooperLaserAmmoUpgradeLevel = 1;
 constexpr int LooperGrenadesUpgradeLevel = 2;
+constexpr int LooperLaserWeaponUpgradeLevel = 3;
 
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassHuman, MAX_CLIENTS)
 
@@ -359,6 +360,10 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		else if(m_UpgradeLevel < LooperGrenadesUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
+		}
+		else if(m_UpgradeLevel < LooperLaserWeaponUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
 		}
 		break;
 	default:
@@ -1213,9 +1218,16 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		CMedicLaser::OnFired(m_pCharacter, pFireContext, StartEnergy);
 		return;
 	case EInfclassWeapon::LOOPER_LASER:
+	{
 		StartEnergy *= 0.7f;
 		Damage = 5;
-		CIcLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		CIcLaser *pLaser = new CIcLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		if(m_UpgradeLevel >= LooperLaserWeaponUpgradeLevel)
+		{
+			pLaser->SetExplosive(true);
+		}
+		pLaser->DoBounce();
+	}
 		break;
 	case EInfclassWeapon::SNIPER_RIFLE:
 		Damage = m_pCharacter->PositionIsLocked() ? 30 : random_int(10, 13);
@@ -2421,7 +2433,7 @@ void CInfClassHuman::GiveUpgrade()
 		{
 			if(m_UpgradeLevel == MercGrenadesUpgradeLevel)
 			{
-				pMessage2 = _("Your grenades now explode automatically");
+				pMessage2 = _("The grenades now explode automatically");
 			}
 			if(m_UpgradeLevel == MercBombUpgrade2Level)
 			{
@@ -2545,6 +2557,10 @@ void CInfClassHuman::GiveUpgrade()
 		{
 			pMessage2 = _("The grenades regeneration speed increased by 50%");
 			m_WeaponRegenIntervalModifier[WEAPON_GRENADE] = 0.5f;
+		}
+		else if(m_UpgradeLevel == LooperLaserWeaponUpgradeLevel)
+		{
+			pMessage2 = _("The laser rifle now has shock-explosive ammo");
 		}
 		break;
 	default:
