@@ -37,10 +37,10 @@
 
 static const int s_SniperPositionLockTimeLimit = 15;
 
-constexpr int MercBombUpgradeLevel = 1;
+constexpr int MercBombToolsUpgradeLevel = 1;
+constexpr int MercGunRegenUpgradeLevel = 2;
 constexpr int MercGrenadesUpgradeLevel = 2;
-constexpr int MercBombUpgrade2Level = 2;
-constexpr int MercGunRegenUpgradeLevel = 3;
+constexpr int MercBombSuperchargeUpgradeLevel = 3;
 constexpr int MedicShotgunSpreadUpgradeLevel = 1;
 constexpr int MedicShotgunAmmoUpgradeLevel = 2;
 constexpr int MedicHealingHoseUpgradeLevel = 3;
@@ -276,13 +276,17 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 	switch(GetPlayerClass())
 	{
 	case EPlayerClass::Mercenary:
-		if(m_UpgradeLevel < MercBombUpgradeLevel)
+		if(m_UpgradeLevel < MercBombToolsUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_ARMOR);
 		}
-		else if(m_UpgradeLevel < MercGrenadesUpgradeLevel)
+		else if(m_UpgradeLevel < MercGunRegenUpgradeLevel)
 		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GUN);
+		}
+		else if(m_UpgradeLevel < MercBombSuperchargeUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_HEALTH);
 		}
 		break;
 	case EPlayerClass::Medic:
@@ -725,7 +729,7 @@ void CInfClassHuman::OnCharacterDamage(SDamageContext *pContext)
 	case EPlayerClass::Mercenary:
 		if(pContext->Mode == TAKEDAMAGEMODE::ALLOW_SELFHARM)
 		{
-			if(m_UpgradeLevel >= MercBombUpgradeLevel)
+			if(m_UpgradeLevel >= MercBombToolsUpgradeLevel)
 			{
 				pContext->Damage = 0;
 				pContext->Force *= 0.5f;
@@ -2335,7 +2339,7 @@ void CInfClassHuman::RemoveWhiteHole()
 
 void CInfClassHuman::UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints)
 {
-	if(m_UpgradeLevel >= MercBombUpgradeLevel)
+	if(m_UpgradeLevel >= MercBombToolsUpgradeLevel)
 	{
 		UpgradePoints *= 1.5;
 	}
@@ -2425,28 +2429,28 @@ void CInfClassHuman::GiveUpgrade()
 	switch(GetPlayerClass())
 	{
 	case EPlayerClass::Mercenary:
-		if(m_UpgradeLevel == MercBombUpgradeLevel)
+		if(m_UpgradeLevel == MercBombToolsUpgradeLevel)
 		{
-			pMessage1 = _("You have found an upgrade!");
+			pMessage1 = _("You have found bomb tools upgrade!");
 			pMessage2 = _("Your bombs won't damage you anymore");
 			pMessage3 = _("And now you can charge them much faster");
 		}
-		else
-		{
-			if(m_UpgradeLevel == MercGrenadesUpgradeLevel)
-			{
-				pMessage2 = _("The grenades now explode automatically");
-			}
-			if(m_UpgradeLevel == MercBombUpgrade2Level)
-			{
-				pMessage3 = _("And the bomb can be charged to 150%");
-				m_MercBombs *= 1.5f;
-			}
-		}
 		if(m_UpgradeLevel == MercGunRegenUpgradeLevel)
 		{
-			pMessage3 = _("In air gun ammo regeneration now works for 12 seconds (3x longer)");
+			pMessage2 = _("In air gun ammo regeneration now works for 12 seconds (3x longer)");
 			m_MercInAirAmmoRegenMaxTime = 12.0f;
+		}
+		if(m_UpgradeLevel == MercGrenadesUpgradeLevel)
+		{
+			pMessage3 = _("The grenades now explode automatically");
+		}
+		if(m_UpgradeLevel == MercBombSuperchargeUpgradeLevel)
+		{
+			pMessage1 = _("You have found a bomb supercharger!");
+			pMessage2 = _("The bombs maximum charge increased to 150%");
+			m_MercBombs *= 1.5f;
+			pMessage3 = _("And also the gun ammo regeneration speed increased by 25%");
+			m_WeaponRegenIntervalModifier[WEAPON_GUN] = 0.75f;
 		}
 		break;
 	case EPlayerClass::Medic:
