@@ -36,19 +36,30 @@ bool CIcLaser::HitTarget(vec2 From, vec2 To)
 	CCharacter *pIntersect = GameWorld()->IntersectCharacter(m_Pos, To, 0.f, At, CombinedFilter);
 	CIcCharacter *pHit = CIcCharacter::GetInstance(pIntersect);
 
-	if(!pHit)
-		return false;
+	while(pHit)
+	{
+		IgnoreHits.Add(pHit);
+		bool Confirmed = OnCharacterHit(pHit);
+		if(Confirmed)
+		{
+			m_From = From;
+			m_Pos = At;
+			m_Energy = -1;
+			return true;
+		}
 
-	m_From = From;
-	m_Pos = At;
-	m_Energy = -1;
+		pIntersect = GameWorld()->IntersectCharacter(m_Pos, To, 0.f, At, CombinedFilter);
+		pHit = CIcCharacter::GetInstance(pIntersect);
+	}
 
-	return OnCharacterHit(pHit);
+	return false;
 }
 
 bool CIcLaser::OnCharacterHit(CIcCharacter *pHit)
 {
-	pHit->TakeDamage(vec2(0.f, 0.f), m_Dmg, GetOwner(), GetDamageType());
+	float DamageLeft = 0;
+	pHit->TakeDamage(vec2(0.f, 0.f), m_Dmg, GetOwner(), GetDamageType(), &DamageLeft);
+	m_Dmg = DamageLeft / 2;
 
 	if(m_Weapon == EInfclassWeapon::LOOPER_LASER)
 	{
@@ -57,7 +68,7 @@ bool CIcLaser::OnCharacterHit(CIcCharacter *pHit)
 		GameServer()->SendEmoticon(pHit->GetCid(), EMOTICON_EXCLAMATION);
 	}
 
-	return true;
+	return !m_Piercing || (m_Dmg < 1);
 }
 
 void CIcLaser::DoBounce()
@@ -138,6 +149,11 @@ void CIcLaser::Snap(int SnappingClient)
 void CIcLaser::SetExplosive(bool Explosive)
 {
 	m_Explosive = Explosive;
+}
+
+void CIcLaser::SetPiercing(bool Piercing)
+{
+	m_Piercing = Piercing;
 }
 
 void CIcLaser::SetSnapType(int LaserType)

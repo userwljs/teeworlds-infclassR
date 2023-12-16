@@ -23,6 +23,7 @@ public:
 	virtual void DoBounce();
 
 	void SetExplosive(bool Explosive);
+	void SetPiercing(bool Piercing);
 	void SetSnapType(int LaserType);
 
 protected:
@@ -43,6 +44,7 @@ protected:
 	int m_EvalTick = 0;
 	int m_Dmg = 0;
 	bool m_Explosive = false;
+	bool m_Piercing = false;
 };
 
 #endif // GAME_SERVER_INFCLASS_ENTITIES_LASER_H
