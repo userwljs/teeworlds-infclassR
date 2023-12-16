@@ -926,6 +926,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/flyingpoint.h
   infclass/entities/growingexplosion.cpp
   infclass/entities/growingexplosion.h
+  infclass/entities/healing_particle.cpp
+  infclass/entities/healing_particle.h
   infclass/entities/hero-flag.cpp
   infclass/entities/hero-flag.h
   infclass/entities/ic_character.cpp

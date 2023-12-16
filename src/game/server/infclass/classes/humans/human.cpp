@@ -16,6 +16,7 @@
 #include <game/server/infclass/entities/bouncing-bullet.h>
 #include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/growingexplosion.h>
+#include <game/server/infclass/entities/healing_particle.h>
 #include <game/server/infclass/entities/hero-flag.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_projectile.h>
@@ -41,6 +42,7 @@ constexpr int MercGrenadesUpgradeLevel = 2;
 constexpr int MercBombUpgrade2Level = 2;
 constexpr int MedicShotgunSpreadUpgradeLevel = 1;
 constexpr int MedicShotgunAmmoUpgradeLevel = 2;
+constexpr int MedicHealingHoseUpgradeLevel = 3;
 constexpr int HeroFlagGiftUpgradeLevel = 1;
 constexpr int HeroWeaponsUpgradeLevel = 2;
 constexpr int HeroArmorUpgradeLevel = 3;
@@ -186,6 +188,13 @@ CAmmoParams CInfClassHuman::GetAmmoParams(int Weapon) const
 			Params.RegenInterval = 0;
 		}
 		break;
+	case EInfclassWeapon::HEALING_GRENADE:
+		if(m_UpgradeLevel >= MedicHealingHoseUpgradeLevel)
+		{
+			Params.MaxAmmo = 16;
+			Params.RegenInterval = 1000;
+		}
+		break;
 	default:
 		break;
 	}
@@ -278,6 +287,10 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		if(m_UpgradeLevel < MedicShotgunAmmoUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
+		}
+		else if(m_UpgradeLevel < MedicHealingHoseUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
 		}
 		break;
 	case EPlayerClass::Hero:
@@ -2182,8 +2195,15 @@ void CInfClassHuman::OnMedicGrenadeFired(WeaponFireContext *pFireContext)
 	if(pFireContext->NoAmmo)
 		return;
 
-	int HealingExplosionRadius = 4;
-	new CGrowingExplosion(GameServer(), GetPos(), GetDirection(), GetCid(), HealingExplosionRadius, EGrowingExplosionEffect::HEAL_HUMANS);
+	if(m_UpgradeLevel >= MedicHealingHoseUpgradeLevel)
+	{
+		new CHealingParticle(GameServer(), GetPos(), GetCid(), GetDirection());
+	}
+	else
+	{
+		int HealingExplosionRadius = 4;
+		new CGrowingExplosion(GameServer(), GetPos(), GetDirection(), GetCid(), HealingExplosionRadius, EGrowingExplosionEffect::HEAL_HUMANS);
+	}
 
 	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
 }
@@ -2421,6 +2441,11 @@ void CInfClassHuman::GiveUpgrade()
 		{
 			pMessage2 = _("The shotgun ammo regeneration speed increased by 33%");
 			m_WeaponRegenIntervalModifier[WEAPON_SHOTGUN] = 0.67f;
+		}
+		else if(m_UpgradeLevel == MedicHealingHoseUpgradeLevel)
+		{
+			pMessage2 = _("The healing grenade launcher replaced with new Medi Hose");
+			m_WeaponReloadIntervalModifier[WEAPON_GRENADE] = 0.4f;
 		}
 		break;
 	case EPlayerClass::Hero:

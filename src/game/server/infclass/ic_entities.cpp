@@ -6,6 +6,7 @@
 #include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/flyingpoint.h>
 #include <game/server/infclass/entities/growingexplosion.h>
+#include <game/server/infclass/entities/healing_particle.h>
 #include <game/server/infclass/entities/hero-flag.h>
 #include <game/server/infclass/entities/ic_door.h>
 #include <game/server/infclass/entities/ic_projectile.h>
@@ -30,6 +31,7 @@ void CIcGameController::RegisterEntityTypes()
 	GameWorld()->RegisterEntityType<CEngineerWall>();
 	GameWorld()->RegisterEntityType<CFlyingPoint>();
 	GameWorld()->RegisterEntityType<CGrowingExplosion>();
+	GameWorld()->RegisterEntityType<CHealingParticle>();
 	GameWorld()->RegisterEntityType<CHeroFlag>();
 	GameWorld()->RegisterEntityType<CIcProjectile>();
 	GameWorld()->RegisterEntityType<CLaserTeleport>();
@@ -58,6 +60,7 @@ void CIcGameController::DestroyChildEntities(int OwnerId)
 		CEngineerWall::EntityId,
 		CFlyingPoint::EntityId,
 		CGrowingExplosion::EntityId,
+		CHealingParticle::EntityId,
 		CHeroFlag::EntityId,
 		CIcProjectile::EntityId,
 		CLaserTeleport::EntityId,
@@ -78,6 +81,7 @@ void CIcGameController::DestroyChildEntities(int OwnerId)
 		CBouncingBullet::EntityId,
 		CEngineerWall::EntityId,
 		CGrowingExplosion::EntityId,
+		CHealingParticle::EntityId,
 		CLooperWall::EntityId,
 		CMercenaryBomb::EntityId,
 		CScientistMine::EntityId,
