@@ -43,6 +43,7 @@ constexpr int MedicShotgunSpreadUpgradeLevel = 1;
 constexpr int MedicShotgunAmmoUpgradeLevel = 2;
 constexpr int HeroFlagGiftUpgradeLevel = 1;
 constexpr int HeroWeaponsUpgradeLevel = 2;
+constexpr int HeroArmorUpgradeLevel = 3;
 constexpr int NinjaSlashBreaksHooksUpgradeLevel = 1;
 constexpr int NinjaFlashGrenadeUpgradeLevel = 2;
 constexpr int NinjaSlashComboUpgradeLevel = 3;
@@ -267,6 +268,10 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		else if(m_UpgradeLevel < HeroWeaponsUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, {WEAPON_GUN, WEAPON_SHOTGUN, WEAPON_GRENADE, WEAPON_LASER});
+		}
+		else if(m_UpgradeLevel < HeroArmorUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_ARMOR);
 		}
 		break;
 	case EPlayerClass::Ninja:
@@ -2254,7 +2259,7 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 
 	{
 		// Gift to self
-		m_pCharacter->SetHealthArmor(10, 10);
+		m_pCharacter->SetHealthArmor(10, m_pCharacter->GetMaxArmor());
 		m_pCharacter->GiveWeapon(WEAPON_GUN, -1);
 		m_pCharacter->GiveWeapon(WEAPON_SHOTGUN, -1);
 		m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
@@ -2368,6 +2373,17 @@ void CInfClassHuman::GiveUpgrade()
 			for(float &Modifier : m_WeaponReloadIntervalModifier)
 			{
 				Modifier = 0.80f;
+			}
+		}
+		else if (m_UpgradeLevel == HeroArmorUpgradeLevel)
+		{
+			pMessage1 = _("You have found an armor upgrade");
+			int NewArmor = 20;
+			pMessage2 = _("('full armor' now means 20 hit points)");
+			if (m_pCharacter)
+			{
+				m_pCharacter->SetMaxArmor(NewArmor);
+				m_pCharacter->SetHealthArmor(m_pCharacter->GetHealth(), NewArmor);
 			}
 		}
 		break;
