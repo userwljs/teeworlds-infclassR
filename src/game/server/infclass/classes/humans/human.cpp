@@ -52,6 +52,7 @@ constexpr int NinjaFlashGrenadeUpgradeLevel = 2;
 constexpr int NinjaSlashComboUpgradeLevel = 3;
 constexpr int SniperLaserAmmoUpgradeLevel = 1;
 constexpr int SniperLaserRangeUpgradeLevel = 2;
+constexpr int SniperLaserPiercingUpgradeLevel = 3;
 constexpr int ScientistLaserAmmoUpgradeLevel = 1;
 constexpr int ScientistTeleportGunUpgradeLevel = 2;
 constexpr int ScientistExtraMineUpgradeLevel = 3;
@@ -328,7 +329,7 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		}
 		break;
 	case EPlayerClass::Sniper:
-		if(m_UpgradeLevel < SniperLaserRangeUpgradeLevel)
+		if(m_UpgradeLevel < SniperLaserPiercingUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
 		}
@@ -1235,9 +1236,13 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 	}
 		break;
 	case EInfclassWeapon::SNIPER_RIFLE:
+	{
 		Damage = m_pCharacter->PositionIsLocked() ? 30 : random_int(10, 13);
-		CIcLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		CIcLaser *pLaser = new CIcLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		pLaser->SetPiercing(m_UpgradeLevel >= SniperLaserPiercingUpgradeLevel);
+		pLaser->DoBounce();
 		break;
+	}
 	case EInfclassWeapon::ENGINEER_LASER:
 	case EInfclassWeapon::HERO_LASER:
 		CIcLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
@@ -2530,6 +2535,10 @@ void CInfClassHuman::GiveUpgrade()
 			// TODO:
 			// pMessage3 = _("Also the attack from locked position now pierces the targets");
 			m_LaserReachModifier = 1.5f;
+		}
+		else if(m_UpgradeLevel == SniperLaserPiercingUpgradeLevel)
+		{
+			pMessage2 = _("The laser now pierces the targets");
 		}
 		break;
 	case EPlayerClass::Scientist:
