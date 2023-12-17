@@ -1813,7 +1813,7 @@ void CBotPlayer::ScheduleRandomFire()
 		}
 	}
 
-	m_NextRandomFireTick = m_LastFireTick + Server()->TickSpeed() * FireInterval;
+	m_NextRandomFireTick = Server()->Tick() + Server()->TickSpeed() * FireInterval;
 }
 
 const char *CBotPlayer::DumpBot()
