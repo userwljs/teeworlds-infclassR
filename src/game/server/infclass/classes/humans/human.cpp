@@ -2532,10 +2532,8 @@ void CInfClassHuman::GiveUpgrade()
 		}
 		else if(m_UpgradeLevel == SniperLaserRangeUpgradeLevel)
 		{
-			pMessage2 = _("The laser rifle range increased by 50%");
-			// TODO:
-			// pMessage3 = _("Also the attack from locked position now pierces the targets");
-			m_LaserReachModifier = 1.5f;
+			pMessage2 = _("The laser rifle range increased by 40%");
+			m_LaserReachModifier = 1.4f;
 		}
 		else if(m_UpgradeLevel == SniperLaserPiercingUpgradeLevel)
 		{
