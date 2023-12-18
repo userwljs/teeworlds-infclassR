@@ -92,6 +92,7 @@ MACRO_CONFIG_INT(InfSlimeMaxHeal, inf_slime_max_heal, 12, 0, 100, CFGFLAG_SERVER
 MACRO_CONFIG_INT(InfInfzoneHealRate, inf_infzone_heal_rate, 3, 0, 10000, CFGFLAG_SERVER, "Infection zone heals infected for X hearts every second")
 MACRO_CONFIG_FLOAT(InfSleeperTakeDamageRatio, inf_sleeper_take_damage_ratio, 1.0, 1, 4, CFGFLAG_SERVER, "The ratio of damage taken by a sleeping tee (1.0 to 4.0)")
 MACRO_CONFIG_INT(InfScientistTpSelfharm, inf_scientist_tp_selfharm, 0, 0, 10000, CFGFLAG_SERVER, "Self damage on each teleportation")
+MACRO_CONFIG_INT(InfSciPortalLifespan, inf_sci_portal_lifespan, 40, 0, 10000, CFGFLAG_SERVER, "aaa")
 MACRO_CONFIG_INT(InfBatAirjumpLimit, inf_bat_airjump_limit, 10000, 0, 10000, CFGFLAG_SERVER, "Max number of extra airjumps")
 MACRO_CONFIG_INT(InfBatDamage, inf_bat_damage, 3, 0, 10000, CFGFLAG_SERVER, "Damage taken by bat")
 MACRO_CONFIG_INT(InfBatLifeSteal, inf_bat_life_steal, 2, 0, 10000, CFGFLAG_SERVER, "Amount of HP given to a bat per hammer hit")

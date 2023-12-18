@@ -25,6 +25,7 @@
 #include <game/server/infclass/entities/medic-laser.h>
 #include <game/server/infclass/entities/merc-bomb.h>
 #include <game/server/infclass/entities/merc-laser.h>
+#include <game/server/infclass/entities/portal.h>
 #include <game/server/infclass/entities/scatter-grenade.h>
 #include <game/server/infclass/entities/scientist-laser.h>
 #include <game/server/infclass/entities/scientist-mine.h>
@@ -55,7 +56,8 @@ constexpr int SniperLaserRangeUpgradeLevel = 2;
 constexpr int SniperLaserPiercingUpgradeLevel = 3;
 constexpr int ScientistLaserAmmoUpgradeLevel = 1;
 constexpr int ScientistTeleportGunUpgradeLevel = 2;
-constexpr int ScientistExtraMineUpgradeLevel = 3;
+constexpr int ScientistPortalGunUpgradeLevel = 3;
+constexpr int ScientistExtraMineUpgradeLevel = 4;
 constexpr int BiologistShotgunSpreadUpgradeLevel = 1;
 constexpr int BiologistMineChargesUpgradeLevel = 2;
 constexpr int LooperLaserAmmoUpgradeLevel = 1;
@@ -340,6 +342,10 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
 		}
 		else if(m_UpgradeLevel < ScientistTeleportGunUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
+		}
+		else if(m_UpgradeLevel < ScientistPortalGunUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
 		}
@@ -1146,13 +1152,20 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 		return;
 	case EInfclassWeapon::TELEPORT_GUN:
 	{
-		int SelfDamage = Config()->m_InfScientistTpSelfharm;
-		if(m_UpgradeLevel >= ScientistTeleportGunUpgradeLevel)
+		if (m_UpgradeLevel >= ScientistPortalGunUpgradeLevel)
 		{
-			SelfDamage = 0;
+			CPortal::OnPortalGunFired(m_pCharacter, pFireContext);
 		}
-		bool ReleaseHooks = GameController()->GetRoundType() == ERoundType::Survival;
-		CLaserTeleport::OnFired(m_pCharacter, pFireContext, SelfDamage, ReleaseHooks);
+		else
+		{
+			int SelfDamage = Config()->m_InfScientistTpSelfharm;
+			if(m_UpgradeLevel >= ScientistTeleportGunUpgradeLevel)
+			{
+				SelfDamage = 0;
+			}
+			bool ReleaseHooks = GameController()->GetRoundType() == ERoundType::Survival;
+			CLaserTeleport::OnFired(m_pCharacter, pFireContext, SelfDamage, ReleaseHooks);
+		}
 	}
 		return;
 	case EInfclassWeapon::HEALING_GRENADE:
@@ -2551,6 +2564,10 @@ void CInfClassHuman::GiveUpgrade()
 		else if(m_UpgradeLevel == ScientistTeleportGunUpgradeLevel)
 		{
 			pMessage2 = _("The teleport gun does not hurt you anymore");
+		}
+		else if(m_UpgradeLevel == ScientistPortalGunUpgradeLevel)
+		{
+			pMessage2 = _("From now on, the teleport gun places portals");
 		}
 		else if(m_UpgradeLevel == ScientistExtraMineUpgradeLevel)
 		{

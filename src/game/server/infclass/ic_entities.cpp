@@ -14,6 +14,7 @@
 #include <game/server/infclass/entities/looper-wall.h>
 #include <game/server/infclass/entities/merc-bomb.h>
 #include <game/server/infclass/entities/plasma.h>
+#include <game/server/infclass/entities/portal.h>
 #include <game/server/infclass/entities/scatter-grenade.h>
 #include <game/server/infclass/entities/scientist-mine.h>
 #include <game/server/infclass/entities/slug-slime.h>
@@ -38,6 +39,7 @@ void CIcGameController::RegisterEntityTypes()
 	GameWorld()->RegisterEntityType<CLooperWall>();
 	GameWorld()->RegisterEntityType<CMercenaryBomb>();
 	GameWorld()->RegisterEntityType<CPlasma>();
+	GameWorld()->RegisterEntityType<CPortal>();
 	GameWorld()->RegisterEntityType<CScatterGrenade>();
 	GameWorld()->RegisterEntityType<CScientistMine>();
 	GameWorld()->RegisterEntityType<CSlugSlime>();
@@ -67,6 +69,7 @@ void CIcGameController::DestroyChildEntities(int OwnerId)
 		CLooperWall::EntityId,
 		CMercenaryBomb::EntityId,
 		CPlasma::EntityId,
+		CPortal::EntityId,
 		CScatterGrenade::EntityId,
 		CScientistMine::EntityId,
 		CSlugSlime::EntityId,
@@ -84,6 +87,7 @@ void CIcGameController::DestroyChildEntities(int OwnerId)
 		CHealingParticle::EntityId,
 		CLooperWall::EntityId,
 		CMercenaryBomb::EntityId,
+		CPortal::EntityId,
 		CScientistMine::EntityId,
 		CSlugSlime::EntityId,
 		CTurret::EntityId,
