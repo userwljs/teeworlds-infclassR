@@ -5395,7 +5395,17 @@ void CIcGameController::Snap(int SnappingClient)
 	pGameInfoObj->m_RoundStartTick = m_RoundStartTick;
 	pGameInfoObj->m_WarmupTimer = m_Warmup;
 
-	pGameInfoObj->m_ScoreLimit = Config()->m_SvScorelimit;
+	pGameInfoObj->m_ScoreLimit = 0;
+	if(GetRoundType() == ERoundType::Survival)
+	{
+		const bool KillBased = Config()->m_InfSurvivalMode != SURVIVAL_MODE_TIME_BASED;
+
+		if(KillBased)
+		{
+			const SurvivalWaveConfiguration *pWave = GetCurrentSurvivalWaveConfiguration();
+			pGameInfoObj->m_ScoreLimit = pWave->GetTotalInfectedLives();
+		}
+	}
 
 	int WholeMinutes = GetTimeLimitMinutes();
 	float FractionalPart = GetTimeLimitMinutes() - WholeMinutes;
