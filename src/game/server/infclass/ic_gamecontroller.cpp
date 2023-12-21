@@ -252,6 +252,8 @@ int SurvivalWaveConfiguration::GetTotalInfectedLives() const
 }
 
 SurvivalGameConfiguration m_SurvivalConfiguration;
+std::size_t m_SpawnedWaveBots = 0;
+bool m_SpawnedWaveMap[MaxBotsPerWave] = {};
 
 int64_t CIcGameController::m_LastTipTime = 0;
 
@@ -2751,6 +2753,15 @@ bool CIcGameController::SurvivalHumansWinConditionsMet() const
 		return TimeIsOut;
 	}
 
+	const SurvivalWaveConfiguration *WaveConf = GetCurrentSurvivalWaveConfiguration();
+	if(WaveConf)
+	{
+		if(m_SpawnedWaveBots < WaveConf->BotConfigurations.Size())
+		{
+			return false;
+		}
+	}
+
 	for(const CBaseBotPlayer *pBot : m_Bots)
 	{
 		if(!pBot->IsHuman() && (pBot->Lives() != 0))
@@ -4338,6 +4349,12 @@ void CIcGameController::RemoveBots()
 		CBaseBotPlayer *pBot = m_Bots.Last();
 		RemoveBot(pBot, "Cleanup");
 	}
+
+	m_SpawnedWaveBots = 0;
+	for(bool &Spawned : m_SpawnedWaveMap)
+	{
+		Spawned = false;
+	}
 }
 
 int CIcGameController::RequestBotID()
@@ -4395,7 +4412,7 @@ CBaseBotPlayer *CIcGameController::AddBot(int Team)
 CBaseBotPlayer *CIcGameController::AddBot(const SurvivalBotConfiguration &Configuration)
 {
 	int Team = 0;
-	if(Configuration.SpawnMinTick > 0)
+	if(Configuration.SpawnMinTick > GetInfectionTick())
 	{
 		Team = TEAM_SPECTATORS;
 	}
@@ -4410,6 +4427,9 @@ CBaseBotPlayer *CIcGameController::AddBot(const SurvivalBotConfiguration &Config
 	CBaseBotPlayer *pBot = AddBot(Team);
 	if(!pBot)
 		return nullptr;
+
+	// Make the bots spawn a bit less predictable
+	pBot->m_RespawnTick += Server()->TickSpeed() * random_float();
 
 	pBot->SetClass(Configuration.Class);
 	pBot->SetSpawnMinTick(Configuration.SpawnMinTick);
@@ -4733,6 +4753,29 @@ void CIcGameController::RoundTickAfterInitialInfection()
 
 	if(StartInfectionTrigger)
 		OnInfectionTriggered();
+
+	if(GetRoundType() == ERoundType::Survival)
+	{
+		const SurvivalWaveConfiguration *WaveConf = GetCurrentSurvivalWaveConfiguration();
+		const int InfectionTick = GetInfectionTick();
+		int SpawnAheadTicks = Server()->TickSpeed() * 3;
+		for (std::size_t BotIndex = 0; BotIndex < WaveConf->BotConfigurations.Size(); ++BotIndex)
+		{
+			if(m_SpawnedWaveMap[BotIndex])
+				continue;
+			const SurvivalBotConfiguration &BotConf = WaveConf->BotConfigurations[BotIndex];
+			if (BotConf.SpawnMinTick < InfectionTick + SpawnAheadTicks)
+			{
+				CBaseBotPlayer *pBot = AddBot(BotConf);
+				if(!pBot)
+				{
+					break;
+				}
+				m_SpawnedWaveMap[BotIndex] = true;
+				m_SpawnedWaveBots++;
+			}
+		}
+	}
 
 	// Ensure that the newly joined players have correct state/class
 	CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
