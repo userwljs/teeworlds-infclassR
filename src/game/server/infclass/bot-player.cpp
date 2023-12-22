@@ -701,7 +701,7 @@ void CBotPlayer::UpdateTarget()
 		for(int i = 0; i < MAX_CLIENTS; ++i)
 		{
 			const CIcCharacter *pChar = GameController()->GetCharacter(i);
-			if(pChar && pChar->IsHuman() && pChar->IsAlive())
+			if(pChar && pChar->IsHuman() && pChar->IsAlive() && !pChar->IsInvisible())
 			{
 				Targets.Add(i);
 			}
@@ -1665,6 +1665,11 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		FirePerSecond = 0.1f;
 		HitDistance = 60.0;
+	}
+
+	if(GetCharacter()->IsInvisible() && Distance > HitDistance * 3)
+	{
+		return;
 	}
 
 	if(Distance < HitDistance)
