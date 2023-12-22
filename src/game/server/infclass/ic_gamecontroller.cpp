@@ -4532,7 +4532,7 @@ CBaseBotPlayer *CIcGameController::AddBot(int Team)
 {
 	if(m_Bots.Size() == MaxBots - 1)
 	{
-		dbg_msg("bots", "AddBot(): Max bots number reached");
+		// dbg_msg("bots", "AddBot(): Max bots number reached");
 		return nullptr;
 	}
 
@@ -4540,11 +4540,11 @@ CBaseBotPlayer *CIcGameController::AddBot(int Team)
 
 	if(PlayerID < 0)
 	{
-		dbg_msg("bots", "AddBot(): No slots");
+		// dbg_msg("bots", "AddBot(): No slots");
 		return nullptr;
 	}
 
-	dbg_msg("bots", "AddBot(): New bot with ID %d", PlayerID);
+	// dbg_msg("bots", "AddBot(): New bot with ID %d", PlayerID);
 
 	CBotPlayer *pPlayer = new(PlayerID) CBotPlayer(this, GetNextClientUniqueId(), PlayerID, Team);
 
