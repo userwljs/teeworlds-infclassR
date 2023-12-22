@@ -60,6 +60,7 @@ constexpr int ScientistPortalGunUpgradeLevel = 3;
 constexpr int ScientistExtraMineUpgradeLevel = 4;
 constexpr int BiologistShotgunSpreadUpgradeLevel = 1;
 constexpr int BiologistMineChargesUpgradeLevel = 2;
+constexpr int BiologistInvisibilityHammerUpgradeLevel = 3;
 constexpr int LooperLaserAmmoUpgradeLevel = 1;
 constexpr int LooperGrenadesUpgradeLevel = 2;
 constexpr int LooperLaserWeaponUpgradeLevel = 3;
@@ -362,6 +363,10 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 		else if(m_UpgradeLevel < BiologistMineChargesUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
+		}
+		else if(m_UpgradeLevel < BiologistInvisibilityHammerUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_HAMMER);
 		}
 		break;
 	case EPlayerClass::Looper:
@@ -868,6 +873,12 @@ void CInfClassHuman::OnHumanHammerHitHuman(CIcCharacter *pTarget)
 		if(pTarget->IsPoisoned())
 		{
 			pTarget->ResetPoisonEffect();
+		}
+		if(m_UpgradeLevel >= BiologistInvisibilityHammerUpgradeLevel)
+		{
+			CInfClassHuman *pTargetHuman = CInfClassHuman::GetInstance(pTarget);
+			float Duration  = Config()->m_InfHumanInvisibilityTime;
+			pTargetHuman->GiveInvisibility(Duration, GetCid());
 		}
 	}
 }
@@ -2680,6 +2691,10 @@ void CInfClassHuman::GiveUpgrade()
 		if(m_UpgradeLevel == BiologistMineChargesUpgradeLevel)
 		{
 			pMessage2 = _("The mines now have more charges");
+		}
+		if(m_UpgradeLevel == BiologistInvisibilityHammerUpgradeLevel)
+		{
+			pMessage2 = _("The hammer now covers teammates and makes them hidden from the infected");
 		}
 		break;
 	case EPlayerClass::Looper:
