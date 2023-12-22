@@ -546,6 +546,33 @@ void CInfClassHuman::OnCharacterPreCoreTick()
 		default:
 			break;
 	}
+
+	if(m_pCharacter->IsInvisible())
+	{
+		float MinDistanceSquared = 48 * 48;
+		for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
+		{
+			if(p->IsHuman())
+				continue;
+			if(!p->IsAlive() || p->IsFrozen() || p->IsBlind())
+				continue;
+
+			if(distance_squared(p->GetPos(), GetPos()) < MinDistanceSquared)
+			{
+				ResetInvisibility();
+				break;
+			}
+		}
+	}
+
+	if((Server()->Tick() < m_InvisibilityEndTick) && (Server()->Tick() >= m_InvisibilityStartTick))
+	{
+		m_pCharacter->MakeInvisible();
+	}
+	else
+	{
+		m_pCharacter->MakeVisible();
+	}
 }
 
 void CInfClassHuman::OnCharacterTick()
@@ -616,6 +643,16 @@ void CInfClassHuman::OnCharacterTick()
 		{
 			m_KillsProgression = 0;
 			m_ResetKillsTick = -1;
+		}
+	}
+
+	if(m_InvisibilityStartTick && !m_pCharacter->IsInvisible())
+	{
+		int StartTicks = m_InvisibilityStartTick - Server()->Tick();
+		if(StartTicks >= 0 && StartTicks % Server()->TickSpeed() == Server()->TickSpeed() - 1)
+		{
+			int FreezeSec = 1 + (StartTicks / Server()->TickSpeed());
+			GameServer()->CreateDamageInd(GetPos(), 0, FreezeSec);
 		}
 	}
 }
@@ -752,6 +789,8 @@ void CInfClassHuman::OnCharacterDamage(SDamageContext *pContext)
 		// Humans are immune to Ninja's force
 		pContext->Force = vec2(0, 0);
 	}
+
+	ResetInvisibility();
 }
 
 void CInfClassHuman::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context)
@@ -841,11 +880,17 @@ void CInfClassHuman::OnHookAttachedPlayer()
 	if(m_pCharacter->IsPassenger())
 		return;
 
-	if(!GameController()->GetTaxiMode())
+	CIcCharacter *pHookedCharacter = GameController()->GetCharacter(m_pCharacter->GetHookedPlayer());
+	if(!pHookedCharacter)
 		return;
 
-	CIcCharacter *pHookedCharacter = GameController()->GetCharacter(m_pCharacter->GetHookedPlayer());
-	if(!pHookedCharacter || !pHookedCharacter->IsHuman())
+	if(!pHookedCharacter->IsHuman())
+	{
+		ResetInvisibility();
+		return;
+	}
+
+	if(!GameController()->GetTaxiMode())
 		return;
 
 	m_pCharacter->TryBecomePassenger(pHookedCharacter);
@@ -931,6 +976,8 @@ void CInfClassHuman::OnWeaponFired(WeaponFireContext *pFireContext)
 	pFireContext->ReloadInterval *= ReloadIntervalModifier;
 
 	CIcPlayerClass::OnWeaponFired(pFireContext);
+
+	ResetInvisibility();
 }
 
 void CInfClassHuman::OnHammerFired(WeaponFireContext *pFireContext)
@@ -1563,6 +1610,29 @@ void CInfClassHuman::BroadcastWeaponState() const
 	}
 	default:
 		break;
+	}
+
+	if(m_pCharacter)
+	{
+		if(m_InvisibilityStartTick && CurrentTick < m_InvisibilityStartTick)
+		{
+			int Seconds = 1 + (m_InvisibilityStartTick - CurrentTick) / Server()->TickSpeed();
+			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
+				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
+				_("Becoming invisible in {sec:RemainingTime}"),
+				"RemainingTime", &Seconds,
+				nullptr);
+		}
+		else if(m_pCharacter->IsInvisible())
+		{
+			float Time = GetInvisibilityRemainingDuration();
+			int Seconds = 1 + Time;
+			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
+				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
+				_("Invisible for {sec:RemainingTime}"),
+				"RemainingTime", &Seconds,
+				nullptr);
+		}
 	}
 
 	if(GetPlayerClass() == EPlayerClass::Engineer)
@@ -2354,6 +2424,34 @@ void CInfClassHuman::RemoveWhiteHole()
 	{
 		m_pCharacter->SetSuperWeaponIndicatorEnabled(false);
 	}
+}
+
+void CInfClassHuman::GiveInvisibility(float Duration, int FromCID)
+{
+	m_InvisibilityStartTick = Server()->Tick() + Server()->TickSpeed() * 3.0f;
+	m_InvisibilityEndTick = m_InvisibilityStartTick + Server()->TickSpeed() * Duration;
+
+	m_pCharacter->AddHelper(FromCID, Duration + 10);
+}
+
+void CInfClassHuman::ResetInvisibility()
+{
+	m_pCharacter->MakeVisible();
+
+	m_InvisibilityStartTick = 0;
+	m_InvisibilityEndTick = 0;
+}
+
+float CInfClassHuman::GetInvisibilityRemainingDuration() const
+{
+	if(m_InvisibilityEndTick == 0.0f)
+		return 0;
+
+	if (Server()->Tick() < m_InvisibilityStartTick)
+		return 0;
+
+	int RemainingTicks = m_InvisibilityEndTick - Server()->Tick();
+	return RemainingTicks * 1.0f / Server()->TickSpeed();
 }
 
 void CInfClassHuman::UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints)
