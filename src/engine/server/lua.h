@@ -69,18 +69,14 @@ private:
 	// helper stuff
 	struct CListdirLoadHelper
 	{
-		CLua *m_pSelf;
-		unsigned m_NumFiles;
-
-		CListdirLoadHelper() { mem_zero(this, sizeof(CListdirLoadHelper)); }
+		CLua *m_pSelf{};
+		unsigned m_NumFiles{};
 	};
 
 	struct CListdirTestHelper
 	{
-		const char *m_pSearch;
-		bool m_Found;
-
-		CListdirTestHelper() { mem_zero(this, sizeof(CListdirTestHelper)); }
+		const char *m_pSearch{};
+		bool m_Found{};
 	};
 };
 
