@@ -25,6 +25,8 @@ public:
 	SurvivalWaveConfiguration() = default;
 	static constexpr int MaxCommandLength = 64;
 
+	int GetTotalInfectedLives() const;
+
 	void Reset()
 	{
 		aName[0] = '\0';

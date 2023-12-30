@@ -169,6 +169,21 @@ struct InfclassPlayerPersistantData : public CGameContext::CPersistentClientData
 	int m_LastInfectionTime = 0;
 };
 
+int SurvivalWaveConfiguration::GetTotalInfectedLives() const
+{
+	int TotalBotLives = 0;
+	for(const SurvivalBotConfiguration &BotConf : BotConfigurations)
+	{
+		int BotLives = BotConf.Lives ? BotConf.Lives : g_Config.m_InfBotLives;
+		if(BotLives < 0)
+			return 0;
+
+		TotalBotLives += BotLives;
+	}
+
+	return TotalBotLives;
+}
+
 SurvivalGameConfiguration m_SurvivalConfiguration;
 
 int64_t CIcGameController::m_LastTipTime = 0;
