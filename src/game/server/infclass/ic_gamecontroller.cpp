@@ -4979,6 +4979,8 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 
 	dbg_msg("server", "OnCharacterDeath: victim=%d damage_type=%s killer=%d assistant=%d", pVictim->GetCid(), pDamageTypeStr, Killer, Assistant);
 
+	RunCallback(Lua()->GetLuaState(), "on_character_death", pVictim->GetCid(), pContext->Killer, pDamageTypeStr);
+
 	RewardTheKillers(pVictim, *pContext);
 
 	int Weapon = DamageTypeToWeapon(DamageType);
