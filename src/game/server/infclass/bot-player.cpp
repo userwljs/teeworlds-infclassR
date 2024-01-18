@@ -686,6 +686,11 @@ void CBotPlayer::UpdateTarget()
 
 	if(m_BotState == EBotState::Fleeing)
 	{
+		float FleeingDuration = 0.65f;
+		if(Server()->Tick() >= m_FleeingSinceTick + Server()->TickSpeed() * FleeingDuration)
+		{
+			SetState(EBotState::Roaming);
+		}
 		return;
 	}
 
