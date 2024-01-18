@@ -1495,10 +1495,15 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	DIRECTION Direction = DirectionToTarget;
 
 	float PreferredDistance = 0.f;
-	float MinDistance = 0.f;
+	float FleeDistance = 0.f;
+	if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
+	{
+		PreferredDistance = 650.0f;
+		FleeDistance = 520.0f;
+	}
 
 	bool KeepingDistance = false;
-	if(Distance < MinDistance)
+	if(Distance < FleeDistance)
 	{
 		Direction = OppositeDirection(DirectionToTarget);
 		KeepingDistance = true;
@@ -1706,6 +1711,12 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		FirePerSecond = 0.1f;
 		HitDistance = 60.0;
 		break;
+	case EInfclassWeapon::INFECTED_GRENADE:
+		HitDistance = 700;
+		FirePerSecond = 0.45f;
+		HorizontalHitRatio = std::abs(Pos.x - m_LastTargetSeenAtPos.x) / HitDistance;
+		pInput->m_TargetY -= (2 + HorizontalHitRatio * 9) * TileSizeF;
+		break;
 	default:
 		break;
 	}
@@ -1798,6 +1809,12 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	if(pInput->m_Fire)
 	{
 		m_LastFireTick = Tick;
+
+		if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
+		{
+			m_LastFireTick += (FirePerSecond + random_float(0.8f)) * TickSpeed;
+			pInput->m_TargetY -= random_float(-2.0f, 2.5f) * TileSizeF;
+		}
 	}
 }
 

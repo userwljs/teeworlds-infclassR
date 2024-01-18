@@ -8,6 +8,7 @@
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/entities/growingexplosion.h>
 #include <game/server/infclass/entities/ic_character.h>
+#include <game/server/infclass/entities/slug-slime.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 
 #include "ic_projectile.h"
@@ -125,6 +126,15 @@ void CIcProjectile::Tick()
 					TargetChr->TakeDamage(m_Direction * maximum(0.001f, m_Force), m_Damage, GetOwner(),m_DamageType);
 				}
 			}
+		}
+
+		if(m_DamageType == EDamageType::INFECTED_GRENADE)
+		{
+			GameController()->CreateDeathEffectDiskGfx(CurPos, 50, 70, GetOwner());
+			CSlugSlime *pNewSlime = new CSlugSlime(GameServer(), CurPos, GetOwner());
+			pNewSlime->Replenish(GetOwner(), Server()->Tick() + Server()->TickSpeed() * 1.0f);
+			pNewSlime->SetDamage(2, 1.5f);
+			// TODO: DamageType
 		}
 
 		GameWorld()->DestroyEntity(this);

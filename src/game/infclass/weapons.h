@@ -50,6 +50,7 @@ enum class EInfclassWeapon
 	INFECTED_HAMMER,
 	STUNNING_HAMMER,
 	BOOMER_EXPLOSION,
+	INFECTED_GRENADE,
 
 	Count,
 	Invalid = Count,

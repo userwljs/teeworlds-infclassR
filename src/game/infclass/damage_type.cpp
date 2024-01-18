@@ -51,6 +51,8 @@ static const char *gs_aDamageTypeNames[] = {
 	"no_damage",
 	"medic_revival",
 	"damage_tile",
+
+	"infected_grenade",
 };
 
 const char *toString(EDamageType DamageType)
@@ -109,6 +111,7 @@ int DamageTypeToWeapon(EDamageType DamageType, TAKEDAMAGEMODE *pMode)
 	case EDamageType::GRENADE:
 	case EDamageType::STUNNING_GRENADE:
 	case EDamageType::MERCENARY_GRENADE:
+	case EDamageType::INFECTED_GRENADE:
 		Weapon = WEAPON_GRENADE;
 		break;
 	case EDamageType::LASER:

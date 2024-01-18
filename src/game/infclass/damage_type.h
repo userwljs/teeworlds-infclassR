@@ -66,7 +66,9 @@ enum class EDamageType
 	MEDIC_REVIVAL,
 	DAMAGE_TILE,
 
-	COUNT = DAMAGE_TILE
+	INFECTED_GRENADE,
+
+	COUNT = INFECTED_GRENADE
 };
 
 const char *toString(EDamageType DamageType);

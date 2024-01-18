@@ -3,6 +3,7 @@
 #include "game/server/entity.h"
 #include "game/server/gameworld.h"
 #include "game/server/infclass/classes/ic_playerclass.h"
+#include "game/server/infclass/entities/ic_projectile.h"
 #include "game/server/infclass/entities/slug-slime.h"
 #include "game/server/infclass/entities/turret.h"
 
@@ -695,6 +696,17 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 	{
 		GameServer()->CreateSound(GetPos(), SOUND_HAMMER_FIRE);
 	}
+}
+
+void CInfClassInfected::OnGrenadeFired(WeaponFireContext *pFireContext)
+{
+	if(pFireContext->NoAmmo)
+		return;
+
+	vec2 Direction = GetDirection();
+	vec2 ProjStartPos = GetPos() + Direction * GetProximityRadius() * 0.75f;
+	CIcProjectile::MakeGrenade(GameContext(), ProjStartPos, Direction, GetCid(), EDamageType::INFECTED_GRENADE);
+	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
 }
 
 void CInfClassInfected::GiveClassAttributes()
