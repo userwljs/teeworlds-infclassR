@@ -1021,11 +1021,6 @@ void CBotPlayer::UpdateControls()
 		NewInput.m_PrevWeapon = 0;
 	}
 
-	if(NewInput.m_Fire)
-	{
-		m_LastFireTick = Tick;
-	}
-
 	ScheduleRandomFire();
 
 	m_pCharacter->OnPredictedInput(&NewInput);
@@ -1454,6 +1449,8 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	const bool FallingDown = m_pCharacter->Core()->m_Vel.y > -Gravity;
 	const int AvailableJumps = GetAvailableJumps();
 
+	const EInfclassWeapon WeaponType = GetCharacter()->GetInfWeaponId();
+
 	bool WantToJump = false;
 	bool WantGoDown = false;
 
@@ -1508,7 +1505,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	}
 	else if(Distance < PreferredDistance)
 	{
-		if(m_KeepingDistanceTick < Tick + TickSpeed * 0.6f)
+		if(m_KeepingDistanceTick < Tick + TickSpeed * 1.0f)
 		{
 			if(random_prob(0.4f))
 			{
@@ -1693,15 +1690,33 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	float FirePerSecond = 0.35f;
 	// TODO: This should be the target proximity radius
-	float HitDistance = GetCharacterClass()->GetHammerProjOffset() + GetCharacterClass()->GetHammerRange() + m_pCharacter->GetProximityRadius();
-	if(GetClass() == EPlayerClass::Boomer)
+	float HitDistance = 0;
+	float HorizontalHitRatio = 1.0f;
+
+	switch(WeaponType)
 	{
+	case EInfclassWeapon::HAMMER:
+	case EInfclassWeapon::JAWS:
+	case EInfclassWeapon::SLIME:
+	case EInfclassWeapon::INFECTED_HAMMER:
+	case EInfclassWeapon::STUNNING_HAMMER:
+		HitDistance = GetCharacterClass()->GetHammerProjOffset() + GetCharacterClass()->GetHammerRange() + m_pCharacter->GetProximityRadius();
+		break;
+	case EInfclassWeapon::BOOMER_EXPLOSION:
 		FirePerSecond = 0.1f;
 		HitDistance = 60.0;
+		break;
+	default:
+		break;
 	}
 
-	if(GetCharacter()->IsInvisible() && Distance > HitDistance * 3)
+	if(GetCharacter()->IsInvisible() && Distance > HitDistance * 2)
 	{
+		return;
+	}
+	if(Tick < m_BotStateTick + TickSpeed * 0.15f)
+	{
+		// Do not attack immediately
 		return;
 	}
 
@@ -1709,33 +1724,36 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		if(GetCharacter()->GetReloadTimer() <= 0)
 		{
-			if(Tick > m_LastFireTick + Server()->TickSpeed() * FirePerSecond)
+			if(Tick > m_LastFireTick + TickSpeed * FirePerSecond)
 			{
 				pInput->m_Fire = true;
 			}
 		}
 	}
-	else if(Distance < HitDistance * 2)
+	else if (WeaponType == EInfclassWeapon::HAMMER)
 	{
-		FirePerSecond += random_float() * 0.5f;
-
-		if(Tick > m_LastFireTick + Server()->TickSpeed() * FirePerSecond)
+		if(Distance < HitDistance * 2)
 		{
-			pInput->m_Fire = true;
+			FirePerSecond += random_float() * 0.5f;
+
+			if(Tick > m_LastFireTick + TickSpeed * FirePerSecond)
+			{
+				pInput->m_Fire = true;
+			}
 		}
-	}
-	else if(GetClass() == EPlayerClass::Slug)
-	{
-		pInput->m_TargetX = m_RoamingDirection * TileSize * 4;
-		pInput->m_TargetY = TileSize * 2;
-	}
-	else if(Distance < HitDistance * 4)
-	{
-		FirePerSecond += random_float() * 1.0f;
-
-		if(Tick > m_LastFireTick + Server()->TickSpeed() * FirePerSecond)
+		else if(GetClass() == EPlayerClass::Slug)
 		{
-			pInput->m_Fire = true;
+			pInput->m_TargetX = m_RoamingDirection * TileSize * 4;
+			pInput->m_TargetY = TileSize * 2;
+		}
+		else if(Distance < HitDistance * 4)
+		{
+			FirePerSecond += random_float() * 1.0f;
+
+			if(Tick > m_LastFireTick + TickSpeed * FirePerSecond)
+			{
+				pInput->m_Fire = true;
+			}
 		}
 	}
 
@@ -1760,7 +1778,10 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		if(pInput->m_Fire)
 		{
-			pInput->m_Fire = s_HiveMind.TryAttack(m_LastTarget);
+			if(WeaponType == EInfclassWeapon::HAMMER)
+			{
+				pInput->m_Fire = s_HiveMind.TryAttack(m_LastTarget);
+			}
 		}
 		if(pInput->m_Hook)
 		{
@@ -1772,6 +1793,11 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		pInput->m_Fire = true;
 		m_NextRandomFireTick = 0;
+	}
+
+	if(pInput->m_Fire)
+	{
+		m_LastFireTick = Tick;
 	}
 }
 
