@@ -333,6 +333,8 @@ protected:
 	int m_NextRandomFireTick = 0;
 	int m_HookUntilTick = -1;
 	int m_DelayHookUntilTick = -1;
+	int m_KeepingDistanceTick = -1;
+	DIRECTION m_KeepingDistanceDirection = DIRECTION_NONE;
 
 	bool m_FallingDown = false;
 	int m_WantedJumps = 0;

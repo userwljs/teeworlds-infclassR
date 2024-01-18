@@ -1479,6 +1479,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		WantGoDown = true;
 	}
 
+	const float Distance = distance(Pos, m_LastTargetSeenAtPos);
 	DIRECTION DirectionToTarget = DIRECTION_NONE;
 
 	if(Pos.x + ProximityRadius < m_LastTargetSeenAtPos.x)
@@ -1495,6 +1496,34 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	}
 
 	DIRECTION Direction = DirectionToTarget;
+
+	float PreferredDistance = 0.f;
+	float MinDistance = 0.f;
+
+	bool KeepingDistance = false;
+	if(Distance < MinDistance)
+	{
+		Direction = OppositeDirection(DirectionToTarget);
+		KeepingDistance = true;
+	}
+	else if(Distance < PreferredDistance)
+	{
+		if(m_KeepingDistanceTick < Tick + TickSpeed * 0.6f)
+		{
+			if(random_prob(0.4f))
+			{
+				m_KeepingDistanceDirection = OppositeDirection(Direction);
+			}
+			else
+			{
+				m_KeepingDistanceDirection = DIRECTION_NONE;
+			}
+			m_KeepingDistanceTick = Tick;
+		}
+
+		Direction = m_KeepingDistanceDirection;
+		KeepingDistance = true;
+	}
 
 	if((AbsXToTarget < TileSize * 3) && WantGoDown)
 	{
@@ -1513,7 +1542,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 		BotDebugMessage(VERBOSE_TRACE1, HasWall ? "HasWall" : "HasNoWall");
 
-		if(WantToJump && HasWall)
+		if((WantToJump || KeepingDistance) && HasWall)
 		{
 			int NeededJumps = GetJumpsNeededToGetOverWall(Direction);
 			if(NeededJumps)
@@ -1529,7 +1558,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		}
 	}
 
-	const float Distance = distance(Pos, m_LastTargetSeenAtPos);
 	const float HookMaxDistance = GetMaxHookDistance();
 	const float GroundControlSpeed = GameServer()->Tuning()->m_GroundControlSpeed;
 
