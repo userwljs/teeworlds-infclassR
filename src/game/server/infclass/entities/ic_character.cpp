@@ -1741,6 +1741,7 @@ EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 		case EPlayerClass::Boomer:
 			return EInfclassWeapon::BOOMER_EXPLOSION;
 		case EPlayerClass::Bat:
+		case EPlayerClass::Spitter:
 			return EInfclassWeapon::JAWS;
 		case EPlayerClass::Slug:
 			return EInfclassWeapon::SLIME;
@@ -1793,6 +1794,8 @@ EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 			return EInfclassWeapon::HERO_GRENADE;
 		case EPlayerClass::Looper:
 			return EInfclassWeapon::LOOPER_GRENADE;
+		case EPlayerClass::Spitter:
+			return EInfclassWeapon::INFECTED_GRENADE;
 		default:
 			return EInfclassWeapon::GRENADE;
 		}

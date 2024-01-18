@@ -1431,6 +1431,8 @@ const char *CIcGameController::GetClassPluralName(EPlayerClass PlayerClass)
 		return "undeads";
 	case EPlayerClass::Tank:
 		return "tanks";
+	case EPlayerClass::Spitter:
+		return "spitters";
 
 	case EPlayerClass::Invalid:
 	case EPlayerClass::None:
@@ -1490,6 +1492,8 @@ const char *CIcGameController::GetClassDisplayName(EPlayerClass PlayerClass, con
 		return _("Undead");
 	case EPlayerClass::Tank:
 		return _("Tank");
+	case EPlayerClass::Spitter:
+		return _("Spitter");
 
 	case EPlayerClass::Invalid:
 	case EPlayerClass::None:
@@ -1529,6 +1533,8 @@ const char *CIcGameController::GetClassDisplayNameForKilledBy(EPlayerClass Playe
 		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "an Undead") : _C_NOOP("For 'Killed by <>'", "the Undead");
 	case EPlayerClass::Tank:
 		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Tank") : _C_NOOP("For 'Killed by <>'", "the Tank");
+	case EPlayerClass::Spitter:
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Spitter") : _C_NOOP("For 'Killed by <>'", "the Spitter");
 
 	default:
 		break;
@@ -1596,6 +1602,8 @@ const char *CIcGameController::GetClassPluralDisplayName(EPlayerClass PlayerClas
 
 	case EPlayerClass::Tank:
 		return _("Tanks");
+	case EPlayerClass::Spitter:
+		return _("Spitters");
 
 	case EPlayerClass::Invalid:
 	case EPlayerClass::None:
@@ -6393,6 +6401,10 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 		AddLine(_C("Tank", "The Tank has a damage resistance and a stunning hammer with increased range and force."));
 		AddLine(_C("Tank", "On the other hand, the movement speed and the hook lenght are reduced."));
 		break;
+	case EPlayerClass::Spitter:
+		AddLine(_C("Spitter", "The Tank has a damage resistance and a stunning hammer with increased range and force."));
+		AddLine(_C("Spitter", "On the other hand, the movement speed and the hook lenght are reduced."));
+		break;
 	}
 
 	return true;
@@ -7623,6 +7635,7 @@ bool CIcGameController::SetPlayerClassProbability(EPlayerClass PlayerClass, int 
 		Config()->m_InfProbaUndead = Probability;
 		break;
 	case EPlayerClass::Tank:
+	case EPlayerClass::Spitter:
 		return false;
 	default:
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "controller", "WARNING: Invalid SetPlayerClassProbability() call");
@@ -7690,6 +7703,7 @@ int CIcGameController::GetPlayerClassProbability(EPlayerClass PlayerClass) const
 	case EPlayerClass::Undead:
 		return Config()->m_InfProbaUndead;
 	case EPlayerClass::Tank:
+	case EPlayerClass::Spitter:
 		return 0;
 	default:
 		break;

@@ -111,6 +111,13 @@ bool CInfClassInfected::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pO
 			pOutput->ColorFeet = 16776744;
 		}
 		break;
+	case EPlayerClass::Spitter:
+		pOutput->pSkinName = "limekitty";
+		pOutput->UseCustomColor = 1;
+		pOutput->ColorBody = 3866368;
+		pOutput->ColorFeet = 2866368;
+		pOutput->ColorFeet = 6183936;
+		break;
 	case EPlayerClass::Ghost:
 		pOutput->pSkinName = "twintri";
 		pOutput->UseCustomColor = 1;
@@ -194,6 +201,8 @@ int CInfClassInfected::GetJumps() const
 	{
 	case EPlayerClass::Hunter:
 		return 3;
+	case EPlayerClass::Spitter:
+		return 4;
 	case EPlayerClass::Bat:
 		return Config()->m_InfBatAirjumpLimit;
 	default:
@@ -720,6 +729,11 @@ void CInfClassInfected::GiveClassAttributes()
 
 	switch(GetPlayerClass())
 	{
+	case EPlayerClass::Spitter:
+		m_pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
+		m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
+		m_pCharacter->SetActiveWeapon(WEAPON_GRENADE);
+		break;
 	default:
 		m_pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
 		m_pCharacter->SetActiveWeapon(WEAPON_HAMMER);

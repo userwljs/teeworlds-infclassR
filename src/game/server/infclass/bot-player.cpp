@@ -3529,12 +3529,19 @@ EThreatLevel CBotPlayer::CareAboutThreatLevel() const
 	{
 		return EThreatLevel::Suspicious;
 	}
+	if(GetClass() == EPlayerClass::Spitter)
+	{
+		return EThreatLevel::Suspicious;
+	}
 
 	return EThreatLevel::Dangerous;
 }
 
 float CBotPlayer::GetLookupRadius() const
 {
+	if(GetClass() == EPlayerClass::Spitter)
+		return 800.0f;
+
 	return 600.0f;
 }
 
