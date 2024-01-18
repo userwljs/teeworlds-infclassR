@@ -309,6 +309,7 @@ protected:
 
 	CBotUtils *m_pUtils = nullptr;
 	EBotState m_BotState = EBotState::Roaming;
+	int m_BotStateTick = -1;
 	DIRECTION m_RoamingDirection = DIRECTION_NONE;
 	EObjection m_RoamingObjection = EObjection::Lookup;
 	EObjection m_TargetLastSeenDirObjection = EObjection::Invalid;

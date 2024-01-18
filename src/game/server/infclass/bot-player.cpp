@@ -2453,6 +2453,7 @@ void CBotPlayer::SetState(EBotState NewState)
 	}
 
 	m_BotState = NewState;
+	m_BotStateTick = Server()->Tick();
 }
 
 void CBotPlayer::SetRoamingDirection(DIRECTION Direction)
