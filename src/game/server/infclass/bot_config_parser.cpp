@@ -8,6 +8,7 @@ static const char *gs_aTweakNames[] = {
 	"weak-hook",
 	"strong-hook",
 	"threat-aware",
+	"can-flee",
 	"invalid",
 };
 

@@ -1501,6 +1501,14 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		PreferredDistance = 650.0f;
 		FleeDistance = 520.0f;
 	}
+	if(CanFlee())
+	{
+		if(GetClass() == EPlayerClass::Witch)
+		{
+			PreferredDistance = TileSize * 14;
+			FleeDistance = TileSize * 7;
+		}
+	}
 
 	bool KeepingDistance = false;
 	if(Distance < FleeDistance)
@@ -1806,6 +1814,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		m_NextRandomFireTick = 0;
 	}
 
+	bool WantFlee = CanFlee() && (Distance < FleeDistance);
 	if(pInput->m_Fire)
 	{
 		m_LastFireTick = Tick;
@@ -1833,6 +1842,18 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 				m_LastFireTick += (FirePerSecond + random_float(0.8f)) * TickSpeed;
 			}
 		}
+	}
+
+	if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
+	{
+		WantFlee = WantFlee && pInput->m_Fire;
+	}
+
+	if(WantFlee)
+	{
+		SetState(EBotState::Fleeing);
+		SetRoamingDirection(OppositeDirection(DirectionToTarget));
+		m_FleeingSinceTick = Tick;
 	}
 }
 
@@ -3505,6 +3526,11 @@ bool CBotPlayer::StrongHook() const
 bool CBotPlayer::IsThreatAware() const
 {
 	return m_aTweaks.Contains(EBotTweak::ThreatAware);
+}
+
+bool CBotPlayer::CanFlee() const
+{
+	return m_aTweaks.Contains(EBotTweak::CanFlee);
 }
 
 float CBotPlayer::GetMaxHookDistance() const
