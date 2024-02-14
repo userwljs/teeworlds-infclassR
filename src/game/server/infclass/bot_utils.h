@@ -100,6 +100,8 @@ public:
 	bool IsSolid(int x, int y) const;
 	bool IsSolid(const vec2 &Position) const { return IsSolid(Position.x, Position.y); }
 	bool CheckPoint(float x, float y) const { return IsSolid(round_to_int(x), round(y)); }
+	int GetCollisionAt(float x, float y) const { return GetTile(round(x), round(y)); }
+	int IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *pOutBeforeCollision = nullptr) const;
 };
 
 class IDebugSink
@@ -178,6 +180,8 @@ public:
 	std::optional<float> GetFirstSolidAbovePosition(const vec2 &Position, int MaxTiles) const;
 	std::optional<float> GetFirstAirAbovePosition(const vec2 &Position, int MaxTiles) const;
 	std::optional<int> GetFirstAirTileAbovePosition(CTileRoundedPosition TilePosition, int MaxTiles) const;
+	std::optional<vec2> GetHitPos(vec2 From, vec2 Direction, float Curvature, float Speed, float Time, float TimeStep) const;
+	std::optional<vec2> GetHitPosVisualized(vec2 From, vec2 Direction, float Curvature, float Speed, float Time, float TimeStep) const;
 
 	float GetAirTilesAbove(const vec2 &Position, int MaxTiles) const;
 	int GetAirTilesAbove(const CTileRoundedPosition &TilePosition, int MaxTiles) const;

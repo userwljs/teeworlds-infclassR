@@ -138,6 +138,35 @@ bool ICollision::IsSolid(int x, int y) const
 	return index == TILE_SOLID || index == TILE_NOHOOK;
 }
 
+// The method is a copy of CCollision::IntersectLine()
+int ICollision::IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *pOutBeforeCollision) const
+{
+	vec2 Pos1Pos0 = Pos1 - Pos0;
+	float Distance = length(Pos1Pos0);
+	int End(Distance+1);
+	vec2 Last = Pos0;
+
+	for(int i = 0; i < End; i++)
+	{
+		float a = i/Distance;
+		vec2 Pos = Pos0 + Pos1Pos0 * a;
+		if(CheckPoint(Pos.x, Pos.y))
+		{
+			if(pOutCollision)
+				*pOutCollision = Pos;
+			if(pOutBeforeCollision)
+				*pOutBeforeCollision = Last;
+			return GetCollisionAt(Pos.x, Pos.y);
+		}
+		Last = Pos;
+	}
+	if(pOutCollision)
+		*pOutCollision = Pos1;
+	if(pOutBeforeCollision)
+		*pOutBeforeCollision = Pos1;
+	return 0;
+}
+
 void IDebugSink::SendMessage(int VerbosityLevel, const char *fmt, ...)
 {
 	if(!IsVerbosityEnabled(VerbosityLevel))
@@ -347,6 +376,42 @@ std::optional<int> CBotUtils::GetFirstAirTileAbovePosition(CTileRoundedPosition 
 		if(!m_pCollision->IsSolid(TilePosition))
 		{
 			return TilePosition.Y;
+		}
+	}
+
+	return std::nullopt;
+}
+
+std::optional<vec2> CBotUtils::GetHitPos(vec2 From, vec2 Direction, float Curvature, float Speed, float Time, float TimeStep) const
+{
+	float SimulatedTime = 0.0f;
+	while(SimulatedTime < Time)
+	{
+		SimulatedTime += TimeStep;
+		vec2 NewPos = CalcPos(From, Direction, Curvature, Speed, SimulatedTime);
+		int Collide = m_pCollision->IntersectLine(From, NewPos, &NewPos);
+		if(Collide)
+		{
+			return NewPos;
+		}
+	}
+
+	return std::nullopt;
+}
+
+std::optional<vec2> CBotUtils::GetHitPosVisualized(vec2 From, vec2 Direction, float Curvature, float Speed, float Time, float TimeStep) const
+{
+	float SimulatedTime = 0.0f;
+	while(SimulatedTime < Time)
+	{
+		SimulatedTime += TimeStep;
+		vec2 NewPos = CalcPos(From, Direction, Curvature, Speed, SimulatedTime);
+		m_pDebugSink->HighlightLineSegment(From, NewPos);
+		int Collide = m_pCollision->IntersectLine(From, NewPos, &NewPos);
+		if(Collide)
+		{
+			m_pDebugSink->HighlightPosition(NewPos);
+			return NewPos;
 		}
 	}
 
