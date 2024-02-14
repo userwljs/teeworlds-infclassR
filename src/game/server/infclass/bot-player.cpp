@@ -1812,8 +1812,26 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 		if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
 		{
-			m_LastFireTick += (FirePerSecond + random_float(0.8f)) * TickSpeed;
 			pInput->m_TargetY -= random_float(-2.0f, 2.5f) * TileSizeF;
+
+			const vec2 Dir{normalize(vec2(pInput->m_TargetX, pInput->m_TargetY))};
+			float Curvature = GameServer()->Tuning()->m_GrenadeCurvature;
+			float Speed = GameServer()->Tuning()->m_GrenadeSpeed;
+			float Time = Distance / Speed;
+
+			const vec2 ProjStartPos = Pos + Dir * m_pCharacter->GetProximityRadius() * 0.75f;
+			const std::optional<vec2> Hit = m_pUtils->GetHitPos(ProjStartPos, Dir, Curvature, Speed, Time * 1.1f, 1.0f / Server()->TickSpeed());
+			constexpr float MaxDistanceSquared = TileSize * 4.5 * TileSize * 4.5;
+			if(Hit.has_value() && distance_squared(m_LastTargetSeenAtPos, Hit.value()) > MaxDistanceSquared)
+			{
+				// Adjust the fire
+				pInput->m_Fire = 0;
+				m_LastFireTick += FirePerSecond * 0.5 * TickSpeed;
+			}
+			else
+			{
+				m_LastFireTick += (FirePerSecond + random_float(0.8f)) * TickSpeed;
+			}
 		}
 	}
 }
