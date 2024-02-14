@@ -659,6 +659,11 @@ void CBotPlayer::TickPaused()
 	{
 		IgnoredPosition.Tick++;
 	}
+
+	for(int &FailedAttackTick : ma_RecentFailedAttackTicks)
+	{
+		FailedAttackTick++;
+	}
 }
 
 void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
@@ -670,6 +675,7 @@ void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	m_NextRandomFireTick = 0;
 	m_RecentObjections.Clear();
 	m_RecentDecisions.Clear();
+	ma_RecentFailedAttackTicks.Clear();
 	m_BotState = EBotState::Roaming;
 
 	SetObjection(EObjection::Lookup);
@@ -1498,8 +1504,11 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	float FleeDistance = 0.f;
 	if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
 	{
-		PreferredDistance = 650.0f;
-		FleeDistance = 520.0f;
+		if(ma_RecentFailedAttackTicks.Size() < 3)
+		{
+			PreferredDistance = TileSize * 20;
+			FleeDistance = TileSize * 16;
+		}
 	}
 	if(CanFlee())
 	{
@@ -1836,10 +1845,16 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 				// Adjust the fire
 				pInput->m_Fire = 0;
 				m_LastFireTick += FirePerSecond * 0.5 * TickSpeed;
+				if(ma_RecentFailedAttackTicks.Size() == ma_RecentFailedAttackTicks.Capacity())
+				{
+					ma_RecentFailedAttackTicks.RemoveAt(0);
+				}
+				ma_RecentFailedAttackTicks.Add(Tick);
 			}
 			else
 			{
 				m_LastFireTick += (FirePerSecond + random_float(0.8f)) * TickSpeed;
+				ma_RecentFailedAttackTicks.Clear();
 			}
 		}
 	}
@@ -3338,6 +3353,15 @@ void CBotPlayer::UpdateCharacterState()
 
 	m_WantedJumps = 0;
 	m_AirJumps = 0;
+
+	if(!ma_RecentFailedAttackTicks.IsEmpty())
+	{
+		const int TrackAttacksForTicks = Server()->TickSpeed() * 3.0f;
+		if(T > ma_RecentFailedAttackTicks.First() + TrackAttacksForTicks)
+		{
+			ma_RecentFailedAttackTicks.RemoveAt(0);
+		}
+	}
 
 	UpdatePOIState();
 }

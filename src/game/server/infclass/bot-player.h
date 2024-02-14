@@ -319,6 +319,7 @@ protected:
 	int m_RoamingBehaviorChangeTick = 0;
 	icArray<EObjection, 5> m_RecentObjections;
 	CRecentDecisions m_RecentDecisions;
+	icArray<int, 4> ma_RecentFailedAttackTicks;
 	CCheckPoints ma_CheckPoints;
 	icArray<SCheckPoint, 4> ma_IgnorePoints;
 	int m_AirJumps = 0;
