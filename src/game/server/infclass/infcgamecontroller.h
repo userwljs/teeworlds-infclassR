@@ -11,6 +11,7 @@
 #include <base/tl/ic_array.h>
 #include <engine/console.h>
 
+class CDoor;
 class CGameWorld;
 class CHintMessage;
 class CInfClassCharacter;
@@ -315,6 +316,8 @@ public:
 
 	static void ChatWitch(IConsole::IResult *pResult, void *pUserData);
 	void ChatWitch(IConsole::IResult *pResult);
+
+	CDoor *AddDoor(const vec2 &From, const vec2 &To);
 
 	using IGameController::GameServer;
 	CGameWorld *GameWorld();

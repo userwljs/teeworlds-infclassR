@@ -6,6 +6,7 @@
 #include <game/server/infclass/entities/flyingpoint.h>
 #include <game/server/infclass/entities/growingexplosion.h>
 #include <game/server/infclass/entities/hero-flag.h>
+#include <game/server/infclass/entities/ic_door.h>
 #include <game/server/infclass/entities/ic_projectile.h>
 #include <game/server/infclass/entities/laser-teleport.h>
 #include <game/server/infclass/entities/looper-wall.h>
@@ -23,6 +24,7 @@ void CInfClassGameController::RegisterEntityTypes()
 {
 	GameWorld()->RegisterEntityType<CBiologistMine>();
 	GameWorld()->RegisterEntityType<CBouncingBullet>();
+	GameWorld()->RegisterEntityType<CDoor>();
 	GameWorld()->RegisterEntityType<CEngineerWall>();
 	GameWorld()->RegisterEntityType<CFlyingPoint>();
 	GameWorld()->RegisterEntityType<CGrowingExplosion>();
