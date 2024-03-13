@@ -141,6 +141,9 @@ bool ICollision::IsSolid(int x, int y) const
 // The method is a copy of CCollision::IntersectLine()
 int ICollision::IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *pOutBeforeCollision) const
 {
+	if(Pos0 == Pos1)
+		return CheckPoint(Pos0.x, Pos0.y);
+
 	vec2 Pos1Pos0 = Pos1 - Pos0;
 	float Distance = length(Pos1Pos0);
 	int End(Distance+1);
