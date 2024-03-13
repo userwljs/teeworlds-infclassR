@@ -376,6 +376,21 @@ std::optional<int> CBotUtils::GetFirstAirTileAbovePosition(CTileRoundedPosition 
 	return std::nullopt;
 }
 
+bool CBotUtils::GetRoughIntersect(CTileRoundedPosition From, CTileRoundedPosition To) const
+{
+	if(m_IntersectionData.has_value())
+	{
+		if(m_IntersectionData->Pos1 == From && m_IntersectionData->Pos2 == To)
+			return m_IntersectionData->CollisionIndex;
+	}
+	vec2 Pos0 = From.toVec2() + Tile2DHalfSize;
+	vec2 Pos1 = To.toVec2() + Tile2DHalfSize;
+	int Index = GetCollision()->IntersectLine(Pos0, Pos1);
+	m_IntersectionData = CIntersectionData{.Pos1 = From, .Pos2 = To, .CollisionIndex = Index};
+
+	return Index;
+}
+
 std::optional<vec2> CBotUtils::GetHitPos(vec2 From, vec2 Direction, float Curvature, float Speed, float Time, float TimeStep) const
 {
 	float SimulatedTime = 0.0f;

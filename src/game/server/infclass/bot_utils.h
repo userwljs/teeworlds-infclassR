@@ -78,6 +78,8 @@ public:
 		return CTileRoundedPosition(X - other.X, Y - other.Y);
 	}
 
+	friend auto operator<=>(const CTileRoundedPosition &, const CTileRoundedPosition &) = default;
+
 	vec2 toVec2() const
 	{
 		return vec2(X * 32, Y * 32);
@@ -101,7 +103,7 @@ public:
 	bool IsSolid(const vec2 &Position) const { return IsSolid(Position.x, Position.y); }
 	bool CheckPoint(float x, float y) const { return IsSolid(round_to_int(x), round(y)); }
 	int GetCollisionAt(float x, float y) const { return GetTile(round(x), round(y)); }
-	int IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *pOutBeforeCollision = nullptr) const;
+	int IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision = nullptr, vec2 *pOutBeforeCollision = nullptr) const;
 };
 
 class IDebugSink
@@ -161,6 +163,14 @@ public:
 	CDataCache<char, -1> m_AirTilesAboveCache;
 };
 
+class CIntersectionData
+{
+public:
+	CTileRoundedPosition Pos1;
+	CTileRoundedPosition Pos2;
+	int CollisionIndex;
+};
+
 class CBotUtilsSharedData
 {
 public:
@@ -196,6 +206,7 @@ public:
 	std::optional<float> GetFirstSolidAbovePosition(const vec2 &Position, int MaxTiles) const;
 	std::optional<float> GetFirstAirAbovePosition(const vec2 &Position, int MaxTiles) const;
 	std::optional<int> GetFirstAirTileAbovePosition(CTileRoundedPosition TilePosition, int MaxTiles) const;
+	bool GetRoughIntersect(CTileRoundedPosition From, CTileRoundedPosition To) const;
 	std::optional<vec2> GetHitPos(vec2 From, vec2 Direction, float Curvature, float Speed, float Time, float TimeStep) const;
 	std::optional<vec2> GetHitPosVisualized(vec2 From, vec2 Direction, float Curvature, float Speed, float Time, float TimeStep) const;
 
@@ -209,4 +220,5 @@ protected:
 	ICollision *m_pCollision{};
 	IDebugSink *m_pDebugSink{};
 	CCollisionCache *m_pCollisionCache{};
+	mutable std::optional<CIntersectionData> m_IntersectionData;
 };
