@@ -549,9 +549,11 @@ void CBotPlayer::OnNewRound()
 	s_HiveMind.Reset();
 }
 
-void CBotPlayer::SetBotUtils(CBotUtils *pUtils)
+void CBotPlayer::SetBotUtilsData(const CBotUtilsSharedData &UtilsData)
 {
-	m_pUtils = pUtils;
+	m_BotUtils.SetCollision(UtilsData.m_pCollision);
+	m_BotUtils.SetDebugSing(UtilsData.m_pDebugSink);
+	m_BotUtils.SetCache(UtilsData.m_pCache);
 }
 
 void CBotPlayer::Snap(int SnappingClient)
@@ -947,8 +949,8 @@ void CBotPlayer::OnTargetLost()
 	const CIcCharacter *pExTarget = GameController()->GetCharacter(m_LastTarget);
 	EObjection SameDirObjection = EObjection::Invalid;
 	{
-		std::optional<int> SolidBelowTheTarget = m_pUtils->GetSolidTileBelow(m_LastTargetSeenAtPos);
-		std::optional<int> SolidBelowTheBot = m_pUtils->GetSolidTileBelow(Pos);
+		std::optional<int> SolidBelowTheTarget = m_BotUtils.GetSolidTileBelow(m_LastTargetSeenAtPos);
+		std::optional<int> SolidBelowTheBot = m_BotUtils.GetSolidTileBelow(Pos);
 
 		if(SolidBelowTheTarget == SolidBelowTheBot)
 		{
@@ -1120,7 +1122,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					DIRECTION BackwardDirection = OppositeDirection(m_RoamingDirection);
 					const int WantBackJumps = GetJumpsNeededToJumpOnPlatform(BackwardDirection, MaxJumps, &JumpTarget, MaxBackjumpXDistance);
 
-					if(WantBackJumps && !m_pUtils->IsReachableByGround(Pos, JumpTarget, MaxJumps))
+					if(WantBackJumps && !m_BotUtils.IsReachableByGround(Pos, JumpTarget, MaxJumps))
 					{
 						STilePosition DecisionPos = JumpPosToShortPos(JumpTarget, Pos);
 						constexpr bool IgnoreIfChecked = true;
@@ -1169,7 +1171,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					CTileRoundedPosition CheckTile = Pos;
 					CheckTile.X += 1 * m_RoamingDirection;
 
-					std::optional<int> SolidInTheNextTile = m_pUtils->GetSolidTileBelow(CheckTile, 2);
+					std::optional<int> SolidInTheNextTile = m_BotUtils.GetSolidTileBelow(CheckTile, 2);
 					if(!SolidInTheNextTile.has_value())
 					{
 						BotDebugMessage(VERBOSE_TRACE1, "Going to fall");
@@ -1195,7 +1197,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					if(m_RoamingObjection == EObjection::Jump)
 					{
 						int TilesAbove = GetAirTilesAbove(m_RoamingDirection, MaxJumps);
-						if(TilesAbove > m_pUtils->GetGroundJumpTiles() && random_prob(m_JumpExtraProbability))
+						if(TilesAbove > m_BotUtils.GetGroundJumpTiles() && random_prob(m_JumpExtraProbability))
 						{
 							BotDebugMessage(VERBOSE_STEPS, "Jump just because!");
 							WantToJump = true;
@@ -1215,7 +1217,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			if(JumpsToAvoidDanger)
 			{
 				constexpr float AvoidDangerProba = 1.0f;
-				if(random_prob(AvoidDangerProba) && m_pUtils->IsReachableByGround(Pos, JumpTarget, MaxJumps))
+				if(random_prob(AvoidDangerProba) && m_BotUtils.IsReachableByGround(Pos, JumpTarget, MaxJumps))
 				{
 					WantToJump = true;
 
@@ -1371,7 +1373,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		bool MaximizeJump = true;
 		if(!IsGrounded())
 		{
-			if(dYTiles < m_pUtils->GetAirJumpTiles())
+			if(dYTiles < m_BotUtils.GetAirJumpTiles())
 			{
 				MaximizeJump = false;
 				// Reduce the interval for the last jump that fits
@@ -1547,10 +1549,10 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	if((AbsXToTarget < TileSize * 3) && WantGoDown)
 	{
 		int YDiff = (m_LastTargetSeenAtPos.y - Pos.y) / TileSizeF;
-		float AirTilesAboveTarget = m_pUtils->GetAirTilesAbove(m_LastTargetSeenAtPos, YDiff + 1);
+		float AirTilesAboveTarget = m_BotUtils.GetAirTilesAbove(m_LastTargetSeenAtPos, YDiff + 1);
 		if(YDiff > AirTilesAboveTarget)
 		{
-			// float GroundLevelBelow = m_pUtils->GetSolidBelow(Pos, YDiff);
+			// float GroundLevelBelow = m_BotUtils.GetSolidBelow(Pos, YDiff);
 			Direction = OppositeDirection(Direction);
 		}
 	}
@@ -1587,7 +1589,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		if(JumpsToAvoidDanger)
 		{
 			constexpr float AvoidDangerProba = 1.0f;
-			if(random_prob(AvoidDangerProba) && m_pUtils->IsReachableByGround(Pos, JumpTarget, AvailableJumps))
+			if(random_prob(AvoidDangerProba) && m_BotUtils.IsReachableByGround(Pos, JumpTarget, AvailableJumps))
 			{
 				WantToJump = true;
 
@@ -1658,7 +1660,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		bool MaximizeJump = true;
 		if(!IsGrounded())
 		{
-			if(dYTiles < m_pUtils->GetAirJumpTiles())
+			if(dYTiles < m_BotUtils.GetAirJumpTiles())
 			{
 				MaximizeJump = false;
 				// Reduce the interval for the last jump that fits
@@ -1838,7 +1840,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			float Time = Distance / Speed;
 
 			const vec2 ProjStartPos = Pos + Dir * m_pCharacter->GetProximityRadius() * 0.75f;
-			const std::optional<vec2> Hit = m_pUtils->GetHitPos(ProjStartPos, Dir, Curvature, Speed, Time * 1.1f, 1.0f / Server()->TickSpeed());
+			const std::optional<vec2> Hit = m_BotUtils.GetHitPos(ProjStartPos, Dir, Curvature, Speed, Time * 1.1f, 1.0f / Server()->TickSpeed());
 			constexpr float MaxDistanceSquared = TileSize * 4.5 * TileSize * 4.5;
 			if(Hit.has_value() && distance_squared(m_LastTargetSeenAtPos, Hit.value()) > MaxDistanceSquared)
 			{
@@ -2066,7 +2068,7 @@ void CBotPlayer::BotDebugMessage(int VerbosityLevel, const char *fmt, ...) const
 #endif
 	va_end(args);
 
-	m_pUtils->GetDebugSink()->SendFormattedMessage(VerbosityLevel, aBuf);
+	m_BotUtils.GetDebugSink()->SendFormattedMessage(VerbosityLevel, aBuf);
 }
 
 bool CBotPlayer::HasWallInTheDirection(DIRECTION Direction) const
@@ -2342,7 +2344,7 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 	const float AirControlAccel = m_NextTuningParams.m_AirControlAccel;
 	const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
 	const float Acceleration = AirControlAccel * DirectionSign;
-	int Ticks = m_pUtils->GetJumpTicksInAir(MaxJumps, IsGrounded());
+	int Ticks = m_BotUtils.GetJumpTicksInAir(MaxJumps, IsGrounded());
 	const int MaxTicks = Server()->TickSpeed() * 1.5f;
 	if(Ticks > MaxTicks)
 		Ticks = MaxTicks;
@@ -2504,7 +2506,7 @@ int CBotPlayer::GetAirTilesAbove(DIRECTION Direction, int MaxJumps) const
 	float MaxTiles = GetMaxTilesForJumps(MaxJumps);
 
 	const vec2 &Pos = m_pCharacter->GetPos();
-	return m_pUtils->GetAirTilesAbove(Pos, MaxTiles);
+	return m_BotUtils.GetAirTilesAbove(Pos, MaxTiles);
 }
 
 float CBotPlayer::GetAirTilesAboveAtX(int MaxTiles, float CheckPosX) const
@@ -2512,7 +2514,7 @@ float CBotPlayer::GetAirTilesAboveAtX(int MaxTiles, float CheckPosX) const
 	const vec2 &Pos = m_pCharacter->GetPos();
 	const float BaseY = Pos.y;
 
-	return m_pUtils->GetAirTilesAbove(vec2(CheckPosX, BaseY), MaxTiles);
+	return m_BotUtils.GetAirTilesAbove(vec2(CheckPosX, BaseY), MaxTiles);
 }
 
 int CBotPlayer::GetMaxJumps() const
@@ -2755,7 +2757,7 @@ void CBotPlayer::GetNewObjection()
 			}
 			else
 			{
-				bool Reachable = m_pUtils->IsReachableByGround(OwnPos, HumanPos, GetMaxJumps());
+				bool Reachable = m_BotUtils.IsReachableByGround(OwnPos, HumanPos, GetMaxJumps());
 
 				if(Reachable)
 				{
@@ -2936,7 +2938,7 @@ int CBotPlayer::GetAvailableJumps() const
 
 float CBotPlayer::GetMaxTilesForJumps(int Jumps) const
 {
-	return m_pUtils->GetMaxTilesForJumps(Jumps, IsGrounded());
+	return m_BotUtils.GetMaxTilesForJumps(Jumps, IsGrounded());
 }
 
 int CBotPlayer::GetJumpsToReachTarget(float TileY) const
@@ -2967,7 +2969,7 @@ bool CBotPlayer::MaybeFallDown() const
 {
 	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
 	{
-		return m_pUtils->IsReachableByGround(m_pCharacter->GetPos(), m_LastTargetSeenAtPos, GetMaxJumps());
+		return m_BotUtils.IsReachableByGround(m_pCharacter->GetPos(), m_LastTargetSeenAtPos, GetMaxJumps());
 	}
 	if (m_RoamingObjection == EObjection::CheckPOI)
 	{
@@ -3201,9 +3203,9 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 	const vec2 ThreatPos = pThreatEntity->GetPos();
 	const float ThreatRadius = pThreatEntity->GetProximityRadius();
 
-	const float MaxTiles = (IsGrounded() ? m_pUtils->GetGroundJumpTiles() : m_pUtils->GetAirJumpTiles()) + 1;
-	const float AirTilesAbovePos = m_pUtils->GetAirTilesAbove(Pos, MaxTiles);
-	std::optional<float> FirstAirAboveThreat = m_pUtils->GetFirstAirAbovePosition(ThreatPos, MaxTiles);
+	const float MaxTiles = (IsGrounded() ? m_BotUtils.GetGroundJumpTiles() : m_BotUtils.GetAirJumpTiles()) + 1;
+	const float AirTilesAbovePos = m_BotUtils.GetAirTilesAbove(Pos, MaxTiles);
+	std::optional<float> FirstAirAboveThreat = m_BotUtils.GetFirstAirAbovePosition(ThreatPos, MaxTiles);
 	if(!FirstAirAboveThreat.has_value())
 	{
 		return 0;
@@ -3213,8 +3215,8 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 	const float AirControlSpeed = m_NextTuningParams.m_AirControlSpeed;
 	const float Acceleration = AirControlAccel * DirectionSign;
 
-	const int ApproxTicks = m_pUtils->GetJumpTicksInAir(MaxJumps, IsGrounded(), AirTilesAbovePos * TileSize, VelY);
-	const float PredictedXDistance = m_pUtils->GetDistanceForVelocityAccelerationTicks(VelX, Acceleration, ApproxTicks, AirControlSpeed);
+	const int ApproxTicks = m_BotUtils.GetJumpTicksInAir(MaxJumps, IsGrounded(), AirTilesAbovePos * TileSize, VelY);
+	const float PredictedXDistance = m_BotUtils.GetDistanceForVelocityAccelerationTicks(VelX, Acceleration, ApproxTicks, AirControlSpeed);
 	const float PredictedXDistanceAbs = std::abs(PredictedXDistance);
 	const float ReachablePosX = Pos.x + PredictedXDistance;
 
@@ -3232,7 +3234,7 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 	while (Distance < PredictedXDistanceAbs)
 	{
 		// There should be at least the same tiles above AirTilesAbovePos
-		const float AirTilesAboveX = m_pUtils->GetAirTilesAbove(Pos + vec2(Distance * DirectionSign, 0), MaxTiles);
+		const float AirTilesAboveX = m_BotUtils.GetAirTilesAbove(Pos + vec2(Distance * DirectionSign, 0), MaxTiles);
 		if(AirTilesAboveX < AirTilesAbovePos)
 		{
 			// Do not jump: going to hit the head otherwise
@@ -3371,7 +3373,7 @@ void CBotPlayer::UpdatePOIState()
 	if(m_POIPos.has_value() && m_pCharacter)
 	{
 		constexpr int MaxSteps = 100;
-		m_CachedPOIReachableByGround = m_pUtils->IsReachableByGround(m_pCharacter->GetPos(), m_POIPos.value(), GetMaxJumps(), MaxSteps);
+		m_CachedPOIReachableByGround = m_BotUtils.IsReachableByGround(m_pCharacter->GetPos(), m_POIPos.value(), GetMaxJumps(), MaxSteps);
 	}
 	else
 	{
@@ -3404,11 +3406,11 @@ CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const
 			for(int i = 0; i < MaxHorizontalTiles; ++i)
 			{
 				float TryX = SecondWantedXPos + TileSize * DirectionFromJumpToTarget;
-				if(m_pUtils->GetCollision()->IsSolid(vec2(TryX, CurrentY)))
+				if(m_BotUtils.GetCollision()->IsSolid(vec2(TryX, CurrentY)))
 				{
 					// Allow only one tile jump for now
 					CurrentY -= TileSize;
-					if(m_pUtils->GetCollision()->IsSolid(vec2(TryX, CurrentY)))
+					if(m_BotUtils.GetCollision()->IsSolid(vec2(TryX, CurrentY)))
 					{
 						break;
 					}
@@ -3416,7 +3418,7 @@ CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const
 
 				vec2 NextTile(TryX, Pos.y);
 				constexpr int MaxFault = 8;
-				std::optional<float> Gnd = m_pUtils->GetSolidBelow(NextTile, MaxFault);
+				std::optional<float> Gnd = m_BotUtils.GetSolidBelow(NextTile, MaxFault);
 				if(!Gnd.has_value())
 				{
 					break;
@@ -3424,7 +3426,7 @@ CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const
 
 				float GroundValue = Gnd.value() - ProximityRadius / 2;
 
-				if(m_pUtils->IsReachableByGround(CurrentTargetTile, vec2(NextTile.x, GroundValue), 1))
+				if(m_BotUtils.IsReachableByGround(CurrentTargetTile, vec2(NextTile.x, GroundValue), 1))
 				{
 					CurrentTargetTile = vec2(NextTile.x, GroundValue);
 					SecondWantedXPos = NextTile.x;
@@ -3453,10 +3455,10 @@ CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const
 			}
 		}
 
-		m_pUtils->GetDebugSink()->HighlightLineSegment(vec2(MinWantedX, Pos.y), vec2(MinWantedX, m_JumpTargetPosition.y));
+		m_BotUtils.GetDebugSink()->HighlightLineSegment(vec2(MinWantedX, Pos.y), vec2(MinWantedX, m_JumpTargetPosition.y));
 		if(MinWantedX != MaxWantedX)
 		{
-			m_pUtils->GetDebugSink()->HighlightLineSegment(vec2(MaxWantedX, Pos.y), vec2(MaxWantedX, m_JumpTargetPosition.y));
+			m_BotUtils.GetDebugSink()->HighlightLineSegment(vec2(MaxWantedX, Pos.y), vec2(MaxWantedX, m_JumpTargetPosition.y));
 		}
 
 		if(AbsXToJumpTarget > TileSize * 4)
@@ -3490,8 +3492,8 @@ CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const
 			const float Acceleration = AirControlAccel * ActualDirection;
 
 			int MaxTicks = 500;
-			const int ApproxTicks = m_pUtils->GetTicksToMoveDistance(VelX, AirControlAccel, VectorToTarget.x, MaxTicks, AirControlSpeed);
-			const float PredictedXDistance = m_pUtils->GetDistanceForVelocityAccelerationTicks(VelX, Acceleration, ApproxTicks, AirControlSpeed);
+			const int ApproxTicks = m_BotUtils.GetTicksToMoveDistance(VelX, AirControlAccel, VectorToTarget.x, MaxTicks, AirControlSpeed);
+			const float PredictedXDistance = m_BotUtils.GetDistanceForVelocityAccelerationTicks(VelX, Acceleration, ApproxTicks, AirControlSpeed);
 
 			if(Pos.x + PredictedXDistance > MaxWantedX)
 			{
@@ -3618,7 +3620,7 @@ void CBotPlayer::SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpF
 	m_JumpTargetPosition = JumpTarget;
 	m_JumpFromPosition = JumpFromPosition;
 
-	m_pUtils->GetDebugSink()->HighlightPosition(JumpTarget);
+	m_BotUtils.GetDebugSink()->HighlightPosition(JumpTarget);
 }
 
 void CBotPlayer::SetPOI(std::optional<vec2> newPOI)

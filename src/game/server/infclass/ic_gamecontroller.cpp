@@ -530,6 +530,7 @@ void CIcGameController::OnReset()
 		Sent = false;
 
 	RunCallback(Lua()->GetLuaState(), "on_world_reset");
+	RegisterBotsContext();
 }
 
 void CIcGameController::OnShutdown()
@@ -4586,7 +4587,7 @@ CBaseBotPlayer *CIcGameController::AddBot(int Team)
 	if(!pPlayer)
 		return nullptr;
 
-	pPlayer->SetBotUtils(m_pBotUtils);
+	pPlayer->SetBotUtilsData(*m_pBotUtilsData);
 	GameServer()->m_apPlayers[PlayerID] = pPlayer;
 
 	EPlayerClass PlayerClass = EPlayerClass::Bat;
@@ -4699,10 +4700,17 @@ void CIcGameController::RegisterBotsContext()
 	Collision.SetGameContext(GameServer());
 	static CGameDebugSink DebugSink;
 	DebugSink.SetGameContext(GameServer());
-	static CBotUtils Utils;
-	Utils.SetDebugSing(&DebugSink);
-	Utils.SetCollision(&Collision);
-	m_pBotUtils = &Utils;
+	static CCollisionCache Cache;
+	static CBotUtilsSharedData UtilsData;
+	UtilsData.m_pCollision = &Collision;
+	UtilsData.m_pDebugSink = &DebugSink;
+	UtilsData.m_pCache = &Cache;
+
+	int Width = Collision.GameLayerWidth();
+	int Height = Collision.GameLayerHeight();
+	Cache.m_AirTilesAboveCache.Reset(Width, Height);
+
+	m_pBotUtilsData = &UtilsData;
 }
 
 CIcGameController::PlayerScore *CIcGameController::GetSurvivalPlayerScore(int ClientId)
@@ -6036,7 +6044,7 @@ CPlayer *CIcGameController::CreatePlayer(int ClientId, bool IsSpectator, void *p
 	}
 
 #ifdef DEBUG_PLAYER
-	pPlayer->SetBotUtils(m_pBotUtils);
+	pPlayer->SetBotUtilsData(*m_pBotUtilsData);
 #endif
 
 	if(pData)

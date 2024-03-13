@@ -14,6 +14,7 @@
 
 class CBaseBotPlayer;
 class CBotUtils;
+class CBotUtilsSharedData;
 class CControlPoint;
 class CDoor;
 class CGameWorld;
@@ -502,7 +503,7 @@ private:
 	void RegisterBotsContext();
 
 	icArray<CBaseBotPlayer *, MaxBots> m_Bots;
-	CBotUtils *m_pBotUtils = nullptr;
+	CBotUtilsSharedData *m_pBotUtilsData{};
 
 	struct PlayerScore
 	{

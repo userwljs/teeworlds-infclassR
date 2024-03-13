@@ -9,12 +9,13 @@
 #include <cstdint>
 #include <optional>
 
+#include "bot_utils.h"
+
 template<typename T>
 T fromString(const char *pString);
 
 class CGameWorld;
 class CIcEntity;
-class CBotUtils;
 
 using ClientsArray = icArray<int, MAX_CLIENTS>;
 
@@ -183,7 +184,7 @@ public:
 
 	static void OnNewRound();
 
-	void SetBotUtils(CBotUtils *pUtils);
+	void SetBotUtilsData(const CBotUtilsSharedData &UtilsData);
 	void Snap(int SnappingClient) override;
 
 	void TryRespawn() override;
@@ -309,7 +310,7 @@ protected:
 	void SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpFromPosition);
 	void SetPOI(std::optional<vec2> newPOI);
 
-	CBotUtils *m_pUtils = nullptr;
+	CBotUtils m_BotUtils;
 	EBotState m_BotState = EBotState::Roaming;
 	int m_BotStateTick = -1;
 	DIRECTION m_RoamingDirection = DIRECTION_NONE;

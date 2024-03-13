@@ -203,9 +203,16 @@ TEST(BotUtils, AirTiles)
 	Collision.SetMapData(c_MapData1, 5, 5);
 	static_assert(std::size(c_MapData1) == 5 * 5);
 
+	static CCollisionCache Cache;
+
+	int Width = Collision.GameLayerWidth();
+	int Height = Collision.GameLayerHeight();
+	Cache.m_AirTilesAboveCache.Reset(Width, Height);
+
 	CBotUtils Utils;
 	Utils.SetDebugSing(&DebugSink);
 	Utils.SetCollision(&Collision);
+	Utils.SetCache(&Cache);
 
 	int MaxTiles = 10;
 

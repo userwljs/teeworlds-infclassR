@@ -118,7 +118,7 @@ public:
 };
 
 template<typename T, T DefaultValue>
-class DataCache
+class CDataCache
 {
 public:
 	void Reset(int Width, int Height)
@@ -155,14 +155,30 @@ protected:
 	int m_Width = 0;
 };
 
+class CCollisionCache
+{
+public:
+	CDataCache<char, -1> m_AirTilesAboveCache;
+};
+
+class CBotUtilsSharedData
+{
+public:
+	ICollision *m_pCollision{};
+	IDebugSink *m_pDebugSink{};
+	CCollisionCache *m_pCache{};
+};
+
 class CBotUtils
 {
 public:
-	void SetCollision(ICollision *pCollision);
+	void SetCollision(ICollision *pCollision) { m_pCollision = pCollision; }
 	ICollision *GetCollision() const { return m_pCollision; }
 
 	void SetDebugSing(IDebugSink *pDebugSink) { m_pDebugSink = pDebugSink; }
 	IDebugSink *GetDebugSink() const { return m_pDebugSink; }
+
+	void SetCache(CCollisionCache *pCache) { m_pCollisionCache = pCache; }
 
 	static float GetDistanceForVelocityAccelerationTicks(float Velocity, float Acceleration, int Ticks, float AccelerationMaxVelocity = 0);
 	static int GetTicksToFallToHeight(float Velocity, float Acceleration, float Distance, int MaxTicks = 500);
@@ -190,9 +206,7 @@ public:
 	bool IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps = 1000) const;
 
 protected:
-	ICollision *m_pCollision = nullptr;
-	IDebugSink *m_pDebugSink = nullptr;
-	const CTuningParams *m_pTuningParams = nullptr;
-
-	mutable DataCache<char, -1> m_AirTilesAboveCache;
+	ICollision *m_pCollision{};
+	IDebugSink *m_pDebugSink{};
+	CCollisionCache *m_pCollisionCache{};
 };

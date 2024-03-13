@@ -186,15 +186,6 @@ void IDebugSink::SendMessage(int VerbosityLevel, const char *fmt, ...)
 	SendFormattedMessage(VerbosityLevel, aBuf);
 }
 
-void CBotUtils::SetCollision(ICollision *pCollision)
-{
-	m_pCollision = pCollision;
-
-	int Width = m_pCollision->GameLayerWidth();
-	int Height = m_pCollision->GameLayerHeight();
-	m_AirTilesAboveCache.Reset(Width, Height);
-}
-
 float CBotUtils::GetDistanceForVelocityAccelerationTicks(float Velocity, float Acceleration, int Ticks, float AccelerationMaxVelocity)
 {
 	return ::GetDistanceForVelocityAccelerationTicks(Velocity, Acceleration, Ticks, AccelerationMaxVelocity);
@@ -428,6 +419,7 @@ float CBotUtils::GetAirTilesAbove(const vec2 &Position, int MaxTiles) const
 
 int CBotUtils::GetAirTilesAbove(const CTileRoundedPosition &TilePosition, int MaxTiles) const
 {
+	auto &m_AirTilesAboveCache = m_pCollisionCache->m_AirTilesAboveCache;
 	char CachedValue = m_AirTilesAboveCache.Get(TilePosition.X, TilePosition.Y);
 	if(CachedValue >= 0)
 		return std::min<int>(MaxTiles, CachedValue);
