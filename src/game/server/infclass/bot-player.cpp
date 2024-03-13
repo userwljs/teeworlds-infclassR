@@ -1472,8 +1472,19 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			if(!CanHook() || (HorizontalDistance < GetMaxHookDistance()))
 			{
 				int NeedJumps = GetJumpsToReachTarget(VectorToTarget);
-				m_WantedJumps = std::min<int>(AvailableJumps, NeedJumps);
-				SetJumpTargetPosition(m_LastTargetSeenAtPos, Pos);
+				int Jumps = std::min<int>(AvailableJumps, NeedJumps);
+				float JumpTiles = m_BotUtils.GetMaxTilesForJumps(Jumps, IsGrounded());
+				JumpTiles = m_BotUtils.GetAirTilesAbove(Pos, JumpTiles);
+				vec2 PosIfJumped = vec2(Pos.x, Pos.y - JumpTiles * TileSizeF);
+				if(m_BotUtils.GetRoughIntersect(PosIfJumped, m_LastTargetSeenAtPos))
+				{
+					// No jump!
+				}
+				else
+				{
+					m_WantedJumps = Jumps;
+					SetJumpTargetPosition(m_LastTargetSeenAtPos, Pos);
+				}
 			}
 		}
 
