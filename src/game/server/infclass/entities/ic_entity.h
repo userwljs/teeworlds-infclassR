@@ -8,6 +8,8 @@
 
 inline constexpr int TileSize = 32;
 inline constexpr float TileSizeF = 32.0f;
+inline constexpr vec2 Tile2DSize{TileSizeF, TileSizeF};
+inline constexpr vec2 Tile2DHalfSize{TileSizeF / 2, TileSizeF / 2};
 
 template <class T, int StackCapacity>
 class icArray;
