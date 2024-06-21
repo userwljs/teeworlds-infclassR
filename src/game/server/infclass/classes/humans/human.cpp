@@ -170,6 +170,13 @@ CAmmoParams CInfClassHuman::GetAmmoParams(int Weapon) const
 
 	switch(InfWID)
 	{
+	case EInfclassWeapon::LOOPER_LASER:
+		if(GameController()->GetRoundType() == ERoundType::Survival)
+		{
+			// Normal MaxAmmo is 20
+			Params.MaxAmmo = 15;
+		}
+		break;
 	case EInfclassWeapon::NINJA_GRENADE:
 		Params.MaxAmmo = minimum(Params.MaxAmmo + m_NinjaAmmoBuff, 10);
 		break;
