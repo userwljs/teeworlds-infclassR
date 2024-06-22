@@ -1,6 +1,7 @@
 #include "ic_gamecontroller.h"
 
 #include <game/server/infclass/entities/ic_character.h>
+#include <game/server/infclass/entities/ic_door.h>
 #include <game/server/infclass/entities/ic_entity.h>
 #include <game/server/infclass/ic_player.h>
 
@@ -46,11 +47,15 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("Destroy", &CIcEntity::Destroy)
 			.addFunction("GetPosition", &CIcEntity::GetPos)
 		.endClass()
+		.deriveClass<CDoor, CIcEntity>("CDoor")
+			.addFunction("SetOpen", &CDoor::SetOpen)
+		.endClass()
 		.beginClass<CIcGameController>("CIcGameController")
 			.addFunction("GetPlayer", &CIcGameController::GetPlayer)
 			.addFunction("GetCharacter", &CIcGameController::GetCharacter)
 			.addFunction("GetSecondsElapsed", &CIcGameController::GetSecondsElapsed)
 			.addFunction("GetSecondsRemaining", &CIcGameController::GetSecondsRemaining)
+			.addFunction("AddDoor", &CIcGameController::AddDoor)
 		.endClass()
 		.beginNamespace("Game")
 			.addProperty("Controller", &pGameController, false)
