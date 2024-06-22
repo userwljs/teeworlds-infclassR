@@ -9,6 +9,7 @@
 #include <engine/console.h>
 #include <engine/storage.h>
 #include <engine/server/lua.h>
+#include <engine/server/lua_callback.h>
 #include <engine/server/roundstatistics.h>
 #include <engine/server/sql_server.h>
 #include <engine/shared/json.h>
@@ -869,6 +870,12 @@ void CGameContext::SendChat(int ChatterClientId, int Team, const char *pText, in
 	if(aText[0] == '!' && Config()->m_SvFilterChatCommands)
 	{
 		return;
+	}
+
+	if(ChatterClientId >= 0)
+	{
+		const char *pCallbackId = Team == CGameContext::CHAT_ALL ? "on_chat_message" : "on_teamchat_message";
+		RunCallback(Lua()->GetLuaState(), pCallbackId, ChatterClientId, std::string(aText));
 	}
 
 	if(SpamProtectionClientId < 0)
