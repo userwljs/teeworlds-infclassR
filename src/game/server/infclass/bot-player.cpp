@@ -29,8 +29,8 @@ public:
 	void ReportKilled(CBotPlayer *pPlayer);
 	void ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetPos);
 
-	bool TryAttack(int ClientID);
-	bool TryHook(int ClientID);
+	bool TryAttack(int TargetId);
+	bool TryHook(int HookerId, int TargetId);
 	bool TryToComputeDecision(CBotPlayer *pPlayer);
 	std::optional<vec2> PickPOI(const vec2 &FromPos) const;
 	bool HasPOI() const;
@@ -49,21 +49,21 @@ public:
 
 protected:
 	static constexpr int MaxAttacksInTimespan = 2;
+	static constexpr int MaxHooksInTimespan = 10;
 	static constexpr float Timespan = 0.75f; // in seconds
 
 	void CleanupUncheckedPositions();
 
 	struct HiveVictim
 	{
-		int ClientID = -1;
-		icArray <int, MaxAttacksInTimespan> aAttacks;
-		int Hooks = 0;
+		icArray<int, MaxAttacksInTimespan> aAttacks;
+		icArray<int, MaxHooksInTimespan> aHooks;
 	};
 
 	HiveVictim *GetVictim(int ClientID);
 
 	int m_Tick = 0;
-	icArray<HiveVictim, MAX_CLIENTS> m_aVictims;
+	HiveVictim m_aVictims[MAX_CLIENTS];
 	icArray<vec2, 10> m_aPOIs;
 	int m_HumansTick = 0;
 	icArray<vec2, MAX_CLIENTS> m_aHumanPositions;
@@ -78,7 +78,10 @@ void CHiveMind::Reset()
 {
 	m_Tick = -1;
 	m_HumansTick = -1;
-	m_aVictims.Clear();
+	for(HiveVictim &Victim : m_aVictims)
+	{
+		Victim = {};
+	}
 	m_aPOIs.Clear();
 	m_aCheckedPos.Clear();
 	m_aGoodDecisions.Clear();
@@ -90,9 +93,9 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 		return;
 
 	m_Tick = Tick;
-	for(int i = m_aVictims.Size() - 1; i >= 0; --i)
+	for(std::size_t VictimId = 0; VictimId < std::size(m_aVictims); ++VictimId)
 	{
-		HiveVictim &Victim = m_aVictims[i];
+		HiveVictim &Victim = m_aVictims[VictimId];
 
 		while(!Victim.aAttacks.IsEmpty())
 		{
@@ -107,13 +110,19 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 			}
 		}
 
-		if(Victim.aAttacks.IsEmpty())
+		// Copy aHooks
+		const auto aHooks = Victim.aHooks;
+		for (int HookerId : aHooks)
 		{
-			m_aVictims.RemoveAt(i);
-			continue;
-		}
+			const CIcCharacter *pCharacter = pGameController->GetCharacter(HookerId);
+			if(pCharacter && pCharacter->GetHookedPlayer() == VictimId)
+			{
+				// Still hooking
+				continue;
+			}
 
-		Victim.Hooks = 0;
+			Victim.aHooks.RemoveOne(HookerId);
+		}
 	}
 
 	m_aPOIs.Clear();
@@ -203,10 +212,10 @@ void CHiveMind::ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetP
 	}
 }
 
-bool CHiveMind::TryAttack(int ClientID)
+bool CHiveMind::TryAttack(int TargetId)
 {
-	HiveVictim *pVictim = GetVictim(ClientID);
-	auto aAttacks = pVictim->aAttacks;
+	HiveVictim *pVictim = GetVictim(TargetId);
+	const auto &aAttacks = pVictim->aAttacks;
 	if(aAttacks.Size() == aAttacks.Capacity())
 		return false;
 
@@ -214,16 +223,21 @@ bool CHiveMind::TryAttack(int ClientID)
 	return true;
 }
 
-bool CHiveMind::TryHook(int ClientID)
+bool CHiveMind::TryHook(int HookerId, int TargetId)
 {
-	HiveVictim *pVictim = GetVictim(ClientID);
+	HiveVictim *pVictim = GetVictim(TargetId);
+	const auto &aHooks = pVictim->aHooks;
 
-	if(pVictim->Hooks >= g_Config.m_InfMaxHiveHooks)
-	{
+	if (aHooks.Contains(HookerId))
+		return true;
+
+	if(aHooks.Size() == aHooks.Capacity())
 		return false;
-	}
 
-	pVictim->Hooks++;
+	if(aHooks.Size() >= g_Config.m_InfMaxHiveHooks)
+		return false;
+
+	pVictim->aHooks.Add(HookerId);
 	return true;
 }
 
@@ -405,18 +419,7 @@ void CHiveMind::CleanupUncheckedPositions()
 
 CHiveMind::HiveVictim *CHiveMind::GetVictim(int ClientID)
 {
-	for(HiveVictim &Victim : m_aVictims)
-	{
-		if(Victim.ClientID == ClientID)
-		{
-			return &Victim;
-		}
-	}
-
-	m_aVictims.Add({});
-	m_aVictims.Last().ClientID = ClientID;
-
-	return &m_aVictims.Last();
+	return &m_aVictims[ClientID];
 }
 
 static CHiveMind s_HiveMind;
@@ -612,6 +615,10 @@ void CBotPlayer::Tick()
 		{
 			m_JumpTargetingTicks--;
 		}
+		if (m_HookAimingRemainingTicks.has_value())
+		{
+			m_HookAimingRemainingTicks.value()--;
+		}
 
 		const int T = Server()->Tick();
 		const int TickSpeed = Server()->TickSpeed();
@@ -655,7 +662,8 @@ void CBotPlayer::TickPaused()
 	if(m_NextRandomFireTick)
 		m_NextRandomFireTick++;
 	m_HookUntilTick++;
-	m_DelayHookUntilTick++;
+	if (m_HookAimingRemainingTicks.has_value())
+		m_HookAimingRemainingTicks.value()++;
 
 	for(auto &IgnoredPosition : ma_IgnorePoints)
 	{
@@ -1812,7 +1820,16 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	if(m_HookUntilTick >= Tick)
 	{
-		pInput->m_Hook = 1;
+		m_HookAimingRemainingTicks.reset();
+		if(s_HiveMind.TryHook(GetCid(), m_LastTarget))
+		{
+			pInput->m_Hook = 1;
+		}
+		else
+		{
+			// Back to aiming
+			ResetHooking();
+		}
 	}
 
 	if(!IsHuman())
@@ -1823,10 +1840,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			{
 				pInput->m_Fire = s_HiveMind.TryAttack(m_LastTarget);
 			}
-		}
-		if(pInput->m_Hook)
-		{
-			pInput->m_Hook = s_HiveMind.TryHook(m_LastTarget);
 		}
 	}
 
@@ -2829,78 +2842,83 @@ void CBotPlayer::MaybeHookTheTarget(float Distance)
 {
 	if(!CanHook())
 	{
-		m_HookUntilTick = -1;
+		ResetHooking();
 		return;
 	}
 
-	float HookDuration = GameServer()->Tuning()->m_HookDuration;
-	float BaseDelay = 0.3f;
-	float ExtraDelay = 0.75f;
-	if(GameController()->HardMode())
-		ExtraDelay = 0.2f;
-
-	if(StrongHook())
-	{
-		BaseDelay *= 0.75f;
-		ExtraDelay *= 0.75;
-	}
-	else if(WeakHook())
-	{
-		HookDuration *= 0.75f;
-		BaseDelay *= 1.5f;
-		ExtraDelay *= 1.5f;
-	}
-
+	const int Tick = Server()->Tick();
 	if(aHookyClasses.Contains(GetClass()))
 	{
-		BaseDelay *= 0.66f;
-		ExtraDelay *= 0.66f;
-
 		if(m_pCharacter->Core()->HookedPlayer() == m_LastTarget)
 		{
 			// Keep hooking
-			const int Tick = Server()->Tick();
 			m_HookUntilTick = Tick + 1;
-			// And delay the next hook
-			m_DelayHookUntilTick = Tick + Server()->TickSpeed() * (BaseDelay + ExtraDelay);
 			return;
 		}
 	}
 
-	const int Tick = Server()->Tick();
+	float HookDuration = GameServer()->Tuning()->m_HookDuration;
+	float MinimumDelay = 0.5f;
+	float RandomExtraDelay = 0.5f;
+	if(GameController()->HardMode())
+		RandomExtraDelay = 0.2f;
+
+	if(StrongHook())
+	{
+		MinimumDelay *= 0.75f;
+		RandomExtraDelay *= 0.75;
+	}
+	else if(WeakHook())
+	{
+		HookDuration *= 0.75f;
+		MinimumDelay *= 1.25f;
+		RandomExtraDelay *= 1.25f;
+	}
+
+	if(aHookyClasses.Contains(GetClass()))
+	{
+		MinimumDelay *= 0.75f;
+		RandomExtraDelay *= 0.75f;
+	}
+
 	if(m_pCharacter->Core()->m_HookState == HOOK_GRABBED)
 	{
 		if(m_pCharacter->Core()->HookedPlayer() != m_LastTarget)
 		{
 			// Grabbed something else. Release.
-			m_HookUntilTick = -1;
-			m_DelayHookUntilTick = Tick + Server()->TickSpeed() * 0.25f;
+			ResetHooking();
+			return;
 		}
 	}
 
-	if(Distance < GetMaxHookDistance())
+	if(Distance > GetMaxHookDistance() + TileSize * 8)
 	{
-		if(m_HookUntilTick <= Tick)
+		m_HookAimingRemainingTicks.reset();
+		return;
+	}
+
+	const bool AlreadyHooking = m_HookUntilTick >= Tick;
+	if(!AlreadyHooking && (Distance < GetMaxHookDistance()))
+	{
+		if(m_HookAimingRemainingTicks.has_value())
 		{
-			// If we're not hooking...
-			if(m_DelayHookUntilTick < Tick)
+			if(m_HookAimingRemainingTicks.value() <= 0)
 			{
-				// ... and we don't have a delay set
-				// then delay
-				m_DelayHookUntilTick = Tick + Server()->TickSpeed() * (BaseDelay + random_float() * ExtraDelay);
-			}
-			else if(m_DelayHookUntilTick == Tick)
-			{
-				// ... and we delayed the hook until this tick
-				// then hook
 				m_HookUntilTick = Tick + Server()->TickSpeed() * HookDuration;
 			}
 		}
+		else
+		{
+			// Start aiming
+			m_HookAimingRemainingTicks = Server()->TickSpeed() * (MinimumDelay + random_float() * RandomExtraDelay);
+		}
 	}
-	else
-	{
-		m_DelayHookUntilTick = -1;
-	}
+}
+
+void CBotPlayer::ResetHooking()
+{
+	m_HookAimingRemainingTicks.reset();
+	m_HookUntilTick = -1;
 }
 
 bool CBotPlayer::IsMovingInDirection(DIRECTION Direction, float MinVelocity) const

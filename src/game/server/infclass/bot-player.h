@@ -264,6 +264,7 @@ public:
 	void ChangeRoamingBehavior();
 	void GetNewObjection();
 	void MaybeHookTheTarget(float Distance);
+	void ResetHooking();
 
 	bool IsMovingInDirection(DIRECTION Direction, float MinVelocity) const;
 
@@ -336,7 +337,7 @@ protected:
 	int m_LastFireTick = -1;
 	int m_NextRandomFireTick = 0;
 	int m_HookUntilTick = -1;
-	int m_DelayHookUntilTick = -1;
+	std::optional<int> m_HookAimingRemainingTicks;
 	int m_KeepingDistanceTick = -1;
 	DIRECTION m_KeepingDistanceDirection = DIRECTION_NONE;
 
