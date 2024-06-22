@@ -135,6 +135,12 @@ bool CLua::LoadScript(const char *pPath)
 	return true;
 }
 
+bool CLua::HasGlobalCallable(const char *pName)
+{
+	luabridge::LuaRef ref = luabridge::getGlobal(GetLuaState(), pName);
+	return ref.isCallable();
+}
+
 /*
 int CLua::LoadFolderHelper(const char *pFolder)
 {

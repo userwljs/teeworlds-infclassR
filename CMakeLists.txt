@@ -857,6 +857,7 @@ set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
   lua.cpp
   lua.h
   lua_apidef.cpp
+  lua_callback.h
   luabinding.cpp
   luabinding.h
   mapconverter.cpp

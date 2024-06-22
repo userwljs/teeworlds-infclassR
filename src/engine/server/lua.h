@@ -49,6 +49,8 @@ public:
 
 	bool LoadScript(const char *pPath);
 
+	bool HasGlobalCallable(const char *pName) override;
+
 	static int ListdirLoadCallback(const char *pName, const char *pFullPath, int is_dir, int dir_type, void *pUser);
 	static int ListdirTestCallback(const char *pName, int is_dir, int dir_type, void *pUser);
 
