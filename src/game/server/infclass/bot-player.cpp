@@ -1773,13 +1773,14 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		return;
 	}
 
+	bool WantToFire{};
 	if(Distance < HitDistance)
 	{
 		if(GetCharacter()->GetReloadTimer() <= 0)
 		{
 			if(Tick > m_LastFireTick + TickSpeed * FirePerSecond)
 			{
-				pInput->m_Fire = true;
+				WantToFire = true;
 			}
 		}
 	}
@@ -1791,7 +1792,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 			if(Tick > m_LastFireTick + TickSpeed * FirePerSecond)
 			{
-				pInput->m_Fire = true;
+				WantToFire = true;
 			}
 		}
 		else if(GetClass() == EPlayerClass::Slug)
@@ -1805,7 +1806,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 			if(Tick > m_LastFireTick + TickSpeed * FirePerSecond)
 			{
-				pInput->m_Fire = true;
+				WantToFire = true;
 			}
 		}
 	}
@@ -1814,11 +1815,17 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	if(GetClass() == EPlayerClass::Boomer)
 	{
-		bool DecideToGetEvenCloser = random_prob(0.3f);
-		if((pInput->m_Fire && (Distance > 60)) || DecideToGetEvenCloser)
+		if(WantToFire && Distance > 60)
+			WantToFire = false;
+
+		if(WantToFire)
 		{
-			pInput->m_Fire = false;
-			m_LastFireTick = Tick;
+			bool DecideToGetEvenCloser = random_prob(0.3f);
+			if(DecideToGetEvenCloser)
+			{
+				WantToFire = false;
+				m_LastFireTick = Tick;
+			}
 		}
 	}
 
@@ -1838,20 +1845,21 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	if(!IsHuman())
 	{
-		if(pInput->m_Fire)
+		if(WantToFire)
 		{
 			if(WeaponType == EInfclassWeapon::HAMMER)
 			{
-				pInput->m_Fire = s_HiveMind.TryAttack(m_LastTarget);
+				WantToFire = s_HiveMind.TryAttack(m_LastTarget);
 			}
 		}
 	}
 
 	if(m_NextRandomFireTick && Tick > m_NextRandomFireTick)
 	{
-		pInput->m_Fire = true;
+		WantToFire = true;
 		m_NextRandomFireTick = 0;
 	}
+	pInput->m_Fire = WantToFire;
 
 	bool WantFlee = CanFlee() && (Distance < FleeDistance);
 	if(pInput->m_Fire)
