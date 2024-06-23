@@ -152,6 +152,7 @@ void CLua::RegisterLuaBindings()
 
 			.addFunction("GetAuthedState", &IServer::GetAuthedState)
 			.addFunction("Kick", &IServer::Kick)
+			.addFunction("GetClientName", &IServer::ClientName)
 
 		.endClass()
 		.beginClass<CGameContext>("CGameServer")
