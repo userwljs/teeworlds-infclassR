@@ -1,3 +1,4 @@
+
 #include <exception>
 #include <string>
 
@@ -8,16 +9,42 @@
 
 #include "lua.h"
 
+#if CONF_LUA
+#include <lua.hpp>
+#include <LuaBridge/LuaBridge.h>
+#endif
+
 IServer * CLua::m_pServer = nullptr;
 //CServer * CLua::ms_pCServer = nullptr;
 //IGameServer * CLua::ms_pGameServer = nullptr;
 CGameContext * CLua::ms_pCGameServer = nullptr;
 CLua * CLua::ms_pStaticLua = nullptr;
 
+#if CONF_LUA
+int LuaErrorFunc(lua_State *L)
+{
+	if (!lua_isstring(L, -1))
+		CLua::HandleException("unknown error");
+	else
+		CLua::HandleException(lua_tostring(L, -1));
+
+	lua_pop(L, 1); // remove error message
+	lua_gc(L, LUA_GCCOLLECT, 0);
+
+	return 0;
+}
+
+int LuaPanic(lua_State *L)
+{
+	dbg_msg("lua", "!! PANIC !!");
+	LuaErrorFunc(L);
+
+	return 0;
+}
+#endif
 
 CLua::CLua()
 {
-	m_pLuaState = 0;
 	CLua::ms_pStaticLua = this;
 }
 
@@ -68,6 +95,7 @@ void CLua::ExecScriptFile(const char *pFileName)
 
 void CLua::ExecScript(const char *pScript, const char *pAsFileName)
 {
+#if CONF_LUA
 	if(GetLuaState() == NULL)
 	{
 		dbg_msg("lua", "error: tried to exec a script without lua state");
@@ -77,7 +105,7 @@ void CLua::ExecScript(const char *pScript, const char *pAsFileName)
 	int Status = luaL_loadbuffer(GetLuaState(), pScript, strlen(pScript), pAsFileName);
 	if(Status != 0)
 	{
-		CLua::ErrorFunc(GetLuaState());
+		LuaErrorFunc(GetLuaState());
 		return;
 	}
 
@@ -85,29 +113,33 @@ void CLua::ExecScript(const char *pScript, const char *pAsFileName)
 
 	if(Status != 0)
 	{
-		CLua::ErrorFunc(GetLuaState());
+		LuaErrorFunc(GetLuaState());
 	}
+#endif
 }
 
 void CLua::StartupLua()
 {
+#if CONF_LUA
 	if(m_pLuaState)
 		lua_close(m_pLuaState);
 
 	m_pLuaState = luaL_newstate();
 
-	lua_atpanic(m_pLuaState, CLua::Panic);
-	lua_register(m_pLuaState, "errorfunc", CLua::ErrorFunc);
+	lua_atpanic(m_pLuaState, LuaPanic);
+	lua_register(m_pLuaState, "errorfunc", LuaErrorFunc);
 
 	luaL_openlibs(m_pLuaState);
 
 	dbg_msg("lua", "started");
 
 	RegisterLuaBindings();
+#endif
 }
 
 bool CLua::LoadScript(const char *pPath)
 {
+#if CONF_LUA
 	if(GetLuaState() == NULL)
 	{
 		dbg_msg("lua", "error: tried to load '%s' without lua state", pPath);
@@ -120,7 +152,7 @@ bool CLua::LoadScript(const char *pPath)
 	int Status = luaL_loadfile(GetLuaState(), pPath);
 	if (Status != 0)
 	{
-		CLua::ErrorFunc(GetLuaState());
+		LuaErrorFunc(GetLuaState());
 		return false;
 	}
 
@@ -128,17 +160,24 @@ bool CLua::LoadScript(const char *pPath)
 
 	if (Status != 0)
 	{
-		CLua::ErrorFunc(GetLuaState());
+		LuaErrorFunc(GetLuaState());
 		return false;
 	}
 
 	return true;
+#else
+	return false;
+#endif
 }
 
 bool CLua::HasGlobalCallable(const char *pName)
 {
+#if CONF_LUA
 	luabridge::LuaRef ref = luabridge::getGlobal(GetLuaState(), pName);
 	return ref.isCallable();
+#else
+	return false;
+#endif
 }
 
 /*
@@ -238,27 +277,6 @@ int CLua::HandleException(const char *pError)
 	CLua::ms_pStaticLua->m_lErrors.push_back(std::string(pError));
 
 	// todo something more versatile
-
-	return 0;
-}
-
-int CLua::ErrorFunc(lua_State *L)
-{
-	if (!lua_isstring(L, -1))
-		HandleException("unknown error");
-	else
-		HandleException(lua_tostring(L, -1));
-
-	lua_pop(L, 1); // remove error message
-	lua_gc(L, LUA_GCCOLLECT, 0);
-
-	return 0;
-}
-
-int CLua::Panic(lua_State *L)
-{
-	dbg_msg("lua", "!! PANIC !!");
-	ErrorFunc(L);
 
 	return 0;
 }

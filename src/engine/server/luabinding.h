@@ -7,6 +7,9 @@
 #include <engine/shared/protocol.h>
 #include <engine/shared/config.h>
 
+#include <lua.hpp>
+#include <LuaBridge/LuaBridge.h>
+
 #include <string>
 
 #define argcheck(cond, narg, expected) \

@@ -1,5 +1,6 @@
 #include "ic_gamecontroller.h"
 
+#if CONF_LUA
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_door.h>
 #include <game/server/infclass/entities/ic_entity.h>
@@ -61,3 +62,8 @@ void CIcGameController::RegisterLuaBindings()
 			.addProperty("Controller", &pGameController, false)
 		.endNamespace();
 }
+#else // USE_LUA
+void CIcGameController::RegisterLuaBindings()
+{
+}
+#endif // USE_LUA

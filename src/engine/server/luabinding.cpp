@@ -1,4 +1,4 @@
-#include <lua.hpp>
+#if CONF_LUA
 
 #include <engine/server.h>
 #include <engine/console.h>
@@ -90,3 +90,5 @@ int CLuaBinding::LuaPrintOverride(lua_State *L)
 
 	return 0;
 }
+
+#endif // USE_LUA

@@ -7,7 +7,7 @@ class ILua : public IInterface
 {
 	MACRO_INTERFACE("lua")
 protected:
-	class lua_State *m_pLuaState;
+	class lua_State *m_pLuaState{};
 
 public:
 	virtual class lua_State *GetLuaState() { return m_pLuaState; }

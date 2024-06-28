@@ -1,3 +1,5 @@
+#if CONF_LUA
+
 #include "lua.h"
 
 #include <base/system.h>
@@ -15,6 +17,9 @@
 #include <game/server/entities/character.h>
 
 #include "luabinding.h"
+
+#include <lua.hpp>
+#include <LuaBridge/LuaBridge.h>
 
 using namespace luabridge;
 
@@ -334,5 +339,6 @@ void CLua::RegisterLuaBindings()
 
 	if(g_Config.m_Debug)
 		dbg_msg("lua/debug", "registering lua bindings complete (L=%p)", L);
-
 }
+
+#endif // USE_LUA

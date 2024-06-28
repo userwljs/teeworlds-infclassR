@@ -52,6 +52,7 @@ if(TARGET_OS STREQUAL "windows")
 endif()
 
 option(USE_CONAN "Use Conan for dependencies" ${USE_CONAN_DEFAULT})
+option(USE_LUA "Use Lua scripting engine" ON)
 option(GEOLOCATION "Enable geolocation support" ${GEOLOCATION_DEFAULT})
 option(MYSQL "Enable mysql support" OFF)
 option(TOOLS "Compile tools" ON)
@@ -324,14 +325,17 @@ find_package(PNG)
 find_package(Python3)
 find_package(SQLite3)
 find_package(Threads)
-find_package(LuaJIT REQUIRED)
 
-FetchContent_Declare(
-  LuaBridge
-  GIT_REPOSITORY https://github.com/kunitoki/LuaBridge3
-  GIT_TAG a8f60e53e4e49d83fa7249f8111dadbbda3c76b1
-)
-FetchContent_MakeAvailable(LuaBridge)
+if(USE_LUA)
+  find_package(LuaJIT REQUIRED)
+
+  FetchContent_Declare(
+    LuaBridge
+    GIT_REPOSITORY https://github.com/kunitoki/LuaBridge3
+    GIT_TAG a8f60e53e4e49d83fa7249f8111dadbbda3c76b1
+  )
+  FetchContent_MakeAvailable(LuaBridge)
+endif()
 
 if(GEOLOCATION)
   find_package(MaxMindDB REQUIRED)
@@ -388,7 +392,10 @@ show_dependency_status("PNG" PNG)
 show_dependency_status("Python3" Python3)
 show_dependency_status("SQLite3" SQLite3)
 show_dependency_status("Zlib" ZLIB)
-show_dependency_status("LuaJIT" LuaJIT)
+
+if(USE_LUA)
+  show_dependency_status("LuaJIT" LuaJIT)
+endif()
 
 if(NOT(CURL_FOUND))
   message(SEND_ERROR "You must install Curl to compile ${CMAKE_PROJECT_NAME}")
@@ -995,12 +1002,14 @@ set(LIBS_SERVER
   ${LIBS}
   SQLite::SQLite3
   ${MYSQL_LIBRARIES}
-  LuaJIT::LuaJIT
-  LuaBridge
   # Add pthreads (on non-Windows) at the end, so that other libraries can depend
   # on it.
   ${CMAKE_THREAD_LIBS_INIT}
 )
+
+if(USE_LUA)
+  list(APPEND LIBS_SERVER LuaJIT::LuaJIT LuaBridge)
+endif()
 
 ########################################################################
 # VARIOUS TARGETS
@@ -1158,6 +1167,12 @@ if(GEOLOCATION)
     GeoLite2PP::GeoLite2PP
     MaxMindDB::MaxMindDB
   )
+endif()
+
+if(USE_LUA)
+  target_compile_definitions(game-server PRIVATE CONF_LUA=1)
+else()
+  target_compile_definitions(game-server PRIVATE CONF_LUA=0)
 endif()
 
 target_link_libraries(game-server ${LIBS_SERVER})

@@ -294,8 +294,10 @@ public:
 	static void ConSetClass(IConsole::IResult *pResult, void *pUserData);
 	void ConSetClass(IConsole::IResult *pResult);
 
+#if CONF_LUA
 	static void ConExecLua(IConsole::IResult *pResult, void *pUserData);
 	static void ConLua(IConsole::IResult *pResult, void *pUserData);
+#endif
 
 	static FunRoundConfiguration ParseFunRoundConfigArguments(IConsole::IResult *pResult);
 

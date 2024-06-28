@@ -7,14 +7,13 @@
 
 #include <engine/lua.h>
 
-#include <lua.hpp>
-#include <LuaBridge/LuaBridge.h>
-
 class CGameContext;
 class CServer;
 class IConsole;
 class IServer;
 class IStorage;
+
+class lua_State;
 
 class CLua : public ILua
 {
@@ -58,8 +57,6 @@ public:
 
 	static int HandleException(std::exception& e);
 	static int HandleException(const char *pError);
-	static int ErrorFunc(lua_State *L);
-	static int Panic(lua_State *L);
 
 	static IServer *m_pServer;
 
