@@ -95,6 +95,9 @@ void CLua::ExecScriptFile(const char *pFileName)
 
 void CLua::ExecScript(const char *pScript, const char *pAsFileName)
 {
+	if(g_Config.m_SvLua == 0)
+		return;
+
 #if CONF_LUA
 	if(GetLuaState() == NULL)
 	{
@@ -139,6 +142,9 @@ void CLua::StartupLua()
 
 bool CLua::LoadScript(const char *pPath)
 {
+	if(g_Config.m_SvLua == 0)
+		return false;
+
 #if CONF_LUA
 	if(GetLuaState() == NULL)
 	{
@@ -172,6 +178,9 @@ bool CLua::LoadScript(const char *pPath)
 
 bool CLua::HasGlobalCallable(const char *pName)
 {
+	if(g_Config.m_SvLua == 0)
+		return false;
+
 #if CONF_LUA
 	luabridge::LuaRef ref = luabridge::getGlobal(GetLuaState(), pName);
 	return ref.isCallable();
