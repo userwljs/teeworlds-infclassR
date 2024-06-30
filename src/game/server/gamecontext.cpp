@@ -4599,6 +4599,24 @@ void CGameContext::OnInit(const void *pPersistentData)
 	// create all entities from the game layer
 	CreateAllEntities(true);
 
+	if(Config()->m_SvLua >= 2)
+	{
+		char aLuaFilename[512];
+		if(Config()->m_SvLuaRuntime[0])
+		{
+			str_format(aLuaFilename, sizeof(aLuaFilename), "lua/runtime/%s", Config()->m_SvLuaRuntime);
+			Lua()->ExecScriptFile(aLuaFilename);
+		}
+
+		if(Config()->m_SvLua >= 2)
+		{
+			// Open file
+			const char *pMapShortName = &g_Config.m_SvMap[0];
+			str_format(aLuaFilename, sizeof(aLuaFilename), "lua/maps/%s.lua", pMapShortName);
+			Lua()->ExecScriptFile(aLuaFilename);
+		}
+	}
+
 	if(GIT_SHORTREV_HASH)
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "git-revision", GIT_SHORTREV_HASH);
 
