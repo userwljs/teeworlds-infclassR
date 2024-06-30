@@ -111,7 +111,6 @@ void CLua::RegisterLuaBindings()
 			"os.remove",
 			"os.setlocal",
 			"dofile",
-			"require",
 			"load",
 			"loadfile",
 			"loadstring",
@@ -124,6 +123,8 @@ void CLua::RegisterLuaBindings()
 		if(g_Config.m_Debug)
 			dbg_msg("lua", "disable: '%s'", aCmd);
 	}
+
+	luaL_dostring(L, "package.path = 'lua/?.lua'");
 
 	// register everything
 	lua_register(L, "print", CLuaBinding::LuaPrintOverride);
