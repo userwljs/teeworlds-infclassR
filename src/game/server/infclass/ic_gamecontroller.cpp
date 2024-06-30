@@ -2789,6 +2789,9 @@ void CIcGameController::StartRound()
 	m_RoundTimeLimitSeconds.reset();
 	m_RoundInfectionDelaySeconds.reset();
 
+	for (auto EnabledPoints : m_EnabledSpawnPoints)
+		EnabledPoints.clear();
+
 	switch(GetRoundType())
 	{
 	case ERoundType::Normal:
@@ -5441,12 +5444,15 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 
 	// get spawn point
 	const std::vector<vec2> &vSpawnPoints = m_avSpawnPoints[Type];
-	const std::size_t Count = vSpawnPoints.size();
+	const std::vector<int> &vEnablements = m_EnabledSpawnPoints[Type];
+	const bool CustomPoints = !vEnablements.empty();
+	const std::size_t Count = CustomPoints ? vEnablements.size() : vSpawnPoints.size();
 	const int RandomShift = random_int(0, Count - 1);
 	for(std::size_t i = 0; i < Count; i++)
 	{
-		int PosIndex = (i + RandomShift) % Count;
-		const vec2 &Pos = vSpawnPoints[PosIndex];
+		const int RandomPointOffset = (i + RandomShift) % Count;
+		int PosIndex = CustomPoints ? vEnablements.at(RandomPointOffset) : RandomPointOffset;
+		const vec2 &Pos = m_avSpawnPoints[Type][PosIndex];
 		if(!IsSpawnable(Pos, EZoneTele::Null))
 			continue;
 

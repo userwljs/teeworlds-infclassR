@@ -21,6 +21,10 @@ struct SpawnContext;
 struct DeathContext;
 struct ZoneData;
 
+#if CONF_LUA
+struct CLuaPlayersNumber;
+#endif // CONF_LUA
+
 enum class TAKEDAMAGEMODE;
 enum class EDamageType;
 enum class ROUND_CANCELATION_REASON;
@@ -297,6 +301,13 @@ public:
 #if CONF_LUA
 	static void ConExecLua(IConsole::IResult *pResult, void *pUserData);
 	static void ConLua(IConsole::IResult *pResult, void *pUserData);
+
+	const std::vector<vec2> *GetHumanSpawns() const;
+	const std::vector<vec2> *GetInfectedSpawns() const;
+	void SetSpawnEnabled(int Index, bool Enabled, int Type);
+	void SetHumanSpawnEnabled(int Index, bool Enabled);
+	void SetInfectedSpawnEnabled(int Index, bool Enabled);
+	CLuaPlayersNumber GetPlayersNumber_Lua(bool IncludeBots = false);
 #endif
 
 	static FunRoundConfiguration ParseFunRoundConfigArguments(IConsole::IResult *pResult);
@@ -437,6 +448,7 @@ private:
 	std::optional<int> m_RoundMinimumInfected;
 	std::optional<float> m_RoundTimeLimitSeconds;
 	std::optional<int> m_RoundInfectionDelaySeconds;
+	std::vector<int> m_EnabledSpawnPoints[2];
 	int m_InfUnbalancedTick;
 	float m_InfBalanceBoostFactor = 0;
 	array<vec2> m_HeroFlagPositions;

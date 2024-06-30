@@ -11,6 +11,13 @@
 #include <lua.hpp>
 #include <LuaBridge/LuaBridge.h>
 
+struct CLuaPlayersNumber
+{
+	int Humans{};
+	int Infected{};
+	int Spectators{};
+};
+
 void CIcGameController::ConExecLua(IConsole::IResult *pResult, void *pUserData)
 {
 	CIcGameController *pSelf = (CIcGameController *)pUserData;
@@ -25,9 +32,89 @@ void CIcGameController::ConLua(IConsole::IResult *pResult, void *pUserData)
 	pSelf->GameServer()->Lua()->ExecScript(pCode);
 }
 
+const std::vector<vec2> *CIcGameController::GetHumanSpawns() const
+{
+	int Type = 1;
+	return &m_avSpawnPoints[Type];
+}
+
+const std::vector<vec2> *CIcGameController::GetInfectedSpawns() const
+{
+	int Type = 0;
+	return &m_avSpawnPoints[Type];
+}
+
+void CIcGameController::SetSpawnEnabled(int Index, bool Enabled, int Type)
+{
+	std::vector<int> &EnabledPointsIndices = m_EnabledSpawnPoints[Type];
+	if(Index < 1)
+	{
+		return;
+	}
+
+	std::size_t FixedSpawnIndex = Index - 1;
+	if(FixedSpawnIndex >= m_avSpawnPoints[Type].size())
+	{
+		return;
+	}
+
+	auto it = std::find(EnabledPointsIndices.begin(), EnabledPointsIndices.end(), FixedSpawnIndex);
+	if(Enabled)
+	{
+		if(it == EnabledPointsIndices.end())
+			EnabledPointsIndices.push_back(FixedSpawnIndex);
+	}
+	else
+	{
+		if(it != EnabledPointsIndices.end())
+			EnabledPointsIndices.erase(it);
+	}
+}
+
+void CIcGameController::SetHumanSpawnEnabled(int Index, bool Enabled)
+{
+	int HumansIndex = 1;
+	SetSpawnEnabled(Index, Enabled, HumansIndex);
+}
+
+void CIcGameController::SetInfectedSpawnEnabled(int Index, bool Enabled)
+{
+	int InfectedIndex = 0;
+	SetSpawnEnabled(Index, Enabled, InfectedIndex);
+}
+
+CLuaPlayersNumber CIcGameController::GetPlayersNumber_Lua(bool IncludeBots)
+{
+	CLuaPlayersNumber Result;
+
+	CIcPlayerIterator<PLAYERITER_COND_READY> Iter(GameServer()->m_apPlayers);
+	while(Iter.Next())
+	{
+		if(!IncludeBots && Iter.Player()->IsBot())
+			continue;
+
+		if(Iter.Player()->IsSpectator())
+			Result.Spectators++;
+		else if(Iter.Player()->IsInfected())
+			Result.Infected++;
+		else
+			Result.Humans++;
+	}
+
+	return Result;
+}
+
 void CIcGameController::RegisterLuaBindings()
 {
 	lua_State *L = Lua()->GetLuaState();
+
+	luabridge::getGlobalNamespace(L)
+		.beginClass< CLuaPlayersNumber >("PlayersNumber")
+			.addConstructor <void (*) ()> ()
+			.addProperty("Humans", &CLuaPlayersNumber::Humans)
+			.addProperty("Infected", &CLuaPlayersNumber::Infected)
+			.addProperty("Spectators", &CLuaPlayersNumber::Spectators)
+		.endClass();
 
 	luabridge::getGlobalNamespace(L)
 		.deriveClass<CIcPlayer, CPlayer>("CIcPlayer")
@@ -56,6 +143,11 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("GetCharacter", &CIcGameController::GetCharacter)
 			.addFunction("GetSecondsElapsed", &CIcGameController::GetSecondsElapsed)
 			.addFunction("GetSecondsRemaining", &CIcGameController::GetSecondsRemaining)
+			.addFunction("GetPlayersNumber", &CIcGameController::GetPlayersNumber_Lua)
+			.addFunction("GetHumanSpawns", &CIcGameController::GetHumanSpawns)
+			.addFunction("GetInfectedSpawns", &CIcGameController::GetInfectedSpawns)
+			.addFunction("SetHumanSpawnEnabled", &CIcGameController::SetHumanSpawnEnabled)
+			.addFunction("SetInfectedSpawnEnabled", &CIcGameController::SetInfectedSpawnEnabled)
 			.addFunction("AddDoor", &CIcGameController::AddDoor)
 		.endClass()
 		.beginNamespace("Game")
