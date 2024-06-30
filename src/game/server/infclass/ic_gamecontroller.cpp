@@ -391,6 +391,8 @@ void CIcGameController::OnReset()
 			pPlayer->m_RespawnTick = Server()->Tick() + Server()->TickSpeed() / 2;
 		}
 	}
+
+	RunCallback(Lua()->GetLuaState(), "on_world_reset");
 }
 
 void CIcGameController::DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfectiousPlayer, EPlayerClass PreviousClass)
@@ -2833,6 +2835,9 @@ void CIcGameController::StartRound()
 	}
 
 	ResetRoundData();
+
+	RunCallback(Lua()->GetLuaState(), "on_round_started", toString(GetRoundType()));
+
 	SaveRoundRules();
 	OnStartRound();
 }
@@ -2881,6 +2886,7 @@ void CIcGameController::EndRound(ERoundEndReason Reason)
 	}
 	ResetFinalExplosion();
 	IGameController::EndRound();
+	RunCallback(Lua()->GetLuaState(), "on_round_end", toString(Reason));
 
 	if(Reason == ERoundEndReason::FINISHED)
 	{
