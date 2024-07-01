@@ -302,6 +302,7 @@ public:
 	static void ConExecLua(IConsole::IResult *pResult, void *pUserData);
 	static void ConLua(IConsole::IResult *pResult, void *pUserData);
 
+	const array<vec2> *GetHeroFlagPositions() const;
 	const std::vector<vec2> *GetHumanSpawns() const;
 	const std::vector<vec2> *GetInfectedSpawns() const;
 	void SetSpawnEnabled(int Index, bool Enabled, int Type);

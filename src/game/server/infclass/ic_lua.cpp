@@ -32,6 +32,11 @@ void CIcGameController::ConLua(IConsole::IResult *pResult, void *pUserData)
 	pSelf->GameServer()->Lua()->ExecScript(pCode);
 }
 
+const array<vec2> *CIcGameController::GetHeroFlagPositions() const
+{
+	return &m_HeroFlagPositions;
+}
+
 const std::vector<vec2> *CIcGameController::GetHumanSpawns() const
 {
 	int Type = 1;
@@ -144,10 +149,12 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("GetSecondsElapsed", &CIcGameController::GetSecondsElapsed)
 			.addFunction("GetSecondsRemaining", &CIcGameController::GetSecondsRemaining)
 			.addFunction("GetPlayersNumber", &CIcGameController::GetPlayersNumber_Lua)
+			.addFunction("GetHeroFlagPositions", &CIcGameController::GetHeroFlagPositions)
 			.addFunction("GetHumanSpawns", &CIcGameController::GetHumanSpawns)
 			.addFunction("GetInfectedSpawns", &CIcGameController::GetInfectedSpawns)
 			.addFunction("SetHumanSpawnEnabled", &CIcGameController::SetHumanSpawnEnabled)
 			.addFunction("SetInfectedSpawnEnabled", &CIcGameController::SetInfectedSpawnEnabled)
+			.addFunction("IsPositionAvailableForHumans", &CIcGameController::IsPositionAvailableForHumans)
 			.addFunction("AddDoor", &CIcGameController::AddDoor)
 		.endClass()
 		.beginNamespace("Game")

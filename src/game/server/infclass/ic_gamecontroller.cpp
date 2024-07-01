@@ -4051,6 +4051,11 @@ bool CIcGameController::HeroGiftAvailable() const
 
 std::optional<vec2> CIcGameController::GetHeroFlagPosition() const
 {
+	if(Lua()->HasGlobalCallable("Get_hero_flag_position"))
+	{
+		return RunCallbackWithResult<vec2>(Lua()->GetLuaState(), "Get_hero_flag_position");
+	}
+
 	int NbPos = m_HeroFlagPositions.size();
 	if(NbPos == 0)
 		return std::nullopt;
