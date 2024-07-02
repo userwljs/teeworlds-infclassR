@@ -5134,6 +5134,8 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 
 void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context)
 {
+	RunCallback(Lua()->GetLuaState(), "on_character_spawned", pCharacter->GetCid(), toString(Context.SpawnType));
+
 	CIcPlayer *pPlayer = pCharacter->GetPlayer();
 	if(!IsInfectionStarted() && pPlayer->RandomClassChoosen())
 	{
