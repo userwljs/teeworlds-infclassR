@@ -233,7 +233,13 @@ CIcGameController::~CIcGameController()
 
 const char *CIcGameController::GameType() const
 {
-	return "InfClassR";
+	return m_GameType.has_value() ? m_GameType.value().c_str() : "InfClassR";
+}
+
+void CIcGameController::SetGameType(const char *pGameType)
+{
+	m_GameType = pGameType;
+	Server()->ExpireServerInfo();
 }
 
 void CIcGameController::IncreaseCurrentRoundCounter()

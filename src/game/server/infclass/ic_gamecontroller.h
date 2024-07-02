@@ -90,6 +90,7 @@ public:
 	~CIcGameController() override;
 
 	const char *GameType() const override;
+	void SetGameType(const char *pGameType);
 
 	void RegisterLuaBindings();
 	void IncreaseCurrentRoundCounter() override;
@@ -443,6 +444,7 @@ private:
 	int* m_GrowingMap;
 	EFinalExplosionState m_FinalExplosionState{};
 
+	std::optional<std::string> m_GameType;
 	std::optional<bool> m_WinCheckEnabled;
 	std::optional<bool> m_VotesEnabled;
 	std::optional<int> m_RoundMinimumPlayers;
