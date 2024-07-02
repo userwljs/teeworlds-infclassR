@@ -31,6 +31,7 @@ enum class EPlayerClass
 	Voodoo,
 	Witch,
 	Undead,
+	Tank,
 
 	Count
 };
@@ -64,6 +65,7 @@ static constexpr EPlayerClass AllInfectedClasses[]{
 	EPlayerClass::Voodoo,
 	EPlayerClass::Witch,
 	EPlayerClass::Undead,
+	EPlayerClass::Tank,
 };
 
 static constexpr EPlayerClass AllPlayerClasses[]{
@@ -91,6 +93,7 @@ static constexpr EPlayerClass AllPlayerClasses[]{
 	EPlayerClass::Voodoo,
 	EPlayerClass::Witch,
 	EPlayerClass::Undead,
+	EPlayerClass::Tank,
 };
 
 constexpr int NB_HUMANCLASS = std::size(AllHumanClasses);

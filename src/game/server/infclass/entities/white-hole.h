@@ -23,7 +23,6 @@ public:
 
 private:
 	// physics
-	float m_PlayerPullStrength; // will be set with a config var
 	const float m_RadiusGrowthRate = 6.0f; // how fast the hole growths when it is created
 	const float m_PlayerDrag = 0.9f;
 	// visual

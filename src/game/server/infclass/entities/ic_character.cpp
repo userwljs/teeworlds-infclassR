@@ -1744,6 +1744,8 @@ EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 			return EInfclassWeapon::JAWS;
 		case EPlayerClass::Slug:
 			return EInfclassWeapon::SLIME;
+		case EPlayerClass::Tank:
+			return EInfclassWeapon::STUNNING_HAMMER;
 		default:
 			return IsInfectedClass(GetPlayerClass()) ? EInfclassWeapon::INFECTED_HAMMER : EInfclassWeapon::HAMMER;
 		}
@@ -2768,7 +2770,15 @@ void CIcCharacter::UpdateTuningParam()
 		pTuningParams->m_AirControlSpeed = pTuningParams->m_AirControlSpeed * Factor;
 		pTuningParams->m_HookDragAccel = pTuningParams->m_HookDragAccel * FactorAccel;
 		pTuningParams->m_HookDragSpeed = pTuningParams->m_HookDragSpeed * FactorSpeed;
-		pTuningParams->m_Gravity = g_Config.m_InfSlowMotionGravity * 0.01f;
+
+		if(GetPlayerClass() == EPlayerClass::Tank)
+		{
+			pTuningParams->m_Gravity = g_Config.m_InfSlowMotionGravity * 0.05f;
+		}
+		else
+		{
+			pTuningParams->m_Gravity = g_Config.m_InfSlowMotionGravity * 0.01f;
+		}
 
 		if(g_Config.m_InfSlowMotionMaxSpeed > 0)
 		{
@@ -2829,7 +2839,7 @@ void CIcCharacter::UpdateTuningParam()
 	
 	if(GetPlayerClass() == EPlayerClass::Ghoul)
 	{
-		float Factor = GetClass()->GetGhoulPercent() * 0.7;
+		float Factor = GetClass()->GetGhoulPercent() * 0.7f;
 		pTuningParams->m_GroundControlSpeed = pTuningParams->m_GroundControlSpeed * (1.0f + 0.35f * Factor);
 		pTuningParams->m_GroundControlAccel = pTuningParams->m_GroundControlAccel * (1.0f + 0.35f * Factor);
 		pTuningParams->m_GroundJumpImpulse = pTuningParams->m_GroundJumpImpulse * (1.0f + 0.35f * Factor);
@@ -2838,5 +2848,19 @@ void CIcCharacter::UpdateTuningParam()
 		pTuningParams->m_AirControlAccel = pTuningParams->m_AirControlAccel * (1.0f + 0.35f * Factor);
 		pTuningParams->m_HookDragAccel = pTuningParams->m_HookDragAccel * (1.0f + 0.35f * Factor);
 		pTuningParams->m_HookDragSpeed = pTuningParams->m_HookDragSpeed * (1.0f + 0.35f * Factor);
+	}
+
+	if(GetPlayerClass() == EPlayerClass::Tank)
+	{
+		float Factor = 0.8f;
+		pTuningParams->m_GroundControlSpeed = pTuningParams->m_GroundControlSpeed * Factor;
+		pTuningParams->m_GroundControlAccel = pTuningParams->m_GroundControlAccel * Factor;
+		pTuningParams->m_AirControlSpeed = pTuningParams->m_AirControlSpeed * Factor;
+		pTuningParams->m_AirControlAccel = pTuningParams->m_AirControlAccel * Factor;
+		pTuningParams->m_HookDragAccel = pTuningParams->m_HookDragAccel * Factor;
+		pTuningParams->m_HookDragSpeed = pTuningParams->m_HookDragSpeed * Factor;
+		pTuningParams->m_HookLength = pTuningParams->m_HookLength * Factor;
+		pTuningParams->m_VelrampStart = pTuningParams->m_VelrampStart * Factor * Factor;
+		pTuningParams->m_VelrampRange = pTuningParams->m_VelrampRange * Factor;
 	}
 }

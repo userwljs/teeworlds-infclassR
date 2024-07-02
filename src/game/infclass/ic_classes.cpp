@@ -115,6 +115,8 @@ const char *toString(EPlayerClass PlayerClass)
 		return "witch";
 	case EPlayerClass::Undead:
 		return "undead";
+	case EPlayerClass::Tank:
+		return "tank";
 
 	case EPlayerClass::Invalid:
 	case EPlayerClass::Count:

@@ -2007,6 +2007,9 @@ bool CBotPlayer::CanHook() const
 	if(IsHuman())
 		return false;
 
+	if(GetClass() == EPlayerClass::Tank)
+		return false;
+
 	if(m_aTweaks.Contains(EBotTweak::NoHook))
 		return false;
 

@@ -1349,6 +1349,8 @@ const char *CIcGameController::GetClassPluralName(EPlayerClass PlayerClass)
 		return "witches";
 	case EPlayerClass::Undead:
 		return "undeads";
+	case EPlayerClass::Tank:
+		return "tanks";
 
 	case EPlayerClass::Invalid:
 	case EPlayerClass::None:
@@ -1406,6 +1408,8 @@ const char *CIcGameController::GetClassDisplayName(EPlayerClass PlayerClass, con
 		return _("Witch");
 	case EPlayerClass::Undead:
 		return _("Undead");
+	case EPlayerClass::Tank:
+		return _("Tank");
 
 	case EPlayerClass::Invalid:
 	case EPlayerClass::None:
@@ -1443,6 +1447,8 @@ const char *CIcGameController::GetClassDisplayNameForKilledBy(EPlayerClass Playe
 		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Witch") : _C_NOOP("For 'Killed by <>'", "the Witch");
 	case EPlayerClass::Undead:
 		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "an Undead") : _C_NOOP("For 'Killed by <>'", "the Undead");
+	case EPlayerClass::Tank:
+		return Article == ETextArticle::Indefinite ? _C_NOOP("For 'Killed by <>'", "a Tank") : _C_NOOP("For 'Killed by <>'", "the Tank");
 
 	default:
 		break;
@@ -1507,6 +1513,9 @@ const char *CIcGameController::GetClassPluralDisplayName(EPlayerClass PlayerClas
 		return _("Witches");
 	case EPlayerClass::Undead:
 		return _("Undeads");
+
+	case EPlayerClass::Tank:
+		return _("Tanks");
 
 	case EPlayerClass::Invalid:
 	case EPlayerClass::None:
@@ -4024,6 +4033,7 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 		{
 		case EPlayerClass::Witch:
 		case EPlayerClass::Undead:
+		case EPlayerClass::Tank:
 		{
 			const SurvivalWaveConfiguration *pCurrentWave = GetCurrentSurvivalWaveConfiguration();
 			if(pCurrentWave)
@@ -6064,6 +6074,10 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 		AddLine(_C("Undead", "Undead can infect humans and heal the infected with the hammer."));
 		AddLine(_C("Undead", "It can also inflict 1 damage point per second by hooking humans."));
 		break;
+	case EPlayerClass::Tank:
+		AddLine(_C("Tank", "The Tank has a damage resistance and a stunning hammer with increased range and force."));
+		AddLine(_C("Tank", "On the other hand, the movement speed and the hook lenght are reduced."));
+		break;
 	}
 
 	return true;
@@ -7261,6 +7275,8 @@ bool CIcGameController::SetPlayerClassProbability(EPlayerClass PlayerClass, int 
 	case EPlayerClass::Undead:
 		Config()->m_InfProbaUndead = Probability;
 		break;
+	case EPlayerClass::Tank:
+		return false;
 	default:
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "controller", "WARNING: Invalid SetPlayerClassProbability() call");
 		return false;
@@ -7326,6 +7342,8 @@ int CIcGameController::GetPlayerClassProbability(EPlayerClass PlayerClass) const
 		return Config()->m_InfProbaWitch;
 	case EPlayerClass::Undead:
 		return Config()->m_InfProbaUndead;
+	case EPlayerClass::Tank:
+		return 0;
 	default:
 		break;
 	}

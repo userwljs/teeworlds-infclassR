@@ -162,6 +162,7 @@ bool CInfClassInfected::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pO
 		}
 		pOutput->ColorFeet = 65414;
 		break;
+	case EPlayerClass::Tank:
 	case EPlayerClass::Undead:
 		pOutput->pSkinName = "redstripe";
 		pOutput->UseCustomColor = 1;
@@ -494,6 +495,36 @@ void CInfClassInfected::OnCharacterDamage(SDamageContext *pContext)
 		pContext->Damage = DamageAccepted;
 		break;
 	}
+	case EPlayerClass::Tank:
+		if(pContext->DamageType == EDamageType::BIOLOGIST_MINE)
+		{
+			pContext->Damage = 3;
+		}
+		else if(pContext->DamageType == EDamageType::SOLDIER_BOMB)
+		{
+			pContext->Damage *= 0.4f;
+		}
+		else if(pContext->Damage > 1)
+		{
+			pContext->Damage -= 1;
+		}
+		else if(pContext->Damage == 1)
+		{
+			if(pContext->DamageType == EDamageType::GUN)
+			{
+				pContext->Damage = 0;
+			}
+			else
+			{
+				float ReflectionProbability = 0.5f;
+				if(random_prob(ReflectionProbability))
+				{
+					pContext->Damage = 0;
+				}
+			}
+		}
+		pContext->Force *= 0.3f;
+		break;
 	default:
 		break;
 	}
