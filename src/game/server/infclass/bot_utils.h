@@ -190,6 +190,8 @@ public:
 
 	void SetCache(CCollisionCache *pCache) { m_pCollisionCache = pCache; }
 
+	void UpdateTuning(const CTuningParams &Tuning);
+
 	static float GetDistanceForVelocityAccelerationTicks(float Velocity, float Acceleration, int Ticks, float AccelerationMaxVelocity = 0);
 	static int GetTicksToFallToHeight(float Velocity, float Acceleration, float Distance, int MaxTicks = 500);
 	static int GetTicksToMoveDistance(float Velocity, float Acceleration, float Distance, int MaxTicks = 500, float AccelerationMaxVelocity = 0);
@@ -221,4 +223,17 @@ protected:
 	IDebugSink *m_pDebugSink{};
 	CCollisionCache *m_pCollisionCache{};
 	mutable std::optional<CIntersectionData> m_IntersectionData;
+
+	float c_GroundJumpImpulse{};
+	float c_GroundControlSpeed{};
+	float c_GroundControlAccel{};
+	float c_AirJumpImpulse{};
+	float c_AirControlSpeed{};
+	float c_AirControlAccel{};
+	float c_Gravity{};
+	float c_JumpPessimism{};
+	float c_GroundJumpHeight{};
+	float c_AirJumpHeight{};
+	float c_GroundJumpTiles{};
+	float c_AirJumpTiles{};
 };

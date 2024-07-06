@@ -193,6 +193,7 @@ public:
 	void TickPaused();
 
 	void OnCharacterSpawned(const SpawnContext &Context) override;
+	void OnTuningChanged() override;
 
 	void UpdateTarget();
 	int UpdateHumanTarget(const ClientsArray &Targets);

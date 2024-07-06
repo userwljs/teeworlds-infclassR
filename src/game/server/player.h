@@ -178,6 +178,8 @@ public:
 	void OverrideDefaultEmote(int Emote, int Tick);
 	bool CanOverrideDefaultEmote() const;
 
+	virtual void OnTuningChanged() {}
+
 /* INFECTION MODIFICATION START ***************************************/
 protected:
 	std::optional<CNetObj_PlayerInput> m_LastTarget;

@@ -696,6 +696,11 @@ void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	ChangeRoamingBehavior();
 }
 
+void CBotPlayer::OnTuningChanged()
+{
+	m_BotUtils.UpdateTuning(m_NextTuningParams);
+}
+
 void CBotPlayer::UpdateTarget()
 {
 	const CIcCharacter *pCharacter = GetCharacter();

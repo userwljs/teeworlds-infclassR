@@ -2873,4 +2873,6 @@ void CIcCharacter::UpdateTuningParam()
 		pTuningParams->m_VelrampStart = pTuningParams->m_VelrampStart * Factor * Factor;
 		pTuningParams->m_VelrampRange = pTuningParams->m_VelrampRange * Factor;
 	}
+
+	m_pPlayer->OnTuningChanged();
 }

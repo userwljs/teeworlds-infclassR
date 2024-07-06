@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <game/gamecore.h>
 #include <game/mapitems.h>
 
 #include <game/server/infclass/bot_utils.h>
@@ -166,6 +167,7 @@ TEST(BotUtils, Jumps)
 	CMockDebugSink DebugSink;
 	CBotUtils Utils;
 	Utils.SetDebugSing(&DebugSink);
+	Utils.UpdateTuning(CTuningParams());
 
 	int MaxTiles = 10;
 
@@ -276,6 +278,7 @@ TEST(BotUtils, ReachableByGround1)
 	CBotUtils Utils;
 	Utils.SetDebugSing(&DebugSink);
 	Utils.SetCollision(&Collision);
+	Utils.UpdateTuning(CTuningParams());
 
 	// Sanity check for the map:
 	EXPECT_EQ(Collision.IsSolid(CTilePosition(1, 4)), false);
@@ -305,6 +308,7 @@ TEST(BotUtils, ReachableByGround2)
 	CBotUtils Utils;
 	Utils.SetDebugSing(&DebugSink);
 	Utils.SetCollision(&Collision);
+	Utils.UpdateTuning(CTuningParams());
 
 	// Sanity check for the map:
 	EXPECT_EQ(Collision.IsSolid(CTilePosition(1, 4)), false);

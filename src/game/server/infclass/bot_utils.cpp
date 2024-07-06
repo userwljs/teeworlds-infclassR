@@ -189,6 +189,26 @@ void IDebugSink::SendMessage(int VerbosityLevel, const char *fmt, ...)
 	SendFormattedMessage(VerbosityLevel, aBuf);
 }
 
+void CBotUtils::UpdateTuning(const CTuningParams &Tuning)
+{
+	c_GroundJumpImpulse = Tuning.m_GroundJumpImpulse;
+	c_GroundControlSpeed = Tuning.m_GroundControlSpeed;
+	c_GroundControlAccel = Tuning.m_GroundControlAccel;
+
+	c_AirJumpImpulse = Tuning.m_AirJumpImpulse;
+	c_AirControlSpeed = Tuning.m_AirControlSpeed;
+	c_AirControlAccel = Tuning.m_AirControlAccel;
+
+	c_Gravity = Tuning.m_Gravity;
+	c_JumpPessimism = -2.f;
+
+	c_GroundJumpHeight = GetDistanceForVelocityAccelerationTicks(c_GroundJumpImpulse, -c_Gravity, c_GroundJumpImpulse / c_Gravity) + c_JumpPessimism;
+	c_AirJumpHeight = GetDistanceForVelocityAccelerationTicks(c_AirJumpImpulse, -c_Gravity, c_AirJumpImpulse / c_Gravity) + c_JumpPessimism;
+
+	c_GroundJumpTiles = c_GroundJumpHeight / TileSizeF;
+	c_AirJumpTiles = c_AirJumpHeight / TileSizeF;
+}
+
 float CBotUtils::GetDistanceForVelocityAccelerationTicks(float Velocity, float Acceleration, int Ticks, float AccelerationMaxVelocity)
 {
 	return ::GetDistanceForVelocityAccelerationTicks(Velocity, Acceleration, Ticks, AccelerationMaxVelocity);
