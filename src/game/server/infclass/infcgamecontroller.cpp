@@ -2623,6 +2623,13 @@ void CInfClassGameController::StartRound()
 	m_RoundType = NewRoundType;
 	QueueRoundType(ERoundType::Invalid);
 
+	m_WinCheckEnabled.reset();
+	m_VotesEnabled.reset();
+	m_RoundMinimumPlayers.reset();
+	m_RoundMinimumInfected.reset();
+	m_RoundTimeLimitSeconds.reset();
+	m_RoundInfectionDelaySeconds.reset();
+
 	switch(GetRoundType())
 	{
 	case ERoundType::Normal:
@@ -2785,6 +2792,9 @@ void CInfClassGameController::GetPlayerCounter(int ClientException, int& NumHuma
 
 int CInfClassGameController::GetMinimumInfectedForPlayers(int PlayersNumber) const
 {
+	if(m_RoundMinimumInfected.has_value())
+		return m_RoundMinimumInfected.value();
+
 	if(GetRoundType() == ERoundType::Fast)
 	{
 		//  7 | 3 vs 4 | 3.01
@@ -2815,28 +2825,7 @@ int CInfClassGameController::GetMinimumInfectedForPlayers(int PlayersNumber) con
 		NumFirstInfected = FirstInfectedLimit;
 	}
 
-	if(GetRoundType() == ERoundType::Survival)
-	{
-		NumFirstInfected = 0;
-	}
-
 	return NumFirstInfected;
-}
-
-int CInfClassGameController::GetMinimumInfected() const
-{
-	int NumPlayers = 0;
-	for(int i = 0; i < MAX_CLIENTS; ++i)
-	{
-		CInfClassPlayer *pPlayer = GetPlayer(i);
-		if(!pPlayer || !pPlayer->m_IsInGame || pPlayer->IsSpectator())
-		{
-			continue;
-		}
-		++NumPlayers;
-	}
-
-	return GetMinimumInfectedForPlayers(NumPlayers);
 }
 
 int CInfClassGameController::InfectedBonusArmor() const
@@ -3663,7 +3652,7 @@ bool CInfClassGameController::IsInfectionStarted() const
 	if(Config()->m_InfTrainingMode)
 		return false;
 
-	return (m_RoundStartTick + Server()->TickSpeed() * GetInfectionDelay() <= Server()->Tick());
+	return GetInfectionStartTick() <= Server()->Tick();
 }
 
 bool CInfClassGameController::MapRotationEnabled() const
@@ -3825,6 +3814,9 @@ float CInfClassGameController::GetTimeLimitMinutes() const
 	if(Config()->m_InfTrainingMode)
 		return 0;
 
+	if(m_RoundTimeLimitSeconds.has_value())
+		return m_RoundTimeLimitSeconds.value() / 60.0;
+
 	float BaseTimeLimit = Config()->m_SvTimelimitInSeconds ? Config()->m_SvTimelimitInSeconds / 60.0 : Config()->m_SvTimelimit;
 
 	switch(GetRoundType())
@@ -3838,9 +3830,24 @@ float CInfClassGameController::GetTimeLimitMinutes() const
 	}
 }
 
-float CInfClassGameController::GetInfectionDelay() const
+int CInfClassGameController::GetTimeLimitSeconds() const
 {
-	return Config()->m_InfInitialInfectionDelay;
+	return GetTimeLimitMinutes() * 60;
+}
+
+void CInfClassGameController::SetTimeLimitSeconds(float Seconds)
+{
+	m_RoundTimeLimitSeconds = Seconds;
+}
+
+int CInfClassGameController::GetInfectionDelay() const
+{
+	return m_RoundInfectionDelaySeconds.value_or(Config()->m_InfInitialInfectionDelay);
+}
+
+void CInfClassGameController::SetInfectionDelay(int Seconds)
+{
+	m_RoundInfectionDelaySeconds = Seconds;
 }
 
 bool CInfClassGameController::HeroGiftAvailable() const
@@ -3977,6 +3984,9 @@ void CInfClassGameController::StartSurvivalRound()
 		}
 	}
 	GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
+
+	SetRoundMinimumPlayers(1);
+	SetRoundMinimumInfected(0);
 }
 
 void CInfClassGameController::EndSurvivalRound()
@@ -4580,6 +4590,9 @@ void CInfClassGameController::CheckRoundFailed()
 	if(m_Warmup)
 		return;
 
+	if(!IsWinCheckEnabled())
+		return;
+
 	if(IsGameOver())
 		return;
 
@@ -4640,6 +4653,9 @@ void CInfClassGameController::CheckRoundFailed()
 
 void CInfClassGameController::DoWincheck()
 {
+	if(!IsWinCheckEnabled())
+		return;
+
 	if(Config()->m_InfTrainingMode)
 		return;
 
@@ -5251,12 +5267,63 @@ int CInfClassGameController::GetInfectedCount(EPlayerClass InfectedPlayerClass) 
 	return Count;
 }
 
+bool CInfClassGameController::IsWinCheckEnabled() const
+{
+	return m_WinCheckEnabled.value_or(true);
+}
+
+void CInfClassGameController::SetWinCheckEnabled(bool Enabled)
+{
+	m_WinCheckEnabled = Enabled;
+}
+
+bool CInfClassGameController::GetVotesEnabled() const
+{
+	return m_VotesEnabled.value_or(!m_InfectedStarted);
+}
+
+void CInfClassGameController::SetVotesEnabled(bool Enabled)
+{
+	m_VotesEnabled = Enabled;
+}
+
 int CInfClassGameController::GetMinPlayers() const
 {
-	if(GetRoundType() == ERoundType::Survival)
-		return 1;
+	return m_RoundMinimumPlayers.value_or(Config()->m_InfMinPlayers);
+}
 
-	return Config()->m_InfMinPlayers;
+void CInfClassGameController::SetRoundMinimumPlayers(int Number)
+{
+	m_RoundMinimumPlayers = Number;
+}
+
+int CInfClassGameController::GetMinimumInfected() const
+{
+	if(m_RoundMinimumInfected.has_value())
+		return m_RoundMinimumInfected.value();
+
+	int NumPlayers = 0;
+	for(int i = 0; i < MAX_CLIENTS; ++i)
+	{
+		CInfClassPlayer *pPlayer = GetPlayer(i);
+		if(!pPlayer || !pPlayer->m_IsInGame || pPlayer->IsSpectator())
+		{
+			continue;
+		}
+		++NumPlayers;
+	}
+
+	return GetMinimumInfectedForPlayers(NumPlayers);
+}
+
+void CInfClassGameController::SetRoundMinimumInfected(int Number)
+{
+	m_RoundMinimumInfected = Number;
+}
+
+void CInfClassGameController::ResetRoundMinimumInfected()
+{
+	m_RoundMinimumInfected.reset();
 }
 
 ERoundType CInfClassGameController::GetDefaultRoundType() const
@@ -5372,7 +5439,7 @@ CLASS_AVAILABILITY CInfClassGameController::GetPlayerClassAvailability(EPlayerCl
 
 bool CInfClassGameController::CanVote()
 {
-	return !m_InfectedStarted;
+	return GetVotesEnabled();
 }
 
 void CInfClassGameController::OnPlayerVoteCommand(int ClientId, int Vote)

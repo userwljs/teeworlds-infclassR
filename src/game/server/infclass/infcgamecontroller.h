@@ -127,7 +127,19 @@ public:
 	int GetPlayerClassProbability(EPlayerClass PlayerClass) const;
 
 	int GetInfectedCount(EPlayerClass InfectedPlayerClass = EPlayerClass::Invalid) const;
+
+	bool IsWinCheckEnabled() const;
+	void SetWinCheckEnabled(bool Enabled);
+
+	bool GetVotesEnabled() const;
+	void SetVotesEnabled(bool Enabled);
+
 	int GetMinPlayers() const;
+	void SetRoundMinimumPlayers(int Number);
+
+	int GetMinimumInfected() const;
+	void SetRoundMinimumInfected(int Number);
+	void ResetRoundMinimumInfected();
 
 	ERoundType GetDefaultRoundType() const;
 	ERoundType GetRoundType() const;
@@ -164,7 +176,12 @@ public:
 	EPlayerScoreMode GetPlayerScoreMode(int SnappingClient) const;
 
 	float GetTimeLimitMinutes() const;
-	float GetInfectionDelay() const;
+
+	int GetTimeLimitSeconds() const;
+	void SetTimeLimitSeconds(float Seconds);
+
+	int GetInfectionDelay() const;
+	void SetInfectionDelay(int Seconds);
 
 	bool IsSpawnable(vec2 Pos, EZoneTele TeleZoneIndex);
 
@@ -271,7 +288,7 @@ public:
 	void SortCharactersByDistance(ClientsArray *pCharacterIds, const vec2 &Center, const float MaxDistance = 0);
 	void SortCharactersByDistance(const ClientsArray &Input, ClientsArray *pOutput, const vec2 &Center, const float MaxDistance = 0);
 	void GetSortedTargetsInRange(const vec2 &Center, const float Radius, const ClientsArray &SkipList, ClientsArray *pOutput);
-	int GetMinimumInfected() const;
+
 	int InfectedBonusArmor() const;
 
 	void SendKillMessage(int Victim, const DeathContext &Context);
@@ -353,6 +370,12 @@ private:
 
 	CGameTeams m_Teams;
 
+	std::optional<bool> m_WinCheckEnabled;
+	std::optional<bool> m_VotesEnabled;
+	std::optional<int> m_RoundMinimumPlayers;
+	std::optional<int> m_RoundMinimumInfected;
+	std::optional<float> m_RoundTimeLimitSeconds;
+	std::optional<int> m_RoundInfectionDelaySeconds;
 	int m_InfUnbalancedTick;
 	float m_InfBalanceBoostFactor = 0;
 	array<vec2> m_HeroFlagPositions;
