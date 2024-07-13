@@ -4572,6 +4572,9 @@ CBaseBotPlayer *CIcGameController::AddBot(int Team)
 		return nullptr;
 	}
 
+	if(IsGameOver())
+		return nullptr;
+
 	const int PlayerID = RequestBotID();
 
 	if(PlayerID < 0)
