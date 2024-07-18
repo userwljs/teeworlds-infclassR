@@ -2614,7 +2614,6 @@ void CIcGameController::ConSurvivalConfWaveAddBots(IConsole::IResult *pResult, S
 		char aBuffer[256];
 		str_format(aBuffer, sizeof(aBuffer), "Invalid wave specification, unable to parse argument '%s'", pStr);
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuffer);
-		return;
 	}
 
 	int SpawnMinTick = Server()->TickSpeed() * SpawnTimeInSeconds;

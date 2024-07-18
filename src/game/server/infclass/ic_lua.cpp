@@ -11,6 +11,7 @@
 #include <game/server/infclass/entities/scientist-mine.h>
 #include <game/server/infclass/entities/turret.h>
 #include <game/server/infclass/ic_player.h>
+#include <game/server/infclass/survival.h>
 #include <game/server/map_info.h>
 
 #include <engine/lua.h>
@@ -144,7 +145,67 @@ CTurret *AddTurret(const CIcGameController *pController)
 	return new CTurret(pController->GameServer(), {}, -1, CTurret::LASER);
 }
 
+void TweaksArray_Add_Lua(TweaksArray *pArray, const char *pTweakName)
+{
+	pArray->Add(fromString<EBotTweak>(pTweakName));
 }
+
+void TweaksArray_Remove_Lua(TweaksArray *pArray, const char *pTweakName)
+{
+	pArray->RemoveOne(fromString<EBotTweak>(pTweakName));
+}
+
+bool TweaksArray_Contains_Lua(const TweaksArray *pArray, const char *pTweakName)
+{
+	return pArray->Contains(fromString<EBotTweak>(pTweakName));
+}
+
+const char *TweaksArray_At_Lua(const TweaksArray *pArray, int Index)
+{
+	return toString(pArray->At(Index));
+}
+
+void SetSurvivalBotConfigurationClass_Lua(SurvivalBotConfiguration *pConfiguration, const char *pClass)
+{
+	EPlayerClass Class = fromString<EPlayerClass>(pClass);
+	if (Class == EPlayerClass::Invalid)
+		return;
+
+	pConfiguration->Class = Class;
+}
+
+const char *GetSurvivalBotConfigurationClass_Lua(const SurvivalBotConfiguration *pConfiguration)
+{
+	if (!pConfiguration)
+		return nullptr;
+
+	return toString(pConfiguration->Class);
+}
+
+void SetSurvivalBotConfigurationSpawnSecond_Lua(SurvivalBotConfiguration *pConfiguration, float Second)
+{
+	pConfiguration->SpawnMinTick = Second * SERVER_TICK_SPEED;
+}
+
+float GetSurvivalBotConfigurationSpawnSecond_Lua(const SurvivalBotConfiguration *pConfiguration)
+{
+	return pConfiguration->SpawnMinTick / static_cast<float>(SERVER_TICK_SPEED);
+}
+
+TweaksArray *SurvivalBotConfigurationClass_GetTweaks_Lua(SurvivalBotConfiguration *pConfiguration)
+{
+	if (!pConfiguration)
+		return nullptr;
+
+	return &pConfiguration->Tweaks;
+}
+
+void PrepareSurvival_Lua(CIcGameController *pController)
+{
+	pController->PrepareSurvival(0);
+}
+
+} // namespace
 
 void CIcGameController::ConExecLua(IConsole::IResult *pResult, void *pUserData)
 {
@@ -346,6 +407,27 @@ void CIcGameController::RegisterLuaBindings()
 	pGameController = this;
 
 	luabridge::getGlobalNamespace(L)
+		.beginClass<TweaksArray>("TweaksArray")
+			.addFunction("Add", &TweaksArray_Add_Lua)
+			.addFunction("Remove", &TweaksArray_Remove_Lua)
+			.addFunction("Contains", &TweaksArray_Contains_Lua)
+			.addFunction("At", &TweaksArray_At_Lua)
+			.addFunction("Size", &TweaksArray::Size)
+		.endClass()
+		.beginClass<SurvivalGameConfiguration>("SurvivalConfiguration")
+			.addProperty("MaxPlayers", &SurvivalGameConfiguration::MaxPlayers)
+			.addProperty("Hardmode", &SurvivalGameConfiguration::HardMode)
+			.addFunction("Reset", &SurvivalGameConfiguration::Reset)
+		.endClass()
+		.beginClass<SurvivalBotConfiguration>("SurvivalBotConfiguration")
+			.addProperty("Class", &GetSurvivalBotConfigurationClass_Lua, &SetSurvivalBotConfigurationClass_Lua)
+			.addProperty("SpawnSecond", &GetSurvivalBotConfigurationSpawnSecond_Lua, &SetSurvivalBotConfigurationSpawnSecond_Lua)
+			.addProperty("Lives", &SurvivalBotConfiguration::Lives)
+			.addProperty("HP", &SurvivalBotConfiguration::HP)
+			.addProperty("DropLevel", &SurvivalBotConfiguration::DropLevel)
+			.addProperty("RespawnInterval", &SurvivalBotConfiguration::RespawnInterval)
+			.addFunction("GetTweaks", &SurvivalBotConfigurationClass_GetTweaks_Lua)
+		.endClass()
 		.beginClass<CIcEntity>("CIcEntity")
 			.addFunction("Destroy", &CIcEntity::MarkForDestroy)
 			.addFunction("MarkForDestroy", &CIcEntity::MarkForDestroy)
@@ -417,6 +499,7 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("CancelRound", &CancelRound_Lua)
 			.addFunction("QueueRound", &CIcGameController::ConQueueRound)
 			.addFunction("DoWarmup", &CIcGameController::DoWarmup)
+			.addFunction("PrepareSurvival", &PrepareSurvival_Lua)
 
 			.addFunction("GetPlayerClassEnabled", &GetPlayerClassEnabled_Lua)
 			.addFunction("SetPlayerClassEnabled", &SetPlayerClassEnabled_Lua)
@@ -433,6 +516,10 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("GetBot", &CIcGameController::GetBot)
 			.addFunction("RemoveBot", &CIcGameController::RemoveBot_Lua)
 			.addFunction("RemoveAllBots", &CIcGameController::RemoveBots)
+
+			.addFunction("SurvivalGetGameConfiguration", &CIcGameController::SurvivalGetGameConfiguration)
+			.addFunction("SurvivalAddWave", &CIcGameController::SurvivalAddWave)
+			.addFunction("SurvivalAddBot", &CIcGameController::SurvivalAddBot)
 		.endClass()
 		.beginNamespace("Game")
 			.addProperty("Controller", &pGameController, false)
