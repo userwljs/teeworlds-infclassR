@@ -159,6 +159,9 @@ public:
 	float GetRespawnInterval() const { return m_RespawnInterval; }
 	void SetRespawnInterval(float Interval);
 
+	const char *GetTag() const override { return m_aTag; }
+	void SetTag(const char *pTag) { str_copy(m_aTag, pTag); }
+
 	virtual const char *DumpBot() { return ""; };
 	virtual void UpdateName() {}
 
@@ -170,6 +173,7 @@ protected:
 	int m_Lives = 0;
 
 	float m_RespawnInterval = 0;
+	char m_aTag[16]{};
 };
 
 class CBotPlayer : public CBaseBotPlayer

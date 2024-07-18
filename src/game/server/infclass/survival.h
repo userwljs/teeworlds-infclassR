@@ -18,6 +18,7 @@ public:
 	int DropLevel{};
 	float RespawnInterval{};
 	TweaksArray Tweaks;
+	char Tag[16]{};
 };
 
 class SurvivalWaveConfiguration

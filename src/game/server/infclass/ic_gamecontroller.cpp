@@ -4628,6 +4628,7 @@ CBaseBotPlayer *CIcGameController::AddBot(const SurvivalBotConfiguration &Config
 	pBot->SetDropLevel(Configuration.DropLevel);
 	pBot->SetRespawnInterval(Configuration.RespawnInterval);
 	pBot->SetTweaks(Configuration.Tweaks);
+	pBot->SetTag(Configuration.Tag);
 	pBot->UpdateName();
 
 	return pBot;

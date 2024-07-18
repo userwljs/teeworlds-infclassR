@@ -183,6 +183,16 @@ const char *GetSurvivalBotConfigurationClass_Lua(const SurvivalBotConfiguration 
 	return toString(pConfiguration->Class);
 }
 
+void SetSurvivalBotConfigurationTag_Lua(SurvivalBotConfiguration *pConfiguration, const char *pTag)
+{
+	str_copy(pConfiguration->Tag, pTag);
+}
+
+const char *GetSurvivalBotConfigurationTag_Lua(const SurvivalBotConfiguration *pConfiguration)
+{
+	return pConfiguration->Tag;
+}
+
 void SetSurvivalBotConfigurationSpawnSecond_Lua(SurvivalBotConfiguration *pConfiguration, float Second)
 {
 	pConfiguration->SpawnMinTick = Second * SERVER_TICK_SPEED;
@@ -334,6 +344,7 @@ void CIcGameController::RegisterLuaBindings()
 		.deriveClass<CIcPlayer, CPlayer>("CIcPlayer")
 			.addProperty("Class", &GetPlayerClass_Lua, &SetPlayerClass_Lua)
 			.addProperty("MaxHP", &CIcPlayer::GetMaxHP, &CIcPlayer::SetMaxHP)
+			.addProperty("Tag", &CIcPlayer::GetTag)
 			.addFunction("ApplyMaxHP", &CIcPlayer::ApplyMaxHP)
 			.addFunction("IsInfected", &CIcPlayer::IsInfected)
 			.addProperty("Score", &GetPlayerScore_Lua, &SetPlayerScore_Lua)
@@ -422,6 +433,7 @@ void CIcGameController::RegisterLuaBindings()
 		.endClass()
 		.beginClass<SurvivalBotConfiguration>("SurvivalBotConfiguration")
 			.addProperty("Class", &GetSurvivalBotConfigurationClass_Lua, &SetSurvivalBotConfigurationClass_Lua)
+			.addProperty("Tag", &GetSurvivalBotConfigurationTag_Lua, &SetSurvivalBotConfigurationTag_Lua)
 			.addProperty("SpawnSecond", &GetSurvivalBotConfigurationSpawnSecond_Lua, &SetSurvivalBotConfigurationSpawnSecond_Lua)
 			.addProperty("Lives", &SurvivalBotConfiguration::Lives)
 			.addProperty("HP", &SurvivalBotConfiguration::HP)
