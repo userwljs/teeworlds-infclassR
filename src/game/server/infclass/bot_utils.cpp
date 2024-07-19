@@ -115,23 +115,6 @@ constexpr int GetTicksToReachDistance(float Velocity, float Acceleration, float 
 	return MaxTicks;
 }
 
-constexpr float c_GroundJumpImpulse = 13.2f; // Tuning -> GroundJumpImpulse
-constexpr float c_GroundControlSpeed = 10.0f; // Tuning -> GroundControlSpeed
-constexpr float c_GroundControlAccel = 100.0f / static_cast<int>(SERVER_TICK_SPEED); // Tuning -> GroundControlAccel
-
-constexpr float c_AirJumpImpulse = 12.0f; // Tuning -> AirJumpImpulse
-constexpr float c_AirControlSpeed = 250.0f / static_cast<int>(SERVER_TICK_SPEED); // Tuning -> AirControlSpeed
-constexpr float c_AirControlAccel = 1.5f; // Tuning -> AirControlAccel
-
-constexpr float c_Gravity = 0.5f; // Tuning -> Gravity
-constexpr float c_JumpPessimism = -2.f;
-
-constexpr float c_GroundJumpHeight = GetDistanceForVelocityAccelerationTicks(c_GroundJumpImpulse, -c_Gravity, c_GroundJumpImpulse / c_Gravity) + c_JumpPessimism;
-constexpr float c_AirJumpHeight = GetDistanceForVelocityAccelerationTicks(c_AirJumpImpulse, -c_Gravity, c_AirJumpImpulse / c_Gravity) + c_JumpPessimism;
-
-constexpr float c_GroundJumpTiles = c_GroundJumpHeight / TileSizeF;
-constexpr float c_AirJumpTiles = c_AirJumpHeight / TileSizeF;
-
 bool ICollision::IsSolid(int x, int y) const
 {
 	int index = GetTile(x, y);
