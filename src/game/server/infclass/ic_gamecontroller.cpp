@@ -1025,29 +1025,6 @@ void CIcGameController::SaveRoundRules()
 	SendServerParams(-1);
 }
 
-void CIcGameController::StartSurvivalGame()
-{
-	m_SurvivalState.Scores.Clear();
-	m_SurvivalState.Kills = 0;
-	m_SurvivalState.KilledPlayers.Clear();
-	m_SurvivalState.SurvivedPlayers.Clear();
-
-	for(int i = 0; i < MAX_CLIENTS; i++)
-	{
-		CIcPlayer *pPlayer = GetPlayer(i);
-		if(pPlayer)
-		{
-			pPlayer->ResetRoundData();
-			CIcCharacter *pCharacter = pPlayer->GetCharacter();
-			if(pCharacter)
-			{
-				pPlayer->KillCharacter();
-				pPlayer->SetClass(EPlayerClass::None);
-			}
-		}
-	}
-}
-
 void CIcGameController::EndSurvivalGame()
 {
 	// Sync the scores
@@ -1108,12 +1085,33 @@ void CIcGameController::EndSurvivalGame()
 		m_BestSurvivalScore = Score;
 	}
 
+	m_WaveStartTick = 0;
 	m_SurvivalState.Wave = 0;
+
+	if(Config()->m_InfSurvivalMode)
+	{
+		if(Config()->m_InfSurvivalAutostart)
+		{
+			QueueRoundType(ERoundType::Survival);
+
+			if(m_SurvivalConfiguration.SurvivalWaves.Size() == m_SurvivalState.Wave + 1)
+			{
+				// Humans won the game.
+			}
+			else
+			{
+				m_TriggerSurvivalAutostart = true;
+			}
+		}
+		m_RoundCount = 0;
+	}
 
 	m_SurvivalState.Kills = 0;
 	m_SurvivalState.Scores.Clear();
 	m_SurvivalState.SurvivedPlayers.Clear();
-	m_SurvivalState.KilledPlayers.Clear();
+	// Process the killed players OnGameRestart() to show proper score board
+	// m_SurvivalState.KilledPlayers.Clear();
+
 }
 
 int CIcGameController::GetRoundTick() const
@@ -1128,7 +1126,8 @@ int CIcGameController::GetInfectionTick() const
 
 int CIcGameController::GetInfectionStartTick() const
 {
-	const int InfectionTick = m_RoundStartTick + Server()->TickSpeed() * GetInfectionDelay();
+	const int StartTick = GetRoundType() == ERoundType::Survival ? m_WaveStartTick : m_RoundStartTick;
+	const int InfectionTick = StartTick + Server()->TickSpeed() * GetInfectionDelay();
 	return InfectionTick;
 }
 
@@ -1517,6 +1516,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("clear_fun_rounds", "", CFGFLAG_SERVER, ConClearFunRounds, this, "Start fun round");
 	pConsole->Register("add_fun_round", "s[classname] s[classname] ?s[more classes]", CFGFLAG_SERVER, ConAddFunRound, this, "Start fun round");
 
+	pConsole->Register("start_survival", "?is", CFGFLAG_SERVER, ConStartSurvival, this, "Set the class of a player");
 	pConsole->Register("start_fast_round", "", CFGFLAG_SERVER, ConStartFastRound, this, "Start a faster gameplay round");
 	pConsole->Register("queue_fast_round", "", CFGFLAG_SERVER, ConQueueFastRound, this, "Queue a faster gameplay round");
 	pConsole->Register("queue_fun_round", "", CFGFLAG_SERVER, ConQueueFunRound, this, "Queue a fun gameplay round");
@@ -1547,6 +1547,10 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("dump_bot", "i", CFGFLAG_SERVER, ConDumpBot, this, "Dump bot state");
 	pConsole->Register("ai", "s[debug|enable|disable]", CFGFLAG_SERVER, ConCheckAI, this, "Debug bot AI from the caller PoV");
 	pConsole->Register("ai_objection", "s[command] ?s[argument]", CFGFLAG_SERVER, ConAiObjection, this, "Setup AI objections");
+
+	pConsole->Register("survival_clear_conf", "", CFGFLAG_SERVER, ConSurvivalClearConf, this, "");
+	pConsole->Register("survival_add_wave", "i[wave] ?s[name]", CFGFLAG_SERVER, ConSurvivalAddWave, this, "");
+	pConsole->Register("survival_conf_wave", "i[wave] s[action] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec]", CFGFLAG_SERVER, ConSurvivalConfWave, this, "");
 }
 
 EInfclassWeapon CIcGameController::GetWeaponIdFromConArgument(IConsole::IResult *pResult, unsigned int Index)
@@ -2130,6 +2134,255 @@ void CIcGameController::ConStartRound(IConsole::IResult *pResult, void *pUserDat
 	}
 
 	pSelf->StartRound();
+}
+
+void CIcGameController::ConSurvivalClearConf(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->SurvivalClearConf();
+}
+
+void CIcGameController::SurvivalClearConf()
+{
+	m_SurvivalConfiguration.SurvivalWaves.Clear();
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "survival configuration cleared");
+}
+
+void CIcGameController::ConSurvivalAddWave(IConsole::IResult *pResult, void *pUserData)
+{
+	int Wave = pResult->GetInteger(0);
+	const char *pWaveName = pResult->GetString(1);
+
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->SurvivalAddWave(Wave, pWaveName);
+}
+
+void CIcGameController::SurvivalAddWave(int Wave, const char *pWaveName)
+{
+	if(Wave != m_SurvivalConfiguration.SurvivalWaves.Size() + 1)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Only incremental setup allowed. Add the previous waves first");
+		return;
+	}
+
+	m_SurvivalConfiguration.SurvivalWaves.Resize(Wave);
+	SurvivalWaveConfiguration &Conf = m_SurvivalConfiguration.SurvivalWaves.Last();
+	Conf.BotConfigurations.Clear();
+	if(pWaveName && pWaveName[0])
+	{
+		str_copy(Conf.aName, pWaveName);
+	}
+	else
+	{
+		Conf.aName[0] = 0;
+	}
+
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "survival wave added");
+}
+
+void CIcGameController::ConSurvivalConfWave(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConSurvivalConfWave(pResult);
+}
+
+void CIcGameController::ConSurvivalConfWave(IConsole::IResult *pResult)
+{
+	int Wave = pResult->GetInteger(0);
+	if((Wave < 1) || (Wave > m_SurvivalConfiguration.SurvivalWaves.Size()))
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid wave number");
+		return;
+	}
+
+	const char *pAction = pResult->GetString(1);
+	if(str_comp(pAction, "add") != 0)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid action");
+		return;
+	}
+
+	const char *pClassName = pResult->GetString(2);
+	bool Ok = false;
+	EPlayerClass PlayerClass = static_cast<EPlayerClass>(GetClassByName(pClassName, &Ok));
+	if(!Ok)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid class name");
+		return;
+	}
+
+	if(!IsInfectedClass(PlayerClass))
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Only infected classes allowed");
+		return;
+	}
+
+	int SpawnTimeInSeconds = 0;
+	int Lives = 0;
+	int HP = 0;
+	float RespawnInterval = 0;
+
+	for(int Arg = 3; Arg < pResult->NumArguments(); ++Arg)
+	{
+		const char *pStr = pResult->GetString(Arg);
+		bool Ok;
+		float Value;
+
+		Value = ParseSpawnTime(pStr, &Ok);
+		if(Ok)
+		{
+			SpawnTimeInSeconds = Value;
+			continue;
+		}
+
+		Value = ParseLives(pStr, &Ok);
+		if(Ok)
+		{
+			Lives = Value;
+			continue;
+		}
+
+		Value = ParseHP(pStr, &Ok);
+		if(Ok)
+		{
+			HP = Value;
+			continue;
+		}
+
+		Value = ParseRespawn(pStr, &Ok);
+		if(Ok)
+		{
+			RespawnInterval = Value;
+			continue;
+		}
+
+		char aBuffer[256];
+		str_format(aBuffer, sizeof(aBuffer), "Invalid wave specification, unable to parse argument '%s'", pStr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuffer);
+		return;
+	}
+
+	int WaveIndex = Wave - 1;
+	SurvivalWaveConfiguration &Conf = m_SurvivalConfiguration.SurvivalWaves[WaveIndex];
+
+	int SpawnMinTick = Server()->TickSpeed() * SpawnTimeInSeconds;
+	Conf.BotConfigurations.Add(SurvivalBotConfiguration(PlayerClass, SpawnMinTick, Lives));
+	SurvivalBotConfiguration &BotConf = Conf.BotConfigurations.Last();
+	BotConf.HP = HP;
+	BotConf.RespawnInterval = RespawnInterval;
+
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "survival wave configuration changed");
+}
+
+void CIcGameController::ConStartSurvival(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConStartSurvival(pResult);
+}
+
+void CIcGameController::ConStartSurvival(IConsole::IResult *pResult)
+{
+	if(Config()->m_InfSurvivalMode == SURVIVAL_MODE_OFF)
+	{
+		int ClientID = pResult->GetClientId();
+		const char *pErrorMessage = "Unable to start a survival: Survival mode is turned off";
+		if(ClientID >= 0)
+		{
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", pErrorMessage);
+		}
+		else
+		{
+			GameServer()->SendChatTarget(-1, pErrorMessage);
+		}
+
+		return;
+	}
+
+	if(GetRoundType() == ERoundType::Survival)
+	{
+		int ClientID = pResult->GetClientId();
+		const char *pErrorMessage = _("The survival is already triggered");
+		if(ClientID >= 0)
+		{
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", pErrorMessage);
+		}
+		else
+		{
+			GameServer()->SendChatTarget(-1, pErrorMessage);
+		}
+
+		return;
+	}
+
+	int Wave = pResult->NumArguments() > 0 ? pResult->GetInteger(0) - 1 : 0;
+
+	if(Wave < 0)
+		return;
+
+	const int MaxWave = m_SurvivalConfiguration.SurvivalWaves.Size();
+	if(Wave >= MaxWave)
+		return;
+
+	PrepareSurvival(Wave);
+
+	QueueRoundType(ERoundType::Survival);
+
+	DoWarmup(3);
+}
+
+void CIcGameController::PrepareSurvival(int Wave)
+{
+	if(Config()->m_InfSurvivalMode)
+	{
+		// Survival is a whole new game, reset the counter!
+		m_RoundCount = Wave;
+		const int MaxWave = m_SurvivalConfiguration.SurvivalWaves.Size();
+		Config()->m_SvRoundsPerMap = MaxWave;
+	}
+
+	m_SurvivalState.Wave = Wave;
+
+	m_SurvivalState.Scores.Clear();
+	m_SurvivalState.Kills = 0;
+	m_SurvivalState.KilledPlayers.Clear();
+	m_SurvivalState.SurvivedPlayers.Clear();
+
+	ResetRoundData();
+
+	for(int i = 0; i < MAX_CLIENTS; i++)
+	{
+		CIcPlayer *pPlayer = GetPlayer(i);
+		if(pPlayer)
+		{
+			pPlayer->KillCharacter();
+			pPlayer->SetClass(EPlayerClass::None);
+		}
+	}
+}
+
+bool CIcGameController::SurvivalHumansWinConditionsMet() const
+{
+	const bool TimeBased = Config()->m_InfSurvivalMode == SURVIVAL_MODE_TIME_BASED;
+	if(TimeBased)
+	{
+		bool TimeIsOut = false;
+		const int Seconds = GetRoundTick() / static_cast<float>(Server()->TickSpeed());
+		if(GetTimeLimitMinutes() > 0 && Seconds >= GetTimeLimitSeconds())
+		{
+			TimeIsOut = true;
+		}
+		return TimeIsOut;
+	}
+
+	for(const CBaseBotPlayer *pBot : m_Bots)
+	{
+		if(!pBot->IsHuman() && (pBot->Lives() != 0))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 void CIcGameController::ConStartFunRound(IConsole::IResult *pResult, void *pUserData)
@@ -2917,6 +3170,41 @@ void CIcGameController::OnInfectionTriggered()
 
 	m_InfUnbalancedTick = -1;
 	MaybeSuggestMoreRounds();
+
+	if(GetRoundType() == ERoundType::Survival)
+	{
+		m_SurvivalState.Scores.Clear();
+		for(int i = 0; i < MAX_CLIENTS; ++i)
+		{
+			CIcPlayer *pPlayer = GetPlayer(i);
+			if(!pPlayer || !pPlayer->GetCharacter())
+				continue;
+
+			if(pPlayer->GetClass() == EPlayerClass::None)
+			{
+				pPlayer->SetClass(ChooseHumanClass(pPlayer));
+				pPlayer->SetRandomClassChoosen();
+			}
+			pPlayer->CloseMapMenu();
+
+			EnsureSurvivalPlayerScore(pPlayer->GetCid());
+		}
+
+		const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.SurvivalWaves.At(m_SurvivalState.Wave);
+		for(const SurvivalBotConfiguration &BotConf : WaveConf.BotConfigurations)
+		{
+			CBaseBotPlayer *pBot = AddBot(BotConf);
+			if(!pBot)
+			{
+				GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTION, _("Unable to allocate a player slot for a bot: too many players!"));
+				EndRound();
+				break;
+			}
+
+			// Make the bots spawn a bit less predictable
+			pBot->m_RespawnTick += Server()->TickSpeed() * random_float();
+		}
+	}
 }
 
 void CIcGameController::StartInfectionGameplay(int PlayersToInfect)
@@ -2955,6 +3243,9 @@ void CIcGameController::MaybeSuggestMoreRounds()
 		return;
 
 	if(m_RoundCount != Config()->m_SvRoundsPerMap-1)
+		return;
+
+	if(Config()->m_InfSurvivalMode)
 		return;
 
 	m_SuggestMoreRounds = true;
@@ -3007,6 +3298,14 @@ void CIcGameController::StartRound()
 		GameServer()->SendChatTarget(-1, "Starting the 'fast' round. Good luck everyone!");
 		break;
 	case ERoundType::Survival:
+	{
+		if(m_SurvivalConfiguration.SurvivalWaves.IsEmpty())
+		{
+			m_RoundType = ERoundType::Normal;
+			GameServer()->SendChatTarget(-1, "Failed to start survival round: the round is not configured");
+		}
+		break;
+	}
 	case ERoundType::Invalid:
 		break;
 	}
@@ -3025,10 +3324,64 @@ void CIcGameController::StartRound()
 
 	if(StartAfterGameOver)
 	{
+		RemoveBots();
+
+		// Cleanup survival stuff *after* score displayed
+		{
+			for(int CID : m_SurvivalState.KilledPlayers)
+			{
+				CIcPlayer *pPlayer = GetPlayer(CID);
+				if(pPlayer->IsSpectator() && !pPlayer->IsBot())
+				{
+					DoTeamChange(pPlayer, TEAM_RED, false);
+				}
+			}
+
+			m_SurvivalState.KilledPlayers.Clear();
+		}
+
+		if(Config()->m_InfSurvivalMode)
+		{
+			for(int CID = 0; CID < MAX_CLIENTS; ++CID)
+			{
+				CIcPlayer *pPlayer = GetPlayer(CID);
+				if(pPlayer && pPlayer->IsSpectator() && !pPlayer->IsBot())
+				{
+					// Reset the class for other (not recently killed) spectator players
+					pPlayer->SetClass(EPlayerClass::None);
+				}
+			}
+		}
+
 		IncreaseCurrentRoundCounter();
 	}
 
-	ResetRoundData();
+	if(GetRoundType() == ERoundType::Survival)
+	{
+		if(m_TriggerSurvivalAutostart)
+		{
+			GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "Survival auto-restarted");
+			m_TriggerSurvivalAutostart = false;
+			PrepareSurvival();
+		}
+		else if(Config()->m_InfSurvivalMode)
+		{
+			if(StartAfterGameOver)
+			{
+				++m_SurvivalState.Wave;
+			}
+		}
+		else
+		{
+			PrepareSurvival();
+		}
+
+		StartSurvivalRound();
+	}
+	else
+	{
+		ResetRoundData();
+	}
 
 	RunCallback(Lua()->GetLuaState(), "on_round_started", toString(GetRoundType()));
 
@@ -3106,14 +3459,13 @@ void CIcGameController::EndRound(ERoundEndReason Reason)
 		EndFunRound();
 		break;
 	case ERoundType::Survival:
-		EndSurvivalRound();
+		EndSurvivalRound(Reason);
 		break;
 	case ERoundType::Invalid:
 		break;
 	}
 
 	m_RoundStarted = false;
-	RemoveBots();
 }
 
 void CIcGameController::DoTeamChange(CPlayer *pBasePlayer, int Team, bool DoChatMsg)
@@ -3641,6 +3993,35 @@ CBaseBotPlayer *CIcGameController::AddBot(int Team)
 	return pPlayer;
 }
 
+CBaseBotPlayer *CIcGameController::AddBot(const SurvivalBotConfiguration &Configuration)
+{
+	int Team = 0;
+	if(Configuration.SpawnMinTick > 0)
+	{
+		Team = TEAM_SPECTATORS;
+	}
+
+	int MaxLives = Configuration.Lives;
+	const bool KillBased = Config()->m_InfSurvivalMode != SURVIVAL_MODE_TIME_BASED;
+	if(!MaxLives && KillBased && (Config()->m_InfBotLives > 0))
+	{
+		MaxLives = Config()->m_InfBotLives;
+	}
+
+	CBaseBotPlayer *pBot = AddBot(Team);
+	if(!pBot)
+		return nullptr;
+
+	pBot->SetClass(Configuration.Class);
+	pBot->SetSpawnMinTick(Configuration.SpawnMinTick);
+	pBot->SetMaxLives(MaxLives);
+	pBot->SetMaxHP(Configuration.HP);
+	pBot->SetRespawnInterval(Configuration.RespawnInterval);
+	pBot->UpdateName();
+
+	return pBot;
+}
+
 bool CIcGameController::RemoveBot(CBaseBotPlayer *pBot, const char *pReason)
 {
 	std::optional<std::size_t> BotIndex = m_Bots.IndexOf(pBot);
@@ -3765,6 +4146,59 @@ void CIcGameController::Tick()
 	const int NumPlayers = NumHumans + NumInfected;
 
 	bool Allowed = !m_Warmup;
+	if(Config()->m_InfSurvivalMode)
+	{
+		if(GetRoundType() != ERoundType::Survival)
+		{
+			// The round is not started yet
+			Allowed = false;
+
+			GameServer()->SendBroadcast_Localization(-1,
+				EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
+				_("Vote to start the game"), nullptr);
+		}
+
+		if(Allowed)
+		{
+			CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+			while(Iter.Next())
+			{
+				const CIcPlayer *pPlayer = Iter.Player();
+				if((m_SurvivalState.Wave > 0) && !m_SurvivalState.SurvivedPlayers.Contains(pPlayer->GetCid()))
+				{
+					continue;
+				}
+				if(pPlayer->MapMenu())
+				{
+					// One of the players didn't choose the class yet
+					Allowed = false;
+
+					GameServer()->SendBroadcast_Localization(-1,
+						EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
+						_("Waiting for players to choose a class"), nullptr);
+					break;
+				}
+			}
+		}
+		// Move infected players to spec
+		for(int i = 0; i < MAX_CLIENTS; ++i)
+		{
+			CIcPlayer *pPlayer = GetPlayer(i);
+
+			if(pPlayer && !pPlayer->IsBot() && pPlayer->IsInfected())
+			{
+				if(!Allowed)
+				{
+					pPlayer->KillCharacter();
+					pPlayer->SetClass(EPlayerClass::None);
+					continue;
+				}
+				const bool DoChatMsg = false;
+				DoTeamChange(pPlayer, TEAM_SPECTATORS, DoChatMsg);
+			}
+		}
+	}
+
 	m_InfectedStarted = false;
 
 	//If the game can start ...
@@ -3781,6 +4215,15 @@ void CIcGameController::Tick()
 			RoundTickBeforeInitialInfection();
 		}
 
+		const auto Bots = m_Bots;
+		for(CBaseBotPlayer *pBot : Bots)
+		{
+			if(pBot->Lives() == 0)
+			{
+				RemoveBot(pBot, "Rage quit");
+			}
+		}
+
 		DoWincheck();
 		if(m_FinalExplosionState == EFinalExplosionState::Started)
 		{
@@ -3790,11 +4233,16 @@ void CIcGameController::Tick()
 	else
 	{
 		m_RoundStartTick = Server()->Tick();
+		if(GetRoundType() == ERoundType::Survival)
+		{
+			m_WaveStartTick = Server()->Tick();
+		}
 	}
 
 	if(GameWorld()->m_Paused)
 	{
 		m_HeroGiftTick++;
+		m_WaveStartTick++;
 	}
 	else
 	{
@@ -4011,7 +4459,28 @@ void CIcGameController::CancelTheRound(ROUND_CANCELATION_REASON Reason)
 
 void CIcGameController::AnnounceTheWinner(int NumHumans)
 {
-	if(NumHumans)
+	const bool HumansWon = NumHumans > 0;
+	if(Config()->m_InfSurvivalMode)
+	{
+		EndRound(ERoundEndReason::FINISHED);
+		return;
+	}
+	else if(GetRoundType() == ERoundType::Survival && HumansWon)
+	{
+		if(m_SurvivalConfiguration.SurvivalWaves.Size() > m_SurvivalState.Wave + 1)
+		{
+			m_InfectedStarted = false;
+			ResetFinalExplosion();
+			EndSurvivalWave();
+
+			m_SurvivalState.Wave++;
+
+			StartSurvivalWave();
+			return;
+		}
+	}
+
+	if(HumansWon)
 	{
 		GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_HUMANS, NumHumans,
 			_P("One human won the round",
@@ -4142,6 +4611,11 @@ bool CIcGameController::IsInfectionStarted() const
 
 bool CIcGameController::MapRotationEnabled() const
 {
+	if(Config()->m_InfSurvivalMode)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -4318,6 +4792,10 @@ float CIcGameController::GetTimeLimitMinutes() const
 		return minimum<float>(BaseTimeLimit, Config()->m_FunRoundDuration);
 	case ERoundType::Fast:
 		return clamp<float>(BaseTimeLimit * 0.5, 1, 3);
+	case ERoundType::Survival:
+		if(Config()->m_InfSurvivalMode == SURVIVAL_MODE_TIME_BASED)
+			return BaseTimeLimit;
+		return 0;
 	default:
 		return BaseTimeLimit;
 	}
@@ -4434,83 +4912,59 @@ void CIcGameController::EndFunRound()
 
 void CIcGameController::StartSurvivalRound()
 {
-	GameServer()->m_World.m_ResetRequested = false;
-
-	char aBuf[256];
-
-	int WaveDisplayNumber = m_SurvivalState.Wave + 1;
-	if(m_SurvivalConfiguration.SurvivalWaves.Size() <= m_SurvivalState.Wave)
+	if(!StartSurvivalWave())
 	{
-		str_format(aBuf, sizeof(aBuf), "Unable to start a survival round: wave %d is not configured", WaveDisplayNumber);
-		GameServer()->SendChatTarget(-1, aBuf);
 		return;
 	}
 
-	// TODO: Check this (not) incremented
-	if(m_SurvivalState.Wave == 0)
-	{
-		StartSurvivalGame();
-	}
-
-	for(int CID : m_SurvivalState.KilledPlayers)
-	{
-		CIcPlayer *pPlayer = GetPlayer(CID);
-		if(pPlayer->IsSpectator())
-		{
-			DoTeamChange(pPlayer, TEAM_RED, false);
-		}
-	}
-
-	m_SurvivalState.KilledPlayers.Clear();
-
-	if(m_SurvivalConfiguration.SurvivalWaves.Size() == 1)
-	{
-		str_format(aBuf, sizeof(aBuf), "The survival begins. Enjoy!");
-	}
-	else
-	{
-		const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.SurvivalWaves.At(m_SurvivalState.Wave);
-
-		if(WaveConf.aName[0])
-		{
-			str_format(aBuf, sizeof(aBuf), "Wave %d: %s", WaveDisplayNumber, WaveConf.aName);
-		}
-		else
-		{
-			str_format(aBuf, sizeof(aBuf), "Wave %d. Enjoy!", WaveDisplayNumber);
-		}
-	}
-	GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
-
 	SetRoundMinimumPlayers(1);
 	SetRoundMinimumInfected(0);
+
+	if(Config()->m_InfSurvivalMode && (m_SurvivalState.Wave > 0))
+	{
+		GameServer()->m_World.m_ResetRequested = false;
+	}
 }
 
-void CIcGameController::EndSurvivalRound()
+void CIcGameController::EndSurvivalRound(ERoundEndReason Reason)
 {
+	if(Reason != ERoundEndReason::FINISHED)
+	{
+		RemoveBots();
+		m_SurvivalState.SurvivedPlayers.Clear();
+		return;
+	}
+
+	bool IsOver = false;
+
 	int NumHumans = 0;
 	int NumInfected = 0;
 	GetPlayerCounter(-1, NumHumans, NumInfected);
 
-	bool IsOver = false;
-
 	if((NumHumans == 0) && (NumInfected > 0))
 	{
-		if(m_SurvivalState.Wave == 0)
+		if(m_SurvivalConfiguration.SurvivalWaves.Size() == 1)
 		{
 			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE,
-				_("The survival is over. You have failed to survive a single wave."));
+				_("The survival is over. You have failed to survive."));
 		}
 		else
 		{
-			int NumWaves = m_SurvivalState.Wave + 1;
-			GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_SCORE, NumWaves,
-				_P(
-					"The survival is over after {int:NumWaves} wave.",
-					"The survival is over after {int:NumWaves} waves.", NumWaves),
+			if(m_SurvivalState.Wave == 0)
+			{
+				GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE,
+					_("The survival is over. You have failed to survive a single wave."));
+			}
+			else
+			{
+				int NumWaves = m_SurvivalState.Wave + 1;
+				GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_SCORE, NumWaves,
+					_P(
+						"The survival is over after {int:NumWaves} wave.",
+						"The survival is over after {int:NumWaves} waves.", NumWaves),
 					"NumWaves", &NumWaves,
-					nullptr
-					);
+					nullptr);
+			}
 		}
 
 		IsOver = true;
@@ -4541,6 +4995,61 @@ void CIcGameController::EndSurvivalRound()
 		return;
 	}
 
+	EndSurvivalWave();
+
+	if(Config()->m_InfSurvivalMode)
+	{
+		QueueRoundType(ERoundType::Survival);
+
+		if (!IsOver)
+		{
+			// Cancel gameover, force new round
+			StartRound();
+		}
+	}
+}
+
+bool CIcGameController::StartSurvivalWave()
+{
+	char aBuf[256];
+
+	int WaveDisplayNumber = m_SurvivalState.Wave + 1;
+	if(m_SurvivalConfiguration.SurvivalWaves.Size() <= m_SurvivalState.Wave)
+	{
+		str_format(aBuf, sizeof(aBuf), "Unable to start a survival round: wave %d is not configured", WaveDisplayNumber);
+		GameServer()->SendChatTarget(-1, aBuf);
+		return false;
+	}
+
+	RemoveBots();
+
+	m_WaveStartTick = Server()->Tick();
+
+	if(m_SurvivalConfiguration.SurvivalWaves.Size() == 1)
+	{
+		str_format(aBuf, sizeof(aBuf), "The survival begins. Enjoy!");
+	}
+	else
+	{
+		const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.SurvivalWaves.At(m_SurvivalState.Wave);
+
+		if(WaveConf.aName[0])
+		{
+			str_format(aBuf, sizeof(aBuf), "Wave %d: %s", WaveDisplayNumber, WaveConf.aName);
+		}
+		else
+		{
+			str_format(aBuf, sizeof(aBuf), "Wave %d. Enjoy!", WaveDisplayNumber);
+		}
+	}
+
+	GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
+
+	return true;
+}
+
+void CIcGameController::EndSurvivalWave()
+{
 	m_SurvivalState.SurvivedPlayers.Clear();
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
@@ -4552,7 +5061,7 @@ void CIcGameController::EndSurvivalRound()
 		}
 	}
 
-	QueueRoundType(ERoundType::Survival);
+	m_WaveStartTick = 0;
 }
 
 void CIcGameController::EnsureFinalExplosionIsStarted()
@@ -5448,6 +5957,14 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 		if(pVictimPlayer->IsBot())
 		{
 			CBotPlayer *pBot = static_cast<CBotPlayer *>(pVictimPlayer);
+			if(GetRoundType() == ERoundType::Survival)
+			{
+				float Delay = pBot->GetRespawnInterval();
+				Delay += -0.5 + random_float();
+				Delay = maximum(0.5f, Delay);
+				pBot->m_RespawnTick = Server()->Tick() + Server()->TickSpeed() * Delay;
+			}
+
 			const int Lives = pBot->Lives() - 1;
 			if(Lives >= 0)
 			{
@@ -5487,8 +6004,15 @@ void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const Spa
 
 void CIcGameController::OnClassChooserRequested(CIcCharacter *pCharacter)
 {
-	CIcPlayer *pPlayer = pCharacter->GetPlayer();
+	if(Config()->m_InfSurvivalMode)
+	{
+		if(GetRoundType() != ERoundType::Survival)
+		{
+			return;
+		}
+	}
 
+	CIcPlayer *pPlayer = pCharacter->GetPlayer();
 	if(GetRoundType() == ERoundType::Fun)
 	{
 		pPlayer->SetRandomClassChoosen();
@@ -5623,6 +6147,17 @@ void CIcGameController::DoWincheck()
 
 	switch(GetRoundType())
 	{
+	case ERoundType::Survival:
+		if(SurvivalHumansWinConditionsMet())
+		{
+			VictoryConditionsMet = true;
+			NeedFinalExplosion = true;
+		}
+		else if (NumHumans == 0)
+		{
+			VictoryConditionsMet = true;
+		}
+		break;
 	default:
 		// One infected can win in some rounds; we have a check if this is a valid situation in CheckRoundFailed()
 		if(NumHumans == 0 && NumInfected >= 1)

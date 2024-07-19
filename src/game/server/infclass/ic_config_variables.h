@@ -191,6 +191,9 @@ MACRO_CONFIG_INT(InfWhiteHolePullStrength, inf_white_hole_pull_strength, 30, 0, 
 
 MACRO_CONFIG_INT(InfBotLives, inf_bot_lives, 0, 0, 30, CFGFLAG_SERVER, "The number of bot lives (for survive rounds)")
 
+MACRO_CONFIG_INT(InfSurvivalMode, inf_survival_mode, 0, 0, 2, CFGFLAG_SERVER, "Survival mode (0 = off, 1 = kill-based, 2 = time-based)")
+MACRO_CONFIG_INT(InfSurvivalAutostart, inf_survival_autostart, 0, 0, 1, CFGFLAG_SERVER, "Automatically start the last choosen survival scenario")
+
 // Deprecated variables
 MACRO_CONFIG_INT(InfStunGrenadeMinimalKills, inf_stun_grenade_minimal_kills, 2, 0, 30, CFGFLAG_SERVER, "Deprecated (has no effect now)")
 MACRO_CONFIG_INT(InfStunGrenadeProbability, inf_stun_grenade_probability, 30, 0, 100, CFGFLAG_SERVER, "Deprecated (has no effect now)")

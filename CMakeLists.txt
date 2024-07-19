@@ -1273,9 +1273,17 @@ install(
   FILES
     "ChangeLog.txt"
     "autoexec.cfg"
+    "normal.cfg"
+    "normalize.cfg"
     "reset.cfg"
   DESTINATION
     "."
+)
+install(
+  DIRECTORY
+    "survivals/"
+  DESTINATION
+    "survivals"
 )
 install(
   FILES

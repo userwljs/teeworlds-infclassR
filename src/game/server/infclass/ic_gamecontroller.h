@@ -85,6 +85,15 @@ struct FunRoundConfiguration
 	EPlayerClass HumanClass = EPlayerClass::Invalid;
 };
 
+struct SurvivalBotConfiguration;
+
+enum SURVIVAL_MODE
+{
+	SURVIVAL_MODE_OFF,
+	SURVIVAL_MODE_KILL_BASED,
+	SURVIVAL_MODE_TIME_BASED,
+};
+
 class CIcGameController : public IGameController
 {
 public:
@@ -250,14 +259,15 @@ public:
 	void EndFunRound();
 
 	void StartSurvivalRound();
-	void EndSurvivalRound();
+	void EndSurvivalRound(ERoundEndReason Reason);
+	bool StartSurvivalWave();
+	void EndSurvivalWave();
 
 	void EnsureFinalExplosionIsStarted();
 	void StartFinalExplosion();
 	void ProgressFinalExplosion();
 	void ResetFinalExplosion();
 	void SaveRoundRules();
-	void StartSurvivalGame();
 	void EndSurvivalGame();
 
 	int GetRoundStartTick() const { return m_RoundStartTick; }
@@ -329,8 +339,24 @@ public:
 
 	static void ConStartFastRound(IConsole::IResult *pResult, void *pUserData);
 	static void ConQueueFastRound(IConsole::IResult *pResult, void *pUserData);
+
 	static void ConPrintPlayerPickingTimestamp(IConsole::IResult *pResult, void *pUserData);
 	void ConPrintPlayerPickingTimestamp(IConsole::IResult *pResult);
+
+	static void ConSurvivalClearConf(IConsole::IResult *pResult, void *pUserData);
+	void SurvivalClearConf();
+
+	static void ConSurvivalAddWave(IConsole::IResult *pResult, void *pUserData);
+	void SurvivalAddWave(int Wave, const char *pWaveName);
+
+	static void ConSurvivalConfWave(IConsole::IResult *pResult, void *pUserData);
+	void ConSurvivalConfWave(IConsole::IResult *pResult);
+
+	static void ConStartSurvival(IConsole::IResult *pResult, void *pUserData);
+	void ConStartSurvival(IConsole::IResult *pResult);
+	void PrepareSurvival(int Wave = 0);
+	bool SurvivalHumansWinConditionsMet() const;
+
 	static void ConMapRotationStatus(IConsole::IResult *pResult, void *pUserData);
 	static void ConSaveMapsData(IConsole::IResult *pResult, void *pUserData);
 	static void ConPrintMapsData(IConsole::IResult *pResult, void *pUserData);
@@ -434,6 +460,7 @@ private:
 
 	int RequestBotID();
 	CBaseBotPlayer *AddBot(int Team = 0);
+	CBaseBotPlayer *AddBot(const SurvivalBotConfiguration &Configuration);
 	bool RemoveBot(CBaseBotPlayer *pBot, const char *pReason = nullptr);
 	bool RemoveBot(int ClientId, const char *pReason = nullptr);
 
@@ -457,7 +484,8 @@ private:
 	int m_BestSurvivalScore = 0;
 	const char *m_LastUsedKillMessage = nullptr;
 
-	bool m_AllowSurvivalAutostart = false;
+	int m_WaveStartTick = 0;
+	bool m_TriggerSurvivalAutostart = false;
 
 	PlayerScore *GetSurvivalPlayerScore(int ClientId);
 	PlayerScore *EnsureSurvivalPlayerScore(int ClientId);
