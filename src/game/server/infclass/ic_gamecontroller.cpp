@@ -2276,6 +2276,7 @@ void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
 		}
 
 		CBotPlayer::DIRECTION Direction = pCharacter->Core()->m_Input.m_TargetX > 0 ? CBotPlayer::DIRECTION_RIGHT : CBotPlayer::DIRECTION_LEFT;
+		vec2 ToTarget(pCharacter->m_Input.m_TargetX, pCharacter->m_Input.m_TargetY);
 		pPlayer->SetRoamingDirection(Direction);
 		CNetObj_PlayerInput input;
 		pPlayer->UpdateControlsRoaming(&input);
@@ -2286,11 +2287,10 @@ void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
 		int MaxJumps = pPlayer->GetAvailableJumps();
 		int AirTilesAbove = pPlayer->GetAirTilesAbove(Direction, MaxJumps);
 		bool HasWall = pPlayer->HasWallInTheDirection(Direction);
-		bool HasDanger = pPlayer->HasDangerInTheDirection(Direction);
+		bool HasDanger = pPlayer->HasDamageTiles(pCharacter->GetPos(), ToTarget, pCharacter->GetProximityRadius());
 		int JumpsToGetOver = HasWall ? pPlayer->GetJumpsNeededToGetOverWall(Direction, MaxJumps, &OverWallTargetPosition) : 0;
 		int JumpsToJumpOn = pPlayer->GetJumpsNeededToJumpOnPlatform(Direction, MaxJumps, &OnPlatformTargetPosition);
 
-		vec2 ToTarget(pCharacter->m_Input.m_TargetX, pCharacter->m_Input.m_TargetY);
 		const EThreatLevel LevelOfDanger = pPlayer->GetDangerLevelOnLine(pCharacter->GetPos(), pCharacter->GetPos() + ToTarget);
 		int DangerLevel = static_cast<int>(LevelOfDanger);
 

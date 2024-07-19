@@ -235,7 +235,7 @@ public:
 		GNUC_ATTRIBUTE((format(printf, 3, 4)));
 
 	bool HasWallInTheDirection(DIRECTION Direction) const;
-	bool HasDangerInTheDirection(DIRECTION Direction) const;
+	bool HasDamageTiles(const vec2 &From, const vec2 &To, float Radius) const;
 	bool HasDangerBelow() const;
 	EThreatLevel GetDangerLevelAhead(vec2 *pThreatPosition = nullptr, CIcEntity **ppThreatEntity = nullptr) const;
 	EThreatLevel GetDangerLevelOnLine(const vec2 &From, vec2 To, vec2 *pThreatPosition = nullptr, CIcEntity **ppThreatEntity = nullptr) const;

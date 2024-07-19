@@ -1078,9 +1078,23 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	const int Tick = Server()->Tick();
 	const int TickSpeed = Server()->TickSpeed();
 	const vec2 &Pos = GetCharacter()->GetPos();
+
+	const float PredictTime = 0.25f; // Predict 1/4 of the next second
+	const vec2 PredictedPos = m_BotUtils.PredictMovement(Pos, GetCharacter()->Core()->m_Vel, Server()->TickSpeed() * PredictTime, m_RoamingDirection);
+
 	const float Radius = GetCharacter()->GetProximityRadius();
 
-	const bool CanJump = GetCharacter()->CanJump();
+	bool CanJump = GetCharacter()->CanJump();
+	if(CanJump)
+	{
+		float JumpTiles = m_BotUtils.GetMaxTilesForJumps(1, IsGrounded());
+		if(HasDamageTiles(Pos, Pos + vec2(0, -JumpTiles * TileSizeF), Radius))
+		{
+			BotDebugMessage(VERBOSE_TRACE1, "Can't jump due to kill tiles!");
+			CanJump = false;
+		}
+	}
+
 	int MaxJumps = GetAvailableJumps();
 
 	bool WantToJump = false;
@@ -1090,7 +1104,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 	if(!HasWallInRoamingDirection)
 	{
-		HasDangerInRoamingHorizontalDirection = HasDangerInTheDirection(m_RoamingDirection);
+		HasDangerInRoamingHorizontalDirection = HasDamageTiles(Pos, PredictedPos, Radius);
 	}
 
 	int KeepMoving = 1;
@@ -1104,7 +1118,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		{
 			BotDebugMessage(VERBOSE_STEPS, "Has wall");
 			vec2 JumpTarget;
-			const int WantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &JumpTarget);
+			const int WantJumps = CanJump ? GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &JumpTarget) : 0;
 			if(WantJumps)
 			{
 				if(MaybeJumpOverWall(JumpTarget))
@@ -1251,7 +1265,11 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		// 'Not grounded' branch
 		if(HasDangerInRoamingHorizontalDirection)
 		{
-			if(VelX * DirectionSign > 0.1)
+			const vec2 PredictedPos2 = m_BotUtils.PredictMovement(Pos, GetCharacter()->Core()->m_Vel, Server()->TickSpeed() * PredictTime, m_RoamingDirection);
+
+			BotDebugMessage(VERBOSE_STEPS, "Predicted move to %.2fx%.2f", PredictedPos2.x / TileSizeF, PredictedPos2.y / TileSizeF);
+
+			if(VelX * DirectionSign > 0.05)
 			{
 				BotDebugMessage(VERBOSE_TRACE1, "Brake!");
 				KeepMoving = -1;
@@ -1466,7 +1484,10 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	const int Tick = Server()->Tick();
 	const int TickSpeed = Server()->TickSpeed();
 	const vec2 &Pos = GetCharacter()->GetPos();
-	int TileX = Pos.x / TileSize;
+
+	const float PredictTime = 0.25f; // Predict 1/4 of the next second
+
+	const float Radius = GetCharacter()->GetProximityRadius();
 
 	const float Gravity = m_NextTuningParams.m_Gravity;
 	const vec2 VectorToTarget = m_LastTargetSeenAtPos - Pos;
@@ -1682,6 +1703,49 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		}
 	}
 
+	int KeepMoving = 1;
+	const float VelX = m_pCharacter->Core()->m_Vel.x;
+
+	const vec2 PredictedPos = m_BotUtils.PredictMovement(Pos, GetCharacter()->Core()->m_Vel, Server()->TickSpeed() * PredictTime, Direction);
+	if(HasDamageTiles(Pos, PredictedPos, Radius))
+	{
+		const int DirectionSign = Direction;
+		if(VelX * DirectionSign > 0.05)
+		{
+			BotDebugMessage(VERBOSE_TRACE1, "Brake!");
+			KeepMoving = -1;
+		}
+		else
+		{
+			KeepMoving = 0;
+		}
+
+		BotDebugMessage(VERBOSE_STEPS, "Hold on! The danger is there");
+	}
+
+	if(WantToJump)
+	{
+		bool CanJump = GetCharacter()->CanJump();
+		if(CanJump)
+		{
+			float JumpTiles = m_BotUtils.GetMaxTilesForJumps(1, IsGrounded());
+			if(HasDamageTiles(Pos, Pos + vec2(0, -JumpTiles * TileSizeF), Radius))
+			{
+				BotDebugMessage(VERBOSE_TRACE1, "Can't jump due to kill tiles!");
+				CanJump = false;
+			}
+		}
+		WantToJump = CanJump;
+	}
+
+	SetRoamingDirection(Direction);
+
+	BotDebugMessage(VERBOSE_TRACE1, WantToJump ? "WantToJump: yes" : "WantToJump: no");
+
+	pInput->m_Direction = m_RoamingDirection * KeepMoving;
+	pInput->m_TargetX = m_LastTargetSeenAtPos.x - Pos.x;
+	pInput->m_TargetY = m_LastTargetSeenAtPos.y - Pos.y;
+
 	if(WantToJump)
 	{
 		const float dYTiles = (Pos.y - m_JumpTargetPosition.y) / TileSizeF;
@@ -1712,33 +1776,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			m_WantedJumps--;
 		}
 	}
-
-	int KeepMoving = 1;
-	const float VelX = m_pCharacter->Core()->m_Vel.x;
-
-	if(HasDangerInTheDirection(Direction))
-	{
-		const int DirectionSign = Direction;
-		if(VelX * DirectionSign > 0.1)
-		{
-			BotDebugMessage(VERBOSE_TRACE1, "Brake!");
-			KeepMoving = -1;
-		}
-		else
-		{
-			KeepMoving = 0;
-		}
-
-		BotDebugMessage(VERBOSE_STEPS, "Hold on! The danger is there");
-	}
-
-	SetRoamingDirection(Direction);
-
-	BotDebugMessage(VERBOSE_TRACE1, WantToJump ? "WantToJump: yes" : "WantToJump: no");
-
-	pInput->m_Direction = m_RoamingDirection * KeepMoving;
-	pInput->m_TargetX = m_LastTargetSeenAtPos.x - Pos.x;
-	pInput->m_TargetY = m_LastTargetSeenAtPos.y - Pos.y;
 
 	float FirePerSecond = 0.35f;
 	// TODO: This should be the target proximity radius
@@ -2128,21 +2165,12 @@ bool CBotPlayer::HasWallInTheDirection(DIRECTION Direction) const
 	return IsSolidTile(Pos + vec2(XOffset, -OneThirdProximityRadius)) || IsSolidTile(Pos + vec2(XOffset, +OneThirdProximityRadius));
 }
 
-bool CBotPlayer::HasDangerInTheDirection(DIRECTION Direction) const
+bool CBotPlayer::HasDamageTiles(const vec2 &From, const vec2 &To, float Radius) const
 {
-	if(!m_pCharacter || (Direction == DIRECTION_NONE))
+	if(!m_pCharacter || (From == To))
 	{
 		return false;
 	}
-
-	const vec2 &Pos = m_pCharacter->GetPos();
-	static const float ProximityRadius = m_pCharacter->GetProximityRadius();
-	const int DirectionSign = Direction;
-
-	const int XOffset = DirectionSign * (ProximityRadius / 2 + TileSize * 0.9);
-
-	int DamageIndex1 = GameController()->GetDamageZoneValueAt(Pos + vec2(XOffset, -ProximityRadius / 2));
-	int DamageIndex2 = GameController()->GetDamageZoneValueAt(Pos + vec2(XOffset, +ProximityRadius / 2));
 
 	icArray<int, 5> BadIndices = {
 		ZONE_DAMAGE_DEATH,
@@ -2153,8 +2181,42 @@ bool CBotPlayer::HasDangerInTheDirection(DIRECTION Direction) const
 		BadIndices.Add(ZONE_DAMAGE_INFECTION);
 	}
 
-	if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2))
+	const vec2 Diff = To - From;
+	const float Length = length(Diff);
+	const vec2 NormalizedDiff = Diff / Length;
+	float HalfRadius = Radius / 2;
+
+	const auto PositionIsBad = [this, BadIndices, HalfRadius](const vec2 &CheckPos) -> bool {
+		// TODO: Optimize in 2x: progress from -HalfRadius to Length+HalfRadius and use +-vec2(NormalizedDiff.y, NormalizedDiff.x) to check the points
+		int DamageIndex1 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(-HalfRadius, +HalfRadius));
+		int DamageIndex2 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(+HalfRadius, +HalfRadius));
+		int DamageIndex3 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(+HalfRadius, -HalfRadius));
+		int DamageIndex4 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(-HalfRadius, -HalfRadius));
+		if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2) || BadIndices.Contains(DamageIndex3) || BadIndices.Contains(DamageIndex4))
+		{
+			return true;
+		}
+
+		return false;
+	};
+
+	if(PositionIsBad(From) || PositionIsBad(To))
 		return true;
+
+	constexpr int Step = 4;
+	int Progress = Step;
+	while(Progress < Length)
+	{
+		const vec2 CheckPos = From + NormalizedDiff * Progress;
+		if(PositionIsBad(CheckPos))
+		{
+			m_BotUtils.GetDebugSink()->SendMessage(VERBOSE_STEPS, "Found danger. Checked from %.2fx%.2f to %.2fx%.2f",
+				From.x / TileSizeF, From.y / TileSizeF, To.x / TileSizeF, To.y / TileSizeF);
+			return true;
+		}
+
+		Progress += Step;
+	}
 
 	return false;
 }
@@ -2199,12 +2261,8 @@ EThreatLevel CBotPlayer::GetDangerLevelAhead(vec2 *pThreatPosition, CIcEntity **
 	}
 
 	const float PredictTime = 0.25f; // Predict 1/4 of the next second
-
 	const vec2 &Pos = pCharacter->GetPos();
-	const int DirectionSign = m_RoamingDirection;
-	const float Acceleration = c_AirControlAccel * DirectionSign;
-	const float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(pCharacter->Core()->m_Vel.x, Acceleration, Server()->TickSpeed() * PredictTime, c_AirControlSpeed);
-	const vec2 EndPos = Pos + vec2(MaxHDistance, 0);
+	const vec2 EndPos = m_BotUtils.PredictMovement(Pos, pCharacter->Core()->m_Vel, Server()->TickSpeed() * PredictTime, m_RoamingDirection);
 
 	return GetDangerLevelOnLine(Pos, EndPos, pThreatPosition, ppThreatEntity);
 }

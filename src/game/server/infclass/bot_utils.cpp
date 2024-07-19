@@ -183,10 +183,8 @@ void CBotUtils::UpdateTuning(const CTuningParams &Tuning)
 	c_AirControlAccel = Tuning.m_AirControlAccel;
 
 	c_Gravity = Tuning.m_Gravity;
-	c_JumpPessimism = -2.f;
-
-	c_GroundJumpHeight = GetDistanceForVelocityAccelerationTicks(c_GroundJumpImpulse, -c_Gravity, c_GroundJumpImpulse / c_Gravity) + c_JumpPessimism;
-	c_AirJumpHeight = GetDistanceForVelocityAccelerationTicks(c_AirJumpImpulse, -c_Gravity, c_AirJumpImpulse / c_Gravity) + c_JumpPessimism;
+	c_GroundJumpHeight = GetDistanceForVelocityAccelerationTicks(c_GroundJumpImpulse, -c_Gravity, c_GroundJumpImpulse / c_Gravity);
+	c_AirJumpHeight = GetDistanceForVelocityAccelerationTicks(c_AirJumpImpulse, -c_Gravity, c_AirJumpImpulse / c_Gravity);
 
 	c_GroundJumpTiles = c_GroundJumpHeight / TileSizeF;
 	c_AirJumpTiles = c_AirJumpHeight / TileSizeF;
@@ -205,6 +203,15 @@ int CBotUtils::GetTicksToFallToHeight(float Velocity, float Acceleration, float 
 int CBotUtils::GetTicksToMoveDistance(float Velocity, float Acceleration, float Distance, int MaxTicks, float AccelerationMaxVelocity)
 {
 	return ::GetTicksToReachDistance(Velocity, Acceleration, Distance, MaxTicks, AccelerationMaxVelocity);
+}
+
+vec2 CBotUtils::PredictMovement(const vec2 &From, const vec2 &Velocity, int Ticks, int Direction) const
+{
+	const float XAcceleration = c_AirControlAccel * Direction;
+	float X = GetDistanceForVelocityAccelerationTicks(Velocity.x, XAcceleration, Ticks, c_AirControlSpeed * Direction);
+	float Y = Velocity.y == 0 ? 0 : GetDistanceForVelocityAccelerationTicks(Velocity.y, c_Gravity, Ticks, 0);
+
+	return From + vec2(X, Y);
 }
 
 int CBotUtils::GetJumpsToReachHeight(float Height, int MaxJumps, bool FromGround) const

@@ -195,6 +195,7 @@ public:
 	static float GetDistanceForVelocityAccelerationTicks(float Velocity, float Acceleration, int Ticks, float AccelerationMaxVelocity = 0);
 	static int GetTicksToFallToHeight(float Velocity, float Acceleration, float Distance, int MaxTicks = 500);
 	static int GetTicksToMoveDistance(float Velocity, float Acceleration, float Distance, int MaxTicks = 500, float AccelerationMaxVelocity = 0);
+	vec2 PredictMovement(const vec2 &From, const vec2 &Velocity, int Ticks, int Direction) const;
 
 	int GetJumpsToReachHeight(float Height, int MaxJumps, bool FromGround) const;
 	float GetMaxTilesForJumps(int Jumps, bool FromGround) const;
