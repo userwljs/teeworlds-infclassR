@@ -2292,8 +2292,13 @@ void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
 		int MaxJumps = pPlayer->GetAvailableJumps();
 		int AirTilesAbove = pPlayer->GetAirTilesAbove(Direction, MaxJumps);
 		bool HasWall = pPlayer->HasWallInTheDirection(Direction);
+		bool HasDanger = pPlayer->HasDangerInTheDirection(Direction);
 		int JumpsToGetOver = HasWall ? pPlayer->GetJumpsNeededToGetOverWall(Direction, MaxJumps, &OverWallTargetPosition) : 0;
 		int JumpsToJumpOn = pPlayer->GetJumpsNeededToJumpOnPlatform(Direction, MaxJumps, &OnPlatformTargetPosition);
+
+		vec2 ToTarget(pCharacter->m_Input.m_TargetX, pCharacter->m_Input.m_TargetY);
+		const EThreatLevel LevelOfDanger = pPlayer->GetDangerLevelOnLine(pCharacter->GetPos(), pCharacter->GetPos() + ToTarget);
+		int DangerLevel = static_cast<int>(LevelOfDanger);
 
 		if(JumpsToGetOver)
 		{
@@ -2305,6 +2310,8 @@ void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
 		}
 
 		char aBuf[100];
+		str_format(aBuf, sizeof(aBuf), "DangerInDir: %d, on line: %d", HasDanger ? 1 : 0, DangerLevel);
+		GameServer()->SendChatTarget(ClientID, aBuf);
 		str_format(aBuf, sizeof(aBuf), "MaxJumps: %d", MaxJumps);
 		GameServer()->SendChatTarget(ClientID, aBuf);
 		str_format(aBuf, sizeof(aBuf), "AirTilesAbove: %d", AirTilesAbove);
@@ -2314,36 +2321,7 @@ void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
 		str_format(aBuf, sizeof(aBuf), "JumpsToJumpOnPlatform: %d", JumpsToJumpOn);
 		GameServer()->SendChatTarget(ClientID, aBuf);
 	}
-	else if(str_comp(pCommand, "danger") == 0)
-	{
-		if(std::is_same_v<UPlayerClass, CIcPlayer>)
-		{
-			GameServer()->SendChatTarget(ClientID, "The server is compiled without AI debug support");
-			return;
-		}
 
-		CBotPlayer *pPlayer = static_cast<CBotPlayer *>(GetPlayer(CheckCID));
-		if (!pPlayer)
-		{
-			GameServer()->SendChatTarget(ClientID, "No player to debug");
-			return;
-		}
-		CIcCharacter *pCharacter = pPlayer->GetCharacter();
-		if (!pCharacter)
-		{
-			GameServer()->SendChatTarget(ClientID, "No character to debug");
-			return;
-		}
-
-		vec2 ToTarget(pCharacter->m_Input.m_TargetX, pCharacter->m_Input.m_TargetY);
-
-		const EThreatLevel LevelOfDanger = pPlayer->GetDangerLevelOnLine(pCharacter->GetPos(), pCharacter->GetPos() + ToTarget);
-		int level = static_cast<int>(LevelOfDanger);
-
-		char aBuf[100];
-		str_format(aBuf, sizeof(aBuf), "level: %d", level);
-		GameServer()->SendChatTarget(ClientID, aBuf);
-	}
 	else if(str_comp(pCommand, "enable") == 0)
 	{
 		CBotPlayer::SetAiEnabled(1);
