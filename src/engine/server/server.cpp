@@ -448,6 +448,23 @@ CServer::~CServer()
 	delete m_pConnectionPool;
 }
 
+static bool HasBotPrefix(const char *pNameRequest)
+{
+	char aBotPrefix[] = "Bot";
+	int aSkeleton[std::size(aBotPrefix) - 1]; // Omit null termination
+	int Length = str_utf8_to_skeleton(pNameRequest, aSkeleton, std::size(aSkeleton));
+	if(Length != std::size(aSkeleton))
+		return false;
+
+	for(int i = 0; i < Length; ++i)
+	{
+		if(aBotPrefix[i] != aSkeleton[i])
+			return false;
+	}
+
+	return true;
+}
+
 bool CServer::IsClientNameAvailable(int ClientId, const char *pNameRequest)
 {
 	// check for empty names
@@ -458,6 +475,12 @@ bool CServer::IsClientNameAvailable(int ClientId, const char *pNameRequest)
 	// write chat commands
 	if(pNameRequest[0] == '/')
 		return false;
+
+	if(!m_aClients[ClientId].m_IsBot)
+	{
+		if(HasBotPrefix(pNameRequest))
+			return false;
+	}
 
 	// make sure that two clients don't have the same name
 	for(int i = 0; i < MAX_CLIENTS; i++)
