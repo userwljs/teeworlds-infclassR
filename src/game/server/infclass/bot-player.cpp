@@ -1644,7 +1644,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 		const EThreatLevel LevelOfDanger = GetDangerLevelOnLine(Pos, Pos + ToTarget);
 
-		bool StopAndHook = false;
+		bool StopAndHook = GetClass() == EPlayerClass::Spider;
 		switch(LevelOfDanger)
 		{
 		case EThreatLevel::Zero:
@@ -2896,6 +2896,10 @@ void CBotPlayer::MaybeHookTheTarget(float Distance)
 	{
 		MinimumDelay *= 0.75f;
 		RandomExtraDelay *= 0.75f;
+	}
+	if(!WeakHook() && (GetClass() == EPlayerClass::Spider))
+	{
+		MinimumDelay *= 0.25f;
 	}
 
 	if(m_pCharacter->Core()->m_HookState == HOOK_GRABBED)
