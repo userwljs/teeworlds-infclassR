@@ -536,7 +536,7 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("RemoveBot", &CIcGameController::RemoveBot_Lua)
 			.addFunction("RemoveAllBots", &CIcGameController::RemoveBots)
 
-			.addFunction("SurvivalGetGameConfiguration", &CIcGameController::SurvivalGetGameConfiguration)
+			.addFunction("SurvivalGetGameConfiguration", &CIcGameController::SurvivalGetMutableGameConfiguration)
 			.addFunction("SurvivalAddWave", &CIcGameController::SurvivalAddWave)
 			.addFunction("SurvivalAddBot", &CIcGameController::SurvivalAddBot)
 		.endClass()
