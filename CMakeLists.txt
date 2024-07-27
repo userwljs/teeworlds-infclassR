@@ -1020,6 +1020,7 @@ if(TOOLS)
   set_src(TOOLS_SRC GLOB src/tools
     dilate.cpp
     dummy_map.cpp
+    generate_lua_config.cpp
     map_convert_for_client.cpp
     map_diff.cpp
     map_extract.cpp
