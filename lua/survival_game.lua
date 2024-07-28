@@ -1,3 +1,7 @@
+-- Snippet for LSP:
+-- local infclass = require("library.Infclass")
+-- local Game = infclass.Game
+-- local Config = infclass.Config
 
 Submod.SurvivalGame = "survival"
 active_submod = Submod.SurvivalGame
