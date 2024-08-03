@@ -1910,7 +1910,8 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 		if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
 		{
-			pInput->m_TargetY -= random_float(-2.0f, 2.5f) * TileSizeF;
+			unsigned Misses = ma_RecentFailedAttackTicks.Size();
+			pInput->m_TargetY -= random_float(-2.0f / (Misses + 1), 2.5f) * TileSizeF;
 
 			const vec2 Dir{normalize(vec2(pInput->m_TargetX, pInput->m_TargetY))};
 			float Curvature = GameServer()->Tuning()->m_GrenadeCurvature;
