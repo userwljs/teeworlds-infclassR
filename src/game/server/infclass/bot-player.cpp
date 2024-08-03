@@ -1929,6 +1929,10 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 				if(ma_RecentFailedAttackTicks.Size() == ma_RecentFailedAttackTicks.Capacity())
 				{
 					ma_RecentFailedAttackTicks.RemoveAt(0);
+					if(CanFlee())
+					{
+						WantFlee = true;
+					}
 				}
 				ma_RecentFailedAttackTicks.Add(Tick);
 			}
