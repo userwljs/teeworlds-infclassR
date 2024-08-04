@@ -1554,14 +1554,45 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	float PreferredDistance = 0.f;
 	float FleeDistance = 0.f;
-	if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
+
+	float FirePerSecond = 0.35f;
+	float HitDistance = 0;
+
+	pInput->m_TargetX = VectorToTarget.x;
+	pInput->m_TargetY = VectorToTarget.y;
+
+	switch(WeaponType)
 	{
+	case EInfclassWeapon::HAMMER:
+	case EInfclassWeapon::JAWS:
+	case EInfclassWeapon::SLIME:
+	case EInfclassWeapon::INFECTED_HAMMER:
+	case EInfclassWeapon::STUNNING_HAMMER:
+		HitDistance = GetCharacterClass()->GetHammerProjOffset() + GetCharacterClass()->GetHammerRange() + m_pCharacter->GetProximityRadius();
+		break;
+	case EInfclassWeapon::BOOMER_EXPLOSION:
+		FirePerSecond = 0.1f;
+		HitDistance = 60.0;
+		break;
+	case EInfclassWeapon::INFECTED_GRENADE:
 		if(ma_RecentFailedAttackTicks.Size() < 3)
 		{
 			PreferredDistance = TileSize * 20;
 			FleeDistance = TileSize * 16;
 		}
+
+		FirePerSecond = 0.45f;
+		{
+			HitDistance = 700;
+			float HorizontalHitRatio = std::abs(Pos.x - m_LastTargetSeenAtPos.x) / HitDistance;
+			pInput->m_TargetY -= (2 + HorizontalHitRatio * 9) * TileSizeF;
+		}
+
+		break;
+	default:
+		break;
 	}
+
 	if(CanFlee())
 	{
 		if(GetClass() == EPlayerClass::Witch)
@@ -1744,8 +1775,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	BotDebugMessage(VERBOSE_TRACE1, WantToJump ? "WantToJump: yes" : "WantToJump: no");
 
 	pInput->m_Direction = m_RoamingDirection * KeepMoving;
-	pInput->m_TargetX = m_LastTargetSeenAtPos.x - Pos.x;
-	pInput->m_TargetY = m_LastTargetSeenAtPos.y - Pos.y;
 
 	if(WantToJump)
 	{
@@ -1776,34 +1805,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			m_LastJumpTick = Tick;
 			m_WantedJumps--;
 		}
-	}
-
-	float FirePerSecond = 0.35f;
-	// TODO: This should be the target proximity radius
-	float HitDistance = 0;
-	float HorizontalHitRatio = 1.0f;
-
-	switch(WeaponType)
-	{
-	case EInfclassWeapon::HAMMER:
-	case EInfclassWeapon::JAWS:
-	case EInfclassWeapon::SLIME:
-	case EInfclassWeapon::INFECTED_HAMMER:
-	case EInfclassWeapon::STUNNING_HAMMER:
-		HitDistance = GetCharacterClass()->GetHammerProjOffset() + GetCharacterClass()->GetHammerRange() + m_pCharacter->GetProximityRadius();
-		break;
-	case EInfclassWeapon::BOOMER_EXPLOSION:
-		FirePerSecond = 0.1f;
-		HitDistance = 60.0;
-		break;
-	case EInfclassWeapon::INFECTED_GRENADE:
-		HitDistance = 700;
-		FirePerSecond = 0.45f;
-		HorizontalHitRatio = std::abs(Pos.x - m_LastTargetSeenAtPos.x) / HitDistance;
-		pInput->m_TargetY -= (2 + HorizontalHitRatio * 9) * TileSizeF;
-		break;
-	default:
-		break;
 	}
 
 	if(GetCharacter()->IsInvisible() && Distance > HitDistance * 2)
