@@ -303,6 +303,7 @@ protected:
 	bool StrongHook() const;
 	bool IsThreatAware() const;
 	bool CanFlee() const;
+	bool CanJumpOnce() const;
 	float GetMaxHookDistance() const;
 	EThreatLevel CareAboutThreatLevel() const;
 	float GetLookupRadius() const;

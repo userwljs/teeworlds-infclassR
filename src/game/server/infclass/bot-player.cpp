@@ -1084,16 +1084,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 	const float Radius = GetCharacter()->GetProximityRadius();
 
-	bool CanJump = GetCharacter()->CanJump();
-	if(CanJump)
-	{
-		float JumpTiles = m_BotUtils.GetMaxTilesForJumps(1, IsGrounded());
-		if(HasDamageTiles(Pos, Pos + vec2(0, -JumpTiles * TileSizeF), Radius))
-		{
-			BotDebugMessage(VERBOSE_TRACE1, "Can't jump due to kill tiles!");
-			CanJump = false;
-		}
-	}
+	bool CanJump = CanJumpOnce();
 
 	int MaxJumps = GetAvailableJumps();
 
@@ -1489,6 +1480,8 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	const float Radius = GetCharacter()->GetProximityRadius();
 
+	bool CanJump = CanJumpOnce();
+
 	const float Gravity = m_NextTuningParams.m_Gravity;
 	const vec2 VectorToTarget = m_LastTargetSeenAtPos - Pos;
 	const float Distance = length(VectorToTarget);
@@ -1757,16 +1750,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	if(WantToJump)
 	{
-		bool CanJump = GetCharacter()->CanJump();
-		if(CanJump)
-		{
-			float JumpTiles = m_BotUtils.GetMaxTilesForJumps(1, IsGrounded());
-			if(HasDamageTiles(Pos, Pos + vec2(0, -JumpTiles * TileSizeF), Radius))
-			{
-				BotDebugMessage(VERBOSE_TRACE1, "Can't jump due to kill tiles!");
-				CanJump = false;
-			}
-		}
 		WantToJump = CanJump;
 	}
 
@@ -3675,6 +3658,23 @@ bool CBotPlayer::IsThreatAware() const
 bool CBotPlayer::CanFlee() const
 {
 	return m_aTweaks.Contains(EBotTweak::CanFlee);
+}
+
+bool CBotPlayer::CanJumpOnce() const
+{
+	if(!GetCharacter()->CanJump())
+		return false;
+
+	const vec2 &Pos = GetCharacter()->GetPos();
+	const float Radius = GetCharacter()->GetProximityRadius();
+	float JumpTiles = m_BotUtils.GetMaxTilesForJumps(1, IsGrounded());
+	if(HasDamageTiles(Pos, Pos + vec2(0, -JumpTiles * TileSizeF), Radius))
+	{
+		BotDebugMessage(VERBOSE_TRACE1, "Can't jump due to kill tiles!");
+		return false;
+	}
+
+	return true;
 }
 
 float CBotPlayer::GetMaxHookDistance() const
