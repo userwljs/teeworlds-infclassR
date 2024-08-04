@@ -3908,6 +3908,7 @@ void CIcGameController::AnnounceHideAndSeekWinner()
 		int Kills;
 		int Deaths;
 		bool Human;
+		bool FirstInfected;
 	};
 
 	icArray<CPlayerScore, MAX_CLIENTS> Scores;
@@ -3920,16 +3921,17 @@ void CIcGameController::AnnounceHideAndSeekWinner()
 		const CIcPlayer *pPlayer = Iter.Player();
 		CPlayerScore Score;
 
-		Score.Human = pPlayer->IsHuman();
+		str_copy(Score.aPlayerName, Server()->ClientName(pPlayer->GetCid()));
 		Score.Kills = pPlayer->GetKills();
 		Score.Deaths = pPlayer->GetDeaths();
-		str_copy(Score.aPlayerName, Server()->ClientName(pPlayer->GetCid()));
+		Score.Human = pPlayer->IsHuman();
+		Score.FirstInfected = pPlayer->IsInfected() && (pPlayer->m_TeamChangeTick < GetInfectionStartTick() + 5);
 
 		if(Score.Human)
 		{
 			HumansScore += Score.Kills;
 		}
-		else
+		else if (Score.FirstInfected)
 		{
 			if(Score.Deaths == 0)
 			{
@@ -3939,11 +3941,35 @@ void CIcGameController::AnnounceHideAndSeekWinner()
 		Scores.Add(Score);
 	}
 
-	const auto Sorter = [](const CPlayerScore &s1, const CPlayerScore &s2) -> bool {
-		if (s1.Kills == s2.Kills)
-			return s1.Deaths < s2.Deaths;
+	const auto Sorter = [NumSurvivedGhosts](const CPlayerScore &s1, const CPlayerScore &s2) -> bool {
+		if(s1.Human != s2.Human)
+		{
+			if(NumSurvivedGhosts > 0)
+			{
+				// Infected won, show them first
+				return !s1.Human;
+			}
+			else
+			{
+				// Humans won, show them first
+				return s1.Human;
+			}
+		}
 
-		return s1.Kills > s2.Kills;
+		if(s1.Human)
+		{
+			return s1.Kills > s2.Kills;
+		}
+		else
+		{
+			if(s1.FirstInfected != s2.FirstInfected)
+			{
+				// Show first infected before joined
+				return s1.FirstInfected;
+			}
+
+			return s1.Deaths < s2.Deaths;
+		}
 	};
 
 	std::stable_sort(Scores.begin(), Scores.end(), Sorter);
@@ -3960,15 +3986,22 @@ void CIcGameController::AnnounceHideAndSeekWinner()
 		}
 		else
 		{
-			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "- {str:PlayerName}: {int:Score} deaths",
-				"PlayerName", Score.aPlayerName,
-				"Score", &Score.Deaths,
-				nullptr);
+			if(Score.FirstInfected)
+			{
+				GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "- {str:PlayerName}: {int:Score} deaths",
+					"PlayerName", Score.aPlayerName,
+					"Score", &Score.Deaths,
+					nullptr);
+			}
+			else
+			{
+				GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "- {str:PlayerName}: {int:Score} deaths (joined later)",
+					"PlayerName", Score.aPlayerName,
+					"Score", &Score.Deaths,
+					nullptr);
+			}
 		}
 	}
-	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Total humans team score: {int:Score}",
-		"Score", &HumansScore,
-		nullptr);
 
 	const char *pWinMessage{};
 	if(NumSurvivedGhosts)
