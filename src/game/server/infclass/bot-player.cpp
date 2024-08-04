@@ -1491,6 +1491,8 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	const float Gravity = m_NextTuningParams.m_Gravity;
 	const vec2 VectorToTarget = m_LastTargetSeenAtPos - Pos;
+	const float Distance = length(VectorToTarget);
+	const vec2 NormalizedToTarget = Distance ? VectorToTarget / Distance : vec2();
 	const float AbsXToTarget = fabs(VectorToTarget.x);
 	const bool FallingDown = m_pCharacter->Core()->m_Vel.y > -Gravity;
 	const int AvailableJumps = GetAvailableJumps();
@@ -1533,7 +1535,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		WantGoDown = true;
 	}
 
-	const float Distance = distance(Pos, m_LastTargetSeenAtPos);
 	DIRECTION DirectionToTarget = DIRECTION_NONE;
 
 	if(Pos.x + ProximityRadius < m_LastTargetSeenAtPos.x)
@@ -1654,13 +1655,13 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	if(CanHook() && !WeakHook() && (Distance < HookMaxDistance - TileSize * 1))
 	{
-		vec2 ToTarget = m_LastTargetSeenAtPos - Pos;
+		vec2 ToTarget = VectorToTarget;
 		const float Len2 = ToTarget.x * ToTarget.x + ToTarget.y * ToTarget.y;
 		static const int MaxLookupDistance = TileSize * 4;
 		static const int MaxLookup_2 = MaxLookupDistance * MaxLookupDistance;
 		if(Len2 > MaxLookup_2)
 		{
-			ToTarget = normalize(ToTarget) * MaxLookupDistance;
+			ToTarget = NormalizedToTarget * MaxLookupDistance;
 		}
 
 		const EThreatLevel LevelOfDanger = GetDangerLevelOnLine(Pos, Pos + ToTarget);
