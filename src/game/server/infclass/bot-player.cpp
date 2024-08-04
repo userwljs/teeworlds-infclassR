@@ -1082,7 +1082,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	const float PredictTime = 0.25f; // Predict 1/4 of the next second
 	const vec2 PredictedPos = m_BotUtils.PredictMovement(Pos, GetCharacter()->Core()->m_Vel, Server()->TickSpeed() * PredictTime, m_RoamingDirection);
 
-	const float Radius = GetCharacter()->GetProximityRadius();
+	const float ProximityRadius = GetCharacter()->GetProximityRadius();
 
 	bool CanJump = CanJumpOnce();
 
@@ -1095,7 +1095,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 	if(!HasWallInRoamingDirection)
 	{
-		HasDangerInRoamingHorizontalDirection = HasDamageTiles(Pos, PredictedPos, Radius);
+		HasDangerInRoamingHorizontalDirection = HasDamageTiles(Pos, PredictedPos, ProximityRadius);
 	}
 
 	int KeepMoving = 1;
@@ -1188,7 +1188,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 					PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump);
 				}
 
-				if(!WantToJump && IsSolidTile(Pos.x, Pos.y + Radius + 5))
+				if(!WantToJump && IsSolidTile(Pos.x, Pos.y + ProximityRadius + 5))
 				{
 					CTileRoundedPosition CheckTile = Pos;
 					CheckTile.X += 1 * m_RoamingDirection;
@@ -1478,7 +1478,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	const float PredictTime = 0.25f; // Predict 1/4 of the next second
 
-	const float Radius = GetCharacter()->GetProximityRadius();
+	const float ProximityRadius = GetCharacter()->GetProximityRadius();
 
 	bool CanJump = CanJumpOnce();
 
@@ -1495,7 +1495,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	bool WantToJump = false;
 	bool WantGoDown = false;
 
-	const float ProximityRadius = m_pCharacter->GetProximityRadius();
 	if(Pos.y > m_LastTargetSeenAtPos.y + ProximityRadius * 2)
 	{
 		if(IsGrounded() || (FallingDown && AvailableJumps > 0))
@@ -1732,7 +1731,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	const float VelX = m_pCharacter->Core()->m_Vel.x;
 
 	const vec2 PredictedPos = m_BotUtils.PredictMovement(Pos, GetCharacter()->Core()->m_Vel, Server()->TickSpeed() * PredictTime, Direction);
-	if(HasDamageTiles(Pos, PredictedPos, Radius))
+	if(HasDamageTiles(Pos, PredictedPos, ProximityRadius))
 	{
 		const int DirectionSign = Direction;
 		if(VelX * DirectionSign > 0.05)
