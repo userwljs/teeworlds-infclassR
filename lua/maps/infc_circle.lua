@@ -1,0 +1,1 @@
+require("survival_game")
