@@ -4215,6 +4215,7 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 	}
 
 	const CIcCharacter *pVictimCharacter = pVictim->GetCharacter();
+	const CIcCharacter *pKillerCharacter = pKiller ? pKiller->GetCharacter() : nullptr;
 	if(pKiller && pKiller != pVictim)
 	{
 		ETextArticle Article = ETextArticle::Indefinite;
@@ -4255,6 +4256,13 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 			PossibleMessages.Add(("{str:PlayerName} was exploded by {str:Killer}."));
 			PossibleMessages.Add(("{str:PlayerName} was eliminated by {str:Killer}."));
 			PossibleMessages.Add(("{str:PlayerName} met a boomer."));
+			if(pVictimCharacter && pKillerCharacter)
+			{
+				if(distance(pVictimCharacter->GetPos(), pKillerCharacter->GetPos()) < TileSizeF * 2.f)
+				{
+					PossibleMessages.Add(("{str:PlayerName} hugged a boomer."));
+				}
+			}
 			break;
 		case EDamageType::SLUG_SLIME:
 			PossibleMessages.Add(("{str:PlayerName} had no aid against {str:Killer}."));
@@ -4311,14 +4319,30 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 		}
 
 		const CIcCharacter *pVictimCharacter = pVictim->GetCharacter();
-		if(pVictimCharacter->GetAttackTick() + TickSpeed * 1.25f < Tick)
+
+		static const icArray<EDamageType, 2> aHopelessDamageTypes = {
+			EDamageType::SLUG_SLIME,
+			EDamageType::BOOMER_EXPLOSION,
+		};
+		if(!aHopelessDamageTypes.Contains(Context.DamageType))
 		{
-			PossibleMessages.Add("{str:PlayerName} kinda gave up.");
-		}
-		else if(pVictimCharacter->GetLastNoAmmoSoundTick() + Server()->TickSpeed() * 0.6 < Tick)
-		{
-			PossibleMessages.Add("{str:PlayerName} had no ammo to kill them all.");
-			PossibleMessages.Add("{str:PlayerName} forgot to reload timely.");
+			if(pVictimCharacter->GetAttackTick() + TickSpeed * 1.25f < Tick)
+			{
+				PossibleMessages.Add("{str:PlayerName} kinda gave up.");
+			}
+			else if(pVictimCharacter->GetLastNoAmmoSoundTick() + Server()->TickSpeed() * 0.6 < Tick)
+			{
+				PossibleMessages.Add("{str:PlayerName} had no ammo to kill them all.");
+				static const icArray<int, 2> aWeaponsWithoutReload = {
+					WEAPON_HAMMER,
+					WEAPON_NINJA,
+				};
+
+				if(!aWeaponsWithoutReload.Contains(pVictimCharacter->GetActiveWeapon()))
+				{
+					PossibleMessages.Add("{str:PlayerName} forgot to reload timely.");
+				}
+			}
 		}
 
 		const char *apPlayerKilledByMessages[] = {
