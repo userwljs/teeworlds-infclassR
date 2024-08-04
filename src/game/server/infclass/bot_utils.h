@@ -219,6 +219,22 @@ public:
 	std::optional<int> GetSolidTileBelow(const CTileRoundedPosition &TilePosition, int MaxTiles = 16) const;
 	bool IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps = 1000) const;
 
+	inline static constexpr float CalcPosY(float Velocity, float Curvature, float Speed, float Time)
+	{
+		Time *= Speed;
+		return Velocity * Time + Curvature / 10000 * (Time * Time);
+	}
+
+	inline static constexpr float CalcPosX(float Velocity, float Speed, float Time)
+	{
+		return Velocity * Time * Speed;
+	}
+
+	inline static constexpr float GetProjectileTimeToTop(float Curvature, float Speed, float VelocityY)
+	{
+		return VelocityY / Speed / Curvature * 10000 / 2;
+	}
+
 protected:
 	ICollision *m_pCollision{};
 	IDebugSink *m_pDebugSink{};

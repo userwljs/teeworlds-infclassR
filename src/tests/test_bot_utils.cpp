@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <engine/shared/fixed_point_number.h>
+
 #include <game/gamecore.h>
 #include <game/mapitems.h>
 
@@ -326,4 +328,41 @@ TEST(BotUtils, ReachableByGround2)
 	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(1, 4), CTilePosition(5, 4), MaxJumps));
 
 	EXPECT_FALSE(Utils.IsReachableByGround(CTilePosition(5, 4), CTilePosition(1, 4), MaxJumps));
+}
+
+TEST(BotUtils, ProjectilePrediction)
+{
+	CMockDebugSink DebugSink;
+	CMockCollision Collision;
+	Collision.SetMapData(c_MapData3, 7, 6);
+	static_assert(std::size(c_MapData3) == 7 * 6);
+
+	CTuningParams Tuning;
+
+	CBotUtils Utils;
+	Utils.SetDebugSing(&DebugSink);
+	Utils.SetCollision(&Collision);
+	Utils.UpdateTuning(Tuning);
+
+	const vec2 ProjStartPos = CTilePosition(1.5, 4);
+	EXPECT_EQ(Collision.IsSolid(ProjStartPos), false);
+
+	const vec2 VectorToTarget(8 * 32, -8 * 32);
+	constexpr float Curvature{7.0f};
+	constexpr float Speed{1000.0f};
+
+	float Time = 1.0f;
+	vec2 Dir{normalize(VectorToTarget)};
+	const std::optional<vec2> Hit = Utils.GetHitPos(ProjStartPos, Dir, Curvature, Speed, Time * 1.1f, 1.0f / SERVER_TICK_SPEED);
+	ASSERT_TRUE(Hit.has_value());
+	const int HitX = Hit.value().x;
+	const int HitY = Hit.value().y;
+	EXPECT_EQ(HitX, 165);
+	EXPECT_EQ(HitY, 31);
+
+	CFixedPointNumber FixedTime = CBotUtils::GetProjectileTimeToTop(Curvature, Speed, 1.0f);
+	EXPECT_EQ(static_cast<float>(FixedTime), 0.714f);
+
+	FixedTime = CBotUtils::GetProjectileTimeToTop(Curvature, Speed, 0.5f);
+	EXPECT_EQ(static_cast<float>(FixedTime), 0.357f);
 }
