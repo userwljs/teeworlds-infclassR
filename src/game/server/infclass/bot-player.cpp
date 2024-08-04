@@ -1549,6 +1549,9 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	float FirePerSecond = 0.35f;
 	float HitDistance = 0;
+	bool PreciseFire{};
+	bool UnreachableByY{};
+	// bool UnreachableByX{};
 
 	pInput->m_TargetX = VectorToTarget.x;
 	pInput->m_TargetY = VectorToTarget.y;
@@ -1574,6 +1577,72 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		}
 
 		FirePerSecond = 0.45f;
+		if(VectorToTarget.y < -TileSizeF * 1.5f)
+		{
+			const vec2 ProjOffset = NormalizedToTarget * m_pCharacter->GetProximityRadius() * 0.75f;
+			const vec2 ToTargetFromProj = VectorToTarget - ProjOffset;
+
+			float Curvature = GameServer()->Tuning()->m_GrenadeCurvature;
+			float Speed = GameServer()->Tuning()->m_GrenadeSpeed;
+
+			float TimeToHighestPoint = CBotUtils::GetProjectileTimeToTop(Curvature, Speed, 1.0f);
+			float BestHeight = -CBotUtils::CalcPosY(-1.0f, Curvature, Speed, TimeToHighestPoint);
+			float RatioY = -ToTargetFromProj.y / BestHeight;
+
+			if(RatioY > 0.98f)
+			{
+				if(!CanJump)
+				{
+					UnreachableByY = true;
+				}
+			}
+
+			// const float BestVelocity = std::cos(45.0f * pi / 180.0f); // 0.71
+			// const float MaxTimeInFlight = CBotUtils::GetProjectileTimeToTop(Curvature, Speed, BestVelocity) * 2;
+			// const float MaxXDistance = CBotUtils::CalcPosX(BestVelocity, Speed, MaxTimeInFlight);
+
+			// if(AbsXToTarget > MaxXDistance + TileSizeF)
+			// {
+			// 	UnreachableByX = true;
+			// }
+
+			// if(RatioY > 0.98f)
+			// {
+			// 	// Consider unreachable, too high
+			// 	WantToJump = true;
+
+			// 	// PreferredDistance = TileSize * 20;
+			// 	// FleeDistance = TileSize * 16;
+			// }
+			// else
+			// {
+			// 	float TargetingDistance = 160;
+			// 	float ProjectileVelocityY = RatioY;
+			// 	float MaxXVelocity = /*1 - RatioY;*/ std::cos(std::asin(ProjectileVelocityY));
+			// 	//
+			// 	float TimeToReachX = ToTargetFromProj.x / (MaxXVelocity * Speed);
+			// 	if(TimeToReachX > TimeToHighestPoint * RatioY)
+			// 	{
+			// 	}
+
+			// 	pInput->m_TargetY = -ProjectileVelocityY * TargetingDistance;
+			// 	float ProjectileVelocityX = 1 - ProjectileVelocityY;
+			// 	pInput->m_TargetX = ProjectileVelocityX * TargetingDistance;
+			// 	if (ToTargetFromProj.x < 0)
+			// 	{
+			// 		pInput->m_TargetX *= -1;
+			// 	}
+
+			// 	HitDistance = Distance; // CalcPosX(ProjectileVelocityX, Speed, TimeToHighestPoint * Ratio);
+			// 	PreciseFire = true;
+			// }
+
+			// m_BotUtils.GetDebugSink()->HighlightLineSegment(Pos + ProjOffset, Pos + vec2(pInput->m_TargetX, pInput->m_TargetY));
+
+			// PreferredDistance = HitDistance;
+			// FleeDistance = std::max<int>(PreferredDistance - 4 * TileSizeF, 0);
+		}
+		else
 		{
 			HitDistance = 700;
 			float HorizontalHitRatio = std::abs(Pos.x - m_LastTargetSeenAtPos.x) / HitDistance;
@@ -1591,6 +1660,11 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		{
 			PreferredDistance = TileSize * 14;
 			FleeDistance = TileSize * 7;
+		}
+
+		if(UnreachableByY)
+		{
+			PreferredDistance = Distance + TileSize * 8;
 		}
 	}
 
@@ -1894,8 +1968,15 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 		if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
 		{
-			unsigned Misses = ma_RecentFailedAttackTicks.Size();
-			pInput->m_TargetY -= random_float(-2.0f / (Misses + 1), 2.5f) * TileSizeF;
+			if(PreciseFire)
+			{
+				pInput->m_TargetY += random_float(-0.25f, 0.25f) * TileSizeF;
+			}
+			else
+			{
+				unsigned Misses = ma_RecentFailedAttackTicks.Size();
+				pInput->m_TargetY -= random_float(-2.0f / (Misses + 1), 2.5f) * TileSizeF;
+			}
 
 			const vec2 Dir{normalize(vec2(pInput->m_TargetX, pInput->m_TargetY))};
 			float Curvature = GameServer()->Tuning()->m_GrenadeCurvature;
