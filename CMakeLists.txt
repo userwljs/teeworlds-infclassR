@@ -976,6 +976,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/white-hole.h
   infclass/events-director.cpp
   infclass/events-director.h
+  infclass/hive_mind.cpp
+  infclass/hive_mind.h
   infclass/ic_config_variables.h
   infclass/ic_entities.cpp
   infclass/ic_gamecontroller.cpp
