@@ -3662,7 +3662,7 @@ bool CBotPlayer::CanFlee() const
 
 bool CBotPlayer::CanJumpOnce() const
 {
-	if(!GetCharacter()->CanJump())
+	if(!IsGrounded() && !GetCharacter()->CanJump())
 		return false;
 
 	const vec2 &Pos = GetCharacter()->GetPos();
