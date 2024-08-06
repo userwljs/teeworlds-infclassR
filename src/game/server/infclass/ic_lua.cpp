@@ -11,6 +11,7 @@
 #include <game/server/infclass/entities/looper-wall.h>
 #include <game/server/infclass/entities/scientist-mine.h>
 #include <game/server/infclass/entities/turret.h>
+#include <game/server/infclass/hive_mind.h>
 #include <game/server/infclass/ic_player.h>
 #include <game/server/infclass/survival.h>
 #include <game/server/map_info.h>
@@ -411,6 +412,8 @@ void CIcGameController::RegisterLuaBindings()
 			.addProperty("Lives", &CBaseBotPlayer::Lives, &CBaseBotPlayer::SetLives)
 			.addProperty("MaxLives", &CBaseBotPlayer::MaxLives, &CBaseBotPlayer::SetMaxLives)
 			.addProperty("RespawnInterval", &CBaseBotPlayer::GetRespawnInterval, &CBaseBotPlayer::SetRespawnInterval)
+		.endClass()
+		.beginClass<CHiveMind>("CHiveMind")
 		.endClass();
 
 	luabridge::getGlobalNamespace(L).deriveClass<CBotPlayer, CBaseBotPlayer>("CBotPlayer");
