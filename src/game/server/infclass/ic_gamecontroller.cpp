@@ -1733,11 +1733,11 @@ void CIcGameController::ConStartSurvivalScenario(IConsole::IResult *pResult)
 		return;
 	}
 
-	m_SurvivalWaves.Clear();
+	m_SurvivalConfiguration.Reset();
 
 	ExecuteFileEx(pResult->GetString(0));
 
-	if(m_SurvivalWaves.IsEmpty())
+	if(m_SurvivalConfiguration.SurvivalWaves.IsEmpty())
 	{
 		int ClientID = pResult->GetClientId();
 		const char *pErrorMessage = "Unable to load the survival configuration";
@@ -2226,24 +2226,13 @@ void CIcGameController::ConSurvivalAddWave(IConsole::IResult *pResult, void *pUs
 
 void CIcGameController::SurvivalAddWave(int Wave, const char *pWaveName)
 {
-	if(Wave != m_SurvivalConfiguration.SurvivalWaves.Size() + 1)
+	if(static_cast<std::size_t>(Wave) != m_SurvivalConfiguration.SurvivalWaves.Size() + 1)
 	{
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Only incremental setup allowed. Add the previous waves first");
 		return;
 	}
 
-	m_SurvivalConfiguration.SurvivalWaves.Resize(Wave);
-	SurvivalWaveConfiguration &Conf = m_SurvivalConfiguration.SurvivalWaves.Last();
-	Conf.BotConfigurations.Clear();
-	if(pWaveName && pWaveName[0])
-	{
-		str_copy(Conf.aName, pWaveName);
-	}
-	else
-	{
-		Conf.aName[0] = 0;
-	}
-
+	m_SurvivalConfiguration.AddWave(pWaveName);
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "survival wave added");
 }
 
@@ -2256,34 +2245,66 @@ void CIcGameController::ConSurvivalConfWave(IConsole::IResult *pResult, void *pU
 void CIcGameController::ConSurvivalConfWave(IConsole::IResult *pResult)
 {
 	int Wave = pResult->GetInteger(0);
-	if((Wave < 1) || (Wave > m_SurvivalConfiguration.SurvivalWaves.Size()))
+	int WaveIndex = Wave - 1;
+
+	SurvivalWaveConfiguration *pConf = SurvivalGetWaveConfiguration(WaveIndex);
+	if(!pConf)
 	{
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid wave number");
 		return;
 	}
 
 	const char *pAction = pResult->GetString(1);
-	if(str_comp(pAction, "add") != 0)
+	if(str_comp(pAction, "add") == 0)
+	{
+		const char *pClassName = pResult->GetString(2);
+		SurvivalBotConfiguration *pBotConfig = SurvivalAddBot(Wave, pClassName);
+		if (!pBotConfig)
+			return;
+
+		ConSurvivalConfWaveAddBots(pResult, pBotConfig);
+	}
+	else if(str_comp(pAction, "command") == 0)
+	{
+		ConSurvivalConfWaveCommand(pResult, pConf);
+	}
+	else
 	{
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid action");
-		return;
 	}
+}
 
-	const char *pClassName = pResult->GetString(2);
+SurvivalBotConfiguration *CIcGameController::SurvivalAddBot(int Wave, const char *pClassName)
+{
 	bool Ok = false;
 	EPlayerClass PlayerClass = static_cast<EPlayerClass>(GetClassByName(pClassName, &Ok));
 	if(!Ok)
 	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid class name");
-		return;
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "SurvivalAddBot: Invalid class name");
+		return nullptr;
 	}
 
 	if(!IsInfectedClass(PlayerClass))
 	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Only infected classes allowed");
-		return;
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "SurvivalAddBot: Only infected classes allowed");
+		return nullptr;
 	}
 
+	int WaveIndex = Wave - 1;
+	SurvivalWaveConfiguration *pConf = SurvivalGetWaveConfiguration(WaveIndex);
+	if(!pConf)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "SurvivalAddBot: Invalid wave number");
+		return nullptr;
+	}
+
+	pConf->BotConfigurations.Add(SurvivalBotConfiguration{.Class = PlayerClass});
+
+	return &pConf->BotConfigurations.Last();
+}
+
+void CIcGameController::ConSurvivalConfWaveAddBots(IConsole::IResult *pResult, SurvivalBotConfiguration *pBotConfiguration) const
+{
 	int SpawnTimeInSeconds = 0;
 	int Lives = 0;
 	int HP = 0;
@@ -2337,17 +2358,40 @@ void CIcGameController::ConSurvivalConfWave(IConsole::IResult *pResult)
 		return;
 	}
 
-	int WaveIndex = Wave - 1;
-	SurvivalWaveConfiguration &Conf = m_SurvivalConfiguration.SurvivalWaves[WaveIndex];
-
 	int SpawnMinTick = Server()->TickSpeed() * SpawnTimeInSeconds;
-	Conf.BotConfigurations.Add(SurvivalBotConfiguration(PlayerClass, SpawnMinTick, Lives));
-	SurvivalBotConfiguration &BotConf = Conf.BotConfigurations.Last();
-	BotConf.HP = HP;
-	BotConf.DropLevel = DropLevel;
-	BotConf.RespawnInterval = RespawnInterval;
+	pBotConfiguration->SpawnMinTick = SpawnMinTick;
+	pBotConfiguration->Lives = Lives;
+	pBotConfiguration->HP = HP;
+	pBotConfiguration->DropLevel = DropLevel;
+	pBotConfiguration->RespawnInterval = RespawnInterval;
 
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "survival wave configuration changed");
+}
+
+void CIcGameController::ConSurvivalConfWaveCommand(IConsole::IResult *pResult, SurvivalWaveConfiguration *pConfiguration) const
+{
+	const char *pCommandEvent = pResult->GetString(2);
+	const char *pCommandCode = pResult->GetString(3);
+
+	if(str_length(pCommandCode) >= SurvivalWaveConfiguration::MaxCommandLength)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Unable to add survival wave configuration command: the command too long");
+		return;
+	}
+
+	// on_won, on_lost
+	if(str_comp(pCommandEvent, "on_won") == 0)
+	{
+		str_copy(pConfiguration->aCommandOnWon, pCommandCode);
+	}
+	else if(str_comp(pCommandEvent, "on_lost") == 0)
+	{
+		str_copy(pConfiguration->aCommandOnLost, pCommandCode);
+	}
+	else
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid wave command specification, unable to parse command 'event' part");
+	}
 }
 
 void CIcGameController::ConStartSurvival(IConsole::IResult *pResult, void *pUserData)
@@ -4158,6 +4202,41 @@ CIcGameController::PlayerScore *CIcGameController::EnsureSurvivalPlayerScore(int
 	return &Score;
 }
 
+const SurvivalWaveConfiguration *CIcGameController::GetCurrentSurvivalWaveConfiguration() const
+{
+	if(m_SurvivalConfiguration.SurvivalWaves.Size() <= m_SurvivalState.Wave)
+	{
+		static const SurvivalWaveConfiguration EmptyConfig;
+		return &EmptyConfig;
+	}
+
+	const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.SurvivalWaves.At(m_SurvivalState.Wave);
+	return &WaveConf;
+}
+
+const SurvivalGameConfiguration *CIcGameController::SurvivalGetGameConfiguration() const
+{
+	return &m_SurvivalConfiguration;
+}
+
+SurvivalWaveConfiguration *CIcGameController::SurvivalGetWaveConfiguration(int WaveIndex)
+{
+	if (WaveIndex < 0)
+		return nullptr;
+
+	SurvivalGameConfiguration *pGameConfig = SurvivalGetMutableGameConfiguration();
+	const auto Index = static_cast<std::size_t>(WaveIndex);
+	if(Index >= pGameConfig->SurvivalWaves.Size())
+		return nullptr;
+
+	return &pGameConfig->SurvivalWaves[Index];
+}
+
+SurvivalGameConfiguration *CIcGameController::SurvivalGetMutableGameConfiguration()
+{
+	return &m_SurvivalConfiguration;
+}
+
 void CIcGameController::TickBeforeWorld()
 {
 	// update core properties important for hook
@@ -5045,6 +5124,28 @@ void CIcGameController::EndSurvivalRound(ERoundEndReason Reason)
 		}
 
 		IsOver = true;
+	}
+
+	const SurvivalWaveConfiguration *pCurrentWave = GetCurrentSurvivalWaveConfiguration();
+	const char *pExecCommand = nullptr;
+	if(NumHumans == 0)
+	{
+		pExecCommand = pCurrentWave->aCommandOnLost;
+	}
+	else
+	{
+		pExecCommand = pCurrentWave->aCommandOnWon;
+	}
+	if(pExecCommand && pExecCommand[0])
+	{
+		if(Console()->LineIsValid(pExecCommand))
+		{
+			Console()->ExecuteLine(pExecCommand);
+		}
+		else
+		{
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid survival end_round command");
+		}
 	}
 
 	if(m_SurvivalConfiguration.SurvivalWaves.Size() == m_SurvivalState.Wave + 1)

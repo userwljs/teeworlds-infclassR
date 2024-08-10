@@ -23,13 +23,19 @@ class SurvivalWaveConfiguration
 {
 public:
 	SurvivalWaveConfiguration() = default;
+	static constexpr int MaxCommandLength = 64;
 
 	void Reset()
 	{
 		aName[0] = '\0';
+		aCommandOnWon[0] = '\0';
+		aCommandOnLost[0] = '\0';
+		BotConfigurations.Clear();
 	}
 
 	char aName[64]{};
+	char aCommandOnWon[MaxCommandLength]{};
+	char aCommandOnLost[MaxCommandLength]{};
 	icArray<SurvivalBotConfiguration, MaxBotsPerWave> BotConfigurations;
 };
 

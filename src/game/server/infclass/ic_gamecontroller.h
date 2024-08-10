@@ -85,7 +85,9 @@ struct FunRoundConfiguration
 	EPlayerClass HumanClass = EPlayerClass::Invalid;
 };
 
-struct SurvivalBotConfiguration;
+class SurvivalBotConfiguration;
+class SurvivalWaveConfiguration;
+class SurvivalGameConfiguration;
 
 enum SURVIVAL_MODE
 {
@@ -354,6 +356,9 @@ public:
 
 	static void ConSurvivalConfWave(IConsole::IResult *pResult, void *pUserData);
 	void ConSurvivalConfWave(IConsole::IResult *pResult);
+	SurvivalBotConfiguration *SurvivalAddBot(int Wave, const char *pClassName);
+	void ConSurvivalConfWaveAddBots(IConsole::IResult *pResult, SurvivalBotConfiguration *pBotConfiguration) const;
+	void ConSurvivalConfWaveCommand(IConsole::IResult *pResult, SurvivalWaveConfiguration *pConfiguration) const;
 
 	static void ConStartSurvival(IConsole::IResult *pResult, void *pUserData);
 	void ConStartSurvival(IConsole::IResult *pResult);
@@ -492,6 +497,11 @@ private:
 
 	PlayerScore *GetSurvivalPlayerScore(int ClientId);
 	PlayerScore *EnsureSurvivalPlayerScore(int ClientId);
+
+	const SurvivalGameConfiguration *SurvivalGetGameConfiguration() const;
+	SurvivalWaveConfiguration *SurvivalGetWaveConfiguration(int WaveIndex);
+	const SurvivalWaveConfiguration *GetCurrentSurvivalWaveConfiguration() const;
+	SurvivalGameConfiguration *SurvivalGetMutableGameConfiguration();
 
 private:
 	int m_ZoneHandle_icDamage;
