@@ -205,6 +205,7 @@ MACRO_CONFIG_INT(InfSurvivalInfectedSpawningDelay, inf_survival_infected_spawnin
 
 MACRO_CONFIG_INT(InfMaxHiveHooks, inf_hive_hooks, 3, 0, 64, CFGFLAG_SERVER, "Max concurrent hooks per player for Survival rounds")
 MACRO_CONFIG_INT(InfSurvivalMode, inf_survival_mode, 0, 0, 2, CFGFLAG_SERVER, "Survival mode (0 = off, 1 = kill-based, 2 = time-based)")
+MACRO_CONFIG_INT(InfSurvivalHardMode, inf_survival_hardmode, 0, 0, 1, CFGFLAG_SERVER, "Survival hard mode (another way of difficulty leveling)")
 MACRO_CONFIG_INT(InfSurvivalAutostart, inf_survival_autostart, 0, 0, 1, CFGFLAG_SERVER, "Automatically start the last choosen survival scenario")
 
 // Deprecated variables

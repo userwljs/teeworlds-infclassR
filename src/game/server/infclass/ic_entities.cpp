@@ -47,6 +47,8 @@ void CIcGameController::RegisterEntityTypes()
 
 void CIcGameController::DestroyChildEntities(int OwnerId)
 {
+	const bool KeepWhatPossible = (GetRoundType() == ERoundType::Survival) && HardMode();
+
 	const int InfCEntities[] = {
 		CGameWorld::ENTTYPE_PICKUP,
 		CGameWorld::ENTTYPE_LASER,
@@ -71,8 +73,24 @@ void CIcGameController::DestroyChildEntities(int OwnerId)
 		CWhiteHole::EntityId,
 	};
 
+	const icArray<int, 32> aKeepTypes = {
+		CBiologistMine::EntityId,
+		CBouncingBullet::EntityId,
+		CEngineerWall::EntityId,
+		CGrowingExplosion::EntityId,
+		CLooperWall::EntityId,
+		CMercenaryBomb::EntityId,
+		CScientistMine::EntityId,
+		CSlugSlime::EntityId,
+		CTurret::EntityId,
+		CWhiteHole::EntityId,
+	};
+
 	for(const auto EntityType : InfCEntities)
 	{
+		if(KeepWhatPossible && aKeepTypes.Contains(EntityType))
+			continue;
+
 		for(CIcEntity *p = (CIcEntity *)GameWorld()->FindFirst(EntityType); p; p = (CIcEntity *)p->TypeNext())
 		{
 			if(p->GetOwner() != OwnerId)

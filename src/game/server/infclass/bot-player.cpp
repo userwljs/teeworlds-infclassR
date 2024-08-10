@@ -2687,6 +2687,8 @@ void CBotPlayer::MaybeHookTheTarget(float Distance)
 	float HookDuration = GameServer()->Tuning()->m_HookDuration;
 	float BaseDelay = 0.3f;
 	float ExtraDelay = 0.75f;
+	if(GameController()->HardMode())
+		ExtraDelay = 0.2f;
 
 	if(StrongHook())
 	{

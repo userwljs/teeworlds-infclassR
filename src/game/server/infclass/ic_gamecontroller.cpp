@@ -238,6 +238,25 @@ struct InfclassPlayerPersistantData : public CGameContext::CPersistentClientData
 	int m_LastInfectionTime = 0;
 };
 
+enum class ESurvivalConfigOption
+{
+	Hardmode,
+	Count,
+	Invalid = Count
+};
+
+static const char *gs_aSurvivalOptionNames[] = {
+	"hardmode",
+	"invalid",
+};
+
+const char *toString(ESurvivalConfigOption RoundType)
+{
+	return toStringImpl(RoundType, gs_aSurvivalOptionNames);
+}
+
+template ESurvivalConfigOption fromString<ESurvivalConfigOption>(const char *pString);
+
 int SurvivalWaveConfiguration::GetTotalInfectedLives() const
 {
 	int TotalBotLives = 0;
@@ -1707,6 +1726,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("ai_objection", "s[command] ?s[argument]", CFGFLAG_SERVER, ConAiObjection, this, "Setup AI objections");
 
 	pConsole->Register("survival_clear_conf", "", CFGFLAG_SERVER, ConSurvivalClearConf, this, "");
+	pConsole->Register("survival_conf", "s[option] ?i[value]", CFGFLAG_SERVER, ConSurvivalConf, this, "Adjust survival configuration");
 	pConsole->Register("survival_add_wave", "i[wave] ?s[name]", CFGFLAG_SERVER, ConSurvivalAddWave, this, "");
 	pConsole->Register("survival_conf_wave", "i[wave] s[action] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec] ?s[drop_level=<>] ?s[tweaks=<>]", CFGFLAG_SERVER, ConSurvivalConfWave, this, "");
 	pConsole->Register("start_survival_scenario", "r[file]", CFGFLAG_SERVER | CFGFLAG_CLIENT, ConStartSurvivalScenario, this, "Start survival with scenario loaded from the specified file");
@@ -2513,8 +2533,46 @@ void CIcGameController::ConSurvivalClearConf(IConsole::IResult *pResult, void *p
 
 void CIcGameController::SurvivalClearConf()
 {
-	m_SurvivalConfiguration.SurvivalWaves.Clear();
+	SurvivalGetMutableGameConfiguration()->Reset();
+
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "survival configuration cleared");
+}
+
+void CIcGameController::ConSurvivalConf(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConSurvivalConf(pResult);
+}
+
+void CIcGameController::ConSurvivalConf(IConsole::IResult *pResult)
+{
+	char aBuf[256];
+	const char *pOptionStr = pResult->GetString(0);
+	ESurvivalConfigOption Option = fromString<ESurvivalConfigOption>(pOptionStr);
+	int Value = pResult->GetInteger(1);
+	switch(Option)
+	{
+	case ESurvivalConfigOption::Hardmode:
+		if(pResult->NumArguments() > 1)
+		{
+			SurvivalGetMutableGameConfiguration()->HardMode = Value;
+		}
+		else
+		{
+			Value = SurvivalGetGameConfiguration()->HardMode;
+		}
+		break;
+	case ESurvivalConfigOption::Invalid:
+		str_format(aBuf, sizeof(aBuf), "Invalid survival_conf argument '%s'", pOptionStr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+		return;
+	}
+
+	if(pResult->NumArguments() == 1)
+	{
+		str_format(aBuf, sizeof(aBuf), "survival_conf '%s' value is %d", pOptionStr, Value);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+	}
 }
 
 void CIcGameController::ConSurvivalAddWave(IConsole::IResult *pResult, void *pUserData)
@@ -3784,10 +3842,10 @@ void CIcGameController::StartRound()
 
 	if(StartAfterGameOver)
 	{
-		RemoveBots();
-
-		// Cleanup survival stuff *after* score displayed
+		if(!HardMode())
 		{
+			RemoveBots();
+
 			for(int CID : m_SurvivalState.KilledPlayers)
 			{
 				CIcPlayer *pPlayer = GetPlayer(CID);
@@ -3798,17 +3856,17 @@ void CIcGameController::StartRound()
 			}
 
 			m_SurvivalState.KilledPlayers.Clear();
-		}
 
-		if(Config()->m_InfSurvivalMode)
-		{
-			for(int CID = 0; CID < MAX_CLIENTS; ++CID)
+			if(Config()->m_InfSurvivalMode)
 			{
-				CIcPlayer *pPlayer = GetPlayer(CID);
-				if(pPlayer && pPlayer->IsSpectator() && !pPlayer->IsBot())
+				for(int CID = 0; CID < MAX_CLIENTS; ++CID)
 				{
-					// Reset the class for other (not recently killed) spectator players
-					pPlayer->SetClass(EPlayerClass::None);
+					CIcPlayer *pPlayer = GetPlayer(CID);
+					if(pPlayer && pPlayer->IsSpectator() && !pPlayer->IsBot())
+					{
+						// Reset the class for other (not recently killed) spectator players
+						pPlayer->SetClass(EPlayerClass::None);
+					}
 				}
 			}
 		}
@@ -5245,7 +5303,7 @@ bool CIcGameController::CanJoinTeam(int Team, int ClientId)
 {
 	if(Team != TEAM_SPECTATORS)
 	{
-		if(GetRoundType() == ERoundType::Survival && IsInfectionStarted())
+		if(GetRoundType() == ERoundType::Survival && (IsInfectionStarted() || (HardMode() && (m_SurvivalState.Wave > 0))))
 		{
 			GameServer()->SendBroadcast_Localization(ClientId,
 				EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
@@ -5323,7 +5381,12 @@ bool CIcGameController::WhiteHoleEnabled() const
 float CIcGameController::GetWhiteHoleLifeSpan() const
 {
 	if(GetRoundType() == ERoundType::Survival)
+	{
+		if(HardMode())
+			return 12;
+
 		return 15;
+	}
 
 	return Config()->m_InfWhiteHoleLifeSpan;
 }
@@ -5336,6 +5399,14 @@ int CIcGameController::MinimumInfectedForRevival() const
 bool CIcGameController::IsClassChooserEnabled() const
 {
 	return Config()->m_InfClassChooser && Server()->GetTimeShiftUnit();
+}
+
+int CIcGameController::HardMode() const
+{
+	if(GetRoundType() != ERoundType::Survival)
+		return 0;
+
+	return std::max<int>(SurvivalGetGameConfiguration()->HardMode, Config()->m_InfSurvivalHardMode);
 }
 
 bool CIcGameController::HumanCanPickSameClass() const
@@ -5680,6 +5751,13 @@ bool CIcGameController::StartSurvivalWave()
 
 void CIcGameController::EndSurvivalWave()
 {
+	m_WaveStartTick = 0;
+
+	if(Config()->m_InfSurvivalHardMode)
+	{
+		return;
+	}
+
 	m_SurvivalState.SurvivedPlayers.Clear();
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
@@ -5690,8 +5768,6 @@ void CIcGameController::EndSurvivalWave()
 			m_SurvivalState.SurvivedPlayers.Add(i);
 		}
 	}
-
-	m_WaveStartTick = 0;
 }
 
 void CIcGameController::EnsureFinalExplosionIsStarted()

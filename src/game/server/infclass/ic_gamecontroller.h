@@ -250,6 +250,7 @@ public:
 	float GetWhiteHoleLifeSpan() const;
 	int MinimumInfectedForRevival() const;
 	bool IsClassChooserEnabled() const;
+	int HardMode() const;
 	bool HumanCanPickSameClass() const;
 	int GetTaxiMode() const;
 	int GetGhoulStomackSize() const;
@@ -366,6 +367,8 @@ public:
 
 	static void ConSurvivalClearConf(IConsole::IResult *pResult, void *pUserData);
 	void SurvivalClearConf();
+	static void ConSurvivalConf(IConsole::IResult *pResult, void *pUserData);
+	void ConSurvivalConf(IConsole::IResult *pResult);
 
 	static void ConSurvivalAddWave(IConsole::IResult *pResult, void *pUserData);
 	void SurvivalAddWave(int Wave, const char *pWaveName);

@@ -46,10 +46,12 @@ class SurvivalGameConfiguration
 {
 public:
 	icArray<SurvivalWaveConfiguration, MaxWaves> SurvivalWaves;
+	bool HardMode{};
 
 	void Reset()
 	{
 		SurvivalWaves.Clear();
+		HardMode = false;
 	}
 
 	SurvivalWaveConfiguration *AddWave(const char *pWaveName)
