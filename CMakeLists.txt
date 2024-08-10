@@ -892,6 +892,10 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   entities/character.cpp
   entities/character.h
   entities_filter.h
+  infclass/bot-player.cpp
+  infclass/bot-player.h
+  infclass/bot_config_parser.cpp
+  infclass/bot_config_parser.h
   infclass/classes/humans/human.cpp
   infclass/classes/humans/human.h
   infclass/classes/ic_playerclass.cpp
@@ -900,6 +904,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/classes/infected/infected.h
   infclass/damage_context.h
   infclass/death_context.h
+  infclass/debug-bot-player.cpp
+  infclass/debug-bot-player.h
   infclass/entities/biologist-laser.cpp
   infclass/entities/biologist-laser.h
   infclass/entities/biologist-mine.cpp

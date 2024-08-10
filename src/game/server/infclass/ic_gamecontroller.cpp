@@ -39,6 +39,16 @@
 #include <iterator>
 #include <time.h>
 
+#ifdef DEBUG_PLAYER
+#include "debug-bot-player.h"
+using UPlayerClass = CDebugPlayer;
+#else
+using UPlayerClass = CIcPlayer;
+#include "bot-player.h"
+#endif
+
+#include "bot_config_parser.h"
+
 const int InfClassModeSpecialSkip = 0x100;
 
 static const char *gs_aRoundEndReasonNames[] = {
@@ -220,6 +230,8 @@ CIcGameController::CIcGameController(class CGameContext *pGameServer)
 
 CIcGameController::~CIcGameController()
 {
+	RemoveBots();
+
 	FreePlayerOwnSnapItems();
 
 	if(m_GrowingMap) delete[] m_GrowingMap;
@@ -361,7 +373,7 @@ void CIcGameController::OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType
 
 	if(!aIgnoreReasons.Contains(Type))
 	{
-		if(pPlayer && pPlayer->IsInGame() && pPlayer->IsInfected() && m_InfectedStarted)
+		if(pPlayer && pPlayer->IsInGame() && pPlayer->IsInfected() && m_InfectedStarted && !pPlayer->IsBot())
 		{
 			int NumHumans;
 			int NumInfected;
@@ -373,6 +385,20 @@ void CIcGameController::OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType
 			{
 				Server()->Ban(pPlayer->GetCid(), 60 * Config()->m_InfLeaverBanTime, "Leaver");
 			}
+		}
+	}
+
+	if(pPlayer->IsBot())
+	{
+		CBotPlayer *pAsBot = static_cast<CBotPlayer *>(pPlayer);
+		std::optional<std::size_t> BotIndex = m_Bots.IndexOf(pAsBot);
+		if(BotIndex.has_value())
+		{
+			m_Bots.RemoveAt(BotIndex.value());
+		}
+		else
+		{
+			dbg_msg("bot", "Disconnected bot (id %d) is not in the bots list", pAsBot->GetCid());
 		}
 	}
 
@@ -1515,6 +1541,12 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 
 	pConsole->Register("witch", "", CFGFLAG_CHAT, ChatWitch, this, "Call Witch");
 	pConsole->Register("santa", "", CFGFLAG_CHAT, ChatWitch, this, "Call the Santa");
+
+	pConsole->Register("add_bot", "i[number] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec]", CFGFLAG_SERVER, ConAddBot, this, "Add a bot");
+	pConsole->Register("remove_bot", "i[CID or -1]", CFGFLAG_SERVER, ConRemoveBot, this, "Remove a bot");
+	pConsole->Register("dump_bot", "i", CFGFLAG_SERVER, ConDumpBot, this, "Dump bot state");
+	pConsole->Register("ai", "s[debug|enable|disable]", CFGFLAG_SERVER, ConCheckAI, this, "Debug bot AI from the caller PoV");
+	pConsole->Register("ai_objection", "s[command] ?s[argument]", CFGFLAG_SERVER, ConAiObjection, this, "Setup AI objections");
 }
 
 EInfclassWeapon CIcGameController::GetWeaponIdFromConArgument(IConsole::IResult *pResult, unsigned int Index)
@@ -1796,6 +1828,163 @@ void CIcGameController::SetPreferredClass(int ClientId, EPlayerClass Class)
 		break;
 	}
 	}
+}
+
+void CIcGameController::ConAddBot(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConAddBot(pResult);
+}
+
+void CIcGameController::ConAddBot(IConsole::IResult *pResult)
+{
+	int BotsNumber = pResult->GetInteger(0);
+	if(!BotsNumber)
+	{
+		return;
+	}
+
+	if(BotsNumber > MaxBots)
+	{
+		return;
+	}
+
+	const char *pClassName = pResult->GetString(1);
+	bool Ok = false;
+	EPlayerClass PlayerClass = GetClassByName(pClassName, &Ok);
+	if(!Ok)
+	{
+		PlayerClass = EPlayerClass::Random;
+	}
+
+	int Lives = 0;
+	if(GetRoundType() == ERoundType::Survival)
+	{
+		Lives = Config()->m_InfBotLives;
+	}
+	int HP = 0;
+	float RespawnInterval = 0;
+
+	for(int Arg = 2; Arg < pResult->NumArguments(); ++Arg)
+	{
+		const char *pStr = pResult->GetString(Arg);
+		bool Ok;
+		float Value;
+
+		Value = ParseLives(pStr, &Ok);
+		if(Ok)
+		{
+			Lives = Value;
+			continue;
+		}
+
+		Value = ParseHP(pStr, &Ok);
+		if(Ok)
+		{
+			HP = Value;
+			continue;
+		}
+
+		Value = ParseRespawn(pStr, &Ok);
+		if(Ok)
+		{
+			RespawnInterval = Value;
+			continue;
+		}
+	}
+
+	for(int i = 0; i < BotsNumber; ++i)
+	{
+		CBaseBotPlayer *pBot = AddBot();
+		if(!pBot)
+			return;
+
+		if(PlayerClass == EPlayerClass::Random)
+		{
+			EPlayerClass c = ChooseInfectedClass(pBot);
+			pBot->SetClass(c);
+		}
+		else
+		{
+			pBot->SetClass(PlayerClass);
+		}
+
+		pBot->SetMaxLives(Lives);
+		pBot->SetMaxHP(HP);
+		pBot->SetRespawnInterval(RespawnInterval);
+	}
+
+	char aBuf[256];
+
+	str_format(aBuf, sizeof(aBuf), "Artificial players joined the game");
+	GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
+}
+
+void CIcGameController::ConRemoveBot(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConRemoveBot(pResult);
+}
+
+void CIcGameController::ConRemoveBot(IConsole::IResult *pResult)
+{
+	int BotID = pResult->GetInteger(0);
+	if(BotID < 0)
+	{
+		RemoveBots();
+		return;
+	}
+
+	CIcPlayer *pPlayer = GetPlayer(BotID);
+	if(!pPlayer || !pPlayer->IsBot())
+	{
+		return;
+	}
+
+	RemoveBot(BotID, "Console command");
+}
+
+void CIcGameController::ConDumpBot(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ChatDumpBot(pResult);
+}
+
+void CIcGameController::ChatDumpBot(IConsole::IResult *pResult)
+{
+	int BotID = pResult->GetInteger(0);
+	int ClientID = pResult->GetClientId();
+	for(int i = 0; i < m_Bots.Size(); ++i)
+	{
+		if(m_Bots.At(i) && (m_Bots.At(i)->GetCid() == BotID))
+		{
+			const char *pBotData = m_Bots.At(i)->DumpBot();
+			GameServer()->SendChat(ClientID, CGameContext::CHAT_ALL, pBotData);
+			return;
+		}
+	}
+
+	GameServer()->SendChat(ClientID, CGameContext::CHAT_ALL, "No such bot");
+}
+
+void CIcGameController::ConCheckAI(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConCheckAI(pResult);
+}
+
+void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
+{
+}
+
+void CIcGameController::ConAiObjection(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConAiObjection(pResult);
+}
+
+void CIcGameController::ConAiObjection(IConsole::IResult *pResult)
+{
 }
 
 void CIcGameController::ConAntiPing(IConsole::IResult *pResult, void *pUserData)
@@ -2924,6 +3113,7 @@ void CIcGameController::EndRound(ERoundEndReason Reason)
 	}
 
 	m_RoundStarted = false;
+	RemoveBots();
 }
 
 void CIcGameController::DoTeamChange(CPlayer *pBasePlayer, int Team, bool DoChatMsg)
@@ -3391,6 +3581,99 @@ bool CIcGameController::IsSafeWitchCandidate(int ClientId) const
 	return true;
 }
 
+void CIcGameController::RemoveBots()
+{
+	while(!m_Bots.IsEmpty())
+	{
+		CBaseBotPlayer *pBot = m_Bots.Last();
+		RemoveBot(pBot, "Cleanup");
+	}
+}
+
+int CIcGameController::RequestBotID()
+{
+	for(int i = MAX_CLIENTS - 1; i > 0; --i)
+	{
+		if(GameServer()->m_apPlayers[i])
+			continue;
+
+		if(Server()->NewBot(i) != 0)
+			continue;
+
+		return i;
+	}
+
+	return -1;
+}
+
+CBaseBotPlayer *CIcGameController::AddBot(int Team)
+{
+	if(m_Bots.Size() == MaxBots - 1)
+	{
+		dbg_msg("bots", "AddBot(): Max bots number reached");
+		return nullptr;
+	}
+
+	const int PlayerID = RequestBotID();
+
+	if(PlayerID < 0)
+	{
+		dbg_msg("bots", "AddBot(): No slots");
+		return nullptr;
+	}
+
+	dbg_msg("bots", "AddBot(): New bot with ID %d", PlayerID);
+
+	CBotPlayer *pPlayer = new(PlayerID) CBotPlayer(this, GetNextClientUniqueId(), PlayerID, Team);
+
+	if(!pPlayer)
+		return nullptr;
+
+	GameServer()->m_apPlayers[PlayerID] = pPlayer;
+
+	EPlayerClass PlayerClass = EPlayerClass::Bat;
+	pPlayer->SetClass(PlayerClass);
+
+	m_Bots.Add(pPlayer);
+
+	pPlayer->UpdateName();
+
+	return pPlayer;
+}
+
+bool CIcGameController::RemoveBot(CBaseBotPlayer *pBot, const char *pReason)
+{
+	std::optional<std::size_t> BotIndex = m_Bots.IndexOf(pBot);
+	if(!BotIndex.has_value())
+	{
+		return false;
+	}
+
+	int ClientId = pBot->GetCid();
+	dbg_msg("bots", "Remove bot (CID: %d, Reason: %s)", ClientId, pReason);
+	GameServer()->OnClientDrop(ClientId, EClientDropType::Kick, pReason);
+	Server()->DelBot(ClientId);
+
+	if(m_Bots.Contains(pBot))
+	{
+		dbg_msg("bot", "Disconnected bot (id %d) is not in the bots list", pBot->GetCid());
+	}
+
+	return true;
+}
+
+bool CIcGameController::RemoveBot(int ClientId, const char *pReason)
+{
+	CIcPlayer *pPlayer = GetPlayer(ClientId);
+	if(!pPlayer || !pPlayer->IsBot())
+	{
+		return false;
+	}
+
+	CBaseBotPlayer *pBot = static_cast<CBaseBotPlayer *>(pPlayer);
+	return RemoveBot(pBot, pReason);
+}
+
 CIcGameController::PlayerScore *CIcGameController::GetSurvivalPlayerScore(int ClientId)
 {
 	for(PlayerScore &Score : m_SurvivalState.Scores)
@@ -3428,6 +3711,11 @@ void CIcGameController::TickBeforeWorld()
 			pCharacter->TickBeforeWorld();
 			m_Teams.m_Core.SetProtected(i, pCharacter->GetPlayer()->HookProtectionEnabled());
 		}
+	}
+
+	for(CBaseBotPlayer *pBot : m_Bots)
+	{
+		pBot->UpdateControls();
 	}
 }
 void CIcGameController::Tick()
@@ -4439,12 +4727,12 @@ CPlayer *CIcGameController::CreatePlayer(int ClientId, bool IsSpectator, void *p
 	CIcPlayer *pPlayer = nullptr;
 	if(IsSpectator)
 	{
-		pPlayer = new(ClientId) CIcPlayer(this, GetNextClientUniqueId(), ClientId, TEAM_SPECTATORS);
+		pPlayer = new(ClientId) UPlayerClass(this, GetNextClientUniqueId(), ClientId, TEAM_SPECTATORS);
 	}
 	else
 	{
 		const int StartTeam = Config()->m_SvTournamentMode ? TEAM_SPECTATORS : GetAutoTeam(ClientId);
-		pPlayer = new(ClientId) CIcPlayer(this, GetNextClientUniqueId(), ClientId, StartTeam);
+		pPlayer = new(ClientId) UPlayerClass(this, GetNextClientUniqueId(), ClientId, StartTeam);
 	}
 
 	if(pData)
@@ -5151,6 +5439,20 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 		if(FreezeDuration > 0)
 		{
 			pVictim->Freeze(FreezeDuration, pContext->Killer, FREEZEREASON_INFECTION);
+		}
+	}
+
+	CIcPlayer *pVictimPlayer = pVictim->GetPlayer();
+	if(pVictimPlayer && (DamageType != EDamageType::GAME))
+	{
+		if(pVictimPlayer->IsBot())
+		{
+			CBotPlayer *pBot = static_cast<CBotPlayer *>(pVictimPlayer);
+			const int Lives = pBot->Lives() - 1;
+			if(Lives >= 0)
+			{
+				pBot->SetLives(Lives);
+			}
 		}
 	}
 }

@@ -8,17 +8,19 @@
 #include <game/server/gamecontroller.h>
 
 #include <engine/console.h>
+#include <engine/shared/protocol.h>
 
 #include <base/tl/ic_array.h>
 
+class CBaseBotPlayer;
 class CDoor;
 class CGameWorld;
 class CHintMessage;
 class CIcCharacter;
 class CIcPlayer;
 struct CNetObj_GameInfo;
-struct SpawnContext;
 struct DeathContext;
+struct SpawnContext;
 struct ZoneData;
 
 #if CONF_LUA
@@ -39,6 +41,8 @@ enum class ERoundEndReason
 	INVALID = COUNT
 };
 const char *toString(ERoundEndReason Reason);
+
+static const int MaxBots = MAX_CLIENTS - 8;
 
 using ClientsArray = icArray<int, MAX_CLIENTS>;
 
@@ -353,6 +357,21 @@ public:
 	static void ChatWitch(IConsole::IResult *pResult, void *pUserData);
 	void ChatWitch(IConsole::IResult *pResult);
 
+	static void ConAddBot(IConsole::IResult *pResult, void *pUserData);
+	void ConAddBot(IConsole::IResult *pResult);
+
+	static void ConRemoveBot(IConsole::IResult *pResult, void *pUserData);
+	void ConRemoveBot(IConsole::IResult *pResult);
+
+	static void ConDumpBot(IConsole::IResult *pResult, void *pUserData);
+	void ChatDumpBot(IConsole::IResult *pResult);
+
+	static void ConCheckAI(IConsole::IResult *pResult, void *pUserData);
+	void ConCheckAI(IConsole::IResult *pResult);
+
+	static void ConAiObjection(IConsole::IResult *pResult, void *pUserData);
+	void ConAiObjection(IConsole::IResult *pResult);
+
 	CDoor *AddDoor(const vec2 &From, const vec2 &To);
 
 	using IGameController::GameServer;
@@ -410,6 +429,15 @@ private:
 	int GetClientIdForNewWitch() const;
 	bool IsSafeWitchCandidate(int ClientId) const;
 	ClientsArray m_WitchCallers;
+
+	void RemoveBots();
+
+	int RequestBotID();
+	CBaseBotPlayer *AddBot(int Team = 0);
+	bool RemoveBot(CBaseBotPlayer *pBot, const char *pReason = nullptr);
+	bool RemoveBot(int ClientId, const char *pReason = nullptr);
+
+	icArray<CBaseBotPlayer *, MaxBots> m_Bots;
 
 	struct PlayerScore
 	{
