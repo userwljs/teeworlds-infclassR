@@ -14,6 +14,7 @@
 #include <game/server/infclass/entities/ic_pickup.h>
 #include <game/server/infclass/events-director.h>
 #include <game/server/infclass/ic_player.h>
+#include <game/server/infclass/survival.h>
 
 #include <game/generated/protocol.h>
 #include <game/mapitems.h>
@@ -158,14 +159,7 @@ struct InfclassPlayerPersistantData : public CGameContext::CPersistentClientData
 	int m_LastInfectionTime = 0;
 };
 
-struct SurvivalWaveConfiguration
-{
-	SurvivalWaveConfiguration() = default;
-
-	char aName[64] = {0};
-};
-
-icArray<SurvivalWaveConfiguration, MaxWaves> m_SurvivalWaves;
+SurvivalGameConfiguration m_SurvivalConfiguration;
 
 int64_t CIcGameController::m_LastTipTime = 0;
 
@@ -4157,7 +4151,7 @@ void CIcGameController::StartSurvivalRound()
 	char aBuf[256];
 
 	int WaveDisplayNumber = m_SurvivalState.Wave + 1;
-	if(m_SurvivalWaves.Size() <= m_SurvivalState.Wave)
+	if(m_SurvivalConfiguration.SurvivalWaves.Size() <= m_SurvivalState.Wave)
 	{
 		str_format(aBuf, sizeof(aBuf), "Unable to start a survival round: wave %d is not configured", WaveDisplayNumber);
 		GameServer()->SendChatTarget(-1, aBuf);
@@ -4181,13 +4175,13 @@ void CIcGameController::StartSurvivalRound()
 
 	m_SurvivalState.KilledPlayers.Clear();
 
-	if(m_SurvivalWaves.Size() == 1)
+	if(m_SurvivalConfiguration.SurvivalWaves.Size() == 1)
 	{
 		str_format(aBuf, sizeof(aBuf), "The survival begins. Enjoy!");
 	}
 	else
 	{
-		const SurvivalWaveConfiguration &WaveConf = m_SurvivalWaves.At(m_SurvivalState.Wave);
+		const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.SurvivalWaves.At(m_SurvivalState.Wave);
 
 		if(WaveConf.aName[0])
 		{
@@ -4234,11 +4228,11 @@ void CIcGameController::EndSurvivalRound()
 		IsOver = true;
 	}
 
-	if(m_SurvivalWaves.Size() == m_SurvivalState.Wave + 1)
+	if(m_SurvivalConfiguration.SurvivalWaves.Size() == m_SurvivalState.Wave + 1)
 	{
 		if(NumHumans)
 		{
-			if(m_SurvivalWaves.Size() > 2)
+			if(m_SurvivalConfiguration.SurvivalWaves.Size() > 2)
 			{
 				GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE,
 					_("The survival is over. You have survived!"));

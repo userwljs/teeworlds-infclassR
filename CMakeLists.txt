@@ -969,6 +969,7 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/ic_player.h
   infclass/snap_filter.cpp
   infclass/snap_filter.h
+  infclass/survival.h
   entity.cpp
   entity.h
   eventhandler.cpp

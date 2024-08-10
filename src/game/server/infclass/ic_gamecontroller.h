@@ -40,8 +40,6 @@ enum class ERoundEndReason
 };
 const char *toString(ERoundEndReason Reason);
 
-static const int MaxWaves = 20;
-
 using ClientsArray = icArray<int, MAX_CLIENTS>;
 
 enum class ERoundType
