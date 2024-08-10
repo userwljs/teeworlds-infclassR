@@ -5960,6 +5960,10 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 			if(GetRoundType() == ERoundType::Survival)
 			{
 				float Delay = pBot->GetRespawnInterval();
+				if(!Delay)
+				{
+					Delay = Config()->m_InfSurvivalInfectedSpawningDelay;
+				}
 				Delay += -0.5 + random_float();
 				Delay = maximum(0.5f, Delay);
 				pBot->m_RespawnTick = Server()->Tick() + Server()->TickSpeed() * Delay;
