@@ -1,10 +1,18 @@
 #include "bot-player.h"
 
+#include <base/tl/ic_enum.h>
 #include <engine/shared/config.h>
 #include <game/server/gamecontext.h>
+#include <game/server/infclass/bot_utils.h>
 #include <game/server/infclass/classes/ic_playerclass.h>
+#include <game/server/infclass/entities/biologist-mine.h>
+#include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_entity.h>
+#include <game/server/infclass/entities/looper-wall.h>
+#include <game/server/infclass/entities/merc-bomb.h>
+#include <game/server/infclass/entities/scatter-grenade.h>
+#include <game/server/infclass/entities/scientist-mine.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 
 static constexpr int InfinityLives = -1;
@@ -45,6 +53,68 @@ void CBaseBotPlayer::SetRespawnInterval(float Interval)
 	m_RespawnInterval = Interval;
 }
 
+inline float distance2(const vec2 &from, const vec2 &to)
+{
+	const float x = to.x - from.x;
+	const float y = to.y - from.y;
+	return x * x + y * y;
+}
+
+static bool AiEnabled = 1;
+static icArray<EObjection, static_cast<int>(EObjection::Count)> AiBannedObjections;
+
+static int c_JumpsHardLimit = 8;
+
+constexpr float c_GroundJumpImpulse = 13.2f; // Tuning -> GroundJumpImpulse
+constexpr float c_GroundControlSpeed = 10.0f; // Tuning -> GroundControlSpeed
+constexpr float c_GroundControlAccel = 100.0f / SERVER_TICK_SPEED; // Tuning -> GroundControlAccel
+
+constexpr float c_AirJumpImpulse = 12.0f; // Tuning -> AirJumpImpulse
+constexpr float c_AirControlSpeed = 250.0f / SERVER_TICK_SPEED; // Tuning -> AirControlSpeed
+constexpr float c_AirControlAccel = 1.5f; // Tuning -> AirControlAccel
+
+constexpr float c_Gravity = 0.5f; // Tuning -> Gravity
+
+static constexpr icArray<EPlayerClass, 3> aHookyClasses = {
+	EPlayerClass::Spider,
+	EPlayerClass::Bat,
+};
+
+static const char *gs_aDecisionNames[] = {
+	"TurnLeft",
+	"TurnRight",
+	"Jump",
+	"NoJump",
+	"Invalid",
+};
+
+const char *toString(EDecision Decision)
+{
+	return toStringImpl(Decision, gs_aDecisionNames);
+}
+
+static const char *gs_aObjectionNames[] = {
+	"lookup",
+	"relax",
+	"jump",
+	"check-top",
+	"check-mid",
+	"check-bottom",
+	"invalid",
+};
+
+const char *toString(EObjection Objection)
+{
+	return toStringImpl(Objection, gs_aObjectionNames);
+}
+
+template EObjection fromString<EObjection>(const char *pString);
+
+static CBotPlayer::DIRECTION OppositeDirection(CBotPlayer::DIRECTION Direction)
+{
+	return CBotPlayer::DIRECTION(Direction * -1);
+}
+
 MACRO_ALLOC_POOL_ID_IMPL(CBotPlayer, MAX_CLIENTS)
 
 CBotPlayer::CBotPlayer(CIcGameController *pGameController, int UniqueClientId, int ClientID, int Team) :
@@ -52,4 +122,1877 @@ CBotPlayer::CBotPlayer(CIcGameController *pGameController, int UniqueClientId, i
 {
 	m_IsInGame = true;
 	m_IsReady = true;
+}
+
+CBotPlayer::~CBotPlayer()
+{
+}
+
+void CBotPlayer::SetBotUtils(CBotUtils *pUtils)
+{
+	m_pUtils = pUtils;
+}
+
+void CBotPlayer::Snap(int SnappingClient)
+{
+	if(m_ClientId == SnappingClient)
+		return;
+
+	CIcPlayer::Snap(SnappingClient);
+}
+
+void CBotPlayer::TryRespawn()
+{
+	if(m_Lives == 0)
+		return;
+
+	if((m_SpawnMinTick >= 0) && (GameController()->GetInfectionTick() < m_SpawnMinTick))
+	{
+		// Too early to spawn
+		return;
+	}
+
+	CIcPlayer::TryRespawn();
+}
+
+void CBotPlayer::Tick()
+{
+	if(GameController()->IsGameOver())
+		return;
+
+	UpdateCharacterState();
+
+	if(m_Team == TEAM_SPECTATORS)
+	{
+		if((m_SpawnMinTick >= 0) && (GameController()->GetInfectionTick() < m_SpawnMinTick))
+		{
+			// Too early to spawn, do nothing
+		}
+		else
+		{
+			const bool DoChatMsg = false;
+			GameController()->DoTeamChange(this, 0, DoChatMsg);
+		}
+	}
+
+	CIcPlayer::Tick();
+
+	if(GameServer()->m_World.m_Paused)
+	{
+		TickPaused();
+	}
+	else
+	{
+		if(m_JumpTargetingTicks > 0)
+		{
+			m_JumpTargetingTicks--;
+		}
+
+		if(m_pCharacter)
+		{
+			if(m_pCharacter->IsAlive())
+			{
+				UpdateTarget();
+			}
+		}
+	}
+
+	m_Latency.m_Avg = 0;
+	m_Latency.m_Max = 0;
+	m_Latency.m_Min = 0;
+	m_Latency.m_Accum = 0;
+	m_Latency.m_AccumMin = 0;
+	m_Latency.m_AccumMax = 0;
+}
+
+void CBotPlayer::TickPaused()
+{
+	m_RoamingBehaviorTick++;
+	m_LastJumpTick++;
+	m_LastFireTick++;
+	m_NextRandomFireTick++;
+	m_HookUntilTick++;
+	m_DelayHookUntilTick++;
+}
+
+void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
+{
+	CIcPlayer::OnCharacterSpawned(Context);
+	GetCharacter()->SetDropLevel(m_DropLevel);
+
+	m_LastFireTick = -1;
+	m_NextRandomFireTick = -1;
+	m_RecentObjections.Clear();
+	m_RecentDecisions.Clear();
+
+	m_RoamingObjection = EObjection::Lookup;
+	ChangeRoamingBehavior();
+}
+
+void CBotPlayer::UpdateTarget()
+{
+	const CIcCharacter *pCharacter = GetCharacter();
+	if(!pCharacter)
+	{
+		return;
+	}
+
+	// Lookup for humans
+	ClientsArray Targets;
+	const float LookupDistance = 500;
+	const float LookupDistanceBackward = 250;
+
+	if(!pCharacter->IsBlind())
+	{
+		for(int i = 0; i < MAX_CLIENTS; ++i)
+		{
+			const CIcCharacter *pChar = GameController()->GetCharacter(i);
+			if(pChar && pChar->IsHuman() && pChar->IsAlive())
+			{
+				Targets.Add(i);
+			}
+		}
+
+		GameController()->SortCharactersByDistance(&Targets, pCharacter->GetPos(), LookupDistance);
+	}
+
+	int TargetId = -1;
+	const vec2 &Pos = pCharacter->GetPos();
+
+	const int HookedPlayer = m_pCharacter->Core()->HookedPlayer();
+	if(Targets.Contains(HookedPlayer))
+	{
+		TargetId = HookedPlayer;
+	}
+	else
+	{
+		for(int CandidateId : Targets)
+		{
+			const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
+			vec2 Out;
+			vec2 Before;
+
+			if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos(), &Out, &Before))
+			{
+				continue;
+			}
+
+			TargetId = CandidateId;
+			m_LastTargetSeenAt = pChar->GetPos();
+			break;
+		}
+	}
+
+	if(TargetId < 0)
+	{
+		if(m_BotState != BOTSTATE_ROAMING)
+		{
+			SetState(BOTSTATE_ROAMING);
+			SetRoamingDirection(m_LastTargetSeenAt.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+		}
+		return;
+	}
+
+	m_LastTarget = TargetId;
+	m_LastTargetPosition = GameController()->GetCharacter(TargetId)->GetPos();
+	SetState(BOTSTATE_HUNTING);
+}
+
+void CBotPlayer::UpdateControls()
+{
+	if(!m_pCharacter)
+		return;
+
+	const int Tick = Server()->Tick();
+
+	CNetObj_PlayerInput NewInput;
+	NewInput.m_Direction = 0;
+	NewInput.m_TargetX = 0;
+	NewInput.m_TargetY = 0;
+	NewInput.m_Jump = 0;
+	NewInput.m_Fire = 0;
+	NewInput.m_Hook = 0;
+	NewInput.m_PlayerFlags = 0;
+	NewInput.m_WantedWeapon = 0;
+	NewInput.m_NextWeapon = 0;
+	NewInput.m_PrevWeapon = 0;
+
+	if(IsHuman())
+	{
+		UpdateHumanBotControls();
+	}
+
+	if(m_BotState == BOTSTATE_ROAMING)
+	{
+		UpdateControlsRoaming(&NewInput);
+	}
+	else if(m_BotState == BOTSTATE_HUNTING)
+	{
+		UpdateControlsHunting(&NewInput);
+	}
+
+	if(!AiEnabled)
+	{
+		NewInput.m_Direction = 0;
+		// NewInput.m_TargetX = 0;
+		// NewInput.m_TargetY = 0;
+		NewInput.m_Jump = 0;
+		NewInput.m_Fire = 0;
+		NewInput.m_Hook = 0;
+		NewInput.m_PlayerFlags = 0;
+		NewInput.m_WantedWeapon = 0;
+		NewInput.m_NextWeapon = 0;
+		NewInput.m_PrevWeapon = 0;
+	}
+
+	if(NewInput.m_Fire || (m_LastFireTick < 0))
+	{
+		m_LastFireTick = Tick;
+
+		ScheduleRandomFire();
+	}
+
+	m_pCharacter->OnPredictedInput(&NewInput);
+	OnDirectInput(&NewInput);
+}
+
+void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
+{
+	if(m_RoamingDirection == DIRECTION_NONE)
+	{
+		SetRoamingDirection(DIRECTION(random_int(-1, 1)));
+		return;
+	}
+
+	MaybeChangeRoamingBehavior();
+
+	const int Tick = Server()->Tick();
+	const vec2 &Pos = GetCharacter()->GetPos();
+	const float Radius = GetCharacter()->GetProximityRadius();
+
+	const bool CanJump = GetCharacter()->CanJump();
+	int MaxJumps = GetAvailableJumps();
+
+	bool WantToJump = false;
+	int TileX = Pos.x / TileSize;
+	int TileY = Pos.y / TileSize;
+
+	const bool HasWallInRoamingDirection = HasWallInTheDirection(m_RoamingDirection);
+	bool HasDangerInRoamingHorizontalDirection = false;
+
+	if(!HasWallInRoamingDirection)
+	{
+		HasDangerInRoamingHorizontalDirection = HasDangerInTheDirection(m_RoamingDirection);
+	}
+
+	int KeepMoving = 1;
+	const int DirectionSign = m_RoamingDirection;
+	const float VelX = m_pCharacter->Core()->m_Vel.x;
+
+	if(IsGrounded())
+	{
+		m_WantedJumps = 0;
+		m_AirJumps = 0;
+
+		if(HasWallInRoamingDirection)
+		{
+			BotDebugMessage("Has wall", VERBOSE_STEPS);
+			const int WantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition);
+			if(WantJumps)
+			{
+				if(MaybeJumpOverWall())
+				{
+					BotDebugMessage("Decide to jump over the wall", VERBOSE_STEPS);
+					WantToJump = true;
+					m_JumpFromPosition = Pos;
+					m_WantedJumps = WantJumps;
+				}
+			}
+
+			if(!WantToJump)
+			{
+				ChangeRoamingBehavior();
+			}
+		}
+		else if(HasDangerInRoamingHorizontalDirection)
+		{
+			ChangeRoamingBehavior();
+			BotDebugMessage("Change the direction to avoid the danger", VERBOSE_STEPS);
+		}
+		else
+		{
+			BotDebugMessage("No wall", VERBOSE_TRACE1);
+			if(m_DecisionTileX != TileX)
+			{
+				const int WantJumps = GetJumpsNeededToJumpOn(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition);
+				if(WantJumps)
+				{
+					if(MaybeJumpOn())
+					{
+						BotDebugMessage("Decided to jump on", VERBOSE_STEPS);
+						WantToJump = true;
+						m_JumpFromPosition = Pos;
+						m_WantedJumps = WantJumps;
+					}
+					else
+					{
+						BotDebugMessage("Ignore 'jump on' option", VERBOSE_STEPS);
+					}
+
+					PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump);
+				}
+				else if(!IsSolidTile(Pos.x + (2 + Radius / 2) * m_RoamingDirection, Pos.y + Radius + 5))
+				{
+					BotDebugMessage("Going to fall", VERBOSE_TRACE1);
+
+					if(MaybeFallDown())
+					{
+						BotDebugMessage("Decide to fall down", VERBOSE_STEPS);
+						m_FallingDown = true;
+					}
+					else
+					{
+						BotDebugMessage("Decide to jump over", VERBOSE_STEPS);
+						WantToJump = true;
+					}
+
+					PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump);
+				}
+
+				if(!WantToJump)
+				{
+					if(m_RoamingObjection == EObjection::Jump)
+					{
+						int TilesAbove = GetAirTilesAbove(m_RoamingDirection, MaxJumps);
+						if(TilesAbove > m_pUtils->GetGroundJumpTiles() && random_prob(m_JumpExtraProbability))
+						{
+							BotDebugMessage("Jump just because!", VERBOSE_STEPS);
+							WantToJump = true;
+							m_JumpFromPosition = Pos;
+							m_WantedJumps = std::max(MaxJumps, 3);
+							m_JumpTargetPosition.x = std::numeric_limits<float>::quiet_NaN();
+						}
+					}
+				}
+
+				m_DecisionTileX = TileX;
+			}
+		}
+
+		if(!WantToJump)
+		{
+			bool JumpToAvoidDanger = MaybeJumpToAvoidDanger();
+			if(JumpToAvoidDanger)
+			{
+				WantToJump = true;
+
+				m_WantedJumps = 1;
+				m_JumpFromPosition = Pos;
+				m_JumpTargetPosition.x = std::numeric_limits<float>::quiet_NaN();
+			}
+		}
+	}
+	else
+	{
+		// 'Not grounded' branch
+		if(HasDangerInRoamingHorizontalDirection)
+		{
+			if(VelX * DirectionSign > 0.1)
+			{
+				BotDebugMessage("Brake!", VERBOSE_TRACE1);
+				pInput->m_Direction = KeepMoving = -1;
+			}
+			else
+			{
+				KeepMoving = 0;
+			}
+
+			BotDebugMessage("Hold on! The danger is there", VERBOSE_STEPS);
+		}
+
+		if(CanJump)
+		{
+			if((m_WantedJumps <= 0) && (m_DecisionTileX != TileX) && (m_pCharacter->Core()->m_Vel.y > -3))
+			{
+				BotDebugMessage("Considering jump from the air", VERBOSE_TRACE1);
+				int MaybeWantJumps = 0;
+				if(HasWallInRoamingDirection)
+				{
+					if((MaybeWantJumps = GetJumpsNeededToGetOverWall(m_RoamingDirection)))
+					{
+						if(m_pCharacter->Core()->m_Vel.y < 0)
+						{
+							// We're moving up
+							if(MaybeJumpOverWall())
+							{
+								BotDebugMessage("Jump over from the air", VERBOSE_STEPS);
+								m_WantedJumps = MaybeWantJumps;
+							}
+						}
+						else
+						{
+							if(MaybeFallDown())
+							{
+								BotDebugMessage("Decide to fall down", VERBOSE_STEPS);
+							}
+							else
+							{
+								BotDebugMessage("Jump over from the air", VERBOSE_STEPS);
+								m_WantedJumps = MaybeWantJumps;
+							}
+						}
+					}
+				}
+				else if((MaybeWantJumps = GetJumpsNeededToJumpOn(m_RoamingDirection, MaxJumps, &m_JumpTargetPosition)))
+				{
+					if(MaybeJumpOn())
+					{
+						BotDebugMessage("Jump on from the air", VERBOSE_STEPS);
+						m_JumpFromPosition = Pos;
+						m_WantedJumps = MaybeWantJumps;
+					}
+				}
+				else if(m_AirJumps == 0)
+				{
+					if(MaybeRandomJumpUp())
+					{
+						BotDebugMessage("Random jump from the air", VERBOSE_STEPS);
+						m_WantedJumps = 1; // GetAvailableJumps();
+						m_JumpFromPosition = Pos;
+						m_JumpTargetPosition = Pos + m_pCharacter->Core()->m_Vel * Server()->TickSpeed();
+					}
+				}
+
+				if(MaybeWantJumps)
+				{
+					PushDecision(m_WantedJumps > 0 ? EDecision::Jump : EDecision::NoJump);
+				}
+
+				m_DecisionTileX = TileX;
+			}
+
+			if(m_WantedJumps > 0)
+			{
+				WantToJump = true;
+				++m_AirJumps;
+			}
+
+			if(!WantToJump)
+			{
+				bool JumpToAvoidDanger = MaybeJumpToAvoidDanger();
+				if(JumpToAvoidDanger)
+				{
+					WantToJump = true;
+
+					m_WantedJumps = 1;
+					m_JumpFromPosition = Pos;
+					m_JumpTargetPosition.x = std::numeric_limits<float>::quiet_NaN();
+				}
+			}
+		}
+	}
+
+	const vec2 VectorToTarget = m_JumpTargetPosition - Pos;
+	float AbsXToJumpTarget = fabs(VectorToTarget.x);
+	float AbsYToJumpTarget = fabs(VectorToTarget.y);
+
+	pInput->m_Direction = m_RoamingDirection * KeepMoving;
+
+	if(WantToJump || m_JumpTargetingTicks)
+	{
+		const float ProximityRadius = m_pCharacter->GetProximityRadius();
+		const float MaxOffset = VectorToTarget.y > 0 ? ProximityRadius : TileSize + ProximityRadius * 1.75f;
+		if(AbsYToJumpTarget > MaxOffset)
+		{
+			const int DirectionFromJumpToTarget = m_JumpTargetPosition.x >= m_JumpFromPosition.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
+			const float WantedXPos = m_JumpTargetPosition.x - (ProximityRadius + 3.0f) * DirectionFromJumpToTarget;
+			float MaxWantedX = WantedXPos;
+			float MinWantedX = WantedXPos;
+
+			const float MaxDiff = 4;
+			if(m_JumpTargetPosition.x >= m_JumpFromPosition.x)
+			{
+				MinWantedX -= MaxDiff;
+			}
+			else
+			{
+				MaxWantedX += MaxDiff;
+			}
+
+			if(Pos.x > MaxWantedX)
+			{
+				pInput->m_Direction = DIRECTION_LEFT;
+			}
+			else if(Pos.x < MinWantedX)
+			{
+				pInput->m_Direction = DIRECTION_RIGHT;
+			}
+			else
+			{
+				pInput->m_Direction = DIRECTION_NONE;
+			}
+		}
+	}
+
+	if(WantToJump)
+	{
+		bool MaximizeJump = true;
+		if(!IsGrounded())
+		{
+			const float dYTiles = (Pos.y - m_JumpTargetPosition.y) / TileSizeF;
+			if(dYTiles < m_pUtils->GetAirJumpTiles())
+			{
+				MaximizeJump = false;
+				// Reduce the interval for the last jump that fits
+			}
+		}
+
+		bool Jump = false;
+		if(MaximizeJump)
+		{
+			Jump = m_pCharacter->Core()->m_Vel.y > -c_Gravity;
+		}
+		else
+		{
+			Jump = true;
+		}
+
+		if(Jump)
+		{
+			pInput->m_Jump = 1;
+			m_LastJumpTick = Tick;
+			m_WantedJumps--;
+		}
+
+		if(m_WantedJumps == 0)
+		{
+			m_JumpTargetingTicks = AbsYToJumpTarget / c_AirJumpImpulse; // Not quite correct
+		}
+	}
+
+	if(!std::isnan(m_JumpTargetPosition.x) && (WantToJump || (!CanJump && ((VelX > 0) == (VectorToTarget.x > 0))))) // todo: match direction
+	{
+		pInput->m_TargetX = VectorToTarget.x;
+		pInput->m_TargetY = VectorToTarget.y;
+	}
+	else
+	{
+		pInput->m_TargetX = m_RoamingDirection * TileSize * 4;
+	}
+
+	if(GetClass() == EPlayerClass::Slug)
+	{
+		if(m_RoamingObjection != EObjection::Relax)
+		{
+			pInput->m_TargetY = TileSize * 2;
+		}
+	}
+
+	if(m_NextRandomFireTick >= 0 && Tick > m_NextRandomFireTick)
+	{
+		pInput->m_Fire = true;
+	}
+
+	if(GetClass() == EPlayerClass::Ghost)
+	{
+		pInput->m_Fire = false;
+	}
+
+	if(GetClass() == EPlayerClass::Boomer)
+	{
+		pInput->m_Fire = false;
+	}
+}
+
+void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
+{
+	const int Tick = Server()->Tick();
+	const vec2 &Pos = GetCharacter()->GetPos();
+	int TileX = Pos.x / TileSize;
+
+	const bool FallingDown = m_pCharacter->Core()->m_Vel.y > 0;
+	const int AvailableJumps = GetAvailableJumps();
+
+	bool WantToJump = false;
+	bool WantGoDown = false;
+
+	const float ProximityRadius = m_pCharacter->GetProximityRadius();
+	if(Pos.y > m_LastTargetPosition.y + ProximityRadius)
+	{
+		if(IsGrounded() || (FallingDown && AvailableJumps > 0))
+		{
+			vec2 VectorToTarget = m_LastTargetPosition - Pos;
+			int NeedJumps = GetJumpsToReachTarget(VectorToTarget);
+			m_WantedJumps = std::min<int>(AvailableJumps, NeedJumps);
+		}
+
+		WantToJump = m_WantedJumps > 0;
+	}
+	else if(Pos.y < m_LastTargetPosition.y)
+	{
+		WantGoDown = true;
+	}
+
+	DIRECTION DirectionToTarget = DIRECTION_NONE;
+
+	if(Pos.x + ProximityRadius < m_LastTargetPosition.x)
+	{
+		DirectionToTarget = DIRECTION_RIGHT;
+	}
+	else if(Pos.x > m_LastTargetPosition.x + ProximityRadius)
+	{
+		DirectionToTarget = DIRECTION_LEFT;
+	}
+	else if(!HasWallInTheDirection(m_RoamingDirection))
+	{
+		DirectionToTarget = m_RoamingDirection;
+	}
+
+	DIRECTION Direction = DirectionToTarget;
+
+	if(Direction != DIRECTION_NONE)
+	{
+		bool HasWall = HasWallInTheDirection(Direction);
+
+		BotDebugMessage(HasWall ? "HasWall" : "HasNoWall", VERBOSE_TRACE1);
+
+		if(WantToJump && HasWall)
+		{
+			int NeededJumps = GetJumpsNeededToGetOverWall(Direction);
+			if(NeededJumps)
+			{
+				WantToJump = true;
+				m_WantedJumps = NeededJumps;
+			}
+			else
+			{
+				WantToJump = false;
+				// TODO: Find another way
+			}
+		}
+	}
+
+	const float Distance = distance(Pos, m_LastTargetPosition);
+	const float MaxHookDistance = GameServer()->Tuning()->m_HookLength;
+	const float GroundControlSpeed = GameServer()->Tuning()->m_GroundControlSpeed;
+
+	bool ConsiderHookingOut = false;
+
+	if(Distance < MaxHookDistance - TileSize * 1)
+	{
+		vec2 ToTarget = m_LastTargetPosition - Pos;
+		const float Len2 = ToTarget.x * ToTarget.x + ToTarget.y * ToTarget.y;
+		static const int MaxLookupDistance = TileSize * 4;
+		static const int MaxLookup_2 = MaxLookupDistance * MaxLookupDistance;
+		if(Len2 > MaxLookup_2)
+		{
+			ToTarget = normalize(ToTarget) * MaxLookupDistance;
+		}
+
+		const EThreatLevel LevelOfDanger = GetDangerLevelOnLine(Pos, Pos + ToTarget);
+
+		bool StopAndHook = false;
+		switch(LevelOfDanger)
+		{
+		case EThreatLevel::Zero:
+			break;
+		case EThreatLevel::Suspicious:
+		case EThreatLevel::Dangerous:
+		case EThreatLevel::Deadly:
+			StopAndHook = true;
+			break;
+		}
+
+		if(StopAndHook)
+		{
+			Direction = DIRECTION_NONE;
+			ConsiderHookingOut = true;
+		}
+	}
+
+	if(m_pCharacter->Core()->HookedPlayer() == m_LastTarget)
+	{
+		if(Distance > TileSize * 5 || IsMovingInDirection(OppositeDirection(DirectionToTarget), GroundControlSpeed * 0.3f))
+		{
+			ConsiderHookingOut = true;
+		}
+
+		if(ConsiderHookingOut)
+		{
+			Direction = OppositeDirection(DirectionToTarget);
+
+			if(!WantGoDown)
+			{
+				// Go move away with a jump
+				WantToJump = true;
+			}
+		}
+	}
+
+	if(WantToJump)
+	{
+		const float JumpIntervalForMaxHeight = 1 / 32.0f * 13; // 0.40625;
+		float JumpInterval = JumpIntervalForMaxHeight;
+
+		if(!IsGrounded())
+		{
+			const float dYTiles = (Pos.y - m_JumpTargetPosition.y) / TileSizeF;
+			if(dYTiles < m_pUtils->GetAirJumpTiles())
+			{
+				// Reduce the interval for the last jump that fits
+				JumpInterval = 0.2f;
+			}
+		}
+
+		if(Tick > m_LastJumpTick + Server()->TickSpeed() * JumpInterval)
+		{
+			pInput->m_Jump = 1;
+			m_LastJumpTick = Tick;
+			m_WantedJumps--;
+		}
+	}
+
+	SetRoamingDirection(Direction);
+
+	BotDebugMessage(WantToJump ? "WantToJump: yes" : "WantToJump: no");
+
+	pInput->m_Direction = m_RoamingDirection;
+	pInput->m_TargetX = m_LastTargetPosition.x - Pos.x;
+	pInput->m_TargetY = m_LastTargetPosition.y - Pos.y;
+
+	float FirePerSecond = 0.3f;
+	// TODO: This should be the target proximity radius
+	const float HitDistance = GetCharacterClass()->GetHammerProjOffset() + GetCharacterClass()->GetHammerRange() + m_pCharacter->GetProximityRadius();
+
+	if(Distance < HitDistance)
+	{
+		if(GetCharacter()->GetReloadTimer() <= 0)
+		{
+			pInput->m_Fire = true;
+		}
+	}
+	else if(Distance < HitDistance * 2)
+	{
+		FirePerSecond += random_float() * 0.5f;
+
+		if(Tick > m_LastFireTick + Server()->TickSpeed() * FirePerSecond)
+		{
+			pInput->m_Fire = true;
+		}
+	}
+	else if(GetClass() == EPlayerClass::Slug)
+	{
+		pInput->m_TargetX = m_RoamingDirection * TileSize * 4;
+		pInput->m_TargetY = TileSize * 2;
+
+		if(m_NextRandomFireTick >= 0 && Tick > m_NextRandomFireTick)
+		{
+			pInput->m_Fire = true;
+		}
+	}
+	else if(Distance < HitDistance * 4)
+	{
+		FirePerSecond += random_float() * 1.0f;
+
+		if(Tick > m_LastFireTick + Server()->TickSpeed() * FirePerSecond)
+		{
+			pInput->m_Fire = true;
+		}
+	}
+
+	MaybeHookTheTarget(Distance);
+
+	if(GetClass() == EPlayerClass::Boomer)
+	{
+		bool DecideToGetEvenCloser = random_prob(0.3f);
+		if((pInput->m_Fire && (Distance > 60)) || DecideToGetEvenCloser)
+		{
+			pInput->m_Fire = false;
+			m_LastFireTick = Tick;
+		}
+	}
+
+	if(m_HookUntilTick >= Tick)
+	{
+		pInput->m_Hook = 1;
+	}
+}
+
+void CBotPlayer::UpdateHumanBotControls()
+{
+	m_BotState = BOTSTATE_HUNTING;
+	m_pCharacter->SetWeapon(WEAPON_HAMMER);
+}
+
+void CBotPlayer::ScheduleRandomFire()
+{
+	if(GetClass() != EPlayerClass::Slug)
+	{
+		return;
+	}
+
+	float FireInterval = 0.2f + random_float();
+
+	if(GetClass() == EPlayerClass::Slug)
+	{
+		if(m_RoamingObjection != EObjection::Relax)
+		{
+			FireInterval /= 2.5f;
+		}
+	}
+
+	m_NextRandomFireTick = m_LastFireTick + Server()->TickSpeed() * FireInterval;
+}
+
+const char *CBotPlayer::DumpBot()
+{
+	static char aBuf[200];
+	switch(m_BotState)
+	{
+	case BOTSTATE_ROAMING:
+		str_format(aBuf, sizeof(aBuf), "Roaming | Direction: %d, objection: %s, extra jumps proba: %.2f",
+			m_RoamingDirection, toString(m_RoamingObjection), m_JumpExtraProbability);
+		break;
+	case BOTSTATE_HUNTING:
+		str_format(aBuf, sizeof(aBuf), "Hunting | Target: %d (%.2f, %.2f)",
+			m_LastTarget,
+			m_LastTargetPosition.x / 32,
+			m_LastTargetPosition.y / 32);
+		break;
+	}
+
+	return aBuf;
+}
+
+void CBotPlayer::SetAiEnabled(bool Enabled)
+{
+	AiEnabled = Enabled;
+}
+
+void CBotPlayer::SetObjectionEnabled(EObjection Objection, bool Enabled)
+{
+	std::optional<std::size_t> Index = AiBannedObjections.IndexOf(Objection);
+	if(Index.has_value())
+	{
+		if(Enabled)
+		{
+			AiBannedObjections.RemoveAt(Index.value());
+		}
+		else
+		{
+		  // Do nothing
+		}
+	}
+	else
+	{
+		if(Enabled)
+		{
+		  // Do nothing
+		}
+		else
+		{
+			AiBannedObjections.Add(Objection);
+		}
+	}
+}
+
+void CBotPlayer::ResetEnabledObjections()
+{
+	AiBannedObjections.Clear();
+}
+
+void CBotPlayer::UpdateName()
+{
+	if((m_MaxLives != InfinityLives))
+	{
+		if(m_MaxHP && (m_Lives > 0))
+		{
+			str_format(m_Name, sizeof(m_Name), "Bot%d (%d HP)", GetCid(), m_pCharacter ? m_pCharacter->GetHealthArmorSum() : m_MaxHP);
+		}
+		else
+		{
+			str_format(m_Name, sizeof(m_Name), "Bot%d (%d/%d)", GetCid(), m_Lives, m_MaxLives);
+		}
+	}
+	else
+	{
+		str_format(m_Name, sizeof(m_Name), "Bot%d", GetCid());
+	}
+
+	Server()->SetClientName(GetCid(), m_Name);
+}
+
+void CBotPlayer::OnCharacterHPChanged()
+{
+	if(m_MaxHP)
+	{
+		UpdateName();
+	}
+}
+
+bool CBotPlayer::IsDebugEnabled(int Verbosity) const
+{
+	return (Verbosity < g_Config.m_InfBotDebugLevel) && (g_Config.m_InfDebugBot < 0 || g_Config.m_InfDebugBot == GetCid());
+}
+
+void CBotPlayer::BotDebugMessage(const char *pMessage, int Verbosity) const
+{
+	if(!IsDebugEnabled(Verbosity))
+		return;
+
+	GameServer()->SendChat(-1, CGameContext::CHAT_ALL, pMessage);
+}
+
+bool CBotPlayer::HasWallInTheDirection(DIRECTION Direction) const
+{
+	if(!m_pCharacter || (Direction == DIRECTION_NONE))
+	{
+		return false;
+	}
+
+	const vec2 &Pos = m_pCharacter->GetPos();
+	static const float OneThirdProximityRadius = m_pCharacter->GetProximityRadius() / 3.0f;
+	const int DirectionSign = Direction;
+
+	const int XOffset = DirectionSign * (OneThirdProximityRadius + TileSize * 0.5f);
+
+	return IsSolidTile(Pos + vec2(XOffset, -OneThirdProximityRadius)) || IsSolidTile(Pos + vec2(XOffset, +OneThirdProximityRadius));
+}
+
+bool CBotPlayer::HasDangerInTheDirection(DIRECTION Direction) const
+{
+	if(!m_pCharacter || (Direction == DIRECTION_NONE))
+	{
+		return false;
+	}
+
+	const vec2 &Pos = m_pCharacter->GetPos();
+	static const float ProximityRadius = m_pCharacter->GetProximityRadius();
+	const int DirectionSign = Direction;
+
+	const int XOffset = DirectionSign * (ProximityRadius / 2 + TileSize * 0.9);
+
+	int DamageIndex1 = GameController()->GetDamageZoneValueAt(Pos + vec2(XOffset, -ProximityRadius / 2));
+	int DamageIndex2 = GameController()->GetDamageZoneValueAt(Pos + vec2(XOffset, +ProximityRadius / 2));
+
+	const icArray<int, 5> BadIndices = {
+		ZONE_DAMAGE_DEATH,
+	};
+
+	if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2))
+		return true;
+
+	return false;
+}
+
+EThreatLevel CBotPlayer::GetDangerLevelAhead(vec2 *pThreatPosition, CIcEntity **ppThreatEntity) const
+{
+	return EThreatLevel::Zero;
+
+	if(!m_pCharacter)
+	{
+		return EThreatLevel::Zero;
+	}
+
+	const float PredictTime = 0.25f; // Predict 1/4 of the next second
+
+	const vec2 &Pos = m_pCharacter->GetPos();
+	const int DirectionSign = m_RoamingDirection;
+	const float Acceleration = c_AirControlAccel * DirectionSign;
+	const float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(m_pCharacter->Core()->m_Vel.x, Acceleration, Server()->TickSpeed() * PredictTime, c_AirControlSpeed);
+	const vec2 EndPos = Pos + vec2(MaxHDistance, 0);
+
+	return GetDangerLevelOnLine(Pos, EndPos, pThreatPosition, ppThreatEntity);
+}
+
+EThreatLevel CBotPlayer::GetDangerLevelOnLine(const vec2 &From, vec2 To, vec2 *pThreatPosition, CIcEntity **ppThreatEntity) const
+{
+	if(IsHuman())
+	{
+		// Bot-human feels no fear
+		return EThreatLevel::Zero;
+	}
+
+	static const float ProximityRadius = m_pCharacter->GetProximityRadius();
+	vec2 ResultPos;
+
+	const std::pair<int, EThreatLevel>
+		Threats[] = {
+			{CEngineerWall::EntityId, EThreatLevel::Deadly},
+			{CScientistMine::EntityId, EThreatLevel::Deadly},
+			{CMercenaryBomb::EntityId, EThreatLevel::Dangerous},
+			{CBiologistMine::EntityId, EThreatLevel::Dangerous},
+
+			{CScatterGrenade::EntityId, EThreatLevel::Suspicious},
+			{CLooperWall::EntityId, EThreatLevel::Suspicious},
+		};
+
+	{
+		vec2 BeforeCol;
+		if(GameServer()->Collision()->IntersectLine(From, To, nullptr, &BeforeCol))
+			To = BeforeCol;
+	}
+
+	EThreatLevel Result = EThreatLevel::Zero;
+	float ResultLen2 = distance2(From, To);
+	CIcEntity *pResultEntity = nullptr;
+
+	for(const std::pair<int, EThreatLevel> &ThreatSpec : Threats)
+	{
+		CEntity *pThreatEntity = GameWorld()->IntersectEntity(From, To, ProximityRadius, &ResultPos, ThreatSpec.first);
+		if(!pThreatEntity)
+			continue;
+
+		// Incorrect math, distance in square but proximity is not. Do not care for now :eyes:
+		float Len2 = distance2(From, ResultPos) - pThreatEntity->GetProximityRadius();
+		if(Len2 < ResultLen2)
+		{
+			ResultLen2 = Len2;
+			pResultEntity = static_cast<CIcEntity *>(pThreatEntity);
+
+			if(ThreatSpec.first == CScientistMine::EntityId)
+			{
+				// Typical mine damage is up to 18
+				if(m_pCharacter->GetHealthArmorSum() > 18)
+				{
+					Result = EThreatLevel::Dangerous;
+				}
+				else
+				{
+					Result = EThreatLevel::Deadly;
+				}
+			}
+			else
+			{
+				Result = ThreatSpec.second;
+			}
+		}
+	}
+
+	if(IsDebugEnabled(VERBOSE_TRACE1))
+	{
+		m_pGameServer->CreateHammerDotEvent(From, Server()->TickSpeed() * 1.0);
+		m_pGameServer->CreateHammerDotEvent(To, Server()->TickSpeed() * 2.0);
+		if(Result != EThreatLevel::Zero)
+		{
+			m_pGameServer->CreateHammerDotEvent(ResultPos, Server()->TickSpeed() * 3.0);
+		}
+	}
+
+	if(pThreatPosition)
+	{
+		*pThreatPosition = ResultPos;
+	}
+	if(ppThreatEntity)
+	{
+		*ppThreatEntity = pResultEntity;
+	}
+
+	return Result;
+}
+
+int CBotPlayer::GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition) const
+{
+	if(MaxJumps < 0)
+		MaxJumps = GetAvailableJumps();
+
+	if(MaxJumps == 0)
+	{
+		return 0;
+	}
+
+	BotDebugMessage("Evaluating jump over...", VERBOSE_TRACE1);
+	int AvailableJumpY = GetAirTilesAbove(Direction, MaxJumps);
+	if(AvailableJumpY <= 0)
+	{
+		return 0;
+	}
+
+	const vec2 &Pos = m_pCharacter->GetPos();
+	static const float HalfProximityRadius = m_pCharacter->GetProximityRadius() / 2;
+	const int DirectionSign = Direction;
+
+	const int XOffset = DirectionSign * (HalfProximityRadius + TileSize * 0.5);
+	const float WallPosX = Pos.x + XOffset;
+	char aBuf[300];
+
+	int NeedJumps = 0;
+	for(int i = 1; i <= AvailableJumpY; ++i)
+	{
+		int CheckPosY = Pos.y - i * TileSize;
+		str_format(aBuf, sizeof(aBuf), "Check the wall at %.2f x %.2f: ", WallPosX / TileSizeF, CheckPosY / TileSizeF);
+		BotDebugMessage(aBuf, VERBOSE_TRACE2);
+
+		int Tile = GameServer()->Collision()->GetCollisionAt(WallPosX, CheckPosY);
+		static const icArray<int, 2> SolidTiles = {TILE_SOLID, TILE_NOHOOK};
+		if(!SolidTiles.Contains(Tile))
+		{
+			int DamageIndex = GameController()->GetDamageZoneValueAt(vec2(WallPosX, CheckPosY));
+			if(DamageIndex == ZONE_DAMAGE_DEATH)
+			{
+				// Unacceptable tile for a jump
+				continue;
+			}
+
+			const int PlatformX = WallPosX / TileSize;
+			const int PlatformY = CheckPosY / TileSize + 1;
+			const int ExtraLenght = 2;
+
+			vec2 TargetPos(PlatformX * TileSize + TileSize * 0.5 - (TileSize * 0.5 + HalfProximityRadius - ExtraLenght) * DirectionSign, PlatformY * TileSize - HalfProximityRadius - ExtraLenght);
+			vec2 VectorToTarget = TargetPos - Pos;
+			NeedJumps = GetJumpsToReachTarget(VectorToTarget);
+
+			if(NeedJumps <= MaxJumps)
+			{
+				str_format(aBuf, sizeof(aBuf), "Can! jump over: av: %d, jump at %d", AvailableJumpY, i);
+				BotDebugMessage(aBuf, VERBOSE_TRACE1);
+
+				if(pTargetPosition)
+				{
+					*pTargetPosition = TargetPos;
+				}
+			}
+			break;
+		}
+	}
+
+	if(NeedJumps)
+	{
+		BotDebugMessage("Can jump over", VERBOSE_TRACE1);
+	}
+	else
+	{
+		BotDebugMessage("Can't jump over", VERBOSE_TRACE1);
+	}
+
+	return NeedJumps;
+}
+
+int CBotPlayer::GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition) const
+{
+	BotDebugMessage("Evaluating jump on a platform...", VERBOSE_TRACE1);
+
+	if(MaxJumps < 0)
+	{
+		MaxJumps = GetAvailableJumps();
+	}
+
+	const vec2 &Pos = m_pCharacter->GetPos();
+	static const float HalfProximityRadius = m_pCharacter->GetProximityRadius() / 2;
+	const int DirectionSign = Direction;
+
+	// float HVelocity = absolute(m_pCharacter->Core()->m_Vel.x);
+	int MinHTile = 0; // Dep on velocity
+
+	// const float MaxControlSpeed = IsGrounded() ? c_GroundControlSpeed : c_AirControlSpeed;
+	// float MaxHSpeed = std::max<float>(MaxControlSpeed, fabs(m_pCharacter->Core()->m_Vel.x));
+	float Acceleration = c_AirControlAccel * DirectionSign;
+	float MaxHDistance = CBotUtils::GetDistanceForVelocityAccelerationTicks(m_pCharacter->Core()->m_Vel.x, Acceleration, Server()->TickSpeed() * 1.0f, c_AirControlSpeed);
+	int MaxHTiles = fabs(MaxHDistance / TileSize);
+	int MaxTiles = GetMaxTilesForJumps(MaxJumps);
+
+	const float CharHorOffset = DirectionSign * HalfProximityRadius;
+	const float CharPosX = Pos.x + CharHorOffset;
+	char aBuf[200];
+	int NeedJumps = 0;
+
+	if(IsDebugEnabled(VERBOSE_TRACE2))
+	{
+		str_format(aBuf, sizeof(aBuf), "jump max H tiles: %.2f", MaxHDistance);
+		BotDebugMessage(aBuf, VERBOSE_TRACE2);
+	}
+
+	int MaxReachableTilesAbove = MaxTiles;
+	for(int horTile = MinHTile; horTile < MaxHTiles; horTile++)
+	{
+		// Min hor tile is 1
+		const float AirPosX = CharPosX + horTile * TileSize * DirectionSign;
+
+		int AirTilesAbove = GetAirTilesAboveAtX(MaxTiles, AirPosX);
+		if(AirTilesAbove <= 0)
+		{
+			return 0;
+		}
+
+		if(AirTilesAbove < MaxReachableTilesAbove)
+			MaxReachableTilesAbove = AirTilesAbove;
+
+		// horTile + 1 because we're looking for the next tile after current air
+		const float WallPosX = CharPosX + (horTile + 1) * TileSize * DirectionSign;
+		for(int i = MaxReachableTilesAbove; i > 0; --i)
+		{
+			float CheckPosY = Pos.y - i * TileSize;
+			bool HasAirThere = !IsSolidTile(WallPosX, CheckPosY);
+
+			if(IsDebugEnabled(VERBOSE_TRACE2))
+			{
+				str_format(aBuf, sizeof(aBuf), "Check the wall at %.2f x %.2f: %s", WallPosX / TileSize, CheckPosY / TileSize, HasAirThere ? "air" : "solid");
+				BotDebugMessage(aBuf, VERBOSE_TRACE2);
+			}
+
+			if(HasAirThere)
+			{
+				bool HasSolidBelow = IsSolidTile(WallPosX, CheckPosY + TileSize);
+
+				if(HasSolidBelow)
+				{
+					if(IsDebugEnabled(VERBOSE_TRACE1))
+					{
+						str_format(aBuf, sizeof(aBuf), "Found a platform at %.2f x %.2f: ", WallPosX / TileSize, CheckPosY / TileSize + 1);
+						BotDebugMessage(aBuf, VERBOSE_TRACE1);
+					}
+
+					const int PlatformX = WallPosX / TileSize;
+					const int PlatformY = CheckPosY / TileSize + 1;
+					const int ExtraLength = 2;
+
+					vec2 TargetPos(PlatformX * TileSize + TileSize * 0.5 - (TileSize * 0.5 + HalfProximityRadius - ExtraLength) * DirectionSign, PlatformY * TileSize - HalfProximityRadius - ExtraLength);
+					vec2 VectorToTarget = TargetPos - Pos;
+					int JumpsToReach = GetJumpsToReachTarget(VectorToTarget);
+					if(JumpsToReach <= MaxJumps)
+					{
+						NeedJumps = JumpsToReach;
+						if(IsDebugEnabled(VERBOSE_TRACE1))
+						{
+							str_format(aBuf, sizeof(aBuf), "Can! jump on: av: %d, jump at %d", MaxReachableTilesAbove, i);
+							BotDebugMessage(aBuf, VERBOSE_TRACE1);
+						}
+
+						if(pTargetPosition)
+						{
+							*pTargetPosition = TargetPos;
+						}
+						break;
+					}
+				}
+			}
+		}
+
+		if(NeedJumps)
+		{
+			break;
+		}
+	}
+
+	if(NeedJumps)
+	{
+		if(IsDebugEnabled(VERBOSE_TRACE1))
+		{
+			str_format(aBuf, sizeof(aBuf), "Can jump on in %d jumps", NeedJumps);
+			BotDebugMessage(aBuf, VERBOSE_TRACE1);
+		}
+	}
+	else
+	{
+		BotDebugMessage("Can't jump on", VERBOSE_TRACE1);
+	}
+
+	return NeedJumps;
+}
+
+int CBotPlayer::GetAirTilesAbove(DIRECTION Direction, int MaxJumps) const
+{
+	if(!m_pCharacter)
+	{
+		return 0;
+	}
+
+	if(MaxJumps < 0)
+	{
+		MaxJumps = GetAvailableJumps();
+	}
+
+	if(MaxJumps == 0)
+	{
+		return 0;
+	}
+
+	float MaxTiles = GetMaxTilesForJumps(MaxJumps);
+
+	const vec2 &Pos = m_pCharacter->GetPos();
+	return m_pUtils->GetAirTilesAbove(Pos, MaxTiles);
+}
+
+float CBotPlayer::GetAirTilesAboveAtX(int MaxTiles, float CheckPosX) const
+{
+	const vec2 &Pos = m_pCharacter->GetPos();
+	const float BaseY = Pos.y;
+
+	return m_pUtils->GetAirTilesAbove(vec2(CheckPosX, BaseY), MaxTiles);
+}
+
+int CBotPlayer::GetMaxJumps() const
+{
+	if(!m_pCharacter)
+	{
+		return 0;
+	}
+
+	return m_pCharacter->Core()->m_Jumps;
+}
+
+void CBotPlayer::SetState(CBotPlayer::BOTSTATE NewState)
+{
+	if(m_BotState == NewState)
+	{
+		return;
+	}
+
+	if(IsHuman())
+	{
+		GameServer()->SendEmoticon(GetCid(), EMOTICON_HEARTS);
+		return;
+	}
+
+	if(NewState == BOTSTATE_ROAMING)
+	{
+		BotDebugMessage("SwitchState: ROAMING", VERBOSE_MAIN);
+
+		static const int RoamingEmotes[] = {
+			EMOTICON_WTF,
+			EMOTICON_QUESTION,
+		};
+		GameServer()->SendEmoticon(GetCid(), RoamingEmotes[random_int(0, 1)]);
+	}
+	else if(NewState == BOTSTATE_HUNTING)
+	{
+		BotDebugMessage("SwitchState: HUNTING", VERBOSE_MAIN);
+
+		static const int HuntingEmotes[] = {
+			EMOTICON_SPLATTEE,
+			EMOTICON_DEVILTEE,
+			EMOTICON_ZOMG,
+		};
+		GameServer()->SendEmoticon(GetCid(), HuntingEmotes[random_int(0, 2)]);
+	}
+
+	m_BotState = NewState;
+}
+
+void CBotPlayer::SetRoamingDirection(DIRECTION Direction)
+{
+	m_RoamingBehaviorTick = Server()->Tick();
+	m_RoamingDirection = Direction;
+}
+
+void CBotPlayer::MaybeChangeRoamingBehavior()
+{
+	if(Server()->Tick() > m_RoamingBehaviorTick + Server()->TickSpeed() * 30)
+	{
+		if(random_prob(0.6f))
+		{
+			// Dirty delay
+			m_RoamingBehaviorTick += Server()->TickSpeed() * (0.125f + random_float());
+		}
+		else
+		{
+			ChangeRoamingBehavior();
+		}
+	}
+}
+
+void CBotPlayer::ChangeRoamingBehavior()
+{
+	SetRoamingDirection(OppositeDirection(m_RoamingDirection));
+
+	m_DecisionTileX = -1;
+	m_DecisionTileY = -1;
+
+	switch(m_RoamingObjection)
+	{
+	case EObjection::Relax:
+	case EObjection::Jump:
+	case EObjection::Lookup:
+		GetNewObjection();
+		break;
+	case EObjection::CheckTheTop:
+	case EObjection::CheckTheMid:
+	case EObjection::CheckTheBottom:
+		if(random_prob(0.5f))
+		{
+			m_RoamingObjection = EObjection::Lookup;
+			GetNewObjection();
+		}
+		else
+		{
+			return;
+		}
+		break;
+	case EObjection::Invalid:
+		// Invalid
+		break;
+	}
+
+	switch(m_RoamingObjection)
+	{
+	case EObjection::Relax:
+		GameServer()->SendEmoticon(GetCid(), EMOTICON_ZZZ);
+		m_JumpExtraProbability = random_float() - 0.5f;
+		break;
+	case EObjection::Jump:
+		GameServer()->SendEmoticon(GetCid(), EMOTICON_MUSIC);
+		m_JumpExtraProbability = random_float();
+		break;
+	case EObjection::CheckTheTop:
+		GameServer()->SendEmoticon(GetCid(), EMOTICON_EXCLAMATION);
+		m_JumpExtraProbability = 0;
+		break;
+	case EObjection::CheckTheMid:
+		GameServer()->SendEmoticon(GetCid(), EMOTICON_EYES);
+		m_JumpExtraProbability = 0;
+		break;
+	case EObjection::CheckTheBottom:
+		GameServer()->SendEmoticon(GetCid(), EMOTICON_OOP);
+		m_JumpExtraProbability = -1;
+		break;
+	case EObjection::Lookup:
+	case EObjection::Invalid:
+		break;
+	}
+
+	char aBuf[200];
+	str_format(aBuf, sizeof(aBuf), "ChangeRoaming| Direction: %d, objection: %s, extra jumps: %.2f",
+		m_RoamingDirection, toString(m_RoamingObjection), m_JumpExtraProbability);
+	BotDebugMessage(aBuf, VERBOSE_STEPS);
+}
+
+void CBotPlayer::GetNewObjection()
+{
+	auto DisabledObjections = AiBannedObjections;
+	if(DisabledObjections.Size() == DisabledObjections.Capacity())
+	{
+		// All objections disabled
+		return;
+	}
+
+	if(!m_RecentObjections.IsEmpty())
+	{
+		DisabledObjections.Add(m_RecentObjections.Last());
+	}
+
+	if(m_RoamingObjection == EObjection::Lookup)
+	{
+		int PlayersAbove = 0;
+		int PlayersMid = 0;
+		int PlayersBelow = 0;
+		// Find if players are above or below
+
+		const vec2 &OwnPos = GetCharacter()->GetPos();
+
+		for(int i = 0; i < MAX_CLIENTS; ++i)
+		{
+			const CIcPlayer *pPlayer = GameController()->GetPlayer(i);
+			if(!pPlayer || !pPlayer->GetCharacter() || !pPlayer->GetCharacter()->IsAlive())
+				continue;
+
+			// Different team?
+			if(pPlayer->IsHuman() != IsHuman())
+			{
+				vec2 TargetPos = pPlayer->GetCharacter()->GetPos();
+				if(TargetPos.y > OwnPos.y)
+				{
+					PlayersBelow++;
+				}
+				else
+				{
+					bool Reachable = m_pUtils->IsReachableByGround(OwnPos, TargetPos, GetMaxJumps());
+
+					if(Reachable)
+					{
+						PlayersMid++;
+					}
+					else
+					{
+						PlayersAbove++;
+					}
+				}
+			}
+		}
+
+		char aBuf[100];
+		str_format(aBuf, sizeof(aBuf), "Looking up. PlayersAbove: %d, PlayersMid: %d, PlayersBelow: %d", PlayersAbove, PlayersMid, PlayersBelow);
+		BotDebugMessage(aBuf, VERBOSE_STEPS);
+
+		double Probas[3] = {PlayersAbove * 1.0, PlayersMid * 1.0, PlayersBelow * 1.0};
+		int Obj = random_distribution(std::begin(Probas), std::end(Probas));
+		if(Obj == 0)
+			m_RoamingObjection = EObjection::CheckTheTop;
+		else if(Obj == 1)
+			m_RoamingObjection = EObjection::CheckTheMid;
+		else
+			m_RoamingObjection = EObjection::CheckTheBottom;
+	}
+	else
+	{
+		do
+		{
+			m_RoamingObjection = EObjection(random_int(0, static_cast<int>(EObjection::Count) > -1));
+		} while(DisabledObjections.Contains(m_RoamingObjection));
+	}
+
+	if(m_RecentObjections.Size() == m_RecentObjections.Capacity())
+	{
+		m_RecentObjections.RemoveAt(0);
+	}
+	m_RecentObjections.Add(m_RoamingObjection);
+}
+
+void CBotPlayer::MaybeHookTheTarget(float Distance)
+{
+	if(IsHuman())
+	{
+		m_HookUntilTick = -1;
+		return;
+	}
+
+	float HookLength = GameServer()->Tuning()->m_HookLength;
+	float HookDuration = GameServer()->Tuning()->m_HookDuration;
+	float BaseDelay = 0.3f;
+	float ExtraDelay = 0.75f;
+
+	if(aHookyClasses.Contains(GetClass()))
+	{
+		BaseDelay *= 0.5f;
+		ExtraDelay *= 0.5;
+
+		if(m_pCharacter->Core()->HookedPlayer() == m_LastTarget)
+		{
+			// Keep hooking
+			const int Tick = Server()->Tick();
+			m_HookUntilTick = Tick + 1;
+			// And delay the next hook
+			m_DelayHookUntilTick = Tick + Server()->TickSpeed() * (BaseDelay + ExtraDelay);
+			return;
+		}
+	}
+	else
+	{
+		HookLength *= 0.9f;
+	}
+
+	const int Tick = Server()->Tick();
+	if(m_pCharacter->Core()->m_HookState == HOOK_GRABBED)
+	{
+		if(m_pCharacter->Core()->HookedPlayer() != m_LastTarget)
+		{
+			// Grabbed something else. Release.
+			m_HookUntilTick = -1;
+			m_DelayHookUntilTick = Tick + Server()->TickSpeed() * 0.25f;
+		}
+	}
+
+	if(Distance < HookLength)
+	{
+		if(m_HookUntilTick <= Tick)
+		{
+			// If we're not hooking...
+			if(m_DelayHookUntilTick < Tick)
+			{
+				// ... and we don't have a delay set
+				// then delay
+				m_DelayHookUntilTick = Tick + Server()->TickSpeed() * (BaseDelay + random_float() * ExtraDelay);
+			}
+			else if(m_DelayHookUntilTick == Tick)
+			{
+				// ... and we delayed the hook until this tick
+				// then hook
+
+				if(!aHookyClasses.Contains(GetClass()))
+				{
+					HookDuration *= random_float() * 0.25f + 0.75f;
+				}
+
+				m_HookUntilTick = Tick + Server()->TickSpeed() * HookDuration;
+			}
+		}
+	}
+	else
+	{
+		m_DelayHookUntilTick = -1;
+	}
+}
+
+bool CBotPlayer::IsMovingInDirection(DIRECTION Direction, float MinVelocity) const
+{
+	const float VelX = m_pCharacter->Core()->m_Vel.x;
+	switch(Direction)
+	{
+	case DIRECTION_LEFT:
+		return VelX < -MinVelocity;
+	case DIRECTION_RIGHT:
+		return VelX > MinVelocity;
+	case DIRECTION_NONE:
+		break;
+	}
+
+	return false;
+}
+
+bool CBotPlayer::IsSolidTile(float X, float Y) const
+{
+	return GameServer()->Collision()->CheckPoint(X, Y);
+}
+
+bool CBotPlayer::IsSolidTile(const vec2 &Point) const
+{
+	return IsSolidTile(Point.x, Point.y);
+}
+
+bool CBotPlayer::IsGrounded() const
+{
+	return m_CachedGrounded;
+}
+
+int CBotPlayer::GetAvailableJumps() const
+{
+	const CIcCharacter *pCharacter = GetCharacter();
+	const int UsedJumps = IsGrounded() ? 0 : pCharacter->Core()->m_JumpedTotal + 1;
+	const int AvailableJumps = pCharacter->Core()->m_Jumps - UsedJumps;
+	int Result = AvailableJumps > 0 ? AvailableJumps : 0;
+
+	if(Result > c_JumpsHardLimit)
+		Result = c_JumpsHardLimit;
+
+	return Result;
+}
+
+float CBotPlayer::GetMaxTilesForJumps(int Jumps) const
+{
+	return m_pUtils->GetMaxTilesForJumps(Jumps, IsGrounded());
+}
+
+int CBotPlayer::GetJumpsToReachTarget(float TileY) const
+{
+	if(TileY == 0)
+		return 0;
+
+	for(int i = 0; i < c_JumpsHardLimit; ++i)
+	{
+		float MaxTile = GetMaxTilesForJumps(i);
+		if(MaxTile >= TileY)
+		{
+			return i;
+		}
+	}
+
+	return c_JumpsHardLimit * 2;
+}
+
+int CBotPlayer::GetJumpsToReachTarget(const vec2 &VectorToTarget) const
+{
+	const float TilesUp = -VectorToTarget.y / TileSize;
+	const int NeedJumps = GetJumpsToReachTarget(TilesUp);
+	return NeedJumps;
+}
+
+bool CBotPlayer::MaybeFallDown() const
+{
+	EDecision PreviousDecision = GetPreviousDecision();
+	if(PreviousDecision == EDecision::Jump)
+	{
+		BotDebugMessage("Jumped previously, do not jump now", VERBOSE_STEPS);
+		return true;
+	}
+	if(PreviousDecision == EDecision::NoJump)
+	{
+		BotDebugMessage("Didn't jump previously, jump now", VERBOSE_STEPS);
+		return false;
+	}
+
+	if(m_RoamingObjection == EObjection::CheckTheBottom)
+	{
+		return true;
+	}
+
+	if(m_RoamingObjection == EObjection::CheckTheTop)
+	{
+		return false;
+	}
+
+	bool Jump = random_prob(0.4f + m_JumpExtraProbability);
+	return !Jump;
+}
+
+bool CBotPlayer::MaybeJumpOverWall() const
+{
+	if(m_RoamingObjection == EObjection::Relax)
+	{
+		return random_prob(0.6f);
+	}
+
+	return true;
+}
+
+bool CBotPlayer::MaybeJumpOn() const
+{
+	EDecision PreviousDecision = GetPreviousDecision();
+	if(PreviousDecision == EDecision::Jump)
+	{
+		BotDebugMessage("Jumped previously, do not jump now", VERBOSE_STEPS);
+		return false;
+	}
+	if(PreviousDecision == EDecision::NoJump)
+	{
+		BotDebugMessage("Didn't jump previously, jump now", VERBOSE_STEPS);
+		return true;
+	}
+
+	if(m_RoamingObjection == EObjection::CheckTheBottom)
+	{
+		BotDebugMessage("Do not jump (check the bottom)", VERBOSE_STEPS);
+		return false;
+	}
+
+	if(m_RoamingObjection == EObjection::CheckTheMid)
+	{
+		BotDebugMessage("Do not jump (check the mid)", VERBOSE_STEPS);
+		return false;
+	}
+
+	if(m_RoamingObjection == EObjection::CheckTheTop)
+	{
+		BotDebugMessage("Do jump (check the top)", VERBOSE_STEPS);
+		return true;
+	}
+
+	return random_prob(0.2 + m_JumpExtraProbability);
+}
+
+bool CBotPlayer::MaybeRandomJumpUp() const
+{
+	return random_prob(m_JumpExtraProbability);
+}
+
+bool CBotPlayer::MaybeJumpToAvoidDanger() const
+{
+	return false;
+
+	CIcEntity *pThreatEntity = nullptr;
+	vec2 ThreatIntersectPos;
+	bool HasMineInRoamingHorizontalDirection = GetDangerLevelAhead(&ThreatIntersectPos, &pThreatEntity) >= EThreatLevel::Dangerous;
+	if(!HasMineInRoamingHorizontalDirection || !pThreatEntity) // pThreatEntity should point to an object if there is a threat
+	{
+		return false;
+	}
+
+	const vec2 Pos = m_pCharacter->GetPos();
+	const vec2 ThreatPos = pThreatEntity->GetPos();
+
+	float MaxTiles = (IsGrounded() ? m_pUtils->GetGroundJumpTiles() : m_pUtils->GetAirJumpTiles()) + 1;
+	float TopLineY = Pos.y - MaxTiles * TileSize + 5;
+	float MaybeTheFirstSolidAbove = m_pUtils->GetFirstSolidAbovePosition(ThreatPos, MaxTiles);
+	if(MaybeTheFirstSolidAbove > TopLineY)
+	{
+		TopLineY = MaybeTheFirstSolidAbove;
+	}
+	bool ExpectSolid = IsSolidTile(ThreatPos.x, TopLineY);
+
+	// There should be no sky higher than that
+
+	float CurrentX = ThreatIntersectPos.x; // + DirectionSign * TileSize
+	float CheckToX = Pos.x;
+	bool MakesSenseToJump = true;
+	while(true)
+	{
+		bool Solid = IsSolidTile(CurrentX, TopLineY);
+
+		if(!ExpectSolid)
+		{
+			float GroundY = m_pUtils->GetSolidBelow(vec2(CurrentX, TopLineY), MaxTiles + 1);
+			if(GroundY < Pos.y)
+			{
+			}
+		}
+		// Check air at (CheckFromX, FirstSolidAbove + TileSize)
+		if(!Solid)
+		{
+			MakesSenseToJump = false;
+			break;
+		}
+
+		if(ThreatIntersectPos.x > Pos.x)
+		{
+		}
+	}
+
+	return MakesSenseToJump;
+}
+
+void CBotPlayer::PushDecision(EDecision Decision)
+{
+	const vec2 &Pos = GetCharacter()->GetPos();
+	const STilePosition Position = STilePosition::fromPosXY(Pos.x, Pos.y);
+	int Direction = m_RoamingDirection;
+
+	const auto SameContextLambda = [Position, Direction](const SBotDecision &BotDecision) -> bool {
+		if(BotDecision.Position != Position)
+			return false;
+		if(BotDecision.Direction != Direction)
+			return false;
+
+		return true;
+	};
+	SBotDecision *pSameContext = std::find_if(m_RecentDecisions.begin(), m_RecentDecisions.end(), SameContextLambda);
+
+	char aBuf[200];
+	if(pSameContext != m_RecentDecisions.end())
+	{
+		str_format(aBuf, sizeof(aBuf), "Overwrite decision at %d %d", Position.X, Position.Y);
+		BotDebugMessage(aBuf, VERBOSE_STEPS);
+		m_RecentDecisions.erase(pSameContext);
+	}
+
+	if(m_RecentDecisions.Size() == m_RecentDecisions.Capacity())
+	{
+		m_RecentDecisions.RemoveAt(0);
+	}
+
+	SBotDecision BotDecision;
+	BotDecision.Position = Position;
+	BotDecision.Direction = Direction;
+	BotDecision.Objection = m_RoamingObjection;
+	BotDecision.Decision = Decision;
+	m_RecentDecisions.Add(BotDecision);
+
+	str_format(aBuf, sizeof(aBuf), "Add decision %s at %d %d", toString(Decision), Position.X, Position.Y);
+	BotDebugMessage(aBuf, VERBOSE_STEPS);
+}
+
+EDecision CBotPlayer::GetPreviousDecision() const
+{
+	const vec2 &Pos = GetCharacter()->GetPos();
+	const STilePosition Position = STilePosition::fromPosXY(Pos.x, Pos.y);
+
+	for(const SBotDecision &BotDecision : m_RecentDecisions)
+	{
+		if(BotDecision.Position != Position)
+			continue;
+
+		if(BotDecision.Direction != m_RoamingDirection)
+			continue;
+
+		if(BotDecision.Objection != m_RoamingObjection)
+			continue;
+
+		return BotDecision.Decision;
+	}
+
+	return EDecision::Invalid;
+}
+
+CGameWorld *CBotPlayer::GameWorld() const
+{
+	return GameServer()->GameWorld();
+}
+
+void CBotPlayer::UpdateCharacterState()
+{
+	const int T = Server()->Tick();
+	if(m_StateUpdateTick == T)
+		return;
+
+	m_StateUpdateTick = T;
+
+	const CIcCharacter *pCharacter = GetCharacter();
+	m_CachedGrounded = pCharacter && pCharacter->IsGrounded();
 }

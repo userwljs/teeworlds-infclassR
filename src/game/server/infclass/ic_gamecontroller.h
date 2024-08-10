@@ -13,6 +13,7 @@
 #include <base/tl/ic_array.h>
 
 class CBaseBotPlayer;
+class CBotUtils;
 class CDoor;
 class CGameWorld;
 class CHintMessage;
@@ -477,8 +478,10 @@ private:
 	CBaseBotPlayer *AddBot(const SurvivalBotConfiguration &Configuration);
 	bool RemoveBot(CBaseBotPlayer *pBot, const char *pReason = nullptr);
 	bool RemoveBot(int ClientId, const char *pReason = nullptr);
+	void RegisterBotsContext();
 
 	icArray<CBaseBotPlayer *, MaxBots> m_Bots;
+	CBotUtils *m_pBotUtils = nullptr;
 
 	struct PlayerScore
 	{

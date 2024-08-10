@@ -22,6 +22,8 @@ void CDebugPlayer::TryRespawn()
 void CDebugPlayer::Tick()
 {
 	CIcPlayer::Tick();
+
+	UpdateCharacterState();
 }
 
 void CDebugPlayer::OnCharacterSpawned(const SpawnContext &Context)

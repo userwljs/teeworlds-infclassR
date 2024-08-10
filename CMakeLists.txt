@@ -895,7 +895,11 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/bot-player.cpp
   infclass/bot-player.h
   infclass/bot_config_parser.cpp
+  infclass/bot_config_parser.cpp
   infclass/bot_config_parser.h
+  infclass/bot_config_parser.h
+  infclass/bot_utils.cpp
+  infclass/bot_utils.h
   infclass/classes/humans/human.cpp
   infclass/classes/humans/human.h
   infclass/classes/ic_playerclass.cpp
@@ -1230,6 +1234,7 @@ if(BUILD_TESTS)
   enable_testing()
   set(TESTS
     "test_CGameWorld"
+    "test_bot_utils"
     "test_icArray"
     "test_icFifoArray"
   )

@@ -7,8 +7,12 @@
 
 #include <cstdint>
 
+template<typename T>
+T fromString(const char *pString);
+
 class CGameWorld;
 class CIcEntity;
+class CBotUtils;
 
 enum Verbosity
 {
@@ -55,6 +59,19 @@ enum class EDecision : uint8_t
 	Invalid = Count,
 };
 
+enum class EObjection : uint8_t
+{
+	Lookup,
+	Relax,
+	Jump,
+	CheckTheTop,
+	CheckTheMid,
+	CheckTheBottom,
+	// SECURE_POSITION,
+	Count,
+	Invalid = Count,
+};
+
 enum class EThreatLevel : uint8_t
 {
 	Zero, // It is safe there
@@ -63,10 +80,13 @@ enum class EThreatLevel : uint8_t
 	Deadly,
 };
 
+const char *toString(EObjection Objection);
+
 struct SBotDecision
 {
 	STilePosition Position;
 	int8_t Direction = 0;
+	EObjection Objection = EObjection::Invalid;
 	EDecision Decision = EDecision::Invalid;
 };
 
@@ -106,6 +126,129 @@ class CBotPlayer : public CBaseBotPlayer
 	MACRO_ALLOC_POOL_ID()
 public:
 	CBotPlayer(CIcGameController *pGameController, int UniqueClientId, int ClientID, int Team);
+	~CBotPlayer() override;
+
+	void SetBotUtils(CBotUtils *pUtils);
+	void Snap(int SnappingClient) override;
+
+	void TryRespawn() override;
+	bool IsBot() const override { return true; }
+	void Tick() override;
+	void TickPaused();
+
+	void OnCharacterSpawned(const SpawnContext &Context) override;
+
+	void UpdateTarget();
+	void UpdateControls() override;
+	void UpdateControlsRoaming(CNetObj_PlayerInput *pInput);
+	void UpdateControlsHunting(CNetObj_PlayerInput *pInput);
+	void UpdateHumanBotControls();
+	void ScheduleRandomFire();
+
+	void FindPath();
+
+	const char *DumpBot() override;
+
+	static void SetAiEnabled(bool Enabled);
+	static void SetObjectionEnabled(EObjection Objection, bool Enabled);
+	static void ResetEnabledObjections();
+	static const char *GetObjectionName(int Objection);
+	static int GetObjectionByName(const char *Objection);
+
+	void UpdateName() override;
+
+	void OnCharacterHPChanged() override;
+
+public:
+	enum BOTSTATE
+	{
+		BOTSTATE_ROAMING,
+		BOTSTATE_HUNTING,
+	};
+
+	enum DIRECTION : int8_t
+	{
+		DIRECTION_LEFT = -1,
+		DIRECTION_NONE = 0,
+		DIRECTION_RIGHT = 1,
+	};
+
+	bool IsDebugEnabled(int Verbosity) const;
+	void BotDebugMessage(const char *pMessage, int Verbosity = VERBOSE_TRACE1) const;
+
+	bool HasWallInTheDirection(DIRECTION Direction) const;
+	bool HasDangerInTheDirection(DIRECTION Direction) const;
+	EThreatLevel GetDangerLevelAhead(vec2 *pThreatPosition = nullptr, CIcEntity **ppThreatEntity = nullptr) const;
+	EThreatLevel GetDangerLevelOnLine(const vec2 &From, vec2 To, vec2 *pThreatPosition = nullptr, CIcEntity **ppThreatEntity = nullptr) const;
+	int GetJumpsNeededToGetOverWall(DIRECTION Direction, int MaxJumps = -1, vec2 *pTargetPosition = nullptr) const;
+	int GetJumpsNeededToJumpOn(DIRECTION Direction, int MaxJumps, vec2 *pTargetPosition = nullptr) const;
+	int GetAirTilesAbove(DIRECTION Direction, int MaxJumpsMaxJumps) const;
+	float GetAirTilesAboveAtX(int MaxTiles, float CheckPosX) const;
+
+	int GetMaxJumps() const;
+	int GetAvailableJumps() const;
+	float GetMaxTilesForJumps(int Jumps) const;
+	int GetJumpsToReachTarget(float TileY) const;
+	int GetJumpsToReachTarget(const vec2 &VectorToTarget) const;
+
+	void SetState(BOTSTATE NewState);
+	void SetRoamingDirection(DIRECTION Direction);
+	void MaybeChangeRoamingBehavior();
+	void ChangeRoamingBehavior();
+	void GetNewObjection();
+	void MaybeHookTheTarget(float Distance);
+
+	bool IsMovingInDirection(DIRECTION Direction, float MinVelocity) const;
+
+	bool IsSolidTile(float X, float Y) const;
+	bool IsSolidTile(const vec2 &Point) const;
+	bool IsGrounded() const;
+
+	bool MaybeFallDown() const;
+	bool MaybeJumpOverWall() const;
+	bool MaybeJumpOn() const;
+	bool MaybeRandomJumpUp() const;
+	bool MaybeJumpToAvoidDanger() const;
+
+	void PushDecision(EDecision Decision);
+	EDecision GetPreviousDecision() const;
+
+protected:
+	CGameWorld *GameWorld() const;
+	void UpdateCharacterState();
+
+	CBotUtils *m_pUtils = nullptr;
+	BOTSTATE m_BotState = BOTSTATE_ROAMING;
+	DIRECTION m_RoamingDirection = DIRECTION_NONE;
+	EObjection m_RoamingObjection = EObjection::Relax;
+	int m_RoamingBehaviorTick = 0;
+	icArray<EObjection, 5> m_RecentObjections;
+	icArray<SBotDecision, 64> m_RecentDecisions;
+	int m_AirJumps = 0;
+
+	float m_JumpExtraProbability = 0;
+
+	int m_LastTarget = -1;
+	vec2 m_LastTargetPosition;
+	vec2 m_LastTargetSeenAt;
+	int m_LastFireTick = -1;
+	int m_NextRandomFireTick = -1;
+	int m_HookUntilTick = -1;
+	int m_DelayHookUntilTick = -1;
+
+	int m_DecisionTileX = -1;
+	int m_DecisionTileY = -1;
+	bool m_FallingDown = false;
+	int m_WantedJumps = 0;
+	int m_LastJumpTick = 0;
+	vec2 m_JumpFromPosition;
+	vec2 m_JumpTargetPosition;
+	int m_JumpTargetingTicks = 0;
+
+	int m_StateUpdateTick = 0;
+	bool m_CachedGrounded = false;
+
+	char m_Name[16];
 };
 
 #endif // INFCLASS_BOT_PLAYER_H

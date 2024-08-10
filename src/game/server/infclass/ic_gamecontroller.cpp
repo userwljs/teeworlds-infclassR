@@ -39,6 +39,8 @@
 #include <iterator>
 #include <time.h>
 
+#define DEBUG_PLAYER
+
 #ifdef DEBUG_PLAYER
 #include "debug-bot-player.h"
 using UPlayerClass = CDebugPlayer;
@@ -48,6 +50,7 @@ using UPlayerClass = CIcPlayer;
 #endif
 
 #include "bot_config_parser.h"
+#include "bot_utils.h"
 
 const int InfClassModeSpecialSkip = 0x100;
 
@@ -160,6 +163,54 @@ enum class ROUND_CANCELATION_REASON
 	EVERYONE_INFECTED_BY_THE_GAME,
 };
 
+class CCollisionWrapper : public ICollision
+{
+public:
+	void SetGameContext(CGameContext *pGameContext)
+	{
+		m_pGameContext = pGameContext;
+	}
+
+	int GetTile(int x, int y) const override
+	{
+		return m_pGameContext->Collision()->GetCollisionAt(x, y);
+	}
+
+	int GameLayerWidth() const override
+	{
+		return m_pGameContext->Collision()->GetWidth();
+	}
+
+	int GameLayerHeight() const override
+	{
+		return m_pGameContext->Collision()->GetHeight();
+	}
+
+protected:
+	CGameContext *m_pGameContext = nullptr;
+};
+
+class CGameDebugSink : public IDebugSink
+{
+public:
+	void SetGameContext(CGameContext *pGameContext)
+	{
+		m_pGameContext = pGameContext;
+	}
+
+	bool IsVerbosityEnabled(int VerbosityLevel) const override { return VerbosityLevel < m_pGameContext->Config()->m_InfBotDebugLevel; }
+	void SendFormattedMessage(int VerbosityLevel, const char *pMessage) const override
+	{
+		if(!IsVerbosityEnabled(VerbosityLevel))
+			return;
+
+		m_pGameContext->SendChat(-1, CGameContext::CHAT_ALL, pMessage);
+	}
+
+protected:
+	CGameContext *m_pGameContext = nullptr;
+};
+
 struct InfclassPlayerPersistantData : public CGameContext::CPersistentClientData
 {
 	EPlayerScoreMode m_ScoreMode = EPlayerScoreMode::Class;
@@ -239,6 +290,7 @@ CIcGameController::CIcGameController(class CGameContext *pGameServer)
 	InitWeapons();
 	ReservePlayerOwnSnapItems();
 	RegisterLuaBindings();
+	RegisterBotsContext();
 
 	ResetPlayerClassesEnablement();
 }
@@ -1565,7 +1617,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("add_bot", "i[number] s[class] ?s[spawn=<>sec] ?s[lives=<>] ?s[hp=<>] ?s[respawn=<>sec] ?s[drop_level=<>]", CFGFLAG_SERVER, ConAddBot, this, "Add a bot");
 	pConsole->Register("remove_bot", "i[CID or -1]", CFGFLAG_SERVER, ConRemoveBot, this, "Remove a bot");
 	pConsole->Register("dump_bot", "i", CFGFLAG_SERVER, ConDumpBot, this, "Dump bot state");
-	pConsole->Register("ai", "s[debug|enable|disable]", CFGFLAG_SERVER, ConCheckAI, this, "Debug bot AI from the caller PoV");
+	pConsole->Register("ai", "s[enable|disable|debug|danger] ?i[clientid]", CFGFLAG_SERVER, ConCheckAI, this, "Debug bot AI from the caller PoV");
 	pConsole->Register("ai_objection", "s[command] ?s[argument]", CFGFLAG_SERVER, ConAiObjection, this, "Setup AI objections");
 
 	pConsole->Register("survival_clear_conf", "", CFGFLAG_SERVER, ConSurvivalClearConf, this, "");
@@ -2061,6 +2113,107 @@ void CIcGameController::ConCheckAI(IConsole::IResult *pResult, void *pUserData)
 
 void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
 {
+	int ClientID = pResult->GetClientId();
+
+	int DebugLevel = Config()->m_InfBotDebugLevel;
+	Config()->m_InfBotDebugLevel = std::max<int>(2, DebugLevel);
+
+	const char *pCommand = pResult->GetString(0);
+	int CheckCID = pResult->NumArguments() > 1 ? pResult->GetInteger(1) : ClientID;
+	if(str_comp(pCommand, "debug") == 0)
+	{
+		if(std::is_same_v<UPlayerClass, CIcPlayer>)
+		{
+			GameServer()->SendChatTarget(ClientID, "The server is compiled without AI debug support");
+			return;
+		}
+
+		CBotPlayer *pPlayer = static_cast<CBotPlayer *>(GetPlayer(CheckCID));
+		if (!pPlayer)
+		{
+			GameServer()->SendChatTarget(ClientID, "No player to debug");
+			return;
+		}
+		CIcCharacter *pCharacter = pPlayer->GetCharacter();
+		if (!pCharacter)
+		{
+			GameServer()->SendChatTarget(ClientID, "No character to debug");
+			return;
+		}
+
+		CBotPlayer::DIRECTION Direction = pCharacter->Core()->m_Input.m_TargetX > 0 ? CBotPlayer::DIRECTION_RIGHT : CBotPlayer::DIRECTION_LEFT;
+		pPlayer->SetRoamingDirection(Direction);
+		CNetObj_PlayerInput input;
+		pPlayer->UpdateControlsRoaming(&input);
+		Config()->m_InfBotDebugLevel = DebugLevel;
+
+		vec2 OverWallTargetPosition;
+		vec2 OnPlatformTargetPosition;
+		int MaxJumps = pPlayer->GetAvailableJumps();
+		int AirTilesAbove = pPlayer->GetAirTilesAbove(Direction, MaxJumps);
+		bool HasWall = pPlayer->HasWallInTheDirection(Direction);
+		int JumpsToGetOver = HasWall ? pPlayer->GetJumpsNeededToGetOverWall(Direction, MaxJumps, &OverWallTargetPosition) : 0;
+		int JumpsToJumpOn = pPlayer->GetJumpsNeededToJumpOn(Direction, MaxJumps, &OnPlatformTargetPosition);
+
+		if(JumpsToGetOver)
+		{
+			GameServer()->CreateLaserDotEvent(OverWallTargetPosition, OverWallTargetPosition, Server()->TickSpeed() * 3.0);
+		}
+		if(JumpsToJumpOn)
+		{
+			GameServer()->CreateHammerDotEvent(OnPlatformTargetPosition, Server()->TickSpeed() * 3.0);
+		}
+
+		char aBuf[100];
+		str_format(aBuf, sizeof(aBuf), "MaxJumps: %d", MaxJumps);
+		GameServer()->SendChatTarget(ClientID, aBuf);
+		str_format(aBuf, sizeof(aBuf), "AirTilesAbove: %d", AirTilesAbove);
+		GameServer()->SendChatTarget(ClientID, aBuf);
+		str_format(aBuf, sizeof(aBuf), "JumpsToGetOverWall: %d", JumpsToGetOver);
+		GameServer()->SendChatTarget(ClientID, aBuf);
+		str_format(aBuf, sizeof(aBuf), "JumpsToJumpOnPlatform: %d", JumpsToJumpOn);
+		GameServer()->SendChatTarget(ClientID, aBuf);
+	}
+	else if(str_comp(pCommand, "danger") == 0)
+	{
+		if(std::is_same_v<UPlayerClass, CIcPlayer>)
+		{
+			GameServer()->SendChatTarget(ClientID, "The server is compiled without AI debug support");
+			return;
+		}
+
+		CBotPlayer *pPlayer = static_cast<CBotPlayer *>(GetPlayer(CheckCID));
+		if (!pPlayer)
+		{
+			GameServer()->SendChatTarget(ClientID, "No player to debug");
+			return;
+		}
+		CIcCharacter *pCharacter = pPlayer->GetCharacter();
+		if (!pCharacter)
+		{
+			GameServer()->SendChatTarget(ClientID, "No character to debug");
+			return;
+		}
+
+		vec2 ToTarget(pCharacter->m_Input.m_TargetX, pCharacter->m_Input.m_TargetY);
+
+		const EThreatLevel LevelOfDanger = pPlayer->GetDangerLevelOnLine(pCharacter->GetPos(), pCharacter->GetPos() + ToTarget);
+		int level = static_cast<int>(LevelOfDanger);
+
+		char aBuf[100];
+		str_format(aBuf, sizeof(aBuf), "level: %d", level);
+		GameServer()->SendChatTarget(ClientID, aBuf);
+	}
+	else if(str_comp(pCommand, "enable") == 0)
+	{
+		CBotPlayer::SetAiEnabled(1);
+	}
+	else if(str_comp(pCommand, "disable") == 0)
+	{
+		CBotPlayer::SetAiEnabled(0);
+	}
+
+	Config()->m_InfBotDebugLevel = DebugLevel;
 }
 
 void CIcGameController::ConAiObjection(IConsole::IResult *pResult, void *pUserData)
@@ -2071,6 +2224,42 @@ void CIcGameController::ConAiObjection(IConsole::IResult *pResult, void *pUserDa
 
 void CIcGameController::ConAiObjection(IConsole::IResult *pResult)
 {
+	const char *pCommand = pResult->GetString(0);
+	const char *pObjection = pResult->GetString(1);
+
+	if(str_comp(pCommand, "reset") == 0)
+	{
+		CBotPlayer::ResetEnabledObjections();
+		return;
+	}
+
+	EObjection Objection = fromString<EObjection>(pObjection);
+	if(Objection == EObjection::Invalid)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid objection");
+		return;
+	}
+
+	if(str_comp(pCommand, "enable") == 0)
+	{
+		CBotPlayer::SetObjectionEnabled(Objection, true);
+	}
+	else if(str_comp(pCommand, "disable") == 0)
+	{
+		CBotPlayer::SetObjectionEnabled(Objection, false);
+	}
+	else if(str_comp(pCommand, "set") == 0)
+	{
+		for(int i = 0; i < static_cast<int>(EObjection::Count); ++i)
+		{
+			EObjection Obj = static_cast<EObjection>(i);
+			CBotPlayer::SetObjectionEnabled(Obj, Obj == Objection);
+		}
+	}
+	else
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid command");
+	}
 }
 
 void CIcGameController::ConAntiPing(IConsole::IResult *pResult, void *pUserData)
@@ -4135,6 +4324,7 @@ CBaseBotPlayer *CIcGameController::AddBot(int Team)
 	if(!pPlayer)
 		return nullptr;
 
+	pPlayer->SetBotUtils(m_pBotUtils);
 	GameServer()->m_apPlayers[PlayerID] = pPlayer;
 
 	EPlayerClass PlayerClass = EPlayerClass::Bat;
@@ -4208,6 +4398,18 @@ bool CIcGameController::RemoveBot(int ClientId, const char *pReason)
 
 	CBaseBotPlayer *pBot = static_cast<CBaseBotPlayer *>(pPlayer);
 	return RemoveBot(pBot, pReason);
+}
+
+void CIcGameController::RegisterBotsContext()
+{
+	static CCollisionWrapper Collision;
+	Collision.SetGameContext(GameServer());
+	static CGameDebugSink DebugSink;
+	DebugSink.SetGameContext(GameServer());
+	static CBotUtils Utils;
+	Utils.SetDebugSing(&DebugSink);
+	Utils.SetCollision(&Collision);
+	m_pBotUtils = &Utils;
 }
 
 CIcGameController::PlayerScore *CIcGameController::GetSurvivalPlayerScore(int ClientId)
@@ -5458,7 +5660,7 @@ void CIcGameController::Snap(int SnappingClient)
 
 CPlayer *CIcGameController::CreatePlayer(int ClientId, bool IsSpectator, void *pData)
 {
-	CIcPlayer *pPlayer = nullptr;
+	UPlayerClass *pPlayer = nullptr;
 	if(IsSpectator)
 	{
 		pPlayer = new(ClientId) UPlayerClass(this, GetNextClientUniqueId(), ClientId, TEAM_SPECTATORS);
@@ -5468,6 +5670,10 @@ CPlayer *CIcGameController::CreatePlayer(int ClientId, bool IsSpectator, void *p
 		const int StartTeam = Config()->m_SvTournamentMode ? TEAM_SPECTATORS : GetAutoTeam(ClientId);
 		pPlayer = new(ClientId) UPlayerClass(this, GetNextClientUniqueId(), ClientId, StartTeam);
 	}
+
+#ifdef DEBUG_PLAYER
+	pPlayer->SetBotUtils(m_pBotUtils);
+#endif
 
 	if(pData)
 	{
