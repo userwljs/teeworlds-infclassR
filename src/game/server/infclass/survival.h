@@ -3,7 +3,20 @@
 #include <base/system.h>
 #include <base/tl/ic_array.h>
 
+#include <game/server/infclass/bot-player.h>
+
 static constexpr int MaxWaves = 20;
+static constexpr int MaxBotsPerWave = 128;
+
+class SurvivalBotConfiguration
+{
+public:
+	EPlayerClass Class{};
+	int SpawnMinTick{};
+	int Lives{};
+	int HP{};
+	float RespawnInterval{};
+};
 
 class SurvivalWaveConfiguration
 {
@@ -16,6 +29,7 @@ public:
 	}
 
 	char aName[64]{};
+	icArray<SurvivalBotConfiguration, MaxBotsPerWave> BotConfigurations;
 };
 
 class SurvivalGameConfiguration
