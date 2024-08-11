@@ -3505,10 +3505,13 @@ CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const
 			}
 		}
 
-		m_BotUtils.GetDebugSink()->HighlightLineSegment(vec2(MinWantedX, Pos.y), vec2(MinWantedX, m_JumpTargetPosition.y));
-		if(MinWantedX != MaxWantedX)
+		if(IsDebugEnabled(VERBOSE_MAIN))
 		{
-			m_BotUtils.GetDebugSink()->HighlightLineSegment(vec2(MaxWantedX, Pos.y), vec2(MaxWantedX, m_JumpTargetPosition.y));
+			m_BotUtils.GetDebugSink()->HighlightLineSegment(vec2(MinWantedX, Pos.y), vec2(MinWantedX, m_JumpTargetPosition.y));
+			if(MinWantedX != MaxWantedX)
+			{
+				m_BotUtils.GetDebugSink()->HighlightLineSegment(vec2(MaxWantedX, Pos.y), vec2(MaxWantedX, m_JumpTargetPosition.y));
+			}
 		}
 
 		if(AbsXToJumpTarget > TileSize * 4)
@@ -3670,7 +3673,10 @@ void CBotPlayer::SetJumpTargetPosition(const vec2 &JumpTarget, const vec2 &JumpF
 	m_JumpTargetPosition = JumpTarget;
 	m_JumpFromPosition = JumpFromPosition;
 
-	m_BotUtils.GetDebugSink()->HighlightPosition(JumpTarget);
+	if(IsDebugEnabled(VERBOSE_MAIN))
+	{
+		m_BotUtils.GetDebugSink()->HighlightPosition(JumpTarget);
+	}
 }
 
 void CBotPlayer::SetPOI(std::optional<vec2> newPOI)

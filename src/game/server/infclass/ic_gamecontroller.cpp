@@ -211,17 +211,11 @@ public:
 
 	void HighlightPosition(const vec2 &Position) override
 	{
-		if(!IsVerbosityEnabled(VERBOSE_MAIN))
-			return;
-
 		m_pGameContext->CreateHammerDotEvent(Position, m_pGameContext->Server()->TickSpeed() * 3.0f);
 	}
 
 	void HighlightLineSegment(const vec2 &From, const vec2 &To) override
 	{
-		if(!IsVerbosityEnabled(VERBOSE_MAIN))
-			return;
-
 		m_pGameContext->CreateLaserDotEvent(From, To, m_pGameContext->Server()->TickSpeed() * 2.0f);
 	}
 
