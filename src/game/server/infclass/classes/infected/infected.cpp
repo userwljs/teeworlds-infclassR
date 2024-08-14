@@ -466,7 +466,14 @@ void CInfClassInfected::OnCharacterDamage(SDamageContext *pContext)
 	switch(GetPlayerClass())
 	{
 	case EPlayerClass::Hunter:
-		if(pContext->DamageType == EDamageType::MEDIC_SHOTGUN)
+		if(GameController()->GetRoundType() == ERoundType::Survival)
+		{
+			if(pContext->DamageType != EDamageType::BOOMER_EXPLOSION)
+			{
+				pContext->Force *= 0.33f;
+			}
+		}
+		else if(pContext->DamageType == EDamageType::MEDIC_SHOTGUN)
 		{
 			pContext->Force = vec2(0, 0);
 		}
