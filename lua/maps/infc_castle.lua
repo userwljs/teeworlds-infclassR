@@ -2,21 +2,12 @@
 -- local infclass = require("library.Infclass")
 -- local Game = infclass.Game
 -- local Config = infclass.Config
+-- require("runtime.base")
 
 -- Utils
 function add_tweak(bot_conf, tweak)
     local tweaks = bot_conf:GetTweaks()
     tweaks:Add(tweak)
-end
-
-function is_in_range(value, from, to)
-    if value < from then
-        return false
-    end
-    if value > to then
-        return false
-    end
-    return true
 end
 
 survival_difficulty_level = 0
@@ -299,28 +290,6 @@ function unlock_door_n(door_index)
         right_border = runtime_context.doors[door_index + 1].Position().x
     else
         right_border = Game.Context.Collision.Width * 32
-    end
-end
-
-function for_each_human_character(callback)
-    ---@param ch CInfClassCharacter
-    ---@return boolean
-    local function acceptable(ch)
-        if ch == nil then
-            return false
-        end
-        if ch:IsInfected() or not ch.IsAlive then
-            return false
-        end
-
-        return true
-    end
-
-    for i = 0,63 do
-        local character = Game.Controller:GetCharacter(i)
-        if acceptable(character) then
-            callback(character)
-        end
     end
 end
 
