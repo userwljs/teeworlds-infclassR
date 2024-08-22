@@ -4491,7 +4491,15 @@ bool CInfClassGameController::GetClassHelpPage(dynamic_string *pOutput, const ch
 		AddLine(_C("Medic", "The Medic can protect humans with the hammer by giving them armor."));
 		AddLine(_C("Medic", "Grenades with medicine give armor to everybody in their range,"
 							" including Heroes and the Medic themself."));
-		AddLine(_C("Medic", "Laser rifle revives the infected, but at the cost of 17 hp and armor."));
+		if(g_Config.m_InfEnableTranquilizerRifle)
+		{
+			int Duration = g_Config.m_InfTranquilizerDose;
+			AddLine(_C("Medic", "Tranqulizer rifle makes the infected fall asleep for {sec:Duration}."), "Duration", &Duration);
+		}
+		else
+		{
+			AddLine(_C("Medic", "Laser rifle revives the infected, but at the cost of 17 hp and armor."));
+		}
 		AddLine(_C("Medic", "Medic also has a powerful shotgun that can knock back the infected."));
 		break;
 	case EPlayerClass::Hero:
@@ -5489,6 +5497,7 @@ void CInfClassGameController::InitWeapons()
 	SetFireDelay(EInfclassWeapon::MERCENARY_GUN, 50);
 	SetFireDelay(EInfclassWeapon::MERCENARY_UPGRADE_LASER, 200);
 	SetFireDelay(EInfclassWeapon::BLINDING_LASER, GetFireDelay(EInfclassWeapon::LASER));
+	SetFireDelay(EInfclassWeapon::TRANQUILIZER_RIFLE, GetFireDelay(EInfclassWeapon::LASER));
 
 	SetAmmoRegenTime(EInfclassWeapon::NONE, 0);
 	SetAmmoRegenTime(EInfclassWeapon::HAMMER, 0);
@@ -5519,6 +5528,7 @@ void CInfClassGameController::InitWeapons()
 	SetAmmoRegenTime(EInfclassWeapon::LOOPER_LASER, 500);
 	SetAmmoRegenTime(EInfclassWeapon::LOOPER_GRENADE, 5000);
 	SetAmmoRegenTime(EInfclassWeapon::BLINDING_LASER, 10000);
+	SetAmmoRegenTime(EInfclassWeapon::TRANQUILIZER_RIFLE, 1000);
 
 	SetMaxAmmo(EInfclassWeapon::NONE, -1);
 	SetMaxAmmo(EInfclassWeapon::HAMMER, -1);
@@ -5548,6 +5558,7 @@ void CInfClassGameController::InitWeapons()
 	SetMaxAmmo(EInfclassWeapon::LOOPER_LASER, 20);
 	SetMaxAmmo(EInfclassWeapon::LOOPER_GRENADE, 10);
 	SetMaxAmmo(EInfclassWeapon::BLINDING_LASER, 10);
+	SetMaxAmmo(EInfclassWeapon::TRANQUILIZER_RIFLE, 10);
 
 	// Infected weapons
 	SetFireDelay(EInfclassWeapon::JAWS, GetFireDelay(EInfclassWeapon::HAMMER));

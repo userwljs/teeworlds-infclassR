@@ -1025,6 +1025,7 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		OnMercLaserFired(pFireContext);
 		break;
 	case EInfclassWeapon::MEDIC_LASER:
+	case EInfclassWeapon::TRANQUILIZER_RIFLE:
 		CMedicLaser::OnFired(m_pCharacter, pFireContext, StartEnergy);
 		return;
 	case EInfclassWeapon::LOOPER_LASER:

@@ -42,6 +42,25 @@ bool CMedicLaser::OnCharacterHit(CInfClassCharacter *pHit)
 		return false;
 
 	pMedic->TakeAmmo(WEAPON_LASER, 5);
+	bool Tranquilizer = m_Weapon == EInfclassWeapon::TRANQUILIZER_RIFLE;
+	if(Tranquilizer)
+	{
+		float Dose = Config()->m_InfTranquilizerDose;
+		float WeightRate = (10 + pHit->GetMaxArmor()) / 20.0f;
+		float EffectDuration = Dose / std::sqrt(WeightRate);
+		if(EffectDuration < 1.0f)
+		{
+			// Survival dose is 7.5 which means 7.5 ^ 2 * 20 = 1125 HP max
+			GameServer()->SendBroadcast_Localization(GetOwner(), EBroadcastPriority::GAMEANNOUNCE,
+				BROADCAST_DURATION_GAMEANNOUNCE,
+				_("The target is too strong, the tranquilizer won't work"),
+				nullptr);
+			return true;
+		}
+		pHit->PutToSleep(EffectDuration, GetOwner());
+		return true;
+	}
+
 	int MinimumHP = Config()->m_InfRevivalDamage + 1;
 	int MinimumInfected = GameController()->MinimumInfectedForRevival();
 

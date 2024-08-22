@@ -43,6 +43,7 @@ enum class EInfclassWeapon
 	MERCENARY_UPGRADE_LASER,
 
 	BLINDING_LASER,
+	TRANQUILIZER_RIFLE,
 
 	JAWS, // Bat
 	SLIME,

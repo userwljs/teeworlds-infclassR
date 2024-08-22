@@ -72,6 +72,7 @@ public:
 	void SetHealthArmor(int HealthAmount, int ArmorAmount);
 	int GetHealthArmorSum();
 
+	int GetMaxArmor() const { return m_MaxArmor; }
 	void SetMaxArmor(int Amount);
 
 	void SetActiveWeapon(int Weapon);

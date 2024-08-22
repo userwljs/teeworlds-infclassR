@@ -1745,7 +1745,7 @@ EInfclassWeapon CInfClassCharacter::GetInfWeaponId(int WID) const
 		case EPlayerClass::Biologist:
 			return EInfclassWeapon::BIOLOGIST_MINE_LASER;
 		case EPlayerClass::Medic:
-			return EInfclassWeapon::MEDIC_LASER;
+			return g_Config.m_InfEnableTranquilizerRifle ? EInfclassWeapon::TRANQUILIZER_RIFLE : EInfclassWeapon::MEDIC_LASER;
 		case EPlayerClass::Mercenary:
 			return EInfclassWeapon::MERCENARY_UPGRADE_LASER;
 		default:

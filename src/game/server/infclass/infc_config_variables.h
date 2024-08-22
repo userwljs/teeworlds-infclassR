@@ -129,6 +129,8 @@ MACRO_CONFIG_INT(InfEnableFollowingCamera, inf_enable_following_camera, 1, 0, 1,
 MACRO_CONFIG_INT(InfMinPlayersForEngineer, inf_min_players_for_engineer, 0, 0, 100, CFGFLAG_SERVER, "Minimum number of players that are needed to enable Engineer class")
 MACRO_CONFIG_INT(InfProbaSpawnNearWitch, inf_proba_spawn_near_witch, 66, 0, 100, CFGFLAG_SERVER, "Probability for an infected to spawn near a witch")
 
+MACRO_CONFIG_INT(InfEnableTranquilizerRifle, inf_enable_tranquilizer_rifle, 0, 0, 1, CFGFLAG_SERVER, "Replace revival laser with tranquilizer rifle (for medic)")
+MACRO_CONFIG_FLOAT(InfTranquilizerDose, inf_tranquilizer_dose, 4.0, 1.0, 30.0, CFGFLAG_SERVER, "Tranquilier dose per rifle shot (effect duration)")
 MACRO_CONFIG_INT(InfRevivalDamage, inf_revival_damage, 17, 0, 100, CFGFLAG_SERVER, "The number of total HP taken from the medic")
 MACRO_CONFIG_INT(InfRevivalMinInfected, inf_revival_min_infected, 5, 1, 100, CFGFLAG_SERVER, "The minimum number of infected to allow revival")
 
