@@ -275,110 +275,122 @@ bool CInfClassHuman::CanBeHit() const
 	return true;
 }
 
-SClassUpgrade CInfClassHuman::GetNextUpgrade() const
+SClassUpgrade CInfClassHuman::GetUpgrade(int Level) const
 {
 	switch(GetPlayerClass())
 	{
 	case EPlayerClass::Mercenary:
-		if(m_UpgradeLevel < MercBombToolsUpgradeLevel)
+		if(Level == MercBombToolsUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_ARMOR);
 		}
-		else if(m_UpgradeLevel < MercGunRegenUpgradeLevel)
+		else if(Level == MercGunRegenUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GUN);
 		}
-		else if(m_UpgradeLevel < MercBombSuperchargeUpgradeLevel)
+		else if(Level == MercBombSuperchargeUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_HEALTH);
 		}
 		break;
 	case EPlayerClass::Medic:
-		if(m_UpgradeLevel < MedicShotgunAmmoUpgradeLevel)
+		if(Level == MedicShotgunSpreadUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
 		}
-		else if(m_UpgradeLevel < MedicHealingHoseUpgradeLevel)
+		else if(Level == MedicShotgunAmmoUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
+		}
+		else if(Level == MedicHealingHoseUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
 		}
 		break;
 	case EPlayerClass::Hero:
-		if(m_UpgradeLevel < HeroFlagGiftUpgradeLevel)
+		if(Level == HeroFlagGiftUpgradeLevel)
 		{
 			return SClassUpgrade::FlagPowerup();
 		}
-		else if(m_UpgradeLevel < HeroWeaponsUpgradeLevel)
+		else if(Level == HeroWeaponsUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, {WEAPON_GUN, WEAPON_SHOTGUN, WEAPON_GRENADE, WEAPON_LASER});
 		}
-		else if(m_UpgradeLevel < HeroArmorUpgradeLevel)
+		else if(Level == HeroArmorUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_ARMOR);
 		}
 		break;
 	case EPlayerClass::Ninja:
-		if(m_UpgradeLevel < NinjaSlashBreaksHooksUpgradeLevel)
+		if(Level == NinjaSlashBreaksHooksUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_NINJA);
 		}
-		else if(m_UpgradeLevel < NinjaFlashGrenadeUpgradeLevel)
+		else if(Level == NinjaFlashGrenadeUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
 		}
-		else if(m_UpgradeLevel < NinjaSlashComboUpgradeLevel)
+		else if(Level == NinjaSlashComboUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_NINJA);
 		}
 		break;
 	case EPlayerClass::Sniper:
-		if(m_UpgradeLevel < SniperLaserPiercingUpgradeLevel)
+		if(Level == SniperLaserAmmoUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
+		}
+		else if(Level == SniperLaserRangeUpgradeLevel)
+		{
+			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
+		}
+		else if(Level == SniperLaserPiercingUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
 		}
 		break;
 	case EPlayerClass::Scientist:
-		if(m_UpgradeLevel < ScientistLaserAmmoUpgradeLevel)
+		if(Level == ScientistLaserAmmoUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
 		}
-		else if(m_UpgradeLevel < ScientistTeleportGunUpgradeLevel)
+		else if(Level == ScientistTeleportGunUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
 		}
-		else if(m_UpgradeLevel < ScientistPortalGunUpgradeLevel)
+		else if(Level == ScientistPortalGunUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
 		}
-		else if(m_UpgradeLevel < ScientistExtraMineUpgradeLevel)
+		else if(Level == ScientistExtraMineUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_HAMMER);
 		}
 		break;
 	case EPlayerClass::Biologist:
-		if(m_UpgradeLevel < BiologistShotgunSpreadUpgradeLevel)
+		if(Level == BiologistShotgunSpreadUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
 		}
-		else if(m_UpgradeLevel < BiologistMineChargesUpgradeLevel)
+		else if(Level == BiologistMineChargesUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
 		}
-		else if(m_UpgradeLevel < BiologistInvisibilityHammerUpgradeLevel)
+		else if(Level == BiologistInvisibilityHammerUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_HAMMER);
 		}
 		break;
 	case EPlayerClass::Looper:
-		if(m_UpgradeLevel < LooperLaserAmmoUpgradeLevel)
+		if(Level == LooperLaserAmmoUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
 		}
-		else if(m_UpgradeLevel < LooperGrenadesUpgradeLevel)
+		else if(Level == LooperGrenadesUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
 		}
-		else if(m_UpgradeLevel < LooperLaserWeaponUpgradeLevel)
+		else if(Level == LooperLaserWeaponUpgradeLevel)
 		{
 			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
 		}

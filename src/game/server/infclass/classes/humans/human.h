@@ -39,7 +39,7 @@ public:
 	void GiveGift(EGiftType GiftType, int Level = 0);
 
 	bool CanBeHit() const override;
-	SClassUpgrade GetNextUpgrade() const override;
+	SClassUpgrade GetUpgrade(int Level) const override;
 	void OnPlayerClassChanged() override;
 
 	void OnPlayerSnap(int SnappingClient, int InfClassVersion) override;

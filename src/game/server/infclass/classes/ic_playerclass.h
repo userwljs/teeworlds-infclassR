@@ -83,7 +83,8 @@ public:
 	virtual bool CanDie() const;
 	virtual bool CanBeHit() const;
 	virtual bool CanBeUnfreezed() const;
-	virtual SClassUpgrade GetNextUpgrade() const;
+	virtual SClassUpgrade GetUpgrade(int Level) const;
+	SClassUpgrade GetNextUpgrade() const;
 
 	float GetHammerProjOffset() const;
 	float GetHammerRange() const;

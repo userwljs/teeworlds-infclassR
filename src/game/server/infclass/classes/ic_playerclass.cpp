@@ -242,9 +242,14 @@ bool CIcPlayerClass::CanBeUnfreezed() const
 	return true;
 }
 
-SClassUpgrade CIcPlayerClass::GetNextUpgrade() const
+SClassUpgrade CIcPlayerClass::GetUpgrade(int Level) const
 {
 	return SClassUpgrade::Invalid();
+}
+
+SClassUpgrade CIcPlayerClass::GetNextUpgrade() const
+{
+	return GetUpgrade(GetUpgradeLevel() + 1);
 }
 
 float CIcPlayerClass::GetHammerProjOffset() const
