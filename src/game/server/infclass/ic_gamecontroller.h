@@ -205,6 +205,7 @@ public:
 	void OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType Type, const char *pReason) override;
 
 	void OnReset() override;
+	void OnShutdown() override;
 
 	void DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfectiousPlayer, EPlayerClass PreviousClass);
 	void MaybeDropPickup(CIcCharacter *pVictim);

@@ -401,6 +401,11 @@ void CIcGameController::OnReset()
 	RunCallback(Lua()->GetLuaState(), "on_world_reset");
 }
 
+void CIcGameController::OnShutdown()
+{
+	RunCallback(Lua()->GetLuaState(), "on_shutdown");
+}
+
 void CIcGameController::DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfectiousPlayer, EPlayerClass PreviousClass)
 {
 	if(GetRoundType() == ERoundType::Survival)

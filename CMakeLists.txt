@@ -1271,6 +1271,12 @@ install(
   DESTINATION
     "."
 )
+install(
+  DIRECTORY
+    "lua/"
+  DESTINATION
+    "lua"
+)
 
 set(CPACK_GENERATOR ZIP)
 include(CPack)
