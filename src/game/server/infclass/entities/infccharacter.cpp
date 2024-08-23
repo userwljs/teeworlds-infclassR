@@ -261,7 +261,16 @@ void CInfClassCharacter::Tick()
 
 	CCharacter::Tick();
 
-	if(m_BlindnessTicks > 0)
+	if(m_SleepingTicks > 0)
+	{
+		--m_SleepingTicks;
+		int EffectSec = 1 + (m_SleepingTicks / Server()->TickSpeed());
+		GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE, BROADCAST_DURATION_REALTIME,
+			_("You are sleeping: {sec:EffectDuration}"),
+			"EffectDuration", &EffectSec,
+			nullptr);
+	}
+	else if(m_BlindnessTicks > 0)
 	{
 		--m_BlindnessTicks;
 		int EffectSec = 1 + (m_BlindnessTicks / Server()->TickSpeed());
@@ -330,6 +339,11 @@ void CInfClassCharacter::TickDeferred()
 	if(m_pClass)
 	{
 		m_pClass->OnCharacterTickDeferred();
+	}
+
+	if(!m_Core.m_AttachedPlayers.empty())
+	{
+		CancelSleeping();
 	}
 }
 
@@ -530,6 +544,9 @@ void CInfClassCharacter::FireWeapon()
 	if((GetPlayerClass() == EPlayerClass::None) || !GetClass())
 		return;
 
+	if(IsSleeping())
+		return;
+
 	DoWeaponSwitch();
 
 	bool FullAuto = false;
@@ -610,6 +627,35 @@ bool CInfClassCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From,
 	float TakenPlaceholder{};
 	float &DamageLeft = pDamagePointsLeft ? *pDamagePointsLeft : TakenPlaceholder;
 	DamageLeft = 0;
+
+	bool DamageIsPhysical{};
+	switch(DamageType)
+	{
+	case EDamageType::SLUG_SLIME:
+	case EDamageType::MERCENARY_GRENADE:
+		DamageIsPhysical = false;
+		break;
+	default:
+		DamageIsPhysical = true;
+		break;
+	}
+
+	if(IsSleeping())
+	{
+		if(DamageIsPhysical)
+		{
+			FloatDmg *= Config()->m_InfSleeperTakeDamageRatio;
+			CancelSleeping();
+		}
+		else
+		{
+			const int MaxTicks = Server()->TickSpeed() * 3.0f;
+			if(m_SleepingTicks > MaxTicks)
+			{
+				m_SleepingTicks = MaxTicks;
+			}
+		}
+	}
 
 	SDamageContext DamageContext;
 	{
@@ -1018,6 +1064,21 @@ void CInfClassCharacter::CancelLoveEffect()
 	m_LoveTick = -1;
 }
 
+void CInfClassCharacter::PutToSleep(float Duration, std::optional<int> FromCid)
+{
+	int NewTicks = Server()->TickSpeed() * Duration;
+	if (NewTicks > m_SleepingTicks)
+	{
+		m_SleepingTicks = NewTicks;
+		m_PutToSleepBy = FromCid;
+	}
+}
+
+void CInfClassCharacter::CancelSleeping()
+{
+	m_SleepingTicks = 0;
+}
+
 bool CInfClassCharacter::IsInSlowMotion() const
 {
 	return m_SlowMotionTick > 0;
@@ -1194,6 +1255,12 @@ void CInfClassCharacter::GetDeathContext(const SDamageContext &DamageContext, De
 	{
 		// The Freezer must be either the Killer or the Assistant
 		AddUnique(m_LastFreezer, &MustBeKillerOrAssistant);
+	}
+
+	if(IsSleeping() && (m_PutToSleepBy.has_value()))
+	{
+		// The Freezer must be either the Killer or the Assistant
+		AddUnique(m_PutToSleepBy.value(), &MustBeKillerOrAssistant);
 	}
 
 	ClientsArray HookersRightNow;
@@ -2407,7 +2474,7 @@ void CInfClassCharacter::PreCoreTick()
 	if(m_pClass)
 		m_pClass->OnCharacterPreCoreTick();
 
-	if(IsFrozen())
+	if(IsFrozen() || IsSleeping())
 	{
 		if(m_FrozenTime % Server()->TickSpeed() == Server()->TickSpeed() - 1)
 		{
@@ -2630,7 +2697,7 @@ void CInfClassCharacter::UpdateTuningParam()
 		NoGravity = true;
 		NoHookAcceleration = true;
 	}
-	if(m_IsFrozen)
+	if(m_IsFrozen || IsSleeping())
 	{
 		NoHook = true;
 		NoControls = true;

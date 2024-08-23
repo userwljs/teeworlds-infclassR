@@ -5251,7 +5251,7 @@ bool CInfClassGameController::TryRespawn(CInfClassPlayer *pPlayer, SpawnContext 
 			if(!pCharacter || !pCharacter->IsAlive())
 				continue;
 
-			if(pCharacter->IsFrozen())
+			if(pCharacter->IsFrozen() || pCharacter->IsSleeping())
 				continue;
 
 			const CInfClassInfected *pInfected = CInfClassInfected::GetInstance(pCharacter);
