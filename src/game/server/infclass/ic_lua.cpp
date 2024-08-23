@@ -412,6 +412,7 @@ void CIcGameController::RegisterLuaBindings()
 			.addProperty("Lives", &CBaseBotPlayer::Lives, &CBaseBotPlayer::SetLives)
 			.addProperty("MaxLives", &CBaseBotPlayer::MaxLives, &CBaseBotPlayer::SetMaxLives)
 			.addProperty("RespawnInterval", &CBaseBotPlayer::GetRespawnInterval, &CBaseBotPlayer::SetRespawnInterval)
+			.addFunction("UpdateControls", &CBaseBotPlayer::UpdateControls)
 		.endClass()
 		.beginClass<CHiveMind>("CHiveMind")
 		.endClass();
