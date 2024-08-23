@@ -611,15 +611,6 @@ void CBotPlayer::Tick()
 	}
 	else
 	{
-		if(m_JumpTargetingTicks > 0)
-		{
-			m_JumpTargetingTicks--;
-		}
-		if (m_HookAimingRemainingTicks.has_value())
-		{
-			m_HookAimingRemainingTicks.value()--;
-		}
-
 		const int T = Server()->Tick();
 		const int TickSpeed = Server()->TickSpeed();
 		float IgnoreForTime = 5.0f;
@@ -632,13 +623,26 @@ void CBotPlayer::Tick()
 			}
 		}
 
-		if(m_pCharacter)
+		const CIcCharacter *pCharacter = GetCharacter();
+		bool Controllable = pCharacter && pCharacter->IsAlive() && !pCharacter->IsFrozen() && !pCharacter->IsSleeping();
+		if(Controllable)
 		{
-			if(m_pCharacter->IsAlive())
+			if(m_JumpTargetingTicks > 0)
 			{
-				UpdateTarget();
-				s_HiveMind.ValidateDirection(this);
+				m_JumpTargetingTicks--;
 			}
+			if (m_HookAimingRemainingTicks.has_value())
+			{
+				m_HookAimingRemainingTicks.value()--;
+			}
+
+			UpdateTarget();
+			s_HiveMind.ValidateDirection(this);
+		}
+		else
+		{
+			m_JumpTargetingTicks = 0;
+			m_HookAimingRemainingTicks.reset();
 		}
 	}
 
