@@ -39,6 +39,10 @@ function reset_castle()
 
     survival_cp1 = Game.Controller:AddControlPoint(vec2(85 * 32, 40.5 * 32))
 
+    sleeper_pos1 = vec2(142.5 * 32, 45.5 * 32)
+    sleeper_pos2 = vec2(136 * 32, 44.5 * 32)
+    sleeper_pos3 = vec2(124 * 32, 35.5 * 32)
+
     spawn_doors()
     right_border = runtime_context.doors[1].Position.x
 
@@ -151,6 +155,16 @@ function setup_wave1()
     add_tweak(bot_conf, "threat-aware")
     add_tweak(bot_conf, "strong-hook")
     castle_wait_bosses_n = 1
+
+    local sleeper_hp = {120, 160, 240, 280, 320, 360}
+    bot_conf = Game.Controller:SurvivalAddBot(wave, "witch")
+    bot_conf.SpawnSecond = 15
+    bot_conf.Tag = "sleeper"
+    bot_conf.Lives = 1
+    bot_conf.HP = sleeper_hp[survival_difficulty_level]
+    bot_conf.DropLevel = 2
+    add_tweak(bot_conf, "threat-aware")
+    add_tweak(bot_conf, "can-flee")
 end
 
 ---@param start_second number
@@ -262,6 +276,22 @@ function on_boss_killed(victim_id)
             survival_current_wave = survival_current_wave + 1
             _G[string.format("setup_wave%d", survival_current_wave)](Game.Controller:GetSecondsAfterInfection() + 3)
         end
+    end
+end
+
+function on_castle_character_spawned(player_id, spawn_type)
+    local spawned_character = Game.Controller:GetCharacter(player_id)
+    if spawned_character == nil then
+        return
+    end
+
+    if spawned_character:IsInfected() == false then
+        return
+    end
+    local spawned_player = Game.Controller:GetPlayer(player_id)
+    if spawned_player.Tag == "sleeper" then
+        spawned_character.Position = sleeper_pos2
+        spawned_character:PutToSleep(10000)
     end
 end
 
@@ -382,7 +412,7 @@ function init_castle()
     on_event("on_tick", on_castle_tick)
     -- on_event("on_round_started", on_castle_round_started)
     on_event("on_world_reset", reset_castle)
-    -- on_event("on_character_spawned", on_castle_character_spawned)
+    on_event("on_character_spawned", on_castle_character_spawned)
     on_event("on_character_death", on_castle_character_death)
 
     reset_castle()
