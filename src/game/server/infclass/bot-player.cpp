@@ -3222,7 +3222,7 @@ CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const
 				}
 
 				vec2 NextTile(TryX, Pos.y);
-				constexpr int MaxFault = 5;
+				constexpr int MaxFault = 8;
 				std::optional<float> Gnd = m_pUtils->GetSolidBelow(NextTile, MaxFault);
 				if(!Gnd.has_value())
 				{
