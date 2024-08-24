@@ -18,7 +18,7 @@ MACRO_CONFIG_STR(AboutContactsDiscord, about_contacts_discord, 128, "https://inf
 MACRO_CONFIG_STR(AboutContactsTelegram, about_contacts_telegram, 128, "", CFGFLAG_SERVER, "Telegram URL or ID")
 MACRO_CONFIG_STR(AboutContactsMatrix, about_contacts_matrix, 128, "https://infclass.github.io/matrix", CFGFLAG_SERVER, "Matrix room URL")
 
-MACRO_CONFIG_INT(SvLua, sv_lua, 0, 0, 3, CFGFLAG_SERVER, "Enable LUA scripts (0 = disabled, 1 = enabled, 2 = map scripts autoload)")
+MACRO_CONFIG_INT(SvLua, sv_lua, 3, 0, 3, CFGFLAG_SERVER, "Enable LUA scripts (0 = disabled, 1 = enabled, 2 = map scripts autoload)")
 MACRO_CONFIG_STR(SvLuaRuntime, sv_lua_runtime, 64, "base.lua", CFGFLAG_SERVER, "Lua runtime file")
 
 MACRO_CONFIG_STR(InfConverterId, inf_converter_id, 16, "v2.1", CFGFLAG_SERVER, "Map converter version id")
