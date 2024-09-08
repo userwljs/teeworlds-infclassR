@@ -672,6 +672,7 @@ void CBotPlayer::UpdateControls()
 	ScheduleRandomFire();
 
 	m_pCharacter->OnPredictedInput(&NewInput);
+	OnPredictedEarlyInput(&NewInput);
 	OnDirectInput(&NewInput);
 }
 
