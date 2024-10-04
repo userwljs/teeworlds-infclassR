@@ -3912,7 +3912,6 @@ void CIcGameController::AnnounceHideAndSeekWinner()
 
 	icArray<CPlayerScore, MAX_CLIENTS> Scores;
 	int HumansScore = 0;
-	int NumHumans = 0;
 	int NumSurvivedGhosts = 0;
 
 	CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
@@ -3929,7 +3928,6 @@ void CIcGameController::AnnounceHideAndSeekWinner()
 		if(Score.Human)
 		{
 			HumansScore += Score.Kills;
-			++NumHumans;
 		}
 		else
 		{
@@ -3972,23 +3970,27 @@ void CIcGameController::AnnounceHideAndSeekWinner()
 		"Score", &HumansScore,
 		nullptr);
 
+	const char *pWinMessage{};
 	if(NumSurvivedGhosts)
 	{
-		// NumSurvivedGhosts
 		GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_INFECTED, NumSurvivedGhosts,
 			_P("{int:NumInfected} ghost survived",
 				"{int:NumInfected} ghosts survived", NumSurvivedGhosts),
 			"NumInfected", &NumSurvivedGhosts,
 			nullptr);
+		pWinMessage = _("The Infected won the round");
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTED, pWinMessage, nullptr);
 	}
 	else
 	{
-		GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_HUMANS, NumHumans,
-			_P("{int:NumHumans} human won the round",
-				"{int:NumHumans} humans won the round", NumHumans),
-			"NumHumans", &NumHumans,
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Total humans team score: {int:Score}",
+			"Score", &HumansScore,
 			nullptr);
+		pWinMessage = _("Humans won the round");
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_HUMANS, pWinMessage, nullptr);
 	}
+
+	GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, 3 * Server()->TickSpeed(), pWinMessage, nullptr);
 }
 
 void CIcGameController::BroadcastInfectionComing(int InfectionTick)
