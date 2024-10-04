@@ -3640,6 +3640,11 @@ void CIcGameController::RoundTickAfterInitialInfection()
 		DoTeamBalance();
 
 	UpdateBalanceFactors();
+
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		OnHideAndSeekTick();
+	}
 }
 
 void CIcGameController::PreparePlayerToJoin(CIcPlayer *pPlayer)
@@ -4434,6 +4439,50 @@ void CIcGameController::ApplyHideAndSeekAttributes(CIcPlayer *pPlayer)
 		{
 			pClass->SetNormalEmote(EMOTE_ANGRY);
 		}
+	}
+}
+
+void CIcGameController::OnHideAndSeekTick()
+{
+	std::size_t NumSurvivedGhosts{};
+	std::optional<int> SurvivorCid{};
+
+	{
+		CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+		while(Iter.Next())
+		{
+			const CIcPlayer *pPlayer = Iter.Player();
+			if(pPlayer->IsInfected() || pPlayer->IsInfectionStarted())
+			{
+				bool FirstInfected = pPlayer->m_TeamChangeTick < GetInfectionStartTick() + 5;
+				if(FirstInfected && (pPlayer->GetDeaths() == 0))
+				{
+					NumSurvivedGhosts++;
+					SurvivorCid = pPlayer->GetCid();
+				}
+			}
+		}
+		if(NumSurvivedGhosts > 1)
+		{
+			SurvivorCid.reset();
+		}
+	}
+
+	if(SurvivorCid.has_value())
+	{
+		const char *pSurvivorName = Server()->ClientName(SurvivorCid.value());
+		GameServer()->SendBroadcast_Localization(-1,
+			EBroadcastPriority::GAMEANNOUNCE, 5 * Server()->TickSpeed(),
+			_("The last survivor is '{str:PlayerName}'"),
+			"PlayerName", pSurvivorName,
+			nullptr);
+	}
+	else if(NumSurvivedGhosts == 0)
+	{
+		GameServer()->SendBroadcast_Localization(-1,
+			EBroadcastPriority::GAMEANNOUNCE, 5 * Server()->TickSpeed(),
+			_("Humans won"),
+			nullptr);
 	}
 }
 
