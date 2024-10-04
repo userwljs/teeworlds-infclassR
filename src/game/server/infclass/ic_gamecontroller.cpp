@@ -2673,6 +2673,12 @@ void CIcGameController::FreePlayerOwnSnapItems()
 
 void CIcGameController::SendHintMessage()
 {
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		// We don't have hints for this round type
+		return;
+	}
+
 	if((g_Config.m_TipsInterval == 0) || (time_get() - m_LastTipTime < time_freq() * g_Config.m_TipsInterval * 60))
 		return;
 
