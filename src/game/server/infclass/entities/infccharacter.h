@@ -197,6 +197,7 @@ public:
 
 	bool IsInvisible() const;
 	bool HasGrantedInvisibility() const;
+	bool IsSolo() const;
 	bool IsInvincible() const; // Invincible here means "ignores all damage"
 	void SetInvincible(int Invincible);
 	bool HasHallucination() const;
@@ -218,6 +219,7 @@ public:
 	void MakeVisible();
 	void MakeInvisible();
 	void GrantInvisibility(float Duration);
+	void SetSoloForDuration(float Duration);
 	void GrantSpawnProtection(float Duration);
 
 	bool PositionIsLocked() const;
@@ -346,6 +348,7 @@ protected:
 	bool m_IsInvisible = false;
 	int m_AntiFireTime = 0;
 	int m_GrantedInvisibilityUntilTick = 0;
+	int m_SoloUntilTick = 0;
 	int m_Invincible = 0;
 
 	int m_HealTick = 0;

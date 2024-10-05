@@ -449,7 +449,11 @@ void CInfClassInfected::OnHookAttachedPlayer()
 void CInfClassInfected::OnWeaponFired(WeaponFireContext *pFireContext)
 {
 	CInfClassPlayerClass::OnWeaponFired(pFireContext);
-	ResetInvisibility();
+
+	if(!m_pCharacter->IsSolo())
+	{
+		ResetInvisibility();
+	}
 }
 
 void CInfClassInfected::OnCharacterDamage(SDamageContext *pContext)
@@ -535,6 +539,8 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 			}
 
 			CInfClassCharacter *pTarget = GameController()->GetCharacter(TargetCid);
+			if (pTarget->IsSolo())
+				continue;
 
 			if(GameServer()->Collision()->IntersectLineWeapon(ProjStartPos, pTarget->GetPos()))
 				continue;
@@ -859,7 +865,7 @@ void CInfClassInfected::GhostPreCoreTick()
 	}
 	else
 	{
-		bool HumanFound = !m_pCharacter->HasGrantedInvisibility() && HasHumansNearby();
+		bool HumanFound = !m_pCharacter->HasGrantedInvisibility() && !m_pCharacter->IsSolo() && HasHumansNearby();
 		if(HumanFound)
 		{
 			m_pCharacter->MakeVisible();
