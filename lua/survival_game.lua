@@ -17,6 +17,7 @@ survival_max_players = 0
 survival_players = 0
 survival_current_wave = 0
 survival_hp_multiplier = 1
+survival_max_drop_level = 2
 
 survival_default_tweaks = nil
 
@@ -357,10 +358,7 @@ function setup_wave6()
         bot_conf.Lives = 2
     end
 
-    local max_drop_level = 2
-    if survival_difficulty_level > survival_players then
-        max_drop_level = 3
-    end
+    local max_drop_level = survival_max_drop_level
 
     local boss_hp = {180, 240, 320, 520, 640, 720}
     bot_conf = Game.Controller:SurvivalAddBot(wave, "tank")
