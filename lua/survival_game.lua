@@ -16,6 +16,7 @@ survival_allow_extra_players = 0
 survival_max_players = 0
 survival_players = 0
 survival_current_wave = 0
+survival_hp_multiplier = 1
 
 survival_default_tweaks = nil
 
@@ -32,6 +33,13 @@ function add_bot_with_tweaks(wave, player_class)
     return bot_conf
 end
 
+---@return SurvivalBotConfiguration
+function add_normal_infected(wave, player_class)
+    local bot_conf = add_bot_with_tweaks(wave, player_class)
+    bot_conf.HP = 10 * survival_hp_multiplier
+    return bot_conf
+end
+
 function setup_wave1()
     print("Setup wave1 with difficulty", survival_difficulty_level)
     local wave = 1
@@ -40,17 +48,17 @@ function setup_wave1()
     local next_spawn_lives = Config.inf_bot_lives
 
     for i = 1,4 do
-        bot_conf = add_bot_with_tweaks(wave, "bat")
+        bot_conf = add_normal_infected(wave, "bat")
     end
 
     if survival_difficulty_level >= 4 then
         for i = 1,2 do
-            bot_conf = add_bot_with_tweaks(wave, "bat")
+            bot_conf = add_normal_infected(wave, "bat")
             bot_conf.SpawnSecond = 5
         end
         if survival_difficulty_level >= 5 then
             for i = 1,2 do
-                bot_conf = add_bot_with_tweaks(wave, "bat")
+                bot_conf = add_normal_infected(wave, "bat")
                 bot_conf.SpawnSecond = 7
                 -- Limit the number of the late boring bats by 4
                 bot_conf.Lives = 4
@@ -59,7 +67,7 @@ function setup_wave1()
     else
         -- 1-3 players
         for i = 1,2 do
-            bot_conf = add_bot_with_tweaks(wave, "bat")
+            bot_conf = add_normal_infected(wave, "bat")
             bot_conf.SpawnSecond = 10
         end
     end
@@ -71,10 +79,10 @@ function setup_wave1()
         -- lvl6 - 100hp
 
         for i = 1,2 do
-            bot_conf = add_bot_with_tweaks(wave, "bat")
+            bot_conf = add_normal_infected(wave, "bat")
             bot_conf.SpawnSecond = 10
             bot_conf.Lives = 1
-            bot_conf.HP = bat_hp
+            bot_conf.HP = bat_hp * survival_hp_multiplier
         end
 
         -- Reduce the number of the late boring bats:
@@ -88,7 +96,7 @@ function setup_wave1()
     end
 
     for i = 1,4 do
-        bot_conf = add_bot_with_tweaks(wave, "bat")
+        bot_conf = add_normal_infected(wave, "bat")
         bot_conf.SpawnSecond = next_spawn_second
         bot_conf.Lives = next_spawn_lives
     end
@@ -99,21 +107,21 @@ function setup_wave2()
     local wave = 2
     local bot_conf = nil
 
-    bot_conf = add_bot_with_tweaks(wave, "smoker")
-    bot_conf = add_bot_with_tweaks(wave, "voodoo")
+    bot_conf = add_normal_infected(wave, "smoker")
+    bot_conf = add_normal_infected(wave, "voodoo")
 
     if survival_difficulty_level > 1 then
         for i = 1,2 do
-            bot_conf = add_bot_with_tweaks(wave, "spider")
+            bot_conf = add_normal_infected(wave, "spider")
             bot_conf.SpawnSecond = 2 + i * 0.2
         end
 
-        bot_conf = add_bot_with_tweaks(wave, "boomer")
+        bot_conf = add_normal_infected(wave, "boomer")
         bot_conf.SpawnSecond = 5
     end
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "hunter")
+        bot_conf = add_normal_infected(wave, "hunter")
         bot_conf.SpawnSecond = 5 + i * 0.3
     end
 
@@ -126,7 +134,7 @@ function setup_wave2()
     local slugs_spawns = {lvl1_slugs, lvl2_slugs, lvl3_slugs, lvl4_slugs, lvl5_slugs, lvl6_slugs}
 
     for i,slug_spawn_time in ipairs(slugs_spawns[survival_difficulty_level]) do
-        bot_conf = add_bot_with_tweaks(wave, "slug")
+        bot_conf = add_normal_infected(wave, "slug")
         bot_conf.SpawnSecond = slug_spawn_time
     end
 
@@ -137,7 +145,7 @@ function setup_wave2()
 
     local boss_hp = {60, 80, 120, 180, 240, 240}
 
-    bot_conf.HP = boss_hp[survival_difficulty_level]
+    bot_conf.HP = boss_hp[survival_difficulty_level] * survival_hp_multiplier
     bot_conf.DropLevel = 1
     add_tweak(bot_conf, "threat-aware")
     add_tweak(bot_conf, "strong-hook")
@@ -148,15 +156,15 @@ function setup_wave3()
     local wave = 3
     local bot_conf = nil
 
-    bot_conf = add_bot_with_tweaks(wave, "smoker")
-    bot_conf = add_bot_with_tweaks(wave, "hunter")
-    bot_conf = add_bot_with_tweaks(wave, "bat")
-    bot_conf = add_bot_with_tweaks(wave, "slug")
+    bot_conf = add_normal_infected(wave, "smoker")
+    bot_conf = add_normal_infected(wave, "hunter")
+    bot_conf = add_normal_infected(wave, "bat")
+    bot_conf = add_normal_infected(wave, "slug")
 
-    bot_conf = add_bot_with_tweaks(wave, "boomer")
+    bot_conf = add_normal_infected(wave, "boomer")
     bot_conf.SpawnSecond = 5
 
-    bot_conf = add_bot_with_tweaks(wave, "voodoo")
+    bot_conf = add_normal_infected(wave, "voodoo")
     bot_conf.SpawnSecond = 5
 
     local ghost_lives = 2
@@ -165,7 +173,7 @@ function setup_wave3()
     end
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "ghost")
+        bot_conf = add_normal_infected(wave, "ghost")
         bot_conf.SpawnSecond = 12 + i * 0.3
         bot_conf.RespawnInterval = 2.5
         bot_conf.Lives = ghost_lives
@@ -173,7 +181,7 @@ function setup_wave3()
     end
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "ghost")
+        bot_conf = add_normal_infected(wave, "ghost")
         bot_conf.SpawnSecond = 15 + i * 0.3
         bot_conf.RespawnInterval = 2.5
         bot_conf.Lives = ghost_lives
@@ -191,13 +199,13 @@ function setup_wave3()
         bot_conf.SpawnSecond = 20
         bot_conf.Tag = "boss"
         bot_conf.Lives = 1
-        bot_conf.HP = boss_hp[survival_difficulty_level]
+        bot_conf.HP = boss_hp[survival_difficulty_level] * survival_hp_multiplier
         bot_conf.DropLevel = 1
         add_tweak(bot_conf, "threat-aware")
     end
 
     for i = 1,3 do
-        bot_conf = add_bot_with_tweaks(wave, "ghost")
+        bot_conf = add_normal_infected(wave, "ghost")
         bot_conf.SpawnSecond = 22 + i * 0.3
         bot_conf.RespawnInterval = 0.5
         bot_conf.Lives = ghost_lives
@@ -210,14 +218,14 @@ function setup_wave4()
     local bot_conf = nil
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "smoker")
-        bot_conf = add_bot_with_tweaks(wave, "hunter")
+        bot_conf = add_normal_infected(wave, "smoker")
+        bot_conf = add_normal_infected(wave, "hunter")
     end
 
     for i = 1,2 do
         bot_conf = Game.Controller:SurvivalAddBot(wave, "spider")
     end
-    bot_conf = add_bot_with_tweaks(wave, "slug")
+    bot_conf = add_normal_infected(wave, "slug")
 
     for i = 1,2 do
         bot_conf = Game.Controller:SurvivalAddBot(wave, "bat")
@@ -230,7 +238,7 @@ function setup_wave4()
     bot_conf.Tag = "boss"
     bot_conf.Lives = 1
     local boss_hp = {120, 160, 220, 280, 320, 360}
-    bot_conf.HP = boss_hp[survival_difficulty_level]
+    bot_conf.HP = boss_hp[survival_difficulty_level] * survival_hp_multiplier
     bot_conf.DropLevel = 2
     add_tweak(bot_conf, "threat-aware")
 
@@ -247,23 +255,23 @@ function setup_wave5()
     local bot_conf = nil
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "smoker")
-        bot_conf = add_bot_with_tweaks(wave, "hunter")
-        bot_conf = add_bot_with_tweaks(wave, "spider")
+        bot_conf = add_normal_infected(wave, "smoker")
+        bot_conf = add_normal_infected(wave, "hunter")
+        bot_conf = add_normal_infected(wave, "spider")
     end
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "slug")
-    end
-    bot_conf.RespawnInterval = 4
-
-    for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "boomer")
+        bot_conf = add_normal_infected(wave, "slug")
     end
     bot_conf.RespawnInterval = 4
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "voodoo")
+        bot_conf = add_normal_infected(wave, "boomer")
+    end
+    bot_conf.RespawnInterval = 4
+
+    for i = 1,2 do
+        bot_conf = add_normal_infected(wave, "voodoo")
     end
     bot_conf.RespawnInterval = 4
 
@@ -281,25 +289,25 @@ function setup_wave5()
     for i,ghoul_spawn_time in ipairs(ghoul_spawns[survival_difficulty_level]) do
         bot_conf = Game.Controller:SurvivalAddBot(wave, "ghoul")
         bot_conf.SpawnSecond = ghoul_spawn_time
-        bot_conf.HP= ghouls_hp[survival_difficulty_level]
+        bot_conf.HP= ghouls_hp[survival_difficulty_level] * survival_hp_multiplier
         bot_conf.Lives = 1
     end
     -- Give a drop to the last ghoul
     bot_conf.DropLevel = 2
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "ghost")
+        bot_conf = add_normal_infected(wave, "ghost")
         bot_conf.SpawnSecond = 20
     end
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "bat")
+        bot_conf = add_normal_infected(wave, "bat")
         bot_conf.SpawnSecond = 35
         bot_conf.HP = 4
     end
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "bat")
+        bot_conf = add_normal_infected(wave, "bat")
         bot_conf.SpawnSecond = 40
         bot_conf.HP = 4
     end
@@ -310,41 +318,41 @@ function setup_wave6()
     local bot_conf = nil
 
     for i = 1,4 do
-        bot_conf = add_bot_with_tweaks(wave, "ghost")
+        bot_conf = add_normal_infected(wave, "ghost")
         bot_conf.Lives = 2
         bot_conf.RespawnInterval = 1
     end
 
     if survival_difficulty_level >= 4 then
         for i = 1,2 do
-            bot_conf = add_bot_with_tweaks(wave, "smoker")
+            bot_conf = add_normal_infected(wave, "smoker")
             bot_conf.SpawnSecond = 5
             bot_conf.Lives = 2
         end
         for i = 1,2 do
-            bot_conf = add_bot_with_tweaks(wave, "spider")
+            bot_conf = add_normal_infected(wave, "spider")
             bot_conf.SpawnSecond = 5
             bot_conf.Lives = 2
         end
         for i = 1,2 do
-            bot_conf = add_bot_with_tweaks(wave, "hunter")
+            bot_conf = add_normal_infected(wave, "hunter")
             bot_conf.SpawnSecond = 5
             bot_conf.Lives = 2
         end
     end
 
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "slug")
+        bot_conf = add_normal_infected(wave, "slug")
         bot_conf.SpawnSecond = 10
         bot_conf.Lives = 2
     end
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "boomer")
+        bot_conf = add_normal_infected(wave, "boomer")
         bot_conf.SpawnSecond = 10
         bot_conf.Lives = 2
     end
     for i = 1,2 do
-        bot_conf = add_bot_with_tweaks(wave, "voodoo")
+        bot_conf = add_normal_infected(wave, "voodoo")
         bot_conf.SpawnSecond = 10
         bot_conf.Lives = 2
     end
@@ -359,11 +367,11 @@ function setup_wave6()
     bot_conf.SpawnSecond = 25
     bot_conf.Tag = "boss"
     bot_conf.Lives = 1
-    bot_conf.HP = boss_hp[survival_difficulty_level]
+    bot_conf.HP = boss_hp[survival_difficulty_level] * survival_hp_multiplier
     bot_conf.DropLevel = max_drop_level
 
     for i = 1,3 do
-        bot_conf = add_bot_with_tweaks(wave, "slug")
+        bot_conf = add_normal_infected(wave, "slug")
         bot_conf.SpawnSecond = 45 + i * 0.2
         bot_conf.HP = 5
     end
@@ -378,28 +386,26 @@ function setup_wave6()
         bot_conf = Game.Controller:SurvivalAddBot(wave, "witch")
         bot_conf.SpawnSecond = 47
         bot_conf.Lives = 1
-        bot_conf.HP = witch_hp[survival_difficulty_level]
+        bot_conf.HP = witch_hp[survival_difficulty_level] * survival_hp_multiplier
         add_tweak(bot_conf, "threat-aware")
         add_tweak(bot_conf, "can-flee")
     end
 
+    local infected_n = 2
     if survival_difficulty_level >= 4 then
-        for i = 1,4 do
-            bot_conf = add_bot_with_tweaks(wave, "boomer")
-            bot_conf.SpawnSecond = 47 + i * 0.2
-        end
-    else
-        for i = 1,2 do
-            bot_conf = add_bot_with_tweaks(wave, "boomer")
-            bot_conf.SpawnSecond = 47 + i * 0.2
-        end
+        infected_n = survival_difficulty_level
     end
-    for i = 1,4 do
-        bot_conf = add_bot_with_tweaks(wave, "hunter")
+
+    for i = 1,infected_n do
+        bot_conf = add_normal_infected(wave, "boomer")
         bot_conf.SpawnSecond = 47 + i * 0.2
     end
     for i = 1,4 do
-        bot_conf = add_bot_with_tweaks(wave, "bat")
+        bot_conf = add_normal_infected(wave, "hunter")
+        bot_conf.SpawnSecond = 47 + i * 0.2
+    end
+    for i = 1,4 do
+        bot_conf = add_normal_infected(wave, "bat")
         bot_conf.SpawnSecond = 48 + i * 0.1
     end
 
