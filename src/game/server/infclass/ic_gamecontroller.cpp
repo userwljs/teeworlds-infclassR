@@ -3066,6 +3066,9 @@ int CIcGameController::GetMinimumInfectedForPlayers(int PlayersNumber) const
 	}
 
 	int InitialPlayersLimit = Config()->m_InfFirstInfectedLimit;
+	if(GetRoundType() == ERoundType::HideAndSeek)
+		InitialPlayersLimit = Config()->m_HsMedicsLimit;
+
 	int NumFirstInfected = 0;
 
 	if(PlayersNumber > 20)
