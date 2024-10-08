@@ -503,7 +503,19 @@ std::optional<int> CBotUtils::GetSolidTileBelow(const CTileRoundedPosition &Tile
 	return std::nullopt;
 }
 
+
 bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps) const
+{
+	return IsReachableByGroundImpl<false>(From, To, MaxJumps, MaxSteps);
+}
+
+bool CBotUtils::IsReachableByGroundTraced(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps) const
+{
+	return IsReachableByGroundImpl<true>(From, To, MaxJumps, MaxSteps);
+}
+
+template<bool Trace>
+bool CBotUtils::IsReachableByGroundImpl(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps) const
 {
 	CTileRoundedPosition FromTile(From);
 	CTileRoundedPosition ToTile(To);
@@ -524,13 +536,18 @@ bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJum
 
 	//	int TileY = TileFrom.Y;
 	int MaxTiles = GetMaxTilesForJumps(MaxJumps, true);
+	int MaxFallTiles = 2;
 
 	int Steps = 0;
 
 	CTileRoundedPosition CurrentTile = FromTile;
-
 	while(CurrentTile.X != ToTile.X)
 	{
+		if constexpr(Trace)
+		{
+			GetDebugSink()->HighlightPosition(CurrentTile.Center());
+		}
+
 		CurrentTile.X += DirectionSign;
 
 		bool POIisSolid = m_pCollision->IsSolid(CurrentTile);
@@ -562,6 +579,13 @@ bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJum
 				return false;
 			}
 
+			if constexpr(Trace)
+			{
+				for(int Y = CurrentTile.Y - 1; Y > FirstAirAbove.value(); --Y)
+				{
+					GetDebugSink()->HighlightPosition(CTileRoundedPosition(CurrentTile.X, Y).Center());
+				}
+			}
 			CurrentTile.Y = FirstAirAbove.value();
 		}
 

@@ -85,6 +85,11 @@ public:
 		return vec2(X * 32, Y * 32);
 	}
 
+	vec2 Center() const
+	{
+		return vec2(X * 32 + 16, Y * 32 + 16);
+	}
+
 	operator vec2() const
 	{
 		return toVec2();
@@ -218,6 +223,7 @@ public:
 	std::optional<float> GetSolidBelow(const vec2 &Position, int MaxTiles = 16) const;
 	std::optional<int> GetSolidTileBelow(const CTileRoundedPosition &TilePosition, int MaxTiles = 16) const;
 	bool IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps = 1000) const;
+	bool IsReachableByGroundTraced(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps = 1000) const;
 
 	inline static constexpr float CalcPosY(float Velocity, float Curvature, float Speed, float Time)
 	{
@@ -236,6 +242,9 @@ public:
 	}
 
 protected:
+	template<bool Trace>
+	bool IsReachableByGroundImpl(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps) const;
+
 	ICollision *m_pCollision{};
 	IDebugSink *m_pDebugSink{};
 	CCollisionCache *m_pCollisionCache{};
