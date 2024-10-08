@@ -68,7 +68,19 @@ int CIcPlayer::GetScore(int SnappingClient) const
 		}
 		if(GameController()->GetRoundType() == ERoundType::HideAndSeek)
 		{
-			return IsHuman() ? m_Kills : -m_Deaths;
+			if(IsHuman())
+			{
+				return m_Kills;
+			}
+			else
+			{
+				int Score = -m_Deaths;
+				if (m_TeamChangeTick >= GameController()->GetInfectionStartTick() + 5)
+				{
+					Score -= 1;
+				}
+				return Score;
+			}
 		}
 
 		return Server()->RoundStatistics()->PlayerScore(m_ClientId);
