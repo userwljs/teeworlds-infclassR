@@ -9,7 +9,7 @@
 
 const int c_MapData1[] = {
 	// clang-format off
-	// y\x  0  1  2  3  4
+	// y\x  0  1  2  3  4  5
 	/* 0 */ 1, 1, 1, 1, 1,
 	/* 1 */ 1, 0, 0, 0, 1,
 	/* 2 */ 1, 0, 0, 1, 1,
@@ -38,6 +38,18 @@ const int c_MapData3[] = {
 	/* 2 */ 1, 0, 0, 0, 0, 0, 1,
 	/* 3 */ 1, 0, 0, 1, 1, 0, 1,
 	/* 4 */ 1, 0, 0, 1, 0, 0, 1,
+	/* 5 */ 1, 1, 1, 1, 1, 1, 1,
+	// clang-format on
+};
+
+const int c_MapData4[] = {
+	// clang-format off
+	// y\x  0  1  2  3  4  5  6
+	/* 0 */ 1, 1, 1, 1, 1, 1, 1,
+	/* 1 */ 1, 0, 0, 0, 0, 0, 1,
+	/* 2 */ 1, 0, 0, 1, 1, 0, 1,
+	/* 3 */ 1, 1, 0, 0, 1, 0, 1,
+	/* 4 */ 1, 1, 1, 0, 0, 0, 1,
 	/* 5 */ 1, 1, 1, 1, 1, 1, 1,
 	// clang-format on
 };
@@ -328,6 +340,30 @@ TEST(BotUtils, ReachableByGround2)
 	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(1, 4), CTilePosition(5, 4), MaxJumps));
 
 	EXPECT_FALSE(Utils.IsReachableByGround(CTilePosition(5, 4), CTilePosition(1, 4), MaxJumps));
+}
+
+TEST(BotUtils, ReachableByGround_Stairs)
+{
+	CMockDebugSink DebugSink;
+	CMockCollision Collision;
+	Collision.SetMapData(c_MapData4, 7, 6);
+	static_assert(std::size(c_MapData4) == 7 * 6);
+
+	CBotUtils Utils;
+	Utils.SetDebugSing(&DebugSink);
+	Utils.SetCollision(&Collision);
+	Utils.UpdateTuning(CTuningParams());
+
+	// Sanity check for the map:
+	EXPECT_EQ(Collision.IsSolid(CTilePosition(1, 2)), false);
+	EXPECT_EQ(Collision.IsSolid(CTilePosition(1, 3)), true);
+	EXPECT_EQ(Collision.IsSolid(CTilePosition(4, 4)), false);
+	EXPECT_EQ(Collision.IsSolid(CTilePosition(5, 5)), true);
+
+	int MaxJumps = 1;
+	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(1, 2), CTilePosition(2, 3), MaxJumps));
+	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(1, 2), CTilePosition(5, 4), MaxJumps));
+	EXPECT_TRUE(Utils.IsReachableByGround(CTilePosition(5, 4), CTilePosition(1, 2), MaxJumps));
 }
 
 TEST(BotUtils, ProjectilePrediction)

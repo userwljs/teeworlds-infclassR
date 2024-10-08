@@ -536,7 +536,7 @@ bool CBotUtils::IsReachableByGroundImpl(const vec2 &From, const vec2 &To, int Ma
 
 	//	int TileY = TileFrom.Y;
 	int MaxTiles = GetMaxTilesForJumps(MaxJumps, true);
-	int MaxFallTiles = 2;
+	int MaxFallTiles = 10;
 
 	int Steps = 0;
 
@@ -587,6 +587,22 @@ bool CBotUtils::IsReachableByGroundImpl(const vec2 &From, const vec2 &To, int Ma
 				}
 			}
 			CurrentTile.Y = FirstAirAbove.value();
+		}
+		else
+		{
+			std::optional<int> SolidTileY = GetSolidTileBelow(CurrentTile, MaxFallTiles);
+			if(SolidTileY.has_value())
+			{
+				int NewY = SolidTileY.value() - 1;
+				if constexpr(Trace)
+				{
+					for(int Y = CurrentTile.Y; Y < NewY; ++Y)
+					{
+						GetDebugSink()->HighlightPosition(CTileRoundedPosition(CurrentTile.X, Y).Center());
+					}
+				}
+				CurrentTile.Y = NewY;
+			}
 		}
 
 		Steps++;
