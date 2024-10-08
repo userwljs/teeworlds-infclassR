@@ -1731,6 +1731,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("dump_bot", "i", CFGFLAG_SERVER, ConDumpBot, this, "Dump bot state");
 	pConsole->Register("ai", "s[enable|disable|debug|danger] ?i[clientid]", CFGFLAG_SERVER, ConCheckAI, this, "Debug bot AI from the caller PoV");
 	pConsole->Register("ai_objection", "s[command] ?s[argument]", CFGFLAG_SERVER, ConAiObjection, this, "Setup AI objections");
+	pConsole->Register("ai_trace_path", "i[ClientId] f[x] f[y]", CFGFLAG_SERVER, ConAiTracePath, this, "Debug bot AI from the caller PoV");
 
 	pConsole->Register("survival_clear_conf", "", CFGFLAG_SERVER, ConSurvivalClearConf, this, "");
 	pConsole->Register("survival_conf", "s[option] ?i[value]", CFGFLAG_SERVER, ConSurvivalConf, this, "Adjust survival configuration");
@@ -2325,6 +2326,47 @@ void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
 		CBotPlayer::SetAiEnabled(0);
 	}
 
+	Config()->m_InfBotDebugLevel = DebugLevel;
+}
+
+void CIcGameController::ConAiTracePath(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	pSelf->ConAiTracePath(pResult);
+}
+
+void CIcGameController::ConAiTracePath(IConsole::IResult *pResult)
+{
+	const int ClientID = pResult->GetClientId();
+	const int CheckCID = pResult->GetInteger(0);
+	const float X = pResult->GetFloat(1) * 32.0f;
+	const float Y = pResult->GetFloat(2) * 32.0f;
+
+	const CIcPlayer *pPlayer = GetPlayer(CheckCID);
+	if (!pPlayer)
+	{
+		GameServer()->SendChatTarget(ClientID, "No player to debug");
+		return;
+	}
+	if (!pPlayer->GetCharacter())
+	{
+		GameServer()->SendChatTarget(ClientID, "The player has no character to debug");
+		return;
+	}
+
+	if (!pPlayer->IsBot())
+	{
+		if(std::is_same_v<UPlayerClass, CIcPlayer>)
+		{
+			GameServer()->SendChatTarget(ClientID, "Unable to debug a player: the server is compiled without AI debug support");
+			return;
+		}
+	}
+
+	const int DebugLevel = Config()->m_InfBotDebugLevel;
+	Config()->m_InfBotDebugLevel = std::max<int>(2, DebugLevel);
+	const CBotPlayer *pBotPlayer = static_cast<const CBotPlayer *>(pPlayer);
+	pBotPlayer->GetBotUtils().IsReachableByGroundTraced(pBotPlayer->GetCharacter()->GetPos(), vec2(X, Y), pBotPlayer->GetMaxJumps(), 1000);
 	Config()->m_InfBotDebugLevel = DebugLevel;
 }
 

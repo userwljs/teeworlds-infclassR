@@ -225,6 +225,7 @@ public:
 	void UpdateName() override;
 
 	void OnCharacterHPChanged() override;
+	const CBotUtils &GetBotUtils() const { return m_BotUtils; };
 
 public:
 	enum DIRECTION : int8_t

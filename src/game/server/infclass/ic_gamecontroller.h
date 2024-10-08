@@ -428,6 +428,9 @@ public:
 	static void ConCheckAI(IConsole::IResult *pResult, void *pUserData);
 	void ConCheckAI(IConsole::IResult *pResult);
 
+	static void ConAiTracePath(IConsole::IResult *pResult, void *pUserData);
+	void ConAiTracePath(IConsole::IResult *pResult);
+
 	static void ConAiObjection(IConsole::IResult *pResult, void *pUserData);
 	void ConAiObjection(IConsole::IResult *pResult);
 
