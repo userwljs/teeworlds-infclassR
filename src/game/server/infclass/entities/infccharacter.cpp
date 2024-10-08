@@ -617,7 +617,7 @@ void CInfClassCharacter::FireWeapon()
 
 	GetClass()->OnWeaponFired(&FireContext);
 
-	if(IsInLove() && FireContext.FireAccepted)
+	if(IsInLove() && FireContext.FireAccepted && !IsSolo())
 	{
 		GameServer()->CreateLoveEvent(GetPos());
 	}
