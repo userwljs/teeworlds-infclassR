@@ -1267,6 +1267,7 @@ install(
     "ChangeLog.txt"
     "autoexec.cfg"
     "reset.cfg"
+    "zowling.cfg"
   DESTINATION
     "."
 )
