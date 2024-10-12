@@ -4486,6 +4486,8 @@ void CIcGameController::OnHideAndSeekTick()
 			EBroadcastPriority::GAMEANNOUNCE, 5 * Server()->TickSpeed(),
 			_("Humans won"),
 			nullptr);
+
+		EnsureFinalExplosionIsStarted();
 	}
 }
 
@@ -5732,6 +5734,12 @@ void CIcGameController::DoWincheck()
 
 	switch(GetRoundType())
 	{
+	case ERoundType::HideAndSeek:
+		if(TimeIsOut || (m_FinalExplosionState == EFinalExplosionState::Finished))
+		{
+			VictoryConditionsMet = true;
+		}
+		break;
 	default:
 		// One infected can win in some rounds; we have a check if this is a valid situation in CheckRoundFailed()
 		if(NumHumans == 0 && NumInfected >= 1)
