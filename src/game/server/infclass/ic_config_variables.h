@@ -41,6 +41,7 @@ MACRO_CONFIG_STR(InfEvent, inf_event, 64, "", CFGFLAG_SERVER, "Special event")
 MACRO_CONFIG_STR(InfDefaultRoundType, inf_default_round_type, 64, "", CFGFLAG_SERVER, "Default round type")
 
 MACRO_CONFIG_FLOAT(HsGhostsProtection, hs_ghosts_protection, 3.5, 0, 10, CFGFLAG_SERVER, "The number of seconds of ghosts spawn protection")
+MACRO_CONFIG_INT(HsFastRoundMinPlayers, hs_fast_round_min_players, 7, 0, 64, CFGFLAG_SERVER, "The minimum number of players for enabling humans win condition")
 MACRO_CONFIG_INT(HsMedicsLimit, hs_medics_limit, 2, 0, 64, CFGFLAG_SERVER, "The max number of medic players in Hide and Seek round")
 
 MACRO_CONFIG_INT(InfMinPlayers, inf_min_players, 2, 0, 64, CFGFLAG_SERVER, "Minimum number of players to start the round")

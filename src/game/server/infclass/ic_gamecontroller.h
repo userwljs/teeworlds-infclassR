@@ -478,6 +478,8 @@ private:
 	std::vector<FunRoundConfiguration> m_FunRoundConfigurations;
 	int m_FunRoundsPassed = 0;
 
+	bool m_HsFastRound = false;
+
 	bool m_InfectedStarted;
 	bool m_RoundStarted = false;
 	bool m_SuggestMoreRounds = false;

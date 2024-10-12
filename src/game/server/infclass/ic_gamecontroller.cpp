@@ -2827,6 +2827,20 @@ void CIcGameController::StartHideAndSeekGameplay(int SeekingPlayers)
 			pPlayer->m_DieTick = m_RoundStartTick;
 		}
 	}
+
+	m_HsFastRound = static_cast<int>(AllPlayers.Size()) > Config()->m_HsFastRoundMinPlayers;
+	if(m_HsFastRound)
+	{
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
+			_("The humans should kill each Ghost at least once to win the round"),
+			nullptr);
+	}
+	else
+	{
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
+			_("The humans should kill as many Ghosts as they can"),
+			nullptr);
+	}
 }
 
 void CIcGameController::MaybeSuggestMoreRounds()
@@ -4030,9 +4044,17 @@ void CIcGameController::AnnounceHideAndSeekWinner()
 	}
 	else
 	{
-		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Total humans team score: {int:Score}",
-			"Score", &HumansScore,
-			nullptr);
+		if(m_HsFastRound)
+		{
+			const int Seconds = GetRoundTick() / ((float)Server()->TickSpeed());
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTED, _("Humans won the round in {sec:RoundDuration}"), "RoundDuration", &Seconds, nullptr);
+		}
+		else
+		{
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Total humans team score: {int:Score}",
+				"Score", &HumansScore,
+				nullptr);
+		}
 		pWinMessage = _("Humans won the round");
 		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_HUMANS, pWinMessage, nullptr);
 	}
@@ -4447,6 +4469,9 @@ void CIcGameController::ApplyHideAndSeekAttributes(CIcPlayer *pPlayer)
 
 void CIcGameController::OnHideAndSeekTick()
 {
+	if(!m_HsFastRound)
+		return;
+
 	std::size_t NumSurvivedGhosts{};
 	std::optional<int> SurvivorCid{};
 
