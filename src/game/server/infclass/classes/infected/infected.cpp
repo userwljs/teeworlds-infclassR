@@ -435,6 +435,12 @@ void CInfClassInfected::OnHookAttachedPlayer()
 	m_LastSeenTick = Server()->Tick();
 }
 
+void CInfClassInfected::OnWeaponFired(WeaponFireContext *pFireContext)
+{
+	CInfClassPlayerClass::OnWeaponFired(pFireContext);
+	ResetInvisibility();
+}
+
 void CInfClassInfected::OnCharacterDamage(SDamageContext *pContext)
 {
 	m_LastSeenTick = Server()->Tick();
@@ -505,12 +511,6 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 		const vec2 ProjStartPos = GetPos() + Direction * GetHammerProjOffset();
 
 		ShowAttackAnimation = true;
-
-		if(GetPlayerClass() == EPlayerClass::Ghost)
-		{
-			m_pCharacter->MakeVisible();
-			m_LastSeenTick = Server()->Tick();
-		}
 
 		// Lookup for humans
 		ClientsArray Targets;
@@ -987,6 +987,12 @@ bool CInfClassInfected::HasHumansNearby()
 	}
 
 	return false;
+}
+
+void CInfClassInfected::ResetInvisibility()
+{
+	m_pCharacter->MakeVisible();
+	m_LastSeenTick = Server()->Tick();
 }
 
 void CInfClassInfected::OnSlimeEffect(int Owner, int Damage, float DamageInterval)
