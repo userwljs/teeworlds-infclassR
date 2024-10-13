@@ -1,9 +1,13 @@
 #include "ic_gamecontroller.h"
 
 #if CONF_LUA
+#include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_door.h>
 #include <game/server/infclass/entities/ic_entity.h>
+#include <game/server/infclass/entities/looper-wall.h>
+#include <game/server/infclass/entities/scientist-mine.h>
+#include <game/server/infclass/entities/turret.h>
 #include <game/server/infclass/ic_player.h>
 #include <game/server/map_info.h>
 
@@ -85,6 +89,26 @@ void FinishRound_Lua(CIcGameController *pController)
 void CancelRound_Lua(CIcGameController *pController)
 {
 	pController->EndRound(ERoundEndReason::CANCELED);
+}
+
+CScientistMine *AddSciMine(const CIcGameController *pController)
+{
+	return new CScientistMine(pController->GameServer(), {}, -1);
+}
+
+CPlacedObject *AddLaserWall(const CIcGameController *pController)
+{
+	return new CEngineerWall(pController->GameServer(), {}, -1);
+}
+
+CPlacedObject *AddLooperWall(const CIcGameController *pController)
+{
+	return new CLooperWall(pController->GameServer(), {}, -1);
+}
+
+CTurret *AddTurret(const CIcGameController *pController)
+{
+	return new CTurret(pController->GameServer(), {}, -1, CTurret::LASER);
 }
 
 void CIcGameController::ConExecLua(IConsole::IResult *pResult, void *pUserData)
@@ -271,9 +295,18 @@ void CIcGameController::RegisterLuaBindings()
 		.deriveClass<CPlacedObject, CIcEntity>("CPlacedObject")
 			.addFunction("HasSecondPosition", &CPlacedObject::HasSecondPosition)
 			.addProperty("SecondPosition", &CPlacedObject::SecondPosition, &CPlacedObject::SetSecondPosition)
+			.addProperty("MaxLength", &CPlacedObject::MaxLength, &CPlacedObject::SetMaxLength)
 		.endClass()
 		.deriveClass<CDoor, CPlacedObject>("CDoor")
 			.addFunction("SetOpen", &CDoor::SetOpen)
+		.endClass()
+		.deriveClass<CScientistMine, CPlacedObject>("CScientistMine")
+			.addFunction("SetExplosionRadius", &CScientistMine::SetExplosionRadius)
+		.endClass()
+		.deriveClass<CTurret, CPlacedObject>("CTurret")
+			.addProperty("ReloadDuration", &CTurret::GetReloadDuration, &CTurret::SetReloadDuration)
+			.addProperty("Damage", &CTurret::GetDamage, &CTurret::SetDamage)
+			.addProperty("Destructable", &CTurret::IsDestructable, &CTurret::SetDestructable)
 		.endClass()
 		.deriveClass<CIcGameController, IGameController>("CIcGameController")
 			.addProperty("GameType", &CIcGameController::GameType, &CIcGameController::SetGameType)
@@ -322,6 +355,10 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("DoWarmup", &CIcGameController::DoWarmup)
 
 			.addFunction("AddDoor", &CIcGameController::AddDoor)
+			.addFunction("AddSciMine", &AddSciMine)
+			.addFunction("AddLaserWall", &AddLaserWall)
+			.addFunction("AddLooperWall", &AddLooperWall)
+			.addFunction("AddTurret", &AddTurret)
 		.endClass()
 		.beginNamespace("Game")
 			.addProperty("Controller", &pGameController, false)
