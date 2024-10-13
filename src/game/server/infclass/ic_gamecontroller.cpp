@@ -4444,7 +4444,8 @@ void CIcGameController::ApplyHideAndSeekAttributes(CIcPlayer *pPlayer)
 		{
 			pCharacter->LoveEffect(GetTimeLimitSeconds() + 5);
 			float SpawnProtectionDuration = Config()->m_HsGhostsProtection;
-			pCharacter->SetSoloForDuration(SpawnProtectionDuration);
+			float SpawnDeathPenalty = m_HsFastRound ? pPlayer->GetDeaths() * Config()->m_HsDeathPenaltyTime : 0;
+			pCharacter->SetSoloForDuration(SpawnProtectionDuration + SpawnDeathPenalty);
 		}
 		else
 		{
