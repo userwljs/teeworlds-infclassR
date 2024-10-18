@@ -5488,6 +5488,23 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 
 EPlayerClass CIcGameController::ChooseHumanClass(const CIcPlayer *pPlayer) const
 {
+	if(Lua()->HasGlobalCallable("choose_human_class"))
+	{
+		std::optional<std::string> c = RunCallbackWithResult<std::string>(Lua()->GetLuaState(), "choose_human_class", pPlayer);
+		if(c.has_value() && !c.value().empty())
+		{
+			EPlayerClass Class = fromString<EPlayerClass>(c.value().c_str());
+			if (IsHumanClass(Class))
+			{
+				return Class;
+			}
+			else
+			{
+				dbg_msg("lua/cb", "choose_human_class() exists but return invalid value '%s'", c.value().c_str());
+			}
+		}
+	}
+
 	double Probability[NB_PLAYERCLASS]{};
 	auto GetClassProbabilityRef = [&Probability](EPlayerClass PlayerClass) -> double & {
 		return Probability[static_cast<int>(PlayerClass)];
@@ -5545,6 +5562,23 @@ EPlayerClass CIcGameController::ChooseHumanClass(const CIcPlayer *pPlayer) const
 
 EPlayerClass CIcGameController::ChooseInfectedClass(const CIcPlayer *pPlayer) const
 {
+	if(Lua()->HasGlobalCallable("choose_infected_class"))
+	{
+		std::optional<std::string> c = RunCallbackWithResult<std::string>(Lua()->GetLuaState(), "choose_infected_class", pPlayer);
+		if(c.has_value() && !c.value().empty())
+		{
+			EPlayerClass Class = fromString<EPlayerClass>(c.value().c_str());
+			if (IsInfectedClass(Class))
+			{
+				return Class;
+			}
+			else
+			{
+				dbg_msg("lua/cb", "choose_infected_class() exists but return invalid value '%s'", c.value().c_str());
+			}
+		}
+	}
+
 	// if(pPlayer->InfectionType() == INFECTION_TYPE::RESTORE_INF_CLASS)
 	{
 		EPlayerClass PrevClass = pPlayer->GetPreviousInfectedClass();
