@@ -547,14 +547,40 @@ function start_survival_auto()
     start_survival_game(survival_players)
 end
 
-if runtime_context.game_initialized == nil then
-    runtime_context.game_initialized = true
+function survival_init()
     -- Kill-based survival
     Config.inf_survival_mode = 1
+    Config.inf_white_hole_num_particles = 60
+    Config.inf_white_hole_radius = 240
 
+    Config.sv_vote_spectate = 1
+end
+
+function survival_on_shutdown()
+    Config.inf_survival_mode = 0
+    Config.inf_survival_hardmode = 0
+    Config.inf_white_hole_num_particles = 100
+    Config.inf_white_hole_radius = 430
+
+    Config.sv_vote_spectate = 0
+
+    survival_remove_votes()
+end
+
+if runtime_context.game_initialized == nil then
+    runtime_context.game_initialized = true
+    survival_init()
     -- on_event("on_character_death", on_game_character_death)
 
     on_event("on_tick", survival_on_tick)
+    on_event("on_shutdown", survival_on_shutdown)
+end
+
+function survival_remove_votes()
+    for i = 1,6 do
+        local vote_command = string.format("lua start_survival_game(%d)", i)
+        Game.Context:RemoveVote(vote_command)
+    end
 end
 
 function survival_setup_votes()
