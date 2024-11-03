@@ -72,7 +72,7 @@ void CInfClassInfected::SetupSkinContext(CSkinContext *pOutput, bool ForSameTeam
 		break;
 	}
 
-	if(m_pPlayer && (m_pPlayer->GetMaxHP() > 20))
+	if(m_pPlayer && (m_pPlayer->GetMaxHP() > 30))
 	{
 		pOutput->Highlight = true;
 	}
