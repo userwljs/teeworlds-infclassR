@@ -115,6 +115,10 @@ bool CInfClassInfected::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pO
 		pOutput->UseCustomColor = 1;
 		pOutput->ColorBody = 3866368;
 		pOutput->ColorFeet = 65414;
+		if((DDNetVersion > VERSION_DDNET_OLD) & g_Config.m_SvUseDDNetSkins)
+		{
+			pOutput->pSkinName = "ghost";
+		}
 		break;
 	case EPlayerClass::Spider:
 		pOutput->pSkinName = "pinky";

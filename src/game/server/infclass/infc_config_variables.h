@@ -25,6 +25,7 @@ MACRO_CONFIG_STR(SvMapsBaseUrl, sv_maps_base_url, 128, "", CFGFLAG_SERVER, "Clie
 MACRO_CONFIG_INT(SvShowOpenDoors, sv_show_open_doors, 0, 0, 1, CFGFLAG_SERVER, "Show open doors (0 = no, 1 = yes)")
 MACRO_CONFIG_INT(SvTimelimitInSeconds, sv_timelimit_in_seconds, 0, 0, 10000, CFGFLAG_SERVER, "Time limit in seconds (0 means 'fallback to sv_timelimit')")
 MACRO_CONFIG_INT(SvMaxDDNetVersion, sv_max_ddnet_version, 0, 0, 9999999, CFGFLAG_SERVER, "Automatically kick clients with DDNet version higher than specified")
+MACRO_CONFIG_INT(SvUseDDNetSkins, sv_use_ddnet_skins, 1, 0, 1, CFGFLAG_SERVER, "Enable DDNet skins for DDNet clients (can cause issues on certain client configs)")
 
 MACRO_CONFIG_INT(InfSmartMapRotation, inf_smart_maprotation, 0, 1, 1, CFGFLAG_SERVER, "Enable smart map rotation algorhythm")
 MACRO_CONFIG_INT(InfInactiveHumansKickTime, inf_inactive_humans_kick_time, 180, 0, 10000, CFGFLAG_SERVER, "How many seconds to wait before taking care of inactive humans")
