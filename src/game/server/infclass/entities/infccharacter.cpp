@@ -2280,7 +2280,7 @@ void CInfClassCharacter::PreCoreTick()
 	{
 		if(m_FrozenTime <= 0)
 		{
-			Unfreeze();
+			TryUnfreeze();
 		}
 		else
 		{
