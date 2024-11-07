@@ -1040,7 +1040,7 @@ void CInfClassInfected::PrepareToDie(const DeathContext &Context, bool *pRefused
 {
 	if(GetPlayerClass() == EPlayerClass::Undead)
 	{
-		m_pCharacter->Freeze(10.0, Context.Killer, FREEZEREASON_UNDEAD);
+		m_pCharacter->Freeze(Config()->m_InfUndeadFreezeDuration, Context.Killer, FREEZEREASON_UNDEAD);
 		m_pCharacter->SetHealthArmor(0, 0);
 		*pRefusedToDie = true;
 		return;
