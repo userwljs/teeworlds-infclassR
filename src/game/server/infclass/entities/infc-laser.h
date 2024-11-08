@@ -5,14 +5,16 @@
 
 #include "infcentity.h"
 
-#include <game/infclass/damage_type.h>
-
 struct WeaponFireContext;
+enum class EDamageType;
+enum class EInfclassWeapon;
 
 class CInfClassLaser : public CInfCEntity
 {
 public:
-	CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EDamageType DamageType, bool Bounce = true);
+	CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);
+
+	static void MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);
 
 	void Tick() override;
 	void TickPaused() override;
@@ -23,7 +25,7 @@ public:
 	void SetExplosive(bool Explosive);
 
 protected:
-	CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, int ObjType);
+	EDamageType GetDamageType() const;
 
 	virtual bool HitCharacter(vec2 From, vec2 To);
 	virtual bool OnCharacterHit(CInfClassCharacter *pHit);
@@ -31,7 +33,7 @@ protected:
 protected:
 	vec2 m_From;
 	vec2 m_Dir;
-	EDamageType m_DamageType;
+	const EInfclassWeapon m_Weapon;
 	float m_Energy;
 	int m_Bounces = 0;
 	int m_MaxBounces = 0;

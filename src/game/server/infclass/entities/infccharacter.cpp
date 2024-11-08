@@ -521,15 +521,14 @@ void CInfClassCharacter::FireWeapon()
 		return;
 	}
 
-	const EInfclassWeapon InfWeaponId = GetInfWeaponId(m_ActiveWeapon);
-
 	WeaponFireContext FireContext;
 	FireContext.Weapon = m_ActiveWeapon;
+	FireContext.InfClassWeapon = GetInfWeaponId(m_ActiveWeapon);
 	FireContext.FireAccepted = true;
 	FireContext.AmmoConsumed = 1;
 	FireContext.AmmoAvailable = m_aWeapons[m_ActiveWeapon].m_Ammo;
 	FireContext.NoAmmo = FireContext.AmmoAvailable == 0;
-	FireContext.ReloadInterval = GameController()->GetFireDelay(InfWeaponId) / 1000.0f;
+	FireContext.ReloadInterval = GameController()->GetFireDelay(FireContext.InfClassWeapon) / 1000.0f;
 
 	GetClass()->OnWeaponFired(&FireContext);
 

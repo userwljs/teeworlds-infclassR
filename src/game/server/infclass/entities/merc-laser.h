@@ -5,7 +5,7 @@
 
 #include "infc-laser.h"
 
-class CMercenaryLaser : public CInfClassLaser
+class CMercenaryLaser final : public CInfClassLaser
 {
 public:
 	CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, float UpgradePoints);

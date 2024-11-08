@@ -4,8 +4,9 @@
 #include <game/server/gamecontext.h>
 #include "scientist-laser.h"
 
-#include <game/server/infclass/classes/humans/human.h>
 #include <game/infclass/damage_type.h>
+#include <game/infclass/weapons.h>
+#include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
 #include "growingexplosion.h"
@@ -13,11 +14,8 @@
 #include "white-hole.h"
 
 CScientistLaser::CScientistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg)
-	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, CGameWorld::ENTTYPE_LASER)
+	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, EInfclassWeapon::EXPLOSIVE_LASER)
 {
-	m_DamageType = EDamageType::SCIENTIST_LASER;
-	
-	GameWorld()->InsertEntity(this);
 	DoBounce();
 }
 
@@ -57,7 +55,7 @@ void CScientistLaser::DoBounce()
 		}
 	}
 
-	GameController()->CreateExplosion(m_Pos, m_Owner, m_DamageType);
+	GameController()->CreateExplosion(m_Pos, m_Owner, EDamageType::SCIENTIST_LASER);
 	CreateWhiteHole(GetPos(), To);
 }
 

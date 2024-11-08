@@ -13,10 +13,9 @@
 static const int MercLaserDamage = 0;
 
 CMercenaryLaser::CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, float UpgradePoints)
-	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, MercLaserDamage, CGameWorld::ENTTYPE_LASER)
+	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, MercLaserDamage, EInfclassWeapon::MERCENARY_UPGRADE_LASER)
 	, m_UpgradePoints(UpgradePoints)
 {
-	GameWorld()->InsertEntity(this);
 	CInfClassLaser::DoBounce();
 }
 

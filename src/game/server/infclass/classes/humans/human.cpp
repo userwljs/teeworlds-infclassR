@@ -1011,7 +1011,6 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 	vec2 Direction = GetDirection();
 	float StartEnergy = GameServer()->Tuning()->m_LaserReach * m_LaserReachModifier;
 	int Damage = GameServer()->Tuning()->m_LaserDamage;
-	EDamageType DamageType = EDamageType::LASER;
 
 	switch(GetPlayerClass())
 	{
@@ -1034,19 +1033,20 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 	case EPlayerClass::Looper:
 		StartEnergy *= 0.7f;
 		Damage = 5;
-		DamageType = EDamageType::LOOPER_LASER;
-		new CInfClassLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, DamageType);
+		CInfClassLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
 		break;
 	case EPlayerClass::Sniper:
 		Damage = m_pCharacter->PositionIsLocked() ? 30 : random_int(10, 13);
-		DamageType = EDamageType::SNIPER_RIFLE;
-		new CInfClassLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, DamageType);
+		CInfClassLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		break;
+	case EPlayerClass::Engineer:
+	case EPlayerClass::Hero:
+		CInfClassLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
 		break;
 	default:
-		new CInfClassLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, DamageType);
 		break;
 	}
-	
+
 	if(pFireContext->FireAccepted)
 	{
 		GameServer()->CreateSound(GetPos(), SOUND_LASER_FIRE);

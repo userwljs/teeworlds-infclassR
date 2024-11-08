@@ -49,6 +49,7 @@ struct EnforcerInfo
 struct WeaponFireContext
 {
 	int Weapon = 0;
+	EInfclassWeapon InfClassWeapon{};
 	bool FireAccepted = false;
 	int AmmoAvailable = 0;
 	int AmmoConsumed = 0;

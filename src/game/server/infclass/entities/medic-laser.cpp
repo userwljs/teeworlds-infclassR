@@ -4,6 +4,8 @@
 #include <engine/shared/config.h>
 
 #include <game/generated/protocol.h>
+#include <game/infclass/damage_type.h>
+#include <game/infclass/weapons.h>
 #include <game/server/gamecontext.h>
 
 #include <game/server/infclass/infcgamecontroller.h>
@@ -20,17 +22,16 @@ void CMedicLaser::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFi
 		return;
 	}
 
-	new CMedicLaser(pCharacter->GameContext(), pCharacter->GetPos(), pCharacter->GetDirection(), StartEnergy, pCharacter->GetCid());
+	CMedicLaser *pLaser = new CMedicLaser(pCharacter->GameContext(), pCharacter->GetPos(), pCharacter->GetDirection(), StartEnergy, pCharacter->GetCid(), pFireContext->InfClassWeapon);
+	pLaser->DoBounce();
 	pFireContext->AmmoConsumed = pFireContext->AmmoAvailable;
 
 	pCharacter->GameServer()->CreateSound(pCharacter->GetPos(), SOUND_LASER_FIRE);
 }
 
-CMedicLaser::CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner)
-	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, 0, CGameWorld::ENTTYPE_LASER)
+CMedicLaser::CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, EInfclassWeapon Weapon)
+	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, 0, Weapon)
 {
-	GameWorld()->InsertEntity(this);
-	DoBounce();
 }
 
 bool CMedicLaser::OnCharacterHit(CInfClassCharacter *pHit)

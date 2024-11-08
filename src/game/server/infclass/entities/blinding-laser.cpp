@@ -13,16 +13,14 @@ void CBlindingLaser::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *
 	if(pFireContext->NoAmmo)
 		return;
 
-	new CBlindingLaser(pCharacter->GameContext(), pCharacter->GetPos(), pCharacter->GetDirection(), pCharacter->GetCid());
+	CBlindingLaser *pLaser = new CBlindingLaser(pCharacter->GameContext(), pCharacter->GetPos(), pCharacter->GetDirection(), pCharacter->GetCid());
 	pCharacter->GameServer()->CreateSound(pCharacter->GetPos(), SOUND_LASER_FIRE);
+	pLaser->DoBounce();
 }
 
 CBlindingLaser::CBlindingLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner)
-	: CInfClassLaser(pGameContext, Pos, Direction, 600, Owner, 0, CGameWorld::ENTTYPE_LASER)
+	: CInfClassLaser(pGameContext, Pos, Direction, 600, Owner, 0, EInfclassWeapon::BLINDING_LASER)
 {
-	GameWorld()->InsertEntity(this);
-
-	DoBounce();
 }
 
 bool CBlindingLaser::OnCharacterHit(CInfClassCharacter *pHit)

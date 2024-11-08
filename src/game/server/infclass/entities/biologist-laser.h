@@ -5,7 +5,7 @@
 
 #include "infc-laser.h"
 
-class CBiologistLaser : public CInfClassLaser
+class CBiologistLaser final : public CInfClassLaser
 {
 public:
 	CBiologistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner, int Dmg);

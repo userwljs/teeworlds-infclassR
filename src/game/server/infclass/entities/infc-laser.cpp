@@ -2,35 +2,25 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include "infc-laser.h"
 
-#include <game/generated/protocol.h>
-#include <game/server/gamecontext.h>
-
 #include <engine/shared/config.h>
+
+#include <game/generated/protocol.h>
+#include <game/infclass/damage_type.h>
+#include <game/infclass/weapons.h>
+#include <game/server/gamecontext.h>
 
 #include <game/server/infclass/entities/infccharacter.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
-CInfClassLaser::CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, int ObjType)
-	: CInfCEntity(pGameContext, ObjType, Pos, Owner)
+CInfClassLaser::CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon) :
+	CInfCEntity(pGameContext, CGameWorld::ENTTYPE_LASER, Pos, Owner), m_Weapon(InfClassWeapon)
 {
 	m_Dmg = Dmg;
 	m_Energy = StartEnergy;
 	m_Dir = Direction;
-	m_DamageType = EDamageType::NO_DAMAGE;
 	m_MaxBounces = GameServer()->Tuning()->m_LaserBounceNum;
 	m_BounceCost = GameServer()->Tuning()->m_LaserBounceCost;
-}
-
-CInfClassLaser::CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EDamageType DamageType, bool Bounce) :
-	CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, CGameWorld::ENTTYPE_LASER)
-{
-	m_DamageType = DamageType;
 	GameWorld()->InsertEntity(this);
-
-	if(Bounce)
-	{
-		DoBounce();
-	}
 }
 
 bool CInfClassLaser::HitCharacter(vec2 From, vec2 To)
@@ -54,9 +44,9 @@ bool CInfClassLaser::HitCharacter(vec2 From, vec2 To)
 
 bool CInfClassLaser::OnCharacterHit(CInfClassCharacter *pHit)
 {
-	pHit->TakeDamage(vec2(0.f, 0.f), m_Dmg, m_Owner, m_DamageType);
+	pHit->TakeDamage(vec2(0.f, 0.f), m_Dmg, m_Owner, GetDamageType());
 
-	if(m_DamageType == EDamageType::LOOPER_LASER)
+	if(m_Weapon == EInfclassWeapon::LOOPER_LASER)
 	{
 		const float EffectDurationInSeconds = Config()->m_InfSlowMotionGunDuration * 0.1f;
 		pHit->SlowMotionEffect(EffectDurationInSeconds, GetOwner());
@@ -113,6 +103,12 @@ void CInfClassLaser::DoBounce()
 	}
 }
 
+void CInfClassLaser::MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon)
+{
+	CInfClassLaser *pLaser = new CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, InfClassWeapon);
+	pLaser->DoBounce();
+}
+
 void CInfClassLaser::Tick()
 {
 	if(Server()->Tick() > m_EvalTick+(Server()->TickSpeed()*GameServer()->Tuning()->m_LaserBounceDelay)/1000.0f)
@@ -137,4 +133,24 @@ void CInfClassLaser::Snap(int SnappingClient)
 void CInfClassLaser::SetExplosive(bool Explosive)
 {
 	m_Explosive = Explosive;
+}
+
+EDamageType CInfClassLaser::GetDamageType() const
+{
+	switch(m_Weapon)
+	{
+	case EInfclassWeapon::LOOPER_LASER:
+		return EDamageType::LOOPER_LASER;
+	case EInfclassWeapon::SNIPER_RIFLE:
+		return EDamageType::SNIPER_RIFLE;
+	case EInfclassWeapon::TURRET_INSTALL_KIT:
+		return EDamageType::TURRET_LASER;
+	case EInfclassWeapon::ENGINEER_LASER:
+	case EInfclassWeapon::HERO_LASER:
+		return EDamageType::LASER;
+
+	default:
+		dbg_assert(false, "Invalid GetDamageType() call");
+		return EDamageType::LASER;
+	}
 }

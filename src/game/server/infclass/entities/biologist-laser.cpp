@@ -2,17 +2,17 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include "biologist-laser.h"
 
+#include <game/infclass/damage_type.h>
+#include <game/infclass/weapons.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/entities/infccharacter.h>
 
 CBiologistLaser::CBiologistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner, int Dmg) :
-	CInfClassLaser(pGameContext, Pos, Direction, 400.0f, Owner, Dmg, CGameWorld::ENTTYPE_LASER)
+	CInfClassLaser(pGameContext, Pos, Direction, 400.0f, Owner, Dmg, EInfclassWeapon::BIOLOGIST_MINE_LASER)
 {
-	m_DamageType = EDamageType::BIOLOGIST_MINE;
 	m_MaxBounces = 4;
 	m_BounceCost = -100;
 
-	GameWorld()->InsertEntity(this);
 	DoBounce();
 }
 
