@@ -13,10 +13,16 @@
 
 void CMedicLaser::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, float StartEnergy)
 {
-	if(pFireContext->NoAmmo)
+	if(pFireContext->AmmoAvailable < 10)
+	{
+		pFireContext->FireAccepted = false;
+		pFireContext->NoAmmo = true;
 		return;
+	}
 
 	new CMedicLaser(pCharacter->GameContext(), pCharacter->GetPos(), pCharacter->GetDirection(), StartEnergy, pCharacter->GetCid());
+	pFireContext->AmmoConsumed = pFireContext->AmmoAvailable;
+
 	pCharacter->GameServer()->CreateSound(pCharacter->GetPos(), SOUND_LASER_FIRE);
 }
 

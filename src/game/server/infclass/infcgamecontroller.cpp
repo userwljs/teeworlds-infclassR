@@ -5258,7 +5258,7 @@ void CInfClassGameController::InitWeapons()
 	SetAmmoRegenTime(EInfclassWeapon::EXPLOSIVE_LASER, 6000);
 	SetAmmoRegenTime(EInfclassWeapon::TELEPORT_GUN, 10000);
 	SetAmmoRegenTime(EInfclassWeapon::HEALING_GRENADE, 0);
-	SetAmmoRegenTime(EInfclassWeapon::MEDIC_LASER, 6000);
+	SetAmmoRegenTime(EInfclassWeapon::MEDIC_LASER, 600);
 	SetAmmoRegenTime(EInfclassWeapon::MEDIC_SHOTGUN, 750);
 	SetAmmoRegenTime(EInfclassWeapon::HERO_SHOTGUN, 750);
 	SetAmmoRegenTime(EInfclassWeapon::HERO_LASER, 3000);
@@ -5287,7 +5287,7 @@ void CInfClassGameController::InitWeapons()
 	SetMaxAmmo(EInfclassWeapon::TELEPORT_GUN, 3);
 	SetMaxAmmo(EInfclassWeapon::SOLDIER_GRENADE, 10);
 	SetMaxAmmo(EInfclassWeapon::HEALING_GRENADE, 10);
-	SetMaxAmmo(EInfclassWeapon::MEDIC_LASER, 1);
+	SetMaxAmmo(EInfclassWeapon::MEDIC_LASER, 10);
 	SetMaxAmmo(EInfclassWeapon::MEDIC_SHOTGUN, 10);
 	SetMaxAmmo(EInfclassWeapon::HERO_SHOTGUN, 10);
 	SetMaxAmmo(EInfclassWeapon::HERO_LASER, 10);
