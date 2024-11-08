@@ -454,6 +454,13 @@ function get_max_players_for_difficulty(difficulty)
     return max_players + survival_allow_extra_players
 end
 
+function update_max_players()
+    survival_max_players = get_max_players_for_difficulty(survival_difficulty_level)
+
+    local game_conf = Game.Controller:SurvivalGetGameConfiguration()
+    game_conf.MaxPlayers = survival_max_players
+end
+
 function update_difficulty()
     survival_default_tweaks = nil
     if survival_difficulty_level <= 4 then
@@ -480,10 +487,7 @@ function update_difficulty()
         Config.inf_hive_hooks = 3
     end
 
-    survival_max_players = get_max_players_for_difficulty(survival_difficulty_level)
-
     local game_conf = Game.Controller:SurvivalGetGameConfiguration()
-    game_conf.MaxPlayers = survival_max_players
     game_conf.Hardmode = false
 end
 
@@ -522,6 +526,7 @@ function start_survival_game(base_difficulty)
     game_conf:Reset()
 
     update_difficulty()
+    update_max_players()
 
     Game.Controller:SurvivalAddWave(1, "The Meeting")
     Game.Controller:SurvivalAddWave(2, "The Green Smoke")
@@ -590,6 +595,12 @@ function survival_setup_votes()
         Game.Context:RemoveVote(vote_command)
         Game.Context:InsertVote(i - 1, vote_name, vote_command)
     end
+end
+
+function set_extra_players(num)
+    survival_allow_extra_players = num
+    survival_setup_votes()
+    update_max_players()
 end
 
 print("Survival Game runtime loaded")
