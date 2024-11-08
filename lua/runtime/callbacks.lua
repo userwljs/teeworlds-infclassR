@@ -2,6 +2,7 @@
 function init_callbacks()
     event_listeners = {}
     event_listeners["on_tick"] = {}
+    event_listeners["on_loaded"] = {}
     event_listeners["on_round_started"] = {}
     event_listeners["on_round_end"] = {}
     event_listeners["on_world_reset"] = {}
@@ -66,6 +67,13 @@ function on_chat_message(from, message_str)
     local listeners = event_listeners["on_chat_message"]
     for i,handler in ipairs(listeners) do
         handler(from, message_str)
+    end
+end
+
+function on_loaded()
+    local listeners = event_listeners["on_loaded"]
+    for i,handler in ipairs(listeners) do
+        handler()
     end
 end
 

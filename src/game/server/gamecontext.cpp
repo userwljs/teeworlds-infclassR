@@ -4624,6 +4624,8 @@ void CGameContext::OnInit(const void *pPersistentData)
 			str_format(aLuaFilename, sizeof(aLuaFilename), "lua/maps/%s.lua", pMapShortName);
 			Lua()->ExecScriptFile(aLuaFilename);
 		}
+
+		RunCallback(Lua()->GetLuaState(), "on_loaded");
 	}
 
 	if(GIT_SHORTREV_HASH)
