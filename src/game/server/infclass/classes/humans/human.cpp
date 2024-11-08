@@ -1008,35 +1008,35 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 	float StartEnergy = GameServer()->Tuning()->m_LaserReach * m_LaserReachModifier;
 	int Damage = GameServer()->Tuning()->m_LaserDamage;
 
-	switch(GetPlayerClass())
+	switch(pFireContext->InfClassWeapon)
 	{
-	case EPlayerClass::Ninja:
+	case EInfclassWeapon::BLINDING_LASER:
 		CBlindingLaser::OnFired(m_pCharacter, pFireContext);
 		return;
-	case EPlayerClass::Biologist:
+	case EInfclassWeapon::BIOLOGIST_MINE_LASER:
 		CBiologistMine::OnFired(m_pCharacter, pFireContext, Config()->m_InfBioMineLasers);
 		return;
-	case EPlayerClass::Scientist:
+	case EInfclassWeapon::EXPLOSIVE_LASER:
 		StartEnergy *= 0.6f;
 		new CScientistLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage);
 		break;
-	case EPlayerClass::Mercenary:
+	case EInfclassWeapon::MERCENARY_UPGRADE_LASER:
 		OnMercLaserFired(pFireContext);
 		break;
-	case EPlayerClass::Medic:
+	case EInfclassWeapon::MEDIC_LASER:
 		CMedicLaser::OnFired(m_pCharacter, pFireContext, StartEnergy);
 		return;
-	case EPlayerClass::Looper:
+	case EInfclassWeapon::LOOPER_LASER:
 		StartEnergy *= 0.7f;
 		Damage = 5;
 		CInfClassLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
 		break;
-	case EPlayerClass::Sniper:
+	case EInfclassWeapon::SNIPER_RIFLE:
 		Damage = m_pCharacter->PositionIsLocked() ? 30 : random_int(10, 13);
 		CInfClassLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
 		break;
-	case EPlayerClass::Engineer:
-	case EPlayerClass::Hero:
+	case EInfclassWeapon::ENGINEER_LASER:
+	case EInfclassWeapon::HERO_LASER:
 		CInfClassLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
 		break;
 	default:
