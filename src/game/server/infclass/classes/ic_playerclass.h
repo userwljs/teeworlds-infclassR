@@ -86,7 +86,7 @@ public:
 	virtual SClassUpgrade GetNextUpgrade() const;
 
 	float GetHammerProjOffset() const;
-	virtual float GetHammerRange() const;
+	float GetHammerRange() const;
 	virtual float GetGhoulPercent() const;
 
 	// Temp stuff

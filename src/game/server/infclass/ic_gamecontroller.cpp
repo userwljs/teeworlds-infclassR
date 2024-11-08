@@ -7122,21 +7122,25 @@ void CIcGameController::InitWeapons()
 	SetWeaponForce(EInfclassWeapon::JAWS, GetWeaponForce(EInfclassWeapon::HAMMER));
 	SetWeaponForce(EInfclassWeapon::SLIME, GetWeaponForce(EInfclassWeapon::HAMMER));
 	SetWeaponForce(EInfclassWeapon::INFECTED_HAMMER, GetWeaponForce(EInfclassWeapon::HAMMER));
+	SetWeaponForce(EInfclassWeapon::STUNNING_HAMMER, GetWeaponForce(EInfclassWeapon::HAMMER));
 	SetWeaponForce(EInfclassWeapon::BOOMER_EXPLOSION, 52);
 
 	SetFireDelay(EInfclassWeapon::JAWS, GetFireDelay(EInfclassWeapon::HAMMER));
 	SetFireDelay(EInfclassWeapon::SLIME, GetFireDelay(EInfclassWeapon::HAMMER));
 	SetFireDelay(EInfclassWeapon::INFECTED_HAMMER, GetFireDelay(EInfclassWeapon::HAMMER));
+	SetFireDelay(EInfclassWeapon::STUNNING_HAMMER, GetFireDelay(EInfclassWeapon::HAMMER));
 	SetFireDelay(EInfclassWeapon::BOOMER_EXPLOSION, GetFireDelay(EInfclassWeapon::HAMMER));
 
 	SetAmmoRegenTime(EInfclassWeapon::JAWS, 0);
 	SetAmmoRegenTime(EInfclassWeapon::SLIME, 0);
 	SetAmmoRegenTime(EInfclassWeapon::INFECTED_HAMMER, 0);
+	SetAmmoRegenTime(EInfclassWeapon::STUNNING_HAMMER, 0);
 	SetAmmoRegenTime(EInfclassWeapon::BOOMER_EXPLOSION, 0);
 
 	SetMaxAmmo(EInfclassWeapon::JAWS, -1);
 	SetMaxAmmo(EInfclassWeapon::SLIME, -1);
 	SetMaxAmmo(EInfclassWeapon::INFECTED_HAMMER, -1);
+	SetMaxAmmo(EInfclassWeapon::STUNNING_HAMMER, -1);
 	SetMaxAmmo(EInfclassWeapon::BOOMER_EXPLOSION, -1);
 }
 

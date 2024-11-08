@@ -254,7 +254,16 @@ float CIcPlayerClass::GetHammerProjOffset() const
 
 float CIcPlayerClass::GetHammerRange() const
 {
-	return m_pCharacter ? m_pCharacter->GetProximityRadius() * 0.5f : 0;
+	if (!m_pCharacter)
+		return 0;
+
+	const EInfclassWeapon Weapon = m_pCharacter->GetInfWeaponId(WEAPON_HAMMER);
+	float Range = m_pCharacter->GetProximityRadius() * 0.5f;
+	if (Weapon == EInfclassWeapon::STUNNING_HAMMER)
+	{
+		Range += 1.5f * 32;
+	}
+	return Range;
 }
 
 float CIcPlayerClass::GetGhoulPercent() const

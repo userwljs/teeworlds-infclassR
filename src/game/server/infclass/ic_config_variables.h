@@ -100,6 +100,7 @@ MACRO_CONFIG_INT(InfSpiderWebHookLength, inf_spider_web_hook_length, 600, 0, 100
 MACRO_CONFIG_INT(InfSmokerHookDamage, inf_smoker_hook_damage, 2, 1, 10000, CFGFLAG_SERVER, "Damage taken by smoker (hook)")
 MACRO_CONFIG_INT(InfSpiderCatchHumans, inf_spider_catch_humans, 1, 0, 1, CFGFLAG_SERVER, "Always catch humans with hook")
 MACRO_CONFIG_FLOAT(InfUndeadFreezeDuration, inf_undead_freeze_duration, 10, 0, 100, CFGFLAG_SERVER, "For how long Undead death will freeze the character (in seconds) (0 = disable)")
+MACRO_CONFIG_INT(InfStunningHammerForce, inf_stunning_hammer_force, 36, 0, 500, CFGFLAG_SERVER, "(Infected) stunning hammer force")
 MACRO_CONFIG_INT(InfInfzoneFreezeDuration, inf_infzone_freeze_duration, 2, 0, 10000, CFGFLAG_SERVER, "For how long infection zone will freeze humans (in seconds) (0 = disable)")
 MACRO_CONFIG_INT(InfLastEnforcerTimeMs, inf_last_enforcer_time_ms, 400, 0, 10000, CFGFLAG_SERVER, "For how long the last hooker will be forced as the char indirect killer (in ms)")
 MACRO_CONFIG_INT(InfDoubleClickFilterMs, inf_double_click_filter_ms, 140, 0, 10000, CFGFLAG_SERVER, "Filter out probably undesired 2nd clicks during given ms (affects soldier bomb)")

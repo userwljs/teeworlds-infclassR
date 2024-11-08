@@ -530,6 +530,8 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 	int Hits = 0;
 	bool ShowAttackAnimation = false;
 
+	float ReloadDuration = 0.33f;
+
 	if(!AutoFire)
 	{
 		const vec2 Direction = GetDirection();
@@ -556,7 +558,8 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 				continue;
 
 			vec2 Dir;
-			if(length(pTarget->GetPos() - GetPos()) > 0.0f)
+			float DistanceToTarget = length(pTarget->GetPos() - GetPos());
+			if(DistanceToTarget > 0.0f)
 				Dir = normalize(pTarget->GetPos() - GetPos());
 			else
 				Dir = vec2(0.f, -1.f);
@@ -603,6 +606,26 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 				int Damage = g_pData->m_Weapons.m_Hammer.m_pBase->m_Damage;
 				EDamageType DamageType = EDamageType::INFECTED_HAMMER;
 
+				if(pFireContext->InfClassWeapon == EInfclassWeapon::STUNNING_HAMMER)
+				{
+					const float hForce = Config()->m_InfStunningHammerForce;
+					if(pTarget->GetPos().x > GetPos().x)
+					{
+						Force.x += hForce;
+					}
+					else if(pTarget->GetPos().x < GetPos().x)
+					{
+						Force.x -= hForce;
+					}
+
+					pTarget->SetEmote(EMOTE_SURPRISE, Server()->Tick() + Server()->TickSpeed() * 1);
+					pTarget->Freeze(0.5f, GetCid(), FREEZEREASON_FLASH);
+
+					Damage = 3;
+					DamageType = EDamageType::HAMMER;
+					ReloadDuration = 0.7f;
+				}
+
 				if(pFireContext->InfClassWeapon == EInfclassWeapon::JAWS)
 				{
 					Damage = Config()->m_InfBatDamage;
@@ -630,7 +653,7 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 	// if we Hit anything, we have to wait for the reload
 	if(Hits)
 	{
-		pFireContext->ReloadInterval = 0.33f;
+		pFireContext->ReloadInterval = ReloadDuration;
 	}
 	else if(pFireContext->InfClassWeapon == EInfclassWeapon::SLIME)
 	{

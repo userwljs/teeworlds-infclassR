@@ -48,6 +48,7 @@ enum class EInfclassWeapon
 	JAWS, // Bat
 	SLIME,
 	INFECTED_HAMMER,
+	STUNNING_HAMMER,
 	BOOMER_EXPLOSION,
 
 	Count,
