@@ -24,7 +24,7 @@ void CMedicLaser::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFi
 
 	CMedicLaser *pLaser = new CMedicLaser(pCharacter->GameContext(), pCharacter->GetPos(), pCharacter->GetDirection(), StartEnergy, pCharacter->GetCid(), pFireContext->InfClassWeapon);
 	pLaser->DoBounce();
-	pFireContext->AmmoConsumed = pFireContext->AmmoAvailable;
+	pFireContext->AmmoConsumed = 5;
 
 	pCharacter->GameServer()->CreateSound(pCharacter->GetPos(), SOUND_LASER_FIRE);
 }
@@ -41,6 +41,7 @@ bool CMedicLaser::OnCharacterHit(CInfClassCharacter *pHit)
 	if(!pMedic)
 		return false;
 
+	pMedic->TakeAmmo(WEAPON_LASER, 5);
 	int MinimumHP = Config()->m_InfRevivalDamage + 1;
 	int MinimumInfected = GameController()->MinimumInfectedForRevival();
 
