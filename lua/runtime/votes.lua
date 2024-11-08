@@ -3,6 +3,8 @@ require("runtime.base")
 Votes = {}
 
 Votes.fun_round_allowed = true
+Votes.survival_game_allowed = true
+Votes.survival_game_max_active_players = 8
 
 function Votes_not_the_same_map(vote_descriptor)
     local map = Config.sv_map
@@ -29,6 +31,20 @@ end
 
 function Votes_submod_is_custom()
     return active_submod ~= Submod.Classic
+end
+
+function Votes_survival_game_condition()
+    if active_submod == Submod.SurvivalGame then
+        return false
+    end
+
+    local players_number = Game.Controller:GetPlayersNumber()
+    local total = players_number.Humans + players_number.Infected
+    if total > Votes.survival_game_max_active_players then
+        return false
+    end
+
+    return Votes.survival_game_allowed
 end
 
 ---@param description string The vote description text
@@ -63,6 +79,7 @@ end
 
 function setup_submods_votes()
     Votes_add_vote("Go back to normal game", "exec normalize.cfg", {Votes_submod_is_custom})
+    Votes_add_vote(string.format("Play survival game (max %d players)", Votes.survival_game_max_active_players), "exec survivals/survival_game.cfg", {Votes_survival_game_condition})
 end
 
 function Votes_on_round_started(round_type_str)
