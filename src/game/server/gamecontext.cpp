@@ -459,6 +459,15 @@ void CGameContext::CallVote(int ClientId, const char *pDesc, const char *pCmd, c
 	if(!pPlayer)
 		return;
 
+	if(Lua()->HasGlobalCallable("can_start_vote"))
+	{
+		std::optional<bool> allowed = RunCallbackWithResult<bool>(Lua()->GetLuaState(), "can_start_vote", ClientId, pCmd, pDesc, pReason);
+		if(allowed.has_value() && allowed.value() != true)
+		{
+			return;
+		}
+	}
+
 	SendChatTarget(-1, pChatmsg);
 
 	m_VoteCreator = ClientId;
