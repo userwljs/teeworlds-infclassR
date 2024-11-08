@@ -1989,6 +1989,18 @@ int CInfClassCharacter::GetAmmo(int Weapon) const
 	return m_aWeapons[Weapon].m_Ammo;
 }
 
+int CInfClassCharacter::TakeAmmo(int Weapon, int Amount)
+{
+	auto &Ammo = m_aWeapons[Weapon].m_Ammo;
+	if(!m_aWeapons[Weapon].m_Got || (Ammo < 0))
+		return 0;
+
+	if(Amount > Ammo)
+		Amount = Ammo;
+	Ammo -= Amount;
+	return Amount;
+}
+
 int CInfClassCharacter::GetCid() const
 {
 	if(m_pPlayer)

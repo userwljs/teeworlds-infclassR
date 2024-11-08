@@ -150,6 +150,7 @@ public:
 
 	void AddAmmo(int Weapon, int Ammo);
 	int GetAmmo(int Weapon) const;
+	int TakeAmmo(int Weapon, int Amount);
 
 	int GetCid() const;
 
