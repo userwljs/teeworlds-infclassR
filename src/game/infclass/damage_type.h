@@ -46,7 +46,7 @@ enum class EDamageType
 	TURRET_PLASMA,
 
 	// Infection weapons
-	INFECTION_HAMMER, // TAKEDAMAGEMODE::INFECTION
+	INFECTED_HAMMER, // TAKEDAMAGEMODE::INFECTION
 	BITE, // Hammers are only for humans
 	BOOMER_EXPLOSION,
 	SLUG_SLIME,

@@ -44,6 +44,11 @@ enum class EInfclassWeapon
 
 	BLINDING_LASER,
 
+	JAWS, // Bat
+	SLIME,
+	INFECTED_HAMMER,
+	BOOMER_EXPLOSION,
+
 	Count,
 	Invalid = Count,
 };

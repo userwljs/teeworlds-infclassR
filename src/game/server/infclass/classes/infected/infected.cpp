@@ -476,7 +476,7 @@ void CInfClassInfected::OnCharacterDamage(SDamageContext *pContext)
 
 void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 {
-	if(GetPlayerClass() == EPlayerClass::Boomer)
+	if(pFireContext->InfClassWeapon == EInfclassWeapon::BOOMER_EXPLOSION)
 	{
 		if(!m_pCharacter->IsFrozen() && !m_pCharacter->IsInLove())
 		{
@@ -490,7 +490,7 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 	bool AutoFire = false;
 	bool FullAuto = false;
 
-	if(GetPlayerClass() == EPlayerClass::Slug)
+	if(pFireContext->InfClassWeapon == EInfclassWeapon::SLIME)
 		FullAuto = true;
 
 	if(m_pCharacter->CountFireInput().m_Presses)
@@ -573,9 +573,9 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 					continue;
 
 				int Damage = g_pData->m_Weapons.m_Hammer.m_pBase->m_Damage;
-				EDamageType DamageType = EDamageType::INFECTION_HAMMER;
+				EDamageType DamageType = EDamageType::INFECTED_HAMMER;
 
-				if(GetPlayerClass() == EPlayerClass::Bat)
+				if(pFireContext->InfClassWeapon == EInfclassWeapon::JAWS)
 				{
 					Damage = Config()->m_InfBatDamage;
 					DamageType = EDamageType::BITE;
@@ -604,7 +604,7 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 	{
 		pFireContext->ReloadInterval = 0.33f;
 	}
-	else if(GetPlayerClass() == EPlayerClass::Slug)
+	else if(pFireContext->InfClassWeapon == EInfclassWeapon::SLIME)
 	{
 		PlaceSlugSlime(pFireContext);
 	}
@@ -668,7 +668,19 @@ void CInfClassInfected::DoBoomerExplosion()
 	int Damage = 14;
 	float Force = 52;
 
+	bool SlimeExplosion = false;
+	SlimeExplosion = GameController()->GetRoundType() == ERoundType::Survival;
+
+	if(SlimeExplosion)
+	{
+		DamageRadius = 200.0f;
+		Force *= 0.5f;
+	}
+
 	CInfClassCharacter *pBestBFTarget = nullptr;
+
+	const int SlimeDamage = Config()->m_InfSlimePoisonDamage;
+	const float SlimeDamageInterval = 1.25f;
 
 	{
 		CInfClassCharacter *apEnts[MAX_CLIENTS];
@@ -693,6 +705,11 @@ void CInfClassInfected::DoBoomerExplosion()
 				ForceDir = normalize(Diff);
 
 			float DamageToDeal = 1 + ((Damage - 1) * NormalizedLength);
+			if(SlimeExplosion)
+			{
+				pTarget->GetClass()->OnSlimeEffect(GetCid(), SlimeDamage, SlimeDamageInterval);
+				DamageToDeal = 0;
+			}
 			pTarget->TakeDamage(ForceDir * Force * NormalizedLength, DamageToDeal, GetCid(), EDamageType::BOOMER_EXPLOSION);
 			if(pTarget->IsInfected())
 			{

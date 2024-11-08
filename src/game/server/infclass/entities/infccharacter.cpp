@@ -1534,8 +1534,14 @@ EInfclassWeapon CInfClassCharacter::GetInfWeaponId(int WID) const
 			return EInfclassWeapon::NINJA_KATANA;
 		case EPlayerClass::Hero:
 			return g_Config.m_InfTurretEnableLaser ? EInfclassWeapon::LASER_TURRET : EInfclassWeapon::PLASMA_TURRET;
+		case EPlayerClass::Boomer:
+			return EInfclassWeapon::BOOMER_EXPLOSION;
+		case EPlayerClass::Bat:
+			return EInfclassWeapon::JAWS;
+		case EPlayerClass::Slug:
+			return EInfclassWeapon::SLIME;
 		default:
-			return EInfclassWeapon::HAMMER;
+			return IsInfectedClass(GetPlayerClass()) ? EInfclassWeapon::INFECTED_HAMMER : EInfclassWeapon::HAMMER;
 		}
 	}
 	else if(WID == WEAPON_GUN)

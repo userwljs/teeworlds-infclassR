@@ -1404,7 +1404,7 @@ int CInfClassGameController::DamageTypeToWeapon(EDamageType DamageType, TAKEDAMA
 		Mode = TAKEDAMAGEMODE::ALLOW_SELFHARM;
 		Weapon = WEAPON_HAMMER;
 		break;
-	case EDamageType::INFECTION_HAMMER:
+	case EDamageType::INFECTED_HAMMER:
 	case EDamageType::BOOMER_EXPLOSION:
 		Mode = TAKEDAMAGEMODE::INFECTION;
 		Weapon = WEAPON_HAMMER;
@@ -5303,6 +5303,22 @@ void CInfClassGameController::InitWeapons()
 	SetMaxAmmo(EInfclassWeapon::LOOPER_LASER, 20);
 	SetMaxAmmo(EInfclassWeapon::LOOPER_GRENADE, 10);
 	SetMaxAmmo(EInfclassWeapon::BLINDING_LASER, 10);
+
+	// Infected weapons
+	SetFireDelay(EInfclassWeapon::JAWS, GetFireDelay(EInfclassWeapon::HAMMER));
+	SetFireDelay(EInfclassWeapon::SLIME, GetFireDelay(EInfclassWeapon::HAMMER));
+	SetFireDelay(EInfclassWeapon::INFECTED_HAMMER, GetFireDelay(EInfclassWeapon::HAMMER));
+	SetFireDelay(EInfclassWeapon::BOOMER_EXPLOSION, GetFireDelay(EInfclassWeapon::HAMMER));
+
+	SetAmmoRegenTime(EInfclassWeapon::JAWS, 0);
+	SetAmmoRegenTime(EInfclassWeapon::SLIME, 0);
+	SetAmmoRegenTime(EInfclassWeapon::INFECTED_HAMMER, 0);
+	SetAmmoRegenTime(EInfclassWeapon::BOOMER_EXPLOSION, 0);
+
+	SetMaxAmmo(EInfclassWeapon::JAWS, -1);
+	SetMaxAmmo(EInfclassWeapon::SLIME, -1);
+	SetMaxAmmo(EInfclassWeapon::INFECTED_HAMMER, -1);
+	SetMaxAmmo(EInfclassWeapon::BOOMER_EXPLOSION, -1);
 }
 
 bool CInfClassGameController::GetPlayerClassEnabled(EPlayerClass PlayerClass) const
