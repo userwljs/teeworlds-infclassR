@@ -149,7 +149,7 @@ void CTurret::AttackTargets()
 			switch(m_Type)
 			{
 			case LASER:
-				CInfClassLaser::MakeLaser(GameServer(), m_Pos, Direction, GameServer()->Tuning()->m_LaserReach, m_Owner, Config()->m_InfTurretDmgHealthLaser, EInfclassWeapon::TURRET_INSTALL_KIT);
+				CInfClassLaser::MakeLaser(GameServer(), m_Pos, Direction, GameServer()->Tuning()->m_LaserReach, m_Owner, Config()->m_InfTurretDmgHealthLaser, EInfclassWeapon::LASER_TURRET);
 				m_ammunition--;
 				break;
 			case PLASMA:

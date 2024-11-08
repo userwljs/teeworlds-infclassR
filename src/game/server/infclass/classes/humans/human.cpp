@@ -1284,7 +1284,8 @@ void CInfClassHuman::BroadcastWeaponState() const
 
 		return;
 	}
-	case EInfclassWeapon::TURRET_INSTALL_KIT:
+	case EInfclassWeapon::LASER_TURRET:
+	case EInfclassWeapon::PLASMA_TURRET:
 	{
 		int Turrets = m_TurretCount;
 		if(!GameController()->AreTurretsEnabled())
@@ -1910,11 +1911,11 @@ void CInfClassHuman::PlaceTurret(WeaponFireContext *pFireContext)
 
 	if(GameController()->AreTurretsEnabled() && m_TurretCount)
 	{
-		if(Config()->m_InfTurretEnableLaser)
+		if(pFireContext->InfClassWeapon == EInfclassWeapon::LASER_TURRET)
 		{
 			new CTurret(GameServer(), GetPos(), GetCid(), Direction, CTurret::LASER);
 		}
-		else if(Config()->m_InfTurretEnablePlasma)
+		else if(pFireContext->InfClassWeapon == EInfclassWeapon::PLASMA_TURRET)
 		{
 			new CTurret(GameServer(), GetPos(), GetCid(), Direction, CTurret::PLASMA);
 		}

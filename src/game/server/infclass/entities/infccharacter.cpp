@@ -1533,7 +1533,7 @@ EInfclassWeapon CInfClassCharacter::GetInfWeaponId(int WID) const
 		case EPlayerClass::Ninja:
 			return EInfclassWeapon::NINJA_KATANA;
 		case EPlayerClass::Hero:
-			return EInfclassWeapon::TURRET_INSTALL_KIT;
+			return g_Config.m_InfTurretEnableLaser ? EInfclassWeapon::LASER_TURRET : EInfclassWeapon::PLASMA_TURRET;
 		default:
 			return EInfclassWeapon::HAMMER;
 		}

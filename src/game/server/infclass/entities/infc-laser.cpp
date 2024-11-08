@@ -143,7 +143,7 @@ EDamageType CInfClassLaser::GetDamageType() const
 		return EDamageType::LOOPER_LASER;
 	case EInfclassWeapon::SNIPER_RIFLE:
 		return EDamageType::SNIPER_RIFLE;
-	case EInfclassWeapon::TURRET_INSTALL_KIT:
+	case EInfclassWeapon::LASER_TURRET:
 		return EDamageType::TURRET_LASER;
 	case EInfclassWeapon::ENGINEER_LASER:
 	case EInfclassWeapon::HERO_LASER:
