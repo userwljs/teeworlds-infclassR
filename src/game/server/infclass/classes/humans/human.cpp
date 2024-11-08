@@ -1029,9 +1029,8 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		OnMercLaserFired(pFireContext);
 		break;
 	case EPlayerClass::Medic:
-		new CMedicLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid());
-		break;
-
+		CMedicLaser::OnFired(m_pCharacter, pFireContext, StartEnergy);
+		return;
 	case EPlayerClass::Looper:
 		StartEnergy *= 0.7f;
 		Damage = 5;

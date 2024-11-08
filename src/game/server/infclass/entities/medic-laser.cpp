@@ -11,6 +11,15 @@
 
 #include "infccharacter.h"
 
+void CMedicLaser::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, float StartEnergy)
+{
+	if(pFireContext->NoAmmo)
+		return;
+
+	new CMedicLaser(pCharacter->GameContext(), pCharacter->GetPos(), pCharacter->GetDirection(), StartEnergy, pCharacter->GetCid());
+	pCharacter->GameServer()->CreateSound(pCharacter->GetPos(), SOUND_LASER_FIRE);
+}
+
 CMedicLaser::CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner)
 	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, 0, CGameWorld::ENTTYPE_LASER)
 {
