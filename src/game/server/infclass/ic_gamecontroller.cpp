@@ -5944,11 +5944,6 @@ EPlayerClass CIcGameController::ChooseHumanClass(const CIcPlayer *pPlayer) const
 		}
 	}
 
-	if(GetRoundType() == ERoundType::HideAndSeek)
-	{
-		return EPlayerClass::Medic;
-	}
-
 	double Probability[NB_PLAYERCLASS]{};
 	auto GetClassProbabilityRef = [&Probability](EPlayerClass PlayerClass) -> double & {
 		return Probability[static_cast<int>(PlayerClass)];
@@ -6021,11 +6016,6 @@ EPlayerClass CIcGameController::ChooseInfectedClass(const CIcPlayer *pPlayer) co
 				dbg_msg("lua/cb", "choose_infected_class() exists but return invalid value '%s'", c.value().c_str());
 			}
 		}
-	}
-
-	if(GetRoundType() == ERoundType::HideAndSeek)
-	{
-		return EPlayerClass::Ghost;
 	}
 
 	// if(pPlayer->InfectionType() == INFECTION_TYPE::RESTORE_INF_CLASS)
