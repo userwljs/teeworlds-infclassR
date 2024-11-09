@@ -42,6 +42,7 @@ protected:
 public:
 /* INFECTION MODIFICATION START ***************************************/
 
+	CMapInfoEx *AddMapInfo(const char *pMapName);
 	void OnMapAdded(const char *pMapName);
 	void InitSmartMapRotation();
 	void SyncSmartMapRotationData();

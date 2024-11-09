@@ -660,17 +660,26 @@ bool IGameController::SetMapMinMaxPlayers(const char *pMapName, int MinPlayers, 
 	return true;
 }
 
-void IGameController::OnMapAdded(const char *pMapName)
+CMapInfoEx *IGameController::AddMapInfo(const char *pMapName)
 {
 	if(!GameServer()->MapExists(pMapName))
 	{
-		return;
+		return nullptr;
 	}
 
 	CMapInfoEx &Info = s_aMapInfo[std::string(pMapName)];
 	Info.SetName(pMapName);
-	Info.mEnabled = true;
-	LoadMapConfig(pMapName, &Info);
+	return &Info;
+}
+
+void IGameController::OnMapAdded(const char *pMapName)
+{
+	CMapInfoEx *pInfo = AddMapInfo(pMapName);
+	if(!pInfo)
+		return;
+
+	pInfo->mEnabled = true;
+	LoadMapConfig(pMapName, pInfo);
 }
 
 void IGameController::InitSmartMapRotation()
