@@ -55,7 +55,7 @@ public:
 	static CMapInfoEx *GetMapInfo(const char *pMapName);
 	static void ResetMapInfo(const char *pMapName);
 	static void AddMapTimestamp(const char *pMapName, int Timestamp);
-	static bool SetMapMinMaxPlayers(const char *pMapName, int MinPlayers, int MaxPlayers);
+	bool SetMapMinMaxPlayers(const char *pMapName, int MinPlayers, int MaxPlayers);
 
 	virtual int PersistentClientDataSize() const = 0;
 	virtual bool GetClientPersistentData(int ClientId, void *pData) const = 0;

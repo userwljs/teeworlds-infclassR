@@ -651,6 +651,10 @@ bool IGameController::SetMapMinMaxPlayers(const char *pMapName, int MinPlayers, 
 	CMapInfoEx *pMapInfo = GetMapInfo(pMapName);
 	if(!pMapInfo)
 	{
+		pMapInfo = AddMapInfo(pMapName);
+	}
+	if(!pMapInfo)
+	{
 		return false;
 	}
 
