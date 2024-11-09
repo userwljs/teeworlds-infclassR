@@ -884,7 +884,7 @@ void IGameController::SmartMapCycle()
 	if(s_aMapInfo.IsEmpty())
 		return;
 
-	const char *pCurrentMap = g_Config.m_SvMap;
+	const CMapInfoEx *pCurrentMapInfo = GetMapInfo(g_Config.m_SvMap);
 	int CurrentActivePlayers = Server()->GetActivePlayerCount();
 
 	int BestMapIndex = 0;
@@ -922,7 +922,7 @@ void IGameController::SmartMapCycle()
 		if(Info.MaximumPlayers && (CurrentActivePlayers > Info.MaximumPlayers))
 			continue;
 
-		if(str_comp(Info.Name(), pCurrentMap) == 0)
+		if(&Info == pCurrentMapInfo)
 			continue;
 
 		float TimeScore = GetMapTimeScore(Info, CurrentTimestamp, MinTimestamp);
