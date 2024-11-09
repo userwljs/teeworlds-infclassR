@@ -955,6 +955,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   gamecontroller.h
   gameworld.cpp
   gameworld.h
+  map_info.cpp
+  map_info.h
   player.cpp
   player.h
   skininfo.h

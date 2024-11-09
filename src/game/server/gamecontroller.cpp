@@ -4,60 +4,13 @@
 #include <game/mapitems.h>
 
 #include <game/generated/protocol.h>
+#include <game/server/map_info.h>
 #include <game/server/player.h>
 
 #include <engine/shared/network.h>
 
 #include "gamecontroller.h"
 #include "gamecontext.h"
-
-class CMapInfo
-{
-public:
-	uint8_t MinimumPlayers = 0;
-	uint8_t MaximumPlayers = 0;
-	uint8_t RecommendedPlayers = 0;
-};
-
-class CMapInfoEx : public CMapInfo
-{
-public:
-	int mTimestamp{};
-	bool mEnabled{};
-
-	const char *Name() const { return aMapName; }
-	void SetName(const char *pMapName);
-
-	void AddTimestamp(int Timestamp);
-	void AddSkippedAt(int Timestamp);
-	void ResetData();
-
-protected:
-	char aMapName[sizeof(CConfig::m_SvMap)];
-};
-
-void CMapInfoEx::SetName(const char *pMapName)
-{
-	str_copy(aMapName, pMapName);
-}
-
-void CMapInfoEx::AddTimestamp(int Timestamp)
-{
-	mTimestamp = Timestamp;
-}
-
-void CMapInfoEx::AddSkippedAt(int Timestamp)
-{
-	if(Timestamp > mTimestamp)
-	{
-		mTimestamp = Timestamp;
-	}
-}
-
-void CMapInfoEx::ResetData()
-{
-	mTimestamp = 0;
-}
 
 constexpr int MaxMapsNumber = 256;
 
@@ -707,7 +660,7 @@ void IGameController::AddMapTimestamp(const char *pMapName, int Timestamp)
 		return;
 	}
 
-	pMapInfo->AddTimestamp(Timestamp);
+	pMapInfo->SetTimestamp(Timestamp);
 }
 
 bool IGameController::SetMapMinMaxPlayers(const char *pMapName, int MinPlayers, int MaxPlayers)
@@ -1086,7 +1039,7 @@ void IGameController::OnStartRound()
 		return;
 
 	int Timestamp = time_timestamp();
-	pMapInfo->AddTimestamp(Timestamp);
+	pMapInfo->SetTimestamp(Timestamp);
 	dbg_msg("smart-rotation", "OnStartRound: Sync timestamp of %s to %d",
 		pMapInfo->Name(), Timestamp);
 }
