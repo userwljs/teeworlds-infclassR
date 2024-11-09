@@ -33,6 +33,7 @@ function ArrayVec2:At(index) end
 ---@class CIcPlayer
 ---@field Class string
 ---@field MaxHP number
+---@field Tag string
 local CIcPlayer = {}
 
 
@@ -150,6 +151,7 @@ function CIcCharacter:ResetPoisonEffect() end
 ---@field inf_spawn_protection_time number Time zombies stay invincible while spawning
 ---@field inf_anti_fire_time number Time players can't attack after spawning (in ms)
 ---@field inf_class_chooser number Enable the class chooser
+---@field inf_allow_picking_same_class number Allow a player to pick the same class again
 ---@field inf_taxi number Toggle taxi mode (disabled, enabled (without passengers ammo regen), enabled
 ---@field inf_taxi_collisions number Set taxi collision flags (1 for attach collisions, 2 for move collisions
 ---@field inf_defender_limit number Maximum number of defenders in game
@@ -165,6 +167,7 @@ function CIcCharacter:ResetPoisonEffect() end
 ---@field inf_voodoo_alive_time number How long a voodoo keeps staying alive after being killed (in ms)
 ---@field inf_barrier_timereduce number Time to remove from a barrier lifespan when an infected dies (centisec)
 ---@field inf_bio_mine_lasers number Radius of mines
+---@field inf_human_invisibility_time number Humans invisibility effect duration in seconds
 ---@field inf_mine_radius number Radius of mines
 ---@field inf_mine_limit number Maximum number of mines per player
 ---@field inf_ninja_jump number Maximum number of katana attacks
@@ -183,6 +186,7 @@ function CIcCharacter:ResetPoisonEffect() end
 ---@field inf_infzone_heal_rate number Infection zone heals infected for X hearts every second
 ---@field inf_sleeper_take_damage_ratio number The ratio of damage taken by a sleeping tee (1.0 to 4.0)
 ---@field inf_scientist_tp_selfharm number Self damage on each teleportation
+---@field inf_sci_portal_lifespan number aaa
 ---@field inf_bat_airjump_limit number Max number of extra airjumps
 ---@field inf_bat_damage number Damage taken by bat
 ---@field inf_bat_life_steal number Amount of HP given to a bat per hammer hit
@@ -192,6 +196,7 @@ function CIcCharacter:ResetPoisonEffect() end
 ---@field inf_smoker_hook_damage number Damage taken by smoker (hook)
 ---@field inf_spider_catch_humans number Always catch humans with hook
 ---@field inf_undead_freeze_duration number For how long Undead death will freeze the character (in seconds) (0 = disable)
+---@field inf_stunning_hammer_force number (Infected) stunning hammer force
 ---@field inf_infzone_freeze_duration number For how long infection zone will freeze humans (in seconds) (0 = disable)
 ---@field inf_last_enforcer_time_ms number For how long the last hooker will be forced as the char indirect killer (in ms)
 ---@field inf_double_click_filter_ms number Filter out probably undesired 2nd clicks during given ms (affects soldier bomb)
@@ -240,7 +245,6 @@ function CIcCharacter:ResetPoisonEffect() end
 ---@field inf_slow_motion_gravity number Modify gravity while in slowmotion
 ---@field inf_cp_caption_radius number Control Point inner (proximity) radius
 ---@field inf_cp_visual_radius number Control Point outer (effect) radius
----@field inf_cp_local_effect_interval number Control Point local effect rate (1HP every N seconds)
 ---@field inf_cp_global_effect_interval number Control Point global effect rate (1HP every N seconds)
 ---@field inf_min_players_for_turrets number Minimum number of players that are needed to enable turrets
 ---@field inf_turret_enable number If turrets are available
@@ -267,7 +271,17 @@ function CIcCharacter:ResetPoisonEffect() end
 ---@field inf_white_hole_affects_humans number Makes white holes suck in humans
 ---@field inf_white_hole_num_particles number Number of particles that will be used for a white hole animation
 ---@field inf_white_hole_pull_strength number How strong a white hole sucks players in
+---@field inf_bot_lives number The number of bot lives (for survive rounds)
+---@field inf_debug_bot number Filter the bot debug by one bot Id (-1 to unset)
+---@field inf_bot_debug_level number Set the bots debug level (0 = off, 4 = max)
+---@field inf_bot_remove_delay number Delay the bots removal (on lives==0) for X seconds
+---@field inf_bot_backjump number Enable backjumps
+---@field inf_bot_check_pos number Enable 'checked pos' logic for bots
 ---@field inf_survival_infected_spawning_delay number The number of seconds for humans to pull themselves together
+---@field inf_hive_hooks number Max concurrent hooks per player for Survival rounds
+---@field inf_survival_mode number Survival mode (0 = off, 1 = kill-based, 2 = time-based)
+---@field inf_survival_hardmode number Survival hard mode (another way of difficulty leveling)
+---@field inf_survival_autostart number Automatically start the last choosen survival scenario
 ---@field inf_stun_grenade_minimal_kills number Deprecated (has no effect now)
 ---@field inf_stun_grenade_probability number Deprecated (has no effect now)
 ---@field inf_slime_poison_duration number Deprecated (has no effect now, use inf_slime_poison_damage instead)
@@ -367,6 +381,39 @@ function CIcGameController:SetHumanSpawnEnabled(index, enabled) end
 ---@param index number
 ---@param enabled boolean
 function CIcGameController:SetInfectedSpawnEnabled(index, enabled) end
+
+-- SURVIVAL STUFF
+
+---@class SurvivalBotConfiguration
+---@field Class string The class name
+---@field SpawnSecond number Spawn second
+---@field Lives number Lives
+---@field HP number MaxHP
+---@field DropLevel number Drop level
+---@field RespawnInterval number Respawn interval in seconds
+---@field Tag string
+local SurvivalBotConfiguration = {}
+
+---@class SurvivalGameConfiguration
+---@field MaxPlayers number
+---@field Hardmode boolean
+local SurvivalGameConfiguration = {}
+
+function SurvivalGameConfiguration:Reset() end
+
+---@return SurvivalGameConfiguration
+function CIcGameController:SurvivalGetGameConfiguration() end
+
+---@param wave number The wave number (starts with 1)
+---@param wave_name string The wave name (title)
+function CIcGameController:SurvivalAddWave(wave, wave_name) end
+
+---@param wave number The wave number (starts with 1)
+---@param class_name string The bot class name
+---@return SurvivalBotConfiguration
+function CIcGameController:SurvivalAddBot(wave, class_name) end
+
+function CIcGameController:PrepareSurvival() end
 
 Game.Controller = CIcGameController
 
