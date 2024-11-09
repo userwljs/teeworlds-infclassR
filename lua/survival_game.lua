@@ -21,6 +21,8 @@ survival_max_drop_level = 2
 
 survival_default_tweaks = nil
 
+OldConfig = {}
+
 ---@return SurvivalBotConfiguration
 function add_bot_with_tweaks(wave, player_class)
     local bot_conf = Game.Controller:SurvivalAddBot(wave, player_class)
@@ -553,6 +555,12 @@ function start_survival_auto()
 end
 
 function survival_init()
+    OldConfig.inf_enable_tranquilizer_rifle = Config.inf_enable_tranquilizer_rifle
+    OldConfig.inf_tranquilizer_dose = Config.inf_tranquilizer_dose
+
+    Config.inf_enable_tranquilizer_rifle = 1
+    Config.inf_tranquilizer_dose = 7.5
+
     -- Kill-based survival
     Config.inf_survival_mode = 1
     Config.inf_white_hole_num_particles = 60
@@ -562,6 +570,10 @@ function survival_init()
 end
 
 function survival_on_shutdown()
+    for key,value in pairs(OldConfig) do
+        Config[key] = value
+    end
+
     Config.inf_survival_mode = 0
     Config.inf_survival_hardmode = 0
     Config.inf_white_hole_num_particles = 100
