@@ -11,6 +11,7 @@
 class CConfig;
 class CPlayer;
 class CMapInfo;
+class CMapInfoEx;
 class IConsole;
 
 enum class EClientDropType;
@@ -50,6 +51,7 @@ public:
 	void PrintMapRotationData(IOHANDLE Output = 0);
 	virtual bool MapRotationEnabled() const = 0;
 
+	static CMapInfoEx *GetMapInfo(const char *pMapName);
 	static void ResetMapInfo(const char *pMapName);
 	static void AddMapTimestamp(const char *pMapName, int Timestamp);
 	static bool SetMapMinMaxPlayers(const char *pMapName, int MinPlayers, int MaxPlayers);

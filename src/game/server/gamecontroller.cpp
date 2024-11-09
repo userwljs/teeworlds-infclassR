@@ -17,21 +17,20 @@ constexpr int MaxMapsNumber = 256;
 static icArray<CMapInfoEx, MaxMapsNumber> s_aMapInfo;
 static std::optional<std::size_t> s_CachedMapIndex = 0;
 
-std::optional<std::size_t> GetMapIndex(const char *pMapName)
+CMapInfoEx *IGameController::GetMapInfo(const char *pMapName)
 {
-	for(std::size_t i = 0; i < s_aMapInfo.Size(); ++i)
-	{
-		if(str_comp(pMapName, s_aMapInfo.At(i).Name()) == 0)
+	auto GetMapIndex = [](const char *pMapName) -> std::optional<std::size_t> {
+		for(std::size_t i = 0; i < s_aMapInfo.Size(); ++i)
 		{
-			return i;
+			if(str_comp(pMapName, s_aMapInfo.At(i).Name()) == 0)
+			{
+				return i;
+			}
 		}
-	}
 
-	return {};
-}
+		return {};
+	};
 
-CMapInfoEx *GetMapInfo(const char *pMapName)
-{
 	if(s_CachedMapIndex >= s_aMapInfo.Size())
 		s_CachedMapIndex.reset();
 
