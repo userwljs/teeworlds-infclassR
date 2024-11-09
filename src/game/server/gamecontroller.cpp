@@ -12,35 +12,17 @@
 #include "gamecontroller.h"
 #include "gamecontext.h"
 
-constexpr int MaxMapsNumber = 256;
+#include <map>
 
-static icArray<CMapInfoEx, MaxMapsNumber> s_aMapInfo;
-static std::optional<std::size_t> s_CachedMapIndex = 0;
+static std::map<std::string, CMapInfoEx> s_aMapInfo;
 
 CMapInfoEx *IGameController::GetMapInfo(const char *pMapName)
 {
-	auto GetMapIndex = [](const char *pMapName) -> std::optional<std::size_t> {
-		for(std::size_t i = 0; i < s_aMapInfo.Size(); ++i)
-		{
-			if(str_comp(pMapName, s_aMapInfo.At(i).Name()) == 0)
-			{
-				return i;
-			}
-		}
-
-		return {};
-	};
-
-	if(s_CachedMapIndex >= s_aMapInfo.Size())
-		s_CachedMapIndex.reset();
-
-	if(!s_CachedMapIndex.has_value() || (str_comp(pMapName, s_aMapInfo.At(s_CachedMapIndex.value()).Name()) != 0))
-		s_CachedMapIndex = GetMapIndex(pMapName);
-
-	if(!s_CachedMapIndex.has_value())
+	auto it = s_aMapInfo.find(std::string(pMapName));
+	if (it == s_aMapInfo.end())
 		return nullptr;
 
-	return &s_aMapInfo[s_CachedMapIndex.value()];
+	return &it->second;
 }
 
 static float GetMapTimeScore(const CMapInfoEx &Info, int CurrentTimestamp, int MinTimestamp)
@@ -483,8 +465,9 @@ void IGameController::GetMapRotationInfo(CMapRotationInfo *pMapRotationInfo)
 void IGameController::SyncSmartMapRotationData()
 {
 	// Disable all maps
-	for (CMapInfoEx &info : s_aMapInfo) {
-		info.mEnabled = false;
+	for(auto &[Name, Info] : s_aMapInfo)
+	{
+		Info.mEnabled = false;
 	}
 
 	const char *pMapRotation = Config()->m_SvMaprotation;
@@ -520,7 +503,7 @@ void IGameController::ConSmartMapRotationStatus()
 	str_format(aBuf, sizeof(aBuf), "Smart maprotation: %d", Config()->m_InfSmartMapRotation);
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 
-	str_format(aBuf, sizeof(aBuf), "Maps in the rotation: %zu", s_aMapInfo.Size());
+	str_format(aBuf, sizeof(aBuf), "Maps in the rotation: %zu", s_aMapInfo.size());
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 
 	int CurrentActivePlayers = Server()->GetActivePlayerCount();
@@ -528,7 +511,7 @@ void IGameController::ConSmartMapRotationStatus()
 	str_format(aBuf, sizeof(aBuf), "Active players: %d", CurrentActivePlayers);
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 
-	if(s_aMapInfo.IsEmpty())
+	if(s_aMapInfo.empty())
 	{
 		return;
 	}
@@ -538,7 +521,7 @@ void IGameController::ConSmartMapRotationStatus()
 	int MinTimestamp = CurrentTimestamp;
 	int MaxMapNameLength = 0;
 
-	for(const CMapInfoEx &Info : s_aMapInfo)
+	for(const auto &[Name, Info] : s_aMapInfo)
 	{
 		int NameLength = strlen(Info.Name());
 		if(NameLength > MaxMapNameLength)
@@ -559,9 +542,9 @@ void IGameController::ConSmartMapRotationStatus()
 		}
 	}
 
-	for(std::size_t i = 0; i < s_aMapInfo.Size(); ++i)
+	int Index = 0;
+	for (const auto &[Name, Info] : s_aMapInfo)
 	{
-		const CMapInfoEx &Info = s_aMapInfo.At(i);
 		if(!Info.mEnabled)
 			continue;
 
@@ -579,8 +562,9 @@ void IGameController::ConSmartMapRotationStatus()
 		int EstimatedScore = TimeScore * 100 + FitPlayersScore * 30;
 		int MapScore = Skipped ? 0 : EstimatedScore;
 
-		str_format(aBuf, sizeof(aBuf), "- %2zu %-*s Score: %3d (time: %.2f, fit players: %.2f, estimated score: %3d) | players min: %2d / max: %2d | ts: %d", i, MaxMapNameLength, Info.Name(),
+		str_format(aBuf, sizeof(aBuf), "- %d %-*s Score: %3d (time: %.2f, fit players: %.2f, estimated score: %3d) | players min: %2d / max: %2d | ts: %d", Index, MaxMapNameLength, Info.Name(),
 			MapScore, TimeScore, FitPlayersScore, EstimatedScore, Info.MinimumPlayers, Info.MaximumPlayers, Info.mTimestamp);
+		++Index;
 
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 	}
@@ -612,7 +596,7 @@ void IGameController::SaveMapRotationData(const char *pFileName)
 void IGameController::PrintMapRotationData(IOHANDLE Output)
 {
 	char aBuf[256];
-	for(const CMapInfoEx &Info : s_aMapInfo)
+	for (const auto &[Name, Info] : s_aMapInfo)
 	{
 		str_format(aBuf, sizeof(aBuf), "add_map_data %s %d", Info.Name(), Info.mTimestamp);
 
@@ -683,8 +667,7 @@ void IGameController::OnMapAdded(const char *pMapName)
 		return;
 	}
 
-	s_aMapInfo.Add({});
-	CMapInfoEx &Info = s_aMapInfo.Last();
+	CMapInfoEx &Info = s_aMapInfo[std::string(pMapName)];
 	Info.SetName(pMapName);
 	Info.mEnabled = true;
 	LoadMapConfig(pMapName, &Info);
@@ -692,7 +675,7 @@ void IGameController::OnMapAdded(const char *pMapName)
 
 void IGameController::InitSmartMapRotation()
 {
-	if(s_aMapInfo.IsEmpty())
+	if(s_aMapInfo.empty())
 	{
 		SyncSmartMapRotationData();
 		LoadMapRotationData();
@@ -881,19 +864,18 @@ void IGameController::DefaultMapCycle()
 
 void IGameController::SmartMapCycle()
 {
-	if(s_aMapInfo.IsEmpty())
+	if(s_aMapInfo.empty())
 		return;
 
 	const CMapInfoEx *pCurrentMapInfo = GetMapInfo(g_Config.m_SvMap);
 	int CurrentActivePlayers = Server()->GetActivePlayerCount();
 
-	int BestMapIndex = 0;
 	int BestMapScore = 0;
 	int CurrentTimestamp = time_timestamp();
 
 	int MinTimestamp = CurrentTimestamp;
 
-	for(const CMapInfoEx &Info : s_aMapInfo)
+	for(const auto &[Name, Info] : s_aMapInfo)
 	{
 		if(!Info.mEnabled)
 			continue;
@@ -910,9 +892,9 @@ void IGameController::SmartMapCycle()
 		}
 	}
 
-	for(std::size_t i = 0; i < s_aMapInfo.Size(); ++i)
+	const CMapInfoEx *pBestMapInfo = nullptr;
+	for(const auto &[Name, Info] : s_aMapInfo)
 	{
-		const CMapInfoEx &Info = s_aMapInfo.At(i);
 		if(!Info.mEnabled)
 			continue;
 
@@ -934,14 +916,15 @@ void IGameController::SmartMapCycle()
 			continue;
 
 		BestMapScore = MapScore;
-		BestMapIndex = i;
+		pBestMapInfo = &Info;
 	}
 
-	const CMapInfoEx &Info = s_aMapInfo.At(BestMapIndex);
-	s_CachedMapIndex = BestMapIndex;
-
-	dbg_msg("smart-rotation", "rotating to index %d (name %s)", BestMapIndex, Info.Name());
-	RotateMapTo(Info.Name());
+	if(pBestMapInfo == nullptr)
+	{
+		return;
+	}
+	dbg_msg("smart-rotation", "rotating to map %s", pBestMapInfo->Name());
+	RotateMapTo(pBestMapInfo->Name());
 }
 
 void IGameController::SkipMap()
