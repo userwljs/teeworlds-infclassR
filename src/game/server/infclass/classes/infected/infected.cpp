@@ -768,6 +768,7 @@ void CInfClassInfected::PlaceSlugSlime(WeaponFireContext *pFireContext)
 		if(pSlime->Replenish(GetCid(), NewEndTick))
 		{
 			pFireContext->FireAccepted = true;
+			pFireContext->ReloadInterval = 0.2f;
 		}
 	}
 }
