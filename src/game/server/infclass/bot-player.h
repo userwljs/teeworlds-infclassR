@@ -207,6 +207,7 @@ public:
 	void OnTargetLost();
 	void UpdateControls() override;
 	void OnKilled() override;
+	void UpdateActiveWeapon();
 	void UpdateControlsRoaming(CNetObj_PlayerInput *pInput);
 	void UpdateControlsHunting(CNetObj_PlayerInput *pInput);
 	void UpdateHumanBotControls();

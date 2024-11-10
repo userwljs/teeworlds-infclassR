@@ -354,7 +354,7 @@ void CBotPlayer::UpdateTarget()
 		for(int i = 0; i < MAX_CLIENTS; ++i)
 		{
 			const CIcCharacter *pChar = GameController()->GetCharacter(i);
-			if(pChar && pChar->IsHuman() && pChar->IsAlive() && !pChar->IsInvisible())
+			if(pChar && !pChar->IsSolo())
 			{
 				Targets.Add(i);
 			}
@@ -412,6 +412,7 @@ void CBotPlayer::UpdateTarget()
 int CBotPlayer::UpdateHumanTarget(const ClientsArray &Targets)
 {
 	const vec2 &Pos = m_pCharacter->GetPos();
+	int CanAttackID = -1;
 	int AvailableMedicID = -1;
 	int CanHealID = -1;
 	int NearestHumanID = -1;
@@ -420,6 +421,15 @@ int CBotPlayer::UpdateHumanTarget(const ClientsArray &Targets)
 	for(int CandidateId : Targets)
 	{
 		const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
+		if(GetClass() == EPlayerClass::Medic)
+		{
+			if(!pChar->IsHuman())
+				continue;
+		}
+
+		if (!pChar->IsAlive() || pChar->IsInvisible())
+			continue;
+
 		vec2 Out;
 		vec2 Before;
 
@@ -428,27 +438,36 @@ int CBotPlayer::UpdateHumanTarget(const ClientsArray &Targets)
 			continue;
 		}
 
-		if(NearestHumanID < 0)
+		if(pChar->IsInfected())
 		{
-			NearestHumanID = CandidateId;
-			NeedTargets -=1;
+			CanAttackID = CandidateId;
+			break;
 		}
 
-		if(AvailableMedicID < 0)
+		if(GetClass() == EPlayerClass::Medic)
 		{
-			if(pChar->GetPlayerClass() == EPlayerClass::Medic)
+			if(NearestHumanID < 0)
 			{
-				AvailableMedicID = CandidateId;
-				NeedTargets -=1;
+				NearestHumanID = CandidateId;
+				NeedTargets -= 1;
 			}
-		}
 
-		if(CanHealID < 0)
-		{
-			if((pChar->GetPlayerClass() != EPlayerClass::Hero) && pChar->GetArmor() < 10)
+			if(AvailableMedicID < 0)
 			{
-				CanHealID = CandidateId;
-				NeedTargets -=1;
+				if(pChar->GetPlayerClass() == EPlayerClass::Medic)
+				{
+					AvailableMedicID = CandidateId;
+					NeedTargets -= 1;
+				}
+			}
+
+			if(CanHealID < 0)
+			{
+				if((pChar->GetPlayerClass() != EPlayerClass::Hero) && pChar->GetArmor() < 10)
+				{
+					CanHealID = CandidateId;
+					NeedTargets -= 1;
+				}
 			}
 		}
 
@@ -458,18 +477,22 @@ int CBotPlayer::UpdateHumanTarget(const ClientsArray &Targets)
 		}
 	}
 
-	if ((AvailableMedicID >= 0) && (GetCharacter()->GetArmor() < 10))
+	if(CanAttackID >= 0)
+	{
+		return CanAttackID;
+	}
+
+	if((AvailableMedicID >= 0) && (GetCharacter()->GetArmor() < 10))
 	{
 		return AvailableMedicID;
 	}
-	else if (CanHealID >= 0)
+
+	if(CanHealID >= 0)
 	{
 		return CanHealID;
 	}
-	else
-	{
-		return NearestHumanID;
-	}
+
+	return NearestHumanID;
 }
 
 int CBotPlayer::UpdateInfectedTarget(const ClientsArray &Targets)
@@ -494,6 +517,9 @@ int CBotPlayer::UpdateInfectedTarget(const ClientsArray &Targets)
 	for(int CandidateId : Targets)
 	{
 		const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
+		if (!pChar->IsHuman() || !pChar->IsAlive() || pChar->IsInvisible())
+			continue;
+
 		if(BestTarget >= 0)
 		{
 			if(!PlayerAttached(CandidateId))
@@ -637,6 +663,7 @@ void CBotPlayer::UpdateControls()
 	NewInput.m_NextWeapon = 0;
 	NewInput.m_PrevWeapon = 0;
 
+	UpdateActiveWeapon();
 	if(IsHuman())
 	{
 		UpdateHumanBotControls();
@@ -686,6 +713,22 @@ void CBotPlayer::OnKilled()
 	if(!IsHuman())
 	{
 		s_HiveMind.ReportKilled(this);
+	}
+}
+
+void CBotPlayer::UpdateActiveWeapon()
+{
+	CIcCharacter *pCharacter = GetCharacter();
+
+	const EWeaponClass WeaponClass = GetWeaponClassById(pCharacter->GetInfWeaponId(WEAPON_GRENADE));
+	switch(WeaponClass)
+	{
+	case EWeaponClass::GRENADE:
+		pCharacter->SetWeapon(WEAPON_GRENADE);
+		break;
+	default:
+		pCharacter->SetWeapon(WEAPON_HAMMER);
+		break;
 	}
 }
 
@@ -1180,20 +1223,17 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	pInput->m_TargetX = VectorToTarget.x;
 	pInput->m_TargetY = VectorToTarget.y;
 
-	switch(WeaponType)
+	const EWeaponClass WeaponClass = GetWeaponClassById(WeaponType);
+	switch(WeaponClass)
 	{
-	case EInfclassWeapon::HAMMER:
-	case EInfclassWeapon::JAWS:
-	case EInfclassWeapon::SLIME:
-	case EInfclassWeapon::INFECTED_HAMMER:
-	case EInfclassWeapon::STUNNING_HAMMER:
+	case EWeaponClass::HAMMER:
 		HitDistance = GetCharacterClass()->GetHammerProjOffset() + GetCharacterClass()->GetHammerRange() + m_pCharacter->GetProximityRadius();
 		break;
-	case EInfclassWeapon::BOOMER_EXPLOSION:
+	case EWeaponClass::SELF_EXPLOSION:
 		FirePerSecond = 0.1f;
 		HitDistance = 60.0;
 		break;
-	case EInfclassWeapon::INFECTED_GRENADE:
+	case EWeaponClass::GRENADE:
 		if(ma_RecentFailedAttackTicks.Size() < 3)
 		{
 			PreferredDistance = TileSize * 20;
@@ -1508,7 +1548,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			}
 		}
 	}
-	else if (WeaponType == EInfclassWeapon::HAMMER)
+	else if (WeaponClass == EWeaponClass::HAMMER)
 	{
 		if(Distance < HitDistance * 2)
 		{
@@ -1537,7 +1577,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	MaybeHookTheTarget(Distance);
 
-	if(GetClass() == EPlayerClass::Boomer)
+	if(WeaponClass == EWeaponClass::SELF_EXPLOSION)
 	{
 		if(WantToFire && Distance > 60)
 			WantToFire = false;
@@ -1571,7 +1611,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		if(WantToFire)
 		{
-			if(WeaponType == EInfclassWeapon::HAMMER)
+			if(WeaponClass == EWeaponClass::HAMMER)
 			{
 				WantToFire = s_HiveMind.TryAttack(m_LastTarget);
 			}
@@ -1590,7 +1630,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		m_LastFireTick = Tick;
 
-		if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
+		if(WeaponClass == EWeaponClass::GRENADE)
 		{
 			if(PreciseFire)
 			{
@@ -1633,7 +1673,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		}
 	}
 
-	if(WeaponType == EInfclassWeapon::INFECTED_GRENADE)
+	if(WeaponClass == EWeaponClass::GRENADE)
 	{
 		WantFlee = WantFlee && pInput->m_Fire;
 	}
@@ -1648,8 +1688,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 void CBotPlayer::UpdateHumanBotControls()
 {
-	m_pCharacter->SetWeapon(WEAPON_HAMMER);
-
 	const float LookupRadius = GetLookupRadius();
 	const vec2 &Pos = m_pCharacter->GetPos();
 	const vec2 LookupFromPos = Pos + m_pCharacter->GetDirection() * GetLookupOffset();
@@ -1686,11 +1724,14 @@ void CBotPlayer::UpdateHumanBotControls()
 
 	if(pClosestSeenEnemy)
 	{
-		SetState(EBotState::Fleeing);
-		SetRoamingDirection(pClosestSeenEnemy->GetPos().x < Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
 		m_LastTargetSeenAtPos = pClosestSeenEnemy->GetPos();
 		m_LastTarget = pClosestSeenEnemy->GetCid();
-		m_FleeingSinceTick = Tick;
+		if(GetClass() == EPlayerClass::Medic)
+		{
+			SetState(EBotState::Fleeing);
+			SetRoamingDirection(pClosestSeenEnemy->GetPos().x < Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
+			m_FleeingSinceTick = Tick;
+		}
 	}
 	else if(m_BotState == EBotState::Fleeing)
 	{
