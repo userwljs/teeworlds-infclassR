@@ -6,10 +6,16 @@
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 
+constexpr float operator"" _Tiles(long double LengthInTiles)
+{
+	return LengthInTiles * 32;
+}
+
 void CHiveMind::Reset()
 {
 	m_Tick = -1;
 	m_HumansTick = -1;
+	m_PrevJumpTick = 0;
 	for(HiveVictim &Victim : m_aVictims)
 	{
 		Victim = {};
@@ -180,6 +186,19 @@ void CHiveMind::ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetP
 		}
 		m_aUncheckedPos.Add(Pos);
 	}
+}
+
+bool CHiveMind::TryJump(CBotPlayer *pPlayer, float SpeedRate)
+{
+	// int Diff = std::min<int>(m_Tick - m_PrevJumpTick, 70);
+	const float NormalizedTicksFactor = std::min<int>(m_Tick - m_PrevJumpTick, 70) / 70.0f;
+	const bool Jump = random_prob((SpeedRate - 0.75) / 0.25 * (0.20 + 0.5 * NormalizedTicksFactor));
+	if(Jump)
+	{
+		m_PrevJumpTick = m_Tick;
+	}
+	// dbg_msg("hive", "Bot %d evaluating jump on speed rate %.2f, ticks diff %d, result: %s", pPlayer->GetCid(), SpeedRate, Diff, Jump ? "yes" : "no");
+	return Jump;
 }
 
 bool CHiveMind::TryAttack(int TargetId)

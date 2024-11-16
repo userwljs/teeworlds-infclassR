@@ -98,7 +98,7 @@ public:
 	void HighlightLineSegment(const vec2 &From, const vec2 &To) override {}
 };
 
-float operator"" _t(long double LengthInTiles)
+constexpr float operator"" _t(long double LengthInTiles)
 {
 	return LengthInTiles * 32;
 }

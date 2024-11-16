@@ -19,6 +19,7 @@ public:
 	void ReportKilled(CBotPlayer *pPlayer);
 	void ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetPos);
 
+	bool TryJump(CBotPlayer *pPlayer, float SpeedRate);
 	bool TryAttack(int TargetId);
 	bool TryHook(int HookerId, int TargetId);
 	bool TryToComputeDecision(CBotPlayer *pPlayer);
@@ -57,6 +58,7 @@ protected:
 	HiveVictim m_aVictims[MAX_CLIENTS];
 	icArray<vec2, 10> m_aPOIs;
 	int m_HumansTick = 0;
+	int m_PrevJumpTick = 0;
 
 	struct GroupItem
 	{

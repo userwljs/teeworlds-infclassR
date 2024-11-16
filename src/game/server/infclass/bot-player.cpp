@@ -19,6 +19,11 @@
 
 static constexpr int InfinityLives = -1;
 
+constexpr float operator"" _Tiles(long double LengthInTiles)
+{
+	return LengthInTiles * 32;
+}
+
 #define THROTTLE_BOTS
 
 static CHiveMind s_HiveMind;
@@ -1176,7 +1181,34 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	bool WantToJump = false;
 	bool WantGoDown = false;
 
-	if(Pos.y > m_LastTargetSeenAtPos.y + ProximityRadius * 2)
+	if(Tick >= m_CachedSameGroundTargetUntilTick)
+	{
+		m_CachedSameGroundTarget = m_BotUtils.IsReachableByGround(Pos, m_LastTargetSeenAtPos, AvailableJumps, 25);
+		m_CachedSameGroundTargetUntilTick = Tick + 11;
+	}
+
+	if(IsGrounded() && m_CachedSameGroundTarget)
+	{
+		const auto EvaluateJump = [&]() {
+			if(AbsXToTarget < 4.0_Tiles)
+				return false;
+
+			// check velocity
+			const float MaxSpeed = IsGrounded() ? m_BotUtils.GroundControlSpeed() : m_BotUtils.AirControlSpeed();
+			const float SpeedRate = m_pCharacter->Core()->m_Vel.x * DirectionToTarget / MaxSpeed;
+			if(SpeedRate < 0.75f || SpeedRate > 3.0f)
+				return false;
+
+			return s_HiveMind.TryJump(this, SpeedRate);
+		};
+
+		if(Tick > m_NextHuntingJumpTick)
+		{
+			m_NextHuntingJumpTick = Tick + 23;
+			WantToJump = EvaluateJump();
+		}
+	}
+	else if(Pos.y > m_LastTargetSeenAtPos.y + ProximityRadius * 2)
 	{
 		if(IsGrounded() || (FallingDown && AvailableJumps > 0))
 		{

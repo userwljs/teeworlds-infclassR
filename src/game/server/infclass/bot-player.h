@@ -229,7 +229,8 @@ public:
 	const CBotUtils &GetBotUtils() const { return m_BotUtils; };
 
 public:
-	enum DIRECTION : int8_t
+	using DIRECTION = int8_t;
+	enum
 	{
 		DIRECTION_LEFT = -1,
 		DIRECTION_NONE = 0,
@@ -344,6 +345,7 @@ protected:
 	int m_LastSeenTick = -1;
 	int m_LastFireTick = -1;
 	int m_NextRandomFireTick = 0;
+	int m_NextHuntingJumpTick = 0;
 	int m_HookUntilTick = -1;
 	std::optional<int> m_HookAimingRemainingTicks;
 	int m_KeepingDistanceTick = -1;
@@ -359,6 +361,9 @@ protected:
 	int m_StateUpdateTick = 0;
 	bool m_CachedGrounded = false;
 	bool m_CachedPOIReachableByGround = false;
+
+	bool m_CachedSameGroundTarget = false;
+	int m_CachedSameGroundTargetUntilTick = 0;
 
 	char m_Name[16];
 };
