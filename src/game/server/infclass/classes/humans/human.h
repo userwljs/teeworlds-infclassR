@@ -97,7 +97,7 @@ protected:
 	void PlaceScientistMine(WeaponFireContext *pFireContext);
 	void PlaceTurret(WeaponFireContext *pFireContext);
 
-	void OnMercGrenadeFired(WeaponFireContext *pFireContext);
+	void OnPoisonGrenadeFired(WeaponFireContext *pFireContext);
 	void OnMedicGrenadeFired(WeaponFireContext *pFireContext);
 
 	void OnMercLaserFired(WeaponFireContext *pFireContext);

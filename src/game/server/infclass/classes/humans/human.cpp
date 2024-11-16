@@ -960,45 +960,41 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 
 void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 {
-	if(GetPlayerClass() == EPlayerClass::Mercenary)
+	switch(pFireContext->InfClassWeapon)
 	{
+	case EInfclassWeapon::POISON_GRENADE:
 		// Does not need the ammo in some cases
-		OnMercGrenadeFired(pFireContext);
+		OnPoisonGrenadeFired(pFireContext);
 		return;
+	case EInfclassWeapon::TELEPORT_GUN:
+		CLaserTeleport::OnFired(m_pCharacter, pFireContext, Config()->m_InfScientistTpSelfharm);
+		return;
+	case EInfclassWeapon::HEALING_GRENADE:
+		OnMedicGrenadeFired(pFireContext);
+		return;
+	default:
+		break;
 	}
 
 	if(pFireContext->NoAmmo)
 		return;
 
-	switch(GetPlayerClass())
-	{
-	case EPlayerClass::Scientist:
-		CLaserTeleport::OnFired(m_pCharacter, pFireContext, Config()->m_InfScientistTpSelfharm);
-		return;
-	case EPlayerClass::Medic:
-		OnMedicGrenadeFired(pFireContext);
-		break;
-	default:
-	{
-		vec2 Direction = GetDirection();
-		vec2 ProjStartPos = GetPos() + Direction * GetProximityRadius() * 0.75f;
-		CProjectile *pProj = new CProjectile(GameContext(), WEAPON_GRENADE,
-			GetCid(),
-			ProjStartPos,
-			Direction,
-			(int)(Server()->TickSpeed() * GameServer()->Tuning()->m_GrenadeLifetime),
-			1, true, 0, SOUND_GRENADE_EXPLODE, EDamageType::GRENADE);
+	vec2 Direction = GetDirection();
+	vec2 ProjStartPos = GetPos() + Direction * GetProximityRadius() * 0.75f;
+	CProjectile *pProj = new CProjectile(GameContext(), WEAPON_GRENADE,
+		GetCid(),
+		ProjStartPos,
+		Direction,
+		(int)(Server()->TickSpeed() * GameServer()->Tuning()->m_GrenadeLifetime),
+		1, true, 0, SOUND_GRENADE_EXPLODE, EDamageType::GRENADE);
 
-		if(GetPlayerClass() == EPlayerClass::Ninja)
-		{
-			pProj->FlashGrenade();
-			pProj->SetFlashRadius(8);
-		}
+	if(GetPlayerClass() == EPlayerClass::Ninja)
+	{
+		pProj->FlashGrenade();
+		pProj->SetFlashRadius(8);
+	}
 
-		GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
-	}
-		break;
-	}
+	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
 }
 
 void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
@@ -1937,22 +1933,22 @@ void CInfClassHuman::PlaceTurret(WeaponFireContext *pFireContext)
 	}
 }
 
-void CInfClassHuman::OnMercGrenadeFired(WeaponFireContext *pFireContext)
+void CInfClassHuman::OnPoisonGrenadeFired(WeaponFireContext *pFireContext)
 {
 	float BaseAngle = angle(GetDirection());
 
-	// Find bomb
-	bool BombFound = false;
+	// Find grenades
+	bool GrenadeFound = false;
 
 	for(TEntityPtr<CScatterGrenade> pGrenade = GameWorld()->FindFirst<CScatterGrenade>(); pGrenade; ++pGrenade)
 	{
 		if(pGrenade->GetOwner() != GetCid())
 			continue;
 		pGrenade->Explode();
-		BombFound = true;
+		GrenadeFound = true;
 	}
 
-	if(BombFound)
+	if(GrenadeFound)
 	{
 		pFireContext->AmmoConsumed = 0;
 		pFireContext->NoAmmo = false;
@@ -1978,6 +1974,9 @@ void CInfClassHuman::OnMercGrenadeFired(WeaponFireContext *pFireContext)
 
 void CInfClassHuman::OnMedicGrenadeFired(WeaponFireContext *pFireContext)
 {
+	if(pFireContext->NoAmmo)
+		return;
+
 	int HealingExplosionRadius = 4;
 	new CGrowingExplosion(GameServer(), GetPos(), GetDirection(), GetCid(), HealingExplosionRadius, EGrowingExplosionEffect::HEAL_HUMANS);
 
