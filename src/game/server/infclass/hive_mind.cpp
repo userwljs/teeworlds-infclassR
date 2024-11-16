@@ -26,6 +26,8 @@ void CHiveMind::ResetDecisions()
 
 void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 {
+	m_pGameController = pGameController;
+
 	if(Tick == m_Tick)
 		return;
 
@@ -99,6 +101,37 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 		else if (pPlayer->IsBot())
 		{
 			m_aInfectedBots.Add(i);
+		}
+	}
+}
+
+void CHiveMind::UpdateGroups()
+{
+	m_Groups.Clear();
+	for (int ClientId = 0; ClientId < MAX_CLIENTS; ++ClientId)
+	{
+		const CIcCharacter *pCharacter = GameController()->GetCharacter(ClientId);
+		if(!pCharacter || !pCharacter->IsInfected())
+			continue;
+
+		m_Groups.Add({pCharacter});
+	}
+
+	constexpr float MaxD2 = 8.0_Tiles * 8.0_Tiles;
+	for (std::size_t BaseIndex = 0; BaseIndex < m_Groups.Size(); ++BaseIndex)
+	{
+		auto &BaseItem = m_Groups[BaseIndex];
+		const vec2 BasePos = BaseItem.pCharacter->GetPos();
+
+		for (std::size_t Index = BaseIndex + 1; Index < m_Groups.Size(); ++Index)
+		{
+			auto &SecondItem = m_Groups[Index];
+			const vec2 SecondPos = SecondItem.pCharacter->GetPos();
+			if (distance_squared(BasePos, SecondPos) > MaxD2)
+				continue;
+
+			BaseItem.aNearbies.Add(SecondItem.pCharacter);
+			SecondItem.aNearbies.Add(BaseItem.pCharacter);
 		}
 	}
 }

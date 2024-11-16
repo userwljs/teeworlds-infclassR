@@ -9,9 +9,12 @@ class CIcGameController;
 class CHiveMind
 {
 public:
+	CIcGameController *GameController() { return m_pGameController; }
+
 	void Reset();
 	void ResetDecisions();
 	void UpdateTick(CIcGameController *pGameController, int Tick);
+	void UpdateGroups();
 
 	void ReportKilled(CBotPlayer *pPlayer);
 	void ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetPos);
@@ -49,10 +52,20 @@ protected:
 
 	HiveVictim *GetVictim(int ClientID);
 
+	CIcGameController *m_pGameController{};
 	int m_Tick = 0;
 	HiveVictim m_aVictims[MAX_CLIENTS];
 	icArray<vec2, 10> m_aPOIs;
 	int m_HumansTick = 0;
+
+	struct GroupItem
+	{
+		const CIcCharacter *pCharacter{};
+		icArray<const CIcCharacter*, MAX_CLIENTS> aNearbies;
+	};
+
+	icArray<GroupItem, MAX_CLIENTS> m_Groups;
+
 	icArray<vec2, MAX_CLIENTS> m_aHumanPositions;
 	icArray<int, MAX_CLIENTS> m_aInfectedBots;
 	icArray<int, MAX_CLIENTS> m_aBotsProcessingQueue;
