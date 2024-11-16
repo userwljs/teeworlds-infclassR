@@ -1158,6 +1158,20 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	const int AvailableJumps = GetAvailableJumps();
 
 	const EInfclassWeapon WeaponType = GetCharacter()->GetInfWeaponId();
+	DIRECTION DirectionToTarget = DIRECTION_NONE;
+
+	if(Pos.x + ProximityRadius < m_LastTargetSeenAtPos.x)
+	{
+		DirectionToTarget = DIRECTION_RIGHT;
+	}
+	else if(Pos.x > m_LastTargetSeenAtPos.x + ProximityRadius)
+	{
+		DirectionToTarget = DIRECTION_LEFT;
+	}
+	else if(!HasWallInTheDirection(m_RoamingDirection))
+	{
+		DirectionToTarget = m_RoamingDirection;
+	}
 
 	bool WantToJump = false;
 	bool WantGoDown = false;
@@ -1192,21 +1206,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	else if(Pos.y < m_LastTargetSeenAtPos.y)
 	{
 		WantGoDown = true;
-	}
-
-	DIRECTION DirectionToTarget = DIRECTION_NONE;
-
-	if(Pos.x + ProximityRadius < m_LastTargetSeenAtPos.x)
-	{
-		DirectionToTarget = DIRECTION_RIGHT;
-	}
-	else if(Pos.x > m_LastTargetSeenAtPos.x + ProximityRadius)
-	{
-		DirectionToTarget = DIRECTION_LEFT;
-	}
-	else if(!HasWallInTheDirection(m_RoamingDirection))
-	{
-		DirectionToTarget = m_RoamingDirection;
 	}
 
 	DIRECTION Direction = DirectionToTarget;
