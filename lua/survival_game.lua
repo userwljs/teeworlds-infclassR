@@ -447,17 +447,18 @@ function on_control_point_effect(control_point)
     for_each_human_character(give_bonus)
 end
 
-function get_max_players_for_difficulty(difficulty)
-    local max_players = difficulty + 2
-    if max_players > 6 then
-        max_players = 6
+function get_max_players_for_difficulty(difficulty, multiplier)
+    local max_players = difficulty + 2 * multiplier
+    local hard_max = 3 + multiplier * 3
+    if max_players > hard_max then
+        max_players = hard_max
     end
 
     return max_players + survival_allow_extra_players
 end
 
 function update_max_players()
-    survival_max_players = get_max_players_for_difficulty(survival_difficulty_level)
+    survival_max_players = get_max_players_for_difficulty(survival_difficulty_level, survival_hp_multiplier)
 
     local game_conf = Game.Controller:SurvivalGetGameConfiguration()
     game_conf.MaxPlayers = survival_max_players
@@ -521,8 +522,9 @@ function survival_on_tick()
     end
 end
 
-function start_survival_game(base_difficulty)
+function start_survival_game(base_difficulty, hp_multiplier)
     survival_difficulty_level = base_difficulty
+    survival_hp_multiplier = hp_multiplier
 
     local game_conf = Game.Controller:SurvivalGetGameConfiguration()
     game_conf:Reset()
@@ -595,17 +597,32 @@ end
 
 function survival_remove_votes()
     for i = 1,6 do
-        local vote_command = string.format("lua start_survival_game(%d)", i)
+        local vote_command = string.format("lua start_survival_game(%d, 1)", i)
+        Game.Context:RemoveVote(vote_command)
+    end
+    for i = 1,6 do
+        local vote_command = string.format("lua start_survival_game(%d, 2)", i)
         Game.Context:RemoveVote(vote_command)
     end
 end
 
 function survival_setup_votes()
+    local vote_index = 0
+    local multiplier = 1
     for i = 1,6 do
-        local vote_name = string.format("Start survival (%d, %d players max)", i, get_max_players_for_difficulty(i))
-        local vote_command = string.format("lua start_survival_game(%d)", i)
+        local vote_name = string.format("Start survival (%d, %d players max)", i, get_max_players_for_difficulty(i, multiplier))
+        local vote_command = string.format("lua start_survival_game(%d, %d)", i, multiplier)
         Game.Context:RemoveVote(vote_command)
-        Game.Context:InsertVote(i - 1, vote_name, vote_command)
+        Game.Context:InsertVote(vote_index, vote_name, vote_command)
+        vote_index = vote_index + 1
+    end
+    multiplier = 2
+    for i = 4,6 do
+        local vote_name = string.format("Start survival (%d, %dx HP, %d players max)", i, multiplier, get_max_players_for_difficulty(i, multiplier))
+        local vote_command = string.format("lua start_survival_game(%d, %d)", i, multiplier)
+        Game.Context:RemoveVote(vote_command)
+        Game.Context:InsertVote(vote_index, vote_name, vote_command)
+        vote_index = vote_index + 1
     end
 end
 
