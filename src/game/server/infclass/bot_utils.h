@@ -241,6 +241,19 @@ public:
 		return VelocityY / Speed / Curvature * 10000 / 2;
 	}
 
+	float GroundJumpImpulse() const { return c_GroundJumpImpulse; }
+	float GroundControlSpeed() const { return c_GroundControlSpeed; }
+	float GroundControlAccel() const { return c_GroundControlAccel; }
+	float AirJumpImpulse() const { return c_AirJumpImpulse; }
+	float AirControlSpeed() const { return c_AirControlSpeed; }
+	float AirControlAccel() const { return c_AirControlAccel; }
+	float Gravity() const { return c_Gravity; }
+	float JumpPessimism() const { return c_JumpPessimism; }
+	float GroundJumpHeight() const { return c_GroundJumpHeight; }
+	float AirJumpHeight() const { return c_AirJumpHeight; }
+	float GroundJumpTiles() const { return c_GroundJumpTiles; }
+	float AirJumpTiles() const { return c_AirJumpTiles; }
+
 protected:
 	template<bool Trace>
 	bool IsReachableByGroundImpl(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps) const;
