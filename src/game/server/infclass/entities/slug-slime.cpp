@@ -36,6 +36,8 @@ void CSlugSlime::Tick()
 	// Find other players
 	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
 	{
+		if (p->IsSolo())
+			continue;
 		if(!GameServer()->Collision()->AreConnected(p->m_Pos, m_Pos, 84.0f))
 			continue; // not in reach
 		
