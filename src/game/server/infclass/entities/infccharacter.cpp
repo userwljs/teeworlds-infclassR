@@ -1934,11 +1934,14 @@ void CInfClassCharacter::Die(DeathContext *pContext)
 
 	// this is for auto respawn after 3 secs
 	m_pPlayer->m_DieTick = Server()->Tick();
-
-	m_Alive = false;
-	GameWorld()->RemoveEntity(this);
-	GameWorld()->m_Core.m_apCharacters[GetCid()] = 0;
 	GameServer()->CreateDeath(GetPos(), GetCid());
+
+	if(!pContext->KeepCharacter)
+	{
+		m_Alive = false;
+		GameWorld()->RemoveEntity(this);
+		GameWorld()->m_Core.m_apCharacters[GetCid()] = 0;
+	}
 }
 
 void CInfClassCharacter::GiveWeapon(int Weapon, int Ammo)
