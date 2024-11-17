@@ -279,7 +279,7 @@ void CInfClassPlayerClass::OnPlayerClassChanged()
 	}
 }
 
-void CInfClassPlayerClass::PrepareToDie(const DeathContext &Context, bool *pRefusedToDie)
+void CInfClassPlayerClass::PrepareToDie(DeathContext *pContext)
 {
 }
 

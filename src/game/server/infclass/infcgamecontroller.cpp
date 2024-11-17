@@ -4570,16 +4570,16 @@ int CInfClassGameController::OnCharacterDeath(class CCharacter *pAbstractVictim,
 	return 0;
 }
 
-void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, const DeathContext &Context)
+void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, DeathContext *pContext)
 {
-	const EDamageType DamageType = Context.DamageType;
-	const int Killer = Context.Killer;
-	const int Assistant = Context.Assistant;
+	const EDamageType DamageType = pContext->DamageType;
+	const int Killer = pContext->Killer;
+	const int Assistant = pContext->Assistant;
 	const char *pDamageTypeStr = toString(DamageType);
 
 	dbg_msg("server", "OnCharacterDeath: victim=%d damage_type=%s killer=%d assistant=%d", pVictim->GetCid(), pDamageTypeStr, Killer, Assistant);
 
-	RewardTheKillers(pVictim, Context);
+	RewardTheKillers(pVictim, *pContext);
 
 	int Weapon = DamageTypeToWeapon(DamageType);
 	static const icArray<EDamageType, 4> BadReasonsToDie = {
@@ -4591,7 +4591,7 @@ void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, cons
 	{
 		if(pVictim->IsHuman())
 		{
-			const CInfClassPlayer *pKiller = GetPlayer(Context.Killer);
+			const CInfClassPlayer *pKiller = GetPlayer(pContext->Killer);
 			if(pKiller && pKiller->IsInfected() && pKiller->GetCharacter())
 			{
 				pVictim->GetPlayer()->SetFollowTarget(pKiller->GetCid(), 5.0);
@@ -4632,7 +4632,7 @@ void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, cons
 	Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", aBuf);
 
 	// It is important to SendKillMessage before GetClass()->OnCharacterDeath() to keep the correct kill order
-	SendKillMessage(pVictim->GetCid(), Context);
+	SendKillMessage(pVictim->GetCid(), *pContext);
 
 	if(pVictim->GetClass())
 	{
@@ -4683,7 +4683,7 @@ void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, cons
 	bool Infect = DamageType != EDamageType::GAME;
 	if(Infect)
 	{
-		pVictim->GetPlayer()->StartInfection(Context.Killer, InfectionType);
+		pVictim->GetPlayer()->StartInfection(pContext->Killer, InfectionType);
 	}
 
 	bool SelfKill = false;
@@ -4722,12 +4722,12 @@ void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, cons
 
 	pVictim->GetPlayer()->m_RespawnTick = Server()->Tick() + RespawnDelay;
 
-	if(Context.DamageType == EDamageType::INFECTION_TILE)
+	if(pContext->DamageType == EDamageType::INFECTION_TILE)
 	{
 		int FreezeDuration = m_Warmup > 0 ? 0 : Config()->m_InfInfzoneFreezeDuration;
 		if(FreezeDuration > 0)
 		{
-			pVictim->Freeze(FreezeDuration, Context.Killer, FREEZEREASON_INFECTION);
+			pVictim->Freeze(FreezeDuration, pContext->Killer, FREEZEREASON_INFECTION);
 		}
 	}
 }

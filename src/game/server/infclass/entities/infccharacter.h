@@ -139,7 +139,7 @@ public:
 
 	void Die(int Killer, int Weapon) override;
 	void Die(int Killer, EDamageType DamageType);
-	void Die(const DeathContext &Context);
+	void Die(DeathContext *pContext);
 
 	void GiveWeapon(int Weapon, int Ammo);
 
@@ -283,7 +283,7 @@ protected:
 	void HandleDamage(int From, int Damage, EDamageType DamageType);
 
 	void OnTotalHealthChanged(int Difference) override;
-	void PrepareToDie(const DeathContext &Context, bool *pRefusedToDie);
+	void PrepareToDie(DeathContext *pContext);
 
 protected:
 	CInfClassGameController *m_pGameController = nullptr;

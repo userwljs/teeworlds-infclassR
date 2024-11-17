@@ -8,6 +8,7 @@ struct DeathContext
 	int Killer = -1;
 	int Assistant = -1;
 	EDamageType DamageType = static_cast<EDamageType>(0);
+	bool RefuseToDie{};
 };
 
 #endif // INFCLASS_DEATH_CONTEXT_H

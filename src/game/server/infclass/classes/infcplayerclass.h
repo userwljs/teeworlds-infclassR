@@ -81,7 +81,7 @@ public:
 	EPlayerClass GetPlayerClass() const;
 	virtual void OnPlayerClassChanged();
 
-	virtual void PrepareToDie(const DeathContext &Context, bool *pRefusedToDie);
+	virtual void PrepareToDie(DeathContext *Context);
 
 	bool IsHealingDisabled() const;
 	void DisableHealing(float Duration, int From, EDamageType DamageType);

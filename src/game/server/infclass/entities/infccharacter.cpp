@@ -145,7 +145,7 @@ void CInfClassCharacter::OnCharacterInInfectionZone()
 
 		GetDeathContext(DamageContext, &Context);
 
-		Die(Context);
+		Die(&Context);
 	}
 }
 
@@ -748,7 +748,7 @@ bool CInfClassCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From,
 		DeathContext Context;
 		GetDeathContext(DamageContext, &Context);
 
-		Die(Context);
+		Die(&Context);
 		return false;
 	}
 
@@ -914,14 +914,14 @@ void CInfClassCharacter::OnTotalHealthChanged(int Difference)
 	}
 }
 
-void CInfClassCharacter::PrepareToDie(const DeathContext &Context, bool *pRefusedToDie)
+void CInfClassCharacter::PrepareToDie(DeathContext *pContext)
 {
-	switch(Context.DamageType)
+	switch(pContext->DamageType)
 	{
 	case EDamageType::DEATH_TILE:
 		if(m_Invincible >= 3)
 		{
-			*pRefusedToDie = true;
+			pContext->RefuseToDie = true;
 			return;
 		}
 		else
@@ -937,20 +937,20 @@ void CInfClassCharacter::PrepareToDie(const DeathContext &Context, bool *pRefuse
 		break;
 	}
 
-	if(Context.Killer == GetCid())
+	if(pContext->Killer == GetCid())
 	{
 		return;
 	}
 
 	if(IsInvincible())
 	{
-		*pRefusedToDie = true;
+		pContext->RefuseToDie = true;
 		return;
 	}
 
 	if(GetClass())
 	{
-		GetClass()->PrepareToDie(Context, pRefusedToDie);
+		GetClass()->PrepareToDie(pContext);
 	}
 }
 
@@ -1901,20 +1901,19 @@ void CInfClassCharacter::Die(int Killer, EDamageType DamageType)
 	DeathContext Context;
 	GetDeathContext(DamageContext, &Context);
 
-	Die(Context);
+	Die(&Context);
 }
 
-void CInfClassCharacter::Die(const DeathContext &Context)
+void CInfClassCharacter::Die(DeathContext *pContext)
 {
 	if(!IsAlive())
 	{
 		return;
 	}
-	
-	bool RefusedToDie = false;
-	PrepareToDie(Context, &RefusedToDie);
 
-	if(RefusedToDie)
+	PrepareToDie(pContext);
+
+	if(pContext->RefuseToDie)
 	{
 		return;
 	}
@@ -1923,12 +1922,12 @@ void CInfClassCharacter::Die(const DeathContext &Context)
 
 	// we got to wait 0.5 secs before respawning
 	m_pPlayer->m_RespawnTick = Server()->Tick()+Server()->TickSpeed()/2;
-	GameController()->OnCharacterDeath(this, Context);
+	GameController()->OnCharacterDeath(this, pContext);
 
 	// a nice sound
 	GameServer()->CreateSound(GetPos(), SOUND_PLAYER_DIE);
 
-	if(Context.DamageType == EDamageType::INFECTION_TILE)
+	if(pContext->DamageType == EDamageType::INFECTION_TILE)
 	{
 		return;
 	}

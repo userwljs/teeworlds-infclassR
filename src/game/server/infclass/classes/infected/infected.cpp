@@ -253,7 +253,7 @@ void CInfClassInfected::OnCharacterTick()
 		if (m_VoodooTimeAlive > 0)
 			m_VoodooTimeAlive-=1000;
 		else
-			m_pCharacter->Die(m_VoodooDeathContext);
+			m_pCharacter->Die(&m_VoodooDeathContext);
 
 		// Display time left to live
 		int Time = m_VoodooTimeAlive/Server()->TickSpeed();
@@ -1053,13 +1053,13 @@ int CInfClassInfected::GetGhoulLevel() const
 	return GetPlayer()->GetGhoulLevel();
 }
 
-void CInfClassInfected::PrepareToDie(const DeathContext &Context, bool *pRefusedToDie)
+void CInfClassInfected::PrepareToDie(DeathContext *pContext)
 {
 	if(GetPlayerClass() == EPlayerClass::Undead)
 	{
-		m_pCharacter->Freeze(Config()->m_InfUndeadFreezeDuration, Context.Killer, FREEZEREASON_UNDEAD);
+		m_pCharacter->Freeze(Config()->m_InfUndeadFreezeDuration, pContext->Killer, FREEZEREASON_UNDEAD);
 		m_pCharacter->SetHealthArmor(0, 0);
-		*pRefusedToDie = true;
+		pContext->RefuseToDie = true;
 		return;
 	}
 
@@ -1071,7 +1071,7 @@ void CInfClassInfected::PrepareToDie(const DeathContext &Context, bool *pRefused
 			if(m_VoodooTimeAlive > 0)
 			{
 				// If about to die, yet killed again, dont kill him either
-				*pRefusedToDie = true;
+				pContext->RefuseToDie = true;
 			}
 
 			// Return here to allow the death on voodoo time expired
@@ -1083,9 +1083,9 @@ void CInfClassInfected::PrepareToDie(const DeathContext &Context, bool *pRefused
 	if(GetPlayerClass() == EPlayerClass::Voodoo)
 	{
 		m_VoodooAboutToDie = true;
-		m_VoodooDeathContext = Context;
+		m_VoodooDeathContext = *pContext;
 		UpdateSkin();
 
-		*pRefusedToDie = true;
+		pContext->RefuseToDie = true;
 	}
 }

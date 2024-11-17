@@ -56,7 +56,7 @@ public:
 
 	bool FindWitchSpawnPosition(vec2 &Position);
 
-	void PrepareToDie(const DeathContext &Context, bool *pRefusedToDie) override;
+	void PrepareToDie(DeathContext *pContext) override;
 
 protected:
 	void GiveClassAttributes() override;

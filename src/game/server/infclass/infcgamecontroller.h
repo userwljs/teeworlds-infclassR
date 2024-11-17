@@ -117,7 +117,7 @@ public:
 	void SendServerParams(int ClientId) const;
 
 	int OnCharacterDeath(class CCharacter *pVictim, class CPlayer *pKiller, int Weapon) override;
-	void OnCharacterDeath(CInfClassCharacter *pVictim, const DeathContext &Context);
+	void OnCharacterDeath(CInfClassCharacter *pVictim, DeathContext *pContext);
 	void OnCharacterSpawned(CInfClassCharacter *pCharacter, const SpawnContext &Context);
 	void OnClassChooserRequested(CInfClassCharacter *pCharacter);
 	void CheckRoundFailed();
