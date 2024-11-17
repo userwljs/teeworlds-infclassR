@@ -2542,7 +2542,7 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 	// Find other players
 	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
-		if(p->IsInfected() || p == m_pCharacter)
+		if(p->IsInfected() || p == m_pCharacter || p->IsSolo())
 			continue;
 
 		CInfClassHuman *pHumanClass = CInfClassHuman::GetInstance(p);
