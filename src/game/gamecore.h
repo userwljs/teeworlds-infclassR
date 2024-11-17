@@ -266,9 +266,9 @@ public:
 
 	void Init(CWorldCore *pWorld, CCollision *pCollision, CTeamsCore *pTeams = nullptr);
 	void Reset();
-	void TickDeferred(CParams *pParams);
-	void Tick(bool UseInput, CParams *pParams);
-	void Move(CParams* pParams);
+	void TickDeferred(const CParams *pParams);
+	void Tick(bool UseInput, const CParams *pParams);
+	void Move(const CParams* pParams);
 
 	void Read(const CNetObj_CharacterCore *pObjCore);
 	void Write(CNetObj_CharacterCore *pObjCore);

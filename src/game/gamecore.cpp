@@ -99,7 +99,7 @@ void CCharacterCore::Reset()
 	m_Input.m_TargetY = -1;
 }
 
-void CCharacterCore::Tick(bool UseInput, CParams* pParams)
+void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 {
 	bool DoDeferredTick = true;
 	m_MoveRestrictions = m_pCollision->GetMoveRestrictions(m_Pos);
@@ -377,7 +377,7 @@ void CCharacterCore::Tick(bool UseInput, CParams* pParams)
 		TickDeferred(pParams);
 }
 
-void CCharacterCore::TickDeferred(CParams *pParams)
+void CCharacterCore::TickDeferred(const CParams *pParams)
 {
 	const CTuningParams* pTuningParams = pParams->m_pTuningParams;
 
@@ -448,7 +448,7 @@ void CCharacterCore::TickDeferred(CParams *pParams)
 	UpdateTaxiPassengers();
 }
 
-void CCharacterCore::Move(CParams* pParams)
+void CCharacterCore::Move(const CParams *pParams)
 {
 	const CTuningParams* pTuningParams = pParams->m_pTuningParams;
 	
