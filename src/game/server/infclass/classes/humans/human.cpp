@@ -792,7 +792,7 @@ void CInfClassHuman::OnCharacterDamage(SDamageContext *pContext)
 		{
 			if(m_UpgradeLevel >= MercBombToolsUpgradeLevel)
 			{
-				pContext->Damage = 0;
+				pContext->Damage /= 3;
 				pContext->Force *= 0.5f;
 			}
 		}
@@ -2572,8 +2572,8 @@ void CInfClassHuman::GiveUpgrade()
 		if(m_UpgradeLevel == MercBombToolsUpgradeLevel)
 		{
 			pMessage1 = _("You have found bomb tools upgrade!");
-			pMessage2 = _("Your bombs won't damage you anymore");
-			pMessage3 = _("And now you can charge them much faster");
+			pMessage2 = _("The bombs are now much safer for you");
+			pMessage3 = _("And you can charge them much faster");
 		}
 		if(m_UpgradeLevel == MercGunRegenUpgradeLevel)
 		{
