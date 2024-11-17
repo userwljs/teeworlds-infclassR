@@ -2068,6 +2068,16 @@ void CInfClassCharacter::SetReloadDuration(float Seconds)
 	m_ReloadTimer = Server()->TickSpeed() * Seconds;
 }
 
+void CInfClassCharacter::SetAntiFire()
+{
+	SetAntiFireDuration(Config()->m_InfAntiFireTime / 1000.0f);
+}
+
+void CInfClassCharacter::SetAntiFireDuration(float Seconds)
+{
+	m_AntiFireTime = Server()->TickSpeed() * Seconds;
+}
+
 vec2 CInfClassCharacter::GetHookPos() const
 {
 	return m_Core.m_HookPos;

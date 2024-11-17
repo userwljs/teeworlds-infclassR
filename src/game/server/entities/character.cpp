@@ -25,7 +25,6 @@ CCharacter::CCharacter(CGameWorld *pWorld) :
 /* INFECTION MODIFICATION START ***************************************/
 	m_MaxArmor = 10;
 
-	m_AntiFireTime = 0;
 	m_PainSoundTimer = 0;
 	m_DartLifeSpan = -1;
 	m_InAirTick = 0;
@@ -218,14 +217,6 @@ void CCharacter::HandleWeapons()
 	// fire Weapon, if wanted
 	FireWeapon();
 }
-
-/* INFECTION MODIFICATION START ***************************************/
-void CCharacter::SetAntiFire()
-{
-	m_AntiFireTime = Server()->TickSpeed() * Config()->m_InfAntiFireTime / 1000;
-}
-
-/* INFECTION MODIFICATION END *****************************************/
 
 void CCharacter::SetActiveWeapon(int Weapon)
 {

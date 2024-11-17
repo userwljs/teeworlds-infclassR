@@ -182,7 +182,6 @@ protected:
 protected:
 	virtual void OnTotalHealthChanged(int Difference) {};
 
-	int m_AntiFireTime;
 	int m_PainSoundTimer;
 	vec2 m_PrevPos;
 

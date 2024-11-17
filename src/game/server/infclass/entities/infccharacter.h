@@ -171,6 +171,9 @@ public:
 	void SetReloadTimer(int Ticks);
 	void SetReloadDuration(float Seconds);
 
+	void SetAntiFire();
+	void SetAntiFireDuration(float Seconds);
+
 	vec2 GetHookPos() const;
 	int GetHookedPlayer() const;
 	void SetHookedPlayer(int ClientId);
@@ -329,6 +332,7 @@ protected:
 	EDamageType m_PoisonDamageType;
 
 	bool m_IsInvisible = false;
+	int m_AntiFireTime = 0;
 	int m_GrantedInvisibilityUntilTick = 0;
 	int m_Invincible = 0;
 
