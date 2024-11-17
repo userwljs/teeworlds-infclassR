@@ -2939,6 +2939,20 @@ bool CIcGameController::SurvivalHumansWinConditionsMet() const
 	return true;
 }
 
+bool CIcGameController::SurvivalInfectedWinConditionsMet() const
+{
+	for (int ClientId = 0; ClientId < MAX_CLIENTS; ++ClientId)
+	{
+		const CIcCharacter *pCharacter = GetCharacter(ClientId);
+		if (!pCharacter || !pCharacter->IsHuman() || pCharacter->IsDead())
+			continue;
+
+		return false;
+	}
+
+	return true;
+}
+
 void CIcGameController::ConStartFunRound(IConsole::IResult *pResult, void *pUserData)
 {
 	CIcGameController *pSelf = (CIcGameController *)pUserData;
@@ -6766,6 +6780,17 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 
 	// Do not infect on disconnect or joining spec
 	bool Infect = DamageType != EDamageType::GAME;
+	if(GetRoundType() == ERoundType::Survival)
+	{
+		float DisabledForDuration = Config()->m_InfSurvivalDeadSeconds;
+		if (pVictim->IsHuman() && !pVictim->GetPlayer()->IsBot() && DisabledForDuration)
+		{
+			pContext->KeepCharacter = true;
+			Infect = false;
+			pVictim->SetDeadForDuration(DisabledForDuration);
+		}
+	}
+
 	if(Infect)
 	{
 		pVictim->GetPlayer()->StartInfection(pContext->Killer, InfectionType);
@@ -6869,6 +6894,7 @@ void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const Spa
 
 void CIcGameController::OnCharacterBackFromDead(CIcCharacter *pCharacter)
 {
+	pCharacter->SetHealthArmor(1, 0);
 }
 
 void CIcGameController::OnClassChooserRequested(CIcCharacter *pCharacter)
@@ -7022,7 +7048,7 @@ void CIcGameController::DoWincheck()
 			VictoryConditionsMet = true;
 			NeedFinalExplosion = true;
 		}
-		else if (NumHumans == 0)
+		else if ((NumHumans == 0) || SurvivalInfectedWinConditionsMet())
 		{
 			VictoryConditionsMet = true;
 		}

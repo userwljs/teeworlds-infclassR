@@ -388,6 +388,7 @@ public:
 	void ConStartSurvival(IConsole::IResult *pResult);
 	void PrepareSurvival(int Wave = 0);
 	bool SurvivalHumansWinConditionsMet() const;
+	bool SurvivalInfectedWinConditionsMet() const;
 
 	static void ConMapRotationStatus(IConsole::IResult *pResult, void *pUserData);
 	static void ConSaveMapsData(IConsole::IResult *pResult, void *pUserData);
