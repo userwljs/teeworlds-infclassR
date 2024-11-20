@@ -23,6 +23,8 @@ survival_default_tweaks = nil
 
 OldConfig = {}
 
+Survival_spawn_zones = nil
+
 ---@return SurvivalBotConfiguration
 function add_bot_with_tweaks(wave, player_class)
     local bot_conf = Game.Controller:SurvivalAddBot(wave, player_class)
@@ -282,9 +284,9 @@ function setup_wave5()
 
     local ghouls_hp = {40, 40, 60, 60, 80, 80}
 
-    local lvl1_ghouls = {20}
+    local lvl1_ghouls = {10}
     local lvl2_ghouls = {10, 20}
-    local lvl3_ghouls = {7, 15, 25}
+    local lvl3_ghouls = {10, 15}
     local lvl4_ghouls = {7, 15, 20}
     local lvl5_ghouls = {7, 10, 15, 20}
     local lvl6_ghouls = {7, 10, 15, 20}
@@ -370,45 +372,80 @@ function setup_wave6()
     bot_conf.HP = boss_hp[survival_difficulty_level] * survival_hp_multiplier
     bot_conf.DropLevel = max_drop_level
 
-    for i = 1,3 do
-        bot_conf = add_normal_infected(wave, "slug")
-        bot_conf.SpawnSecond = 45 + i * 0.2
-        bot_conf.HP = 5
+    local after_tank_sec = 50
+    local set_zone = do_nothing
+
+    if Survival_spawn_zones ~= nil then
+        local zones_count = table.getn(Survival_spawn_zones)
+
+        local zone = Survival_spawn_zones[math.random(1, zones_count)]
+        local spawns_count = table.getn(zone)
+
+        set_zone = function (bot_conf)
+            local spawn_point_id = zone[math.random(1, spawns_count)]
+            bot_conf.SpawnPointId = spawn_point_id
+        end
     end
-    for i = 1,3 do
-        bot_conf = Game.Controller:SurvivalAddBot(wave, "spider")
-        bot_conf.SpawnSecond = 46 + i * 0.2
+
+    local witch_spawn_sec = after_tank_sec + 2
+    local infected_n = 2
+
+    if survival_difficulty_level >= 3 then
+        infected_n = survival_difficulty_level
+    end
+
+    for i = 1,infected_n do
+        bot_conf = add_normal_infected(wave, "slug")
+        bot_conf.SpawnSecond = after_tank_sec + i * 0.2
         bot_conf.HP = 5
+        set_zone(bot_conf)
+    end
+    for i = 1,infected_n do
+        bot_conf = add_normal_infected(wave, "spider")
+        bot_conf.SpawnSecond = after_tank_sec + 1 + i * 0.2
+        bot_conf.HP = 5
+        set_zone(bot_conf)
     end
 
     if survival_difficulty_level >= 3 then
         local witch_hp = {0, 0, 80, 120, 180, 240}
         bot_conf = Game.Controller:SurvivalAddBot(wave, "witch")
-        bot_conf.SpawnSecond = 47
+        bot_conf.SpawnSecond = witch_spawn_sec
         bot_conf.Lives = 1
         bot_conf.HP = witch_hp[survival_difficulty_level] * survival_hp_multiplier
         add_tweak(bot_conf, "threat-aware")
         add_tweak(bot_conf, "can-flee")
+        set_zone(bot_conf)
     end
-
-    local infected_n = 2
-    if survival_difficulty_level >= 4 then
-        infected_n = survival_difficulty_level
-    end
-
     for i = 1,infected_n do
         bot_conf = add_normal_infected(wave, "boomer")
-        bot_conf.SpawnSecond = 47 + i * 0.2
+        bot_conf.SpawnSecond = witch_spawn_sec + 2 + i * 0.2
+        set_zone(bot_conf)
     end
-    for i = 1,4 do
+    for i = 1,survival_difficulty_level do
         bot_conf = add_normal_infected(wave, "hunter")
-        bot_conf.SpawnSecond = 47 + i * 0.2
+        bot_conf.SpawnSecond = witch_spawn_sec + 2 + i * 0.2
+        set_zone(bot_conf)
     end
-    for i = 1,4 do
+    for i = 1,survival_difficulty_level do
         bot_conf = add_normal_infected(wave, "bat")
-        bot_conf.SpawnSecond = 48 + i * 0.1
+        bot_conf.SpawnSecond = witch_spawn_sec + 2 + i * 0.1
+        set_zone(bot_conf)
     end
 
+    if survival_difficulty_level >= 3 then
+        local n = survival_difficulty_level - 2
+        for i = 1,n do
+            bot_conf = add_normal_infected(wave, "smoker")
+            bot_conf.SpawnSecond = witch_spawn_sec + 5 + i * 0.4
+        set_zone(bot_conf)
+        end
+        for i = 1,n do
+            bot_conf = add_normal_infected(wave, "voodoo")
+            bot_conf.SpawnSecond = witch_spawn_sec + 5 + i * 0.5
+        set_zone(bot_conf)
+        end
+    end
 end
 
 -- function on_game_character_death(victim_id, killer_id, weapon_str)
