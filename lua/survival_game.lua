@@ -449,7 +449,7 @@ end
 
 function get_max_players_for_difficulty(difficulty, multiplier)
     local max_players = difficulty + 2 * multiplier
-    local hard_max = 3 + multiplier * 3
+    local hard_max = 4 + multiplier * 3
     if max_players > hard_max then
         max_players = hard_max
     end
