@@ -1,0 +1,33 @@
+#pragma once
+
+enum class EUpgradeType
+{
+	MercBombTools,
+	MercGunAirRegen,
+	MercGunRegen,
+	MercGrenades,
+	MercBombSupercharge,
+	MedicShotgunSpread,
+	MedicPistolRegen,
+	MedicShotgunRegen,
+	MedicHealingHose,
+	HeroFlagGift,
+	HeroWeapons,
+	HeroArmor,
+	NinjaSlashBreaksHooks,
+	NinjaFlashGrenadeArea,
+	NinjaSlashCombo,
+	SniperLaserRegenReload,
+	SniperLaserRange,
+	SniperLaserPiercing,
+	ScientistLaserRegenReload,
+	ScientistTeleportGun,
+	ScientistPortalGun,
+	ScientistExtraMine,
+	BiologistShotgunSpread,
+	BiologistMineCharges,
+	BiologistInvisibilityHammer,
+	LooperLaserRegen,
+	LooperGrenadesRegen,
+	LooperLaserWeapon,
+};

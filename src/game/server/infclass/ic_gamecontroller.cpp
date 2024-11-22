@@ -3297,7 +3297,9 @@ void CIcGameController::ConGiveUpgrade(IConsole::IResult *pResult)
 		return;
 	}
 
-	pPlayer->GetCharacterClass()->GiveUpgrade();
+	const int Level = pPlayer->GetCharacterClass()->GetUpgradeLevel();
+	const auto Upgrades = pPlayer->GetCharacterClass()->GetUpgrade(Level + 1);
+	pPlayer->GetCharacterClass()->GiveUpgrades(Upgrades);
 }
 
 void CIcGameController::ConSetDrop(IConsole::IResult *pResult, void *pUserData)
@@ -5359,15 +5361,15 @@ void CIcGameController::MaybeDropPickup(CIcCharacter *pVictim)
 			continue;
 		}
 
-		SClassUpgrade Upgrade = pClass->GetNextUpgrade();
-		if(!Upgrade.IsValid())
+		PlayerUpgradesArray Upgrade = pClass->GetNextUpgrade();
+		if(Upgrade.IsEmpty())
 			continue;
 
 		if(HasSpawnedPickups.Contains(ClientId))
 			continue;
 
 		CIcPickup *p = new CIcPickup(GameServer(), EICPickupType::ClassUpgrade, Pos, ClientId);
-		p->SetUpgrade(Upgrade);
+		p->SetUpgrades(Upgrade);
 		p->Spawn();
 	}
 }

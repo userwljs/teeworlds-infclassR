@@ -20,45 +20,11 @@ struct DeathContext;
 struct WeaponFireContext;
 struct CAmmoParams;
 
+enum class EUpgradeType;
+using PlayerUpgradesArray = icArray<EUpgradeType, 5>;
+
 enum class EDamageType;
 enum class IC_PICKUP_TYPE;
-
-struct SClassUpgrade
-{
-	using TSubtypes = icArray<int, 6>;
-
-	SClassUpgrade() = default;
-
-	explicit SClassUpgrade(int T) :
-		Type(T)
-	{
-	}
-
-	explicit SClassUpgrade(int T, int S) :
-		Type(T)
-	{
-		Subtypes.Add(S);
-	}
-
-	explicit SClassUpgrade(int T, TSubtypes S) :
-		Type(T),
-		Subtypes(S)
-	{
-	}
-
-	int Type = 0;
-	TSubtypes Subtypes;
-
-	bool IsValid() const { return Type >= 0; }
-	bool IsFlagPowerup() const;
-
-	static SClassUpgrade FlagPowerup();
-
-	static SClassUpgrade Invalid()
-	{
-		return SClassUpgrade(-1);
-	}
-};
 
 class CIcPlayerClass
 {
@@ -83,8 +49,8 @@ public:
 	virtual bool CanDie() const;
 	virtual bool CanBeHit() const;
 	virtual bool CanBeUnfreezed() const;
-	virtual SClassUpgrade GetUpgrade(int Level) const;
-	SClassUpgrade GetNextUpgrade() const;
+	virtual PlayerUpgradesArray GetUpgrade(int Level) const;
+	PlayerUpgradesArray GetNextUpgrade() const;
 
 	float GetHammerProjOffset() const;
 	float GetHammerRange() const;
@@ -131,7 +97,7 @@ public:
 	virtual void OnSlimeEffect(int Owner, int Damage, float DamageInterval) = 0;
 	virtual void OnFloatingPointCollected(int Points);
 
-	virtual void GiveUpgrade() {}
+	virtual void GiveUpgrades(const PlayerUpgradesArray &NewUpgrades){};
 
 	CGameContext *GameContext() const;
 	CGameContext *GameServer() const;
@@ -151,6 +117,8 @@ public:
 	int GetUpgradeLevel() const;
 	void ResetUpgradeLevel();
 
+	bool HasUpgrade(EUpgradeType Upgrade) const { return m_Upgrades.Contains(Upgrade); }
+
 protected:
 	virtual void GiveClassAttributes();
 	virtual void DestroyChildEntities();
@@ -163,6 +131,7 @@ protected:
 	int m_NormalEmote;
 
 	int m_UpgradeLevel = 0;
+	PlayerUpgradesArray m_Upgrades;
 	int m_ControlPointEffectAppliedTick = 0;
 	int m_HealingDisabledTicks = 0;
 };

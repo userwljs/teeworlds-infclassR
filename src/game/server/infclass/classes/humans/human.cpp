@@ -34,36 +34,10 @@
 #include <game/server/infclass/entities/white-hole.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
+#include <game/server/infclass/player_upgrades.h>
 #include <game/server/teeinfo.h>
 
 static const int s_SniperPositionLockTimeLimit = 15;
-
-constexpr int MercBombToolsUpgradeLevel = 1;
-constexpr int MercGunRegenUpgradeLevel = 2;
-constexpr int MercGrenadesUpgradeLevel = 2;
-constexpr int MercBombSuperchargeUpgradeLevel = 3;
-constexpr int MedicShotgunSpreadUpgradeLevel = 1;
-constexpr int MedicShotgunAmmoUpgradeLevel = 2;
-constexpr int MedicHealingHoseUpgradeLevel = 3;
-constexpr int HeroFlagGiftUpgradeLevel = 1;
-constexpr int HeroWeaponsUpgradeLevel = 2;
-constexpr int HeroArmorUpgradeLevel = 3;
-constexpr int NinjaSlashBreaksHooksUpgradeLevel = 1;
-constexpr int NinjaFlashGrenadeUpgradeLevel = 2;
-constexpr int NinjaSlashComboUpgradeLevel = 3;
-constexpr int SniperLaserAmmoUpgradeLevel = 1;
-constexpr int SniperLaserRangeUpgradeLevel = 2;
-constexpr int SniperLaserPiercingUpgradeLevel = 3;
-constexpr int ScientistLaserAmmoUpgradeLevel = 1;
-constexpr int ScientistTeleportGunUpgradeLevel = 2;
-constexpr int ScientistPortalGunUpgradeLevel = 3;
-constexpr int ScientistExtraMineUpgradeLevel = 4;
-constexpr int BiologistShotgunSpreadUpgradeLevel = 1;
-constexpr int BiologistMineChargesUpgradeLevel = 2;
-constexpr int BiologistInvisibilityHammerUpgradeLevel = 3;
-constexpr int LooperLaserAmmoUpgradeLevel = 1;
-constexpr int LooperGrenadesUpgradeLevel = 2;
-constexpr int LooperLaserWeaponUpgradeLevel = 3;
 
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassHuman, MAX_CLIENTS)
 
@@ -195,7 +169,7 @@ CAmmoParams CInfClassHuman::GetAmmoParams(int Weapon) const
 		}
 		break;
 	case EInfclassWeapon::HEALING_GRENADE:
-		if(m_UpgradeLevel >= MedicHealingHoseUpgradeLevel)
+		if(HasUpgrade(EUpgradeType::MedicHealingHose))
 		{
 			Params.MaxAmmo = 16;
 			Params.RegenInterval = 1000;
@@ -275,131 +249,133 @@ bool CInfClassHuman::CanBeHit() const
 	return true;
 }
 
-SClassUpgrade CInfClassHuman::GetUpgrade(int Level) const
+PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 {
-	switch(GetPlayerClass())
+	switch(PlayerClass)
 	{
 	case EPlayerClass::Mercenary:
-		if(Level == MercBombToolsUpgradeLevel)
+		switch(UpgradeLevel)
 		{
-			return SClassUpgrade(POWERUP_ARMOR);
-		}
-		else if(Level == MercGunRegenUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GUN);
-		}
-		else if(Level == MercBombSuperchargeUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_HEALTH);
+		case 1:
+			return { EUpgradeType::MercBombTools };
+		case 2:
+			return { EUpgradeType::MercGunAirRegen, EUpgradeType::MercGrenades };
+		case 3:
+			return { EUpgradeType::MercGunRegen, EUpgradeType::MercBombSupercharge };
+		default:
+			break;
 		}
 		break;
+
 	case EPlayerClass::Medic:
-		if(Level == MedicShotgunSpreadUpgradeLevel)
+		switch(UpgradeLevel)
 		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
-		}
-		else if(Level == MedicShotgunAmmoUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
-		}
-		else if(Level == MedicHealingHoseUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
+		case 1:
+			return { EUpgradeType::MedicShotgunSpread, EUpgradeType::MedicPistolRegen };
+		case 2:
+			return { EUpgradeType::MedicShotgunRegen };
+		case 3:
+			return { EUpgradeType::MedicHealingHose };
+		default:
+			break;
 		}
 		break;
+
 	case EPlayerClass::Hero:
-		if(Level == HeroFlagGiftUpgradeLevel)
+		switch(UpgradeLevel)
 		{
-			return SClassUpgrade::FlagPowerup();
-		}
-		else if(Level == HeroWeaponsUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, {WEAPON_GUN, WEAPON_SHOTGUN, WEAPON_GRENADE, WEAPON_LASER});
-		}
-		else if(Level == HeroArmorUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_ARMOR);
+		case 1:
+			return { EUpgradeType::HeroFlagGift };
+		case 2:
+			return { EUpgradeType::HeroWeapons };
+		case 3:
+			return { EUpgradeType::HeroArmor };
+		default:
+			break;
 		}
 		break;
+
 	case EPlayerClass::Ninja:
-		if(Level == NinjaSlashBreaksHooksUpgradeLevel)
+		switch(UpgradeLevel)
 		{
-			return SClassUpgrade(POWERUP_NINJA);
-		}
-		else if(Level == NinjaFlashGrenadeUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
-		}
-		else if(Level == NinjaSlashComboUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_NINJA);
+		case 1:
+			return { EUpgradeType::NinjaSlashBreaksHooks };
+		case 2:
+			return { EUpgradeType::NinjaFlashGrenadeArea };
+		case 3:
+			return { EUpgradeType::NinjaSlashCombo };
+		default:
+			break;
 		}
 		break;
+
 	case EPlayerClass::Sniper:
-		if(Level == SniperLaserAmmoUpgradeLevel)
+		switch(UpgradeLevel)
 		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
-		}
-		else if(Level == SniperLaserRangeUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
-		}
-		else if(Level == SniperLaserPiercingUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
+		case 1:
+			return { EUpgradeType::SniperLaserRegenReload };
+		case 2:
+			return { EUpgradeType::SniperLaserRange };
+		case 3:
+			return { EUpgradeType::SniperLaserPiercing };
+		default:
+			break;
 		}
 		break;
+
 	case EPlayerClass::Scientist:
-		if(Level == ScientistLaserAmmoUpgradeLevel)
+		switch(UpgradeLevel)
 		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
-		}
-		else if(Level == ScientistTeleportGunUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
-		}
-		else if(Level == ScientistPortalGunUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
-		}
-		else if(Level == ScientistExtraMineUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_HAMMER);
+		case 1:
+			return { EUpgradeType::ScientistLaserRegenReload };
+		case 2:
+			return { EUpgradeType::ScientistTeleportGun };
+		case 3:
+			return { EUpgradeType::ScientistPortalGun };
+		case 4:
+			return { EUpgradeType::ScientistExtraMine };
+		default:
+			break;
 		}
 		break;
+
 	case EPlayerClass::Biologist:
-		if(Level == BiologistShotgunSpreadUpgradeLevel)
+		switch(UpgradeLevel)
 		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_SHOTGUN);
-		}
-		else if(Level == BiologistMineChargesUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
-		}
-		else if(Level == BiologistInvisibilityHammerUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_HAMMER);
+		case 1:
+			return { EUpgradeType::BiologistShotgunSpread };
+		case 2:
+			return { EUpgradeType::BiologistMineCharges };
+		case 3:
+			return { EUpgradeType::BiologistInvisibilityHammer };
+		default:
+			break;
 		}
 		break;
+
 	case EPlayerClass::Looper:
-		if(Level == LooperLaserAmmoUpgradeLevel)
+		switch(UpgradeLevel)
 		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
-		}
-		else if(Level == LooperGrenadesUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_GRENADE);
-		}
-		else if(Level == LooperLaserWeaponUpgradeLevel)
-		{
-			return SClassUpgrade(POWERUP_WEAPON, WEAPON_LASER);
+		case 1:
+			return { EUpgradeType::LooperLaserRegen };
+		case 2:
+			return { EUpgradeType::LooperGrenadesRegen };
+		case 3:
+			return { EUpgradeType::LooperLaserWeapon };
+		default:
+			break;
 		}
 		break;
 	default:
 		break;
 	}
 
-	return SClassUpgrade::Invalid();
+	return {};
+}
+
+PlayerUpgradesArray CInfClassHuman::GetUpgrade(int Level) const
+{
+	return GetUpgrades(GetPlayerClass(), Level);
 }
 
 void CInfClassHuman::OnPlayerClassChanged()
@@ -790,7 +766,7 @@ void CInfClassHuman::OnCharacterDamage(SDamageContext *pContext)
 	case EPlayerClass::Mercenary:
 		if(pContext->Mode == TAKEDAMAGEMODE::ALLOW_SELFHARM)
 		{
-			if(m_UpgradeLevel >= MercBombToolsUpgradeLevel)
+			if(HasUpgrade(EUpgradeType::MercBombTools))
 			{
 				pContext->Damage /= 3;
 				pContext->Force *= 0.5f;
@@ -886,7 +862,7 @@ void CInfClassHuman::OnHumanHammerHitHuman(CIcCharacter *pTarget)
 		{
 			pTarget->ResetPoisonEffect();
 		}
-		if(m_UpgradeLevel >= BiologistInvisibilityHammerUpgradeLevel)
+		if(HasUpgrade(EUpgradeType::BiologistInvisibilityHammer))
 		{
 			CInfClassHuman *pTargetHuman = CInfClassHuman::GetInstance(pTarget);
 			float Duration  = Config()->m_InfHumanInvisibilityTime;
@@ -1161,7 +1137,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 	{
 	case EInfclassWeapon::RICOCHET_SHOTGUN:
 		ShotSpread = 1;
-		if(m_UpgradeLevel >= BiologistShotgunSpreadUpgradeLevel)
+		if(HasUpgrade(EUpgradeType::BiologistShotgunSpread))
 		{
 			ShotSpread = 2;
 			SpreadingValue *= 0.5f;
@@ -1169,7 +1145,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 		break;
 	case EInfclassWeapon::MEDIC_SHOTGUN:
 		DamageType = EDamageType::MEDIC_SHOTGUN;
-		if(m_UpgradeLevel >= MedicShotgunSpreadUpgradeLevel)
+		if(HasUpgrade(EUpgradeType::MedicShotgunSpread))
 		{
 			ShotSpread = 5;
 			SpreadingValue *= 0.8f;
@@ -1222,14 +1198,14 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 		return;
 	case EInfclassWeapon::TELEPORT_GUN:
 	{
-		if (m_UpgradeLevel >= ScientistPortalGunUpgradeLevel)
+		if (HasUpgrade(EUpgradeType::ScientistPortalGun))
 		{
 			CPortal::OnPortalGunFired(m_pCharacter, pFireContext);
 		}
 		else
 		{
 			int SelfDamage = Config()->m_InfScientistTpSelfharm;
-			if(m_UpgradeLevel >= ScientistTeleportGunUpgradeLevel)
+			if(HasUpgrade(EUpgradeType::ScientistTeleportGun))
 			{
 				SelfDamage = 0;
 			}
@@ -1255,7 +1231,7 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 	{
 		CIcProjectile *pProj = CIcProjectile::MakeGrenade(GameContext(), ProjStartPos, Direction, GetCid(), EDamageType::STUNNING_GRENADE);
 		int FlashRadius = 8;
-		if(m_UpgradeLevel >= NinjaFlashGrenadeUpgradeLevel)
+		if(HasUpgrade(EUpgradeType::NinjaFlashGrenadeArea))
 		{
 			FlashRadius = 10;
 		}
@@ -1290,7 +1266,7 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		int Lasers = Config()->m_InfBioMineLasers;
 		if(GameController()->GetRoundType() == ERoundType::Survival)
 		{
-			Lasers = m_UpgradeLevel >= BiologistMineChargesUpgradeLevel ? 12 : 8;
+			Lasers = HasUpgrade(EUpgradeType::BiologistMineCharges) ? 12 : 8;
 		}
 		CBiologistMine::OnFired(m_pCharacter, pFireContext, Lasers);
 	}
@@ -1311,7 +1287,7 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		StartEnergy *= 0.7f;
 		Damage = 5;
 		CIcLaser *pLaser = new CIcLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
-		if(m_UpgradeLevel >= LooperLaserWeaponUpgradeLevel)
+		if(HasUpgrade(EUpgradeType::LooperLaserWeapon))
 		{
 			pLaser->SetExplosive(true);
 		}
@@ -1320,10 +1296,11 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		break;
 	case EInfclassWeapon::SNIPER_RIFLE:
 	{
-		int LockedPosDamage = m_UpgradeLevel >= SniperLaserPiercingUpgradeLevel ? 40 : 30;
+		const bool HasPiercing = HasUpgrade(EUpgradeType::SniperLaserPiercing);
+		int LockedPosDamage = HasPiercing ? 40 : 30;
 		Damage = m_pCharacter->PositionIsLocked() ? LockedPosDamage : random_int(10, 13);
 		CIcLaser *pLaser = new CIcLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
-		pLaser->SetPiercing(m_UpgradeLevel >= SniperLaserPiercingUpgradeLevel);
+		pLaser->SetPiercing(HasPiercing);
 		pLaser->DoBounce();
 		break;
 	}
@@ -2036,12 +2013,12 @@ void CInfClassHuman::ActivateNinja(WeaponFireContext *pFireContext)
 
 		GameServer()->CreateSound(GetPos(), SOUND_NINJA_HIT);
 
-		if(m_UpgradeLevel >= NinjaSlashBreaksHooksUpgradeLevel)
+		if(HasUpgrade(EUpgradeType::NinjaSlashBreaksHooks))
 		{
 			GameWorld()->ReleaseHooked(GetCid());
 		}
 
-		if(m_UpgradeLevel >= NinjaSlashComboUpgradeLevel)
+		if(HasUpgrade(EUpgradeType::NinjaSlashCombo))
 		{
 			const float Reload = pFireContext->ReloadInterval;
 			if(Server()->Tick() > m_NinjaComboFirstTick + Reload * 2 * Server()->TickSpeed())
@@ -2309,7 +2286,7 @@ void CInfClassHuman::OnPoisonGrenadeFired(WeaponFireContext *pFireContext)
 		float a = BaseAngle + random_float() / 3.0f;
 
 		[[maybe_unused]] CScatterGrenade *pProj = new CScatterGrenade(GameServer(), GetCid(), GetPos(), vec2(cosf(a), sinf(a)));
-		if(m_UpgradeLevel >= MercGrenadesUpgradeLevel)
+		if(HasUpgrade(EUpgradeType::MercGrenades))
 		{
 			pProj->ExplodeOnContact();
 		}
@@ -2325,7 +2302,7 @@ void CInfClassHuman::OnMedicGrenadeFired(WeaponFireContext *pFireContext)
 	if(pFireContext->NoAmmo)
 		return;
 
-	if(m_UpgradeLevel >= MedicHealingHoseUpgradeLevel)
+	if(HasUpgrade(EUpgradeType::MedicHealingHose))
 	{
 		new CHealingParticle(GameServer(), GetPos(), GetCid(), GetDirection());
 	}
@@ -2386,7 +2363,7 @@ int CInfClassHuman::GetTurretGive() const
 {
 	int TurretGive = Config()->m_InfTurretGive;
 
-	if(m_UpgradeLevel >= HeroFlagGiftUpgradeLevel)
+	if(HasUpgrade(EUpgradeType::HeroFlagGift))
 	{
 		TurretGive += 1;
 	}
@@ -2398,7 +2375,7 @@ int CInfClassHuman::GetMaxTurrets() const
 {
 	int TurretMax = Config()->m_InfTurretMaxPerPlayer;
 
-	if(m_UpgradeLevel >= HeroFlagGiftUpgradeLevel)
+	if(HasUpgrade(EUpgradeType::HeroFlagGift))
 	{
 		TurretMax += 2;
 	}
@@ -2409,7 +2386,7 @@ int CInfClassHuman::GetMaxTurrets() const
 int CInfClassHuman::GetMaxSciMines() const
 {
 	int MaxMines = Config()->m_InfMineLimit;
-	if(m_UpgradeLevel >= ScientistExtraMineUpgradeLevel)
+	if(HasUpgrade(EUpgradeType::ScientistExtraMine))
 	{
 		MaxMines += 1;
 	}
@@ -2479,7 +2456,7 @@ float CInfClassHuman::GetInvisibilityRemainingDuration() const
 
 void CInfClassHuman::UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints)
 {
-	if(m_UpgradeLevel >= MercBombToolsUpgradeLevel)
+	if(HasUpgrade(EUpgradeType::MercBombTools))
 	{
 		UpgradePoints *= 1.5;
 	}
@@ -2499,7 +2476,8 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 
 	if(pHero != m_pCharacter)
 	{
-		GiveGift(EGiftType::HeroFlag, GetUpgradeLevel());
+		int Level = HasUpgrade(EUpgradeType::HeroFlagGift) ? 1 : 0;
+		GiveGift(EGiftType::HeroFlag, Level);
 		return;
 	}
 
@@ -2558,185 +2536,192 @@ void CInfClassHuman::OnWhiteHoleSpawned(CWhiteHole *pWhiteHole)
 	m_ResetKillsTick = pWhiteHole->GetEndTick().value() + Server()->TickSpeed() * 3;
 }
 
-void CInfClassHuman::GiveUpgrade()
+void CInfClassHuman::GiveUpgrades(const PlayerUpgradesArray &NewUpgrades)
 {
-	const char *pMessage1 = _("You have found a weapon upgrade!");
-	const char *pMessage2{};
-	const char *pMessage3{};
-
+	if (NewUpgrades.IsEmpty())
+	{
+		return;
+	}
 	m_UpgradeLevel++;
 
-	switch(GetPlayerClass())
+	const char *pWeaponUpgradeMsg = _("You have found a weapon upgrade!");
+	icArray<const char *, 4> aMessages;
+
+	auto AddMessage = [&aMessages](const char *pMessage)
 	{
-	case EPlayerClass::Mercenary:
-		if(m_UpgradeLevel == MercBombToolsUpgradeLevel)
+		aMessages.Add(pMessage);
+	};
+
+	auto AddWeaponMessageIfNothingYet = [&aMessages, pWeaponUpgradeMsg]()
+	{
+		if (aMessages.IsEmpty())
 		{
-			pMessage1 = _("You have found bomb tools upgrade!");
-			pMessage2 = _("The bombs are now much safer for you");
-			pMessage3 = _("And you can charge them much faster");
+			aMessages.Add(pWeaponUpgradeMsg);
 		}
-		if(m_UpgradeLevel == MercGunRegenUpgradeLevel)
+	};
+
+	for(EUpgradeType Upgrade : NewUpgrades)
+	{
+		if(!m_Upgrades.Contains(Upgrade))
 		{
-			pMessage2 = _("In air gun ammo regeneration now works for 12 seconds (3x longer)");
+			m_Upgrades.Add(Upgrade);
+		}
+	}
+
+	for(EUpgradeType Upgrade : NewUpgrades)
+	{
+		switch(Upgrade)
+		{
+		case EUpgradeType::MercBombTools:
+			AddMessage(_("You have found bomb tools upgrade!"));
+			AddMessage(_("The bombs are now much safer for you"));
+			AddMessage(_("And you can charge them much faster"));
+			break;
+		case EUpgradeType::MercGunAirRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("In air gun ammo regeneration now works for 12 seconds (3x longer)"));
 			m_MercInAirAmmoRegenMaxTime = 12.0f;
-		}
-		if(m_UpgradeLevel == MercGrenadesUpgradeLevel)
-		{
-			pMessage3 = _("The grenades now explode automatically");
-		}
-		if(m_UpgradeLevel == MercBombSuperchargeUpgradeLevel)
-		{
-			pMessage1 = _("You have found a bomb supercharger!");
-			pMessage2 = _("The bombs maximum charge increased to 150%");
+			break;
+		case EUpgradeType::MercGrenades:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The grenades now explode automatically"));
+			break;
+		case EUpgradeType::MercBombSupercharge:
+			AddMessage(_("You have found a bomb supercharger!"));
+			AddMessage(_("The bombs maximum charge increased to 150%"));
 			m_MercBombs *= 1.5f;
-			pMessage3 = _("And also the gun ammo regeneration speed increased by 25%");
+			break;
+		case EUpgradeType::MercGunRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("And also the gun ammo regeneration speed increased by 25%"));
 			m_WeaponRegenIntervalModifier[WEAPON_GUN] = 0.75f;
-		}
-		break;
-	case EPlayerClass::Medic:
-		if(m_UpgradeLevel == MedicShotgunSpreadUpgradeLevel)
-		{
-			pMessage2 = _("The shotgun bullets number increased");
-			pMessage3 = _("The pistol ammo regeneration speed increased by 50%");
+			break;
+		case EUpgradeType::MedicShotgunSpread:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The shotgun bullets number increased"));
+			break;
+		case EUpgradeType::MedicPistolRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The pistol ammo regeneration speed increased by 50%"));
 			m_WeaponRegenIntervalModifier[WEAPON_GUN] = 0.5f;
-		}
-		else if(m_UpgradeLevel == MedicShotgunAmmoUpgradeLevel)
-		{
-			pMessage2 = _("The shotgun ammo regeneration speed increased by 33%");
+			break;
+		case EUpgradeType::MedicShotgunRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The shotgun ammo regeneration speed increased by 33%"));
 			m_WeaponRegenIntervalModifier[WEAPON_SHOTGUN] = 0.67f;
-		}
-		else if(m_UpgradeLevel == MedicHealingHoseUpgradeLevel)
-		{
-			pMessage2 = _("The healing grenade launcher replaced with new Medi Hose");
+			break;
+		case EUpgradeType::MedicHealingHose:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The healing grenade launcher replaced with new Medi Hose"));
 			m_WeaponReloadIntervalModifier[WEAPON_GRENADE] = 0.4f;
-		}
-		break;
-	case EPlayerClass::Hero:
-		if(m_UpgradeLevel == HeroFlagGiftUpgradeLevel)
-		{
-			pMessage1 = _("From now on, each flag will give you an extra turret and extra HP for the teammates");
-			pMessage2 = _("Plus, you can carry an extra pair of turrets, just for a case");
-		}
-		else if(m_UpgradeLevel == HeroWeaponsUpgradeLevel)
-		{
-			pMessage2 = _("Fire rate and ammo regeneration speed of all weapons increased by 20%");
+			break;
+
+		case EUpgradeType::HeroFlagGift:
+			AddMessage(_("From now on, each flag will give you an extra turret and extra HP for the teammates"));
+			AddMessage(_("Plus, you can carry an extra pair of turrets, just for a case"));
+			break;
+		case EUpgradeType::HeroWeapons:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("Fire rate and ammo regeneration speed of all weapons increased by 20%"));
 
 			for(float &Modifier : m_WeaponRegenIntervalModifier)
 			{
 				Modifier = 0.80f;
 			}
-
 			for(float &Modifier : m_WeaponReloadIntervalModifier)
 			{
 				Modifier = 0.80f;
 			}
-		}
-		else if (m_UpgradeLevel == HeroArmorUpgradeLevel)
-		{
-			pMessage1 = _("You have found an armor upgrade");
-			int NewArmor = 20;
-			pMessage2 = _("('full armor' now means 20 hit points)");
-			if (m_pCharacter)
+			break;
+
+		case EUpgradeType::HeroArmor:
+			AddMessage(_("You have found an armor upgrade"));
+			AddMessage(_("('full armor' now means 20 hit points)"));
+			if(m_pCharacter)
 			{
+				int NewArmor = 20;
 				m_pCharacter->SetMaxArmor(NewArmor);
 				m_pCharacter->SetHealthArmor(m_pCharacter->GetHealth(), NewArmor);
 			}
-		}
-		break;
-	case EPlayerClass::Ninja:
-		if(m_UpgradeLevel == NinjaSlashBreaksHooksUpgradeLevel)
-		{
-			pMessage2 = _("Ninja slash now releases hooks");
-		}
-		else if(m_UpgradeLevel == NinjaFlashGrenadeUpgradeLevel)
-		{
-			pMessage2 = _("Flash grenade area increased to 150%");
-		}
-		else if(m_UpgradeLevel == NinjaSlashComboUpgradeLevel)
-		{
-			pMessage2 = _("Now you can do two slashes in a combo!");
-		}
-		break;
-	case EPlayerClass::Sniper:
-		if(m_UpgradeLevel == SniperLaserAmmoUpgradeLevel)
-		{
-			pMessage2 = _("The laser rifle reload and ammo regeneration speed increased by 20%");
+			break;
+
+		case EUpgradeType::NinjaSlashBreaksHooks:
+			AddMessage(_("Ninja slash now releases hooks"));
+			break;
+		case EUpgradeType::NinjaFlashGrenadeArea:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("Flash grenade area increased to 150%"));
+			break;
+		case EUpgradeType::NinjaSlashCombo:
+			AddMessage(_("Now you can do two slashes in a combo!"));
+			break;
+		case EUpgradeType::SniperLaserRegenReload:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle reload and ammo regeneration speed increased by 20%"));
 			m_WeaponReloadIntervalModifier[WEAPON_LASER] = 0.8f;
 			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.8f;
-		}
-		else if(m_UpgradeLevel == SniperLaserRangeUpgradeLevel)
-		{
-			pMessage2 = _("The laser rifle range increased by 40%");
+			break;
+		case EUpgradeType::SniperLaserRange:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle range increased by 40%"));
 			m_LaserReachModifier = 1.4f;
-		}
-		else if(m_UpgradeLevel == SniperLaserPiercingUpgradeLevel)
-		{
-			pMessage2 = _("The laser now pierces the targets");
-			pMessage3 = _("The damage in locked position increased to 40 hit points");
-		}
-		break;
-	case EPlayerClass::Scientist:
-		if(m_UpgradeLevel == ScientistLaserAmmoUpgradeLevel)
-		{
-			pMessage2 = _("The laser rifle reload and ammo regeneration speed increased by 30%");
+			break;
+		case EUpgradeType::SniperLaserPiercing:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser now pierces the targets"));
+			AddMessage(_("The damage in locked position increased to 40 hit points"));
+			break;
+		case EUpgradeType::ScientistLaserRegenReload:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle reload and ammo regeneration speed increased by 30%"));
 			m_WeaponReloadIntervalModifier[WEAPON_LASER] = 0.7f;
 			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.7f;
-		}
-		else if(m_UpgradeLevel == ScientistTeleportGunUpgradeLevel)
-		{
-			pMessage2 = _("The teleport gun does not hurt you anymore");
-		}
-		else if(m_UpgradeLevel == ScientistPortalGunUpgradeLevel)
-		{
-			pMessage2 = _("From now on, the teleport gun places portals");
-		}
-		else if(m_UpgradeLevel == ScientistExtraMineUpgradeLevel)
-		{
-			pMessage2 = _("From now on, you can place an extra mine");
-		}
-		break;
-	case EPlayerClass::Biologist:
-		if(m_UpgradeLevel == BiologistShotgunSpreadUpgradeLevel)
-		{
-			pMessage2 = _("The shotgun now fires more bullets per shot");
-		}
-		if(m_UpgradeLevel == BiologistMineChargesUpgradeLevel)
-		{
-			pMessage2 = _("The mines now have more charges");
-		}
-		if(m_UpgradeLevel == BiologistInvisibilityHammerUpgradeLevel)
-		{
-			pMessage2 = _("The hammer now covers teammates and makes them hidden from the infected");
-		}
-		break;
-	case EPlayerClass::Looper:
-		if(m_UpgradeLevel == LooperLaserAmmoUpgradeLevel)
-		{
-			pMessage2 = _("The laser rifle ammo regeneration speed increased by 25%");
+			break;
+		case EUpgradeType::ScientistTeleportGun:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The teleport gun does not hurt you anymore"));
+			break;
+		case EUpgradeType::ScientistPortalGun:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("From now on, the teleport gun places portals"));
+			break;
+		case EUpgradeType::ScientistExtraMine:
+			AddMessage(_("From now on, you can place an extra mine"));
+			break;
+		case EUpgradeType::BiologistShotgunSpread:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The shotgun now fires more bullets per shot"));
+			break;
+		case EUpgradeType::BiologistMineCharges:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The mines now have more charges"));
+			break;
+		case EUpgradeType::BiologistInvisibilityHammer:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The hammer now covers teammates and makes them hidden from the infected"));
+			break;
+		case EUpgradeType::LooperLaserRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle ammo regeneration speed increased by 25%"));
 			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.75f;
-		}
-		else if(m_UpgradeLevel == LooperGrenadesUpgradeLevel)
-		{
-			pMessage2 = _("The grenades regeneration speed increased by 50%");
+			break;
+		case EUpgradeType::LooperGrenadesRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The grenades regeneration speed increased by 50%"));
 			m_WeaponRegenIntervalModifier[WEAPON_GRENADE] = 0.5f;
+			break;
+		case EUpgradeType::LooperLaserWeapon:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle now has shock-explosive ammo"));
+			break;
 		}
-		else if(m_UpgradeLevel == LooperLaserWeaponUpgradeLevel)
+	}
+
+	for (const char *pMessage : aMessages)
+	{
+		if (pMessage)
 		{
-			pMessage2 = _("The laser rifle now has shock-explosive ammo");
+			GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage, nullptr);
 		}
-		break;
-	default:
-		return;
-	}
-
-	GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage1, nullptr);
-
-	if(pMessage2)
-	{
-		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage2, nullptr);
-	}
-	if(pMessage3)
-	{
-		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage3, nullptr);
 	}
 }

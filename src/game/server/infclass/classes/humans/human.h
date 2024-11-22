@@ -16,6 +16,8 @@ enum class EGiftType
 	HeroFlag,
 };
 
+enum class EUpgradeType;
+
 class CInfClassHuman : public CIcPlayerClass
 {
 	MACRO_ALLOC_POOL_ID()
@@ -39,7 +41,7 @@ public:
 	void GiveGift(EGiftType GiftType, int Level = 0);
 
 	bool CanBeHit() const override;
-	SClassUpgrade GetUpgrade(int Level) const override;
+	PlayerUpgradesArray GetUpgrade(int Level) const override;
 	void OnPlayerClassChanged() override;
 
 	void OnPlayerSnap(int SnappingClient, int InfClassVersion) override;
@@ -78,7 +80,8 @@ public:
 	void UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints);
 	void OnHeroFlagTaken(CIcCharacter *pHero);
 	void OnWhiteHoleSpawned(CWhiteHole *pWhiteHole);
-	void GiveUpgrade() override;
+
+	void GiveUpgrades(const PlayerUpgradesArray &NewUpgrades) override;
 
 protected:
 	void GiveClassAttributes() override;

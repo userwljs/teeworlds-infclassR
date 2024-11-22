@@ -129,6 +129,7 @@ int CIcPlayerClass::GetUpgradeLevel() const
 void CIcPlayerClass::ResetUpgradeLevel()
 {
 	m_UpgradeLevel = 0;
+	m_Upgrades.Clear();
 }
 
 void CIcPlayerClass::SetCharacter(CIcCharacter *character)
@@ -242,12 +243,12 @@ bool CIcPlayerClass::CanBeUnfreezed() const
 	return true;
 }
 
-SClassUpgrade CIcPlayerClass::GetUpgrade(int Level) const
+PlayerUpgradesArray CIcPlayerClass::GetUpgrade(int Level) const
 {
-	return SClassUpgrade::Invalid();
+	return {};
 }
 
-SClassUpgrade CIcPlayerClass::GetNextUpgrade() const
+PlayerUpgradesArray CIcPlayerClass::GetNextUpgrade() const
 {
 	return GetUpgrade(GetUpgradeLevel() + 1);
 }
@@ -478,16 +479,4 @@ void CIcPlayerClass::UpdateSkin()
 		return;
 
 	m_pPlayer->UpdateSkin();
-}
-
-const int FlagPowerupType = NUM_POWERUPS + 1;
-
-bool SClassUpgrade::IsFlagPowerup() const
-{
-	return Type == FlagPowerupType;
-}
-
-SClassUpgrade SClassUpgrade::FlagPowerup()
-{
-	return SClassUpgrade(FlagPowerupType);
 }

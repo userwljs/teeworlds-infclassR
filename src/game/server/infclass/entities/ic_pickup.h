@@ -15,10 +15,10 @@ enum class EICPickupType
 	Health,
 	Armor,
 	ClassUpgrade,
-	ClassUpgradeFlag,
 };
 
-struct SClassUpgrade;
+enum class EUpgradeType;
+using PlayerUpgradesArray = icArray<EUpgradeType, 5>;
 
 class CIcPickup : public CIcEntity
 {
@@ -36,15 +36,17 @@ public:
 
 	void Spawn(float Delay = 0);
 	void SetRespawnInterval(float Seconds);
-	void SetUpgrade(const SClassUpgrade &Upgrade);
+	void SetUpgrades(const PlayerUpgradesArray &Upgrades);
 
 private:
+	void UpdateNetworkTypes();
+
 	EICPickupType m_Type = EICPickupType::Invalid;
 	int m_SpawnTick = 0;
 	float m_SpawnInterval = -1;
 	int m_NetworkType = 0;
-	int m_CurrentNetworkSubtype = 0;
-	icArray<int, 6> m_NetworkSubtypes;
+	int m_NetworkSubtype{};
+	PlayerUpgradesArray m_Upgrades;
 };
 
 #endif
