@@ -4,6 +4,9 @@
 -- local Config = infclass.Config
 -- require("runtime.base")
 
+Submod.SurvivalGame = "survival"
+active_submod = Submod.SurvivalGame
+
 -- Utils
 function add_tweak(bot_conf, tweak)
     local tweaks = bot_conf:GetTweaks()
@@ -19,6 +22,8 @@ castle_hardmode = true
 castle_wait_bosses_n = 0
 
 survival_default_tweaks = nil
+
+OldConfig = {}
 
 ---@return SurvivalBotConfiguration
 function add_bot_with_tweaks(wave, player_class)
@@ -316,8 +321,8 @@ function unlock_door_n(door_index)
     Game.Context:SendChatTarget(-1, string.format("Door number %d unlocked", door_index))
 
     if doors_n > door_index then
-        safe_zone_left_x = runtime_context.doors[door_index].Position().x
-        right_border = runtime_context.doors[door_index + 1].Position().x
+        safe_zone_left_x = runtime_context.doors[door_index].Position.x
+        right_border = runtime_context.doors[door_index + 1].Position.x
     else
         right_border = Game.Context.Collision.Width * 32
     end
@@ -404,14 +409,51 @@ function start_survival_auto()
     start_survival_game(survival_players)
 end
 
-function init_castle()
-    runtime_context.castle_initialized = true
+function survival_init()
+    OldConfig.inf_enable_tranquilizer_rifle = Config.inf_enable_tranquilizer_rifle
+    OldConfig.inf_tranquilizer_dose = Config.inf_tranquilizer_dose
+
+    Config.inf_enable_tranquilizer_rifle = 1
+    Config.inf_tranquilizer_dose = 7.5
+
     -- Kill-based survival
     Config.inf_survival_mode = 1
+    Config.inf_white_hole_num_particles = 60
+    Config.inf_white_hole_radius = 240
+
+    Config.sv_vote_spectate = 1
+end
+
+function Castle_on_shutdown()
+    for key,value in pairs(OldConfig) do
+        Config[key] = value
+    end
+
+    Config.inf_survival_mode = 0
+    Config.inf_survival_hardmode = 0
+    Config.inf_white_hole_num_particles = 100
+    Config.inf_white_hole_radius = 430
+
+    Config.sv_vote_spectate = 0
+
+    survival_remove_votes()
+end
+
+if runtime_context.game_initialized == nil then
+    runtime_context.game_initialized = true
+    -- on_event("on_character_death", on_game_character_death)
+
+    -- on_event("on_tick", survival_on_tick)
+end
+
+function init_castle()
+    runtime_context.castle_initialized = true
+    survival_init()
 
     on_event("on_tick", on_castle_tick)
     -- on_event("on_round_started", on_castle_round_started)
     on_event("on_world_reset", reset_castle)
+    on_event("on_shutdown", Castle_on_shutdown)
     on_event("on_character_spawned", on_castle_character_spawned)
     on_event("on_character_death", on_castle_character_death)
 
@@ -420,6 +462,17 @@ end
 
 if runtime_context.castle_initialized == nil then
     init_castle()
+end
+
+function survival_remove_votes()
+    for i = 1,6 do
+        local vote_command = string.format("lua start_survival_game(%d)", i)
+        Game.Context:RemoveVote(vote_command)
+    end
+    for i = 1,6 do
+        local vote_command = string.format("lua start_survival_game(%d)", i)
+        Game.Context:RemoveVote(vote_command)
+    end
 end
 
 function survival_setup_votes()
