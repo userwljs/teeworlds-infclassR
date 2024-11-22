@@ -790,6 +790,10 @@ void CIcGameController::HandleCharacterTiles(CIcCharacter *pCharacter)
 			}
 		}
 
+		if (Damage <= 0)
+		{
+			Damage = Config()->m_InfTileDamage;
+		}
 		if(Damage > 0)
 		{
 			pCharacter->OnCharacterInDamageZone(Damage);

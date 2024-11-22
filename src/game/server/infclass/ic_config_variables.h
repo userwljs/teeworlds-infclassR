@@ -141,6 +141,8 @@ MACRO_CONFIG_FLOAT(InfTranquilizerDose, inf_tranquilizer_dose, 4.0, 1.0, 30.0, C
 MACRO_CONFIG_INT(InfRevivalDamage, inf_revival_damage, 17, 0, 100, CFGFLAG_SERVER, "The number of total HP taken from the medic")
 MACRO_CONFIG_INT(InfRevivalMinInfected, inf_revival_min_infected, 5, 1, 100, CFGFLAG_SERVER, "The minimum number of infected to allow revival")
 
+MACRO_CONFIG_INT(InfTileDamage, inf_tile_damage, 5, 1, 100, CFGFLAG_SERVER, "The damage points of a 'damage' tile")
+
 MACRO_CONFIG_INT(InfHeroFlagIndicator, inf_hero_flag_indicator, 1, 0, 1, CFGFLAG_SERVER, "Shows the heros in which direction the next flag is")
 MACRO_CONFIG_INT(InfHeroFlagIndicatorTime, inf_hero_flag_indicator_time, 3, 0, 1000, CFGFLAG_SERVER, "How many seconds the hero has to stand still until the indicator is shown")
 
