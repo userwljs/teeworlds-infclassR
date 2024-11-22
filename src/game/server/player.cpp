@@ -276,21 +276,23 @@ void CPlayer::OnDirectInput(const CNetObj_PlayerInput *pNewInput)
 
 	m_PlayerFlags = pNewInput->m_PlayerFlags;
 
-	// bool AcceptInput = Server()->Tick() > m_DieTick + Server()->TickSpeed() * 0.2f;
-	// if(!m_pCharacter && m_Team != TEAM_SPECTATORS && AcceptInput && (pNewInput->m_Fire&1))
-	// 	Respawn();
-
 	// check for activity
-	if(pNewInput->m_Direction || m_LatestActivity.m_TargetX != pNewInput->m_TargetX ||
-		m_LatestActivity.m_TargetY != pNewInput->m_TargetY || pNewInput->m_Jump ||
-		pNewInput->m_Fire&1 || pNewInput->m_Hook)
+	if(m_LastTarget.has_value())
 	{
-		m_LatestActivity.m_TargetX = pNewInput->m_TargetX;
-		m_LatestActivity.m_TargetY = pNewInput->m_TargetY;
-		m_LastActionTick = Server()->Tick();
-		if (pNewInput->m_Direction || pNewInput->m_Jump || pNewInput->m_Hook)
-			m_LastActionMoveTick = Server()->Tick();
+		if(mem_comp(&m_LastTarget.value(), pNewInput, sizeof(CNetObj_PlayerInput)))
+		{
+			m_LastActionTick = Server()->Tick();
+
+			if(pNewInput->m_Direction || pNewInput->m_Jump || pNewInput->m_Hook)
+			{
+				m_LastActionMoveTick = Server()->Tick();
+			}
+		}
 	}
+
+	m_LastTarget = *pNewInput;
+	m_LatestActivity.m_TargetX = pNewInput->m_TargetX;
+	m_LatestActivity.m_TargetY = pNewInput->m_TargetY;
 }
 
 void CPlayer::OnPredictedEarlyInput(const CNetObj_PlayerInput *pNewInput)

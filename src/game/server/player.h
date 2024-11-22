@@ -8,6 +8,8 @@
 #include <game/server/alloc.h>
 #include <game/server/teeinfo.h>
 
+#include <optional>
+
 class CCharacter;
 class CGameContext;
 class IServer;
@@ -178,6 +180,8 @@ public:
 
 /* INFECTION MODIFICATION START ***************************************/
 protected:
+	std::optional<CNetObj_PlayerInput> m_LastTarget;
+
 	EPlayerClass m_class;
 	int m_DefaultScoreMode;
 	char m_aLanguage[16];
