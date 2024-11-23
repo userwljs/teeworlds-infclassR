@@ -93,6 +93,9 @@ public:
 	int PersistentClientDataSize() const override;
 	bool GetClientPersistentData(int ClientId, void *pData) const override;
 
+	void GetHelpText(dynamic_string *pBuffer, int ClientId, const char *pHelpPage) const override;
+	bool GetClassHelpPage(dynamic_string *pOutput, const char *pLanguage, EPlayerClass PlayerClass) const;
+
 	bool OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv) override;
 	void HandleCharacterTiles(CInfClassCharacter *pCharacter);
 	void HandleLastHookers();

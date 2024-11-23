@@ -11,7 +11,6 @@
 #include <engine/shared/memheap.h>
 
 #include <game/collision.h>
-#include <game/infclass/classes.h>
 #include <game/layers.h>
 #include <game/voting.h>
 
@@ -327,7 +326,6 @@ private:
 	static void ConStats(IConsole::IResult *pResult, void *pUserData);
 #endif
 	void ChatHelp(int ClientId, const char *pHelpPage);
-	bool WriteClassHelpPage(dynamic_string *pOutput, const char *pLanguage, EPlayerClass PlayerClass);
 	static void ConLanguage(IConsole::IResult *pResult, void *pUserData);
 	static void ConCmdList(IConsole::IResult *pResult, void *pUserData);
 	static void ConChangeLog(IConsole::IResult *pResult, void *pUserData);

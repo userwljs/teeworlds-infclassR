@@ -7,6 +7,8 @@
 
 #include <engine/map.h>
 
+#include <teeuniverses/system/string.h>
+
 #include <vector>
 
 class CConfig;
@@ -60,6 +62,8 @@ public:
 
 	virtual int PersistentClientDataSize() const = 0;
 	virtual bool GetClientPersistentData(int ClientId, void *pData) const = 0;
+
+	virtual void GetHelpText(dynamic_string *pBuffer, int ClientId, const char *pHelpPage) const = 0;
 
 protected:
 	bool LoadMapConfig(const char *pMapName, CMapInfo *pInfo);
