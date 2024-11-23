@@ -638,6 +638,7 @@ set(BASE
   src/base/tl/ic_fifo.h
   src/base/tl/range.h
   src/base/tl/threading.h
+  src/base/types.h
   src/base/unicode/confusables.cpp
   src/base/unicode/confusables.h
   src/base/unicode/confusables_data.h
