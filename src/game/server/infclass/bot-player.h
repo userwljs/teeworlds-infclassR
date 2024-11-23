@@ -146,6 +146,9 @@ public:
 	virtual void UpdateControls() {}
 	virtual void OnKilled() {}
 
+	void SetBotConfigId(std::optional<int> ConfigId);
+	std::optional<int> GetBotConfigId() const { return m_BotConfigId; }
+
 	void SetTweaks(const TweaksArray &aTweaks);
 	void SetSpawnMinTick(int SpawnTick);
 	int Lives() const { return m_Lives; }
@@ -167,6 +170,7 @@ public:
 
 protected:
 	TweaksArray m_aTweaks;
+	std::optional<int> m_BotConfigId;
 	int m_SpawnMinTick = -1;
 	int m_MaxLives = 0;
 	int m_DropLevel = 0;

@@ -28,6 +28,11 @@ constexpr float operator"" _Tiles(long double LengthInTiles)
 
 static CHiveMind s_HiveMind;
 
+void CBaseBotPlayer::SetBotConfigId(std::optional<int> ConfigId)
+{
+	m_BotConfigId = ConfigId;
+}
+
 void CBaseBotPlayer::SetTweaks(const TweaksArray &aTweaks)
 {
 	m_aTweaks = aTweaks;

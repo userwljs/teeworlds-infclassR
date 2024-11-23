@@ -5040,6 +5040,7 @@ void CIcGameController::RoundTickAfterInitialInfection()
 				{
 					break;
 				}
+				pBot->SetBotConfigId(BotIndex);
 				m_SpawnedWaveMap[BotIndex] = true;
 				m_SpawnedWaveBots++;
 			}
