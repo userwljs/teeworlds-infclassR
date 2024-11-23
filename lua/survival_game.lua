@@ -43,6 +43,14 @@ function add_normal_infected(wave, player_class)
     return bot_conf
 end
 
+---@return SurvivalBotConfiguration
+function add_boss_infected(wave, player_class)
+    local bot_conf = Game.Controller:SurvivalAddBot(wave, player_class)
+    bot_conf.Tag = "boss"
+    bot_conf.Lives = 1
+    return bot_conf
+end
+
 function setup_wave1()
     print("Setup wave1 with difficulty", survival_difficulty_level)
     local wave = 1
@@ -141,10 +149,8 @@ function setup_wave2()
         bot_conf.SpawnSecond = slug_spawn_time
     end
 
-    bot_conf = Game.Controller:SurvivalAddBot(wave, "spider")
+    bot_conf = add_boss_infected(wave, "spider")
     bot_conf.SpawnSecond = 25
-    bot_conf.Tag = "boss"
-    bot_conf.Lives = 1
 
     local boss_hp = {60, 80, 120, 180, 240, 240}
 
@@ -198,10 +204,8 @@ function setup_wave3()
     end
 
     for i = 1,spawns do
-        bot_conf = Game.Controller:SurvivalAddBot(wave, "ghost")
+        bot_conf = add_boss_infected(wave, "ghost")
         bot_conf.SpawnSecond = 20
-        bot_conf.Tag = "boss"
-        bot_conf.Lives = 1
         bot_conf.HP = boss_hp[survival_difficulty_level] * survival_hp_multiplier
         bot_conf.DropLevel = 1
         add_tweak(bot_conf, "threat-aware")
@@ -236,10 +240,8 @@ function setup_wave4()
         add_tweak(bot_conf, "strong-hook")
     end
 
-    bot_conf = Game.Controller:SurvivalAddBot(wave, "witch")
+    bot_conf = add_boss_infected(wave, "witch")
     bot_conf.SpawnSecond = 20
-    bot_conf.Tag = "boss"
-    bot_conf.Lives = 1
     local boss_hp = {120, 160, 220, 280, 320, 360}
     bot_conf.HP = boss_hp[survival_difficulty_level] * survival_hp_multiplier
     bot_conf.DropLevel = 2
@@ -363,10 +365,8 @@ function setup_wave6()
     local max_drop_level = survival_max_drop_level
 
     local boss_hp = {180, 240, 320, 520, 640, 720}
-    bot_conf = Game.Controller:SurvivalAddBot(wave, "tank")
+    bot_conf = add_boss_infected(wave, "tank")
     bot_conf.SpawnSecond = 25
-    bot_conf.Tag = "boss"
-    bot_conf.Lives = 1
     bot_conf.HP = boss_hp[survival_difficulty_level] * survival_hp_multiplier
     bot_conf.DropLevel = max_drop_level
 
