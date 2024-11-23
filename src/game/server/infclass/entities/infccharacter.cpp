@@ -2445,13 +2445,13 @@ void CInfClassCharacter::SnapCharacter(int SnappingClient, int Id)
 		Weapon = WEAPON_NINJA;
 	}
 
-	if(PrivateGetPlayerClass() == EPlayerClass::Spider)
+	if(GetPlayerClass() == EPlayerClass::Spider)
 	{
 		pCharacter->m_HookTick -= (g_Config.m_InfSpiderHookTime - 1) * SERVER_TICK_SPEED - SERVER_TICK_SPEED / 5;
 		if(pCharacter->m_HookTick < 0)
 			pCharacter->m_HookTick = 0;
 	}
-	if(PrivateGetPlayerClass() == EPlayerClass::Bat)
+	if(GetPlayerClass() == EPlayerClass::Bat)
 	{
 		pCharacter->m_HookTick -= (g_Config.m_InfBatHookTime - 1) * SERVER_TICK_SPEED - SERVER_TICK_SPEED / 5;
 		if(pCharacter->m_HookTick < 0)
