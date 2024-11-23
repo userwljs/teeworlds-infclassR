@@ -4,9 +4,10 @@
 #define GAME_SERVER_GAMECONTROLLER_H
 
 #include <base/vmath.h>
-#include <base/tl/array.h>
 
 #include <engine/map.h>
+
+#include <vector>
 
 class CConfig;
 class CPlayer;
@@ -36,7 +37,7 @@ protected:
 	void DoActivityCheck();
 
 /* INFECTION MODIFICATION START ***************************************/
-	array<vec2> m_SpawnPoints[2];
+	std::vector<vec2> m_avSpawnPoints[2];
 	int m_RoundId;
 	
 public:

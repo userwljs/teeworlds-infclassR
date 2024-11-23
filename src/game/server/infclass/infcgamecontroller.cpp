@@ -158,7 +158,12 @@ CInfClassGameController::CInfClassGameController(class CGameContext *pGameServer
 	m_pGameType = "InfClassR";
 
 	m_Teams.m_Core.m_IsInfclass = true;
-	
+
+	for(std::vector<vec2> &vTeamSpawnPoints : m_avSpawnPoints)
+	{
+		vTeamSpawnPoints.reserve(32);
+	}
+
 	m_GrowingMap = 0;
 
 	//Get zones
@@ -683,9 +688,9 @@ bool CInfClassGameController::HumanWallAllowedInPos(const vec2 &Pos) const
 		int Type = 0; // InfectedSpawn
 
 		// get spawn point
-		for(int i = 0; i < m_SpawnPoints[Type].size(); i++)
+		for(std::size_t i = 0; i < m_avSpawnPoints[Type].size(); i++)
 		{
-			if(distance(Pos, m_SpawnPoints[Type][i]) <= Radius)
+			if(distance(Pos, m_avSpawnPoints[Type][i]) <= Radius)
 			{
 				return false;
 			}
@@ -5021,20 +5026,20 @@ bool CInfClassGameController::TryRespawn(CInfClassPlayer *pPlayer, SpawnContext 
 
 	int Type = (pPlayer->IsInfected() ? 0 : 1);
 
-	if(m_SpawnPoints[Type].size() == 0)
+	if(m_avSpawnPoints[Type].size() == 0)
 	{
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", "The map has no spawn points");
 		return false;
 	}
 
 	// get spawn point
-	const array<vec2> &aSpawnPoints = m_SpawnPoints[Type];
-	const int Count = aSpawnPoints.size();
+	const std::vector<vec2> &vSpawnPoints = m_avSpawnPoints[Type];
+	const std::size_t Count = vSpawnPoints.size();
 	const int RandomShift = random_int(0, Count - 1);
-	for(int i = 0; i < Count; i++)
+	for(std::size_t i = 0; i < Count; i++)
 	{
 		int PosIndex = (i + RandomShift) % Count;
-		const vec2 &Pos = aSpawnPoints[PosIndex];
+		const vec2 &Pos = vSpawnPoints[PosIndex];
 		if(!IsSpawnable(Pos, EZoneTele::Null))
 			continue;
 

@@ -212,9 +212,9 @@ bool IGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, 
 	vec2 Pos = (P0 + P1 + P2 + P3)/4.0f;
 	
 	if(str_comp(pName, "icInfected") == 0)
-		m_SpawnPoints[0].add(Pos);
+		m_avSpawnPoints[0].push_back(Pos);
 	else if(str_comp(pName, "icHuman") == 0)
-		m_SpawnPoints[1].add(Pos);
+		m_avSpawnPoints[1].push_back(Pos);
 	
 	return false;
 }
