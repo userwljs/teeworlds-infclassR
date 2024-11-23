@@ -473,8 +473,13 @@ float CInfClassGameController::GetHeroFlagCooldown() const
 
 bool CInfClassGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv)
 {
-	bool res = IGameController::OnEntity(pName, Pivot, P0, P1, P2, P3, PosEnv);
+	bool Result = IGameController::OnEntity(pName, Pivot, P0, P1, P2, P3, PosEnv);
 	vec2 Pos = (P0 + P1 + P2 + P3)/4.0f;
+
+	if(str_comp(pName, "icInfected") == 0)
+		m_avSpawnPoints[0].push_back(Pos);
+	else if(str_comp(pName, "icHuman") == 0)
+		m_avSpawnPoints[1].push_back(Pos);
 
 	CInfCEntity *pNewEntity = nullptr;
 	if(str_comp(pName, "icInfected") == 0)
@@ -512,7 +517,7 @@ bool CInfClassGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, v
 		pNewEntity->SetAnimatedPos(Pivot, Pos - Pivot, PosEnv);
 	}
 
-	return res;
+	return Result;
 }
 
 void CInfClassGameController::HandleCharacterTiles(CInfClassCharacter *pCharacter)
