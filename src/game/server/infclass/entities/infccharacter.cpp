@@ -2631,6 +2631,15 @@ void CInfClassCharacter::SnapCharacter(int SnappingClient, int Id)
 		Weapon = WEAPON_NINJA;
 	}
 
+	int DDNetVersion = Server()->GetClientVersion(SnappingClient);
+	if(GetPlayerClass() == EPlayerClass::Boomer)
+	{
+		if(DDNetVersion >= 18080)
+		{
+			// https://github.com/ddnet/ddnet/pull/9230
+			Weapon = -1;
+		}
+	}
 	if(GetPlayerClass() == EPlayerClass::Spider)
 	{
 		pCharacter->m_HookTick -= (g_Config.m_InfSpiderHookTime - 1) * SERVER_TICK_SPEED - SERVER_TICK_SPEED / 5;
