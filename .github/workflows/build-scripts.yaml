@@ -28,6 +28,11 @@ jobs:
       with:
         path: "scripts/ci/sources"
 
+    - name: Prepare Linux
+      if: contains(matrix.config.os, 'ubuntu')
+      run: |
+        sudo apt-get update -y
+
     - name: Install the dependencies
       run: ./scripts/scripts/prepare-system.sh
 
