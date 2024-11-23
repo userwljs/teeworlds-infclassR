@@ -204,6 +204,16 @@ float GetSurvivalBotConfigurationSpawnSecond_Lua(const SurvivalBotConfiguration 
 	return pConfiguration->SpawnMinTick / static_cast<float>(SERVER_TICK_SPEED);
 }
 
+int GetSurvivalBotSpawnPointId(const SurvivalBotConfiguration *pConfiguration)
+{
+	return pConfiguration->SpawnPointId.value_or(0);
+}
+
+void SetSurvivalBotSpawnPointId(SurvivalBotConfiguration *pConfiguration, int SpawnPointId)
+{
+	pConfiguration->SpawnPointId = SpawnPointId;
+}
+
 TweaksArray *SurvivalBotConfigurationClass_GetTweaks_Lua(SurvivalBotConfiguration *pConfiguration)
 {
 	if (!pConfiguration)
@@ -439,6 +449,7 @@ void CIcGameController::RegisterLuaBindings()
 			.addProperty("Class", &GetSurvivalBotConfigurationClass_Lua, &SetSurvivalBotConfigurationClass_Lua)
 			.addProperty("Tag", &GetSurvivalBotConfigurationTag_Lua, &SetSurvivalBotConfigurationTag_Lua)
 			.addProperty("SpawnSecond", &GetSurvivalBotConfigurationSpawnSecond_Lua, &SetSurvivalBotConfigurationSpawnSecond_Lua)
+			.addProperty("SpawnPointId", &GetSurvivalBotSpawnPointId, &SetSurvivalBotSpawnPointId)
 			.addProperty("Lives", &SurvivalBotConfiguration::Lives)
 			.addProperty("HP", &SurvivalBotConfiguration::HP)
 			.addProperty("DropLevel", &SurvivalBotConfiguration::DropLevel)

@@ -12,7 +12,9 @@ class SurvivalBotConfiguration
 {
 public:
 	EPlayerClass Class{};
-	int SpawnMinTick{};
+	std::int16_t SpawnMinTick{};
+	// SpawnPointId == 0 means any; indices starts with 1
+	std::optional<std::uint16_t> SpawnPointId{};
 	int Lives{};
 	int HP{};
 	int DropLevel{};

@@ -7099,6 +7099,7 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 	if(pPlayer->IsInfected() && (m_FinalExplosionState != EFinalExplosionState::NotStarted))
 		return false;
 
+	std::optional<std::uint16_t> WantedSpawnIndex;
 	if(GetRoundType() == ERoundType::Survival && pPlayer->IsInfected())
 	{
 		if(!IsInfectionStarted())
@@ -7112,31 +7113,44 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 				EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_REALTIME);
 			return false;
 		}
+
+		const SurvivalWaveConfiguration *pWaveConf = GetCurrentSurvivalWaveConfiguration();
+		const CBaseBotPlayer *pBot = static_cast<CBaseBotPlayer *>(pPlayer);
+		const std::optional<std::size_t> ConfigId = pBot->GetBotConfigId();
+		if(ConfigId.has_value() && ConfigId.value() < pWaveConf->BotConfigurations.Size())
+		{
+			const SurvivalBotConfiguration &BotConf = pWaveConf->BotConfigurations[ConfigId.value()];
+
+			WantedSpawnIndex = BotConf.SpawnPointId;
+		}
 	}
 
-	if(m_InfectedStarted && pPlayer->IsInfected() && random_prob(Config()->m_InfProbaSpawnNearWitch / 100.0f))
+	if(m_InfectedStarted && pPlayer->IsInfected())
 	{
-		CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
-		while(Iter.Next())
+		if (random_prob(Config()->m_InfProbaSpawnNearWitch / 100.0f))
 		{
-			if(Iter.Player()->GetCid() == pPlayer->GetCid())
-				continue;
-			if(Iter.Player()->GetClass() != EPlayerClass::Witch)
-				continue;
-
-			const CIcCharacter *pCharacter = Iter.Player()->GetCharacter();
-			if(!pCharacter || !pCharacter->IsAlive())
-				continue;
-
-			if(pCharacter->IsFrozen() || pCharacter->IsSleeping())
-				continue;
-
-			const CInfClassInfected *pInfected = CInfClassInfected::GetInstance(pCharacter);
-
-			if(pInfected->FindWitchSpawnPosition(pContext->SpawnPos))
+			CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+			while(Iter.Next())
 			{
-				pContext->SpawnType = SpawnContext::WitchSpawn;
-				return true;
+				if(Iter.Player()->GetCid() == pPlayer->GetCid())
+					continue;
+				if(Iter.Player()->GetClass() != EPlayerClass::Witch)
+					continue;
+
+				const CIcCharacter *pCharacter = Iter.Player()->GetCharacter();
+				if(!pCharacter || !pCharacter->IsAlive())
+					continue;
+
+				if(pCharacter->IsFrozen() || pCharacter->IsSleeping())
+					continue;
+
+				const CInfClassInfected *pInfected = CInfClassInfected::GetInstance(pCharacter);
+
+				if(pInfected->FindWitchSpawnPosition(pContext->SpawnPos))
+				{
+					pContext->SpawnType = SpawnContext::WitchSpawn;
+					return true;
+				}
 			}
 		}
 	}
@@ -7184,7 +7198,22 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 	for(std::size_t i = 0; i < Count; i++)
 	{
 		const int RandomPointOffset = (i + RandomShift) % Count;
-		int PosIndex = CustomPoints ? vEnablements.at(RandomPointOffset) : RandomPointOffset;
+		std::size_t PosIndex = 0;
+		if (WantedSpawnIndex.has_value())
+		{
+			if (WantedSpawnIndex.value() < Count)
+			{
+				PosIndex = WantedSpawnIndex.value();
+			}
+		}
+		else if(CustomPoints)
+		{
+			PosIndex = vEnablements.at(RandomPointOffset);
+		}
+		else
+		{
+			PosIndex = RandomPointOffset;
+		}
 		const vec2 &Pos = m_avSpawnPoints[Type][PosIndex];
 		if(!IsSpawnable(Pos, EZoneTele::Null))
 			continue;

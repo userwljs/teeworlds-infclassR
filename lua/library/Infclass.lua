@@ -387,6 +387,7 @@ function CIcGameController:SetInfectedSpawnEnabled(index, enabled) end
 ---@class SurvivalBotConfiguration
 ---@field Class string The class name
 ---@field SpawnSecond number Spawn second
+---@field SpawnPointId number Spawn point ID
 ---@field Lives number Lives
 ---@field HP number MaxHP
 ---@field DropLevel number Drop level
