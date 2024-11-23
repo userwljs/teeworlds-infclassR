@@ -5327,14 +5327,14 @@ bool CInfClassGameController::TryRespawn(CInfClassPlayer *pPlayer, SpawnContext 
 			if(Iter.Player()->GetClass() != EPlayerClass::Witch)
 				continue;
 
-			CInfClassCharacter *pCharacter = Iter.Player()->GetCharacter();
-			if(!pCharacter)
+			const CInfClassCharacter *pCharacter = Iter.Player()->GetCharacter();
+			if(!pCharacter || !pCharacter->IsAlive())
 				continue;
 
 			if(pCharacter->IsFrozen())
 				continue;
 
-			CInfClassInfected *pInfected = CInfClassInfected::GetInstance(pCharacter);
+			const CInfClassInfected *pInfected = CInfClassInfected::GetInstance(pCharacter);
 
 			if(pInfected->FindWitchSpawnPosition(pContext->SpawnPos))
 			{

@@ -15,6 +15,7 @@ class CInfClassInfected : public CInfClassPlayerClass
 public:
 	CInfClassInfected(CInfClassPlayer *pPlayer);
 
+	static const CInfClassInfected *GetInstance(const CInfClassCharacter *pCharacter);
 	static CInfClassInfected *GetInstance(CInfClassCharacter *pCharacter);
 
 	bool IsHuman() const final { return false; }
@@ -54,7 +55,7 @@ public:
 	void IncreaseGhoulLevel(int Diff);
 	int GetGhoulLevel() const;
 
-	bool FindWitchSpawnPosition(vec2 &Position);
+	bool FindWitchSpawnPosition(vec2 &Position) const;
 
 	void PrepareToDie(DeathContext *pContext) override;
 

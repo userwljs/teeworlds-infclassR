@@ -25,6 +25,17 @@ CInfClassInfected::CInfClassInfected(CInfClassPlayer *pPlayer)
 	SetNormalEmote(EMOTE_ANGRY);
 }
 
+const CInfClassInfected *CInfClassInfected::GetInstance(const CInfClassCharacter *pCharacter)
+{
+	const CInfClassPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
+	if(pClass && pClass->IsZombie())
+	{
+		return static_cast<const CInfClassInfected*>(pClass);
+	}
+
+	return nullptr;
+}
+
 CInfClassInfected *CInfClassInfected::GetInstance(CInfClassCharacter *pCharacter)
 {
 	CInfClassPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
@@ -806,11 +817,11 @@ CSlugSlime *CInfClassInfected::PlaceSlime(vec2 PlaceToPos, float MinDistance)
 	return pNewSlime;
 }
 
-bool CInfClassInfected::FindWitchSpawnPosition(vec2 &Position)
+bool CInfClassInfected::FindWitchSpawnPosition(vec2 &Position) const
 {
 	float Angle = atan2f(m_pCharacter->m_Input.m_TargetY, m_pCharacter->m_Input.m_TargetX);//atan2f instead of atan2
 
-	for(int i=0; i<32; i++)
+	for(int i = 0; i < 32; i++)
 	{
 		float TestAngle;
 
