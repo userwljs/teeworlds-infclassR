@@ -3,13 +3,18 @@
 #ifndef BASE_MATH_H
 #define BASE_MATH_H
 
-#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 
-using std::clamp;
-
 constexpr float pi = 3.1415926535897932384626433f;
+
+template<typename T>
+constexpr const T &
+clamp(const T &value, const T &low, const T &high)
+{
+	return (value < low) ? low : (high < value) ? high :
+												  value;
+}
 
 constexpr inline int round_to_int(float f)
 {
