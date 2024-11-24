@@ -39,6 +39,8 @@ enum PLAYERCLASS
 
 }
 
+static_assert(static_cast<int>(AllHumanClasses.Last()) < END_HUMANCLASS);
+
 int toNetValue(EPlayerClass C)
 {
 	constexpr int HumanClassOffset = PLAYERCLASS_MERCENARY - static_cast<int>(EPlayerClass::Mercenary);
