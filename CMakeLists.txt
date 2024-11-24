@@ -616,6 +616,8 @@ set(BASE
   src/base/color.h
   src/base/detect.h
   src/base/dynamic.h
+  src/base/flags.cpp
+  src/base/flags.h
   src/base/hash.cpp
   src/base/hash.h
   src/base/hash_bundled.cpp
