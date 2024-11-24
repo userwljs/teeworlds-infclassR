@@ -4,7 +4,7 @@
 #include <engine/console.h>
 #include <engine/shared/protocol.h>
 
-enum class EPlayerClass;
+#include <game/infclass/classes.h>
 
 enum
 {
@@ -32,28 +32,7 @@ public:
 	{
 	public:
 		int m_Score{};
-		int m_EngineerScore{};
-		int m_SoldierScore{};
-		int m_ScientistScore{};
-		int m_BiologistScore{};
-		int m_LooperScore{};
-		int m_MedicScore{};
-		int m_HeroScore{};
-		int m_NinjaScore{};
-		int m_MercenaryScore{};
-		int m_SniperScore{};
-
-		int m_SmokerScore{};
-		int m_HunterScore{};
-		int m_BatScore{};
-		int m_BoomerScore{};
-		int m_GhostScore{};
-		int m_SpiderScore{};
-		int m_GhoulScore{};
-		int m_SlugScore{};
-		int m_VoodooScore{};
-		int m_UndeadScore{};
-		int m_WitchScore{};
+		int m_ClassScore[NB_PLAYERCLASS]{};
 
 		bool m_WasSpectator{};
 		bool m_Won{};

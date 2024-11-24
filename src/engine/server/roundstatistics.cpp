@@ -9,125 +9,59 @@ int CRoundStatistics::CPlayerStats::OnScoreEvent(int EventType, EPlayerClass Cla
 	int Points = 0;
 	switch(EventType)
 	{
-		case SCOREEVENT_HUMAN_SURVIVE:
-			Points = 50;
-			break;
-		case SCOREEVENT_HUMAN_SUICIDE:
-			Points = -10;
-			break;
-		case SCOREEVENT_INFECTION:
-			Points = 30;
-			break;
-		case SCOREEVENT_KILL_INFECTED:
-			Points = 10;
-			break;
-		case SCOREEVENT_KILL_TARGET:
-			Points = 20;
-			break;
-		case SCOREEVENT_KILL_WITCH:
-			Points = 50;
-			break;
-		case SCOREEVENT_KILL_UNDEAD:
-			Points = 50;
-			break;
-		case SCOREEVENT_DESTROY_TURRET:
-			Points = 10;
-			break;
-		case SCOREEVENT_HELP_FREEZE:
-			Points = 10;
-			break;
-		case SCOREEVENT_HELP_HOOK_BARRIER:
-			Points = 10;
-			break;
-		case SCOREEVENT_HELP_HOOK_INFECTION:
-			Points = 10;
-			break;
-		case SCOREEVENT_HUMAN_HEALING:
-			Points = 10;
-			break;
-		case SCOREEVENT_HERO_FLAG:
-			Points = 10;
-			break;
-		case SCOREEVENT_BONUS:
-			Points = 50;
-			break;
-		case SCOREEVENT_MEDIC_REVIVE:
-			Points = 50;
-			break;
+	case SCOREEVENT_HUMAN_SURVIVE:
+		Points = 50;
+		break;
+	case SCOREEVENT_HUMAN_SUICIDE:
+		Points = -10;
+		break;
+	case SCOREEVENT_INFECTION:
+		Points = 30;
+		break;
+	case SCOREEVENT_KILL_INFECTED:
+		Points = 10;
+		break;
+	case SCOREEVENT_KILL_TARGET:
+		Points = 20;
+		break;
+	case SCOREEVENT_KILL_WITCH:
+		Points = 50;
+		break;
+	case SCOREEVENT_KILL_UNDEAD:
+		Points = 50;
+		break;
+	case SCOREEVENT_DESTROY_TURRET:
+		Points = 10;
+		break;
+	case SCOREEVENT_HELP_FREEZE:
+		Points = 10;
+		break;
+	case SCOREEVENT_HELP_HOOK_BARRIER:
+		Points = 10;
+		break;
+	case SCOREEVENT_HELP_HOOK_INFECTION:
+		Points = 10;
+		break;
+	case SCOREEVENT_HUMAN_HEALING:
+		Points = 10;
+		break;
+	case SCOREEVENT_HERO_FLAG:
+		Points = 10;
+		break;
+	case SCOREEVENT_BONUS:
+		Points = 50;
+		break;
+	case SCOREEVENT_MEDIC_REVIVE:
+		Points = 50;
+		break;
 	}
 
 	m_Score += Points;
-	
-	switch(Class)
-	{
-		case EPlayerClass::Engineer:
-			m_EngineerScore += Points;
-			break;
-		case EPlayerClass::Soldier:
-			m_SoldierScore += Points;
-			break;
-		case EPlayerClass::Scientist:
-			m_ScientistScore += Points;
-			break;
-		case EPlayerClass::Biologist:
-			m_BiologistScore += Points;
-			break;
-		case EPlayerClass::Looper:
-			m_LooperScore += Points;
-			break;
-		case EPlayerClass::Medic:
-			m_MedicScore += Points;
-			break;
-		case EPlayerClass::Hero:
-			m_HeroScore += Points;
-			break;
-		case EPlayerClass::Ninja:
-			m_NinjaScore += Points;
-			break;
-		case EPlayerClass::Mercenary:
-			m_MercenaryScore += Points;
-			break;
-		case EPlayerClass::Sniper:
-			m_SniperScore += Points;
-			break;
-		case EPlayerClass::Smoker:
-			m_SmokerScore += Points;
-			break;
-		case EPlayerClass::Hunter:
-			m_HunterScore += Points;
-			break;
-		case EPlayerClass::Bat:
-			m_BatScore += Points;
-			break;
-		case EPlayerClass::Boomer:
-			m_BoomerScore += Points;
-			break;
-		case EPlayerClass::Ghost:
-			m_GhostScore += Points;
-			break;
-		case EPlayerClass::Spider:
-			m_SpiderScore += Points;
-			break;
-		case EPlayerClass::Ghoul:
-			m_GhoulScore += Points;
-			break;
-		case EPlayerClass::Slug:
-			m_SlugScore += Points;
-			break;
-		case EPlayerClass::Voodoo:
-			m_VoodooScore += Points;
-			break;
-		case EPlayerClass::Undead:
-			m_UndeadScore += Points;
-			break;
-		case EPlayerClass::Witch:
-			m_WitchScore += Points;
-			break;
 
-		case EPlayerClass::Invalid:
-		case EPlayerClass::None:
-		case EPlayerClass::Count:
-			break;
+	int ClassIndex = static_cast<int>(Class);
+	if(ClassIndex > 0 && ClassIndex < NB_PLAYERCLASS)
+	{
+		m_ClassScore[ClassIndex] += Points;
 	}
 
 	return Points;
