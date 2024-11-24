@@ -10,6 +10,7 @@
 #include <game/server/infclass/classes/infcplayerclass.h>
 #include <game/server/infclass/entities/infccharacter.h>
 #include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/snap_filter.h>
 
 int CIcPickup::EntityId = CGameWorld::ENTTYPE_PICKUP;
 
@@ -148,21 +149,8 @@ void CIcPickup::Snap(int SnappingClient)
 	if(m_Type == EICPickupType::Invalid)
 		return;
 
-	const CPlayer *pSnappingPlayer = GameServer()->GetPlayer(SnappingClient);
-
-	bool DoSnap = m_Owner < 0 || SnappingClient == m_Owner || SnappingClient == SERVER_DEMO_CLIENT;
-	if(!DoSnap)
-	{
-		if(pSnappingPlayer && pSnappingPlayer->GetTeam() == TEAM_SPECTATORS)
-		{
-			DoSnap = pSnappingPlayer->m_SpectatorId < 0 || pSnappingPlayer->m_SpectatorId == m_Owner;
-		}
-	}
-
-	if(!DoSnap)
-	{
+	if(!SnapFiltersPassed(this, SnappingClient, EFilterFlag::Follower | EFilterFlag::FreeSpec | EFilterFlag::Demo | EFilterFlag::Restricted))
 		return;
-	}
 
 	int NetworkType = -1;
 	int Subtype = 0;
