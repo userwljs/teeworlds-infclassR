@@ -152,6 +152,8 @@ icArray<SurvivalWaveConfiguration, MaxWaves> m_SurvivalWaves;
 
 int64_t CInfClassGameController::m_LastTipTime = 0;
 
+IGameController *CreateInfclassModController(CGameContext *pGameServer) { return new CInfClassGameController(pGameServer); }
+
 CInfClassGameController::CInfClassGameController(class CGameContext *pGameServer)
 : IGameController(pGameServer), m_Teams(pGameServer)
 {

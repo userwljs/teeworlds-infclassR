@@ -17,8 +17,9 @@
 #include <algorithm>
 
 #include <game/server/entities/character.h>
-#include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/player.h>
+
+extern IGameController *CreateInfclassModController(CGameContext *pGameServer);
 
 #ifdef CONF_GEOLOCATION
 #include <infclassr/geolocation.h>
@@ -4460,7 +4461,7 @@ void CGameContext::OnInit(const void *pPersistentData)
 
 	// select gametype
 	if(!str_comp(Config()->m_SvGametype, "mod"))
-		m_pController = new CInfClassGameController(this);
+		m_pController = CreateInfclassModController(this);
 	else
 		m_pController = new IGameController(this);
 	m_pController->RegisterChatCommands(Console());
