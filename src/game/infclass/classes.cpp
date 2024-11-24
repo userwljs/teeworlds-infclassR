@@ -35,16 +35,16 @@ enum PLAYERCLASS
 	PLAYERCLASS_UNDEAD,
 	PLAYERCLASS_TANK,
 	END_INFECTEDCLASS,
-
-	NB_PLAYERCLASS,
-	NB_HUMANCLASS = END_HUMANCLASS - START_HUMANCLASS - 1,
-	NB_INFECTEDCLASS = END_INFECTEDCLASS - START_INFECTEDCLASS - 1,
 };
 
 }
 
 int toNetValue(EPlayerClass C)
 {
+	constexpr int HumanClassOffset = PLAYERCLASS_MERCENARY - static_cast<int>(EPlayerClass::Mercenary);
+	static_assert(static_cast<int>(AllHumanClasses.Last()) + HumanClassOffset < END_HUMANCLASS,
+		"Added human class requires extra code to preserve network compatibilty");
+
 	if (C == EPlayerClass::None)
 		return PLAYERCLASS_NONE;
 
@@ -56,7 +56,6 @@ int toNetValue(EPlayerClass C)
 	}
 	else
 	{
-		constexpr int HumanClassOffset = PLAYERCLASS_MERCENARY - static_cast<int>(EPlayerClass::Mercenary);
 		return Value + HumanClassOffset;
 	}
 }
