@@ -10,6 +10,7 @@
 #include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/entities/infccharacter.h>
 #include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/snap_filter.h>
 
 CHeroFlag::CHeroFlag(CGameContext *pGameContext, int Owner)
 	: CInfCEntity(pGameContext, CGameWorld::ENTTYPE_HERO_FLAG, vec2(), Owner, ms_PhysSize)
@@ -111,15 +112,15 @@ void CHeroFlag::Snap(int SnappingClient)
 
 	if(NetworkClipped(SnappingClient))
 		return;
-	
-	if(SnappingClient != SERVER_DEMO_CLIENT && SnappingClient != m_Owner)
-		return;
 
-	CInfClassCharacter *pOwner = GetOwnerCharacter();
+	const CInfClassCharacter *pOwner = GetOwnerCharacter();
 	if(!pOwner)
 		return;
 
 	if(pOwner->GetPlayerClass() != EPlayerClass::Hero)
+		return;
+
+	if(!SnapFiltersPassed(this, SnappingClient, EFilterFlag::Follower | EFilterFlag::Demo | EFilterFlag::Restricted))
 		return;
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
