@@ -335,6 +335,11 @@ void IGameController::DoTeamChange(CPlayer *pPlayer, int Team, bool DoChatMsg)
 	// OnPlayerInfoChange(pPlayer);
 }
 
+int IGameController::GetPlayerTeam(int ClientId) const
+{
+	return 0;
+}
+
 const char *IGameController::GetTeamName(int Team)
 {
 	if(IsTeamplay())
@@ -617,6 +622,11 @@ void IGameController::PrintMapRotationData(IOHANDLE Output)
 	}
 }
 
+bool IGameController::MapRotationEnabled() const
+{
+	return true;
+}
+
 void IGameController::ResetMapInfo(const char *pMapName)
 {
 	CMapInfoEx *pMapInfo = GetMapInfo(pMapName);
@@ -655,6 +665,20 @@ bool IGameController::SetMapMinMaxPlayers(const char *pMapName, int MinPlayers, 
 	pMapInfo->MaximumPlayers = MaxPlayers;
 
 	return true;
+}
+
+int IGameController::PersistentClientDataSize() const
+{
+	return sizeof(CGameContext::CPersistentClientData);
+}
+
+bool IGameController::GetClientPersistentData(int ClientId, void *pData) const
+{
+	return true;
+}
+
+void IGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const char *pHelpPage) const
+{
 }
 
 CMapInfoEx *IGameController::AddMapInfo(const char *pMapName)
@@ -1030,6 +1054,14 @@ void IGameController::OnStartRound()
 	pMapInfo->SetTimestamp(Timestamp);
 	dbg_msg("smart-rotation", "OnStartRound: Sync timestamp of %s to %d",
 		pMapInfo->Name(), Timestamp);
+}
+
+CPlayer *IGameController::CreatePlayer(int ClientId, bool IsSpectator, void *pData)
+{
+	const int StartTeam = (IsSpectator || Config()->m_SvTournamentMode) ? TEAM_SPECTATORS : GetAutoTeam(ClientId);
+	CPlayer *pPlayer = new(ClientId) CPlayer(m_pGameServer, GetNextClientUniqueId(), ClientId, StartTeam);
+
+	return pPlayer;
 }
 
 void IGameController::DoWarmup(int Seconds)

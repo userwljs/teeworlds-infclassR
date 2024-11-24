@@ -4459,7 +4459,10 @@ void CGameContext::OnInit(const void *pPersistentData)
 	m_Collision.Init(&m_Layers);
 
 	// select gametype
-	m_pController = new CInfClassGameController(this);
+	if(!str_comp(Config()->m_SvGametype, "mod"))
+		m_pController = new CInfClassGameController(this);
+	else
+		m_pController = new IGameController(this);
 	m_pController->RegisterChatCommands(Console());
 
 	Console()->ExecuteFile(g_Config.m_SvResetFile);

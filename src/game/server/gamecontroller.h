@@ -53,17 +53,17 @@ public:
 	void LoadMapRotationData();
 	void SaveMapRotationData(const char *pFileName);
 	void PrintMapRotationData(IOHANDLE Output = 0);
-	virtual bool MapRotationEnabled() const = 0;
+	virtual bool MapRotationEnabled() const;
 
 	static CMapInfoEx *GetMapInfo(const char *pMapName);
 	static void ResetMapInfo(const char *pMapName);
 	static void AddMapTimestamp(const char *pMapName, int Timestamp);
 	bool SetMapMinMaxPlayers(const char *pMapName, int MinPlayers, int MaxPlayers);
 
-	virtual int PersistentClientDataSize() const = 0;
-	virtual bool GetClientPersistentData(int ClientId, void *pData) const = 0;
+	virtual int PersistentClientDataSize() const;
+	virtual bool GetClientPersistentData(int ClientId, void *pData) const;
 
-	virtual void GetHelpText(dynamic_string *pBuffer, int ClientId, const char *pHelpPage) const = 0;
+	virtual void GetHelpText(dynamic_string *pBuffer, int ClientId, const char *pHelpPage) const;
 
 protected:
 	bool LoadMapConfig(const char *pMapName, CMapInfo *pInfo);
@@ -182,11 +182,11 @@ public:
 	virtual void Snap(int SnappingClient);
 	
 	virtual bool CanVote();
-	virtual void OnPlayerVoteCommand(int ClientId, int Vote) = 0;
+	virtual void OnPlayerVoteCommand(int ClientId, int Vote) {};
 
 	void OnStartRound();
 
-	virtual CPlayer *CreatePlayer(int ClientId, bool IsSpectator, void *pData) = 0;
+	virtual CPlayer *CreatePlayer(int ClientId, bool IsSpectator, void *pData);
 
 	//
 /* INFECTION MODIFICATION START ***************************************/
@@ -197,17 +197,17 @@ public:
 	/*
 
 	*/
-	virtual int GetPlayerTeam(int ClientId) const = 0;
+	virtual int GetPlayerTeam(int ClientId) const;
 	virtual const char *GetTeamName(int Team);
 	virtual int GetAutoTeam(int NotThisId);
-	virtual void OnTeamChangeRequested(int ClientId, int Team) = 0;
+	virtual void OnTeamChangeRequested(int ClientId, int Team) {};
 	virtual bool CanJoinTeam(int Team, int NotThisId);
 	bool CanChangeTeam(CPlayer *pPplayer, int JoinTeam);
 	int ClampTeam(int Team);
 
 	double GetTime();
 
-	virtual void RegisterChatCommands(class IConsole *pConsole) = 0;
+	virtual void RegisterChatCommands(class IConsole *pConsole) {};
 
 private:
 	// starting 1 to make 0 the special value "no client id"
