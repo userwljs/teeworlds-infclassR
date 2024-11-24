@@ -43,6 +43,9 @@ void CPlacedObject::Tick()
 
 bool CPlacedObject::DoSnapForClient(int SnappingClient)
 {
+	if(IsMarkedForDestroy())
+		return false;
+
 	if(NetworkClipped(SnappingClient) && (!m_Pos2.has_value() || NetworkClipped(SnappingClient, m_Pos2.value())))
 		return false;
 

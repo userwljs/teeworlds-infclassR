@@ -948,6 +948,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/infcgamecontroller.h
   infclass/infcplayer.cpp
   infclass/infcplayer.h
+  infclass/snap_filter.cpp
+  infclass/snap_filter.h
   entity.cpp
   entity.h
   eventhandler.cpp
