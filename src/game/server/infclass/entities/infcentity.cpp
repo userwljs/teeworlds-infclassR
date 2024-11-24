@@ -28,17 +28,17 @@ CInfCEntity::CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, i
 {
 }
 
-CInfClassGameController *CInfCEntity::GameController()
+CInfClassGameController *CInfCEntity::GameController() const
 {
 	return static_cast<CInfClassGameController*>(GameServer()->m_pController);
 }
 
-CInfClassCharacter *CInfCEntity::GetOwnerCharacter()
+CInfClassCharacter *CInfCEntity::GetOwnerCharacter() const
 {
 	return GameController()->GetCharacter(GetOwner());
 }
 
-CInfClassPlayerClass *CInfCEntity::GetOwnerClass()
+CInfClassPlayerClass *CInfCEntity::GetOwnerClass() const
 {
 	CInfClassCharacter *pCharacter = GetOwnerCharacter();
 	if (pCharacter)

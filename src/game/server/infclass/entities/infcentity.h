@@ -24,10 +24,10 @@ public:
 	CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), int Owner = -1,
 	            int ProximityRadius=0);
 
-	CInfClassGameController *GameController();
+	CInfClassGameController *GameController() const;
 	int GetOwner() const { return m_Owner; }
-	CInfClassCharacter *GetOwnerCharacter();
-	CInfClassPlayerClass *GetOwnerClass();
+	CInfClassCharacter *GetOwnerCharacter() const;
+	CInfClassPlayerClass *GetOwnerClass() const;
 
 	static EntityFilter GetOwnerFilterFunction(int Owner);
 	EntityFilter GetOwnerFilterFunction();
