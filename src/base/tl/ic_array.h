@@ -14,8 +14,8 @@ public:
 	constexpr icArray(std::initializer_list<T> list);
 	icArray(T (&Array)[StackCapacity]);
 
-	const T &At(std::size_t Index) const { return m_Data[Index]; }
-	T operator[](std::size_t Index) const { return m_Data[Index]; }
+	constexpr const T &At(std::size_t Index) const { return m_Data[Index]; }
+	constexpr const T &operator[](std::size_t Index) const { return m_Data[Index]; }
 	T &operator[](std::size_t Index) { return m_Data[Index]; }
 
 	T *Data() { return &m_Data[0]; }
@@ -24,8 +24,8 @@ public:
 	T &First() { return m_Data[0]; }
 	T &Last() { return m_Data[m_Size - 1]; }
 
-	const T &First() const { return m_Data[0]; }
-	const T &Last() const { return m_Data[m_Size - 1]; }
+	constexpr const T &First() const { return m_Data[0]; }
+	constexpr const T &Last() const { return m_Data[m_Size - 1]; }
 
 	void erase(const T *pItem);
 
