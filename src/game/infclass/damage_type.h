@@ -71,4 +71,6 @@ enum class EDamageType
 
 const char *toString(EDamageType DamageType);
 
+int DamageTypeToWeapon(EDamageType DamageType, TAKEDAMAGEMODE *pMode = nullptr);
+
 #endif // INFCLASS_DAMAGE_TYPE_H

@@ -30,7 +30,7 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 	m_DamageType(DamageType)
 {
 	m_TriggeredByCid = Owner;
-	CInfClassGameController::DamageTypeToWeapon(DamageType, &m_TakeDamageMode);
+	DamageTypeToWeapon(DamageType, &m_TakeDamageMode);
 
 	switch(DamageType)
 	{

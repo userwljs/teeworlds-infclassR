@@ -31,7 +31,7 @@ CProjectile::CProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 P
 /* INFECTION MODIFICATION START ***************************************/
 	m_IsFlashGrenade = false;
 	m_StartPos = Pos;
-	m_Weapon = CInfClassGameController::DamageTypeToWeapon(DamageType, &m_TakeDamageMode);
+	m_Weapon = DamageTypeToWeapon(DamageType, &m_TakeDamageMode);
 /* INFECTION MODIFICATION END *****************************************/
 }
 

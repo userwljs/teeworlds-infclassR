@@ -581,7 +581,7 @@ bool CInfClassCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From,
 			Dmg += ExtraDmg;
 		}
 		DamageContext.Damage = Dmg;
-		DamageContext.Weapon = CInfClassGameController::DamageTypeToWeapon(DamageType, &DamageContext.Mode);
+		DamageContext.Weapon = DamageTypeToWeapon(DamageType, &DamageContext.Mode);
 	}
 
 	const int &Weapon = DamageContext.Weapon;
@@ -1896,7 +1896,7 @@ void CInfClassCharacter::Die(int Killer, EDamageType DamageType)
 	SDamageContext DamageContext;
 	DamageContext.Killer = Killer;
 	DamageContext.DamageType = DamageType;
-	CInfClassGameController::DamageTypeToWeapon(DamageType, &DamageContext.Mode);
+	DamageTypeToWeapon(DamageType, &DamageContext.Mode);
 
 	DeathContext Context;
 	GetDeathContext(DamageContext, &Context);

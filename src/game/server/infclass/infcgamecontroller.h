@@ -249,7 +249,6 @@ public:
 	static const char *GetClanForClass(EPlayerClass PlayerClass, const char *pDefaultText = nullptr);
 	static const char *GetClassPluralDisplayName(EPlayerClass PlayerClass);
 	static EPlayerClass MenuClassToPlayerClass(int MenuClass);
-	static int DamageTypeToWeapon(EDamageType DamageType, TAKEDAMAGEMODE *pMode = nullptr);
 
 	int GetPlayerTeam(int ClientId) const override;
 	void SetPlayerInfected(int ClientId, bool Infected);
