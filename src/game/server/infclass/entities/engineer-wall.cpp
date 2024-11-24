@@ -10,6 +10,7 @@
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/snap_filter.h>
 
 #include "engineer-wall.h"
 #include "game/server/infclass/entities/infcentity.h"
@@ -86,8 +87,7 @@ void CEngineerWall::Snap(int SnappingClient)
 
 	if(!HasSecondPosition())
 	{
-		const CInfClassPlayer *pDestPlayer = GameController()->GetPlayer(SnappingClient);
-		if(pDestPlayer && !pDestPlayer->IsHuman())
+		if(!SnapFiltersPassed(this, SnappingClient, EFilterFlag::Follower | EFilterFlag::SameTeam | EFilterFlag::Demo | EFilterFlag::Restricted))
 		{
 			return;
 		}
