@@ -503,6 +503,50 @@ void CCharacter::Die(int Killer, int Weapon)
 //TODO: Move the emote stuff to a function
 void CCharacter::SnapCharacter(int SnappingClient, int Id)
 {
+	CCharacterCore *pCore;
+	int Tick = 0;
+
+	// write down the m_Core
+	if(!m_ReckoningTick || GameServer()->m_World.m_Paused)
+	{
+		Tick = 0;
+		pCore = &m_Core;
+	}
+	else
+	{
+		Tick = m_ReckoningTick;
+		pCore = &m_SendCore;
+	}
+
+	int EmoteNormal = m_pPlayer->GetDefaultEmote();
+
+	CNetObj_Character *pCharacter = Server()->SnapNewItem<CNetObj_Character>(Id);
+	if(!pCharacter)
+		return;
+
+	pCharacter->m_Tick = Tick;
+	pCore->Write(pCharacter);
+	if(pCharacter->m_HookedPlayer != -1)
+	{
+		if(!Server()->Translate(pCharacter->m_HookedPlayer, SnappingClient))
+			pCharacter->m_HookedPlayer = -1;
+	}
+	pCharacter->m_Emote = m_EmoteType;
+	pCharacter->m_AmmoCount = 0;
+	pCharacter->m_AttackTick = m_AttackTick;
+	pCharacter->m_Direction = m_Input.m_Direction;
+	pCharacter->m_Weapon = m_ActiveWeapon;
+
+	pCharacter->m_Health = m_Health;
+	pCharacter->m_Armor = m_Armor;
+
+	if(pCharacter->m_Emote == EmoteNormal)
+	{
+		if(250 - ((Server()->Tick() - m_LastAction) % (250)) < 5)
+			pCharacter->m_Emote = EMOTE_BLINK;
+	}
+
+	pCharacter->m_PlayerFlags = GetPlayer()->m_PlayerFlags;
 }
 
 bool CCharacter::CanSnapCharacter(int SnappingClient)
@@ -544,6 +588,18 @@ bool CCharacter::IsSnappingCharacterInView(int SnappingClientId)
 
 void CCharacter::Snap(int SnappingClient)
 {
+	int Id = m_pPlayer->GetCid();
+
+	if(!Server()->Translate(Id, SnappingClient))
+		return;
+
+	if(!CanSnapCharacter(SnappingClient))
+		return;
+
+	if(!IsSnappingCharacterInView(SnappingClient))
+		return;
+
+	SnapCharacter(SnappingClient, Id);
 }
 
 bool CCharacter::CanCollide(int ClientId)

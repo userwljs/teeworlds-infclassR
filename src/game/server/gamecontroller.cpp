@@ -1157,11 +1157,34 @@ void IGameController::OnGameRestart()
 
 bool IGameController::IsTeamplay() const
 {
-	return m_GameFlags&GAMEFLAG_TEAMS;
+	return m_GameFlags & GAMEFLAG_TEAMS;
 }
 
 void IGameController::Snap(int SnappingClient)
 {
+	CNetObj_GameInfo *pGameInfoObj = Server()->SnapNewItem<CNetObj_GameInfo>(0);
+	if(!pGameInfoObj)
+		return;
+
+	pGameInfoObj->m_GameFlags = m_GameFlags;
+	pGameInfoObj->m_GameStateFlags = 0;
+	if(m_GameOverTick != -1)
+		pGameInfoObj->m_GameStateFlags |= GAMESTATEFLAG_GAMEOVER;
+	if(m_SuddenDeath)
+		pGameInfoObj->m_GameStateFlags |= GAMESTATEFLAG_SUDDENDEATH;
+	if(GameServer()->m_World.m_Paused)
+		pGameInfoObj->m_GameStateFlags |= GAMESTATEFLAG_PAUSED;
+	pGameInfoObj->m_RoundStartTick = m_RoundStartTick;
+	pGameInfoObj->m_WarmupTimer = m_Warmup;
+
+	pGameInfoObj->m_ScoreLimit = Config()->m_SvScorelimit;
+
+	pGameInfoObj->m_RoundNum = (str_length(Config()->m_SvMaprotation) && Config()->m_SvRoundsPerMap) ? Config()->m_SvRoundsPerMap : 0;
+	pGameInfoObj->m_RoundCurrent = m_RoundCount+1;
+
+	CNetObj_GameData *pGameData = static_cast<CNetObj_GameData *>(Server()->SnapNewItem(NETOBJTYPE_GAMEDATA, 0, sizeof(CNetObj_GameData)));
+	if(!pGameData)
+		return;
 }
 
 int IGameController::GetAutoTeam(int NotThisId)
@@ -1187,6 +1210,32 @@ int IGameController::GetAutoTeam(int NotThisId)
 	if(CanJoinTeam(Team, NotThisId))
 		return Team;
 	return -1;
+}
+
+bool IGameController::CanSpawn(int Team, vec2 *pOutPos) const
+{
+	// spectators can't spawn
+	if(Team == TEAM_SPECTATORS || GameServer()->m_World.m_Paused || GameServer()->m_World.m_ResetRequested)
+		return false;
+
+	const int Type = Team == TEAM_RED ? 0 : 1;
+	if(m_avSpawnPoints[Type].size() == 0)
+	{
+		return false;
+	}
+
+	// get spawn point
+	const std::vector<vec2> &vSpawnPoints = m_avSpawnPoints[Type];
+	const std::size_t Count = vSpawnPoints.size();
+	const int RandomShift = random_int(0, Count - 1);
+	for(std::size_t i = 0; i < Count; i++)
+	{
+		int PosIndex = (i + RandomShift) % Count;
+		*pOutPos = vSpawnPoints[PosIndex];
+		return true;
+	}
+
+	return false;
 }
 
 bool IGameController::CanJoinTeam(int Team, int NotThisId)

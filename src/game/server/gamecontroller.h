@@ -156,6 +156,8 @@ public:
 	int GetRoundCount();
 	bool IsRoundEndTime();
 
+	bool CanSpawn(int Team, vec2 *pOutPos) const;
+
 	bool IsForceBalanced();
 
 	struct CMapRotationInfo
