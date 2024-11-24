@@ -302,12 +302,15 @@ void CPortal::TeleportCharacters()
 		if(pCharacter->IsInfected())
 			continue;
 
+		const int CharacterClientId = pCharacter->GetCid();
+		if(m_Teleported.Contains(CharacterClientId))
+			continue;
+
 		const float Distance = distance(pCharacter->m_Pos, m_Pos);
 		if(Distance > pCharacter->m_ProximityRadius + m_Radius)
 			continue;
 
 		// Teleport the character
-		const int CharacterClientId = pCharacter->GetCid();
 		pCharacter->SetPosition(TargetPos);
 		pCharacter->ResetHook();
 		GameWorld()->ReleaseHooked(CharacterClientId);
@@ -316,6 +319,7 @@ void CPortal::TeleportCharacters()
 		GameServer()->CreateDeath(TargetPos, pCharacter->GetCid());
 
 		GameServer()->CreateSound(GetPos(), SOUND_CTF_RETURN);
+		m_Teleported.Add(CharacterClientId);
 	}
 }
 

@@ -5,6 +5,8 @@
 
 #include "ic_entity.h"
 
+#include <base/tl/ic_array.h>
+
 struct WeaponFireContext;
 
 class CPortal : public CIcEntity
@@ -65,6 +67,8 @@ protected:
 
 	PortalType m_PortalType = PortalType::Disconnected;
 	CPortal *m_AnotherPortal = nullptr;
+
+	icArray<int, MAX_CLIENTS> m_Teleported;
 
 	int m_StartTick{};
 	int m_EndTick{};
