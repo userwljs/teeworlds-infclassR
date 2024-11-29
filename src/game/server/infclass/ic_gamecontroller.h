@@ -505,6 +505,8 @@ private:
 	bool RemoveBot_Lua(int ClientId);
 	void RegisterBotsContext();
 
+	void AddMoreBotsAccordingToConfiguration();
+
 	icArray<CBaseBotPlayer *, MaxBots> m_Bots;
 	CBotUtilsSharedData *m_pBotUtilsData{};
 

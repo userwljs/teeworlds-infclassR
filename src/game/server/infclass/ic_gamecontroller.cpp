@@ -4755,6 +4755,30 @@ void CIcGameController::RegisterBotsContext()
 	m_pBotUtilsData = &UtilsData;
 }
 
+void CIcGameController::AddMoreBotsAccordingToConfiguration()
+{
+	const SurvivalWaveConfiguration *WaveConf = GetCurrentSurvivalWaveConfiguration();
+	const int InfectionTick = GetInfectionTick();
+	int SpawnAheadTicks = Server()->TickSpeed() * 3;
+	for (std::size_t BotIndex = 0; BotIndex < WaveConf->BotConfigurations.Size(); ++BotIndex)
+	{
+		if(m_SpawnedWaveMap[BotIndex])
+			continue;
+		const SurvivalBotConfiguration &BotConf = WaveConf->BotConfigurations[BotIndex];
+		if (BotConf.SpawnMinTick < InfectionTick + SpawnAheadTicks)
+		{
+			CBaseBotPlayer *pBot = AddBot(BotConf);
+			if(!pBot)
+			{
+				break;
+			}
+			pBot->SetBotConfigId(BotIndex);
+			m_SpawnedWaveMap[BotIndex] = true;
+			m_SpawnedWaveBots++;
+		}
+	}
+}
+
 CIcGameController::PlayerScore *CIcGameController::GetSurvivalPlayerScore(int ClientId)
 {
 	for(PlayerScore &Score : m_SurvivalState.Scores)
@@ -5025,26 +5049,7 @@ void CIcGameController::RoundTickAfterInitialInfection()
 
 	if(GetRoundType() == ERoundType::Survival)
 	{
-		const SurvivalWaveConfiguration *WaveConf = GetCurrentSurvivalWaveConfiguration();
-		const int InfectionTick = GetInfectionTick();
-		int SpawnAheadTicks = Server()->TickSpeed() * 3;
-		for (std::size_t BotIndex = 0; BotIndex < WaveConf->BotConfigurations.Size(); ++BotIndex)
-		{
-			if(m_SpawnedWaveMap[BotIndex])
-				continue;
-			const SurvivalBotConfiguration &BotConf = WaveConf->BotConfigurations[BotIndex];
-			if (BotConf.SpawnMinTick < InfectionTick + SpawnAheadTicks)
-			{
-				CBaseBotPlayer *pBot = AddBot(BotConf);
-				if(!pBot)
-				{
-					break;
-				}
-				pBot->SetBotConfigId(BotIndex);
-				m_SpawnedWaveMap[BotIndex] = true;
-				m_SpawnedWaveBots++;
-			}
-		}
+		AddMoreBotsAccordingToConfiguration();
 	}
 
 	// Ensure that the newly joined players have correct state/class
