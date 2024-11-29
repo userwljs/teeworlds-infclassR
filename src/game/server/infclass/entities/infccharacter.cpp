@@ -248,7 +248,17 @@ void CInfClassCharacter::TickBeforeWorld()
 	m_Core.m_InLove = IsInLove();
 	m_Core.m_HookProtected = GetPlayer()->HookProtectionEnabled();
 
-	SetSolo(m_SoloUntilTick >= CurrentTick);
+	for(std::optional<int> *pTick : {
+			&m_SoloUntilTick,
+		})
+	{
+		if(pTick->has_value() && pTick->value() >= 0 && pTick->value() < CurrentTick)
+		{
+			pTick->reset();
+		}
+	}
+
+	UpdateCoreSolo();
 }
 
 void CInfClassCharacter::Tick()
@@ -362,6 +372,16 @@ void CInfClassCharacter::TickPaused()
 	}
 	if(m_PoisonTick)
 		m_PoisonTick++;
+
+	for(std::optional<int> *pTick : {
+			&m_SoloUntilTick,
+		})
+	{
+		if(pTick->has_value() && pTick->value() > 0)
+		{
+			pTick->value()++;
+		}
+	}
 }
 
 void CInfClassCharacter::Snap(int SnappingClient)
@@ -2418,8 +2438,12 @@ void CInfClassCharacter::GrantInvisibility(float Duration)
 
 void CInfClassCharacter::SetSoloForDuration(float Duration)
 {
-	m_SoloUntilTick = Server()->Tick() + Server()->TickSpeed() * Duration;
-	SetSolo(Duration > 0);
+	if(Duration > 0)
+		m_SoloUntilTick = Server()->Tick() + Server()->TickSpeed() * Duration;
+	else
+		m_SoloUntilTick.reset();
+
+	UpdateCoreSolo();
 }
 
 void CInfClassCharacter::GrantSpawnProtection(float Duration)
@@ -2462,12 +2486,21 @@ void CInfClassCharacter::PreCoreTick()
 		}
 	}
 
-	if(m_SoloUntilTick > CurrentTick)
+	if(m_SoloUntilTick.has_value())
 	{
-		const int SoloTicks = m_SoloUntilTick - CurrentTick;
-		int EffectDuration = 1 + (SoloTicks / Server()->TickSpeed());
-		GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE,
-			BROADCAST_DURATION_REALTIME, _("You are in Solo mode for {sec:EffectDuration}"), "EffectDuration", &EffectDuration, nullptr);
+		int EffectUntilTick = m_SoloUntilTick.value();
+		if(EffectUntilTick < 0)
+		{
+			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE,
+				BROADCAST_DURATION_REALTIME, _("You are in Solo mode"), nullptr);
+		}
+		else
+		{
+			const int RemainingTicks = EffectUntilTick - CurrentTick;
+			int EffectDuration = 1 + (RemainingTicks / Server()->TickSpeed());
+			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE,
+				BROADCAST_DURATION_REALTIME, _("You are in Solo mode for {sec:EffectDuration}"), "EffectDuration", &EffectDuration, nullptr);
+		}
 	}
 
 	if(m_AntiFireTime > 0)
@@ -2705,6 +2738,11 @@ void CInfClassCharacter::FreeChildSnapIds()
 		Server()->SnapFreeId(m_CursorId);
 		m_CursorId = -1;
 	}
+}
+
+void CInfClassCharacter::UpdateCoreSolo()
+{
+	SetSolo(m_SoloUntilTick.has_value());
 }
 
 void CInfClassCharacter::UpdateTuningParam()

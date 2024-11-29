@@ -290,6 +290,7 @@ protected:
 
 	void FreeChildSnapIds();
 
+	void UpdateCoreSolo();
 	void UpdateTuningParam();
 	void TeleToId(int TeleNumber, int TeleType);
 
@@ -348,7 +349,7 @@ protected:
 	bool m_IsInvisible = false;
 	int m_AntiFireTime = 0;
 	int m_GrantedInvisibilityUntilTick = 0;
-	int m_SoloUntilTick = 0;
+	std::optional<int> m_SoloUntilTick;
 	int m_Invincible = 0;
 
 	int m_HealTick = 0;
