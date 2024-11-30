@@ -15,7 +15,7 @@ CSuperWeaponIndicator::CSuperWeaponIndicator(CGameContext *pGameContext, vec2 Po
 	GameWorld()->InsertEntity(this);
 	m_Radius = 40.0f;
 	m_StartTick = Server()->Tick();
-	m_OwnerChar = GameServer()->GetPlayerChar(m_Owner);
+
 	m_warmUpCounter = Server()->TickSpeed()*3;
 	m_IsWarmingUp = true;
 	
@@ -59,30 +59,32 @@ void CSuperWeaponIndicator::Tick()
 {
 	if(IsMarkedForDestroy())
 		return;
+
 	CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
-	CInfClassHuman *pHuman = pOwnerChar ? CInfClassHuman::GetInstance(pOwnerChar->GetPlayer()) : nullptr;
+	CInfClassHuman *pHuman = CInfClassHuman::GetInstance(pOwnerChar);
 
 	if(!pHuman)
 		return;
 
-	//refresh indicator position
-	m_Pos = m_OwnerChar->Core()->m_Pos;
-	
-	if (m_IsWarmingUp) 
+	if(!pOwnerChar->HasSuperWeaponIndicator())
 	{
-		if ( m_warmUpCounter > 0 ) 
+		GameWorld()->DestroyEntity(this);
+		return;
+	}
+
+	// refresh indicator position
+	SetPos(pOwnerChar->Core()->m_Pos);
+
+	if(m_IsWarmingUp)
+	{
+		if(m_warmUpCounter > 0)
 		{
 			m_warmUpCounter--;
-		} else {
+		}
+		else
+		{
 			m_IsWarmingUp = false;
 			pHuman->GiveWhiteHole();
 		}
-	} 
-	else 	
-	{
-		if(!pOwnerChar->HasSuperWeaponIndicator())
-		{
-			GameWorld()->DestroyEntity(this);
-		} 
 	}
 }

@@ -13,15 +13,14 @@ public:
 	CSuperWeaponIndicator(CGameContext *pGameContext, vec2 Pos, int Owner);
 	~CSuperWeaponIndicator() override;
 	
-	virtual void Snap(int SnappingClient);
-	virtual void Tick();
+	void Snap(int SnappingClient) override;
+	void Tick() override;
 
 private:
 	int m_StartTick;
 	int m_warmUpCounter;
 	bool m_IsWarmingUp;
-	array<int> m_Ids;
-	CCharacter *m_OwnerChar;
+	array<int> m_Ids;;
 	
 public:
 	float m_Radius;
