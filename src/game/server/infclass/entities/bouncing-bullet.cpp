@@ -6,7 +6,6 @@
 #include <game/server/gamecontext.h>
 
 #include <game/infclass/damage_type.h>
-#include <game/server/infclass/infcgamecontroller.h>
 
 #include "bouncing-bullet.h"
 #include "infccharacter.h"
@@ -18,7 +17,7 @@ CBouncingBullet::CBouncingBullet(CGameContext *pGameContext, int Owner, vec2 Pos
 	m_ActualDir = Dir;
 	m_Direction = Dir;
 	m_StartTick = Server()->Tick();
-	m_LifeSpan = Server()->TickSpeed()*2;
+	SetLifespan(2.0f);
 	m_BounceLeft = 3; // the number of time that a bullet can bounce. It's usefull to remove bullets laying on the ground
 	m_DistanceLeft = 1200; // the max distance a bullet can travel
 	
@@ -35,11 +34,18 @@ vec2 CBouncingBullet::GetPos(float Time)
 
 void CBouncingBullet::TickPaused()
 {
+	CInfCEntity::TickPaused();
+
 	m_StartTick++;
 }
 
 void CBouncingBullet::Tick()
 {
+	CInfCEntity::Tick();
+
+	if(IsMarkedForDestroy())
+		return;
+
 	float Pt = (Server()->Tick()-m_StartTick-1)/(float)Server()->TickSpeed();
 	float Ct = (Server()->Tick()-m_StartTick)/(float)Server()->TickSpeed();
 	vec2 PrevPos = GetPos(Pt);
@@ -50,14 +56,12 @@ void CBouncingBullet::Tick()
 
 	m_DistanceLeft -= distance(CurPos, PrevPos);
 	
-	if(GameLayerClipped(CurPos) || m_LifeSpan < 0 || m_BounceLeft < 0 || m_DistanceLeft < 0.0f)
+	if(GameLayerClipped(CurPos) || m_BounceLeft < 0 || m_DistanceLeft < 0.0f)
 	{
 		GameWorld()->DestroyEntity(this);
 		return;
 	}
 	
-	m_LifeSpan--;
-
 	vec2 NewPos;
 	int Collide = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CurPos, nullptr, &NewPos);
 
