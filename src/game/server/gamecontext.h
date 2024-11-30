@@ -135,6 +135,7 @@ public:
 	class IConsole *Console() { return m_pConsole; }
 	CGameWorld *GameWorld() { return &m_World; }
 	CCollision *Collision() { return &m_Collision; }
+	const CCollision *Collision() const { return &m_Collision; }
 	CTuningParams *Tuning() { return &m_Tuning; }
 	const CTuningParams *Tuning() const { return &m_Tuning; }
 	virtual class CLayers *Layers() { return &m_Layers; }
