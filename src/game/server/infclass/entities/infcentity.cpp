@@ -33,6 +33,11 @@ CInfClassGameController *CInfCEntity::GameController() const
 	return static_cast<CInfClassGameController*>(GameServer()->m_pController);
 }
 
+void CInfCEntity::SetOwner(int ClientId)
+{
+	m_Owner = ClientId;
+}
+
 CInfClassCharacter *CInfCEntity::GetOwnerCharacter() const
 {
 	return GameController()->GetCharacter(GetOwner());

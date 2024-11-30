@@ -38,7 +38,7 @@ CIcPickup::CIcPickup(CGameContext *pGameContext, EICPickupType Type, vec2 Pos, i
 
 void CIcPickup::Reset()
 {
-	if(m_Owner >= 0)
+	if(HasOwner())
 		CInfCEntity::Reset();
 
 	m_SpawnTick = -1;

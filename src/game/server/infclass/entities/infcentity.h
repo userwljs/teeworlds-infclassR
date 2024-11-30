@@ -25,7 +25,11 @@ public:
 	            int ProximityRadius=0);
 
 	CInfClassGameController *GameController() const;
+
+	bool HasOwner() const { return m_Owner >= 0; }
 	int GetOwner() const { return m_Owner; }
+	void SetOwner(int ClientId);
+
 	CInfClassCharacter *GetOwnerCharacter() const;
 	CInfClassPlayerClass *GetOwnerClass() const;
 
