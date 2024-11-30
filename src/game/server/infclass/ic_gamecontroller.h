@@ -161,7 +161,9 @@ public:
 	int OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;
 	void OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext);
 	void OnIcCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context);
+	void OnCharacterBackFromDead(CIcCharacter *pCharacter);
 	void OnClassChooserRequested(CIcCharacter *pCharacter);
+
 	void CheckRoundFailed();
 	float GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const override;
 	void DoWincheck() override;

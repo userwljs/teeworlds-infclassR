@@ -78,6 +78,7 @@ public:
 	virtual void OnCharacterSpawned(const SpawnContext &Context);
 	virtual void OnCharacterDeath(EDamageType DamageType);
 	virtual void OnCharacterDamage(SDamageContext *pContext);
+	virtual void OnCharacterBackFromDead();
 
 	virtual void OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context);
 

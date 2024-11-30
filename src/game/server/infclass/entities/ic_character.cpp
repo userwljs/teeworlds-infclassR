@@ -247,8 +247,10 @@ void CIcCharacter::TickBeforeWorld()
 	m_Core.m_HookProtected = GetPlayer()->HookProtectionEnabled();
 	m_SleepThisTick = std::max(m_SleepTicks, m_DeepSleepTicks) > 0;
 
+	const bool WasDead = IsDead();
 	for(std::optional<int> *pTick : {
 			&m_SoloUntilTick,
+			&m_DeadUntilTick,
 		})
 	{
 		if(pTick->has_value() && pTick->value() >= 0 && pTick->value() < CurrentTick)
@@ -258,6 +260,10 @@ void CIcCharacter::TickBeforeWorld()
 	}
 
 	UpdateCoreSolo();
+	if(WasDead && !IsDead())
+	{
+		GameController()->OnCharacterBackFromDead(this);
+	}
 }
 
 void CIcCharacter::Tick()
@@ -392,6 +398,7 @@ void CIcCharacter::TickPaused()
 
 	for(std::optional<int> *pTick : {
 			&m_SoloUntilTick,
+			&m_DeadUntilTick,
 		})
 	{
 		if(pTick->has_value() && pTick->value() > 0)
@@ -437,32 +444,43 @@ void CIcCharacter::Snap(int SnappingClient)
 	if(m_Core.m_Solo)
 		pDDNetCharacter->m_Flags |= CHARACTERFLAG_SOLO;
 
-	if(GetPlayerClass() == EPlayerClass::Mercenary)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_JETPACK;
-
-	if(GetPlayerClass() == EPlayerClass::Scientist)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_TELEGUN_GRENADE;
-
-	if(GetPlayerClass() != EPlayerClass::Boomer)
+	if(IsDead())
 	{
-		if(m_aWeapons[WEAPON_HAMMER].m_Got)
-			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_HAMMER;
-	}
-	if(m_aWeapons[WEAPON_GUN].m_Got)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_GUN;
-	if(m_aWeapons[WEAPON_SHOTGUN].m_Got)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_SHOTGUN;
-	if(m_aWeapons[WEAPON_GRENADE].m_Got)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_GRENADE;
-	if(m_aWeapons[WEAPON_LASER].m_Got)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_LASER;
-	if(m_ActiveWeapon == WEAPON_NINJA)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_NINJA;
-	if(IsFrozen())
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_MOVEMENTS_DISABLED;
-
-	if(IsInLove())
 		pDDNetCharacter->m_Flags |= CHARACTERFLAG_HAMMER_HIT_DISABLED;
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_SHOTGUN_HIT_DISABLED;
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_GRENADE_HIT_DISABLED;
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_LASER_HIT_DISABLED;
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_HOOK_HIT_DISABLED;
+	}
+	else
+	{
+		if(GetPlayerClass() == EPlayerClass::Mercenary)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_JETPACK;
+
+		if(GetPlayerClass() == EPlayerClass::Scientist)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_TELEGUN_GRENADE;
+
+		if(GetPlayerClass() != EPlayerClass::Boomer)
+		{
+			if(m_aWeapons[WEAPON_HAMMER].m_Got)
+				pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_HAMMER;
+		}
+		if(m_aWeapons[WEAPON_GUN].m_Got)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_GUN;
+		if(m_aWeapons[WEAPON_SHOTGUN].m_Got)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_SHOTGUN;
+		if(m_aWeapons[WEAPON_GRENADE].m_Got)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_GRENADE;
+		if(m_aWeapons[WEAPON_LASER].m_Got)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_LASER;
+		if(m_ActiveWeapon == WEAPON_NINJA)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_NINJA;
+		if(IsFrozen())
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_MOVEMENTS_DISABLED;
+
+		if(IsInLove())
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_HAMMER_HIT_DISABLED;
+	}
 
 	pDDNetCharacter->m_Jumps = m_Core.m_Jumps;
 	pDDNetCharacter->m_JumpedTotal = m_Core.m_JumpedTotal;
@@ -586,7 +604,7 @@ void CIcCharacter::FireWeapon()
 	if((GetPlayerClass() == EPlayerClass::None) || !GetClass())
 		return;
 
-	if(IsSleeping())
+	if(IsSleeping() || IsDead())
 		return;
 
 	DoWeaponSwitch();
@@ -2472,6 +2490,21 @@ void CIcCharacter::SetSoloForDuration(float Duration)
 	UpdateCoreSolo();
 }
 
+bool CIcCharacter::IsDead() const
+{
+	return m_DeadUntilTick.has_value();
+}
+
+void CIcCharacter::SetDeadForDuration(float Duration)
+{
+	if(Duration)
+		m_DeadUntilTick = Server()->Tick() + Server()->TickSpeed() * Duration;
+	else
+		m_DeadUntilTick.reset();
+
+	UpdateCoreSolo();
+}
+
 void CIcCharacter::GrantSpawnProtection(float Duration)
 {
 	// Indicate time left being protected via eyes
@@ -2512,7 +2545,23 @@ void CIcCharacter::PreCoreTick()
 		}
 	}
 
-	if(m_SoloUntilTick.has_value())
+	if(m_DeadUntilTick.has_value())
+	{
+		int EffectUntilTick = m_DeadUntilTick.value();
+		if(EffectUntilTick < 0)
+		{
+			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE,
+				BROADCAST_DURATION_REALTIME, _("You are Dead"), nullptr);
+		}
+		else
+		{
+			const int RemainingTicks = EffectUntilTick - CurrentTick;
+			int EffectDuration = 1 + (RemainingTicks / Server()->TickSpeed());
+			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE,
+				BROADCAST_DURATION_REALTIME, _("You are Dead for {sec:EffectDuration}"), "EffectDuration", &EffectDuration, nullptr);
+		}
+	}
+	else if(m_SoloUntilTick.has_value())
 	{
 		int EffectUntilTick = m_SoloUntilTick.value();
 		if(EffectUntilTick < 0)
@@ -2666,7 +2715,8 @@ void CIcCharacter::PrepareSnapContext(CCharacterSnapContext &SnapContext) const
 	}
 
 	int DDNetVersion = Server()->GetClientVersion(SnappingClient);
-	if(GetPlayerClass() == EPlayerClass::Boomer)
+	bool NoWeapon = IsDead() || (GetPlayerClass() == EPlayerClass::Boomer);
+	if(NoWeapon)
 	{
 		if(DDNetVersion >= 18080)
 		{
@@ -2737,7 +2787,7 @@ void CIcCharacter::FreeChildSnapIds()
 
 void CIcCharacter::UpdateCoreSolo()
 {
-	SetSolo(m_SoloUntilTick.has_value());
+	SetSolo(m_DeadUntilTick.has_value() || m_SoloUntilTick.has_value());
 }
 
 void CIcCharacter::UpdateTuningParam()

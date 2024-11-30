@@ -53,6 +53,7 @@ public:
 	void OnCharacterSnap(int SnappingClient) override;
 	void OnCharacterSpawned(const SpawnContext &Context) override;
 	void OnCharacterDamage(SDamageContext *pContext) override;
+	void OnCharacterBackFromDead() override;
 
 	void OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context) override;
 	void OnHumanHammerHitHuman(CIcCharacter *pTarget);

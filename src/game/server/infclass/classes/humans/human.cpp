@@ -786,6 +786,11 @@ void CInfClassHuman::OnCharacterDamage(SDamageContext *pContext)
 	ResetInvisibility();
 }
 
+void CInfClassHuman::OnCharacterBackFromDead()
+{
+	SpawnChildEntities();
+}
+
 void CInfClassHuman::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context)
 {
 	if(!m_pCharacter)

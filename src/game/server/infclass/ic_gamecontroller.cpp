@@ -6867,6 +6867,10 @@ void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const Spa
 	}
 }
 
+void CIcGameController::OnCharacterBackFromDead(CIcCharacter *pCharacter)
+{
+}
+
 void CIcGameController::OnClassChooserRequested(CIcCharacter *pCharacter)
 {
 	if(Config()->m_InfSurvivalMode)

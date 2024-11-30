@@ -382,6 +382,10 @@ void CIcPlayerClass::OnCharacterDamage(SDamageContext *pContext)
 {
 }
 
+void CIcPlayerClass::OnCharacterBackFromDead()
+{
+}
+
 void CIcPlayerClass::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context)
 {
 }

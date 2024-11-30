@@ -205,6 +205,10 @@ public:
 	void MakeInvisible();
 	void GrantInvisibility(float Duration);
 	void SetSoloForDuration(float Duration);
+
+	bool IsDead() const;
+	void SetDeadForDuration(float Duration);
+
 	void GrantSpawnProtection(float Duration);
 
 	bool PositionIsLocked() const;
@@ -355,6 +359,7 @@ protected:
 	int m_AntiFireTime = 0;
 	int m_GrantedInvisibilityUntilTick = 0;
 	std::optional<int> m_SoloUntilTick;
+	std::optional<int> m_DeadUntilTick;
 	int m_Invincible = 0;
 
 	int m_HealTick = 0;
