@@ -37,7 +37,7 @@ CScientistMine::~CScientistMine()
 
 void CScientistMine::Explode(int DetonatedBy)
 {
-	new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), m_Owner, 6, EDamageType::SCIENTIST_MINE);
+	new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), GetOwner(), 6, EDamageType::SCIENTIST_MINE);
 	GameWorld()->DestroyEntity(this);
 	
 	//Self damage
@@ -131,7 +131,7 @@ void CScientistMine::Tick()
 			DetonatedBy = p->GetCid();
 			if(DetonatedBy < 0)
 			{
-				DetonatedBy = m_Owner;
+				DetonatedBy = GetOwner();
 			}
 			break;
 		}

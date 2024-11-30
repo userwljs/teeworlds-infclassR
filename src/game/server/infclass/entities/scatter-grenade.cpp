@@ -8,8 +8,8 @@
 #include <game/server/gamecontext.h>
 
 #include <game/infclass/damage_type.h>
-
-#include "growingexplosion.h"
+#include <game/server/infclass/entities/growingexplosion.h>
+#include <game/server/infclass/entities/infccharacter.h>
 
 int CScatterGrenade::EntityId = CGameWorld::ENTTYPE_SCATTER_GRENADE;
 
@@ -50,9 +50,9 @@ void CScatterGrenade::Tick()
 
 	if(m_ExplodeOnContact)
 	{
-		CCharacter *OwnerChar = GameServer()->GetPlayerChar(m_Owner);
-		CCharacter *TargetChr = GameServer()->m_World.IntersectCharacter(PrevPos, CurPos, 6.0f, CurPos, GetExceptEntitiesFilterFunction({OwnerChar}), m_Owner);
-		
+		CCharacter *OwnerChar = GetOwnerCharacter();
+		CCharacter *TargetChr = GameWorld()->IntersectCharacter(PrevPos, CurPos, 6.0f, CurPos, GetExceptEntitiesFilterFunction({OwnerChar}), GetOwner());
+
 		if(TargetChr)
 		{
 			Explode();
@@ -139,11 +139,11 @@ void CScatterGrenade::Explode()
 {
 	if(m_IsFlashGrenade)
 	{
-		new CGrowingExplosion(GameServer(), m_ActualPos, m_ActualDir, m_Owner, 4, EDamageType::STUNNING_GRENADE);
+		new CGrowingExplosion(GameServer(), m_ActualPos, m_ActualDir, GetOwner(), 4, EDamageType::STUNNING_GRENADE);
 	}
 	else
 	{
-		new CGrowingExplosion(GameServer(), m_ActualPos, m_ActualDir, m_Owner, 4, EDamageType::MERCENARY_GRENADE);
+		new CGrowingExplosion(GameServer(), m_ActualPos, m_ActualDir, GetOwner(), 4, EDamageType::MERCENARY_GRENADE);
 	}
 	
 	GameWorld()->DestroyEntity(this);

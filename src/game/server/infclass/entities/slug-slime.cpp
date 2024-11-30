@@ -39,13 +39,13 @@ void CSlugSlime::Tick()
 		if(!GameServer()->Collision()->AreConnected(p->m_Pos, m_Pos, 84.0f))
 			continue; // not in reach
 		
-		p->GetClass()->OnSlimeEffect(m_Owner, m_Damage, m_DamageInterval);
+		p->GetClass()->OnSlimeEffect(GetOwner(), m_Damage, m_DamageInterval);
 	}
 
 	int ExistsForTicks = Server()->Tick() - m_StartTick;
 	if((ExistsForTicks % 20) == 1)
 	{
-		GameServer()->CreateDeath(m_Pos, m_Owner);
+		GameServer()->CreateDeath(m_Pos, GetOwner());
 	}
 }
 
@@ -81,7 +81,7 @@ bool CSlugSlime::Replenish(int PlayerId, int EndTick)
 	if(m_EndTick > EndTick)
 		return false;
 
-	m_Owner = PlayerId;
+	SetOwner(PlayerId);
 	m_EndTick = EndTick;
 	return true;
 }

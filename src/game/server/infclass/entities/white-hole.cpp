@@ -188,7 +188,7 @@ void CWhiteHole::Tick()
 	int LifeSpan = m_EndTick - CurrentTick;
 	if(Server()->Tick() >= m_EndTick)
 	{
-		new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), m_Owner, 20, EDamageType::WHITE_HOLE);
+		new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), GetOwner(), 20, EDamageType::WHITE_HOLE);
 		Reset();
 	}
 	else 

@@ -45,7 +45,7 @@ void CPlasma::Tick()
 			//freeze or explode
 			if (m_Freeze) 
 			{
-				pTarget->Freeze(3.0f, m_Owner, FREEZEREASON_FLASH);
+				pTarget->Freeze(3.0f, GetOwner(), FREEZEREASON_FLASH);
 			}
 			
 			Explode();
@@ -82,7 +82,7 @@ void CPlasma::Explode()
 	//GameServer()->CreateSound(CurPos, m_SoundImpact);
 	if (m_Explosive) 
 	{
-		GameController()->CreateExplosion(m_Pos, m_Owner, m_DamageType, Config()->m_InfTurretDmgFactor*0.1f);
+		GameController()->CreateExplosion(m_Pos, GetOwner(), m_DamageType, Config()->m_InfTurretDmgFactor*0.1f);
 	}
 	Reset();
 }

@@ -85,7 +85,7 @@ void CMercenaryBomb::Explode(int TriggeredBy)
 	if(m_Load > 1)
 	{
 		GameServer()->CreateSound(m_Pos, SOUND_GRENADE_EXPLODE);
-		CGrowingExplosion *pExplosion = new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), m_Owner, 16.0f * Factor, EDamageType::MERCENARY_BOMB);
+		CGrowingExplosion *pExplosion = new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), GetOwner(), 16.0f * Factor, EDamageType::MERCENARY_BOMB);
 		pExplosion->SetTriggeredBy(TriggeredBy);
 	}
 
@@ -126,7 +126,7 @@ void CMercenaryBomb::Snap(int SnappingClient)
 		pP->m_Subtype = 0;
 	}
 
-	if(SnappingClient == m_Owner && m_LoadingTick > 0)
+	if(SnappingClient == GetOwner() && m_LoadingTick > 0)
 	{
 		R = GetProximityRadius();
 		AngleStart = AngleStart * 2.0f;

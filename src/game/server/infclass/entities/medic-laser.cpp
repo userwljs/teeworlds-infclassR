@@ -46,7 +46,7 @@ bool CMedicLaser::OnCharacterHit(CInfClassCharacter *pHit)
 
 	if(pMedic->GetHealthArmorSum() < MinimumHP)
 	{
-		GameServer()->SendBroadcast_Localization(m_Owner, EBroadcastPriority::GAMEANNOUNCE,
+		GameServer()->SendBroadcast_Localization(GetOwner(), EBroadcastPriority::GAMEANNOUNCE,
 			BROADCAST_DURATION_GAMEANNOUNCE,
 			_("You need at least {int:MinimumHP} HP"),
 			"MinimumHP", &MinimumHP,
@@ -55,7 +55,7 @@ bool CMedicLaser::OnCharacterHit(CInfClassCharacter *pHit)
 	}
 	else if(GameController()->GetInfectedCount() < MinimumInfected)
 	{
-		GameServer()->SendBroadcast_Localization(m_Owner, EBroadcastPriority::GAMEANNOUNCE,
+		GameServer()->SendBroadcast_Localization(GetOwner(), EBroadcastPriority::GAMEANNOUNCE,
 			BROADCAST_DURATION_GAMEANNOUNCE,
 			_("Too few infected (less than {int:MinimumInfected})"),
 			"MinimumInfected", &MinimumInfected,
@@ -64,7 +64,7 @@ bool CMedicLaser::OnCharacterHit(CInfClassCharacter *pHit)
 	}
 	else if(pHit->GetArmor() > 10)
 	{
-		GameServer()->SendBroadcast_Localization(m_Owner, EBroadcastPriority::GAMEANNOUNCE,
+		GameServer()->SendBroadcast_Localization(GetOwner(), EBroadcastPriority::GAMEANNOUNCE,
 			BROADCAST_DURATION_GAMEANNOUNCE,
 			_("The target is too strong, the cure won't work"),
 			nullptr);
@@ -85,7 +85,7 @@ bool CMedicLaser::OnCharacterHit(CInfClassCharacter *pHit)
 		pInfected->SetHealthArmor(1, 0);
 		const float ReviverHelperDuration = 45;
 		pInfected->AddHelper(pMedic->GetCid(), ReviverHelperDuration);
-		pMedic->TakeDamage(vec2(0.f, 0.f), Config()->m_InfRevivalDamage * 2, m_Owner, EDamageType::MEDIC_REVIVAL);
+		pMedic->TakeDamage(vec2(0.f, 0.f), Config()->m_InfRevivalDamage * 2, GetOwner(), EDamageType::MEDIC_REVIVAL);
 
 		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_HUMANS,
 			_("Medic {str:MedicName} revived {str:RevivedName}"),

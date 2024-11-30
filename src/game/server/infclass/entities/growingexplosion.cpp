@@ -118,7 +118,7 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 	case EGrowingExplosionEffect::POISON_INFECTED:
 		if(random_prob(0.1f))
 		{
-			GameServer()->CreateDeath(m_SeedPos, m_Owner);
+			GameServer()->CreateDeath(m_SeedPos, GetOwner());
 		}
 		break;
 	case EGrowingExplosionEffect::ELECTRIFY_INFECTED:
@@ -176,13 +176,13 @@ void CGrowingExplosion::Tick()
 					case EGrowingExplosionEffect::POISON_INFECTED:
 						if(random_prob(0.1f))
 						{
-							GameServer()->CreateDeath(TileCenter, m_Owner);
+							GameServer()->CreateDeath(TileCenter, GetOwner());
 						}
 						break;
 					case EGrowingExplosionEffect::HEAL_HUMANS:
 						if(m_VisualizedTiles % 8 == 0)
 						{
-							GameServer()->CreateDeath(TileCenter, m_Owner);
+							GameServer()->CreateDeath(TileCenter, GetOwner());
 						}
 						break;
 					case EGrowingExplosionEffect::LOVE_INFECTED:
@@ -195,7 +195,7 @@ void CGrowingExplosion::Tick()
 						if(random_prob(0.2f))
 						{
 							float DamageFactor = m_DamageType == EDamageType::MERCENARY_BOMB ? 0 : 1;
-							GameController()->CreateExplosion(TileCenter, m_Owner, m_DamageType, DamageFactor);
+							GameController()->CreateExplosion(TileCenter, GetOwner(), m_DamageType, DamageFactor);
 						}
 						break;
 					case EGrowingExplosionEffect::ELECTRIFY_INFECTED:
@@ -307,7 +307,7 @@ void CGrowingExplosion::Tick()
 				switch(m_ExplosionEffect)
 				{
 				case EGrowingExplosionEffect::FREEZE_INFECTED:
-					p->Freeze(3.0f, m_Owner, FREEZEREASON_FLASH);
+					p->Freeze(3.0f, GetOwner(), FREEZEREASON_FLASH);
 					GameServer()->SendEmoticon(p->GetCid(), EMOTICON_QUESTION);
 					m_Hit[p->GetCid()] = true;
 					break;
@@ -317,8 +317,8 @@ void CGrowingExplosion::Tick()
 					const float PoisonDurationSeconds = Config()->m_InfPoisonDuration / 1000.0;
 					const float DamageIntervalSeconds = PoisonDurationSeconds / Damage;
 
-					p->Poison(Damage, m_Owner, EDamageType::MERCENARY_GRENADE, DamageIntervalSeconds);
-					p->GetClass()->DisableHealing(Config()->m_InfPoisonDuration / 1000.0f, m_Owner, EDamageType::MERCENARY_GRENADE);
+					p->Poison(Damage, GetOwner(), EDamageType::MERCENARY_GRENADE, DamageIntervalSeconds);
+					p->GetClass()->DisableHealing(Config()->m_InfPoisonDuration / 1000.0f, GetOwner(), EDamageType::MERCENARY_GRENADE);
 				}
 					GameServer()->SendEmoticon(p->GetCid(), EMOTICON_DROP);
 					m_Hit[p->GetCid()] = true;
@@ -343,7 +343,7 @@ void CGrowingExplosion::Tick()
 					int Damage = GetActualDamage();
 					if(Damage)
 					{
-						p->TakeDamage(normalize(p->m_Pos - m_SeedPos) * 4.0f, Damage, m_Owner, m_DamageType);
+						p->TakeDamage(normalize(p->m_Pos - m_SeedPos) * 4.0f, Damage, GetOwner(), m_DamageType);
 					}
 					m_Hit[p->GetCid()] = true;
 					break;

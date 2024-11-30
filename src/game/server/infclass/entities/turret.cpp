@@ -149,12 +149,12 @@ void CTurret::AttackTargets()
 			switch(m_Type)
 			{
 			case LASER:
-				CInfClassLaser::MakeLaser(GameServer(), m_Pos, Direction, GameServer()->Tuning()->m_LaserReach, m_Owner, Config()->m_InfTurretDmgHealthLaser, EInfclassWeapon::LASER_TURRET);
+				CInfClassLaser::MakeLaser(GameServer(), m_Pos, Direction, GameServer()->Tuning()->m_LaserReach, GetOwner(), Config()->m_InfTurretDmgHealthLaser, EInfclassWeapon::LASER_TURRET);
 				m_ammunition--;
 				break;
 			case PLASMA:
 			{
-				CPlasma *pPlasma = new CPlasma(GameServer(), m_Pos, m_Owner, pChr->GetCid(), Direction, 0, 1);
+				CPlasma *pPlasma = new CPlasma(GameServer(), m_Pos, GetOwner(), pChr->GetCid(), Direction, 0, 1);
 				pPlasma->SetDamageType(EDamageType::TURRET_PLASMA);
 			}
 				m_ammunition--;
@@ -225,13 +225,13 @@ void CTurret::Snap(int SnappingClient)
 
 void CTurret::Die(CInfClassCharacter *pKiller)
 {
-	pKiller->TakeDamage(vec2(0.f, 0.f), Config()->m_InfTurretSelfDestructDmg, m_Owner, EDamageType::TURRET_DESTRUCTION);
+	pKiller->TakeDamage(vec2(0.f, 0.f), Config()->m_InfTurretSelfDestructDmg, GetOwner(), EDamageType::TURRET_DESTRUCTION);
 	GameServer()->CreateSound(m_Pos, SOUND_LASER_FIRE);
 	int ClientId = pKiller->GetCid();
 	GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_SCORE, _("You destroyed {str:PlayerName}'s turret!"),
-		"PlayerName", Server()->ClientName(m_Owner),
+		"PlayerName", Server()->ClientName(GetOwner()),
 		nullptr);
-	GameServer()->SendChatTarget_Localization(m_Owner, CHATCATEGORY_SCORE, _("{str:PlayerName} has destroyed your turret!"),
+	GameServer()->SendChatTarget_Localization(GetOwner(), CHATCATEGORY_SCORE, _("{str:PlayerName} has destroyed your turret!"),
 		"PlayerName", Server()->ClientName(ClientId),
 		nullptr);
 

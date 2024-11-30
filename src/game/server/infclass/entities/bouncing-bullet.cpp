@@ -66,14 +66,14 @@ void CBouncingBullet::Tick()
 	int Collide = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CurPos, nullptr, &NewPos);
 
 	const float ProjectileRadius = 6.0f;
-	CInfClassCharacter *pTargetChr = CInfClassCharacter::GetInstance(GameServer()->m_World.IntersectCharacter(PrevPos, NewPos, ProjectileRadius, NewPos, nullptr, m_Owner));
+	CInfClassCharacter *pTargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, NewPos, ProjectileRadius, NewPos, nullptr, GetOwner()));
 
 	if(pTargetChr)
 	{
 		const float Damage = 1.33f;
 		if(pTargetChr)
 		{
-			pTargetChr->TakeDamage(m_Direction * 2, Damage, m_Owner, EDamageType::BIOLOGIST_SHOTGUN);
+			pTargetChr->TakeDamage(m_Direction * 2, Damage, GetOwner(), EDamageType::BIOLOGIST_SHOTGUN);
 		}
 
 		GameWorld()->DestroyEntity(this);

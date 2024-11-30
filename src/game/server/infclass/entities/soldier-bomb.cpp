@@ -61,14 +61,14 @@ void CSoldierBomb::Explode()
 	if(Server()->Tick() < m_StartTick + Config()->m_InfDoubleClickFilterMs * Server()->TickSpeed() / 1000.0)
 		return;
 
-	CCharacter *pOwnerChar = GameServer()->GetPlayerChar(m_Owner);
+	CCharacter *pOwnerChar = GetOwnerCharacter();
 	if(!pOwnerChar)
 		return;
 
 	vec2 dir = normalize(pOwnerChar->m_Pos - m_Pos);
 
 	GameServer()->CreateSound(m_Pos, SOUND_GRENADE_EXPLODE);
-	GameController()->CreateExplosion(m_Pos, m_Owner, EDamageType::SOLDIER_BOMB);
+	GameController()->CreateExplosion(m_Pos, GetOwner(), EDamageType::SOLDIER_BOMB);
 	if(m_ChargedBomb <= m_nbBomb)
 	{
 		/*
@@ -84,7 +84,7 @@ void CSoldierBomb::Explode()
 		{
 			float angle = static_cast<float>(i) * 2.0 * pi / 6.0;
 			vec2 expPos = m_Pos + vec2(90.0 * cos(angle), 90.0 * sin(angle));
-			GameController()->CreateExplosion(expPos, m_Owner, EDamageType::SOLDIER_BOMB);
+			GameController()->CreateExplosion(expPos, GetOwner(), EDamageType::SOLDIER_BOMB);
 		}
 		for(int i = 0; i < 12; i++)
 		{
@@ -92,7 +92,7 @@ void CSoldierBomb::Explode()
 			vec2 expPos = vec2(180.0 * cos(angle), 180.0 * sin(angle));
 			if(dot(expPos, dir) <= 0)
 			{
-				GameController()->CreateExplosion(m_Pos + expPos, m_Owner, EDamageType::SOLDIER_BOMB);
+				GameController()->CreateExplosion(m_Pos + expPos, GetOwner(), EDamageType::SOLDIER_BOMB);
 			}
 		}
 	}

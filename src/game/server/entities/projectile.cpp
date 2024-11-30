@@ -70,8 +70,8 @@ void CProjectile::Tick()
 	vec2 CurPos = GetPos(Ct);
 	int Collide = GameServer()->Collision()->IntersectLine(PrevPos, CurPos, &CurPos, 0);
 	const float ProjectileRadius = 6.0f;
-	CCharacter *OwnerChar = GameServer()->GetPlayerChar(m_Owner);
-	CInfClassCharacter *TargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, CurPos, ProjectileRadius, CurPos, GetExceptEntitiesFilterFunction({OwnerChar}), m_Owner));
+	CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
+	CInfClassCharacter *TargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, CurPos, ProjectileRadius, CurPos, GetExceptEntitiesFilterFunction({pOwnerChar}), GetOwner()));
 
 	m_LifeSpan--;
 	
@@ -86,23 +86,23 @@ void CProjectile::Tick()
 			vec2 Dir = normalize(PrevPos - CurPos);
 			if(length(Dir) > 1.1) Dir = normalize(m_StartPos - CurPos);
 			
-			new CGrowingExplosion(GameServer(), CurPos, Dir, m_Owner, m_FlashRadius, EDamageType::STUNNING_GRENADE);
+			new CGrowingExplosion(GameServer(), CurPos, Dir, GetOwner(), m_FlashRadius, EDamageType::STUNNING_GRENADE);
 		}
 		else if(m_Explosive)
 		{
-			GameController()->CreateExplosion(CurPos, m_Owner, m_DamageType);
+			GameController()->CreateExplosion(CurPos, GetOwner(), m_DamageType);
 		}
 		else if(TargetChr)
 		{
-			if(OwnerChar)
+			if(pOwnerChar)
 			{
-				if(OwnerChar->IsHuman() && TargetChr->IsHuman())
+				if(pOwnerChar->IsHuman() && TargetChr->IsHuman())
 				{
-					TargetChr->TakeDamage(m_Direction * 0.001f, m_Damage, m_Owner, m_DamageType);
+					TargetChr->TakeDamage(m_Direction * 0.001f, m_Damage, GetOwner(), m_DamageType);
 				}
 				else
 				{
-					TargetChr->TakeDamage(m_Direction * maximum(0.001f, m_Force), m_Damage, m_Owner,m_DamageType);
+					TargetChr->TakeDamage(m_Direction * maximum(0.001f, m_Force), m_Damage, GetOwner(),m_DamageType);
 				}
 			}
 		}

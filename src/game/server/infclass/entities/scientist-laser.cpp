@@ -55,7 +55,7 @@ void CScientistLaser::DoBounce()
 		}
 	}
 
-	GameController()->CreateExplosion(m_Pos, m_Owner, EDamageType::SCIENTIST_LASER);
+	GameController()->CreateExplosion(m_Pos, GetOwner(), EDamageType::SCIENTIST_LASER);
 	CreateWhiteHole(GetPos(), To);
 }
 
@@ -69,8 +69,8 @@ void CScientistLaser::CreateWhiteHole(const vec2 &CenterPos, const vec2 &To)
 	{
 		return;
 	}
-	new CGrowingExplosion(GameServer(), CenterPos, vec2(0.0, -1.0), m_Owner, 5, EDamageType::WHITE_HOLE);
-	new CWhiteHole(GameServer(), To, m_Owner);
+	new CGrowingExplosion(GameServer(), CenterPos, vec2(0.0, -1.0), GetOwner(), 5, EDamageType::WHITE_HOLE);
+	new CWhiteHole(GameServer(), To, GetOwner());
 
 	// Make it unavailable
 	pHuman->RemoveWhiteHole();

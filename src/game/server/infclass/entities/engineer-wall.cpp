@@ -112,11 +112,11 @@ void CEngineerWall::Snap(int SnappingClient)
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 	CSnapContext Context(SnappingClientVersion);
 
-	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_Pos2.value_or(m_Pos), m_SnapStartTick, m_Owner);
+	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_Pos2.value_or(m_Pos), m_SnapStartTick, GetOwner());
 
 	if(HasSecondPosition())
 	{
-		GameServer()->SnapLaserObject(Context, m_EndPointId, m_Pos2.value(), m_Pos2.value(), Server()->Tick(), m_Owner);
+		GameServer()->SnapLaserObject(Context, m_EndPointId, m_Pos2.value(), m_Pos2.value(), Server()->Tick(), GetOwner());
 	}
 }
 
@@ -148,7 +148,7 @@ void CEngineerWall::OnHitInfected(CInfClassCharacter *pCharacter)
 		}
 	}
 
-	pCharacter->Die(m_Owner, EDamageType::LASER_WALL);
+	pCharacter->Die(GetOwner(), EDamageType::LASER_WALL);
 }
 
 void CEngineerWall::PrepareSnapData()

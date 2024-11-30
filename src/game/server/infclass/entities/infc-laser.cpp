@@ -29,7 +29,7 @@ bool CInfClassLaser::HitCharacter(vec2 From, vec2 To)
 	CInfClassCharacter *pOwnerChar = GameController()->GetCharacter(GetOwner());
 	icArray<const CEntity*, 10> IgnoreHits;
 	IgnoreHits.Add(pOwnerChar);
-	CCharacter *pIntersect = GameWorld()->IntersectCharacter(m_Pos, To, 0.f, At, GetExceptEntitiesFilterFunction(IgnoreHits), m_Owner);
+	CCharacter *pIntersect = GameWorld()->IntersectCharacter(m_Pos, To, 0.f, At, GetExceptEntitiesFilterFunction(IgnoreHits), GetOwner());
 	CInfClassCharacter *pHit = CInfClassCharacter::GetInstance(pIntersect);
 
 	if(!pHit)
@@ -44,7 +44,7 @@ bool CInfClassLaser::HitCharacter(vec2 From, vec2 To)
 
 bool CInfClassLaser::OnCharacterHit(CInfClassCharacter *pHit)
 {
-	pHit->TakeDamage(vec2(0.f, 0.f), m_Dmg, m_Owner, GetDamageType());
+	pHit->TakeDamage(vec2(0.f, 0.f), m_Dmg, GetOwner(), GetDamageType());
 
 	if(m_Weapon == EInfclassWeapon::LOOPER_LASER)
 	{
