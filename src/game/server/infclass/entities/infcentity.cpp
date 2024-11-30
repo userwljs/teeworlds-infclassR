@@ -21,11 +21,11 @@ static bool ExceptEntitiesFilter(const CEntity *pEntity)
 	return !aFilterEntities.Contains(pEntity);
 }
 
-CInfCEntity::CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, int Owner,
-                         int ProximityRadius)
-	: CEntity(pGameContext->GameWorld(), ObjectType, Pos, ProximityRadius)
-	, m_Owner(Owner)
+CInfCEntity::CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, std::optional<int> Owner,
+	int ProximityRadius) :
+	CEntity(pGameContext->GameWorld(), ObjectType, Pos, ProximityRadius)
 {
+	SetOwner(Owner.value_or(-1));
 }
 
 CInfClassGameController *CInfCEntity::GameController() const
@@ -35,7 +35,14 @@ CInfClassGameController *CInfCEntity::GameController() const
 
 void CInfCEntity::SetOwner(int ClientId)
 {
-	m_Owner = ClientId;
+	if(ClientId < 0)
+	{
+		m_Owner.reset();
+	}
+	else
+	{
+		m_Owner = ClientId;
+	}
 }
 
 CInfClassCharacter *CInfCEntity::GetOwnerCharacter() const

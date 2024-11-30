@@ -21,13 +21,13 @@ using EntityFilter = bool (*)(const CEntity *);
 class CInfCEntity : public CEntity
 {
 public:
-	CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), int Owner = -1,
-	            int ProximityRadius=0);
+	CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), std::optional<int> Owner = std::nullopt,
+		int ProximityRadius = 0);
 
 	CInfClassGameController *GameController() const;
 
-	bool HasOwner() const { return m_Owner >= 0; }
-	int GetOwner() const { return m_Owner; }
+	bool HasOwner() const { return m_Owner.has_value(); }
+	int GetOwner() const { return m_Owner.value_or(-1); }
 	void SetOwner(int ClientId);
 
 	CInfClassCharacter *GetOwnerCharacter() const;
@@ -57,7 +57,7 @@ protected:
 	virtual bool DoSnapForClient(int SnappingClient);
 	void SyncPosition();
 
-	int m_Owner = 0;
+	std::optional<int> m_Owner;
 	vec2 m_Velocity{};
 	std::optional<int> m_EndTick;
 	vec2 m_Pivot;
