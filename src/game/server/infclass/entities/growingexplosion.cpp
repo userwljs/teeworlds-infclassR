@@ -28,7 +28,7 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 }
 
 CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 Dir, int Owner, int Radius, EDamageType DamageType) :
-	CInfCEntity(pGameContext, EntityId, Pos, Owner),
+	CIcEntity(pGameContext, EntityId, Pos, Owner),
 	m_MaxGrowing(Radius),
 	m_DamageType(DamageType)
 {

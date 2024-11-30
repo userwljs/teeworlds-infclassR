@@ -13,7 +13,7 @@
 #include <game/server/infclass/infcgamecontroller.h>
 
 CInfClassLaser::CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon) :
-	CInfCEntity(pGameContext, CGameWorld::ENTTYPE_LASER, Pos, Owner), m_Weapon(InfClassWeapon)
+	CIcEntity(pGameContext, CGameWorld::ENTTYPE_LASER, Pos, Owner), m_Weapon(InfClassWeapon)
 {
 	m_Dmg = Dmg;
 	m_Energy = StartEnergy;

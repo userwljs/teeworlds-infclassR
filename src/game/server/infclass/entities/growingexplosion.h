@@ -4,7 +4,7 @@
 #ifndef GAME_SERVER_ENTITIES_GROWINGEXPLOSION_H
 #define GAME_SERVER_ENTITIES_GROWINGEXPLOSION_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
 #include <game/server/entity.h>
 #include <game/server/entities/character.h>
@@ -25,7 +25,7 @@ enum class EGrowingExplosionEffect
 	HEAL_HUMANS,
 };
 
-class CGrowingExplosion : public CInfCEntity
+class CGrowingExplosion : public CIcEntity
 {
 public:
 	static int EntityId;

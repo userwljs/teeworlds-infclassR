@@ -904,6 +904,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/hero-flag.h
   infclass/entities/ic-pickup.cpp
   infclass/entities/ic-pickup.h
+  infclass/entities/ic_entity.cpp
+  infclass/entities/ic_entity.h
   infclass/entities/ic_projectile.cpp
   infclass/entities/ic_projectile.h
   infclass/entities/infc-laser.cpp
@@ -912,8 +914,6 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/infc-placed-object.h
   infclass/entities/infccharacter.cpp
   infclass/entities/infccharacter.h
-  infclass/entities/infcentity.cpp
-  infclass/entities/infcentity.h
   infclass/entities/laser-teleport.cpp
   infclass/entities/laser-teleport.h
   infclass/entities/looper-wall.cpp

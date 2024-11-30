@@ -2,11 +2,11 @@
 #ifndef GAME_SERVER_ENTITIES_PLASMA_H
 #define GAME_SERVER_ENTITIES_PLASMA_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
 enum class EDamageType;
 
-class CPlasma: public CInfCEntity
+class CPlasma: public CIcEntity
 {
 public:
 	static int EntityId;

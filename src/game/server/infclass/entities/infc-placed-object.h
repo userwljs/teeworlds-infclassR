@@ -3,9 +3,9 @@
 #ifndef GAME_SERVER_ENTITIES_INFC_PLACED_OBJECT_H
 #define GAME_SERVER_ENTITIES_INFC_PLACED_OBJECT_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
-class CPlacedObject : public CInfCEntity
+class CPlacedObject : public CIcEntity
 {
 public:
 	CPlacedObject(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), int Owner = -1, int ProximityRadius=0);

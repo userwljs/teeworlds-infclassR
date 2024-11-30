@@ -1,11 +1,11 @@
 #ifndef GAME_SERVER_ENTITIES_LASER_TELEPORT_H
 #define GAME_SERVER_ENTITIES_LASER_TELEPORT_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
 struct WeaponFireContext;
 
-class CLaserTeleport : public CInfCEntity
+class CLaserTeleport : public CIcEntity
 {
 public:
 	static int EntityId;

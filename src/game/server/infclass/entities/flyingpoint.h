@@ -3,9 +3,9 @@
 #ifndef GAME_SERVER_ENTITIES_FLYINGPOINT_H
 #define GAME_SERVER_ENTITIES_FLYINGPOINT_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
-class CFlyingPoint : public CInfCEntity
+class CFlyingPoint : public CIcEntity
 {
 public:
 	static int EntityId;

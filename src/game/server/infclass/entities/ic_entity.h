@@ -18,10 +18,10 @@ class CInfClassPlayerClass;
 
 using EntityFilter = bool (*)(const CEntity *);
 
-class CInfCEntity : public CEntity
+class CIcEntity : public CEntity
 {
 public:
-	CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), std::optional<int> Owner = std::nullopt,
+	CIcEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), std::optional<int> Owner = std::nullopt,
 		int ProximityRadius = 0);
 
 	CInfClassGameController *GameController() const;

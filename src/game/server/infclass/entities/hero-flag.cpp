@@ -15,7 +15,7 @@
 int CHeroFlag::EntityId{};
 
 CHeroFlag::CHeroFlag(CGameContext *pGameContext, int Owner)
-	: CInfCEntity(pGameContext, EntityId, vec2(), Owner, ms_PhysSize)
+	: CIcEntity(pGameContext, EntityId, vec2(), Owner, ms_PhysSize)
 {
 	for(int &Id : m_Ids)
 	{

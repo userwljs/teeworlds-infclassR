@@ -3,11 +3,11 @@
 #ifndef GAME_SERVER_ENTITIES_SUPERWEAPON_INDICATOR_H
 #define GAME_SERVER_ENTITIES_SUPERWEAPON_INDICATOR_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
 #include <base/tl/array.h>
 
-class CSuperWeaponIndicator : public CInfCEntity
+class CSuperWeaponIndicator : public CIcEntity
 {
 public:
 	static int EntityId;

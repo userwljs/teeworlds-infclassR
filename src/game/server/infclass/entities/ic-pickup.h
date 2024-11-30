@@ -3,7 +3,7 @@
 #ifndef GAME_SERVER_IC_ENTITIES_PICKUP_H
 #define GAME_SERVER_IC_ENTITIES_PICKUP_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
 #include <base/tl/ic_array.h>
 
@@ -19,7 +19,7 @@ enum class EICPickupType
 
 struct SClassUpgrade;
 
-class CIcPickup : public CInfCEntity
+class CIcPickup : public CIcEntity
 {
 public:
 	static int EntityId;

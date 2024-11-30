@@ -2,7 +2,7 @@
 
 #include <base/flags.h>
 
-class CInfCEntity;
+class CIcEntity;
 
 enum class EFilterFlag
 {
@@ -17,4 +17,4 @@ enum class EFilterFlag
 
 DECLARE_FLAGS(FilterFlags, EFilterFlag);
 
-bool SnapFiltersPassed(const CInfCEntity *pEntity, int SnappingClient, FilterFlags Flags);
+bool SnapFiltersPassed(const CIcEntity *pEntity, int SnappingClient, FilterFlags Flags);

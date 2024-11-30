@@ -69,7 +69,7 @@ void CInfClassGameController::DestroyChildEntities(int OwnerId)
 
 	for(const auto EntityType : InfCEntities)
 	{
-		for(CInfCEntity *p = (CInfCEntity *)GameWorld()->FindFirst(EntityType); p; p = (CInfCEntity *)p->TypeNext())
+		for(CIcEntity *p = (CIcEntity *)GameWorld()->FindFirst(EntityType); p; p = (CIcEntity *)p->TypeNext())
 		{
 			if(p->GetOwner() != OwnerId)
 				continue;

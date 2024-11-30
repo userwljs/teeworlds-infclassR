@@ -1,11 +1,11 @@
 #pragma once
 
-#include <game/server/infclass/entities/infcentity.h>
+#include <game/server/infclass/entities/ic_entity.h>
 
 enum class TAKEDAMAGEMODE;
 enum class EDamageType;
 
-class CIcProjectile : public CInfCEntity
+class CIcProjectile : public CIcEntity
 {
 public:
 	static int EntityId;

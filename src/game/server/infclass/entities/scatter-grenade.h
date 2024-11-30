@@ -3,9 +3,9 @@
 #ifndef GAME_SERVER_ENTITIES_SCATTERGRENADE_H
 #define GAME_SERVER_ENTITIES_SCATTERGRENADE_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
-class CScatterGrenade : public CInfCEntity
+class CScatterGrenade : public CIcEntity
 {
 public:
 	static int EntityId;

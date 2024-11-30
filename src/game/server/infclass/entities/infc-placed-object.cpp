@@ -6,7 +6,7 @@
 #include <game/server/infclass/infcgamecontroller.h>
 
 CPlacedObject::CPlacedObject(CGameContext *pGameContext, int ObjectType, vec2 Pos, int Owner, int ProximityRadius)
-	: CInfCEntity(pGameContext, ObjectType, Pos, Owner, ProximityRadius)
+	: CIcEntity(pGameContext, ObjectType, Pos, Owner, ProximityRadius)
 {
 	m_InfClassObjectId = Server()->SnapNewId();
 	m_InfClassObjectType = INFCLASS_OBJECT_TYPE_CUSTOM;
@@ -33,7 +33,7 @@ void CPlacedObject::SetSecondPosition(vec2 Position)
 
 void CPlacedObject::Tick()
 {
-	CInfCEntity::Tick();
+	CIcEntity::Tick();
 
 	if(m_Pos2.has_value())
 	{

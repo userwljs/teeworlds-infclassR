@@ -15,7 +15,7 @@
 int CIcPickup::EntityId = CGameWorld::ENTTYPE_PICKUP;
 
 CIcPickup::CIcPickup(CGameContext *pGameContext, EICPickupType Type, vec2 Pos, int Owner) :
-	CInfCEntity(pGameContext, EntityId, Pos, Owner, PickupPhysSize)
+	CIcEntity(pGameContext, EntityId, Pos, Owner, PickupPhysSize)
 {
 	m_Type = Type;
 	m_SpawnTick = -1;
@@ -39,7 +39,7 @@ CIcPickup::CIcPickup(CGameContext *pGameContext, EICPickupType Type, vec2 Pos, i
 void CIcPickup::Reset()
 {
 	if(HasOwner())
-		CInfCEntity::Reset();
+		CIcEntity::Reset();
 
 	m_SpawnTick = -1;
 }
@@ -59,7 +59,7 @@ void CIcPickup::Tick()
 			return;
 	}
 
-	CInfCEntity::Tick();
+	CIcEntity::Tick();
 
 	// Check if a player intersected us
 	CInfClassCharacter *pChr = nullptr;

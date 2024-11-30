@@ -13,7 +13,7 @@
 int CBouncingBullet::EntityId{};
 
 CBouncingBullet::CBouncingBullet(CGameContext *pGameContext, int Owner, vec2 Pos, vec2 Dir)
-	: CInfCEntity(pGameContext, EntityId, Pos, Owner)
+	: CIcEntity(pGameContext, EntityId, Pos, Owner)
 {
 	m_ActualPos = Pos;
 	m_ActualDir = Dir;
@@ -36,14 +36,14 @@ vec2 CBouncingBullet::GetPos(float Time)
 
 void CBouncingBullet::TickPaused()
 {
-	CInfCEntity::TickPaused();
+	CIcEntity::TickPaused();
 
 	m_StartTick++;
 }
 
 void CBouncingBullet::Tick()
 {
-	CInfCEntity::Tick();
+	CIcEntity::Tick();
 
 	if(IsMarkedForDestroy())
 		return;

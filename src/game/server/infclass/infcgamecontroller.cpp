@@ -484,7 +484,7 @@ bool CInfClassGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, v
 	else if(str_comp(pName, "icHuman") == 0)
 		m_avSpawnPoints[1].push_back(Pos);
 
-	CInfCEntity *pNewEntity = nullptr;
+	CIcEntity *pNewEntity = nullptr;
 	if(str_comp(pName, "icInfected") == 0)
 	{
 		int SpawnX = static_cast<int>(Pos.x)/32.0f;

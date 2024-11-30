@@ -1,4 +1,4 @@
-#include "infcentity.h"
+#include "ic_entity.h"
 
 #include <base/tl/ic_array.h>
 
@@ -12,7 +12,7 @@ static icArray<const CEntity *, 10> aFilterEntities;
 
 static bool OwnerFilter(const CEntity *pEntity)
 {
-	const CInfCEntity *pInfEntity = static_cast<const CInfCEntity *>(pEntity);
+	const CIcEntity *pInfEntity = static_cast<const CIcEntity *>(pEntity);
 	return pInfEntity->GetOwner() == FilterOwnerId;
 }
 
@@ -21,7 +21,7 @@ static bool ExceptEntitiesFilter(const CEntity *pEntity)
 	return !aFilterEntities.Contains(pEntity);
 }
 
-CInfCEntity::CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, std::optional<int> Owner,
+CIcEntity::CIcEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, std::optional<int> Owner,
 	int ProximityRadius) :
 	CEntity(pGameContext->GameWorld(), ObjectType, Pos, ProximityRadius)
 {
@@ -29,12 +29,12 @@ CInfCEntity::CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, s
 	SetOwner(Owner.value_or(-1));
 }
 
-CInfClassGameController *CInfCEntity::GameController() const
+CInfClassGameController *CIcEntity::GameController() const
 {
 	return static_cast<CInfClassGameController*>(GameServer()->m_pController);
 }
 
-void CInfCEntity::SetOwner(int ClientId)
+void CIcEntity::SetOwner(int ClientId)
 {
 	if(ClientId < 0)
 	{
@@ -46,12 +46,12 @@ void CInfCEntity::SetOwner(int ClientId)
 	}
 }
 
-CInfClassCharacter *CInfCEntity::GetOwnerCharacter() const
+CInfClassCharacter *CIcEntity::GetOwnerCharacter() const
 {
 	return GameController()->GetCharacter(GetOwner());
 }
 
-CInfClassPlayerClass *CInfCEntity::GetOwnerClass() const
+CInfClassPlayerClass *CIcEntity::GetOwnerClass() const
 {
 	CInfClassCharacter *pCharacter = GetOwnerCharacter();
 	if (pCharacter)
@@ -60,29 +60,29 @@ CInfClassPlayerClass *CInfCEntity::GetOwnerClass() const
 	return nullptr;
 }
 
-EntityFilter CInfCEntity::GetOwnerFilterFunction(int Owner)
+EntityFilter CIcEntity::GetOwnerFilterFunction(int Owner)
 {
 	FilterOwnerId = Owner;
 	return OwnerFilter;
 }
 
-EntityFilter CInfCEntity::GetOwnerFilterFunction()
+EntityFilter CIcEntity::GetOwnerFilterFunction()
 {
 	return GetOwnerFilterFunction(GetOwner());
 }
 
-EntityFilter CInfCEntity::GetExceptEntitiesFilterFunction(const icArray<const CEntity *, 10> &aEntities)
+EntityFilter CIcEntity::GetExceptEntitiesFilterFunction(const icArray<const CEntity *, 10> &aEntities)
 {
 	aFilterEntities = aEntities;
 	return ExceptEntitiesFilter;
 }
 
-void CInfCEntity::Reset()
+void CIcEntity::Reset()
 {
 	GameWorld()->DestroyEntity(this);
 }
 
-void CInfCEntity::Tick()
+void CIcEntity::Tick()
 {
 	if(m_EndTick.has_value() && (Server()->Tick() >= m_EndTick))
 	{
@@ -100,25 +100,25 @@ void CInfCEntity::Tick()
 	}
 }
 
-void CInfCEntity::TickPaused()
+void CIcEntity::TickPaused()
 {
 	if (m_EndTick.has_value())
 		++m_EndTick.value();
 }
 
-void CInfCEntity::SetPos(const vec2 &Position)
+void CIcEntity::SetPos(const vec2 &Position)
 {
 	m_Pos = Position;
 }
 
-void CInfCEntity::SetAnimatedPos(const vec2 &Pivot, const vec2 &RelPosition, int PosEnv)
+void CIcEntity::SetAnimatedPos(const vec2 &Pivot, const vec2 &RelPosition, int PosEnv)
 {
 	m_Pivot = Pivot;
 	m_RelPosition = RelPosition;
 	m_PosEnv = PosEnv;
 }
 
-float CInfCEntity::GetLifespan() const
+float CIcEntity::GetLifespan() const
 {
 	if (!m_EndTick.has_value())
 		return -1;
@@ -127,17 +127,17 @@ float CInfCEntity::GetLifespan() const
 	return RemainingTicks <= 0 ? 0 : RemainingTicks / static_cast<float>(Server()->TickSpeed());
 }
 
-void CInfCEntity::SetLifespan(float Lifespan)
+void CIcEntity::SetLifespan(float Lifespan)
 {
 	m_EndTick = Server()->Tick() + Server()->TickSpeed() * Lifespan;
 }
 
-void CInfCEntity::ResetLifespan()
+void CIcEntity::ResetLifespan()
 {
 	m_EndTick.reset();
 }
 
-bool CInfCEntity::DoSnapForClient(int SnappingClient)
+bool CIcEntity::DoSnapForClient(int SnappingClient)
 {
 	if(NetworkClipped(SnappingClient))
 		return false;
@@ -145,7 +145,7 @@ bool CInfCEntity::DoSnapForClient(int SnappingClient)
 	return true;
 }
 
-void CInfCEntity::SyncPosition()
+void CIcEntity::SyncPosition()
 {
 	vec2 Position(0.0f, 0.0f);
 	float Angle = 0.0f;

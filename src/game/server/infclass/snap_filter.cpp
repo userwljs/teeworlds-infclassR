@@ -4,10 +4,10 @@
 #include "engine/shared/config.h"
 #include "game/server/gamecontext.h"
 #include "game/server/infclass/entities/infccharacter.h"
-#include "game/server/infclass/entities/infcentity.h"
+#include "game/server/infclass/entities/ic_entity.h"
 #include "game/server/player.h"
 
-bool SnapFiltersPassed(const CInfCEntity *pEntity, int SnappingClient, FilterFlags Flags)
+bool SnapFiltersPassed(const CIcEntity *pEntity, int SnappingClient, FilterFlags Flags)
 {
 	const int Owner = pEntity->GetOwner();
 	if(Owner < 0 || SnappingClient == Owner)

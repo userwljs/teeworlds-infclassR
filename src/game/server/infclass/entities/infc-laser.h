@@ -3,13 +3,13 @@
 #ifndef GAME_SERVER_INFCLASS_ENTITIES_LASER_H
 #define GAME_SERVER_INFCLASS_ENTITIES_LASER_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
 struct WeaponFireContext;
 enum class EDamageType;
 enum class EInfclassWeapon;
 
-class CInfClassLaser : public CInfCEntity
+class CInfClassLaser : public CIcEntity
 {
 public:
 	CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);

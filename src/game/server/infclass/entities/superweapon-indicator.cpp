@@ -12,7 +12,7 @@
 int CSuperWeaponIndicator::EntityId{};
 
 CSuperWeaponIndicator::CSuperWeaponIndicator(CGameContext *pGameContext, vec2 Pos, int Owner)
-	: CInfCEntity(pGameContext, EntityId, Pos, Owner)
+	: CIcEntity(pGameContext, EntityId, Pos, Owner)
 {
 	GameWorld()->InsertEntity(this);
 	m_Radius = 40.0f;

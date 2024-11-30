@@ -16,7 +16,7 @@
 int CWhiteHole::EntityId{};
 
 CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner)
-	: CInfCEntity(pGameContext, EntityId, CenterPos, Owner)
+	: CIcEntity(pGameContext, EntityId, CenterPos, Owner)
 {
 	GameWorld()->InsertEntity(this);
 	m_PlayerPullStrength = Config()->m_InfWhiteHolePullStrength/10.0f;

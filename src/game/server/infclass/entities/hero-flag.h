@@ -3,11 +3,11 @@
 #ifndef GAME_SERVER_ENTITIES_HEROFLAG_H
 #define GAME_SERVER_ENTITIES_HEROFLAG_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
 class CInfClassCharacter;
 
-class CHeroFlag : public CInfCEntity
+class CHeroFlag : public CIcEntity
 {
 public:
 	static int EntityId;

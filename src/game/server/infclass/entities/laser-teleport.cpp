@@ -64,7 +64,7 @@ std::optional<vec2> CLaserTeleport::FindPortalPosition(CInfClassCharacter *pChar
 }
 
 CLaserTeleport::CLaserTeleport(CGameContext *pGameContext, vec2 StartPos, vec2 EndPos)
-	: CInfCEntity(pGameContext, EntityId)
+	: CIcEntity(pGameContext, EntityId)
 {
 	m_StartPos = StartPos;
 	m_EndPos = EndPos;

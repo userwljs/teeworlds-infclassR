@@ -13,7 +13,7 @@
 #include <game/server/infclass/snap_filter.h>
 
 #include "engineer-wall.h"
-#include "game/server/infclass/entities/infcentity.h"
+#include "game/server/infclass/entities/ic_entity.h"
 #include "infccharacter.h"
 
 static const float g_BarrierMaxLength = 300.0;

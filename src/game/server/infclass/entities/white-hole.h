@@ -3,9 +3,9 @@
 #ifndef GAME_SERVER_ENTITIES_WHITE_HOLE_H
 #define GAME_SERVER_ENTITIES_WHITE_HOLE_H
 
-#include "infcentity.h"
+#include "ic_entity.h"
 
-class CWhiteHole : public CInfCEntity
+class CWhiteHole : public CIcEntity
 {
 private:
 	void StartVisualEffect();
