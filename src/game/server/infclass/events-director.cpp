@@ -41,16 +41,16 @@ void EventsDirector::SetPreloadedMapName(const char *pName)
 
 	if(pEvent[0])
 	{
-		if(str_endswith(pName, pEvent))
+		if(str_comp(pEvent, "winter") == 0)
 		{
-			if(str_comp(pEvent, "winter") == 0)
+			if(str_endswith(pName, pEvent) || str_find(pName, "snow"))
 			{
 				PreloadedMapEventType = EventType::Winter;
 			}
-			else
-			{
-				PreloadedMapEventType = EventType::Generic;
-			}
+		}
+		else
+		{
+			PreloadedMapEventType = EventType::Generic;
 		}
 	}
 }
