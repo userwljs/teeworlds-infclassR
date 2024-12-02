@@ -39,7 +39,7 @@ float CConsole::CResult::GetFloat(unsigned Index) const
 	return str_tofloat(m_apArgs[Index]);
 }
 
-ColorHSLA CConsole::CResult::GetColor(unsigned Index, bool Light) const
+ColorHSLA CConsole::CResult::GetColor(unsigned Index, float DarkestLighting) const
 {
 	ColorHSLA Hsla = ColorHSLA(0, 0, 0);
 	if(Index >= m_NumArgs)
@@ -49,8 +49,8 @@ ColorHSLA CConsole::CResult::GetColor(unsigned Index, bool Light) const
 	if(str_isallnum(pStr) || ((pStr[0] == '-' || pStr[0] == '+') && str_isallnum(pStr + 1))) // Teeworlds Color (Packed HSL)
 	{
 		Hsla = ColorHSLA(str_toulong_base(pStr, 10), true);
-		if(Light)
-			Hsla = Hsla.UnclampLighting();
+		if(DarkestLighting)
+			Hsla = Hsla.UnclampLighting(DarkestLighting);
 	}
 	else if(*pStr == '$') // Hex RGB
 	{
@@ -762,7 +762,7 @@ struct CColVariableData
 {
 	IConsole *m_pConsole;
 	unsigned *m_pVariable;
-	bool m_Light;
+	float m_DarkestLighting;
 	bool m_Alpha;
 	unsigned m_OldValue;
 };
@@ -841,12 +841,12 @@ static void ColVariableCommand(IConsole::IResult *pResult, void *pUserData)
 
 	if(pResult->NumArguments())
 	{
-		ColorHSLA Col = pResult->GetColor(0, pData->m_Light);
-		int Val = Col.Pack(pData->m_Light ? 0.5f : 0.0f, pData->m_Alpha);
+		const ColorHSLA Color = pResult->GetColor(0, pData->m_DarkestLighting);
+		const unsigned Value = Color.Pack(pData->m_DarkestLighting, pData->m_Alpha);
 
-		*(pData->m_pVariable) = Val;
+		*(pData->m_pVariable) = Value;
 		if(pResult->m_ClientId != IConsole::CLIENT_ID_GAME)
-			pData->m_OldValue = Val;
+			pData->m_OldValue = Value;
 	}
 	else
 	{
@@ -855,13 +855,11 @@ static void ColVariableCommand(IConsole::IResult *pResult, void *pUserData)
 		pData->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "console", aBuf);
 		pResult->m_Value = *(pData->m_pVariable);
 
-		ColorHSLA Hsla(*(pData->m_pVariable), true);
-		if(pData->m_Light)
-			Hsla = Hsla.UnclampLighting();
+		const ColorHSLA Hsla = ColorHSLA(*pData->m_pVariable, true).UnclampLighting(pData->m_DarkestLighting);
 		str_format(aBuf, sizeof(aBuf), "H: %d°, S: %d%%, L: %d%%", round_truncate(Hsla.h * 360), round_truncate(Hsla.s * 100), round_truncate(Hsla.l * 100));
 		pData->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "console", aBuf);
 
-		ColorRGBA Rgba = color_cast<ColorRGBA>(Hsla);
+		const ColorRGBA Rgba = color_cast<ColorRGBA>(Hsla);
 		str_format(aBuf, sizeof(aBuf), "R: %d, G: %d, B: %d, #%06X", round_truncate(Rgba.r * 255), round_truncate(Rgba.g * 255), round_truncate(Rgba.b * 255), Rgba.Pack(false));
 		pData->m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "console", aBuf);
 
@@ -996,13 +994,12 @@ void CConsole::ConToggle(IConsole::IResult *pResult, void *pUser)
 		else if(pfnCallback == ColVariableCommand)
 		{
 			CColVariableData *pData = static_cast<CColVariableData *>(pUserData);
-			bool Light = pData->m_Light;
-			float Darkest = Light ? 0.5f : 0.0f;
+			float DarkestLighting = pData->m_DarkestLighting;
 			bool Alpha = pData->m_Alpha;
 			unsigned Cur = *pData->m_pVariable;
-			ColorHSLA Val = Cur == pResult->GetColor(1, Light).Pack(Darkest, Alpha) ? pResult->GetColor(2, Light) : pResult->GetColor(1, Light);
+			ColorHSLA Val = Cur == pResult->GetColor(1, DarkestLighting).Pack(DarkestLighting, Alpha) ? pResult->GetColor(2, DarkestLighting) : pResult->GetColor(1, DarkestLighting);
 
-			str_format(aBuf, sizeof(aBuf), "%s %u", pResult->GetString(0), Val.Pack(Darkest, Alpha));
+			str_format(aBuf, sizeof(aBuf), "%s %u", pResult->GetString(0), Val.Pack(DarkestLighting, Alpha));
 			pConsole->ExecuteLine(aBuf);
 			aBuf[0] = 0;
 		}

@@ -207,7 +207,7 @@ void MakeGrayScale(CImageInfo *pImg)
 
 void SetQuadColor(CQuad *Quad, int Color)
 {
-	ColorRGBA BodyColor = color_cast<ColorRGBA>(ColorHSLA(Color).UnclampLighting());
+	ColorRGBA BodyColor = color_cast<ColorRGBA>(ColorHSLA(Color).UnclampLighting(ColorHSLA::DARKEST_LGT));
 	CColor TypedColor;
 	TypedColor.r = BodyColor.r * 255;
 	TypedColor.g = BodyColor.g * 255;
