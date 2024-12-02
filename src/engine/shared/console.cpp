@@ -18,28 +18,28 @@
 
 // todo: rework this
 
-const char *CConsole::CResult::GetString(unsigned Index)
+const char *CConsole::CResult::GetString(unsigned Index) const
 {
 	if(Index >= m_NumArgs)
 		return "";
 	return m_apArgs[Index];
 }
 
-int CConsole::CResult::GetInteger(unsigned Index)
+int CConsole::CResult::GetInteger(unsigned Index) const
 {
 	if(Index >= m_NumArgs)
 		return 0;
 	return str_toint(m_apArgs[Index]);
 }
 
-float CConsole::CResult::GetFloat(unsigned Index)
+float CConsole::CResult::GetFloat(unsigned Index) const
 {
 	if(Index >= m_NumArgs)
 		return 0.0f;
 	return str_tofloat(m_apArgs[Index]);
 }
 
-ColorHSLA CConsole::CResult::GetColor(unsigned Index, bool Light)
+ColorHSLA CConsole::CResult::GetColor(unsigned Index, bool Light) const
 {
 	ColorHSLA Hsla = ColorHSLA(0, 0, 0);
 	if(Index >= m_NumArgs)
@@ -1428,7 +1428,7 @@ void CConsole::CResult::ResetVictim()
 	m_Victim = VICTIM_NONE;
 }
 
-bool CConsole::CResult::HasVictim()
+bool CConsole::CResult::HasVictim() const
 {
 	return m_Victim != VICTIM_NONE;
 }

@@ -50,10 +50,10 @@ public:
 		IResult() { m_NumArgs = 0; m_ClientId = -1; }
 		virtual ~IResult() {}
 
-		virtual int GetInteger(unsigned Index) = 0;
-		virtual float GetFloat(unsigned Index) = 0;
-		virtual const char *GetString(unsigned Index) = 0;
-		virtual ColorHSLA GetColor(unsigned Index, bool Light) = 0;
+		virtual int GetInteger(unsigned Index) const = 0;
+		virtual float GetFloat(unsigned Index) const = 0;
+		virtual const char *GetString(unsigned Index) const = 0;
+		virtual ColorHSLA GetColor(unsigned Index, bool Light) const = 0;
 		
 		int GetClientId() { return m_ClientId; }
 		
