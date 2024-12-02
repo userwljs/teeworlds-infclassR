@@ -347,6 +347,8 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		case 2:
 			return { EUpgradeType::BiologistMineCharges };
 		case 3:
+			return { EUpgradeType::BiologistGrenade };
+		case 4:
 			return { EUpgradeType::BiologistInvisibilityHammer };
 		default:
 			break;
@@ -1241,6 +1243,11 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 			FlashRadius = 10;
 		}
 		pProj->SetFlashRadius(FlashRadius);
+	}
+	else if (pFireContext->InfClassWeapon == EInfclassWeapon::BIOLOGIST_GRENADE)
+	{
+		CIcProjectile *pProj = CIcProjectile::MakeGrenade(GameContext(), ProjStartPos, Direction, GetCid(), EDamageType::BIOLOGIST_MINE);
+		pProj->SetSoundImpact(SOUND_LASER_BOUNCE);
 	}
 	else
 	{
@@ -2700,6 +2707,14 @@ void CInfClassHuman::GiveUpgrades(const PlayerUpgradesArray &NewUpgrades)
 		case EUpgradeType::BiologistMineCharges:
 			AddWeaponMessageIfNothingYet();
 			AddMessage(_("The mines now have more charges"));
+			break;
+		case EUpgradeType::BiologistGrenade:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("You've got a bio grenade launcher"));
+			if(m_pCharacter)
+			{
+				m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
+			}
 			break;
 		case EUpgradeType::BiologistInvisibilityHammer:
 			AddWeaponMessageIfNothingYet();

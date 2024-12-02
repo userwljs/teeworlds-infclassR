@@ -26,6 +26,7 @@ enum class EUpgradeType
 	ScientistExtraMine,
 	BiologistShotgunSpread,
 	BiologistMineCharges,
+	BiologistGrenade,
 	BiologistInvisibilityHammer,
 	LooperLaserRegen,
 	LooperGrenadesRegen,

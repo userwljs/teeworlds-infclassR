@@ -113,6 +113,9 @@ SClassUpgrade GetUpgradeInfo(const PlayerUpgradesArray &Upgrades)
 		case EUpgradeType::BiologistMineCharges:
 			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_LASER);
 			break;
+		case EUpgradeType::BiologistGrenade:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GRENADE);
+			break;
 		case EUpgradeType::BiologistInvisibilityHammer:
 			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_HAMMER);
 			break;

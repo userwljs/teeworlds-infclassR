@@ -6,6 +6,7 @@
 #include <game/server/gamecontext.h>
 
 #include <game/infclass/damage_type.h>
+#include <game/server/infclass/entities/biologist-laser.h>
 #include <game/server/infclass/entities/growingexplosion.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/slug-slime.h>
@@ -102,7 +103,18 @@ void CIcProjectile::Tick()
 				GameServer()->CreateSound(CurPos, m_SoundImpact.value());
 		}
 
-		if(m_FlashRadius)
+		if(m_DamageType == EDamageType::BIOLOGIST_MINE)
+		{
+			const int Lasers = 12;
+			const float PerLaserDamage = 10;
+			float AngleStep = 2.0f * pi / Lasers;
+			float RandomShift = random_float() * 2.0f * pi;
+			for(int i = 0; i < Lasers; i++)
+			{
+				new CBiologistLaser(GameServer(), CurPos, direction(RandomShift + AngleStep * i), GetOwner(), PerLaserDamage);
+			}
+		}
+		else if(m_FlashRadius)
 		{
 			vec2 Dir = normalize(PrevPos - CurPos);
 			if(length(Dir) > 1.1) Dir = normalize(m_StartPos - CurPos);
@@ -160,10 +172,19 @@ void CIcProjectile::FillInfo(CNetObj_Projectile *pProj)
 
 void CIcProjectile::Snap(int SnappingClient)
 {
-	float Ct = (Server()->Tick()-m_StartTick)/(float)Server()->TickSpeed();
+	float Ct = (Server()->Tick() - m_StartTick) / (float)Server()->TickSpeed();
+	vec2 Pos = GetPos(Ct);
 
-	if(NetworkClipped(SnappingClient, GetPos(Ct)))
+	if(NetworkClipped(SnappingClient, Pos))
 		return;
+
+	if(m_DamageType == EDamageType::BIOLOGIST_MINE)
+	{
+		int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
+		int Subtype = 0;
+		GameServer()->SnapLaserObject(CSnapContext(SnappingClientVersion), GetId(),
+			Pos, Pos, m_StartTick, GetOwner(), LASERTYPE_PLASMA, Subtype);
+	}
 
 	CNetObj_Projectile *pProj = Server()->SnapNewItem<CNetObj_Projectile>(GetId());
 	if(pProj)

@@ -1813,6 +1813,8 @@ EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 			return EInfclassWeapon::TELEPORT_GUN;
 		case EPlayerClass::Hero:
 			return EInfclassWeapon::HERO_GRENADE;
+		case EPlayerClass::Biologist:
+			return EInfclassWeapon::BIOLOGIST_GRENADE;
 		case EPlayerClass::Looper:
 			return EInfclassWeapon::LOOPER_GRENADE;
 		case EPlayerClass::Spitter:

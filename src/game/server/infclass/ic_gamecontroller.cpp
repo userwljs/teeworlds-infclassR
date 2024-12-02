@@ -7558,6 +7558,7 @@ void CIcGameController::InitWeapons()
 	SetWeaponForce(EInfclassWeapon::HERO_SHOTGUN, GetWeaponForce(EInfclassWeapon::SHOTGUN));
 	SetWeaponForce(EInfclassWeapon::RICOCHET_SHOTGUN, GetWeaponForce(EInfclassWeapon::SHOTGUN));
 	SetWeaponForce(EInfclassWeapon::BIOLOGIST_MINE_LASER, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::BIOLOGIST_GRENADE, GetWeaponForce(EInfclassWeapon::LASER));
 	SetWeaponForce(EInfclassWeapon::LOOPER_LASER, GetWeaponForce(EInfclassWeapon::LASER));
 	SetWeaponForce(EInfclassWeapon::LOOPER_GRENADE, GetWeaponForce(EInfclassWeapon::GRENADE));
 	SetWeaponForce(EInfclassWeapon::HERO_LASER, GetWeaponForce(EInfclassWeapon::LASER));
@@ -7588,6 +7589,7 @@ void CIcGameController::InitWeapons()
 	SetFireDelay(EInfclassWeapon::HERO_SHOTGUN, 250);
 	SetFireDelay(EInfclassWeapon::RICOCHET_SHOTGUN, 250);
 	SetFireDelay(EInfclassWeapon::BIOLOGIST_MINE_LASER, GetFireDelay(EInfclassWeapon::LASER));
+	SetFireDelay(EInfclassWeapon::BIOLOGIST_GRENADE, 1000);
 	SetFireDelay(EInfclassWeapon::LOOPER_LASER, 250);
 	SetFireDelay(EInfclassWeapon::LOOPER_GRENADE, GetFireDelay(EInfclassWeapon::GRENADE));
 	SetFireDelay(EInfclassWeapon::HERO_LASER, GetFireDelay(EInfclassWeapon::LASER));
@@ -7626,6 +7628,7 @@ void CIcGameController::InitWeapons()
 	SetAmmoRegenTime(EInfclassWeapon::NINJA_KATANA, 0);
 	SetAmmoRegenTime(EInfclassWeapon::NINJA_GRENADE, 15000);
 	SetAmmoRegenTime(EInfclassWeapon::BIOLOGIST_MINE_LASER, 175);
+	SetAmmoRegenTime(EInfclassWeapon::BIOLOGIST_GRENADE, 15000);
 	SetAmmoRegenTime(EInfclassWeapon::RICOCHET_SHOTGUN, 675);
 	SetAmmoRegenTime(EInfclassWeapon::LOOPER_LASER, 500);
 	SetAmmoRegenTime(EInfclassWeapon::LOOPER_GRENADE, 5000);
@@ -7656,6 +7659,7 @@ void CIcGameController::InitWeapons()
 	SetMaxAmmo(EInfclassWeapon::MERCENARY_GUN, 40);
 	SetMaxAmmo(EInfclassWeapon::MERCENARY_UPGRADE_LASER, 10);
 	SetMaxAmmo(EInfclassWeapon::BIOLOGIST_MINE_LASER, 10);
+	SetMaxAmmo(EInfclassWeapon::BIOLOGIST_GRENADE, 5);
 	SetMaxAmmo(EInfclassWeapon::RICOCHET_SHOTGUN, 10);
 	SetMaxAmmo(EInfclassWeapon::LOOPER_LASER, 20);
 	SetMaxAmmo(EInfclassWeapon::LOOPER_GRENADE, 10);
