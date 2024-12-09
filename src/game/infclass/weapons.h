@@ -54,3 +54,14 @@ enum class EInfclassWeapon
 };
 
 constexpr int NB_INFWEAPON = static_cast<int>(EInfclassWeapon::Count);
+
+enum class EWeaponClass
+{
+	UNKNOWN,
+	HAMMER,
+	GRENADE,
+	LASER,
+	SELF_EXPLOSION,
+};
+
+EWeaponClass GetWeaponClassById(EInfclassWeapon Weapon);

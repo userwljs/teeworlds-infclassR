@@ -755,6 +755,7 @@ set_glob(GAME_SHARED GLOB src/game
   infclass/classes.h
   infclass/damage_type.cpp
   infclass/damage_type.h
+  infclass/weapons.cpp
   infclass/weapons.h
   layers.cpp
   layers.h
