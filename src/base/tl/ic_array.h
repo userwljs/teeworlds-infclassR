@@ -43,6 +43,7 @@ public:
 	constexpr bool Contains(const T &Item) const;
 
 	constexpr void Add(const T &Value);
+	constexpr void AddWithOverwrite(const T &Value);
 
 	void RemoveLast();
 
@@ -164,6 +165,15 @@ inline constexpr void icArray<T, StackCapacity>::Add(const T &Value)
 {
 	m_Data[m_Size] = Value;
 	++m_Size;
+}
+
+template<class T, int StackCapacity>
+inline constexpr void icArray<T, StackCapacity>::AddWithOverwrite(const T &Value)
+{
+	if (m_Size == StackCapacity)
+		RemoveAt(0);
+
+	Add(Value);
 }
 
 template<class T, int StackCapacity>
