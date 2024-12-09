@@ -22,10 +22,15 @@ survival_hp_multiplier = 1
 castle_hardmode = true
 castle_wait_bosses_n = 0
 Castle_sleepers = {}
+Castle_witch_next_wave_time = nil
+Castle_witch_spawned_waves = 0
+Castle_witch_id = 0
 
 survival_default_tweaks = nil
 
 OldConfig = {}
+
+Castle_horde_spawn_intervals = {6, 5, 4, 3, 2, 1, 1}
 
 ---@return SurvivalBotConfiguration
 function add_bot_with_tweaks(wave, player_class)
@@ -55,9 +60,20 @@ function add_boss_infected(wave, player_class)
     return bot_conf
 end
 
+---@return SurvivalBotConfiguration
+function add_witch_infected(wave, player_class, witch_id)
+    local bot_conf = add_bot_with_tweaks(wave, player_class)
+    bot_conf.HP = 10 * survival_hp_multiplier
+    bot_conf.SpawnWitchId = witch_id
+    bot_conf.Lives = 1
+    return bot_conf
+end
+
 function reset_castle()
     castle_wait_bosses_n = 0
     Castle_sleepers = {}
+    Castle_witch_next_wave_time = nil
+    Castle_witch_spawned_waves = 0
     safe_zone_left_x = 0
 
     survival_cp1 = Game.Controller:AddControlPoint(vec2(85 * 32, 40.5 * 32))
@@ -165,6 +181,14 @@ function on_castle_tick()
         print("Setup the waves with difficulty", survival_difficulty_level)
         setup_wave1()
     end
+
+    local current_second = Game.Controller:GetSecondsAfterInfection()
+    if Castle_witch_next_wave_time ~= nil then
+        if current_second >= Castle_witch_next_wave_time then
+            Castle_spawn_witch_wave()
+            Castle_schedule_next_witch_wave()
+        end
+    end
 end
 
 function setup_wave1()
@@ -206,13 +230,12 @@ function setup_wave1()
     add_tweak(bot_conf, "strong-hook")
     castle_wait_bosses_n = 1
 
-    local sleeper_hp = {120, 160, 240, 280, 320, 360}
+    local sleeper_hp = {80, 180, 320, 420, 520, 640}
     bot_conf = Game.Controller:SurvivalAddBot(wave, "witch")
     bot_conf.SpawnSecond = 15
     bot_conf.Tag = "sleeper"
     bot_conf.Lives = 1
     bot_conf.HP = sleeper_hp[survival_difficulty_level]
-    bot_conf.DropLevel = 2
     add_tweak(bot_conf, "threat-aware")
     add_tweak(bot_conf, "can-flee")
 end
@@ -298,20 +321,96 @@ end
 function setup_wave4(start_second)
     local wave = 1
     local bot_conf = nil
-
-    local max_drop_level = 2
-    if survival_difficulty_level > survival_players then
-        max_drop_level = 3
-    end
-
     local boss_hp = {180, 240, 320, 520, 640, 720}
     bot_conf = add_boss_infected(wave, "tank")
     bot_conf.SpawnSecond = start_second
     bot_conf.HP = boss_hp[survival_difficulty_level]
-    bot_conf.DropLevel = max_drop_level
+    bot_conf.DropLevel = 3
+end
+
+function Castle_spawn_witch_wave()
+    local start_second = Game.Controller:GetSecondsAfterInfection() + 0.125
+
+    Castle_witch_spawned_waves = Castle_witch_spawned_waves + 1
+    local interval = Castle_horde_spawn_intervals[survival_difficulty_level]
+
+    local wave = 1 -- Always '1' for Castle
+    local spawn_wave = Castle_witch_spawned_waves
+
+    local function spawn_with_lives(player_class)
+        local bot_conf = add_witch_infected(wave, player_class, Castle_witch_id)
+        bot_conf.SpawnSecond = start_second
+        bot_conf.Lives = 4
+        bot_conf.RespawnInterval = interval
+        return bot_conf
+    end
+
+    local bot_conf = nil
+    if spawn_wave % 4 == 1 then
+        spawn_with_lives("voodoo")
+        spawn_with_lives("smoker")
+        spawn_with_lives("hunter")
+        bot_conf = spawn_with_lives("spider")
+        bot_conf.SpawnSecond = start_second + 1
+    end
+
+    bot_conf = nil
+    if spawn_wave > 5 then
+        bot_conf = add_witch_infected(wave, "ghoul", Castle_witch_id)
+        bot_conf.SpawnSecond = start_second
+    end
+    if survival_difficulty_level < spawn_wave then
+        if bot_conf ~= nil then
+            return
+        end
+    end
+
+    bot_conf = add_witch_infected(wave, "slug", Castle_witch_id)
+    bot_conf.SpawnSecond = start_second
+
+    if survival_difficulty_level < spawn_wave then
+        if bot_conf ~= nil then
+            return
+        end
+    end
+    if spawn_wave % 3 == 2 then
+        bot_conf = add_witch_infected(wave, "boomer", Castle_witch_id)
+        bot_conf.SpawnSecond = start_second + 0.75
+    end
+    if survival_difficulty_level < spawn_wave then
+        if bot_conf ~= nil then
+            return
+        end
+    end
+    if spawn_wave > 2 then
+        bot_conf = add_witch_infected(wave, "slug", Castle_witch_id)
+        bot_conf.SpawnSecond = start_second
+    end
+    if survival_difficulty_level < spawn_wave then
+        if bot_conf ~= nil then
+            return
+        end
+    end
+    if spawn_wave > 1 then
+        bot_conf = add_witch_infected(wave, "ghost", Castle_witch_id)
+        bot_conf.SpawnSecond = start_second + 1.25
+    end
+end
+
+function Castle_schedule_next_witch_wave()
+    Castle_witch_next_wave_time = Game.Controller:GetSecondsAfterInfection() + Castle_horde_spawn_intervals[survival_difficulty_level]
+end
+
+function on_witch_awaken(sleeper_id)
+    Game.Context:SendChatTarget(-1, "The Witch was awakened!")
+
+    Castle_witch_id = sleeper_id
+    Castle_spawn_witch_wave()
+    Castle_schedule_next_witch_wave()
 end
 
 function on_castle_sleeper_awaken(sleeper_id)
+    on_witch_awaken(sleeper_id)
 end
 
 function on_boss_killed(victim_id)
@@ -350,6 +449,10 @@ function on_castle_character_death(victim_id, killer_id, weapon_str)
     end
     if victim_player.Tag == "boss" then
         on_boss_killed(victim_id)
+    end
+
+    if victim_id == Castle_witch_id then
+        Castle_witch_next_wave_time = nil
     end
 end
 
@@ -461,9 +564,11 @@ end
 function survival_init()
     OldConfig.inf_enable_tranquilizer_rifle = Config.inf_enable_tranquilizer_rifle
     OldConfig.inf_tranquilizer_dose = Config.inf_tranquilizer_dose
+    OldConfig.inf_proba_spawn_near_witch = Config.inf_proba_spawn_near_witch
 
     Config.inf_enable_tranquilizer_rifle = 1
     Config.inf_tranquilizer_dose = 7.5
+    Config.inf_proba_spawn_near_witch = 0
 
     -- Kill-based survival
     Config.inf_survival_mode = 1
