@@ -214,6 +214,16 @@ void SetSurvivalBotSpawnPointId(SurvivalBotConfiguration *pConfiguration, int Sp
 	pConfiguration->SpawnPointId = SpawnPointId;
 }
 
+int GetSurvivalBotSpawnWitchId(const SurvivalBotConfiguration *pConfiguration)
+{
+	return pConfiguration->SpawnWitchId.value_or(0);
+}
+
+void SetSurvivalBotSpawnWitchId(SurvivalBotConfiguration *pConfiguration, int ClientId)
+{
+	pConfiguration->SpawnWitchId = ClientId;
+}
+
 TweaksArray *SurvivalBotConfigurationClass_GetTweaks_Lua(SurvivalBotConfiguration *pConfiguration)
 {
 	if (!pConfiguration)
@@ -450,6 +460,7 @@ void CIcGameController::RegisterLuaBindings()
 			.addProperty("Tag", &GetSurvivalBotConfigurationTag_Lua, &SetSurvivalBotConfigurationTag_Lua)
 			.addProperty("SpawnSecond", &GetSurvivalBotConfigurationSpawnSecond_Lua, &SetSurvivalBotConfigurationSpawnSecond_Lua)
 			.addProperty("SpawnPointId", &GetSurvivalBotSpawnPointId, &SetSurvivalBotSpawnPointId)
+			.addProperty("SpawnWitchId", &GetSurvivalBotSpawnWitchId, &SetSurvivalBotSpawnWitchId)
 			.addProperty("Lives", &SurvivalBotConfiguration::Lives)
 			.addProperty("HP", &SurvivalBotConfiguration::HP)
 			.addProperty("DropLevel", &SurvivalBotConfiguration::DropLevel)

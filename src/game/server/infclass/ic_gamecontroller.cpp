@@ -7100,6 +7100,7 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 		return false;
 
 	std::optional<std::uint16_t> WantedSpawnIndex;
+	std::optional<std::uint8_t> WantedWitchCid;
 	if(GetRoundType() == ERoundType::Survival && pPlayer->IsInfected())
 	{
 		if(!IsInfectionStarted())
@@ -7122,11 +7123,30 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 			const SurvivalBotConfiguration &BotConf = pWaveConf->BotConfigurations[ConfigId.value()];
 
 			WantedSpawnIndex = BotConf.SpawnPointId;
+			WantedWitchCid = BotConf.SpawnWitchId;
 		}
 	}
 
 	if(m_InfectedStarted && pPlayer->IsInfected())
 	{
+		if (WantedWitchCid.has_value())
+		{
+			const CIcCharacter *pCharacter = GetCharacter(WantedWitchCid.value());
+			if (pCharacter && pCharacter->IsAlive())
+			{
+				if(pCharacter->IsFrozen() || pCharacter->IsSleeping())
+					return false;
+
+				const CInfClassInfected *pInfected = CInfClassInfected::GetInstance(pCharacter);
+
+				if(pInfected->FindWitchSpawnPosition(pContext->SpawnPos))
+				{
+					pContext->SpawnType = SpawnContext::WitchSpawn;
+					return true;
+				}
+			}
+		}
+
 		if (random_prob(Config()->m_InfProbaSpawnNearWitch / 100.0f))
 		{
 			CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
