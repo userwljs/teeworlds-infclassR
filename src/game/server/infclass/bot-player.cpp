@@ -272,6 +272,7 @@ void CBotPlayer::TickPaused()
 	m_LastJumpTick++;
 	m_LastSeenTick++;
 	m_LastFireTick++;
+	m_LastWeaponSwitchTick++;
 	if(m_NextRandomFireTick)
 		m_NextRandomFireTick++;
 	m_HookUntilTick++;
@@ -295,6 +296,7 @@ void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	GetCharacter()->SetDropLevel(m_DropLevel);
 
 	m_LastFireTick = -1;
+	m_LastWeaponSwitchTick = 0;
 	m_NextRandomFireTick = 0;
 	m_RecentObjections.Clear();
 	m_RecentDecisions.Clear();
@@ -1167,7 +1169,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	const bool FallingDown = m_pCharacter->Core()->m_Vel.y > -Gravity;
 	const int AvailableJumps = GetAvailableJumps();
 
-	const EInfclassWeapon WeaponType = GetCharacter()->GetInfWeaponId();
 	DIRECTION DirectionToTarget = DIRECTION_NONE;
 
 	if(Pos.x + ProximityRadius < m_LastTargetSeenAtPos.x)
@@ -1182,6 +1183,10 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	{
 		DirectionToTarget = m_RoamingDirection;
 	}
+
+	PickBestWeapon(Distance);
+
+	EInfclassWeapon WeaponType = GetCharacter()->GetInfWeaponId();
 
 	bool WantToJump = false;
 	bool WantGoDown = false;
@@ -1659,9 +1664,12 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		WantToFire = true;
 		m_NextRandomFireTick = 0;
 	}
+	bool WantFlee = CanFlee() && (Distance < FleeDistance);
+	if(WantFlee)
+		WantToFire = true;
+
 	pInput->m_Fire = WantToFire;
 
-	bool WantFlee = CanFlee() && (Distance < FleeDistance);
 	if(pInput->m_Fire)
 	{
 		m_LastFireTick = Tick;
@@ -1705,6 +1713,17 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			{
 				m_LastFireTick += (FirePerSecond + random_float(0.8f)) * TickSpeed;
 				ma_RecentFailedAttackTicks.Clear();
+			}
+		}
+	}
+	else
+	{
+		if (!WantFlee)
+		{
+			int PrevAttackTick = ma_RecentFailedAttackTicks.IsEmpty() ? 0 : ma_RecentFailedAttackTicks.Last();
+			if(Tick > PrevAttackTick + SERVER_TICK_SPEED * 0.5f)
+			{
+				ma_RecentFailedAttackTicks.AddWithOverwrite(Tick);
 			}
 		}
 	}
@@ -3258,6 +3277,35 @@ void CBotPlayer::UpdatePOIState()
 	{
 		m_CachedPOIReachableByGround = false;
 	}
+}
+
+void CBotPlayer::PickBestWeapon(float DistanceToTarget)
+{
+	const int Tick = Server()->Tick();
+	const int TickSpeed = Server()->TickSpeed();
+
+	if(Tick < m_LastWeaponSwitchTick + TickSpeed * 1.25f)
+		return;
+
+	EInfclassWeapon WeaponType = GetCharacter()->GetInfWeaponId();
+	EWeaponClass WeaponClass = GetWeaponClassById(WeaponType);
+
+	CIcCharacter *pCharacter = GetCharacter();
+	if((WeaponClass == EWeaponClass::GRENADE) && (Tick > m_LastFireTick + TickSpeed * 0.25f) && (DistanceToTarget < TileSize * 5) && pCharacter->HasWeapon(EWeaponClass::HAMMER))
+	{
+		pCharacter->SetWeapon(WEAPON_HAMMER);
+	}
+	else if(pCharacter->HasWeapon(EWeaponClass::GRENADE))
+	{
+		pCharacter->SetWeapon(WEAPON_GRENADE);
+	}
+	else
+	{
+		// Do nothing
+		return;
+	}
+
+	m_LastWeaponSwitchTick = Tick;
 }
 
 CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const

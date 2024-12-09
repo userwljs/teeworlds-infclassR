@@ -307,6 +307,7 @@ protected:
 	void UpdateCharacterState();
 	void UpdatePOIState();
 
+	void PickBestWeapon(float DistanceToTarget);
 	DIRECTION DoLandingManeuves() const;
 
 	bool CanHook() const;
@@ -348,6 +349,7 @@ protected:
 	int m_FleeingSinceTick = -1;
 	int m_LastSeenTick = -1;
 	int m_LastFireTick = -1;
+	int m_LastWeaponSwitchTick = 0;
 	int m_NextRandomFireTick = 0;
 	int m_NextHuntingJumpTick = 0;
 	int m_HookUntilTick = -1;
