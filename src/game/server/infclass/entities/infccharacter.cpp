@@ -1965,6 +1965,24 @@ bool CInfClassCharacter::HasWeapon(int Weapon) const
 	return m_aWeapons[Weapon].m_Got;
 }
 
+bool CInfClassCharacter::HasWeapon(EWeaponClass WeaponClass) const
+{
+	for (int WeaponSlot = 0; WeaponSlot < NUM_WEAPONS; ++WeaponSlot)
+	{
+		const WeaponStat &Weapon = m_aWeapons[WeaponSlot];
+		if (!Weapon.m_Got)
+			continue;
+
+		const EInfclassWeapon InfId = GetInfWeaponId(WeaponSlot);
+		if(GetWeaponClassById(InfId) == WeaponClass)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void CInfClassCharacter::TakeAllWeapons()
 {
 	for (WeaponStat &weapon : m_aWeapons)

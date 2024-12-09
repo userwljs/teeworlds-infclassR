@@ -13,6 +13,7 @@ class CWhiteHole;
 
 enum class EDamageType;
 enum class EInfclassWeapon;
+enum class EWeaponClass;
 enum class TAKEDAMAGEMODE;
 
 enum FREEZEREASON
@@ -147,6 +148,7 @@ public:
 	void SetActiveWeapon(int Weapon);
 	void SetLastWeapon(int Weapon);
 	bool HasWeapon(int Weapon) const;
+	bool HasWeapon(EWeaponClass WeaponClass) const;
 	void TakeAllWeapons();
 
 	void AddAmmo(int Weapon, int Ammo);
