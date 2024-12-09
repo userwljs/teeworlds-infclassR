@@ -416,6 +416,8 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("LoveEffect", &CIcCharacter::LoveEffect)
 			.addFunction("IsInLove", &CIcCharacter::IsInLove)
 			.addFunction("ResetLoveEffect", &CIcCharacter::CancelLoveEffect)
+			.addFunction("IsDead", &CIcCharacter::IsDead)
+			.addFunction("SetDeadForDuration", &CIcCharacter::SetDeadForDuration)
 			.addFunction("SetAntiFireDuration", &CIcCharacter::SetAntiFireDuration)
 		.endClass();
 
