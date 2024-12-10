@@ -482,6 +482,9 @@ void CIcCharacter::Snap(int SnappingClient)
 			pDDNetCharacter->m_Flags |= CHARACTERFLAG_HAMMER_HIT_DISABLED;
 	}
 
+	if(GetDropLevel() > 0)
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_INVINCIBLE; // Gives TEE_EFFECT_SPARKLE and does not affect prediction
+
 	pDDNetCharacter->m_Jumps = m_Core.m_Jumps;
 	pDDNetCharacter->m_JumpedTotal = m_Core.m_JumpedTotal;
 
