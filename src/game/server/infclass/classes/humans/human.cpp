@@ -1168,14 +1168,19 @@ void CInfClassHuman::GiveClassAttributes()
 		m_PositionLockTicksRemaining = 0;
 	}
 
+	SpawnChildEntities();
+
+	m_KillsProgression = 0;
+	m_pCharacter->UnlockPosition();
+}
+
+void CInfClassHuman::SpawnChildEntities()
+{
 	if(GetPlayerClass() == EPlayerClass::Hero)
 	{
 		if(!m_pHeroFlag)
 			m_pHeroFlag = new CHeroFlag(GameServer(), m_pPlayer->GetCid());
 	}
-
-	m_KillsProgression = 0;
-	m_pCharacter->UnlockPosition();
 }
 
 void CInfClassHuman::DestroyChildEntities()

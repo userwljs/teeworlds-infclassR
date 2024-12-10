@@ -78,6 +78,7 @@ public:
 
 protected:
 	void GiveClassAttributes() override;
+	void SpawnChildEntities();
 	void DestroyChildEntities() override;
 	void BroadcastWeaponState() const override;
 
