@@ -356,6 +356,12 @@ function get_max_players_for_difficulty(difficulty)
     return max_players + survival_allow_extra_players
 end
 
+function update_max_players()
+    survival_max_players = get_max_players_for_difficulty(survival_difficulty_level, survival_hp_multiplier)
+
+    local game_conf = Game.Controller:SurvivalGetGameConfiguration()
+    game_conf.MaxPlayers = survival_max_players
+end
 
 function update_difficulty()
     survival_default_tweaks = nil
@@ -491,6 +497,12 @@ function survival_setup_votes()
         Game.Context:InsertVote(i - 1, vote_name, vote_command)
     end
     Game.Context:RemoveVote("lua start_survival_game(6)")
+end
+
+function set_extra_players(num)
+    survival_allow_extra_players = num
+    survival_setup_votes()
+    update_max_players()
 end
 
 print("Castle runtime loaded")
