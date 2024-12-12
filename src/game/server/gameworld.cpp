@@ -137,6 +137,13 @@ void CGameWorld::Snap(int SnappingClient)
 		}
 }
 
+int CGameWorld::AddType()
+{
+	int NewTypeId = m_apFirstEntityTypes.size();
+	m_apFirstEntityTypes.push_back(nullptr);
+	return NewTypeId;
+}
+
 void CGameWorld::Reset()
 {
 	// reset all entities

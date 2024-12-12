@@ -47,6 +47,8 @@ public:
 	};
 
 private:
+	int AddType();
+
 	void Reset();
 	void RemoveEntities();
 
@@ -70,6 +72,12 @@ public:
 	~CGameWorld();
 
 	void SetGameServer(CGameContext *pGameServer);
+
+	template <typename TEntity>
+	void RegisterEntityType()
+	{
+		TEntity::EntityId = AddType();
+	}
 
 	CEntity *FindFirst(int Type);
 
