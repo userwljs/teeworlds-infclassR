@@ -13,8 +13,7 @@
 //////////////////////////////////////////////////
 CGameWorld::CGameWorld()
 {
-	for(int i = 0; i < NUM_ENTTYPES; i++)
-		m_apFirstEntityTypes[i] = 0;
+	m_apFirstEntityTypes.resize(NUM_ENTTYPES, nullptr);
 }
 
 CGameWorld::~CGameWorld()

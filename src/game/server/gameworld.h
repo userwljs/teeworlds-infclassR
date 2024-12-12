@@ -5,6 +5,8 @@
 
 #include <game/gamecore.h>
 
+#include <vector>
+
 class CEntity;
 class CCharacter;
 
@@ -49,7 +51,7 @@ private:
 	void RemoveEntities();
 
 	CEntity *m_pNextTraverseEntity;
-	CEntity *m_apFirstEntityTypes[NUM_ENTTYPES];
+	std::vector<CEntity *> m_apFirstEntityTypes;
 
 	class CGameContext *m_pGameServer{};
 	class CConfig *m_pConfig{};
