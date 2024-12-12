@@ -19,7 +19,7 @@
 static const float g_BarrierMaxLength = 300.0;
 static const float g_BarrierRadius = 0.0;
 
-int CEngineerWall::EntityId = CGameWorld::ENTTYPE_ENGINEER_WALL;
+int CEngineerWall::EntityId{};
 
 CEngineerWall::CEngineerWall(CGameContext *pGameContext, vec2 Pos1, int Owner)
 	: CPlacedObject(pGameContext, EntityId, Pos1, Owner)

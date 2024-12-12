@@ -25,6 +25,7 @@ CInfCEntity::CInfCEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, s
 	int ProximityRadius) :
 	CEntity(pGameContext->GameWorld(), ObjectType, Pos, ProximityRadius)
 {
+	dbg_assert(ObjectType != 0, "Invalid ObjectType. Ensure that the type is registered via RegisterEntityType().");
 	SetOwner(Owner.value_or(-1));
 }
 

@@ -13,7 +13,7 @@
 
 constexpr float SoldierBombRadius = 60.0f;
 
-int CSoldierBomb::EntityId = CGameWorld::ENTTYPE_SOLDIER_BOMB;
+int CSoldierBomb::EntityId{};
 
 void CSoldierBomb::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext)
 {

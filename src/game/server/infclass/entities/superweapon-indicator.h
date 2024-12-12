@@ -10,6 +10,8 @@
 class CSuperWeaponIndicator : public CInfCEntity
 {
 public:
+	static int EntityId;
+
 	CSuperWeaponIndicator(CGameContext *pGameContext, vec2 Pos, int Owner);
 	~CSuperWeaponIndicator() override;
 	

@@ -12,7 +12,7 @@
 
 #include "ic_projectile.h"
 
-int CIcProjectile::EntityId = CGameWorld::ENTTYPE_PROJECTILE;
+int CIcProjectile::EntityId{};
 
 CIcProjectile::CIcProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 Pos, vec2 Dir, int Span,
 		int Damage, bool Explosive, float Force, int SoundImpact, EDamageType DamageType)

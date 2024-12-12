@@ -8,7 +8,7 @@
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/infcplayer.h>
 
-int CLaserTeleport::EntityId = CGameWorld::ENTTYPE_LASER_TELEPORT;
+int CLaserTeleport::EntityId{};
 
 void CLaserTeleport::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, int SelfDamage)
 {

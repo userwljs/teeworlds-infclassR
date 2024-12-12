@@ -12,7 +12,7 @@
 #include "infccharacter.h"
 #include "growingexplosion.h"
 
-int CScientistMine::EntityId = CGameWorld::ENTTYPE_SCIENTIST_MINE;
+int CScientistMine::EntityId{};
 
 CScientistMine::CScientistMine(CGameContext *pGameContext, vec2 Pos, int Owner) :
 	CPlacedObject(pGameContext, EntityId, Pos, Owner, pGameContext->Config()->m_InfMineRadius)

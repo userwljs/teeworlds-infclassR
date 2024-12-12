@@ -28,6 +28,8 @@ enum class EGrowingExplosionEffect
 class CGrowingExplosion : public CInfCEntity
 {
 public:
+	static int EntityId;
+
 	CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 Dir, int Owner, int Radius, EGrowingExplosionEffect ExplosionEffect);
 	CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 Dir, int Owner, int Radius, EDamageType DamageType);
 

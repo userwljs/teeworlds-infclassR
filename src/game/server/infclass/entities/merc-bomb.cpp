@@ -11,7 +11,7 @@
 #include "growingexplosion.h"
 #include "infccharacter.h"
 
-int CMercenaryBomb::EntityId = CGameWorld::ENTTYPE_MERCENARY_BOMB;
+int CMercenaryBomb::EntityId{};
 static const float s_MercBombRadius = 80.0f;
 
 CMercenaryBomb::CMercenaryBomb(CGameContext *pGameContext, vec2 Pos, int Owner)

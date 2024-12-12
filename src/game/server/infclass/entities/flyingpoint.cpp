@@ -6,7 +6,7 @@
 #include <game/server/infclass/entities/infccharacter.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
-int CFlyingPoint::EntityId = CGameWorld::ENTTYPE_FLYINGPOINT;
+int CFlyingPoint::EntityId{};
 
 CFlyingPoint::CFlyingPoint(CGameContext *pGameContext, vec2 Pos, int TrackedPlayer, int Points, vec2 InitialVel)
 	: CInfCEntity(pGameContext, EntityId, Pos, TrackedPlayer, 24.0f)

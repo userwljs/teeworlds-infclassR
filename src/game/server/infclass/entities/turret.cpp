@@ -18,7 +18,7 @@
 
 #include <iterator> // std::size
 
-int CTurret::EntityId = CGameWorld::ENTTYPE_TURRET;
+int CTurret::EntityId{};
 
 CTurret::CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, vec2 Direction, CTurret::Type Type) :
 	CPlacedObject(pGameContext, EntityId, Pos, Owner)

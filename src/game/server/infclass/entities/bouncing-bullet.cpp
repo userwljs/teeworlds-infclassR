@@ -10,8 +10,10 @@
 #include "bouncing-bullet.h"
 #include "infccharacter.h"
 
+int CBouncingBullet::EntityId{};
+
 CBouncingBullet::CBouncingBullet(CGameContext *pGameContext, int Owner, vec2 Pos, vec2 Dir)
-	: CInfCEntity(pGameContext, CGameWorld::ENTTYPE_BOUNCING_BULLET, Pos, Owner)
+	: CInfCEntity(pGameContext, EntityId, Pos, Owner)
 {
 	m_ActualPos = Pos;
 	m_ActualDir = Dir;

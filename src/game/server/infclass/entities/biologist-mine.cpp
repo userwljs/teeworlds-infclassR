@@ -7,7 +7,7 @@
 #include "biologist-mine.h"
 #include "infccharacter.h"
 
-int CBiologistMine::EntityId = CGameWorld::ENTTYPE_BIOLOGIST_MINE;
+int CBiologistMine::EntityId{};
 
 void CBiologistMine::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, int Lasers)
 {

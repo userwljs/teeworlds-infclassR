@@ -13,7 +13,7 @@
 #include "growingexplosion.h"
 #include "infccharacter.h"
 
-int CWhiteHole::EntityId = CGameWorld::ENTTYPE_WHITE_HOLE;
+int CWhiteHole::EntityId{};
 
 CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner)
 	: CInfCEntity(pGameContext, EntityId, CenterPos, Owner)

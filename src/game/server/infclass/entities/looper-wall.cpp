@@ -19,7 +19,7 @@ static const float g_BarrierRadius = 0.0;
 
 static constexpr float g_Thickness = 17.0f;
 
-int CLooperWall::EntityId = CGameWorld::ENTTYPE_LOOPER_WALL;
+int CLooperWall::EntityId{};
 
 CLooperWall::CLooperWall(CGameContext *pGameContext, vec2 Pos1, int Owner) :
 	CPlacedObject(pGameContext, EntityId, Pos1, Owner)

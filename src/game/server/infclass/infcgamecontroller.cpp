@@ -197,6 +197,7 @@ CInfClassGameController::CInfClassGameController(class CGameContext *pGameServer
 		}
 	}
 
+	RegisterEntityTypes();
 	InitWeapons();
 	ReservePlayerOwnSnapItems();
 }
@@ -5557,40 +5558,6 @@ void CInfClassGameController::InitWeapons()
 	SetMaxAmmo(EInfclassWeapon::SLIME, -1);
 	SetMaxAmmo(EInfclassWeapon::INFECTED_HAMMER, -1);
 	SetMaxAmmo(EInfclassWeapon::BOOMER_EXPLOSION, -1);
-}
-
-void CInfClassGameController::DestroyChildEntities(int OwnerId)
-{
-	static const auto InfCEntities = {
-		CGameWorld::ENTTYPE_PICKUP,
-		CGameWorld::ENTTYPE_PROJECTILE,
-		CGameWorld::ENTTYPE_LASER,
-		CGameWorld::ENTTYPE_ENGINEER_WALL,
-		CGameWorld::ENTTYPE_LOOPER_WALL,
-		CGameWorld::ENTTYPE_SOLDIER_BOMB,
-		CGameWorld::ENTTYPE_SCATTER_GRENADE,
-		CGameWorld::ENTTYPE_MERCENARY_BOMB,
-		CGameWorld::ENTTYPE_SCIENTIST_MINE,
-		CGameWorld::ENTTYPE_BIOLOGIST_MINE,
-		CGameWorld::ENTTYPE_SLUG_SLIME,
-		CGameWorld::ENTTYPE_GROWINGEXPLOSION,
-		CGameWorld::ENTTYPE_WHITE_HOLE,
-		CGameWorld::ENTTYPE_SUPERWEAPON_INDICATOR,
-		CGameWorld::ENTTYPE_TURRET,
-		CGameWorld::ENTTYPE_PLASMA,
-		CGameWorld::ENTTYPE_HERO_FLAG,
-	};
-
-	for(const auto EntityType : InfCEntities)
-	{
-		for(CInfCEntity *p = (CInfCEntity *)GameWorld()->FindFirst(EntityType); p; p = (CInfCEntity *)p->TypeNext())
-		{
-			if(p->GetOwner() != OwnerId)
-				continue;
-
-			GameServer()->m_World.DestroyEntity(p);
-		}
-	}
 }
 
 bool CInfClassGameController::GetPlayerClassEnabled(EPlayerClass PlayerClass) const

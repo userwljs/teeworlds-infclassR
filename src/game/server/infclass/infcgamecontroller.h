@@ -143,6 +143,7 @@ public:
 	int GetMaxAmmo(EInfclassWeapon WID) const;
 	void SetMaxAmmo(EInfclassWeapon WID, int n);
 
+	void RegisterEntityTypes();
 	void InitWeapons();
 
 	void DestroyChildEntities(int OwnerId);

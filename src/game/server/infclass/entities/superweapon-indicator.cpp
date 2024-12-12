@@ -9,8 +9,10 @@
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/infcplayer.h>
 
+int CSuperWeaponIndicator::EntityId{};
+
 CSuperWeaponIndicator::CSuperWeaponIndicator(CGameContext *pGameContext, vec2 Pos, int Owner)
-	: CInfCEntity(pGameContext, CGameWorld::ENTTYPE_SUPERWEAPON_INDICATOR, Pos, Owner)
+	: CInfCEntity(pGameContext, EntityId, Pos, Owner)
 {
 	GameWorld()->InsertEntity(this);
 	m_Radius = 40.0f;

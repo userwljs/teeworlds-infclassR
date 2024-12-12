@@ -8,7 +8,7 @@
 #include "infccharacter.h"
 #include "slug-slime.h"
 
-int CSlugSlime::EntityId = CGameWorld::ENTTYPE_SLUG_SLIME;
+int CSlugSlime::EntityId{};
 
 CSlugSlime::CSlugSlime(CGameContext *pGameContext, vec2 Pos, int Owner) :
 	CPlacedObject(pGameContext, EntityId, Pos, Owner)

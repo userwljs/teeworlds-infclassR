@@ -7,6 +7,7 @@
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/classes/infcplayerclass.h>
 #include <game/infclass/damage_type.h>
+#include <game/server/infclass/entities/slug-slime.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
 #include "infccharacter.h"
@@ -18,6 +19,8 @@ constexpr int UnavailableTile = -2;
 
 } // namespace
 
+int CGrowingExplosion::EntityId{};
+
 CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 Dir, int Owner, int Radius, EGrowingExplosionEffect ExplosionEffect) :
 	CGrowingExplosion(pGameContext, Pos, Dir, Owner, Radius, EDamageType::NO_DAMAGE)
 {
@@ -25,7 +28,7 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 }
 
 CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 Dir, int Owner, int Radius, EDamageType DamageType) :
-	CInfCEntity(pGameContext, CGameWorld::ENTTYPE_GROWINGEXPLOSION, Pos, Owner),
+	CInfCEntity(pGameContext, EntityId, Pos, Owner),
 	m_MaxGrowing(Radius),
 	m_DamageType(DamageType)
 {
@@ -358,7 +361,7 @@ void CGrowingExplosion::Tick()
 	// clean slug slime
 	if (m_ExplosionEffect == EGrowingExplosionEffect::FREEZE_INFECTED)
 	{
-		for(TEntityPtr<CEntity> e = GameWorld()->FindFirst(CGameWorld::ENTTYPE_SLUG_SLIME); e; ++e)
+		for(TEntityPtr<CEntity> e = GameWorld()->FindFirst(CSlugSlime::EntityId); e; ++e)
 		{
 			int tileX = m_MaxGrowing + static_cast<int>(round(e->m_Pos.x)) / 32 - m_SeedX;
 			int tileY = m_MaxGrowing + static_cast<int>(round(e->m_Pos.y)) / 32 - m_SeedY;

@@ -11,8 +11,10 @@
 #include <game/server/infclass/entities/infccharacter.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
+int CPlasma::EntityId{};
+
 CPlasma::CPlasma(CGameContext *pGameContext, vec2 Pos, int Owner, int TrackedPlayer, vec2 Direction, bool Freeze, bool Explosive)
-	: CInfCEntity(pGameContext, CGameWorld::ENTTYPE_PLASMA, Pos, Owner)
+	: CInfCEntity(pGameContext, EntityId, Pos, Owner)
 {
 	m_Freeze = Freeze;
 	m_DamageType = EDamageType::NO_DAMAGE;

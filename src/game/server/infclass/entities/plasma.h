@@ -8,8 +8,9 @@ enum class EDamageType;
 
 class CPlasma: public CInfCEntity
 {
-	
 public:
+	static int EntityId;
+
 	CPlasma(CGameContext *pGameContext, vec2 Pos, int Owner,int TrackedPlayer, vec2 Direction, bool Freeze, bool Explosive);
 
 	virtual void Tick();

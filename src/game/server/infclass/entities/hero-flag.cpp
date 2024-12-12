@@ -12,7 +12,7 @@
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/snap_filter.h>
 
-int CHeroFlag::EntityId = CGameWorld::ENTTYPE_HERO_FLAG;
+int CHeroFlag::EntityId{};
 
 CHeroFlag::CHeroFlag(CGameContext *pGameContext, int Owner)
 	: CInfCEntity(pGameContext, EntityId, vec2(), Owner, ms_PhysSize)
