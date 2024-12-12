@@ -13,12 +13,6 @@
 //////////////////////////////////////////////////
 CGameWorld::CGameWorld()
 {
-	m_pGameServer = 0x0;
-	m_pConfig = 0x0;
-	m_pServer = 0x0;
-
-	m_Paused = false;
-	m_ResetRequested = false;
 	for(int i = 0; i < NUM_ENTTYPES; i++)
 		m_apFirstEntityTypes[i] = 0;
 }
