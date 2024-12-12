@@ -50,7 +50,7 @@ private:
 	void Reset();
 	void RemoveEntities();
 
-	CEntity *m_pNextTraverseEntity;
+	CEntity *m_pNextTraverseEntity{};
 	std::vector<CEntity *> m_apFirstEntityTypes;
 
 	class CGameContext *m_pGameServer{};
