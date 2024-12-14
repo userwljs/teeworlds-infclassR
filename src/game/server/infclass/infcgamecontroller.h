@@ -145,6 +145,7 @@ public:
 
 	void InitWeapons();
 
+	void DestroyChildEntities(int OwnerId);
 	bool GetPlayerClassEnabled(EPlayerClass PlayerClass) const;
 	bool SetPlayerClassEnabled(EPlayerClass PlayerClass, bool Enabled);
 	bool SetPlayerClassProbability(EPlayerClass PlayerClass, int Probability);
