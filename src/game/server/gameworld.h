@@ -110,23 +110,22 @@ public:
 	*/
 	CEntity *ClosestEntity(vec2 Pos, float Radius, int Type, const CEntity *pNotThis);
 
-	/*
-		Function: interserct_CCharacter
-			Finds the closest CCharacter that intersects the line.
-
-		Arguments:
-			pos0 - Start position
-			pos2 - End position
-			radius - How for from the line the CCharacter is allowed to be.
-			new_pos - Intersection position
-			notthis - Entity to ignore intersecting with
-
-		Returns:
-			Returns a pointer to the closest hit or NULL of there is no intersection.
-	*/
 	using EntityFilter = bool (*)(const CEntity *);
 	class CEntity *IntersectEntity(vec2 Pos0, vec2 Pos1, float Radius, vec2 *NewPos, int EntityType, EntityFilter FilterFunction);
 
+	/*
+		Function: IntersectCharacter
+			Finds the CCharacters that intersects the line.
+
+		Arguments:
+			Pos0 - Start position
+			Pos1 - End position
+			Radius - How for from the line the CCharacter is allowed to be.
+			NewPos - Intersection position
+
+		Returns:
+			Returns a pointer to the closest hit or nullptr of there is no intersection.
+	*/
 	class CCharacter *IntersectCharacter(vec2 Pos0, vec2 Pos1, float Radius, vec2 &NewPos, EntityFilter FilterFunction, int CollideWith, bool InfectedOnly = true);
 	CEntity *IntersectEntity(vec2 Pos0, vec2 Pos1, float Radius, vec2 *NewPos, int EntityType);
 	CEntity *GetClosestEntity(const vec2 From, CEntity *pEntity1, CEntity *pEntity2);
