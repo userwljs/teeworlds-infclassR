@@ -5,12 +5,12 @@
 enum class TAKEDAMAGEMODE;
 enum class EDamageType;
 
-class CProjectile : public CInfCEntity
+class CIcProjectile : public CInfCEntity
 {
 public:
 	static int EntityId;
 
-	CProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 Pos, vec2 Dir, int Span,
+	CIcProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 Pos, vec2 Dir, int Span,
 		int Damage, bool Explosive, float Force, int SoundImpact, EDamageType DamageType);
 
 	vec2 GetPos(float Time);

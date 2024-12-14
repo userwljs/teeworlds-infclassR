@@ -876,7 +876,7 @@ void CInfClassHuman::OnGunFired(WeaponFireContext *pFireContext)
 		DamageType = EDamageType::MERCENARY_GUN;
 
 	{
-		CProjectile *pProj = new CProjectile(GameContext(), WEAPON_GUN,
+		CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_GUN,
 			GetCid(),
 			ProjStartPos,
 			Direction,
@@ -945,7 +945,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 		else
 		{
 			int Damage = 1;
-			CProjectile *pProj = new CProjectile(GameContext(), WEAPON_SHOTGUN,
+			CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_SHOTGUN,
 				GetCid(),
 				ProjStartPos,
 				Direction,
@@ -980,7 +980,7 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 
 	vec2 Direction = GetDirection();
 	vec2 ProjStartPos = GetPos() + Direction * GetProximityRadius() * 0.75f;
-	CProjectile *pProj = new CProjectile(GameContext(), WEAPON_GRENADE,
+	CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_GRENADE,
 		GetCid(),
 		ProjStartPos,
 		Direction,

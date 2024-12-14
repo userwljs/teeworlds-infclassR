@@ -12,9 +12,9 @@
 
 #include "ic_projectile.h"
 
-int CProjectile::EntityId = CGameWorld::ENTTYPE_PROJECTILE;
+int CIcProjectile::EntityId = CGameWorld::ENTTYPE_PROJECTILE;
 
-CProjectile::CProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 Pos, vec2 Dir, int Span,
+CIcProjectile::CIcProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 Pos, vec2 Dir, int Span,
 		int Damage, bool Explosive, float Force, int SoundImpact, EDamageType DamageType)
 : CInfCEntity(pGameContext, EntityId, Pos, Owner)
 {
@@ -37,7 +37,7 @@ CProjectile::CProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 P
 /* INFECTION MODIFICATION END *****************************************/
 }
 
-vec2 CProjectile::GetPos(float Time)
+vec2 CIcProjectile::GetPos(float Time)
 {
 	float Curvature = 0;
 	float Speed = 0;
@@ -64,7 +64,7 @@ vec2 CProjectile::GetPos(float Time)
 }
 
 
-void CProjectile::Tick()
+void CIcProjectile::Tick()
 {
 	float Pt = (Server()->Tick()-m_StartTick-1)/(float)Server()->TickSpeed();
 	float Ct = (Server()->Tick()-m_StartTick)/(float)Server()->TickSpeed();
@@ -115,12 +115,12 @@ void CProjectile::Tick()
 /* INFECTION MODIFICATION END *****************************************/
 }
 
-void CProjectile::TickPaused()
+void CIcProjectile::TickPaused()
 {
 	++m_StartTick;
 }
 
-void CProjectile::FillInfo(CNetObj_Projectile *pProj)
+void CIcProjectile::FillInfo(CNetObj_Projectile *pProj)
 {
 	pProj->m_X = (int)m_Pos.x;
 	pProj->m_Y = (int)m_Pos.y;
@@ -130,7 +130,7 @@ void CProjectile::FillInfo(CNetObj_Projectile *pProj)
 	pProj->m_Type = m_Type;
 }
 
-void CProjectile::Snap(int SnappingClient)
+void CIcProjectile::Snap(int SnappingClient)
 {
 	float Ct = (Server()->Tick()-m_StartTick)/(float)Server()->TickSpeed();
 
@@ -143,12 +143,12 @@ void CProjectile::Snap(int SnappingClient)
 }
 
 /* INFECTION MODIFICATION START ***************************************/
-void CProjectile::FlashGrenade()
+void CIcProjectile::FlashGrenade()
 {
 	m_IsFlashGrenade = true;
 }
 
-void CProjectile::SetFlashRadius(int Radius)
+void CIcProjectile::SetFlashRadius(int Radius)
 {
 	m_FlashRadius = Radius;
 }
