@@ -47,7 +47,7 @@ void CIcEntity::SetOwner(int ClientId)
 
 CInfClassCharacter *CIcEntity::GetOwnerCharacter() const
 {
-	return GameController()->GetCharacter(GetOwner());
+	return m_Owner.has_value() ? GameController()->GetCharacter(m_Owner.value()) : nullptr;
 }
 
 EntityFilter CIcEntity::GetOwnerFilterFunction(int Owner)
