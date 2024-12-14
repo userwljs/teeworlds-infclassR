@@ -10,11 +10,13 @@
 #include <game/server/infclass/entities/infccharacter.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
-#include "projectile.h"
+#include "ic_projectile.h"
+
+int CProjectile::EntityId = CGameWorld::ENTTYPE_PROJECTILE;
 
 CProjectile::CProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 Pos, vec2 Dir, int Span,
 		int Damage, bool Explosive, float Force, int SoundImpact, EDamageType DamageType)
-: CInfCEntity(pGameContext, CGameWorld::ENTTYPE_PROJECTILE, Pos, Owner)
+: CInfCEntity(pGameContext, EntityId, Pos, Owner)
 {
 	m_Type = Type;
 	m_Direction = Dir;

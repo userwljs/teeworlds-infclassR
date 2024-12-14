@@ -878,8 +878,6 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   ddracecommands.cpp
   entities/character.cpp
   entities/character.h
-  entities/projectile.cpp
-  entities/projectile.h
   infclass/classes/humans/human.cpp
   infclass/classes/humans/human.h
   infclass/classes/infcplayerclass.cpp
@@ -906,6 +904,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/hero-flag.h
   infclass/entities/ic-pickup.cpp
   infclass/entities/ic-pickup.h
+  infclass/entities/ic_projectile.cpp
+  infclass/entities/ic_projectile.h
   infclass/entities/infc-laser.cpp
   infclass/entities/infc-laser.h
   infclass/entities/infc-placed-object.cpp

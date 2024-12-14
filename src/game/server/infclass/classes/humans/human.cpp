@@ -8,8 +8,6 @@
 
 #include <game/generated/server_data.h>
 
-#include <game/server/entities/projectile.h>
-
 #include <game/server/infclass/damage_context.h>
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/death_context.h>
@@ -19,6 +17,7 @@
 #include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/growingexplosion.h>
 #include <game/server/infclass/entities/hero-flag.h>
+#include <game/server/infclass/entities/ic_projectile.h>
 #include <game/server/infclass/entities/infccharacter.h>
 #include <game/server/infclass/entities/laser-teleport.h>
 #include <game/server/infclass/entities/looper-wall.h>
