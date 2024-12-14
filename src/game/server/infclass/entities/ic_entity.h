@@ -14,7 +14,6 @@ class icArray;
 class CGameContext;
 class CInfClassCharacter;
 class CInfClassGameController;
-class CInfClassPlayerClass;
 
 using EntityFilter = bool (*)(const CEntity *);
 
@@ -31,7 +30,6 @@ public:
 	void SetOwner(int ClientId);
 
 	CInfClassCharacter *GetOwnerCharacter() const;
-	CInfClassPlayerClass *GetOwnerClass() const;
 
 	static EntityFilter GetOwnerFilterFunction(int Owner);
 	EntityFilter GetOwnerFilterFunction();

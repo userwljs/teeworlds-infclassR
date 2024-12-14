@@ -26,7 +26,7 @@ bool CMercenaryLaser::HitCharacter(vec2 From, vec2 To)
 	if(pHitMercBomb)
 	{
 		CMercenaryBomb *pBomb = static_cast<CMercenaryBomb*>(pHitMercBomb);
-		CInfClassHuman *pMercClass = CInfClassHuman::GetInstance(GetOwnerClass());
+		CInfClassHuman *pMercClass = CInfClassHuman::GetInstance(GetOwnerCharacter());
 		pMercClass->UpgradeMercBomb(pBomb, m_UpgradePoints);
 
 		m_From = From;
