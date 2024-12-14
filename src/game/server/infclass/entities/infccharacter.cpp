@@ -25,18 +25,6 @@
 
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassCharacter, MAX_CLIENTS)
 
-static bool HumansEntitiesFilter(const CEntity *pEntity)
-{
-	const CInfClassCharacter *pInfEntity = static_cast<const CInfClassCharacter *>(pEntity);
-	return pInfEntity->IsHuman();
-}
-
-static bool InfectedEntitiesFilter(const CEntity *pEntity)
-{
-	const CInfClassCharacter *pInfEntity = static_cast<const CInfClassCharacter *>(pEntity);
-	return !pInfEntity->IsHuman();
-}
-
 CInfClassCharacter::CInfClassCharacter(CInfClassGameController *pGameController) :
 	CCharacter(pGameController->GameWorld()), m_pGameController(pGameController)
 {
@@ -51,14 +39,70 @@ CInfClassCharacter::~CInfClassCharacter()
 	ResetClassObject();
 }
 
-EntityFilter CInfClassCharacter::GetInfectedFilterFunction()
+CharacterFilter CInfClassCharacter::GetInfectedFilter()
 {
+	const auto InfectedEntitiesFilter = [](const CCharacter *pEntity) {
+		const CInfClassCharacter *pInfEntity = CInfClassCharacter::GetInstance(pEntity);
+		return !pInfEntity->IsHuman();
+	};
+
 	return InfectedEntitiesFilter;
 }
 
-EntityFilter CInfClassCharacter::GetHumansFilterFunction()
+CharacterFilter CInfClassCharacter::GetHumansFilter()
 {
+	const auto HumansEntitiesFilter = [](const CCharacter *pEntity) {
+		const CInfClassCharacter *pInfEntity = CInfClassCharacter::GetInstance(pEntity);
+		return pInfEntity->IsHuman();
+	};
+
 	return HumansEntitiesFilter;
+}
+
+CharacterFilter CInfClassCharacter::GetExceptThisCharacterFilter()
+{
+	static int s_ExceptCharacterId{};
+	s_ExceptCharacterId = GetCid();
+
+	const auto ExceptThisCharFilter = [](const CCharacter *pCh) {
+		const CInfClassCharacter *pCharacter = CInfClassCharacter::GetInstance(pCh);
+		return pCharacter->GetCid() != s_ExceptCharacterId;
+	};
+
+	return ExceptThisCharFilter;
+}
+
+CharacterFilter CInfClassCharacter::GetExceptCharactersFilter(const icArray<const CInfClassCharacter *, 10> &aCharacters)
+{
+	static icArray<const CInfClassCharacter *, 10> s_aFilterCharacters;
+	s_aFilterCharacters = aCharacters;
+
+	const auto ExceptCharactersFilter = [](const CCharacter *pCh) {
+		const CInfClassCharacter *pCharacter = CInfClassCharacter::GetInstance(pCh);
+		return !s_aFilterCharacters.Contains(pCharacter);
+	};
+
+	return ExceptCharactersFilter;
+}
+
+CharacterFilter CInfClassCharacter::GetFilterAllOff(CharacterFilter Filter1, CharacterFilter Filter2)
+{
+	static icArray<CharacterFilter, 4> s_aCombinedCharacterFilters;
+	s_aCombinedCharacterFilters.Clear();
+	s_aCombinedCharacterFilters.Add(Filter1);
+	s_aCombinedCharacterFilters.Add(Filter2);
+
+	auto CombinedCharactersFilter = [](const CCharacter *pEntity) {
+		for(const CharacterFilter &Filter : s_aCombinedCharacterFilters)
+		{
+			if(!Filter(pEntity))
+				return false;
+		}
+
+		return true;
+	};
+
+	return CombinedCharactersFilter;
 }
 
 void CInfClassCharacter::ResetClassObject()

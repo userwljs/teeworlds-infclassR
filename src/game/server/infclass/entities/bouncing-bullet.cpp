@@ -68,7 +68,10 @@ void CBouncingBullet::Tick()
 	int Collide = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CurPos, nullptr, &NewPos);
 
 	const float ProjectileRadius = 6.0f;
-	CInfClassCharacter *pTargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, NewPos, ProjectileRadius, NewPos, nullptr, GetOwner()));
+	const CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
+	const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
+	CharacterFilter Filter = IsInfected ? CInfClassCharacter::GetHumansFilter() : CInfClassCharacter::GetInfectedFilter();
+	CInfClassCharacter *pTargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, NewPos, ProjectileRadius, NewPos, Filter));
 
 	if(pTargetChr)
 	{

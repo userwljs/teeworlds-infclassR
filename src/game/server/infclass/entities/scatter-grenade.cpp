@@ -50,8 +50,11 @@ void CScatterGrenade::Tick()
 
 	if(m_ExplodeOnContact)
 	{
-		CCharacter *OwnerChar = GetOwnerCharacter();
-		CCharacter *TargetChr = GameWorld()->IntersectCharacter(PrevPos, CurPos, 6.0f, CurPos, GetExceptEntitiesFilterFunction({OwnerChar}), GetOwner());
+		const float ProjectileRadius = 6.0f;
+		const CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
+		const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
+		CharacterFilter OnlyOtherTeamFilter = IsInfected ? CInfClassCharacter::GetHumansFilter() : CInfClassCharacter::GetInfectedFilter();
+		CInfClassCharacter *TargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, CurPos, ProjectileRadius, CurPos, OnlyOtherTeamFilter));
 
 		if(TargetChr)
 		{

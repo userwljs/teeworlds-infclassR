@@ -72,8 +72,10 @@ void CIcProjectile::Tick()
 	vec2 CurPos = GetPos(Ct);
 	int Collide = GameServer()->Collision()->IntersectLine(PrevPos, CurPos, &CurPos, 0);
 	const float ProjectileRadius = 6.0f;
-	CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
-	CInfClassCharacter *TargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, CurPos, ProjectileRadius, CurPos, GetExceptEntitiesFilterFunction({pOwnerChar}), GetOwner()));
+	const CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
+	const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
+	CharacterFilter OnlyOtherTeamFilter = IsInfected ? CInfClassCharacter::GetHumansFilter() : CInfClassCharacter::GetInfectedFilter();
+	CInfClassCharacter *TargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, CurPos, ProjectileRadius, CurPos, OnlyOtherTeamFilter));
 
 	m_LifeSpan--;
 	

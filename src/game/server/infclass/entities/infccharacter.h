@@ -93,8 +93,11 @@ public:
 	static const CInfClassCharacter *GetInstance(const CCharacter *pCharacter);
 	static CInfClassCharacter *GetInstance(CCharacter *pCharacter);
 
-	static EntityFilter GetInfectedFilterFunction();
-	static EntityFilter GetHumansFilterFunction();
+	static CharacterFilter GetInfectedFilter();
+	static CharacterFilter GetHumansFilter();
+	CharacterFilter GetExceptThisCharacterFilter();
+	static CharacterFilter GetExceptCharactersFilter(const icArray<const CInfClassCharacter *, 10> &aCharacters);
+	static CharacterFilter GetFilterAllOff(CharacterFilter Filter1, CharacterFilter Filter2);
 
 	void OnCharacterSpawned(const SpawnContext &Context);
 	void OnCharacterInInfectionZone();
