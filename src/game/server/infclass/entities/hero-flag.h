@@ -10,6 +10,8 @@ class CInfClassCharacter;
 class CHeroFlag : public CInfCEntity
 {
 public:
+	static int EntityId;
+
 	static constexpr int ms_SHIELD_COUNT = 4;
 
 	static const int ms_PhysSize = 14;
