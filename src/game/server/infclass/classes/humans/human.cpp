@@ -1354,8 +1354,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 
 		if(pOwnWall && pOwnWall->HasSecondPosition() && pOwnWall->GetEndTick().has_value())
 		{
-			int RemainingTicks = pOwnWall->GetEndTick().value() - CurrentTick;
-			int Seconds = 1 + RemainingTicks / Server()->TickSpeed();
+			int Seconds = pOwnWall->GetLifespan() + 1;
 			GameServer()->SendBroadcast_Localization(GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Laser wall: {sec:RemainingTime}"),
@@ -1381,8 +1380,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 
 		if(pOwnWall && pOwnWall->HasSecondPosition())
 		{
-			int RemainingTicks = pOwnWall->GetEndTick().value() - CurrentTick;
-			int Seconds = 1 + RemainingTicks / Server()->TickSpeed();
+			int Seconds = pOwnWall->GetLifespan() + 1;
 			GameServer()->SendBroadcast_Localization(GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Looper laser wall: {sec:RemainingTime}"),
