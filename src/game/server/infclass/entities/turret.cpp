@@ -31,6 +31,8 @@ CTurret::CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, CTurret::Type 
 	m_WarmUpCounter = Server()->TickSpeed() * Config()->m_InfTurretWarmUpDuration;
 	m_Type = Type;
 
+	SetDestructable(true);
+
 	switch(m_Type)
 	{
 	case LASER:
@@ -58,6 +60,11 @@ CTurret::~CTurret()
 	}
 }
 
+void CTurret::SetDestructable(bool Destructable)
+{
+	m_Destructable = Destructable;
+}
+
 void CTurret::Tick()
 {
 	CPlacedObject::Tick();
@@ -69,6 +76,7 @@ void CTurret::Tick()
 	CInfClassCharacter *pKiller = nullptr;
 	float ClosestLength = CCharacterCore::PhysicalSize() + HitRadius();
 	ClosestLength *= ClosestLength;
+	const float HitRange2 = ClosestLength;
 
 	for(TEntityPtr<CInfClassCharacter> pChr = GameWorld()->FindFirst<CInfClassCharacter>(); pChr; ++pChr)
 	{
@@ -76,6 +84,9 @@ void CTurret::Tick()
 			continue;
 
 		float Len2 = distance_squared(pChr->GetPos(), GetPos());
+
+		if (Len2 < HitRange2)
+			Hit(pChr);
 
 		// selfdestruction
 		if(Len2 < ClosestLength)
@@ -216,10 +227,17 @@ void CTurret::Snap(int SnappingClient)
 	}
 }
 
+void CTurret::Hit(CInfClassCharacter *pCharacter)
+{
+	pCharacter->TakeDamage(vec2(0.f, 0.f), Config()->m_InfTurretSelfDestructDmg, GetOwner(), EDamageType::TURRET_DESTRUCTION);
+	GameServer()->CreateSound(m_Pos, SOUND_LASER_FIRE);
+}
+
 void CTurret::Die(CInfClassCharacter *pKiller)
 {
-	pKiller->TakeDamage(vec2(0.f, 0.f), Config()->m_InfTurretSelfDestructDmg, GetOwner(), EDamageType::TURRET_DESTRUCTION);
-	GameServer()->CreateSound(m_Pos, SOUND_LASER_FIRE);
+	if(!IsDestructable())
+		return;
+
 	int ClientId = pKiller->GetCid();
 	GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_SCORE, _("You destroyed {str:PlayerName}'s turret!"),
 		"PlayerName", Server()->ClientName(GetOwner()),

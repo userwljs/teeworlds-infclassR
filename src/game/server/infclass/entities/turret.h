@@ -19,9 +19,14 @@ public:
 	CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, Type Type);
 	~CTurret() override;
 
+	bool IsDestructable() const { return m_Destructable; }
+	void SetDestructable(bool Destructable);
+
 	void Tick() override;
 	void Snap(int SnappingClient) override;
 	float HitRadius() const { return 4.0f; }
+
+	void Hit(CInfClassCharacter *pCharacter);
 	void Die(CInfClassCharacter *pKiller);
 
 	float GetReloadDuration() const { return m_ReloadDuration; }
@@ -41,6 +46,7 @@ private:
 	int m_ReloadCounter;
 	int m_ammunition;
 	bool m_foundTarget;
+	bool m_Destructable{};
 
 	int m_Ids[8];
 };
