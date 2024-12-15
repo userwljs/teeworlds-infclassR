@@ -21,6 +21,7 @@ survival_current_wave = 0
 survival_hp_multiplier = 1
 castle_hardmode = true
 castle_wait_bosses_n = 0
+Castle_sleepers = {}
 
 survival_default_tweaks = nil
 
@@ -56,6 +57,7 @@ end
 
 function reset_castle()
     castle_wait_bosses_n = 0
+    Castle_sleepers = {}
     safe_zone_left_x = 0
 
     survival_cp1 = Game.Controller:AddControlPoint(vec2(85 * 32, 40.5 * 32))
@@ -128,7 +130,36 @@ function get_hero_flag_position()
     Game.Controller:ProvideHeroFlagPosition(position)
 end
 
+function add_sleeper(sleeper_id)
+    local sleeper_descriptor = {}
+    sleeper_descriptor["sleeper_id"] = sleeper_id
+    sleeper_descriptor["ignore"] = false
+
+    table.insert(Castle_sleepers, sleeper_descriptor)
+end
+
+function check_sleepers()
+    if Castle_sleepers == nil then
+        return
+    end
+
+    for i,sleeper_descriptor in ipairs(Castle_sleepers) do
+        if not sleeper_descriptor.ignore then
+            local character = Game.Controller:GetCharacter(sleeper_descriptor.sleeper_id)
+            if character == nil then
+                sleeper_descriptor.ignore = true
+            else
+                if not character:IsSleeping() then
+                    sleeper_descriptor.ignore = true
+                    on_castle_sleeper_awaken(sleeper_descriptor.sleeper_id)
+                end
+            end
+        end
+    end
+end
+
 function on_castle_tick()
+    check_sleepers()
     local tick = Game.Server.Tick
     if (tick + 1) == Game.Controller.InfectionStartTick then
         print("Setup the waves with difficulty", survival_difficulty_level)
@@ -280,6 +311,9 @@ function setup_wave4(start_second)
     bot_conf.DropLevel = max_drop_level
 end
 
+function on_castle_sleeper_awaken(sleeper_id)
+end
+
 function on_boss_killed(victim_id)
     Game.Context:SendChatTarget(-1,string.format("Boss killed on wave %d", survival_current_wave))
     if castle_wait_bosses_n then
@@ -305,6 +339,7 @@ function on_castle_character_spawned(player_id, spawn_type)
     if spawned_player.Tag == "sleeper" then
         spawned_character.Position = sleeper_pos2
         spawned_character:PutToSleep(10000)
+        add_sleeper(player_id)
     end
 end
 
