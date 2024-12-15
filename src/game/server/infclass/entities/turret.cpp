@@ -30,6 +30,17 @@ CTurret::CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, CTurret::Type 
 	m_ammunition = Config()->m_InfTurretAmmunition;
 	m_WarmUpCounter = Server()->TickSpeed() * Config()->m_InfTurretWarmUpDuration;
 	m_Type = Type;
+
+	switch(m_Type)
+	{
+	case LASER:
+		SetReloadDuration(Config()->m_InfTurretLaserReloadDuration);
+		break;
+	case PLASMA:
+		SetReloadDuration(Config()->m_InfTurretPlasmaReloadDuration);
+		break;
+	}
+
 	for(int &Id : m_Ids)
 	{
 		Id = Server()->SnapNewId();
@@ -170,15 +181,7 @@ void CTurret::AttackTargets()
 
 void CTurret::Reload()
 {
-	switch(m_Type)
-	{
-	case LASER:
-		m_ReloadCounter = Server()->TickSpeed() * Config()->m_InfTurretLaserReloadDuration;
-		break;
-	case PLASMA:
-		m_ReloadCounter = Server()->TickSpeed() * Config()->m_InfTurretPlasmaReloadDuration;
-		break;
-	}
+	m_ReloadCounter = Server()->TickSpeed() * m_ReloadDuration;
 }
 
 void CTurret::Snap(int SnappingClient)
@@ -229,4 +232,9 @@ void CTurret::Die(CInfClassCharacter *pKiller)
 	Server()->RoundStatistics()->OnScoreEvent(ClientId, SCOREEVENT_DESTROY_TURRET, pKiller->GetPlayerClass(), Server()->ClientName(ClientId), GameServer()->Console());
 	GameServer()->SendScoreSound(pKiller->GetCid());
 	Reset();
+}
+
+void CTurret::SetReloadDuration(float Seconds)
+{
+	m_ReloadDuration = Seconds;
 }

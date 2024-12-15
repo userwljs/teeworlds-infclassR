@@ -24,6 +24,9 @@ public:
 	float HitRadius() const { return 4.0f; }
 	void Die(CInfClassCharacter *pKiller);
 
+	float GetReloadDuration() const { return m_ReloadDuration; }
+	void SetReloadDuration(float Seconds);
+
 protected:
 	void AttackTargets();
 	void Reload();
@@ -33,6 +36,7 @@ private:
 	int m_Radius;
 	Type m_Type;
 	const float m_RadiusGrowthRate = 4.0f;
+	float m_ReloadDuration{};
 	int m_WarmUpCounter;
 	int m_ReloadCounter;
 	int m_ammunition;
