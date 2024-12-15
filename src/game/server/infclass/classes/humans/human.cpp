@@ -1449,8 +1449,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 		}
 		else if(NumMines <= 0 && pOwnWhiteHole)
 		{
-			int RemainingTicks = pOwnWhiteHole->GetEndTick() - CurrentTick;
-			int Seconds = 1 + RemainingTicks / Server()->TickSpeed();
+			int Seconds = 1 + pOwnWhiteHole->GetLifespan();
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("White hole: {sec:RemainingTime}"),
@@ -1460,8 +1459,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 		}
 		else if(NumMines > 0 && pOwnWhiteHole)
 		{
-			int RemainingTicks = pOwnWhiteHole->GetEndTick() - CurrentTick;
-			int Seconds = 1 + RemainingTicks / Server()->TickSpeed();
+			int Seconds = 1 + pOwnWhiteHole->GetLifespan();
 			dynamic_string Buffer;
 			Server()->Localization()->Format_LP(Buffer, GetPlayer()->GetLanguage(), NumMines,
 				_P("One mine is active", "{int:NumMines} mines are active"),
@@ -2132,10 +2130,10 @@ void CInfClassHuman::OnHeroFlagTaken(CInfClassCharacter *pHero)
 
 void CInfClassHuman::OnWhiteHoleSpawned(CWhiteHole *pWhiteHole)
 {
-	pWhiteHole->SetLifeSpan(GameController()->GetWhiteHoleLifeSpan());
+	pWhiteHole->SetLifespan(GameController()->GetWhiteHoleLifeSpan());
 
 	m_KillsProgression = -1;
-	m_ResetKillsTick = pWhiteHole->GetEndTick() + Server()->TickSpeed() * 3;
+	m_ResetKillsTick = pWhiteHole->GetEndTick().value() + Server()->TickSpeed() * 3;
 }
 
 void CInfClassHuman::GiveUpgrade()

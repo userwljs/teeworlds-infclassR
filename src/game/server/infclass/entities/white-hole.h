@@ -16,14 +16,10 @@ public:
 	static int EntityId;
 
 	CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner);
-	virtual ~CWhiteHole();
-	
-	virtual void Snap(int SnappingClient);
-	virtual void TickPaused();
-	virtual void Tick();
+	~CWhiteHole() override;
 
-	int GetEndTick() const { return m_EndTick; }
-	void SetLifeSpan(float Seconds);
+	void Snap(int SnappingClient) override;
+	void Tick() override;
 
 private:
 	// physics
@@ -41,9 +37,6 @@ private:
 	vec2 *m_ParticleVec;
 
 	bool m_IsDieing = false;
-	
-public:
-	int m_EndTick = 0;
 	int m_Radius = 0; // changes overtime - grows when created - shrinks when dieing
 };
 

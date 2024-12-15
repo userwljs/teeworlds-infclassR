@@ -31,9 +31,9 @@ CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner)
 	}
 
 	CInfClassCharacter *pOwner = GetOwnerCharacter();
-	if(pOwner)
+	CInfClassHuman *pHuman = CInfClassHuman::GetInstance(pOwner);
+	if(pHuman)
 	{
-		CInfClassHuman *pHuman = CInfClassHuman::GetInstance(pOwner);
 		pHuman->OnWhiteHoleSpawned(this);
 	}
 
@@ -125,8 +125,7 @@ void CWhiteHole::Snap(int SnappingClient)
 
 void CWhiteHole::MoveParticles()
 {
-	const int CurrentTick = Server()->Tick();
-	int LifeSpan = m_EndTick - CurrentTick;
+	int LifeSpan = m_EndTick.value_or(0) - Server()->Tick();
 
 	float Radius = Config()->m_InfWhiteHoleRadius;
 	float RandomAngle, Speed;
@@ -181,41 +180,32 @@ void CWhiteHole::MoveCharacters()
 
 void CWhiteHole::Tick()
 {
-	if(m_MarkedForDestroy)
+	CIcEntity::Tick();
+
+	if(m_EndTick.has_value())
+	{
+		if(Server()->Tick() >= m_EndTick.value())
+		{
+			new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), GetOwner(), 20, EDamageType::WHITE_HOLE);
+		}
+	}
+
+	if(IsMarkedForDestroy())
 		return;
 
-	const int CurrentTick = Server()->Tick();
-	int LifeSpan = m_EndTick - CurrentTick;
-	if(Server()->Tick() >= m_EndTick)
+	int LifeSpan = m_EndTick.value() - Server()->Tick();
+	if(LifeSpan < m_ParticleStopTickTime) // shrink radius
 	{
-		new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), GetOwner(), 20, EDamageType::WHITE_HOLE);
-		Reset();
+		m_Radius = LifeSpan / (float)m_ParticleStopTickTime * Config()->m_InfWhiteHoleRadius;
+		m_IsDieing = true;
 	}
-	else 
+	else if(m_Radius < Config()->m_InfWhiteHoleRadius) // grow radius
 	{
-		if (LifeSpan < m_ParticleStopTickTime) // shrink radius
-		{
-			m_Radius = LifeSpan/(float)m_ParticleStopTickTime * Config()->m_InfWhiteHoleRadius;
-			m_IsDieing = true;
-		}
-		else if (m_Radius < Config()->m_InfWhiteHoleRadius) // grow radius
-		{
-			m_Radius += m_RadiusGrowthRate;
-			if (m_Radius > Config()->m_InfWhiteHoleRadius)
-				m_Radius = Config()->m_InfWhiteHoleRadius;
-		}
-
-		MoveParticles();
-		MoveCharacters();
+		m_Radius += m_RadiusGrowthRate;
+		if(m_Radius > Config()->m_InfWhiteHoleRadius)
+			m_Radius = Config()->m_InfWhiteHoleRadius;
 	}
-}
 
-void CWhiteHole::SetLifeSpan(float Seconds)
-{
-	m_EndTick = Server()->Tick() + Server()->TickSpeed() * Seconds;
-}
-
-void CWhiteHole::TickPaused()
-{
-	++m_EndTick;
+	MoveParticles();
+	MoveCharacters();
 }
