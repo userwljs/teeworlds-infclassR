@@ -4,6 +4,7 @@
 #include <base/tl/ic_array.h>
 #include <game/infclass/classes.h>
 #include <game/server/entities/character.h>
+#include <game/server/entities_filter.h>
 
 class CGameContext;
 class CInfClassGameController;
@@ -81,7 +82,6 @@ struct SpawnContext
 const char *toString(SpawnContext::SPAWN_TYPE SpawnType);
 
 using ClientsArray = icArray<int, MAX_CLIENTS>;
-using EntityFilter = bool (*)(const CEntity *);
 
 class CInfClassCharacter : public CCharacter
 {

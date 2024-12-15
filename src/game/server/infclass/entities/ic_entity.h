@@ -4,6 +4,7 @@
 #define GAME_SERVER_ENTITIES_INFC_ENTITY_H
 
 #include <game/server/entity.h>
+#include <game/server/entities_filter.h>
 
 inline constexpr int TileSize = 32;
 inline constexpr float TileSizeF = 32.0f;
@@ -14,8 +15,6 @@ class icArray;
 class CGameContext;
 class CInfClassCharacter;
 class CInfClassGameController;
-
-using EntityFilter = bool (*)(const CEntity *);
 
 class CIcEntity : public CEntity
 {

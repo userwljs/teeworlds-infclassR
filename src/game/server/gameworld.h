@@ -4,6 +4,7 @@
 #define GAME_SERVER_GAMEWORLD_H
 
 #include <game/gamecore.h>
+#include <game/server/entities_filter.h>
 
 #include <vector>
 
@@ -102,7 +103,6 @@ public:
 	*/
 	CEntity *ClosestEntity(vec2 Pos, float Radius, int Type, const CEntity *pNotThis);
 
-	using EntityFilter = bool (*)(const CEntity *);
 	class CEntity *IntersectEntity(vec2 Pos0, vec2 Pos1, float Radius, vec2 *NewPos, int EntityType, EntityFilter FilterFunction);
 
 	/*

@@ -878,6 +878,7 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   ddracecommands.cpp
   entities/character.cpp
   entities/character.h
+  entities_filter.h
   infclass/classes/humans/human.cpp
   infclass/classes/humans/human.h
   infclass/classes/infcplayerclass.cpp
