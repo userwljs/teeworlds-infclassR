@@ -20,17 +20,15 @@
 
 int CTurret::EntityId{};
 
-CTurret::CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, vec2 Direction, CTurret::Type Type) :
+CTurret::CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, CTurret::Type Type) :
 	CPlacedObject(pGameContext, EntityId, Pos, Owner)
 {
 	m_InfClassObjectType = INFCLASS_OBJECT_TYPE_TURRET;
-	m_Dir = Direction;
 	m_StartTick = Server()->Tick();
-	m_Bounces = 0;
 	m_Radius = 15.0f;
 	m_foundTarget = false;
 	m_ammunition = Config()->m_InfTurretAmmunition;
-	m_EndTick = m_StartTick + Server()->TickSpeed() * GameController()->InfTurretDuration();
+	SetLifespan(GameController()->InfTurretDuration());
 	m_WarmUpCounter = Server()->TickSpeed() * Config()->m_InfTurretWarmUpDuration;
 	m_Type = Type;
 	for(int &Id : m_Ids)
@@ -52,12 +50,11 @@ CTurret::~CTurret()
 
 void CTurret::Tick()
 {
+	CPlacedObject::Tick();
+
 	// marked for destroy
 	if(IsMarkedForDestroy())
 		return;
-
-	if(Server()->Tick() >= m_EndTick)
-		Reset();
 
 	CInfClassCharacter *pKiller = nullptr;
 	float ClosestLength = CCharacterCore::PhysicalSize() + HitRadius();
@@ -115,11 +112,6 @@ void CTurret::Tick()
 	}
 
 	AttackTargets();
-}
-
-void CTurret::TickPaused()
-{
-	++m_EndTick;
 }
 
 void CTurret::AttackTargets()
@@ -202,7 +194,6 @@ void CTurret::Snap(int SnappingClient)
 			return;
 
 		pInfClassObject->m_StartTick = m_StartTick;
-		pInfClassObject->m_EndTick = m_EndTick;
 	}
 
 	const CInfClassPlayer *pPlayer = GameController()->GetPlayer(SnappingClient);

@@ -16,27 +16,20 @@ public:
 		PLASMA,
 	};
 
-	CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, vec2 Direction, Type Type);
+	CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, Type Type);
 	~CTurret() override;
 
 	void Tick() override;
-	void TickPaused() override;
 	void Snap(int SnappingClient) override;
 	float HitRadius() const { return 4.0f; }
 	void Die(CInfClassCharacter *pKiller);
-
-	int GetEndTick() const { return m_EndTick; }
 
 protected:
 	void AttackTargets();
 	void Reload();
 
 private:
-	vec2 m_Vel;
-	vec2 m_Dir;
 	int m_StartTick;
-	int m_EndTick;
-	int m_Bounces;
 	int m_Radius;
 	Type m_Type;
 	const float m_RadiusGrowthRate = 4.0f;

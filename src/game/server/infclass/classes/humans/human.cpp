@@ -1909,17 +1909,15 @@ void CInfClassHuman::PlaceScientistMine(WeaponFireContext *pFireContext)
 
 void CInfClassHuman::PlaceTurret(WeaponFireContext *pFireContext)
 {
-	const vec2 Direction = GetDirection();
-
 	if(GameController()->AreTurretsEnabled() && m_TurretCount)
 	{
 		if(pFireContext->InfClassWeapon == EInfclassWeapon::LASER_TURRET)
 		{
-			new CTurret(GameServer(), GetPos(), GetCid(), Direction, CTurret::LASER);
+			new CTurret(GameServer(), GetPos(), GetCid(), CTurret::LASER);
 		}
 		else if(pFireContext->InfClassWeapon == EInfclassWeapon::PLASMA_TURRET)
 		{
-			new CTurret(GameServer(), GetPos(), GetCid(), Direction, CTurret::PLASMA);
+			new CTurret(GameServer(), GetPos(), GetCid(), CTurret::PLASMA);
 		}
 
 		GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
