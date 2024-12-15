@@ -6,20 +6,6 @@
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
-static int FilterOwnerId = -1;
-static icArray<const CEntity *, 10> aFilterEntities;
-
-static bool OwnerFilter(const CEntity *pEntity)
-{
-	const CIcEntity *pInfEntity = static_cast<const CIcEntity *>(pEntity);
-	return pInfEntity->GetOwner() == FilterOwnerId;
-}
-
-static bool ExceptEntitiesFilter(const CEntity *pEntity)
-{
-	return !aFilterEntities.Contains(pEntity);
-}
-
 CIcEntity::CIcEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, std::optional<int> Owner,
 	int ProximityRadius) :
 	CEntity(pGameContext->GameWorld(), ObjectType, Pos, ProximityRadius)
@@ -52,7 +38,14 @@ CInfClassCharacter *CIcEntity::GetOwnerCharacter() const
 
 EntityFilter CIcEntity::GetOwnerFilterFunction(int Owner)
 {
-	FilterOwnerId = Owner;
+	static int s_FilterOwnerId{};
+	s_FilterOwnerId = Owner;
+
+	const auto OwnerFilter = [](const CEntity *pEntity) {
+		const CIcEntity *pInfEntity = static_cast<const CIcEntity *>(pEntity);
+		return pInfEntity->GetOwner() == s_FilterOwnerId;
+	};
+
 	return OwnerFilter;
 }
 
@@ -63,7 +56,13 @@ EntityFilter CIcEntity::GetOwnerFilterFunction()
 
 EntityFilter CIcEntity::GetExceptEntitiesFilterFunction(const icArray<const CEntity *, 10> &aEntities)
 {
-	aFilterEntities = aEntities;
+	static icArray<const CEntity *, 10> s_aFilterEntities;
+	s_aFilterEntities = aEntities;
+
+	const auto ExceptEntitiesFilter = [](const CEntity *pEntity) {
+		return !s_aFilterEntities.Contains(pEntity);
+	};
+
 	return ExceptEntitiesFilter;
 }
 
