@@ -1911,14 +1911,21 @@ void CInfClassHuman::PlaceTurret(WeaponFireContext *pFireContext)
 {
 	if(GameController()->AreTurretsEnabled() && m_TurretCount)
 	{
+		CTurret *pTurret{};
 		if(pFireContext->InfClassWeapon == EInfclassWeapon::LASER_TURRET)
 		{
-			new CTurret(GameServer(), GetPos(), GetCid(), CTurret::LASER);
+			pTurret = new CTurret(GameServer(), GetPos(), GetCid(), CTurret::LASER);
 		}
 		else if(pFireContext->InfClassWeapon == EInfclassWeapon::PLASMA_TURRET)
 		{
-			new CTurret(GameServer(), GetPos(), GetCid(), CTurret::PLASMA);
+			pTurret = new CTurret(GameServer(), GetPos(), GetCid(), CTurret::PLASMA);
 		}
+		else
+		{
+			dbg_assert(false, "Unknown Turret weapon type");
+			return;
+		}
+		pTurret->SetLifespan(GameController()->InfTurretDuration());
 
 		GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
 		m_TurretCount--;
