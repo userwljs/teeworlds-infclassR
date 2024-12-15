@@ -15,6 +15,9 @@ public:
 	vec2 SecondPosition() const { return m_Pos2.value_or(m_Pos); }
 	void SetSecondPosition(vec2 Position);
 
+	float MaxLength() const { return m_MaxLength.value_or(0); }
+	void SetMaxLength(float Length);
+
 	void Tick() override;
 
 protected:

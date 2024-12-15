@@ -31,6 +31,18 @@ void CPlacedObject::SetSecondPosition(vec2 Position)
 	m_InfClassObjectFlags = INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION;
 }
 
+void CPlacedObject::SetMaxLength(float Length)
+{
+	if(Length == 0)
+	{
+		m_MaxLength.reset();
+	}
+	else
+	{
+		m_MaxLength = Length;
+	}
+}
+
 void CPlacedObject::Tick()
 {
 	CIcEntity::Tick();
