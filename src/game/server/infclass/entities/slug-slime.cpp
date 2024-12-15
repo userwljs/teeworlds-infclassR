@@ -51,12 +51,6 @@ void CSlugSlime::Tick()
 	}
 }
 
-void CSlugSlime::TickPaused()
-{
-	m_StartTick++;
-	m_EndTick++;
-}
-
 void CSlugSlime::Snap(int SnappingClient)
 {
 	// Do not snap Slime at all to prevent possible crash on owner indicator rendering
@@ -74,7 +68,6 @@ void CSlugSlime::Snap(int SnappingClient)
 			return;
 
 		pInfClassObject->m_StartTick = m_StartTick;
-		pInfClassObject->m_EndTick = m_EndTick;
 	}
 }
 

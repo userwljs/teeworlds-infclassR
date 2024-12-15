@@ -13,16 +13,13 @@ public:
 	CSlugSlime(CGameContext *pGameContext, vec2 Pos, int Owner);
 
 	void Tick() override;
-	void TickPaused() override;
 	void Snap(int SnappingClient) override;
-	int GetEndTick() const { return m_EndTick; }
 
 	bool Replenish(int PlayerId, int EndTick);
 	void SetDamage(int Damage, float Interval);
 
 private:
 	int m_StartTick = 0;
-	int m_EndTick = 0;
 	int m_Damage{};
 	float m_DamageInterval{};
 };
