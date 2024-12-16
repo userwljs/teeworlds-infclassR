@@ -158,8 +158,6 @@ IGameController *CreateInfclassModController(CGameContext *pGameServer) { return
 CInfClassGameController::CInfClassGameController(class CGameContext *pGameServer)
 : IGameController(pGameServer), m_Teams(pGameServer)
 {
-	m_pGameType = "InfClassR";
-
 	m_Teams.m_Core.m_IsInfclass = true;
 
 	for(std::vector<vec2> &vTeamSpawnPoints : m_avSpawnPoints)
@@ -209,6 +207,11 @@ CInfClassGameController::~CInfClassGameController()
 	FreePlayerOwnSnapItems();
 
 	if(m_GrowingMap) delete[] m_GrowingMap;
+}
+
+const char *CInfClassGameController::GameType() const
+{
+	return "InfClassR";
 }
 
 void CInfClassGameController::IncreaseCurrentRoundCounter()

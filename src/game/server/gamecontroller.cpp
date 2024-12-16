@@ -86,7 +86,6 @@ IGameController::IGameController(class CGameContext *pGameServer)
 	m_pGameServer = pGameServer;
 	m_pConfig = m_pGameServer->Config();
 	m_pServer = m_pGameServer->Server();
-	m_pGameType = "unknown";
 
 	//
 	DoWarmup(g_Config.m_SvWarmup);
@@ -407,7 +406,7 @@ void IGameController::StartRound()
 	m_ForceBalanced = false;
 	Server()->DemoRecorder_HandleAutoStart();
 	char aBuf[256];
-	str_format(aBuf, sizeof(aBuf), "start round type='%s' teamplay='%d' id='%d'", m_pGameType, m_GameFlags&GAMEFLAG_TEAMS, m_RoundId);
+	str_format(aBuf, sizeof(aBuf), "start round type='%s' teamplay='%d' id='%d'", GameType(), m_GameFlags&GAMEFLAG_TEAMS, m_RoundId);
 	GameServer()->Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", aBuf);
 }
 
@@ -1298,6 +1297,11 @@ bool IGameController::CanChangeTeam(CPlayer *pPlayer, int JoinTeam)
 
 void IGameController::DoWincheck()
 {
+}
+
+const char *IGameController::GameType() const
+{
+	return "unknown";
 }
 
 int IGameController::ClampTeam(int Team)

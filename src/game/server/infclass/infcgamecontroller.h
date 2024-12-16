@@ -81,6 +81,8 @@ public:
 	CInfClassGameController(class CGameContext *pGameServer);
 	~CInfClassGameController() override;
 
+	const char *GameType() const override;
+
 	void IncreaseCurrentRoundCounter() override;
 
 	void DoTeamBalance() override;

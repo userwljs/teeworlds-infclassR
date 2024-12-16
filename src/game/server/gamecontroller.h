@@ -92,8 +92,6 @@ protected:
 	bool m_ForceBalanced;
 
 public:
-	const char *m_pGameType;
-	
 	void SkipMap();
 
 	bool IsTeamplay() const;
@@ -101,6 +99,8 @@ public:
 
 	IGameController(class CGameContext *pGameServer);
 	virtual ~IGameController();
+
+	virtual const char *GameType() const;
 
 	virtual void DoWincheck();
 
