@@ -559,15 +559,19 @@ function survival_on_tick()
     end
 end
 
-function start_survival_game(base_difficulty, hp_multiplier)
+function Survival_set_difficulty(base_difficulty, hp_multiplier)
     survival_difficulty_level = base_difficulty
     survival_hp_multiplier = hp_multiplier
 
+    update_difficulty()
+    update_max_players()
+end
+
+function start_survival_game(base_difficulty, hp_multiplier)
     local game_conf = Game.Controller:SurvivalGetGameConfiguration()
     game_conf:Reset()
 
-    update_difficulty()
-    update_max_players()
+    Survival_set_difficulty(base_difficulty, hp_multiplier)
 
     Game.Controller:SurvivalAddWave(1, "The Meeting")
     Game.Controller:SurvivalAddWave(2, "The Green Smoke")
