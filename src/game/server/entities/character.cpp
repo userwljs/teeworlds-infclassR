@@ -617,6 +617,43 @@ bool CCharacter::SameTeam(int ClientId)
 	return Teams()->m_Core.SameTeam(GetPlayer()->GetCid(), ClientId);
 }
 
+void CCharacter::TeleportToTeleId(int TeleNumber, int TeleType)
+{
+	const std::map<int, std::vector<vec2>> &AllTeleOuts = GameServer()->Collision()->GetTeleOuts();
+	if(AllTeleOuts.find(TeleNumber) == AllTeleOuts.cend())
+	{
+		dbg_msg("character", "No tele out for tele number: %d", TeleNumber);
+		return;
+	}
+	const std::vector<vec2> Outs = AllTeleOuts.at(TeleNumber);
+	if(Outs.empty())
+	{
+		dbg_msg("character", "No tele out for tele number: %d", TeleNumber);
+		return;
+	}
+
+	switch(TeleType)
+	{
+	case TILE_TELEINEVIL:
+	case TILE_TELEIN:
+		break;
+	default:
+		dbg_msg("character", "Unsupported tele type: %d", TeleType);
+		return;
+	}
+
+	int DestTeleNumber = random_int(0, Outs.size() - 1);
+	vec2 DestPosition = Outs.at(DestTeleNumber);
+	m_Core.m_Pos = DestPosition;
+	if(TeleType == TILE_TELEINEVIL)
+	{
+		m_Core.m_Vel = vec2(0, 0);
+		GameWorld()->ReleaseHooked(GetPlayer()->GetCid());
+	}
+
+	ResetHook();
+}
+
 int CCharacter::Team()
 {
 	return Teams()->m_Core.Team(m_pPlayer->GetCid());
@@ -787,9 +824,26 @@ void CCharacter::SetTeams(CGameTeams *pTeams)
 	m_Core.SetTeamsCore(&m_pTeams->m_Core);
 }
 
-void CCharacter::HandleTiles(int Index)
+void CCharacter::HandleTiles(int MapIndex)
 {
 	m_MoveRestrictions = GameServer()->Collision()->GetMoveRestrictions(m_Pos);
+
+	HandleTeleports(MapIndex);
+}
+
+void CCharacter::HandleTeleports(int MapIndex)
+{
+	CTeleTile *pTeleLayer = GameServer()->Collision()->TeleLayer();
+	if(!pTeleLayer)
+		return;
+
+	int TeleNumber = pTeleLayer[MapIndex].m_Number;
+	int TeleType = pTeleLayer[MapIndex].m_Type;
+	if((TeleNumber > 0) && (TeleType != TILE_TELEOUT))
+	{
+		dbg_msg("InfClass", "Character TeleNumber: %d, TeleType: %d", TeleNumber, TeleType);
+		TeleportToTeleId(TeleNumber, TeleType);
+	}
 }
 
 void CCharacter::DDRaceInit()

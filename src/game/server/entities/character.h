@@ -158,7 +158,8 @@ protected:
 	CCharacterCore m_Core;
 	CGameTeams *m_pTeams = nullptr;
 
-	void HandleTiles(int Index);
+	void HandleTiles(int MapIndex);
+	void HandleTeleports(int MapIndex);
 	void DDRaceInit();
 	void HandleSkippableTiles(int Index);
 
@@ -169,6 +170,8 @@ public:
 	int Team();
 	bool CanCollide(int ClientId);
 	bool SameTeam(int ClientId);
+
+	void TeleportToTeleId(int TeleNumber, int TeleType);
 
 protected:
 	EPlayerClass PrivateGetPlayerClass() const;

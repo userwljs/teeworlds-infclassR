@@ -138,7 +138,6 @@ public:
 	void HandleMapMenu();
 	void HandleMapMenuClicked();
 	void HandleWeaponsRegen();
-	void HandleTeleports();
 	void HandleIndirectKillerCleanup();
 
 	void Die(int Killer, int Weapon) override;
@@ -292,7 +291,6 @@ protected:
 
 	void UpdateCoreSolo();
 	void UpdateTuningParam();
-	void TeleToId(int TeleNumber, int TeleType);
 
 	void ResetClassObject();
 	void HandleDamage(int From, int Damage, EDamageType DamageType);
