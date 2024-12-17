@@ -131,6 +131,10 @@ void CCollision::InitTeleports()
 			{
 				m_TeleOuts[Number].emplace_back(i % m_Width * 32.0f + 16.0f, i / m_Width * 32.0f + 16.0f);
 			}
+			else if(Type == TILE_TELECHECKOUT)
+			{
+				m_TeleCheckOuts[Number].emplace_back(i % m_Width * 32.0f + 16.0f, i / m_Width * 32.0f + 16.0f);
+			}
 		}
 	}
 }
@@ -982,4 +986,10 @@ const std::vector<vec2> &CCollision::TeleOuts(int Number) const
 {
 	static const std::vector<vec2> sEmptyVector;
 	return m_TeleOuts.contains(Number) ? m_TeleOuts.at(Number) : sEmptyVector;
+}
+
+const std::vector<vec2> &CCollision::TeleCheckOuts(int Number) const
+{
+	static const std::vector<vec2> sEmptyVector;
+	return m_TeleCheckOuts.contains(Number) ? m_TeleCheckOuts.at(Number) : sEmptyVector;
 }

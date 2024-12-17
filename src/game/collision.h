@@ -66,6 +66,7 @@ public:
 
 	bool CheckPoint(float x, float y) const { return IsSolid(round_to_int(x), round(y)); }
 	bool CheckPoint(vec2 Pos) const { return CheckPoint(Pos.x, Pos.y); }
+	bool CheckPointLua(vec2 Pos) const { return CheckPoint(Pos); }
 	int GetCollisionAt(float x, float y) const { return GetTile(round(x), round(y)); }
 	int GetWidth() const { return m_Width; };
 	int GetHeight() const { return m_Height; };
@@ -121,11 +122,14 @@ public:
 	CLayers *Layers() { return m_pLayers; }
 
 	const std::vector<vec2> &TeleOuts(int Number) const;
+	const std::vector<vec2> &TeleCheckOuts(int Number) const;
 
 private:
 	CTeleTile *m_pTele;
 	// TILE_TELEOUT
 	std::map<int, std::vector<vec2>> m_TeleOuts;
+	// TILE_TELECHECKOUT
+	std::map<int, std::vector<vec2>> m_TeleCheckOuts;
 
 	CSpeedupTile *m_pSpeedup;
 };

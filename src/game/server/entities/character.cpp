@@ -624,10 +624,12 @@ void CCharacter::SetTeleCheckpoint(int CP)
 
 void CCharacter::TeleportToTeleId(int TeleNumber, int TeleType)
 {
-	const std::vector<vec2> &Outs = GameServer()->Collision()->TeleOuts(TeleNumber);
+	const std::vector<vec2> &Outs = TeleType == TILE_TELECHECKOUT ?
+										GameServer()->Collision()->TeleCheckOuts(TeleNumber) :
+										GameServer()->Collision()->TeleOuts(TeleNumber);
 	if(Outs.empty())
 	{
-		dbg_msg("character", "No tele out for tele number: %d", TeleNumber);
+		dbg_msg("character", "No tele out for tele number: %d, type %d", TeleNumber, TeleType);
 		return;
 	}
 
@@ -635,6 +637,7 @@ void CCharacter::TeleportToTeleId(int TeleNumber, int TeleType)
 	{
 	case TILE_TELEINEVIL:
 	case TILE_TELEIN:
+	case TILE_TELECHECKOUT:
 		break;
 	default:
 		dbg_msg("character", "Unsupported tele type: %d", TeleType);
@@ -644,7 +647,7 @@ void CCharacter::TeleportToTeleId(int TeleNumber, int TeleType)
 	int DestTeleNumber = random_int(0, Outs.size() - 1);
 	vec2 DestPosition = Outs.at(DestTeleNumber);
 	m_Core.m_Pos = DestPosition;
-	if(TeleType == TILE_TELEINEVIL)
+	if((TeleType == TILE_TELEINEVIL) || (TeleType == TILE_TELECHECKOUT))
 	{
 		m_Core.m_Vel = vec2(0, 0);
 		GameWorld()->ReleaseHooked(GetPlayer()->GetCid());
@@ -845,7 +848,7 @@ void CCharacter::HandleTeleports(int MapIndex)
 
 	int TeleNumber = pTeleLayer[MapIndex].m_Number;
 	int TeleType = pTeleLayer[MapIndex].m_Type;
-	if((TeleNumber > 0) && (TeleType != TILE_TELEOUT))
+	if((TeleNumber > 0) && (TeleType != TILE_TELEOUT) && (TeleType != TILE_TELECHECKOUT))
 	{
 		dbg_msg("InfClass", "Character TeleNumber: %d, TeleType: %d", TeleNumber, TeleType);
 		TeleportToTeleId(TeleNumber, TeleType);
