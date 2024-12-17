@@ -9,6 +9,11 @@
 #include <map>
 #include <vector>
 
+class CTile;
+class CLayers;
+class CTeleTile;
+class CSpeedupTile;
+
 enum
 {
 	CANTMOVE_LEFT = 1 << 0,
@@ -33,10 +38,10 @@ class CCollision
 {
 	std::vector<EZonePhysics> mv_Physics;
 	std::vector<int8_t> mv_Doors;
-	class CTile *m_pTiles;
+	CTile *m_pTiles;
 	int m_Width;
 	int m_Height;
-	class CLayers *m_pLayers;
+	CLayers *m_pLayers;
 	
 	double m_Time;
 	
@@ -111,16 +116,17 @@ public:
 	int IsSpeedup(int Index) const;
 	void GetSpeedup(int Index, vec2 *Dir, int *Force, int *MaxSpeed) const;
 
-	class CTeleTile *TeleLayer() { return m_pTele; }
-	class CLayers *Layers() { return m_pLayers; }
+	CTeleTile *TeleLayer() { return m_pTele; }
+	CLayers *Layers() { return m_pLayers; }
 
 	const std::map<int, std::vector<vec2>> &GetTeleOuts() const { return m_TeleOuts; }
 
 private:
-	class CTeleTile *m_pTele;
+	CTeleTile *m_pTele;
+	// TILE_TELEOUT
 	std::map<int, std::vector<vec2>> m_TeleOuts;
 
-	class CSpeedupTile *m_pSpeedup;
+	CSpeedupTile *m_pSpeedup;
 };
 
 #endif

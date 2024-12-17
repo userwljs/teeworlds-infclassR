@@ -123,17 +123,13 @@ void CCollision::InitTeleports()
 	// Init tele outs
 	for(int i = 0; i < m_Width * m_Height; i++)
 	{
-		int Number = TeleLayer()[i].m_Number;
-		int Type = TeleLayer()[i].m_Type;
+		int Number = m_pTele[i].m_Number;
+		int Type = m_pTele[i].m_Type;
 		if(Number > 0)
 		{
-			int x = i % m_Width;
-			int y = i / m_Width;
-
 			if(Type == TILE_TELEOUT)
 			{
-				m_TeleOuts[Number].push_back(
-					vec2(i % m_Width * 32 + 16, i / m_Width * 32 + 16));
+				m_TeleOuts[Number].emplace_back(i % m_Width * 32.0f + 16.0f, i / m_Width * 32.0f + 16.0f);
 			}
 		}
 	}
