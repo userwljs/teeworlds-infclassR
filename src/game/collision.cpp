@@ -544,6 +544,20 @@ bool CCollision::IsSolid(int x, int y) const
 	return GetPhysicsTile(x, y) != EZonePhysics::Null;
 }
 
+std::optional<int> CCollision::GetTeleCheckpoint(int Index) const
+{
+	if(Index < 0)
+		return std::nullopt;
+
+	if(!m_pTele)
+		return std::nullopt;
+
+	if(m_pTele[Index].m_Type == TILE_TELECHECK)
+		return m_pTele[Index].m_Number;
+
+	return std::nullopt;
+}
+
 int CCollision::IsSpeedup(int Index) const
 {
 	if(Index < 0 || !m_pSpeedup)

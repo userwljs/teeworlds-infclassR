@@ -171,6 +171,9 @@ public:
 	bool CanCollide(int ClientId);
 	bool SameTeam(int ClientId);
 
+	int TeleCheckpoint() const { return m_TeleCheckpoint; }
+	void SetTeleCheckpoint(int CP);
+
 	void TeleportToTeleId(int TeleNumber, int TeleType);
 
 protected:
@@ -191,6 +194,7 @@ protected:
 
 	int m_PainSoundTimer;
 	vec2 m_PrevPos;
+	int m_TeleCheckpoint{};
 
 	int m_InAirTick;
 

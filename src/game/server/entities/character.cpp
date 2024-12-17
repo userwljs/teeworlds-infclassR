@@ -617,6 +617,11 @@ bool CCharacter::SameTeam(int ClientId)
 	return Teams()->m_Core.SameTeam(GetPlayer()->GetCid(), ClientId);
 }
 
+void CCharacter::SetTeleCheckpoint(int CP)
+{
+	m_TeleCheckpoint = CP;
+}
+
 void CCharacter::TeleportToTeleId(int TeleNumber, int TeleType)
 {
 	const std::vector<vec2> &Outs = GameServer()->Collision()->TeleOuts(TeleNumber);
@@ -827,7 +832,14 @@ void CCharacter::HandleTiles(int MapIndex)
 
 void CCharacter::HandleTeleports(int MapIndex)
 {
-	CTeleTile *pTeleLayer = GameServer()->Collision()->TeleLayer();
+	const std::optional<int> TeleCheckpoint = Collision()->GetTeleCheckpoint(MapIndex);
+	if(TeleCheckpoint.has_value())
+	{
+		SetTeleCheckpoint(TeleCheckpoint.value());
+		return;
+	}
+
+	const CTeleTile *pTeleLayer = GameServer()->Collision()->TeleLayer();
 	if(!pTeleLayer)
 		return;
 
@@ -842,8 +854,9 @@ void CCharacter::HandleTeleports(int MapIndex)
 
 void CCharacter::DDRaceInit()
 {
-	m_Core.m_Id = GetPlayer()->GetCid();
 	m_PrevPos = m_Pos;
+	m_Core.m_Id = GetPlayer()->GetCid();
+	m_TeleCheckpoint = 0;
 }
 
 void CCharacter::SetPosition(const vec2 &Position)

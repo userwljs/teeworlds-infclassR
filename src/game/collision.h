@@ -113,6 +113,7 @@ public:
 	int GetTileIndex(int Index) const;
 	int GetTileFlags(int Index) const;
 
+	std::optional<int> GetTeleCheckpoint(int Index) const;
 	int IsSpeedup(int Index) const;
 	void GetSpeedup(int Index, vec2 *Dir, int *Force, int *MaxSpeed) const;
 
