@@ -206,6 +206,7 @@ public:
 	void TryUnfreeze(int UnfreezerCid = -1);
 	FREEZEREASON GetFreezeReason() const { return m_FreezeReason; }
 	int GetFreezer() const;
+	int FreezeStartTick() const;
 
 	bool IsBlind() const { return m_BlindnessTicks > 0; }
 

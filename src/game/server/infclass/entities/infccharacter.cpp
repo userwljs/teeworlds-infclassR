@@ -2367,6 +2367,11 @@ int CInfClassCharacter::GetFreezer() const
 	return IsFrozen() ? m_LastFreezer : -1;
 }
 
+int CInfClassCharacter::FreezeStartTick() const
+{
+	return m_Core.m_FreezeStart;
+}
+
 void CInfClassCharacter::ResetBlindness()
 {
 	m_BlindnessTicks = 0;
