@@ -158,6 +158,7 @@ protected:
 	CCharacterCore m_Core;
 	CGameTeams *m_pTeams = nullptr;
 
+	void HandleTiles(int Index);
 	void DDRaceInit();
 	void HandleSkippableTiles(int Index);
 

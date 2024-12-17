@@ -778,13 +778,18 @@ void CCharacter::PostCoreTick()
 
 	int CurrentIndex = GameServer()->Collision()->GetMapIndex(m_Pos);
 	HandleSkippableTiles(CurrentIndex);
-	m_MoveRestrictions = GameServer()->Collision()->GetMoveRestrictions(nullptr, this, m_Pos, 18.0f, CurrentIndex);
+	HandleTiles(CurrentIndex);
 }
 
 void CCharacter::SetTeams(CGameTeams *pTeams)
 {
 	m_pTeams = pTeams;
 	m_Core.SetTeamsCore(&m_pTeams->m_Core);
+}
+
+void CCharacter::HandleTiles(int Index)
+{
+	m_MoveRestrictions = GameServer()->Collision()->GetMoveRestrictions(m_Pos);
 }
 
 void CCharacter::DDRaceInit()
