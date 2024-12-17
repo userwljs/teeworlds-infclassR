@@ -619,13 +619,7 @@ bool CCharacter::SameTeam(int ClientId)
 
 void CCharacter::TeleportToTeleId(int TeleNumber, int TeleType)
 {
-	const std::map<int, std::vector<vec2>> &AllTeleOuts = GameServer()->Collision()->GetTeleOuts();
-	if(AllTeleOuts.find(TeleNumber) == AllTeleOuts.cend())
-	{
-		dbg_msg("character", "No tele out for tele number: %d", TeleNumber);
-		return;
-	}
-	const std::vector<vec2> Outs = AllTeleOuts.at(TeleNumber);
+	const std::vector<vec2> &Outs = GameServer()->Collision()->TeleOuts(TeleNumber);
 	if(Outs.empty())
 	{
 		dbg_msg("character", "No tele out for tele number: %d", TeleNumber);

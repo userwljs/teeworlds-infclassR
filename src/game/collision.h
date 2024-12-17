@@ -119,7 +119,7 @@ public:
 	CTeleTile *TeleLayer() { return m_pTele; }
 	CLayers *Layers() { return m_pLayers; }
 
-	const std::map<int, std::vector<vec2>> &GetTeleOuts() const { return m_TeleOuts; }
+	const std::vector<vec2> &TeleOuts(int Number) const;
 
 private:
 	CTeleTile *m_pTele;

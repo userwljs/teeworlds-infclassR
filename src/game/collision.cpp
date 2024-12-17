@@ -963,3 +963,9 @@ bool CCollision::AreConnected(vec2 Pos1, vec2 Pos2, float Radius) const
 
 	return false;
 }
+
+const std::vector<vec2> &CCollision::TeleOuts(int Number) const
+{
+	static const std::vector<vec2> sEmptyVector;
+	return m_TeleOuts.contains(Number) ? m_TeleOuts.at(Number) : sEmptyVector;
+}
