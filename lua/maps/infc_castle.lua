@@ -630,13 +630,13 @@ function survival_remove_votes()
 end
 
 function survival_setup_votes()
-    for i = 1,5 do
+    for i = 1,6 do
         local vote_name = string.format("Start survival (%d, %d players max)", i, get_max_players_for_difficulty(i))
         local vote_command = string.format("lua start_survival_game(%d)", i)
         Game.Context:RemoveVote(vote_command)
         Game.Context:InsertVote(i - 1, vote_name, vote_command)
     end
-    Game.Context:RemoveVote("lua start_survival_game(6)")
+    -- Game.Context:RemoveVote("lua start_survival_game(6)")
 end
 
 function set_extra_players(num)
