@@ -248,6 +248,9 @@ void CLua::RegisterLuaBindings()
 
 			// attributes
 			.addFunction("IsAlive", &CCharacter::IsAlive)
+
+			.addProperty("TeleCheckpoint", &CCharacter::TeleCheckpoint, &CCharacter::SetTeleCheckpoint)
+			.addFunction("TeleportToTeleId", &CCharacter::TeleportToTeleId)
 		.endClass()
 
 		// Game:Players(ID)
