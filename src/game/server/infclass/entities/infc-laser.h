@@ -14,7 +14,7 @@ class CInfClassLaser : public CIcEntity
 public:
 	CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);
 
-	static void MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);
+	static CInfClassLaser *MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);
 
 	void Tick() override;
 	void TickPaused() override;
@@ -23,6 +23,7 @@ public:
 	virtual void DoBounce();
 
 	void SetExplosive(bool Explosive);
+	void SetSnapType(int LaserType);
 
 protected:
 	EDamageType GetDamageType() const;
@@ -34,6 +35,7 @@ protected:
 	vec2 m_From;
 	vec2 m_Dir;
 	const EInfclassWeapon m_Weapon;
+	int m_SnapLaserType = -1;
 	float m_Energy;
 	int m_Bounces = 0;
 	int m_MaxBounces = 0;

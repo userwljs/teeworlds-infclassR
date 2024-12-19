@@ -107,10 +107,11 @@ void CInfClassLaser::DoBounce()
 	}
 }
 
-void CInfClassLaser::MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon)
+CInfClassLaser *CInfClassLaser::MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon)
 {
 	CInfClassLaser *pLaser = new CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, InfClassWeapon);
 	pLaser->DoBounce();
+	return pLaser;
 }
 
 void CInfClassLaser::Tick()
@@ -131,12 +132,17 @@ void CInfClassLaser::Snap(int SnappingClient)
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 	CSnapContext Context(SnappingClientVersion);
-	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_From, m_EvalTick, GetOwner());
+	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_From, m_EvalTick, GetOwner(), m_SnapLaserType);
 }
 
 void CInfClassLaser::SetExplosive(bool Explosive)
 {
 	m_Explosive = Explosive;
+}
+
+void CInfClassLaser::SetSnapType(int LaserType)
+{
+	m_SnapLaserType = LaserType;
 }
 
 EDamageType CInfClassLaser::GetDamageType() const
