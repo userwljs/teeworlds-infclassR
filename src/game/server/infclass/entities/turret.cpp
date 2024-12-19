@@ -162,16 +162,19 @@ void CTurret::AttackTargets()
 			switch(m_Type)
 			{
 			case LASER:
-				CInfClassLaser::MakeLaser(GameServer(), m_Pos, Direction, GameServer()->Tuning()->m_LaserReach, GetOwner(), Config()->m_InfTurretDmgHealthLaser, EInfclassWeapon::LASER_TURRET);
+			{
+				CInfClassLaser *pLaser = CInfClassLaser::MakeLaser(GameServer(), m_Pos, Direction, GameServer()->Tuning()->m_LaserReach, GetOwner(), GetDamage(), EInfclassWeapon::LASER_TURRET);
+				pLaser->SetSnapType(m_SnapLaserType);
 				m_ammunition--;
 				break;
+			}
 			case PLASMA:
 			{
 				CPlasma *pPlasma = new CPlasma(GameServer(), m_Pos, GetOwner(), pChr->GetCid(), Direction, 0, 1);
 				pPlasma->SetDamageType(EDamageType::TURRET_PLASMA);
-			}
 				m_ammunition--;
 				break;
+			}
 			}
 
 			GameServer()->CreateSound(m_Pos, SOUND_LASER_FIRE);
@@ -216,7 +219,7 @@ void CTurret::Snap(int SnappingClient)
 
 	float time = (Server()->Tick() - m_StartTick) / (float)Server()->TickSpeed();
 	float angle = fmodf(time * pi / 2, 2.0f * pi);
-	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_Pos, Server()->Tick(), GetOwner());
+	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_Pos, Server()->Tick(), GetOwner(), m_SnapLaserType);
 
 	int Dots = AntiPing ? 2 : std::size(m_Ids);
 	for(int i = 0; i < Dots; i++)
@@ -255,4 +258,15 @@ void CTurret::Die(CInfClassCharacter *pKiller)
 void CTurret::SetReloadDuration(float Seconds)
 {
 	m_ReloadDuration = Seconds;
+}
+
+int CTurret::GetDamage() const
+{
+	return m_Damage.value_or(g_Config.m_InfTurretDmgHealthLaser);
+}
+
+void CTurret::SetDamage(int Damage)
+{
+	m_Damage = Damage;
+	m_SnapLaserType = Damage > g_Config.m_InfTurretDmgHealthLaser ? LASERTYPE_FREEZE : -1;
 }

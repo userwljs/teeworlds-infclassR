@@ -32,6 +32,9 @@ public:
 	float GetReloadDuration() const { return m_ReloadDuration; }
 	void SetReloadDuration(float Seconds);
 
+	int GetDamage() const;
+	void SetDamage(int Damage);
+
 protected:
 	void AttackTargets();
 	void Reload();
@@ -40,11 +43,13 @@ private:
 	int m_StartTick;
 	int m_Radius;
 	Type m_Type;
+	int m_SnapLaserType = -1;
 	const float m_RadiusGrowthRate = 4.0f;
 	float m_ReloadDuration{};
 	int m_WarmUpCounter;
 	int m_ReloadCounter;
 	int m_ammunition;
+	std::optional<int> m_Damage;
 	bool m_foundTarget;
 	bool m_Destructable{};
 
