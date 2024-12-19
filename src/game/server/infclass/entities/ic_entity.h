@@ -39,6 +39,7 @@ public:
 	void Tick() override;
 	void TickPaused() override;
 
+	virtual void MoveTo(const vec2 &Position);
 	void SetPos(const vec2 &Position);
 	void SetAnimatedPos(const vec2 &Pivot, const vec2 &RelPosition, int PosEnv);
 

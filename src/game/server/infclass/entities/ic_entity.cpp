@@ -95,6 +95,11 @@ void CIcEntity::TickPaused()
 		++m_EndTick.value();
 }
 
+void CIcEntity::MoveTo(const vec2 &Position)
+{
+	SetPos(Position);
+}
+
 void CIcEntity::SetPos(const vec2 &Position)
 {
 	m_Pos = Position;

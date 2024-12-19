@@ -11,6 +11,8 @@ public:
 	CPlacedObject(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), int Owner = -1, int ProximityRadius=0);
 	~CPlacedObject() override;
 
+	void MoveTo(const vec2 &Position) override;
+
 	bool HasSecondPosition() const { return m_Pos2.has_value(); }
 	vec2 SecondPosition() const { return m_Pos2.value_or(m_Pos); }
 	void SetSecondPosition(vec2 Position);

@@ -17,6 +17,16 @@ CPlacedObject::~CPlacedObject()
 	Server()->SnapFreeId(m_InfClassObjectId);
 }
 
+void CPlacedObject::MoveTo(const vec2 &Position)
+{
+	if(m_Pos2.has_value())
+	{
+		vec2 Difference = Position - m_Pos;
+		CIcEntity::MoveTo(Position);
+		m_Pos2 = m_Pos2.value() + Difference;
+	}
+}
+
 void CPlacedObject::SetSecondPosition(vec2 Position)
 {
 	if(m_MaxLength.value() && distance(m_Pos, Position) > m_MaxLength.value())
