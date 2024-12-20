@@ -16,6 +16,18 @@
 
 static std::map<std::string, CMapInfoEx> s_aMapInfo;
 
+void SetFlagEnabled(int &Flags, int Flag, bool Enabled)
+{
+	if(Enabled)
+	{
+		Flags |= Flag;
+	}
+	else
+	{
+		Flags &= ~Flag;
+	}
+}
+
 CMapInfoEx *IGameController::GetMapInfo(const char *pMapName)
 {
 	auto it = s_aMapInfo.find(std::string(pMapName));
@@ -1302,6 +1314,26 @@ void IGameController::DoWincheck()
 const char *IGameController::GameType() const
 {
 	return "unknown";
+}
+
+bool IGameController::IsHealthArmorHudEnabled() const
+{
+	return m_GameInfoFlags2 & GAMEINFOFLAG2_HUD_HEALTH_ARMOR;
+}
+
+void IGameController::SetHealthArmorHudEnabled(bool Enabled)
+{
+	SetFlagEnabled(m_GameInfoFlags2, GAMEINFOFLAG2_HUD_HEALTH_ARMOR, Enabled);
+}
+
+bool IGameController::IsAmmoHudEnabled() const
+{
+	return m_GameInfoFlags2 & GAMEINFOFLAG2_HUD_AMMO;
+}
+
+void IGameController::SetAmmoHudEnabled(bool Enabled)
+{
+	SetFlagEnabled(m_GameInfoFlags2, GAMEINFOFLAG2_HUD_AMMO, Enabled);
 }
 
 int IGameController::ClampTeam(int Team)

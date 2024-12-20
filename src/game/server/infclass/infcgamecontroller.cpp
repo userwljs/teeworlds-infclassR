@@ -197,6 +197,9 @@ CInfClassGameController::CInfClassGameController(class CGameContext *pGameServer
 		}
 	}
 
+	SetHealthArmorHudEnabled(true);
+	SetAmmoHudEnabled(true);
+
 	RegisterEntityTypes();
 	InitWeapons();
 	ReservePlayerOwnSnapItems();
@@ -4277,7 +4280,7 @@ void CInfClassGameController::Snap(int SnappingClient)
 			pGameInfoEx->m_Flags |= GAMEINFOFLAG_ENTITIES_DDNET;
 		}
 
-		pGameInfoEx->m_Flags2 = GAMEINFOFLAG2_HUD_HEALTH_ARMOR | GAMEINFOFLAG2_HUD_AMMO | GAMEINFOFLAG2_HUD_DDRACE;
+		pGameInfoEx->m_Flags2 = m_GameInfoFlags2 | GAMEINFOFLAG2_HUD_DDRACE;
 		pGameInfoEx->m_Flags2 |= GAMEINFOFLAG2_NO_WEAK_HOOK;
 		pGameInfoEx->m_Flags2 |= GAMEINFOFLAG2_NO_SKIN_CHANGE_FOR_FROZEN;
 		pGameInfoEx->m_Version = GAMEINFO_CURVERSION;

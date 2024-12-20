@@ -88,6 +88,7 @@ protected:
 	int m_RoundCount;
 
 	int m_GameFlags;
+	int m_GameInfoFlags2{};
 	int m_UnbalancedTick;
 	bool m_ForceBalanced;
 
@@ -101,6 +102,12 @@ public:
 	virtual ~IGameController();
 
 	virtual const char *GameType() const;
+
+	bool IsHealthArmorHudEnabled() const;
+	void SetHealthArmorHudEnabled(bool Enabled);
+
+	bool IsAmmoHudEnabled() const;
+	void SetAmmoHudEnabled(bool Enabled);
 
 	virtual void DoWincheck();
 
