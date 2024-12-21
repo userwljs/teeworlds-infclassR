@@ -315,6 +315,16 @@ void CGameContext::CreateDeath(vec2 Pos, int ClientId, CClientMask Mask)
 	}
 }
 
+void CGameContext::CreateFinishEffect(vec2 Pos, CClientMask Mask)
+{
+	CNetEvent_Finish *pEvent = m_Events.Create<CNetEvent_Finish>(Mask);
+	if(pEvent)
+	{
+		pEvent->m_X = (int)Pos.x;
+		pEvent->m_Y = (int)Pos.y;
+	}
+}
+
 void CGameContext::CreateSound(vec2 Pos, int Sound, CClientMask Mask)
 {
 	if(Sound < 0)
@@ -4893,6 +4903,63 @@ IGameServer *CreateGameServer() { return new CGameContext; }
 
 void CGameContext::OnSetAuthed(int ClientId, int Level)
 {
+}
+
+void CGameContext::SendRecord(int ClientId)
+{
+	CNetMsg_Sv_Record Msg;
+	CNetMsg_Sv_RecordLegacy MsgLegacy;
+	MsgLegacy.m_PlayerTimeBest = Msg.m_PlayerTimeBest = m_pController->PlayerBestRaceTime(ClientId) * 100.0f;
+	MsgLegacy.m_ServerTimeBest = Msg.m_ServerTimeBest = m_pController->ServerBestRaceTime() * 100.0f; //TODO: finish this
+	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, ClientId);
+	if(!Server()->IsSixup(ClientId) && GetClientVersion(ClientId) < VERSION_DDNET_MSG_LEGACY)
+	{
+		Server()->SendPackMsg(&MsgLegacy, MSGFLAG_VITAL, ClientId);
+	}
+}
+
+void CGameContext::SendFinish(int ClientId, float Time, float PreviousBestTime)
+{
+	int ClientVersion = m_apPlayers[ClientId]->GetClientVersion();
+
+	if(!Server()->IsSixup(ClientId))
+	{
+		CNetMsg_Sv_DDRaceTime Msg;
+		CNetMsg_Sv_DDRaceTimeLegacy MsgLegacy;
+		MsgLegacy.m_Time = Msg.m_Time = (int)(Time * 100.0f);
+		MsgLegacy.m_Check = Msg.m_Check = 0;
+		MsgLegacy.m_Finish = Msg.m_Finish = 1;
+
+		if(PreviousBestTime)
+		{
+			float Diff100 = (Time - PreviousBestTime) * 100;
+			MsgLegacy.m_Check = Msg.m_Check = (int)Diff100;
+		}
+		if(VERSION_DDRACE <= ClientVersion)
+		{
+			if(ClientVersion < VERSION_DDNET_MSG_LEGACY)
+			{
+				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, ClientId);
+			}
+			else
+			{
+				Server()->SendPackMsg(&MsgLegacy, MSGFLAG_VITAL, ClientId);
+			}
+		}
+	}
+
+	CNetMsg_Sv_RaceFinish RaceFinishMsg;
+	RaceFinishMsg.m_ClientId = ClientId;
+	RaceFinishMsg.m_Time = Time * 1000;
+	RaceFinishMsg.m_Diff = 0;
+	if(PreviousBestTime)
+	{
+		float Diff = absolute(Time - PreviousBestTime);
+		RaceFinishMsg.m_Diff = Diff * 1000 * (Time < PreviousBestTime ? -1 : 1);
+	}
+	RaceFinishMsg.m_RecordPersonal = (Time < PreviousBestTime || !PreviousBestTime);
+	RaceFinishMsg.m_RecordServer = Time < m_pController->ServerBestRaceTime();
+	Server()->SendPackMsg(&RaceFinishMsg, MSGFLAG_VITAL | MSGFLAG_NORECORD, -1);
 }
 
 bool CGameContext::ProcessSpamProtection(int ClientId, bool RespectChatInitialDelay)

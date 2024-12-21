@@ -200,6 +200,7 @@ public:
 	void CreateHammerHit(vec2 Pos, CClientMask Mask = CClientMask().set());
 	void CreatePlayerSpawn(vec2 Pos, CClientMask Mask = CClientMask().set());
 	void CreateDeath(vec2 Pos, int Who, CClientMask Mask = CClientMask().set());
+	void CreateFinishEffect(vec2 Pos, CClientMask Mask = CClientMask().set());
 	void CreateSound(vec2 Pos, int Sound, CClientMask Mask = CClientMask().set());
 	void CreateSoundGlobal(int Sound, int Target = -1);
 
@@ -454,6 +455,8 @@ private:
 	int m_aHitSoundState[MAX_CLIENTS]; // 1 for hit, 2 for kill (no sounds must be sent)
 
 public:
+	void SendRecord(int ClientId);
+	void SendFinish(int ClientId, float Time, float PreviousBestTime);
 	void OnSetAuthed(int ClientId, int Level) override;
 
 public:

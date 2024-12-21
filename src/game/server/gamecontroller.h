@@ -225,6 +225,10 @@ public:
 
 	virtual void RegisterChatCommands(class IConsole *pConsole) {};
 
+	virtual float PlayerBestRaceTime(int ClientId) const;
+	virtual float ServerBestRaceTime() const;
+	virtual void SetServerBestRaceTime(float Time) {}
+
 private:
 	// starting 1 to make 0 the special value "no client id"
 	uint32_t m_NextUniqueClientId = 1;

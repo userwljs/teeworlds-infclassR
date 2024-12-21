@@ -255,6 +255,16 @@ double IGameController::GetTime()
 	return static_cast<double>(Server()->Tick() - m_RoundStartTick)/Server()->TickSpeed();
 }
 
+float IGameController::PlayerBestRaceTime(int ClientId) const
+{
+	return 0;
+}
+
+float IGameController::ServerBestRaceTime() const
+{
+	return 0;
+}
+
 void IGameController::OnPlayerConnect(CPlayer *pPlayer)
 {
 	int ClientId = pPlayer->GetCid();
