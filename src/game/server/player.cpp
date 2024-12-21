@@ -325,7 +325,14 @@ CCharacter *CPlayer::GetCharacter()
 {
 	if(m_pCharacter && m_pCharacter->IsAlive())
 		return m_pCharacter;
-	return 0;
+	return nullptr;
+}
+
+const CCharacter *CPlayer::GetCharacter() const
+{
+	if(m_pCharacter && m_pCharacter->IsAlive())
+		return m_pCharacter;
+	return nullptr;
 }
 
 void CPlayer::KillCharacter(int Weapon)
@@ -334,7 +341,7 @@ void CPlayer::KillCharacter(int Weapon)
 	{
 		m_pCharacter->Die(m_ClientId, Weapon);
 		delete m_pCharacter;
-		m_pCharacter = 0;
+		m_pCharacter = nullptr;
 	}
 }
 

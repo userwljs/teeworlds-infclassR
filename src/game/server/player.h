@@ -56,6 +56,7 @@ public:
 
 	virtual void KillCharacter(int Weapon = WEAPON_GAME);
 	CCharacter *GetCharacter();
+	const CCharacter *GetCharacter() const;
 
 	//---------------------------------------------------------
 	// this is used for snapping so we know how we can clip the view for the player
