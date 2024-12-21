@@ -6,7 +6,6 @@
 #include <game/infclass/classes.h>
 #include <game/infclass/weapons.h>
 #include <game/server/gamecontroller.h>
-#include <game/server/teams.h>
 
 #include <base/tl/ic_array.h>
 #include <engine/console.h>
@@ -409,8 +408,6 @@ private:
 	int m_MapHeight;
 	int* m_GrowingMap;
 	EFinalExplosionState m_FinalExplosionState{};
-
-	CGameTeams m_Teams;
 
 	std::optional<bool> m_WinCheckEnabled;
 	std::optional<bool> m_VotesEnabled;

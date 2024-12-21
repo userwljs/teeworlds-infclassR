@@ -156,7 +156,7 @@ int64_t CInfClassGameController::m_LastTipTime = 0;
 IGameController *CreateInfclassModController(CGameContext *pGameServer) { return new CInfClassGameController(pGameServer); }
 
 CInfClassGameController::CInfClassGameController(class CGameContext *pGameServer)
-: IGameController(pGameServer), m_Teams(pGameServer)
+: IGameController(pGameServer)
 {
 	m_Teams.m_Core.m_IsInfclass = true;
 
@@ -5011,8 +5011,6 @@ void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, Deat
 void CInfClassGameController::OnCharacterSpawned(CInfClassCharacter *pCharacter, const SpawnContext &Context)
 {
 	IGameController::OnCharacterSpawn(pCharacter);
-
-	pCharacter->SetTeams(&m_Teams);
 
 	CInfClassPlayer *pPlayer = pCharacter->GetPlayer();
 	if(!IsInfectionStarted() && pPlayer->RandomClassChoosen())

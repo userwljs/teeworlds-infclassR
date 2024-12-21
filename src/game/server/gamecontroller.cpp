@@ -4,6 +4,7 @@
 #include <game/mapitems.h>
 
 #include <game/generated/protocol.h>
+#include <game/server/entities/character.h>
 #include <game/server/map_info.h>
 #include <game/server/player.h>
 
@@ -93,7 +94,8 @@ IConsole *IGameController::Console()
 	return GameServer()->Console();
 }
 
-IGameController::IGameController(class CGameContext *pGameServer)
+IGameController::IGameController(CGameContext *pGameServer) :
+	m_Teams(pGameServer)
 {
 	m_pGameServer = pGameServer;
 	m_pConfig = m_pGameServer->Config();
@@ -1081,6 +1083,7 @@ int IGameController::OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int
 
 void IGameController::OnCharacterSpawn(CCharacter *pCharacter)
 {
+	pCharacter->SetTeams(&m_Teams);
 }
 
 void IGameController::OnStartRound()

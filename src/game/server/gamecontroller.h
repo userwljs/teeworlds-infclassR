@@ -6,6 +6,7 @@
 #include <base/vmath.h>
 
 #include <engine/map.h>
+#include <game/server/teams.h>
 
 #include <teeuniverses/system/string.h>
 
@@ -77,6 +78,8 @@ protected:
 	void RotateMapTo(const char *pMapName);
 
 	int GetNextClientUniqueId();
+
+	CGameTeams m_Teams;
 
 	char m_aMapWish[MAX_MAP_LENGTH];
 	char m_aQueuedMap[MAX_MAP_LENGTH];
