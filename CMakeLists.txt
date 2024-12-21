@@ -729,6 +729,8 @@ set_glob(ENGINE_SHARED GLOB src/engine/shared
   protocol_ex.cpp
   protocol_ex.h
   protocol_ex_msgs.h
+  protocolglue.cpp
+  protocolglue.h
   ringbuffer.cpp
   ringbuffer.h
   snapshot.cpp

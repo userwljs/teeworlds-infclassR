@@ -12,6 +12,7 @@
 #include <engine/server/sql_server.h>
 #include <engine/shared/json.h>
 #include <engine/shared/linereader.h>
+#include <engine/shared/protocolglue.h>
 #include <game/version.h>
 #include <game/collision.h>
 #include <game/gamecore.h>
@@ -1560,18 +1561,6 @@ void CGameContext::OnTick()
 		}
 	}
 #endif
-}
-
-static int PlayerFlags_SevenToSix(int Flags)
-{
-	int Six = 0;
-	if(Flags & protocol7::PLAYERFLAG_CHATTING)
-		Six |= PLAYERFLAG_CHATTING;
-	if(Flags & protocol7::PLAYERFLAG_SCOREBOARD)
-		Six |= PLAYERFLAG_SCOREBOARD;
-	if(Flags & protocol7::PLAYERFLAG_AIM)
-		Six |= PLAYERFLAG_AIM;
-	return Six;
 }
 
 // Server hooks

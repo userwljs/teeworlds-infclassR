@@ -20,6 +20,7 @@
 #include <base/tl/ic_enum.h>
 #include <engine/shared/config.h>
 #include <engine/server/mapconverter.h>
+#include <engine/shared/protocolglue.h>
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
 #include <engine/shared/network.h>
@@ -4232,7 +4233,7 @@ void CInfClassGameController::Snap(int SnappingClient)
 	if(!pGameInfoObj)
 		return;
 
-	pGameInfoObj->m_GameFlags = m_GameFlags;
+	pGameInfoObj->m_GameFlags = GameFlags_ClampToSix(m_GameFlags);
 	pGameInfoObj->m_GameStateFlags = 0;
 	if(m_GameOverTick != -1)
 		pGameInfoObj->m_GameStateFlags |= GAMESTATEFLAG_GAMEOVER;
