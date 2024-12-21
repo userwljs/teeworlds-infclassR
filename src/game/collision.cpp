@@ -628,9 +628,7 @@ bool CCollision::TileExistsNext(int Index) const
 
 int CCollision::GetMapIndex(vec2 Pos) const
 {
-	int Nx = clamp((int)Pos.x / 32, 0, m_Width - 1);
-	int Ny = clamp((int)Pos.y / 32, 0, m_Height - 1);
-	int Index = Ny * m_Width + Nx;
+	int Index = GetPureMapIndex(Pos.x, Pos.y);
 
 	if(TileExists(Index))
 		return Index;

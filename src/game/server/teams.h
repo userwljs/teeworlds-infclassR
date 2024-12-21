@@ -15,7 +15,7 @@ public:
 	CGameTeams(CGameContext *pGameContext);
 
 	// helper methods
-	CCharacter *Character(int ClientId)
+	CCharacter *GetCharacter(int ClientId)
 	{
 		return GameServer()->GetPlayerChar(ClientId);
 	}
@@ -33,6 +33,12 @@ public:
 		return m_pGameContext->Server();
 	}
 
+	void OnCharacterStart(int ClientId);
+	void OnCharacterFinish(int ClientId);
+	void OnCharacterSpawn(int ClientId);
+	void OnCharacterDeath(int ClientId, int Weapon);
+	void Tick();
+
 	// returns nullptr if successful, error string if failed
 	const char *SetCharacterTeam(int ClientId, int Team);
 
@@ -44,6 +50,9 @@ public:
 	void SetForceCharacterTeam(int ClientId, int Team);
 
 	void Reset();
+
+protected:
+	void OnFinish(CPlayer *pPlayer, int TimeTicks, const char *pTimestamp);
 };
 
 #endif

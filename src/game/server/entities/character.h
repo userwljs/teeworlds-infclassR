@@ -9,6 +9,7 @@
 
 class CGameTeams;
 enum class EPlayerClass;
+enum class ERaceState;
 
 struct CAmmoParams
 {
@@ -188,6 +189,12 @@ public:
 	CGameTeams *Teams() { return m_pTeams; }
 	void SetTeams(CGameTeams *pTeams);
 
+	ERaceState RaceState() const { return m_RaceState; }
+	void SetRaceState(ERaceState State);
+
+	int GetRaceStartTick() const;
+	void SetRaceStartTick(int Tick);
+
 	int Team();
 	bool CanCollide(int ClientId);
 	bool SameTeam(int ClientId);
@@ -228,6 +235,8 @@ protected:
 protected:
 	virtual void OnTotalHealthChanged(int Difference) {};
 
+	ERaceState m_RaceState{};
+	std::optional<int> m_RaceStartTick;
 	int m_PainSoundTimer;
 	vec2 m_PrevPos;
 	int m_TeleCheckpoint{};

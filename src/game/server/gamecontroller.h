@@ -18,6 +18,7 @@ class CGameContext;
 class CMapInfo;
 class CMapInfoEx;
 class CPlayer;
+class CPlayerRaceData;
 class IConsole;
 
 enum class EClientDropType;
@@ -228,6 +229,7 @@ public:
 
 	virtual void RegisterChatCommands(class IConsole *pConsole) {};
 
+	virtual CPlayerRaceData *GetPlayerRaceData(int ClientId) { return nullptr; }
 	virtual float PlayerBestRaceTime(int ClientId) const;
 	virtual float ServerBestRaceTime() const;
 	virtual void SetServerBestRaceTime(float Time) {}

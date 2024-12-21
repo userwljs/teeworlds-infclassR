@@ -913,11 +913,39 @@ void CCharacter::SetTeams(CGameTeams *pTeams)
 	m_Core.SetTeamsCore(&m_pTeams->m_Core);
 }
 
+void CCharacter::SetRaceState(ERaceState State)
+{
+	m_RaceState = State;
+}
+
+int CCharacter::GetRaceStartTick() const
+{
+	return m_RaceStartTick.value_or(0);
+}
+
+void CCharacter::SetRaceStartTick(int Tick)
+{
+	m_RaceStartTick = Tick;
+}
+
 void CCharacter::HandleTiles(int MapIndex)
 {
 	m_MoveRestrictions = GameServer()->Collision()->GetMoveRestrictions(m_Pos);
 
 	HandleTeleports(MapIndex);
+
+	int TileIndex = GameServer()->Collision()->GetTileIndex(MapIndex);
+	switch(TileIndex)
+	{
+	case TILE_START:
+		m_pTeams->OnCharacterStart(GetCid());
+		break;
+	case TILE_FINISH:
+		m_pTeams->OnCharacterFinish(GetCid());
+		break;
+	default:
+		break;
+	}
 }
 
 void CCharacter::HandleTeleports(int MapIndex)

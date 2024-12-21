@@ -46,6 +46,8 @@ int CClientGameTileGetter::GetClientGameTileIndex(int TileX, int TileY) const
 	{
 	case TILE_SOLID:
 	case TILE_NOHOOK:
+	case TILE_START:
+	case TILE_FINISH:
 	case TILE_ENTITIES_OFF_1:
 	case TILE_ENTITIES_OFF_2:
 		return GameLayerIndex;

@@ -765,6 +765,7 @@ set_glob(GAME_SHARED GLOB src/game
   mapitems_ex.cpp
   mapitems_ex.h
   mapitems_ex_types.h
+  race_state.h
   teamscore.cpp
   teamscore.h
   tuning.h
