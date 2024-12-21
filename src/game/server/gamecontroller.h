@@ -108,6 +108,9 @@ public:
 
 	virtual const char *GameType() const;
 
+	bool IsRaceEnabled() const;
+	void SetRaceEnabled(bool Enabled);
+
 	bool IsHealthArmorHudEnabled() const;
 	void SetHealthArmorHudEnabled(bool Enabled);
 

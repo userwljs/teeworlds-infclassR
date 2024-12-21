@@ -1339,6 +1339,16 @@ const char *IGameController::GameType() const
 	return "unknown";
 }
 
+bool IGameController::IsRaceEnabled() const
+{
+	return m_GameFlags & protocol7::GAMEFLAG_RACE;
+}
+
+void IGameController::SetRaceEnabled(bool Enabled)
+{
+	SetFlagEnabled(m_GameFlags, protocol7::GAMEFLAG_RACE, Enabled);
+}
+
 bool IGameController::IsHealthArmorHudEnabled() const
 {
 	return m_GameInfoFlags2 & GAMEINFOFLAG2_HUD_HEALTH_ARMOR;
