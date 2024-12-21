@@ -11,10 +11,12 @@
 
 #include <vector>
 
+class CCharacter;
 class CConfig;
-class CPlayer;
+class CGameContext;
 class CMapInfo;
 class CMapInfoEx;
+class CPlayer;
 class IConsole;
 
 enum class EClientDropType;
@@ -26,9 +28,9 @@ enum class EClientDropType;
 */
 class IGameController
 {
-	class CGameContext *m_pGameServer;
-	class CConfig *m_pConfig;
-	class IServer *m_pServer;
+	CGameContext *m_pGameServer;
+	CConfig *m_pConfig;
+	IServer *m_pServer;
 
 protected:
 	CGameContext *GameServer() const { return m_pGameServer; }
@@ -98,7 +100,7 @@ public:
 	bool IsTeamplay() const;
 	bool IsGameOver() const { return m_GameOverTick != -1; }
 
-	IGameController(class CGameContext *pGameServer);
+	IGameController(CGameContext *pGameServer);
 	virtual ~IGameController();
 
 	virtual const char *GameType() const;
@@ -122,7 +124,7 @@ public:
 			weapon - What weapon that killed it. Can be -1 for undefined
 				weapon when switching team or player suicides.
 	*/
-	virtual int OnCharacterDeath(class CCharacter *pVictim, class CPlayer *pKiller, int Weapon);
+	virtual int OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int Weapon);
 	/*
 		Function: OnCharacterSpawn
 			Called when a CCharacter spawns into the game world.
@@ -130,7 +132,7 @@ public:
 		Arguments:
 			chr - The CCharacter that was spawned.
 	*/
-	virtual void OnCharacterSpawn(class CCharacter *pChr);
+	virtual void OnCharacterSpawn(CCharacter *pChr);
 
 	/*
 		Function: OnEntity
@@ -147,7 +149,7 @@ public:
 	virtual bool OnEntity(int Index, int x, int y, int Layer, int Flags, bool Initial, int Number = 0);
 	virtual bool OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv);
 
-	virtual void OnPlayerConnect(class CPlayer *pPlayer);
+	virtual void OnPlayerConnect(CPlayer *pPlayer);
 	virtual void OnPlayerDisconnect(CPlayer *pPlayer, EClientDropType Type, const char *pReason);
 
 	virtual void OnReset();

@@ -17,7 +17,6 @@
 #include <teeuniverses/components/localization.h>
 
 #include "eventhandler.h"
-#include "gamecontroller.h"
 #include "gameworld.h"
 
 #include <fstream>
@@ -59,7 +58,9 @@ enum class EBroadcastPriority
 };
 
 class CConfig;
+class CPlayer;
 class IEngine;
+class IGameController;
 
 class CGameContext : public IGameServer
 {

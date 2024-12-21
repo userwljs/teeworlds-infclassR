@@ -8,6 +8,7 @@
 #include <engine/server/roundstatistics.h>
 
 #include <game/server/gamecontext.h>
+#include <game/server/gamecontroller.h>
 
 MACRO_ALLOC_POOL_ID_IMPL(CPlayer, MAX_CLIENTS)
 

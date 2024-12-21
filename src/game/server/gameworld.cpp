@@ -2,11 +2,14 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 
 #include "gameworld.h"
-#include "entities/character.h"
-#include "entity.h"
-#include "gamecontext.h"
-#include <utility>
+
 #include <engine/shared/config.h>
+#include <game/server/entities/character.h>
+#include <game/server/entity.h>
+#include <game/server/gamecontext.h>
+#include <game/server/gamecontroller.h>
+
+#include <utility>
 
 //////////////////////////////////////////////////
 // game world

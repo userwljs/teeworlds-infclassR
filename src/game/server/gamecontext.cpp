@@ -1,5 +1,7 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.				*/
+#include "gamecontext.h"
+
 #include <base/logger.h>
 #include <base/math.h>
 #include <engine/shared/config.h>
@@ -10,13 +12,13 @@
 #include <engine/server/sql_server.h>
 #include <engine/shared/json.h>
 #include <engine/shared/linereader.h>
-#include "gamecontext.h"
 #include <game/version.h>
 #include <game/collision.h>
 #include <game/gamecore.h>
 #include <algorithm>
 
 #include <game/server/entities/character.h>
+#include <game/server/gamecontroller.h>
 #include <game/server/player.h>
 
 extern IGameController *CreateInfclassModController(CGameContext *pGameServer);

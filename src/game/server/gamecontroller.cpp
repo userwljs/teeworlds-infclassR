@@ -9,8 +9,8 @@
 
 #include <engine/shared/network.h>
 
-#include "gamecontroller.h"
 #include "gamecontext.h"
+#include "gamecontroller.h"
 
 #include <map>
 
@@ -1074,12 +1074,12 @@ void IGameController::DoTeamBalance()
 	m_UnbalancedTick = -1;
 }
 
-int IGameController::OnCharacterDeath(class CCharacter *pVictim, class CPlayer *pKiller, int Weapon)
+int IGameController::OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int Weapon)
 {
 	return 0;
 }
 
-void IGameController::OnCharacterSpawn(class CCharacter *pChr)
+void IGameController::OnCharacterSpawn(CCharacter *pCharacter)
 {
 }
 
