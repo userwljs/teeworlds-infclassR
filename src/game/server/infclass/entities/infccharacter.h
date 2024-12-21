@@ -157,8 +157,6 @@ public:
 	int GetAmmo(int Weapon) const;
 	int TakeAmmo(int Weapon, int Amount);
 
-	int GetCid() const;
-
 	CInfClassPlayer *GetPlayer();
 
 	const CInfClassPlayerClass *GetClass() const { return m_pClass; }

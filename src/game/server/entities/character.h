@@ -31,6 +31,8 @@ public:
 	CCharacter(CGameWorld *pWorld);
 	~CCharacter() override;
 
+	int GetCid() const;
+
 	void Reset() override;
 	void Destroy() override;
 	void PreTick();

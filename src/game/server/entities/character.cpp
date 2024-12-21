@@ -34,8 +34,16 @@ CCharacter::CCharacter(CGameWorld *pWorld) :
 /* INFECTION MODIFICATION END *****************************************/
 }
 
-CCharacter::~CCharacter()
+CCharacter::~CCharacter() = default;
+
+int CCharacter::GetCid() const
 {
+	if(m_pPlayer)
+	{
+		return m_pPlayer->GetCid();
+	}
+
+	return -1;
 }
 
 void CCharacter::Reset()

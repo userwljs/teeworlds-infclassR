@@ -2145,16 +2145,6 @@ int CInfClassCharacter::TakeAmmo(int Weapon, int Amount)
 	return Amount;
 }
 
-int CInfClassCharacter::GetCid() const
-{
-	if(m_pPlayer)
-	{
-		return m_pPlayer->GetCid();
-	}
-
-	return -1;
-}
-
 CInfClassPlayer *CInfClassCharacter::GetPlayer()
 {
 	return static_cast<CInfClassPlayer*>(m_pPlayer);
