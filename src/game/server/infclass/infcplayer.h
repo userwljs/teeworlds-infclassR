@@ -45,6 +45,7 @@ public:
 	~CInfClassPlayer() override;
 
 	static CInfClassPlayer *GetInstance(CPlayer *pPlayer);
+	static const CInfClassPlayer *GetInstance(const CPlayer *pPlayer);
 
 	CInfClassGameController *GameController() const;
 
@@ -198,6 +199,11 @@ protected:
 	icArray<EPlayerClass, 5> m_PreviousClasses;
 	icArray<vec2, 1> m_SavedPositions;
 };
+
+inline const CInfClassPlayer *CInfClassPlayer::GetInstance(const CPlayer *pPlayer)
+{
+	return static_cast<const CInfClassPlayer *>(pPlayer);
+}
 
 inline CInfClassPlayer *CInfClassPlayer::GetInstance(CPlayer *pPlayer)
 {
