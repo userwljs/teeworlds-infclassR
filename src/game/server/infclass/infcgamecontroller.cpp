@@ -5137,6 +5137,16 @@ void CInfClassGameController::CheckRoundFailed()
 	}
 }
 
+float CInfClassGameController::GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const
+{
+	const CInfClassPlayer *pInfPlayer = CInfClassPlayer::GetInstance(pPlayer);
+
+	int HumanMaxInactiveTimeSecs = Config()->m_InfInactiveHumansKickTime ? Config()->m_InfInactiveHumansKickTime : Config()->m_SvInactiveKickTime * 60;
+	int InfectedMaxInactiveTimeSecs = Config()->m_InfInactiveInfectedKickTime ? Config()->m_InfInactiveInfectedKickTime : Config()->m_SvInactiveKickTime * 60;
+
+	return pInfPlayer->IsHuman() ? HumanMaxInactiveTimeSecs : InfectedMaxInactiveTimeSecs;
+}
+
 void CInfClassGameController::DoWincheck()
 {
 	if(!IsWinCheckEnabled())

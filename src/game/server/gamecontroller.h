@@ -114,6 +114,7 @@ public:
 	bool IsAmmoHudEnabled() const;
 	void SetAmmoHudEnabled(bool Enabled);
 
+	virtual float GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const;
 	virtual void DoWincheck();
 
 	// event

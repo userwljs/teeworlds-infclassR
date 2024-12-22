@@ -127,9 +127,6 @@ void IGameController::DoActivityCheck()
 	if(g_Config.m_SvInactiveKickTime == 0)
 		return;
 
-	int HumanMaxInactiveTimeSecs = Config()->m_InfInactiveHumansKickTime ? Config()->m_InfInactiveHumansKickTime : Config()->m_SvInactiveKickTime * 60;
-	int InfectedMaxInactiveTimeSecs = Config()->m_InfInactiveInfectedKickTime ? Config()->m_InfInactiveInfectedKickTime : Config()->m_SvInactiveKickTime * 60;
-
 	unsigned int nbPlayers = 0;
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
@@ -166,7 +163,7 @@ void IGameController::DoActivityCheck()
 		if(pPlayer->IsBot())
 			continue;
 
-		float PlayerMaxInactiveTimeSecs = pPlayer->IsHuman() ? HumanMaxInactiveTimeSecs : InfectedMaxInactiveTimeSecs;
+		float PlayerMaxInactiveTimeSecs = GetMaxInactiveTimeSeconds(pPlayer);
 		if(PlayerMaxInactiveTimeSecs < 20)
 		{
 			PlayerMaxInactiveTimeSecs = 20;
@@ -351,6 +348,11 @@ void IGameController::RotateMapTo(const char *pMapName)
 int IGameController::GetNextClientUniqueId()
 {
 	return m_NextUniqueClientId++;
+}
+
+float IGameController::GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const
+{
+	return Config()->m_SvInactiveKickTime * 60;
 }
 
 void IGameController::DoTeamChange(CPlayer *pPlayer, int Team, bool DoChatMsg)

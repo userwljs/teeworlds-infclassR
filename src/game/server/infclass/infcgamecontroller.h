@@ -126,6 +126,7 @@ public:
 	void OnCharacterSpawned(CInfClassCharacter *pCharacter, const SpawnContext &Context);
 	void OnClassChooserRequested(CInfClassCharacter *pCharacter);
 	void CheckRoundFailed();
+	float GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const override;
 	void DoWincheck() override;
 	void StartRound() override;
 	void ResetRoundData();
