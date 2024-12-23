@@ -3,7 +3,7 @@
 #ifndef GAME_SERVER_ENTITIES_BIOLOGIST_MINE_H
 #define GAME_SERVER_ENTITIES_BIOLOGIST_MINE_H
 
-#include "infc-placed-object.h"
+#include <game/server/infclass/entities/ic_placed_object.h>
 
 struct WeaponFireContext;
 

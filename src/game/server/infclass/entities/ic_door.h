@@ -2,7 +2,7 @@
 #ifndef GAME_SERVER_ENTITIES_DOOR_H
 #define GAME_SERVER_ENTITIES_DOOR_H
 
-#include <game/server/infclass/entities/infc-placed-object.h>
+#include <game/server/infclass/entities/ic_placed_object.h>
 
 class CGameWorld;
 

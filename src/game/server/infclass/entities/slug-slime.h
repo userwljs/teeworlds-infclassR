@@ -3,7 +3,7 @@
 #ifndef GAME_SERVER_ENTITIES_SLUG_SLIME_H
 #define GAME_SERVER_ENTITIES_SLUG_SLIME_H
 
-#include "infc-placed-object.h"
+#include <game/server/infclass/entities/ic_placed_object.h>
 
 class CSlugSlime : public CPlacedObject
 {

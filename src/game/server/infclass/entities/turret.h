@@ -3,7 +3,7 @@
 #ifndef GAME_SERVER_ENTITIES_TURRET_H
 #define GAME_SERVER_ENTITIES_TURRET_H
 
-#include "infc-placed-object.h"
+#include <game/server/infclass/entities/ic_placed_object.h>
 
 class CTurret : public CPlacedObject
 {
