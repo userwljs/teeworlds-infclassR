@@ -22,20 +22,18 @@ CPlasma::CPlasma(CGameContext *pGameContext, vec2 Pos, int Owner, int TrackedPla
 	m_Dir = Direction;
 	m_Explosive = Explosive;
 	m_StartTick = Server()->Tick();
-	m_LifeSpan = Server()->TickSpeed()*Config()->m_InfTurretPlasmaLifeSpan;
 	m_InitialAmount = 1.0f;
+
+	SetLifespan(Config()->m_InfTurretPlasmaLifeSpan);
 	GameWorld()->InsertEntity(this);
 }
 
 void CPlasma::Tick()
 {
-	//reduce lifespan
-	if (m_LifeSpan < 0)
-	{
-		Reset();
+	CIcEntity::Tick();
+
+	if(IsMarkedForDestroy())
 		return;
-	}
-	m_LifeSpan--;
 	
 	// tracking, position and collision calculation
 	CIcCharacter *pTarget = GameController()->GetCharacter(m_TrackedPlayer);

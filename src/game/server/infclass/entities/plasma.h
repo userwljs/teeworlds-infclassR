@@ -23,7 +23,6 @@ private:
 
 private:
 	int m_StartTick;
-	int m_LifeSpan;
 	vec2 m_Dir;
 	float m_Speed;
 	int m_Freeze;
