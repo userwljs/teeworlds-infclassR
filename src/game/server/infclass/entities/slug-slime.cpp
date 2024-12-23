@@ -3,7 +3,7 @@
 #include <game/server/gamecontext.h>
 #include <engine/shared/config.h>
 
-#include <game/server/infclass/classes/infcplayerclass.h>
+#include <game/server/infclass/classes/ic_playerclass.h>
 
 #include "ic_character.h"
 #include "slug-slime.h"

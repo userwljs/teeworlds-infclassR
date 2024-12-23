@@ -7,7 +7,7 @@
 #include <game/server/infclass/events-director.h>
 
 #include "classes/humans/human.h"
-#include "classes/infcplayerclass.h"
+#include "classes/ic_playerclass.h"
 #include "classes/infected/infected.h"
 #include "engine/server.h"
 #include "entities/ic_character.h"
@@ -364,7 +364,7 @@ const CIcCharacter *CIcPlayer::GetCharacter() const
 	return static_cast<const CIcCharacter*>(m_pCharacter);
 }
 
-void CIcPlayer::SetCharacterClass(CInfClassPlayerClass *pClass)
+void CIcPlayer::SetCharacterClass(CIcPlayerClass *pClass)
 {
 	if(m_pInfcPlayerClass)
 	{

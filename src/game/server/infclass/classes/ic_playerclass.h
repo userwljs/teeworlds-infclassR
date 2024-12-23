@@ -9,7 +9,6 @@ class CConfig;
 class CGameContext;
 class CGameWorld;
 class CIcCharacter;
-class CInfClassGameContext;
 class CIcGameController;
 class CIcPlayer;
 class IServer;
@@ -47,11 +46,11 @@ struct SClassUpgrade
 	}
 };
 
-class CInfClassPlayerClass
+class CIcPlayerClass
 {
 public:
-	CInfClassPlayerClass(CIcPlayer *pPlayer);
-	virtual ~CInfClassPlayerClass() = default;
+	CIcPlayerClass(CIcPlayer *pPlayer);
+	virtual ~CIcPlayerClass() = default;
 
 	void SetCharacter(CIcCharacter *character);
 

@@ -2,7 +2,7 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include "flyingpoint.h"
 
-#include <game/server/infclass/classes/infcplayerclass.h>
+#include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 

@@ -5,7 +5,7 @@
 
 #include <engine/shared/config.h>
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/classes/infcplayerclass.h>
+#include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/entities/slug-slime.h>
 #include <game/server/infclass/ic_gamecontroller.h>

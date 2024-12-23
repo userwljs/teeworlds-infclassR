@@ -39,7 +39,7 @@ static const int s_SniperPositionLockTimeLimit = 15;
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassHuman, MAX_CLIENTS)
 
 CInfClassHuman::CInfClassHuman(CIcPlayer *pPlayer)
-	: CInfClassPlayerClass(pPlayer)
+	: CIcPlayerClass(pPlayer)
 {
 	m_BroadcastWhiteHoleReady = -100;
 
@@ -48,17 +48,17 @@ CInfClassHuman::CInfClassHuman(CIcPlayer *pPlayer)
 
 CInfClassHuman *CInfClassHuman::GetInstance(CIcPlayer *pPlayer)
 {
-	CInfClassPlayerClass *pClass = pPlayer ? pPlayer->GetCharacterClass() : nullptr;
+	CIcPlayerClass *pClass = pPlayer ? pPlayer->GetCharacterClass() : nullptr;
 	return GetInstance(pClass);
 }
 
 CInfClassHuman *CInfClassHuman::GetInstance(CIcCharacter *pCharacter)
 {
-	CInfClassPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
+	CIcPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
 	return GetInstance(pClass);
 }
 
-CInfClassHuman *CInfClassHuman::GetInstance(CInfClassPlayerClass *pClass)
+CInfClassHuman *CInfClassHuman::GetInstance(CIcPlayerClass *pClass)
 {
 	if(pClass && pClass->IsHuman())
 	{
@@ -227,7 +227,7 @@ SClassUpgrade CInfClassHuman::GetNextUpgrade() const
 
 void CInfClassHuman::OnPlayerClassChanged()
 {
-	CInfClassPlayerClass::OnPlayerClassChanged();
+	CIcPlayerClass::OnPlayerClassChanged();
 
 	ResetUpgrades();
 	ResetUpgradeLevel();
@@ -338,7 +338,7 @@ void CInfClassHuman::OnPlayerSnap(int SnappingClient, int InfClassVersion)
 
 void CInfClassHuman::OnCharacterPreCoreTick()
 {
-	CInfClassPlayerClass::OnCharacterPreCoreTick();
+	CIcPlayerClass::OnCharacterPreCoreTick();
 
 	switch (GetPlayerClass())
 	{
@@ -390,7 +390,7 @@ void CInfClassHuman::OnCharacterPreCoreTick()
 
 void CInfClassHuman::OnCharacterTick()
 {
-	CInfClassPlayerClass::OnCharacterTick();
+	CIcPlayerClass::OnCharacterTick();
 
 	switch(GetPlayerClass())
 	{
@@ -470,7 +470,7 @@ void CInfClassHuman::OnCharacterTickPaused()
 
 void CInfClassHuman::OnCharacterPostCoreTick()
 {
-	CInfClassPlayerClass::OnCharacterPostCoreTick();
+	CIcPlayerClass::OnCharacterPostCoreTick();
 
 	switch(GetPlayerClass())
 	{
@@ -556,7 +556,7 @@ void CInfClassHuman::OnCharacterSnap(int SnappingClient)
 
 void CInfClassHuman::OnCharacterSpawned(const SpawnContext &Context)
 {
-	CInfClassPlayerClass::OnCharacterSpawned(Context);
+	CIcPlayerClass::OnCharacterSpawned(Context);
 
 	ResetUpgrades();
 	ResetUpgradeLevel();
@@ -759,7 +759,7 @@ void CInfClassHuman::OnWeaponFired(WeaponFireContext *pFireContext)
 	const float ReloadIntervalModifier = m_WeaponReloadIntervalModifier[pFireContext->Weapon];
 	pFireContext->ReloadInterval *= ReloadIntervalModifier;
 
-	CInfClassPlayerClass::OnWeaponFired(pFireContext);
+	CIcPlayerClass::OnWeaponFired(pFireContext);
 }
 
 void CInfClassHuman::OnHammerFired(WeaponFireContext *pFireContext)
@@ -1063,7 +1063,7 @@ void CInfClassHuman::GiveClassAttributes()
 
 	RemoveWhiteHole();
 
-	CInfClassPlayerClass::GiveClassAttributes();
+	CIcPlayerClass::GiveClassAttributes();
 
 	if(!m_pCharacter)
 	{
@@ -1198,7 +1198,7 @@ void CInfClassHuman::DestroyChildEntities()
 		m_pHeroFlag = nullptr;
 	}
 
-	CInfClassPlayerClass::DestroyChildEntities();
+	CIcPlayerClass::DestroyChildEntities();
 
 	if(!m_pCharacter)
 	{

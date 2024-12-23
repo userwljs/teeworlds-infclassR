@@ -2,7 +2,7 @@
 #include "game/generated/protocol.h"
 #include "game/server/entity.h"
 #include "game/server/gameworld.h"
-#include "game/server/infclass/classes/infcplayerclass.h"
+#include "game/server/infclass/classes/ic_playerclass.h"
 #include "game/server/infclass/entities/slug-slime.h"
 #include "game/server/infclass/entities/turret.h"
 
@@ -20,14 +20,14 @@
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassInfected, MAX_CLIENTS)
 
 CInfClassInfected::CInfClassInfected(CIcPlayer *pPlayer)
-	: CInfClassPlayerClass(pPlayer)
+	: CIcPlayerClass(pPlayer)
 {
 	SetNormalEmote(EMOTE_ANGRY);
 }
 
 const CInfClassInfected *CInfClassInfected::GetInstance(const CIcCharacter *pCharacter)
 {
-	const CInfClassPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
+	const CIcPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
 	if(pClass && pClass->IsZombie())
 	{
 		return static_cast<const CInfClassInfected*>(pClass);
@@ -38,7 +38,7 @@ const CInfClassInfected *CInfClassInfected::GetInstance(const CIcCharacter *pCha
 
 CInfClassInfected *CInfClassInfected::GetInstance(CIcCharacter *pCharacter)
 {
-	CInfClassPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
+	CIcPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
 	if(pClass && pClass->IsZombie())
 	{
 		return static_cast<CInfClassInfected*>(pClass);
@@ -243,7 +243,7 @@ bool CInfClassInfected::CanBeUnfreezed() const
 
 void CInfClassInfected::OnCharacterPreCoreTick()
 {
-	CInfClassPlayerClass::OnCharacterPreCoreTick();
+	CIcPlayerClass::OnCharacterPreCoreTick();
 
 	switch(GetPlayerClass())
 	{
@@ -260,7 +260,7 @@ void CInfClassInfected::OnCharacterPreCoreTick()
 
 void CInfClassInfected::OnCharacterTick()
 {
-	CInfClassPlayerClass::OnCharacterTick();
+	CIcPlayerClass::OnCharacterTick();
 
 	if(GetPlayerClass() == EPlayerClass::Voodoo && m_VoodooAboutToDie)
 	{
@@ -287,14 +287,14 @@ void CInfClassInfected::OnCharacterTick()
 
 void CInfClassInfected::OnCharacterTickPaused()
 {
-	CInfClassPlayerClass::OnCharacterTickPaused();
+	CIcPlayerClass::OnCharacterTickPaused();
 
 	++m_HookDmgTick;
 }
 
 void CInfClassInfected::OnCharacterPostCoreTick()
 {
-	CInfClassPlayerClass::OnCharacterPostCoreTick();
+	CIcPlayerClass::OnCharacterPostCoreTick();
 
 	int HookerPlayer = m_pCharacter->Core()->HookedPlayer();
 	if(HookerPlayer >= 0)
@@ -399,7 +399,7 @@ void CInfClassInfected::OnCharacterSnap(int SnappingClient)
 
 void CInfClassInfected::OnCharacterSpawned(const SpawnContext &Context)
 {
-	CInfClassPlayerClass::OnCharacterSpawned(Context);
+	CIcPlayerClass::OnCharacterSpawned(Context);
 
 	m_HookDmgTick = 0;
 	m_SlimeEffectTicks = 0;
@@ -417,7 +417,7 @@ void CInfClassInfected::OnCharacterSpawned(const SpawnContext &Context)
 
 void CInfClassInfected::OnCharacterDeath(EDamageType DamageType)
 {
-	CInfClassPlayerClass::OnCharacterDeath(DamageType);
+	CIcPlayerClass::OnCharacterDeath(DamageType);
 
 	if(GetPlayerClass() == EPlayerClass::Ghoul)
 	{
@@ -452,7 +452,7 @@ void CInfClassInfected::OnHookAttachedPlayer()
 
 void CInfClassInfected::OnWeaponFired(WeaponFireContext *pFireContext)
 {
-	CInfClassPlayerClass::OnWeaponFired(pFireContext);
+	CIcPlayerClass::OnWeaponFired(pFireContext);
 
 	if(!m_pCharacter->IsSolo())
 	{
@@ -638,7 +638,7 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 
 void CInfClassInfected::GiveClassAttributes()
 {
-	CInfClassPlayerClass::GiveClassAttributes();
+	CIcPlayerClass::GiveClassAttributes();
 
 	if(!m_pCharacter)
 	{

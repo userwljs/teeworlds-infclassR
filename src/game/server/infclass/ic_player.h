@@ -7,7 +7,7 @@
 class CGameContext;
 class CIcCharacter;
 class CIcGameController;
-class CInfClassPlayerClass;
+class CIcPlayerClass;
 struct SpawnContext;
 
 // We actually have to include player.h after all this stuff above.
@@ -75,9 +75,9 @@ public:
 
 	CIcCharacter *GetCharacter();
 	const CIcCharacter *GetCharacter() const;
-	CInfClassPlayerClass *GetCharacterClass() { return m_pInfcPlayerClass; }
-	const CInfClassPlayerClass *GetCharacterClass() const { return m_pInfcPlayerClass; }
-	void SetCharacterClass(CInfClassPlayerClass *pClass);
+	CIcPlayerClass *GetCharacterClass() { return m_pInfcPlayerClass; }
+	const CIcPlayerClass *GetCharacterClass() const { return m_pInfcPlayerClass; }
+	void SetCharacterClass(CIcPlayerClass *pClass);
 
 	void SetClass(EPlayerClass NewClass);
 	void UpdateSkin();
@@ -157,7 +157,7 @@ protected:
 	SkinGetter m_SkinGetter;
 
 	CIcGameController *m_pGameController = nullptr;
-	CInfClassPlayerClass *m_pInfcPlayerClass = nullptr;
+	CIcPlayerClass *m_pInfcPlayerClass = nullptr;
 	int m_HumanTime{};
 	int m_InfectionTick;
 	bool m_HookProtection{};

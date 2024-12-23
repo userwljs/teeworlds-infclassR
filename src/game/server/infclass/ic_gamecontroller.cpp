@@ -7,7 +7,7 @@
 #include "game/infclass/classes.h"
 
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/classes/infcplayerclass.h>
+#include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/death_context.h>
 #include <game/server/infclass/entities/flyingpoint.h>
@@ -3688,7 +3688,7 @@ void CIcGameController::MaybeDropPickup(CIcCharacter *pVictim)
 			continue;
 		}
 
-		const CInfClassPlayerClass *pClass = pCharacter->GetClass();
+		const CIcPlayerClass *pClass = pCharacter->GetClass();
 		if(pClass->GetUpgradeLevel() >= DropMaxLevel)
 		{
 			// The player already has an upgrade of this level

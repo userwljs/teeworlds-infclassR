@@ -1,14 +1,14 @@
 #ifndef GAME_SERVER_INFCLASS_CLASSES_INFECTED_H
 #define GAME_SERVER_INFCLASS_CLASSES_INFECTED_H
 
-#include "../infcplayerclass.h"
+#include "../ic_playerclass.h"
 
 #include <game/server/alloc.h>
 #include <game/server/infclass/death_context.h>
 
 class CSlugSlime;
 
-class CInfClassInfected : public CInfClassPlayerClass
+class CInfClassInfected : public CIcPlayerClass
 {
 	MACRO_ALLOC_POOL_ID()
 

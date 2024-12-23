@@ -9,7 +9,7 @@
 class CGameContext;
 class CIcGameController;
 class CIcPlayer;
-class CInfClassPlayerClass;
+class CIcPlayerClass;
 class CWhiteHole;
 
 enum class EDamageType;
@@ -159,9 +159,9 @@ public:
 
 	CIcPlayer *GetPlayer();
 
-	const CInfClassPlayerClass *GetClass() const { return m_pClass; }
-	CInfClassPlayerClass *GetClass() { return m_pClass; }
-	void SetClass(CInfClassPlayerClass *pClass);
+	const CIcPlayerClass *GetClass() const { return m_pClass; }
+	CIcPlayerClass *GetClass() { return m_pClass; }
+	void SetClass(CIcPlayerClass *pClass);
 
 	CInputCount CountFireInput() const;
 	bool FireJustPressed() const;
@@ -299,7 +299,7 @@ protected:
 
 protected:
 	CIcGameController *m_pGameController = nullptr;
-	CInfClassPlayerClass *m_pClass = nullptr;
+	CIcPlayerClass *m_pClass = nullptr;
 
 	CNetObj_PlayerInput m_InputBackup;
 

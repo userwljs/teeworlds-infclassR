@@ -4,7 +4,7 @@
 #include <game/generated/protocol.h>
 #include <game/server/gamecontext.h>
 
-#include <game/server/infclass/classes/infcplayerclass.h>
+#include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 #include <game/server/infclass/snap_filter.h>

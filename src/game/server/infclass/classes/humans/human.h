@@ -1,7 +1,7 @@
 #ifndef GAME_SERVER_INFCLASS_CLASSES_HUMAN_H
 #define GAME_SERVER_INFCLASS_CLASSES_HUMAN_H
 
-#include "../infcplayerclass.h"
+#include "../ic_playerclass.h"
 
 #include <base/tl/ic_array.h>
 #include <game/server/alloc.h>
@@ -16,7 +16,7 @@ enum class EGiftType
 	HeroFlag,
 };
 
-class CInfClassHuman : public CInfClassPlayerClass
+class CInfClassHuman : public CIcPlayerClass
 {
 	MACRO_ALLOC_POOL_ID()
 
@@ -25,7 +25,7 @@ public:
 
 	static CInfClassHuman *GetInstance(CIcPlayer *pPlayer);
 	static CInfClassHuman *GetInstance(CIcCharacter *pCharacter);
-	static CInfClassHuman *GetInstance(CInfClassPlayerClass *pClass);
+	static CInfClassHuman *GetInstance(CIcPlayerClass *pClass);
 
 	bool IsHuman() const final { return true; }
 

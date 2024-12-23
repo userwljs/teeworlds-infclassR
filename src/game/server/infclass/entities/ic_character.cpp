@@ -9,7 +9,7 @@
 #include <game/generated/server_data.h>
 #include <game/infclass/damage_type.h>
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/classes/infcplayerclass.h>
+#include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/server/infclass/damage_context.h>
 #include <game/server/infclass/death_context.h>
 #include <game/server/infclass/entities/ic_projectile.h>
@@ -2147,7 +2147,7 @@ CIcPlayer *CIcCharacter::GetPlayer()
 	return static_cast<CIcPlayer*>(m_pPlayer);
 }
 
-void CIcCharacter::SetClass(CInfClassPlayerClass *pClass)
+void CIcCharacter::SetClass(CIcPlayerClass *pClass)
 {
 	m_pClass = pClass;
 

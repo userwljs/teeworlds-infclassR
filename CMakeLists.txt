@@ -883,8 +883,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   entities_filter.h
   infclass/classes/humans/human.cpp
   infclass/classes/humans/human.h
-  infclass/classes/infcplayerclass.cpp
-  infclass/classes/infcplayerclass.h
+  infclass/classes/ic_playerclass.cpp
+  infclass/classes/ic_playerclass.h
   infclass/classes/infected/infected.cpp
   infclass/classes/infected/infected.h
   infclass/damage_context.h

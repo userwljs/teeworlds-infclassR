@@ -1,4 +1,4 @@
-#include "infcplayerclass.h"
+#include "ic_playerclass.h"
 
 #include <base/system.h>
 #include <engine/shared/config.h>
@@ -9,13 +9,13 @@
 #include <game/server/infclass/ic_player.h>
 #include <game/server/teeinfo.h>
 
-CInfClassPlayerClass::CInfClassPlayerClass(CIcPlayer *pPlayer)
+CIcPlayerClass::CIcPlayerClass(CIcPlayer *pPlayer)
 	: m_pPlayer(pPlayer)
 {
 	m_NormalEmote = EMOTE_NORMAL;
 }
 
-CGameContext *CInfClassPlayerClass::GameContext() const
+CGameContext *CIcPlayerClass::GameContext() const
 {
 	if(m_pPlayer)
 		return m_pPlayer->GameServer();
@@ -24,12 +24,12 @@ CGameContext *CInfClassPlayerClass::GameContext() const
 }
 
 // A lot of code use GameServer() as CGameContext* getter, so let it be.
-CGameContext *CInfClassPlayerClass::GameServer() const
+CGameContext *CIcPlayerClass::GameServer() const
 {
 	return GameContext();
 }
 
-CGameWorld *CInfClassPlayerClass::GameWorld() const
+CGameWorld *CIcPlayerClass::GameWorld() const
 {
 	if(m_pPlayer)
 		return m_pPlayer->GameServer()->GameWorld();
@@ -37,7 +37,7 @@ CGameWorld *CInfClassPlayerClass::GameWorld() const
 	return nullptr;
 }
 
-CIcGameController *CInfClassPlayerClass::GameController() const
+CIcGameController *CIcPlayerClass::GameController() const
 {
 	if(m_pPlayer)
 		return m_pPlayer->GameController();
@@ -45,7 +45,7 @@ CIcGameController *CInfClassPlayerClass::GameController() const
 	return nullptr;
 }
 
-CConfig *CInfClassPlayerClass::Config()
+CConfig *CIcPlayerClass::Config()
 {
 	if(m_pPlayer)
 		return m_pPlayer->GameServer()->Config();
@@ -53,7 +53,7 @@ CConfig *CInfClassPlayerClass::Config()
 	return nullptr;
 }
 
-const CConfig *CInfClassPlayerClass::Config() const
+const CConfig *CIcPlayerClass::Config() const
 {
 	if(m_pPlayer)
 		return m_pPlayer->GameServer()->Config();
@@ -61,7 +61,7 @@ const CConfig *CInfClassPlayerClass::Config() const
 	return nullptr;
 }
 
-IServer *CInfClassPlayerClass::Server() const
+IServer *CIcPlayerClass::Server() const
 {
 	if(m_pPlayer)
 		return m_pPlayer->Server();
@@ -69,17 +69,17 @@ IServer *CInfClassPlayerClass::Server() const
 	return nullptr;
 }
 
-CIcPlayer *CInfClassPlayerClass::GetPlayer()
+CIcPlayer *CIcPlayerClass::GetPlayer()
 {
 	return m_pPlayer;
 }
 
-const CIcPlayer *CInfClassPlayerClass::GetPlayer() const
+const CIcPlayer *CIcPlayerClass::GetPlayer() const
 {
 	return m_pPlayer;
 }
 
-int CInfClassPlayerClass::GetCid() const
+int CIcPlayerClass::GetCid() const
 {
 	const CIcPlayer *pPlayer = GetPlayer();
 	if(pPlayer)
@@ -88,7 +88,7 @@ int CInfClassPlayerClass::GetCid() const
 	return -1;
 }
 
-vec2 CInfClassPlayerClass::GetPos() const
+vec2 CIcPlayerClass::GetPos() const
 {
 	if(m_pCharacter)
 		return m_pCharacter->GetPos();
@@ -96,7 +96,7 @@ vec2 CInfClassPlayerClass::GetPos() const
 	return vec2(0, 0);
 }
 
-vec2 CInfClassPlayerClass::GetDirection() const
+vec2 CIcPlayerClass::GetDirection() const
 {
 	if(m_pCharacter)
 		return m_pCharacter->GetDirection();
@@ -104,7 +104,7 @@ vec2 CInfClassPlayerClass::GetDirection() const
 	return vec2(0, 0);
 }
 
-vec2 CInfClassPlayerClass::GetProjectileStartPos(float Offset) const
+vec2 CIcPlayerClass::GetProjectileStartPos(float Offset) const
 {
 	vec2 From = GetPos();
 	vec2 To = From + GetDirection() * Offset;
@@ -113,7 +113,7 @@ vec2 CInfClassPlayerClass::GetProjectileStartPos(float Offset) const
 	return To;
 }
 
-float CInfClassPlayerClass::GetProximityRadius() const
+float CIcPlayerClass::GetProximityRadius() const
 {
 	if(m_pCharacter)
 		return m_pCharacter->GetProximityRadius();
@@ -121,17 +121,17 @@ float CInfClassPlayerClass::GetProximityRadius() const
 	return 0;
 }
 
-int CInfClassPlayerClass::GetUpgradeLevel() const
+int CIcPlayerClass::GetUpgradeLevel() const
 {
 	return m_UpgradeLevel;
 }
 
-void CInfClassPlayerClass::ResetUpgradeLevel()
+void CIcPlayerClass::ResetUpgradeLevel()
 {
 	m_UpgradeLevel = 0;
 }
 
-void CInfClassPlayerClass::SetCharacter(CIcCharacter *character)
+void CIcPlayerClass::SetCharacter(CIcCharacter *character)
 {
 	if(m_pCharacter == character)
 	{
@@ -153,22 +153,22 @@ void CInfClassPlayerClass::SetCharacter(CIcCharacter *character)
 	}
 }
 
-bool CInfClassPlayerClass::IsZombie() const
+bool CIcPlayerClass::IsZombie() const
 {
 	return !IsHuman();
 }
 
-void CInfClassPlayerClass::ResetNormalEmote()
+void CIcPlayerClass::ResetNormalEmote()
 {
 	SetNormalEmote(EMOTE_NORMAL);
 }
 
-void CInfClassPlayerClass::SetNormalEmote(int Emote)
+void CIcPlayerClass::SetNormalEmote(int Emote)
 {
 	m_NormalEmote = Emote;
 }
 
-int CInfClassPlayerClass::GetDefaultEmote() const
+int CIcPlayerClass::GetDefaultEmote() const
 {
 	int EmoteNormal = m_NormalEmote;
 
@@ -205,14 +205,14 @@ int CInfClassPlayerClass::GetDefaultEmote() const
 	return EmoteNormal;
 }
 
-void CInfClassPlayerClass::GetAmmoRegenParams(int Weapon, WeaponRegenParams *pParams)
+void CIcPlayerClass::GetAmmoRegenParams(int Weapon, WeaponRegenParams *pParams)
 {
 	EInfclassWeapon InfWID = m_pCharacter->GetInfWeaponId(Weapon);
 	pParams->RegenInterval = GameController()->GetAmmoRegenTime(InfWID);
 	pParams->MaxAmmo = GameController()->GetMaxAmmo(InfWID);
 }
 
-int CInfClassPlayerClass::GetJumps() const
+int CIcPlayerClass::GetJumps() const
 {
 	// From DDNet:
 
@@ -225,42 +225,42 @@ int CInfClassPlayerClass::GetJumps() const
 	return 2; // Ground jump + Air jump
 }
 
-bool CInfClassPlayerClass::CanDie() const
+bool CIcPlayerClass::CanDie() const
 {
 	return true;
 }
 
-bool CInfClassPlayerClass::CanBeHit() const
+bool CIcPlayerClass::CanBeHit() const
 {
 	return true;
 }
 
-bool CInfClassPlayerClass::CanBeUnfreezed() const
+bool CIcPlayerClass::CanBeUnfreezed() const
 {
 	return true;
 }
 
-SClassUpgrade CInfClassPlayerClass::GetNextUpgrade() const
+SClassUpgrade CIcPlayerClass::GetNextUpgrade() const
 {
 	return SClassUpgrade::Invalid();
 }
 
-float CInfClassPlayerClass::GetHammerProjOffset() const
+float CIcPlayerClass::GetHammerProjOffset() const
 {
 	return GetProximityRadius() * 0.75f;
 }
 
-float CInfClassPlayerClass::GetHammerRange() const
+float CIcPlayerClass::GetHammerRange() const
 {
 	return m_pCharacter ? m_pCharacter->GetProximityRadius() * 0.5f : 0;
 }
 
-float CInfClassPlayerClass::GetGhoulPercent() const
+float CIcPlayerClass::GetGhoulPercent() const
 {
 	return 0;
 }
 
-EPlayerClass CInfClassPlayerClass::GetPlayerClass() const
+EPlayerClass CIcPlayerClass::GetPlayerClass() const
 {
 	if(m_pPlayer)
 		return m_pPlayer->GetClass();
@@ -268,7 +268,7 @@ EPlayerClass CInfClassPlayerClass::GetPlayerClass() const
 	return EPlayerClass::None;
 }
 
-void CInfClassPlayerClass::OnPlayerClassChanged()
+void CIcPlayerClass::OnPlayerClassChanged()
 {
 	UpdateSkin();
 	SetNormalEmote(EMOTE_NORMAL);
@@ -282,25 +282,25 @@ void CInfClassPlayerClass::OnPlayerClassChanged()
 	}
 }
 
-void CInfClassPlayerClass::PrepareToDie(DeathContext *pContext)
+void CIcPlayerClass::PrepareToDie(DeathContext *pContext)
 {
 }
 
-void CInfClassPlayerClass::DisableHealing(float Duration, int From, EDamageType DamageType)
+void CIcPlayerClass::DisableHealing(float Duration, int From, EDamageType DamageType)
 {
 	m_HealingDisabledTicks = maximum<int>(m_HealingDisabledTicks, Duration * Server()->TickSpeed());
 }
 
-void CInfClassPlayerClass::OnPlayerSnap(int SnappingClient, int InfClassVersion)
+void CIcPlayerClass::OnPlayerSnap(int SnappingClient, int InfClassVersion)
 {
 }
 
-bool CInfClassPlayerClass::IsHealingDisabled() const
+bool CIcPlayerClass::IsHealingDisabled() const
 {
 	return m_HealingDisabledTicks > 0;
 }
 
-void CInfClassPlayerClass::OnCharacterPreCoreTick()
+void CIcPlayerClass::OnCharacterPreCoreTick()
 {
 	if(m_pCharacter->IsPassenger())
 	{
@@ -316,7 +316,7 @@ void CInfClassPlayerClass::OnCharacterPreCoreTick()
 	}
 }
 
-void CInfClassPlayerClass::OnCharacterTick()
+void CIcPlayerClass::OnCharacterTick()
 {
 	if(m_HealingDisabledTicks > 0)
 	{
@@ -326,23 +326,23 @@ void CInfClassPlayerClass::OnCharacterTick()
 	BroadcastWeaponState();
 }
 
-void CInfClassPlayerClass::OnCharacterTickPaused()
+void CIcPlayerClass::OnCharacterTickPaused()
 {
 }
 
-void CInfClassPlayerClass::OnCharacterPostCoreTick()
+void CIcPlayerClass::OnCharacterPostCoreTick()
 {
 }
 
-void CInfClassPlayerClass::OnCharacterTickDeferred()
+void CIcPlayerClass::OnCharacterTickDeferred()
 {
 }
 
-void CInfClassPlayerClass::OnCharacterSnap(int SnappingClient)
+void CIcPlayerClass::OnCharacterSnap(int SnappingClient)
 {
 }
 
-void CInfClassPlayerClass::OnCharacterSpawned(const SpawnContext &Context)
+void CIcPlayerClass::OnCharacterSpawned(const SpawnContext &Context)
 {
 	m_HealingDisabledTicks = 0;
 
@@ -350,7 +350,7 @@ void CInfClassPlayerClass::OnCharacterSpawned(const SpawnContext &Context)
 	GiveClassAttributes();
 }
 
-void CInfClassPlayerClass::OnCharacterDeath(EDamageType DamageType)
+void CIcPlayerClass::OnCharacterDeath(EDamageType DamageType)
 {
 	if(m_pCharacter->HasPassenger())
 	{
@@ -360,19 +360,19 @@ void CInfClassPlayerClass::OnCharacterDeath(EDamageType DamageType)
 	DestroyChildEntities();
 }
 
-void CInfClassPlayerClass::OnCharacterDamage(SDamageContext *pContext)
+void CIcPlayerClass::OnCharacterDamage(SDamageContext *pContext)
 {
 }
 
-void CInfClassPlayerClass::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context)
+void CIcPlayerClass::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context)
 {
 }
 
-void CInfClassPlayerClass::OnHookAttachedPlayer()
+void CIcPlayerClass::OnHookAttachedPlayer()
 {
 }
 
-void CInfClassPlayerClass::OnWeaponFired(WeaponFireContext *pFireContext)
+void CIcPlayerClass::OnWeaponFired(WeaponFireContext *pFireContext)
 {
 	switch(pFireContext->Weapon)
 	{
@@ -399,35 +399,35 @@ void CInfClassPlayerClass::OnWeaponFired(WeaponFireContext *pFireContext)
 	}
 }
 
-void CInfClassPlayerClass::OnHammerFired(WeaponFireContext *pFireContext)
+void CIcPlayerClass::OnHammerFired(WeaponFireContext *pFireContext)
 {
 }
 
-void CInfClassPlayerClass::OnGunFired(WeaponFireContext *pFireContext)
+void CIcPlayerClass::OnGunFired(WeaponFireContext *pFireContext)
 {
 }
 
-void CInfClassPlayerClass::OnShotgunFired(WeaponFireContext *pFireContext)
+void CIcPlayerClass::OnShotgunFired(WeaponFireContext *pFireContext)
 {
 }
 
-void CInfClassPlayerClass::OnGrenadeFired(WeaponFireContext *pFireContext)
+void CIcPlayerClass::OnGrenadeFired(WeaponFireContext *pFireContext)
 {
 }
 
-void CInfClassPlayerClass::OnLaserFired(WeaponFireContext *pFireContext)
+void CIcPlayerClass::OnLaserFired(WeaponFireContext *pFireContext)
 {
 }
 
-void CInfClassPlayerClass::OnNinjaFired(WeaponFireContext *pFireContext)
+void CIcPlayerClass::OnNinjaFired(WeaponFireContext *pFireContext)
 {
 }
 
-void CInfClassPlayerClass::OnFloatingPointCollected(int Points)
+void CIcPlayerClass::OnFloatingPointCollected(int Points)
 {
 }
 
-void CInfClassPlayerClass::GiveClassAttributes()
+void CIcPlayerClass::GiveClassAttributes()
 {
 	if(!m_pCharacter)
 	{
@@ -438,15 +438,15 @@ void CInfClassPlayerClass::GiveClassAttributes()
 	m_pCharacter->SetJumpsLimit(GetJumps());
 }
 
-void CInfClassPlayerClass::DestroyChildEntities()
+void CIcPlayerClass::DestroyChildEntities()
 {
 }
 
-void CInfClassPlayerClass::BroadcastWeaponState() const
+void CIcPlayerClass::BroadcastWeaponState() const
 {
 }
 
-void CInfClassPlayerClass::CreateHammerHit(const vec2 &ProjStartPos, const CIcCharacter *pTarget)
+void CIcPlayerClass::CreateHammerHit(const vec2 &ProjStartPos, const CIcCharacter *pTarget)
 {
 	const vec2 VecToTarget(pTarget->GetPos() - ProjStartPos);
 	if(length(VecToTarget) > 0.0f)
@@ -455,7 +455,7 @@ void CInfClassPlayerClass::CreateHammerHit(const vec2 &ProjStartPos, const CIcCh
 		GameServer()->CreateHammerHit(ProjStartPos);
 }
 
-void CInfClassPlayerClass::UpdateSkin()
+void CIcPlayerClass::UpdateSkin()
 {
 	if(!m_pPlayer)
 		return;
