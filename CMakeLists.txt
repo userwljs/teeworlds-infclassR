@@ -949,12 +949,12 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/white-hole.h
   infclass/events-director.cpp
   infclass/events-director.h
+  infclass/ic_config_variables.h
   infclass/ic_entities.cpp
   infclass/ic_gamecontroller.cpp
   infclass/ic_gamecontroller.h
   infclass/ic_player.cpp
   infclass/ic_player.h
-  infclass/infc_config_variables.h
   infclass/snap_filter.cpp
   infclass/snap_filter.h
   entity.cpp
