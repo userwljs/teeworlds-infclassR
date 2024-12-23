@@ -950,11 +950,11 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/events-director.cpp
   infclass/events-director.h
   infclass/ic_entities.cpp
+  infclass/ic_player.cpp
+  infclass/ic_player.h
   infclass/infc_config_variables.h
   infclass/infcgamecontroller.cpp
   infclass/infcgamecontroller.h
-  infclass/infcplayer.cpp
-  infclass/infcplayer.h
   infclass/snap_filter.cpp
   infclass/snap_filter.h
   entity.cpp

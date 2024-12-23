@@ -6,7 +6,7 @@
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 
 int CLaserTeleport::EntityId{};
 
@@ -88,7 +88,7 @@ void CLaserTeleport::Snap(int SnappingClient)
 {
 	m_LaserFired = true;
 
-	const CInfClassPlayer *pPlayer = GameController()->GetPlayer(SnappingClient);
+	const CIcPlayer *pPlayer = GameController()->GetPlayer(SnappingClient);
 	const bool AntiPing = pPlayer && pPlayer->GetAntiPingEnabled();
 
 	if(AntiPing)

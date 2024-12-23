@@ -13,7 +13,7 @@ class CInfClassInfected : public CInfClassPlayerClass
 	MACRO_ALLOC_POOL_ID()
 
 public:
-	CInfClassInfected(CInfClassPlayer *pPlayer);
+	CInfClassInfected(CIcPlayer *pPlayer);
 
 	static const CInfClassInfected *GetInstance(const CIcCharacter *pCharacter);
 	static CInfClassInfected *GetInstance(CIcCharacter *pCharacter);

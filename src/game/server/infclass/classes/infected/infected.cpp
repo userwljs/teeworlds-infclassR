@@ -14,12 +14,12 @@
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 #include <game/server/teeinfo.h>
 
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassInfected, MAX_CLIENTS)
 
-CInfClassInfected::CInfClassInfected(CInfClassPlayer *pPlayer)
+CInfClassInfected::CInfClassInfected(CIcPlayer *pPlayer)
 	: CInfClassPlayerClass(pPlayer)
 {
 	SetNormalEmote(EMOTE_ANGRY);
@@ -379,7 +379,7 @@ void CInfClassInfected::OnCharacterSnap(int SnappingClient)
 	}
 	else
 	{
-		const CInfClassPlayer *pDestClient = GameController()->GetPlayer(SnappingClient);
+		const CIcPlayer *pDestClient = GameController()->GetPlayer(SnappingClient);
 		if(pDestClient && pDestClient->IsInGame() && pDestClient->IsInfected())
 		{
 			if(m_pCharacter->GetHealthArmorSum() < 10)
@@ -741,7 +741,7 @@ void CInfClassInfected::DoBoomerExplosion()
 				}
 			}
 
-			const CInfClassPlayer *pTargetPlayer = pTarget->GetPlayer();
+			const CIcPlayer *pTargetPlayer = pTarget->GetPlayer();
 			if(pTarget->IsInfected() || (pTargetPlayer && pTargetPlayer->IsInfectionStarted()))
 			{
 				const float BoomerHelperDuration = 30;

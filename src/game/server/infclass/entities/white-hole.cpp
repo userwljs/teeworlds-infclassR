@@ -8,7 +8,7 @@
 #include <game/server/infclass/classes/humans/human.h>
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 
 #include "growingexplosion.h"
 #include "ic_character.h"
@@ -93,7 +93,7 @@ void CWhiteHole::Snap(int SnappingClient)
 	if(!DoSnapForClient(SnappingClient))
 		return;
 
-	const CInfClassPlayer *pPlayer = GameController()->GetPlayer(SnappingClient);
+	const CIcPlayer *pPlayer = GameController()->GetPlayer(SnappingClient);
 	const bool AntiPing = pPlayer && pPlayer->GetAntiPingEnabled();
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 	CSnapContext Context(SnappingClientVersion);

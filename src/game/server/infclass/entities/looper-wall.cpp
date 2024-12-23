@@ -6,7 +6,7 @@
 
 #include <game/server/infclass/classes/infcplayerclass.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 #include <game/server/infclass/snap_filter.h>
 
 #include <engine/server/roundstatistics.h>
@@ -97,7 +97,7 @@ void CLooperWall::Snap(int SnappingClient)
 	if(!DoSnapForClient(SnappingClient))
 		return;
 
-	const CInfClassPlayer *pDestPlayer = GameController()->GetPlayer(SnappingClient);
+	const CIcPlayer *pDestPlayer = GameController()->GetPlayer(SnappingClient);
 	if(!HasSecondPosition())
 	{
 		if(!SnapFiltersPassed(this, SnappingClient, EFilterFlag::Follower | EFilterFlag::SameTeam | EFilterFlag::Demo | EFilterFlag::Restricted))

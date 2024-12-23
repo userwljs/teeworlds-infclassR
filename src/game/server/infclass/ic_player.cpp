@@ -1,4 +1,4 @@
-#include "infcplayer.h"
+#include "ic_player.h"
 
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
@@ -12,9 +12,9 @@
 #include "engine/server.h"
 #include "entities/ic_character.h"
 
-MACRO_ALLOC_POOL_ID_IMPL(CInfClassPlayer, MAX_CLIENTS)
+MACRO_ALLOC_POOL_ID_IMPL(CIcPlayer, MAX_CLIENTS)
 
-CInfClassPlayer::CInfClassPlayer(CInfClassGameController *pGameController, int UniqueClientId, int ClientId, int Team)
+CIcPlayer::CIcPlayer(CInfClassGameController *pGameController, int UniqueClientId, int ClientId, int Team)
 	: CPlayer(pGameController->GameServer(), UniqueClientId, ClientId, Team)
 	, m_pGameController(pGameController)
 {
@@ -29,17 +29,17 @@ CInfClassPlayer::CInfClassPlayer(CInfClassGameController *pGameController, int U
 	SetClass(EPlayerClass::None);
 }
 
-CInfClassPlayer::~CInfClassPlayer()
+CIcPlayer::~CIcPlayer()
 {
 	SetCharacterClass(nullptr);
 }
 
-CInfClassGameController *CInfClassPlayer::GameController() const
+CInfClassGameController *CIcPlayer::GameController() const
 {
 	return m_pGameController;
 }
 
-void CInfClassPlayer::TryRespawn()
+void CIcPlayer::TryRespawn()
 {
 	SpawnContext Context;
 	if(!GameController()->TryRespawn(this, &Context))
@@ -55,7 +55,7 @@ void CInfClassPlayer::TryRespawn()
 	GameServer()->CreatePlayerSpawn(Context.SpawnPos, GameController()->GetMaskForPlayerWorldEvent(m_ClientId));
 }
 
-int CInfClassPlayer::GetScore(int SnappingClient) const
+int CIcPlayer::GetScore(int SnappingClient) const
 {
 	if(GetTeam() == TEAM_SPECTATORS)
 	{
@@ -73,7 +73,7 @@ int CInfClassPlayer::GetScore(int SnappingClient) const
 	return CPlayer::GetScore(SnappingClient);
 }
 
-void CInfClassPlayer::Tick()
+void CIcPlayer::Tick()
 {
 	if(!Server()->ClientIngame(m_ClientId))
 		return;
@@ -119,7 +119,7 @@ void CInfClassPlayer::Tick()
 			}
 			else if(IsForcedToSpectate())
 			{
-				const CInfClassPlayer *pFollowedPlayer = GameController()->GetPlayer(TargetToFollow());
+				const CIcPlayer *pFollowedPlayer = GameController()->GetPlayer(TargetToFollow());
 				m_ViewPos = pFollowedPlayer->m_ViewPos;
 			}
 			else
@@ -130,7 +130,7 @@ void CInfClassPlayer::Tick()
 	}
 }
 
-void CInfClassPlayer::PostTick()
+void CIcPlayer::PostTick()
 {
 	// update latency value
 	if(m_PlayerFlags & PLAYERFLAG_SCOREBOARD)
@@ -145,7 +145,7 @@ void CInfClassPlayer::PostTick()
 	UpdateSpectatorPos();
 }
 
-void CInfClassPlayer::Snap(int SnappingClient)
+void CIcPlayer::Snap(int SnappingClient)
 {
 	if(!Server()->ClientIngame(m_ClientId))
 		return;
@@ -211,7 +211,7 @@ void CInfClassPlayer::Snap(int SnappingClient)
 	}
 }
 
-void CInfClassPlayer::SnapClientInfo(int SnappingClient, int SnappingClientMappedId)
+void CIcPlayer::SnapClientInfo(int SnappingClient, int SnappingClientMappedId)
 {
 	CNetObj_ClientInfo *pClientInfo = Server()->SnapNewItem<CNetObj_ClientInfo>(SnappingClientMappedId);
 	if(!pClientInfo)
@@ -229,7 +229,7 @@ void CInfClassPlayer::SnapClientInfo(int SnappingClient, int SnappingClientMappe
 	pClientInfo->m_ColorFeet = SkinInfo.ColorFeet;
 }
 
-void CInfClassPlayer::HandleInfection()
+void CIcPlayer::HandleInfection()
 {
 	if(m_InfectionType == INFECTION_TYPE::NO)
 	{
@@ -243,7 +243,7 @@ void CInfClassPlayer::HandleInfection()
 	}
 
 	const EPlayerClass PreviousClass = GetClass();
-	CInfClassPlayer *pInfectiousPlayer = GameController()->GetPlayer(m_InfectiousPlayerCid);
+	CIcPlayer *pInfectiousPlayer = GameController()->GetPlayer(m_InfectiousPlayerCid);
 
 	m_InfectionType = INFECTION_TYPE::NO;
 	m_InfectiousPlayerCid = -1;
@@ -251,7 +251,7 @@ void CInfClassPlayer::HandleInfection()
 	GameController()->DoPlayerInfection(this, pInfectiousPlayer, PreviousClass);
 }
 
-void CInfClassPlayer::KillCharacter(int Weapon)
+void CIcPlayer::KillCharacter(int Weapon)
 {
 	if(!m_pCharacter)
 		return;
@@ -290,7 +290,7 @@ void CInfClassPlayer::KillCharacter(int Weapon)
 	}
 }
 
-int CInfClassPlayer::GetDefaultEmote() const
+int CIcPlayer::GetDefaultEmote() const
 {
 	if(m_pInfcPlayerClass)
 		return m_pInfcPlayerClass->GetDefaultEmote();
@@ -298,7 +298,7 @@ int CInfClassPlayer::GetDefaultEmote() const
 	return CPlayer::GetDefaultEmote();
 }
 
-CWeakSkinInfo CInfClassPlayer::GetSkinInfo(int SnappingClient) const
+CWeakSkinInfo CIcPlayer::GetSkinInfo(int SnappingClient) const
 {
 	CWeakSkinInfo SkinInfo;
 	if(m_SkinGetter)
@@ -309,7 +309,7 @@ CWeakSkinInfo CInfClassPlayer::GetSkinInfo(int SnappingClient) const
 			Server()->GetClientInfo(SnappingClient, &ClientInfo);
 		}
 
-		CInfClassPlayer *pSnappingClient = GameController()->GetPlayer(SnappingClient);
+		CIcPlayer *pSnappingClient = GameController()->GetPlayer(SnappingClient);
 
 		bool SameTeam = pSnappingClient && (m_Team == pSnappingClient->m_Team) && (IsHuman() == pSnappingClient->IsHuman());
 
@@ -324,47 +324,47 @@ CWeakSkinInfo CInfClassPlayer::GetSkinInfo(int SnappingClient) const
 	return SkinInfo;
 }
 
-bool CInfClassPlayer::GetAntiPingEnabled() const
+bool CIcPlayer::GetAntiPingEnabled() const
 {
 	return m_AntiPing;
 }
 
-void CInfClassPlayer::SetAntiPingEnabled(bool Enabled)
+void CIcPlayer::SetAntiPingEnabled(bool Enabled)
 {
 	m_AntiPing = Enabled;
 }
 
-void CInfClassPlayer::SetInfectionTimestamp(int Timestamp)
+void CIcPlayer::SetInfectionTimestamp(int Timestamp)
 {
 	m_GameInfectionTimestamp = Timestamp;
 }
 
-int CInfClassPlayer::GetInfectionTimestamp() const
+int CIcPlayer::GetInfectionTimestamp() const
 {
 	return m_GameInfectionTimestamp;
 }
 
-void CInfClassPlayer::SetPreferredClass(EPlayerClass Class)
+void CIcPlayer::SetPreferredClass(EPlayerClass Class)
 {
 	m_PreferredClass = Class;
 }
 
-void CInfClassPlayer::SetPreviouslyPickedClass(EPlayerClass Class)
+void CIcPlayer::SetPreviouslyPickedClass(EPlayerClass Class)
 {
 	m_PickedClass = Class;
 }
 
-CIcCharacter *CInfClassPlayer::GetCharacter()
+CIcCharacter *CIcPlayer::GetCharacter()
 {
 	return CIcCharacter::GetInstance(m_pCharacter);
 }
 
-const CIcCharacter *CInfClassPlayer::GetCharacter() const
+const CIcCharacter *CIcPlayer::GetCharacter() const
 {
 	return static_cast<const CIcCharacter*>(m_pCharacter);
 }
 
-void CInfClassPlayer::SetCharacterClass(CInfClassPlayerClass *pClass)
+void CIcPlayer::SetCharacterClass(CInfClassPlayerClass *pClass)
 {
 	if(m_pInfcPlayerClass)
 	{
@@ -375,7 +375,7 @@ void CInfClassPlayer::SetCharacterClass(CInfClassPlayerClass *pClass)
 	m_pInfcPlayerClass = pClass;
 }
 
-void CInfClassPlayer::SetClass(EPlayerClass NewClass)
+void CIcPlayer::SetClass(EPlayerClass NewClass)
 {
 	if(m_class == NewClass)
 		return;
@@ -450,7 +450,7 @@ void CInfClassPlayer::SetClass(EPlayerClass NewClass)
 	SendClassIntro();
 }
 
-void CInfClassPlayer::UpdateSkin()
+void CIcPlayer::UpdateSkin()
 {
 	if(m_pInfcPlayerClass)
 	{
@@ -468,7 +468,7 @@ void CInfClassPlayer::UpdateSkin()
 	m_TeeInfos.ToSixup();
 }
 
-void CInfClassPlayer::StartInfection(int InfectiousPlayerCid, INFECTION_TYPE InfectionType)
+void CIcPlayer::StartInfection(int InfectiousPlayerCid, INFECTION_TYPE InfectionType)
 {
 	dbg_assert(InfectionType != INFECTION_TYPE::NO, "Invalid infection");
 
@@ -480,29 +480,29 @@ void CInfClassPlayer::StartInfection(int InfectiousPlayerCid, INFECTION_TYPE Inf
 	m_InfectionCause = InfectiousPlayerCid >= 0 ? INFECTION_CAUSE::PLAYER : INFECTION_CAUSE::GAME;
 }
 
-bool CInfClassPlayer::IsInfectionStarted() const
+bool CIcPlayer::IsInfectionStarted() const
 {
 	return m_InfectionType != INFECTION_TYPE::NO;
 }
 
-void CInfClassPlayer::OpenMapMenu(int Menu)
+void CIcPlayer::OpenMapMenu(int Menu)
 {
 	m_MapMenu = Menu;
 	m_MapMenuTick = 0;
 }
 
-void CInfClassPlayer::CloseMapMenu()
+void CIcPlayer::CloseMapMenu()
 {
 	m_MapMenu = 0;
 	m_MapMenuTick = -1;
 }
 
-bool CInfClassPlayer::MapMenuClickable()
+bool CIcPlayer::MapMenuClickable()
 {
 	return (m_MapMenu > 0 && (m_MapMenuTick > Server()->TickSpeed()/2));
 }
 
-void CInfClassPlayer::SetHookProtection(bool Value, bool Automatic)
+void CIcPlayer::SetHookProtection(bool Value, bool Automatic)
 {
 	if(m_HookProtection != Value)
 	{
@@ -520,22 +520,22 @@ void CInfClassPlayer::SetHookProtection(bool Value, bool Automatic)
 	m_HookProtectionAutomatic = Automatic;
 }
 
-EPlayerScoreMode CInfClassPlayer::GetScoreMode() const
+EPlayerScoreMode CIcPlayer::GetScoreMode() const
 {
 	return m_ScoreMode;
 }
 
-void CInfClassPlayer::SetScoreMode(EPlayerScoreMode Mode)
+void CIcPlayer::SetScoreMode(EPlayerScoreMode Mode)
 {
 	m_ScoreMode = Mode;
 }
 
-void CInfClassPlayer::ResetTheTargetToFollow()
+void CIcPlayer::ResetTheTargetToFollow()
 {
 	SetFollowTarget(-1, 0);
 }
 
-void CInfClassPlayer::SetFollowTarget(int ClientId, float Duration)
+void CIcPlayer::SetFollowTarget(int ClientId, float Duration)
 {
 	m_FollowTargetId = ClientId;
 	if(m_FollowTargetId < 0)
@@ -548,12 +548,12 @@ void CInfClassPlayer::SetFollowTarget(int ClientId, float Duration)
 	}
 }
 
-int CInfClassPlayer::TargetToFollow() const
+int CIcPlayer::TargetToFollow() const
 {
 	return m_FollowTargetTicks > 0 ? m_FollowTargetId : -1;
 }
 
-int CInfClassPlayer::GetSpectatingCid() const
+int CIcPlayer::GetSpectatingCid() const
 {
 	int TargetCid = TargetToFollow();
 	if (TargetCid < 0)
@@ -564,28 +564,28 @@ int CInfClassPlayer::GetSpectatingCid() const
 	return TargetCid;
 }
 
-float CInfClassPlayer::GetGhoulPercent() const
+float CIcPlayer::GetGhoulPercent() const
 {
 	return clamp(m_GhoulLevel/static_cast<float>(GameController()->GetGhoulStomackSize()), 0.0f, 1.0f);
 }
 
-void CInfClassPlayer::IncreaseGhoulLevel(int Diff)
+void CIcPlayer::IncreaseGhoulLevel(int Diff)
 {
 	int NewGhoulLevel = m_GhoulLevel + Diff;
 	m_GhoulLevel = clamp(NewGhoulLevel, 0, GameController()->GetGhoulStomackSize());
 }
 
-void CInfClassPlayer::SetRandomClassChoosen()
+void CIcPlayer::SetRandomClassChoosen()
 {
 	m_RandomClassRoundId = GameController()->GetRoundId();
 }
 
-bool CInfClassPlayer::RandomClassChoosen() const
+bool CIcPlayer::RandomClassChoosen() const
 {
 	return m_RandomClassRoundId == GameController()->GetRoundId();
 }
 
-EPlayerClass CInfClassPlayer::GetPreviousInfectedClass() const
+EPlayerClass CIcPlayer::GetPreviousInfectedClass() const
 {
 	for (int i = m_PreviousClasses.Size() - 1; i > 0; --i)
 	{
@@ -599,7 +599,7 @@ EPlayerClass CInfClassPlayer::GetPreviousInfectedClass() const
 	return EPlayerClass::Invalid;
 }
 
-EPlayerClass CInfClassPlayer::GetPreviousHumanClass() const
+EPlayerClass CIcPlayer::GetPreviousHumanClass() const
 {
 	for(int i = m_PreviousClasses.Size() - 1; i > 0; --i)
 	{
@@ -613,18 +613,18 @@ EPlayerClass CInfClassPlayer::GetPreviousHumanClass() const
 	return EPlayerClass::Invalid;
 }
 
-EPlayerClass CInfClassPlayer::GetPreviouslyPickedClass() const
+EPlayerClass CIcPlayer::GetPreviouslyPickedClass() const
 {
 	return m_PickedClass;
 }
 
-void CInfClassPlayer::AddSavedPosition(const vec2 Position)
+void CIcPlayer::AddSavedPosition(const vec2 Position)
 {
 	m_SavedPositions.Resize(1);
 	m_SavedPositions[0] = Position;
 }
 
-bool CInfClassPlayer::LoadSavedPosition(vec2 *pOutput) const
+bool CIcPlayer::LoadSavedPosition(vec2 *pOutput) const
 {
 	if(m_SavedPositions.IsEmpty())
 		return false;
@@ -633,7 +633,7 @@ bool CInfClassPlayer::LoadSavedPosition(vec2 *pOutput) const
 	return true;
 }
 
-void CInfClassPlayer::ResetRoundData()
+void CIcPlayer::ResetRoundData()
 {
 	SetClass(EPlayerClass::None);
 	m_PreviousClasses.Clear();
@@ -646,22 +646,22 @@ void CInfClassPlayer::ResetRoundData()
 	m_Score = 0;
 }
 
-void CInfClassPlayer::OnKill()
+void CIcPlayer::OnKill()
 {
 	++m_Kills;
 }
 
-void CInfClassPlayer::OnDeath()
+void CIcPlayer::OnDeath()
 {
 	++m_Deaths;
 }
 
-void CInfClassPlayer::OnAssist()
+void CIcPlayer::OnAssist()
 {
 	++m_Assists;
 }
 
-void CInfClassPlayer::SetMaxHP(int MaxHP)
+void CIcPlayer::SetMaxHP(int MaxHP)
 {
 	m_MaxHP = MaxHP;
 	if(m_pInfcPlayerClass)
@@ -670,7 +670,7 @@ void CInfClassPlayer::SetMaxHP(int MaxHP)
 	}
 }
 
-void CInfClassPlayer::ApplyMaxHP()
+void CIcPlayer::ApplyMaxHP()
 {
 	if(!GetCharacter())
 		return;
@@ -685,7 +685,7 @@ void CInfClassPlayer::ApplyMaxHP()
 	GetCharacter()->SetHealthArmor(HP, Armor);
 }
 
-void CInfClassPlayer::OnCharacterSpawned(const SpawnContext &Context)
+void CIcPlayer::OnCharacterSpawned(const SpawnContext &Context)
 {
 	CIcCharacter *pCharacter = GetCharacter();
 
@@ -696,7 +696,7 @@ void CInfClassPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	ApplyMaxHP();
 }
 
-const char *CInfClassPlayer::GetClan(int SnappingClient) const
+const char *CIcPlayer::GetClan(int SnappingClient) const
 {
 	if(GetTeam() == TEAM_SPECTATORS)
 	{
@@ -728,7 +728,7 @@ const char *CInfClassPlayer::GetClan(int SnappingClient) const
 	return aBuf;
 }
 
-void CInfClassPlayer::HandleAutoRespawn()
+void CIcPlayer::HandleAutoRespawn()
 {
 	float AutoSpawnInterval = 3;
 
@@ -743,12 +743,12 @@ void CInfClassPlayer::HandleAutoRespawn()
 	}
 }
 
-void CInfClassPlayer::UpdateSpectatorPos()
+void CIcPlayer::UpdateSpectatorPos()
 {
 	if(m_Team != TEAM_SPECTATORS || m_SpectatorId == SPEC_FREEVIEW)
 		return;
 
-	const CInfClassPlayer *pTarget = GameController()->GetPlayer(m_SpectatorId);
+	const CIcPlayer *pTarget = GameController()->GetPlayer(m_SpectatorId);
 	if(!pTarget)
 		return;
 
@@ -762,7 +762,7 @@ void CInfClassPlayer::UpdateSpectatorPos()
 	m_ViewPos = GameServer()->m_apPlayers[m_SpectatorId]->m_ViewPos;
 }
 
-bool CInfClassPlayer::IsForcedToSpectate() const
+bool CIcPlayer::IsForcedToSpectate() const
 {
 	if(!g_Config.m_InfEnableFollowingCamera)
 	{
@@ -775,7 +775,7 @@ bool CInfClassPlayer::IsForcedToSpectate() const
 	int Target = TargetToFollow();
 	if (Target >= 0)
 	{
-		const CInfClassPlayer *pFollowedPlayer = GameController()->GetPlayer(Target);
+		const CIcPlayer *pFollowedPlayer = GameController()->GetPlayer(Target);
 		if(pFollowedPlayer && pFollowedPlayer->GetCharacter() && (!pFollowedPlayer->IsHuman() || (pFollowedPlayer->IsHuman() == IsHuman())))
 		{
 			return true;
@@ -785,7 +785,7 @@ bool CInfClassPlayer::IsForcedToSpectate() const
 	return false;
 }
 
-void CInfClassPlayer::SendClassIntro()
+void CIcPlayer::SendClassIntro()
 {
 	const EPlayerClass Class = GetClass();
 	if(!IsBot() && (Class != EPlayerClass::None) && (Class != EPlayerClass::Invalid))

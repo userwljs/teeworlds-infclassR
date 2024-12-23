@@ -21,9 +21,9 @@ class CInfClassHuman : public CInfClassPlayerClass
 	MACRO_ALLOC_POOL_ID()
 
 public:
-	explicit CInfClassHuman(CInfClassPlayer *pPlayer);
+	explicit CInfClassHuman(CIcPlayer *pPlayer);
 
-	static CInfClassHuman *GetInstance(CInfClassPlayer *pPlayer);
+	static CInfClassHuman *GetInstance(CIcPlayer *pPlayer);
 	static CInfClassHuman *GetInstance(CIcCharacter *pCharacter);
 	static CInfClassHuman *GetInstance(CInfClassPlayerClass *pClass);
 

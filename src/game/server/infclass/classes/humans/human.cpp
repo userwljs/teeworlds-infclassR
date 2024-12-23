@@ -31,14 +31,14 @@
 #include <game/server/infclass/entities/turret.h>
 #include <game/server/infclass/entities/white-hole.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 #include <game/server/teeinfo.h>
 
 static const int s_SniperPositionLockTimeLimit = 15;
 
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassHuman, MAX_CLIENTS)
 
-CInfClassHuman::CInfClassHuman(CInfClassPlayer *pPlayer)
+CInfClassHuman::CInfClassHuman(CIcPlayer *pPlayer)
 	: CInfClassPlayerClass(pPlayer)
 {
 	m_BroadcastWhiteHoleReady = -100;
@@ -46,7 +46,7 @@ CInfClassHuman::CInfClassHuman(CInfClassPlayer *pPlayer)
 	ResetUpgrades();
 }
 
-CInfClassHuman *CInfClassHuman::GetInstance(CInfClassPlayer *pPlayer)
+CInfClassHuman *CInfClassHuman::GetInstance(CIcPlayer *pPlayer)
 {
 	CInfClassPlayerClass *pClass = pPlayer ? pPlayer->GetCharacterClass() : nullptr;
 	return GetInstance(pClass);
@@ -502,7 +502,7 @@ void CInfClassHuman::OnCharacterSnap(int SnappingClient)
 
 	if(SnappingClient != m_pPlayer->GetCid())
 	{
-		const CInfClassPlayer *pDestClient = GameController()->GetPlayer(SnappingClient);
+		const CIcPlayer *pDestClient = GameController()->GetPlayer(SnappingClient);
 		if(pDestClient && pDestClient->GetCharacter())
 		{
 			switch(pDestClient->GetClass())

@@ -36,16 +36,16 @@ enum class EPlayerScoreMode
 	Count,
 };
 
-class CInfClassPlayer : public CPlayer
+class CIcPlayer : public CPlayer
 {
 	MACRO_ALLOC_POOL_ID()
 
 public:
-	CInfClassPlayer(CInfClassGameController *pGameController, int UniqueClientId, int ClientId, int Team);
-	~CInfClassPlayer() override;
+	CIcPlayer(CInfClassGameController *pGameController, int UniqueClientId, int ClientId, int Team);
+	~CIcPlayer() override;
 
-	static CInfClassPlayer *GetInstance(CPlayer *pPlayer);
-	static const CInfClassPlayer *GetInstance(const CPlayer *pPlayer);
+	static CIcPlayer *GetInstance(CPlayer *pPlayer);
+	static const CIcPlayer *GetInstance(const CPlayer *pPlayer);
 
 	CInfClassGameController *GameController() const;
 
@@ -200,14 +200,14 @@ protected:
 	icArray<vec2, 1> m_SavedPositions;
 };
 
-inline const CInfClassPlayer *CInfClassPlayer::GetInstance(const CPlayer *pPlayer)
+inline const CIcPlayer *CIcPlayer::GetInstance(const CPlayer *pPlayer)
 {
-	return static_cast<const CInfClassPlayer *>(pPlayer);
+	return static_cast<const CIcPlayer *>(pPlayer);
 }
 
-inline CInfClassPlayer *CInfClassPlayer::GetInstance(CPlayer *pPlayer)
+inline CIcPlayer *CIcPlayer::GetInstance(CPlayer *pPlayer)
 {
-	return static_cast<CInfClassPlayer *>(pPlayer);
+	return static_cast<CIcPlayer *>(pPlayer);
 }
 
 enum
@@ -223,10 +223,10 @@ enum
 };
 
 template<int FLAGS>
-class CInfClassPlayerIterator
+class CIcPlayerIterator
 {
 public:
-	CInfClassPlayerIterator(CPlayer **ppPlayers) :
+	CIcPlayerIterator(CPlayer **ppPlayers) :
 		m_ppPlayers(ppPlayers)
 	{
 		Reset();
@@ -254,7 +254,7 @@ public:
 	}
 
 	void Reset() { m_ClientId = -1; }
-	CInfClassPlayer *Player() { return static_cast<CInfClassPlayer *>(m_ppPlayers[m_ClientId]); }
+	CIcPlayer *Player() { return static_cast<CIcPlayer *>(m_ppPlayers[m_ClientId]); }
 	int ClientId() { return m_ClientId; }
 
 private:

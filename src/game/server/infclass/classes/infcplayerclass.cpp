@@ -6,10 +6,10 @@
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 #include <game/server/teeinfo.h>
 
-CInfClassPlayerClass::CInfClassPlayerClass(CInfClassPlayer *pPlayer)
+CInfClassPlayerClass::CInfClassPlayerClass(CIcPlayer *pPlayer)
 	: m_pPlayer(pPlayer)
 {
 	m_NormalEmote = EMOTE_NORMAL;
@@ -69,19 +69,19 @@ IServer *CInfClassPlayerClass::Server() const
 	return nullptr;
 }
 
-CInfClassPlayer *CInfClassPlayerClass::GetPlayer()
+CIcPlayer *CInfClassPlayerClass::GetPlayer()
 {
 	return m_pPlayer;
 }
 
-const CInfClassPlayer *CInfClassPlayerClass::GetPlayer() const
+const CIcPlayer *CInfClassPlayerClass::GetPlayer() const
 {
 	return m_pPlayer;
 }
 
 int CInfClassPlayerClass::GetCid() const
 {
-	const CInfClassPlayer *pPlayer = GetPlayer();
+	const CIcPlayer *pPlayer = GetPlayer();
 	if(pPlayer)
 		return pPlayer->GetCid();
 

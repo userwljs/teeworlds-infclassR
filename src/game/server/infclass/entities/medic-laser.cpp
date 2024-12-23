@@ -9,7 +9,7 @@
 #include <game/server/gamecontext.h>
 
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 
 #include "ic_character.h"
 

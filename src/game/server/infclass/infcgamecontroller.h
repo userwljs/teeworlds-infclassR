@@ -14,7 +14,7 @@ class CDoor;
 class CGameWorld;
 class CHintMessage;
 class CIcCharacter;
-class CInfClassPlayer;
+class CIcPlayer;
 struct CNetObj_GameInfo;
 struct SpawnContext;
 struct DeathContext;
@@ -133,9 +133,9 @@ public:
 	void EndRound() override;
 	void EndRound(ROUND_END_REASON Reason);
 	void DoTeamChange(class CPlayer *pPlayer, int Team, bool DoChatMsg = true) override;
-	bool TryRespawn(CInfClassPlayer *pPlayer, SpawnContext *pContext);
-	EPlayerClass ChooseHumanClass(const CInfClassPlayer *pPlayer) const;
-	EPlayerClass ChooseInfectedClass(const CInfClassPlayer *pPlayer) const;
+	bool TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext);
+	EPlayerClass ChooseHumanClass(const CIcPlayer *pPlayer) const;
+	EPlayerClass ChooseInfectedClass(const CIcPlayer *pPlayer) const;
 
 	int GetFireDelay(EInfclassWeapon WID) const;
 	void SetFireDelay(EInfclassWeapon WID, int Time);
@@ -177,18 +177,18 @@ public:
 	ERoundType GetRoundType() const;
 	void QueueRoundType(ERoundType RoundType);
 
-	CLASS_AVAILABILITY GetPlayerClassAvailability(EPlayerClass PlayerClass, const CInfClassPlayer *pForPlayer = nullptr) const;
+	CLASS_AVAILABILITY GetPlayerClassAvailability(EPlayerClass PlayerClass, const CIcPlayer *pForPlayer = nullptr) const;
 	bool CanVote() override;
 
 	void OnPlayerVoteCommand(int ClientId, int Vote) override;
-	void OnPlayerClassChanged(CInfClassPlayer *pPlayer);
+	void OnPlayerClassChanged(CIcPlayer *pPlayer);
 
 	void OnPlayerConnect(CPlayer *pPlayer) override;
 	void OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType Type, const char *pReason) override;
 
 	void OnReset() override;
 
-	void DoPlayerInfection(CInfClassPlayer *pPlayer, CInfClassPlayer *pInfectiousPlayer, EPlayerClass PreviousClass);
+	void DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfectiousPlayer, EPlayerClass PreviousClass);
 	void MaybeDropPickup(CIcCharacter *pVictim);
 
 	void OnHeroFlagCollected(int ClientId);
@@ -324,7 +324,7 @@ public:
 	using IGameController::GameServer;
 	CGameWorld *GameWorld();
 	IConsole *Console() const;
-	CInfClassPlayer *GetPlayer(int ClientId) const;
+	CIcPlayer *GetPlayer(int ClientId) const;
 	CIcCharacter *GetCharacter(int ClientId) const;
 	int GetPlayerOwnCursorId(int ClientId) const;
 
@@ -341,8 +341,8 @@ protected:
 	void RoundTickBeforeInitialInfection();
 	void RoundTickAfterInitialInfection();
 
-	void PreparePlayerToJoin(CInfClassPlayer *pPlayer);
-	void SetPlayerPickedTimestamp(CInfClassPlayer *pPlayer, int Timestamp) const;
+	void PreparePlayerToJoin(CIcPlayer *pPlayer);
+	void SetPlayerPickedTimestamp(CIcPlayer *pPlayer, int Timestamp) const;
 
 	uint32_t InfectHumans(uint32_t NumHumansToInfect);
 	void ForcePlayersBalance(uint32_t PlayersToBalance);

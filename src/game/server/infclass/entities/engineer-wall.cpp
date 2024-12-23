@@ -9,7 +9,7 @@
 #include <game/server/infclass/classes/infected/infected.h>
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 #include <game/server/infclass/snap_filter.h>
 
 #include "engineer-wall.h"

@@ -17,7 +17,7 @@
 #include <game/server/infclass/entities/superweapon-indicator.h>
 #include <game/server/infclass/entities/white-hole.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 
 MACRO_ALLOC_POOL_ID_IMPL(CIcCharacter, MAX_CLIENTS)
 
@@ -701,7 +701,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 	/* INFECTION MODIFICATION START ***************************************/
 
 	//KillerPlayer
-	CInfClassPlayer *pKillerPlayer = GameController()->GetPlayer(From);
+	CIcPlayer *pKillerPlayer = GameController()->GetPlayer(From);
 	CIcCharacter *pKillerChar = nullptr;
 	if(pKillerPlayer)
 		pKillerChar = pKillerPlayer->GetCharacter();
@@ -1775,7 +1775,7 @@ void CIcCharacter::OpenClassChooser()
 
 void CIcCharacter::HandleMapMenu()
 {
-	CInfClassPlayer *pPlayer = GetPlayer();
+	CIcPlayer *pPlayer = GetPlayer();
 	if(GetPlayerClass() != EPlayerClass::None)
 	{
 		SetAntiFire();
@@ -1862,7 +1862,7 @@ void CIcCharacter::HandleMapMenuClicked()
 {
 	bool Random = false;
 
-	CInfClassPlayer *pPlayer = GetPlayer();
+	CIcPlayer *pPlayer = GetPlayer();
 	int MenuClass = pPlayer->m_MapMenuItem;
 	EPlayerClass NewClass = CInfClassGameController::MenuClassToPlayerClass(MenuClass);
 	if(NewClass == EPlayerClass::Random)
@@ -2142,9 +2142,9 @@ int CIcCharacter::TakeAmmo(int Weapon, int Amount)
 	return Amount;
 }
 
-CInfClassPlayer *CIcCharacter::GetPlayer()
+CIcPlayer *CIcCharacter::GetPlayer()
 {
-	return static_cast<CInfClassPlayer*>(m_pPlayer);
+	return static_cast<CIcPlayer*>(m_pPlayer);
 }
 
 void CIcCharacter::SetClass(CInfClassPlayerClass *pClass)
@@ -2631,7 +2631,7 @@ void CIcCharacter::SnapCharacter(int SnappingClient, int Id)
 	pCharacter->m_Direction = m_Input.m_Direction;
 	pCharacter->m_Weapon = Weapon;
 
-	const CInfClassPlayer *pSnappingClient = GameController()->GetPlayer(SnappingClient);
+	const CIcPlayer *pSnappingClient = GameController()->GetPlayer(SnappingClient);
 	int ClientVersion = Server()->GetClientInfclassVersion(SnappingClient);
 	int SnappingSpectatorId = -1;
 	if(pSnappingClient)

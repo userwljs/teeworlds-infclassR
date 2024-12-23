@@ -11,7 +11,7 @@ class CGameWorld;
 class CIcCharacter;
 class CInfClassGameContext;
 class CInfClassGameController;
-class CInfClassPlayer;
+class CIcPlayer;
 class IServer;
 
 struct SpawnContext;
@@ -50,7 +50,7 @@ struct SClassUpgrade
 class CInfClassPlayerClass
 {
 public:
-	CInfClassPlayerClass(CInfClassPlayer *pPlayer);
+	CInfClassPlayerClass(CIcPlayer *pPlayer);
 	virtual ~CInfClassPlayerClass() = default;
 
 	void SetCharacter(CIcCharacter *character);
@@ -126,8 +126,8 @@ public:
 	CConfig *Config();
 	const CConfig *Config() const;
 	IServer *Server() const;
-	CInfClassPlayer *GetPlayer();
-	const CInfClassPlayer *GetPlayer() const;
+	CIcPlayer *GetPlayer();
+	const CIcPlayer *GetPlayer() const;
 	int GetCid() const;
 	vec2 GetPos() const;
 	vec2 GetDirection() const;
@@ -144,7 +144,7 @@ protected:
 
 	void CreateHammerHit(const vec2 &ProjStartPos, const CIcCharacter *pTarget);
 
-	CInfClassPlayer *m_pPlayer = nullptr;
+	CIcPlayer *m_pPlayer = nullptr;
 	CIcCharacter *m_pCharacter = nullptr;
 	int m_NormalEmote;
 

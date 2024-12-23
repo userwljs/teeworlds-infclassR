@@ -8,7 +8,7 @@
 
 class CGameContext;
 class CInfClassGameController;
-class CInfClassPlayer;
+class CIcPlayer;
 class CInfClassPlayerClass;
 class CWhiteHole;
 
@@ -157,7 +157,7 @@ public:
 	int GetAmmo(int Weapon) const;
 	int TakeAmmo(int Weapon, int Amount);
 
-	CInfClassPlayer *GetPlayer();
+	CIcPlayer *GetPlayer();
 
 	const CInfClassPlayerClass *GetClass() const { return m_pClass; }
 	CInfClassPlayerClass *GetClass() { return m_pClass; }

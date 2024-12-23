@@ -7,7 +7,7 @@
 #include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/infcplayer.h>
+#include <game/server/infclass/ic_player.h>
 
 int CSuperWeaponIndicator::EntityId{};
 
@@ -39,7 +39,7 @@ void CSuperWeaponIndicator::Snap(int SnappingClient)
 	if(NetworkClipped(SnappingClient))
 		return;
 
-	const CInfClassPlayer *pPlayer = GameController()->GetPlayer(SnappingClient);
+	const CIcPlayer *pPlayer = GameController()->GetPlayer(SnappingClient);
 	const bool AntiPing = pPlayer && pPlayer->GetAntiPingEnabled();
 
 	if(AntiPing)
