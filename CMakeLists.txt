@@ -1115,18 +1115,18 @@ add_custom_command(
 #add_library(server-shared STATIC ${SERVER_SRC})
 
 # Target
-add_executable(Server
+add_executable(game-server
   src/game/server/main_server.cpp
   ${DEPS}
   ${SERVER_SRC}
   ${SERVER_ICON}
 )
 
-set_property(TARGET Server
+set_property(TARGET game-server
     PROPERTY OUTPUT_NAME ${SERVER_EXECUTABLE}
 )
 
-list(APPEND TARGETS_OWN Server)
+list(APPEND TARGETS_OWN game-server)
 
 if(GEOLOCATION)
   add_library(GeoLite2PP STATIC
@@ -1141,27 +1141,27 @@ if(GEOLOCATION)
   )
   add_library(GeoLite2PP::GeoLite2PP ALIAS GeoLite2PP)
 
-  target_sources(Server PRIVATE
+  target_sources(game-server PRIVATE
     "src/infclassr/geolocation.cpp"
     "src/infclassr/geolocation.h"
   )
 
-  target_compile_definitions(Server PRIVATE CONF_GEOLOCATION)
-  target_link_libraries(Server
+  target_compile_definitions(game-server PRIVATE CONF_GEOLOCATION)
+  target_link_libraries(game-server
     GeoLite2PP::GeoLite2PP
     MaxMindDB::MaxMindDB
   )
 endif()
 
-target_link_libraries(Server ${LIBS_SERVER})
-list(APPEND TARGETS_OWN Server)
-list(APPEND TARGETS_LINK Server)
+target_link_libraries(game-server ${LIBS_SERVER})
+list(APPEND TARGETS_OWN game-server)
+list(APPEND TARGETS_LINK game-server)
 
-target_link_libraries(Server engine-gfx)
-target_link_libraries(Server engine-shared)
-target_link_libraries(Server game-shared)
-target_link_libraries(Server ICU::i18n)
-target_link_libraries(Server ICU::uc)
+target_link_libraries(game-server engine-gfx)
+target_link_libraries(game-server engine-shared)
+target_link_libraries(game-server game-shared)
+target_link_libraries(game-server ICU::i18n)
+target_link_libraries(game-server ICU::uc)
 
 if(TARGET_OS AND TARGET_OS STREQUAL "mac")
   set(SERVER_LAUNCHER_SRC src/osxlaunch/server.mm)
@@ -1210,7 +1210,7 @@ install(
 )
 install(
   TARGETS
-    Server
+    game-server
   DESTINATION
     "."
 )
