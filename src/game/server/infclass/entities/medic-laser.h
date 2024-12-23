@@ -1,9 +1,9 @@
 #ifndef GAME_SERVER_ENTITIES_MEDIC_LASER_H
 #define GAME_SERVER_ENTITIES_MEDIC_LASER_H
 
-#include "infc-laser.h"
+#include "ic_laser.h"
 
-class CMedicLaser : public CInfClassLaser
+class CMedicLaser : public CIcLaser
 {
 public:
 	static void OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext, float StartEnergy);

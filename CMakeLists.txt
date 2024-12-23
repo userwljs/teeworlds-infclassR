@@ -911,14 +911,14 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/ic_door.h
   infclass/entities/ic_entity.cpp
   infclass/entities/ic_entity.h
+  infclass/entities/ic_laser.cpp
+  infclass/entities/ic_laser.h
   infclass/entities/ic_pickup.cpp
   infclass/entities/ic_pickup.h
   infclass/entities/ic_placed_object.cpp
   infclass/entities/ic_placed_object.h
   infclass/entities/ic_projectile.cpp
   infclass/entities/ic_projectile.h
-  infclass/entities/infc-laser.cpp
-  infclass/entities/infc-laser.h
   infclass/entities/laser-teleport.cpp
   infclass/entities/laser-teleport.h
   infclass/entities/looper-wall.cpp

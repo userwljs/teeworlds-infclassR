@@ -9,12 +9,12 @@ struct WeaponFireContext;
 enum class EDamageType;
 enum class EInfclassWeapon;
 
-class CInfClassLaser : public CIcEntity
+class CIcLaser : public CIcEntity
 {
 public:
-	CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);
+	CIcLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);
 
-	static CInfClassLaser *MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);
+	static CIcLaser *MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon);
 
 	void Tick() override;
 	void TickPaused() override;

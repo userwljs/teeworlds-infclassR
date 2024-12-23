@@ -12,7 +12,7 @@
 #include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 
-#include "infc-laser.h"
+#include "ic_laser.h"
 #include "ic_character.h"
 #include "plasma.h"
 
@@ -163,7 +163,7 @@ void CTurret::AttackTargets()
 			{
 			case LASER:
 			{
-				CInfClassLaser *pLaser = CInfClassLaser::MakeLaser(GameServer(), m_Pos, Direction, GameServer()->Tuning()->m_LaserReach, GetOwner(), GetDamage(), EInfclassWeapon::LASER_TURRET);
+				CIcLaser *pLaser = CIcLaser::MakeLaser(GameServer(), m_Pos, Direction, GameServer()->Tuning()->m_LaserReach, GetOwner(), GetDamage(), EInfclassWeapon::LASER_TURRET);
 				pLaser->SetSnapType(m_SnapLaserType);
 				m_ammunition--;
 				break;

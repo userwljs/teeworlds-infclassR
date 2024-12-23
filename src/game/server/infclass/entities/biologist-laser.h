@@ -3,9 +3,9 @@
 #ifndef GAME_SERVER_ENTITIES_BIOLOGIST_LASER_H
 #define GAME_SERVER_ENTITIES_BIOLOGIST_LASER_H
 
-#include "infc-laser.h"
+#include "ic_laser.h"
 
-class CBiologistLaser final : public CInfClassLaser
+class CBiologistLaser final : public CIcLaser
 {
 public:
 	CBiologistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner, int Dmg);

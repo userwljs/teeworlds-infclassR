@@ -1,9 +1,9 @@
 #ifndef GAME_SERVER_ENTITIES_BLINDING_LASER_H
 #define GAME_SERVER_ENTITIES_BLINDING_LASER_H
 
-#include "infc-laser.h"
+#include "ic_laser.h"
 
-class CBlindingLaser : public CInfClassLaser
+class CBlindingLaser : public CIcLaser
 {
 public:
 	static void OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext);

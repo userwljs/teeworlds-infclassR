@@ -1031,15 +1031,15 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 	case EInfclassWeapon::LOOPER_LASER:
 		StartEnergy *= 0.7f;
 		Damage = 5;
-		CInfClassLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		CIcLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
 		break;
 	case EInfclassWeapon::SNIPER_RIFLE:
 		Damage = m_pCharacter->PositionIsLocked() ? 30 : random_int(10, 13);
-		CInfClassLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		CIcLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
 		break;
 	case EInfclassWeapon::ENGINEER_LASER:
 	case EInfclassWeapon::HERO_LASER:
-		CInfClassLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		CIcLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
 		break;
 	default:
 		break;

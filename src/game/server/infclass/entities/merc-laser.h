@@ -3,9 +3,9 @@
 #ifndef GAME_SERVER_INFCLASS_ENTITIES_MERC_LASER_H
 #define GAME_SERVER_INFCLASS_ENTITIES_MERC_LASER_H
 
-#include "infc-laser.h"
+#include "ic_laser.h"
 
-class CMercenaryLaser final : public CInfClassLaser
+class CMercenaryLaser final : public CIcLaser
 {
 public:
 	CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, float UpgradePoints);

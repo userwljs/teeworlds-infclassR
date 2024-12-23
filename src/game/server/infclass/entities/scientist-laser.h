@@ -3,9 +3,9 @@
 #ifndef GAME_SERVER_ENTITIES_SCILASER_H
 #define GAME_SERVER_ENTITIES_SCILASER_H
 
-#include "infc-laser.h"
+#include "ic_laser.h"
 
-class CScientistLaser final : public CInfClassLaser
+class CScientistLaser final : public CIcLaser
 {
 public:
 	CScientistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg);

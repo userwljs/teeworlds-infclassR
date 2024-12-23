@@ -8,7 +8,7 @@
 #include <game/server/infclass/entities/ic_character.h>
 
 CBiologistLaser::CBiologistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner, int Dmg) :
-	CInfClassLaser(pGameContext, Pos, Direction, 400.0f, Owner, Dmg, EInfclassWeapon::BIOLOGIST_MINE_LASER)
+	CIcLaser(pGameContext, Pos, Direction, 400.0f, Owner, Dmg, EInfclassWeapon::BIOLOGIST_MINE_LASER)
 {
 	m_MaxBounces = 4;
 	m_BounceCost = -100;

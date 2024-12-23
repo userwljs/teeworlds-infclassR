@@ -19,7 +19,7 @@ void CBlindingLaser::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireC
 }
 
 CBlindingLaser::CBlindingLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner)
-	: CInfClassLaser(pGameContext, Pos, Direction, 600, Owner, 0, EInfclassWeapon::BLINDING_LASER)
+	: CIcLaser(pGameContext, Pos, Direction, 600, Owner, 0, EInfclassWeapon::BLINDING_LASER)
 {
 }
 

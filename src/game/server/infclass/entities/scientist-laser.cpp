@@ -14,7 +14,7 @@
 #include "white-hole.h"
 
 CScientistLaser::CScientistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg)
-	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, EInfclassWeapon::EXPLOSIVE_LASER)
+	: CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, EInfclassWeapon::EXPLOSIVE_LASER)
 {
 	DoBounce();
 }

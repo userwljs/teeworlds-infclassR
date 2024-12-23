@@ -30,7 +30,7 @@ void CMedicLaser::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireCont
 }
 
 CMedicLaser::CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, EInfclassWeapon Weapon)
-	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, 0, Weapon)
+	: CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, 0, Weapon)
 {
 }
 

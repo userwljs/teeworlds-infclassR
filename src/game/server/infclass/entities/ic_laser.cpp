@@ -1,6 +1,6 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
-#include "infc-laser.h"
+#include "ic_laser.h"
 
 #include <engine/shared/config.h>
 
@@ -12,7 +12,7 @@
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 
-CInfClassLaser::CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon) :
+CIcLaser::CIcLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon) :
 	CIcEntity(pGameContext, CGameWorld::ENTTYPE_LASER, Pos, Owner), m_Weapon(InfClassWeapon)
 {
 	m_Dmg = Dmg;
@@ -23,7 +23,7 @@ CInfClassLaser::CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direct
 	GameWorld()->InsertEntity(this);
 }
 
-bool CInfClassLaser::HitCharacter(vec2 From, vec2 To)
+bool CIcLaser::HitCharacter(vec2 From, vec2 To)
 {
 	vec2 At;
 	CIcCharacter *pOwnerChar = GameController()->GetCharacter(GetOwner());
@@ -46,7 +46,7 @@ bool CInfClassLaser::HitCharacter(vec2 From, vec2 To)
 	return OnCharacterHit(pHit);
 }
 
-bool CInfClassLaser::OnCharacterHit(CIcCharacter *pHit)
+bool CIcLaser::OnCharacterHit(CIcCharacter *pHit)
 {
 	pHit->TakeDamage(vec2(0.f, 0.f), m_Dmg, GetOwner(), GetDamageType());
 
@@ -60,7 +60,7 @@ bool CInfClassLaser::OnCharacterHit(CIcCharacter *pHit)
 	return true;
 }
 
-void CInfClassLaser::DoBounce()
+void CIcLaser::DoBounce()
 {
 	m_EvalTick = Server()->Tick();
 
@@ -107,25 +107,25 @@ void CInfClassLaser::DoBounce()
 	}
 }
 
-CInfClassLaser *CInfClassLaser::MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon)
+CIcLaser *CIcLaser::MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon)
 {
-	CInfClassLaser *pLaser = new CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, InfClassWeapon);
+	CIcLaser *pLaser = new CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, InfClassWeapon);
 	pLaser->DoBounce();
 	return pLaser;
 }
 
-void CInfClassLaser::Tick()
+void CIcLaser::Tick()
 {
 	if(Server()->Tick() > m_EvalTick+(Server()->TickSpeed()*GameServer()->Tuning()->m_LaserBounceDelay)/1000.0f)
 		DoBounce();
 }
 
-void CInfClassLaser::TickPaused()
+void CIcLaser::TickPaused()
 {
 	++m_EvalTick;
 }
 
-void CInfClassLaser::Snap(int SnappingClient)
+void CIcLaser::Snap(int SnappingClient)
 {
 	if(NetworkClipped(SnappingClient) && NetworkClipped(SnappingClient, m_From))
 		return;
@@ -135,17 +135,17 @@ void CInfClassLaser::Snap(int SnappingClient)
 	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_From, m_EvalTick, GetOwner(), m_SnapLaserType);
 }
 
-void CInfClassLaser::SetExplosive(bool Explosive)
+void CIcLaser::SetExplosive(bool Explosive)
 {
 	m_Explosive = Explosive;
 }
 
-void CInfClassLaser::SetSnapType(int LaserType)
+void CIcLaser::SetSnapType(int LaserType)
 {
 	m_SnapLaserType = LaserType;
 }
 
-EDamageType CInfClassLaser::GetDamageType() const
+EDamageType CIcLaser::GetDamageType() const
 {
 	switch(m_Weapon)
 	{

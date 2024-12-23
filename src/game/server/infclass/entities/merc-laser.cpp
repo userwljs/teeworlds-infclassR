@@ -13,10 +13,10 @@
 static const int MercLaserDamage = 0;
 
 CMercenaryLaser::CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, float UpgradePoints)
-	: CInfClassLaser(pGameContext, Pos, Direction, StartEnergy, Owner, MercLaserDamage, EInfclassWeapon::MERCENARY_UPGRADE_LASER)
+	: CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, MercLaserDamage, EInfclassWeapon::MERCENARY_UPGRADE_LASER)
 	, m_UpgradePoints(UpgradePoints)
 {
-	CInfClassLaser::DoBounce();
+	CIcLaser::DoBounce();
 }
 
 bool CMercenaryLaser::HitCharacter(vec2 From, vec2 To)
