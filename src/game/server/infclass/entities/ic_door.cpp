@@ -10,9 +10,7 @@ CDoor::CDoor(CGameContext *pGameContext, vec2 Pos, vec2 PosTo) :
 	m_Open(true)
 {
 	m_Pos = Pos;
-	m_Pos2 = PosTo;
-
-	m_InfClassObjectFlags = INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION;
+	SetSecondPosition(PosTo);
 
 	SetOpen(false);
 	GameWorld()->InsertEntity(this);
@@ -117,7 +115,6 @@ void CDoor::Snap(int SnappingClientId)
 	}
 
 	GameServer()->SnapLaserObject(CSnapContext(SnappingClientVersion), GetId(), To, From, StartTick, -1, ForcedShowOpen ? LASERTYPE_FREEZE : LASERTYPE_DOOR);
-	// TODO: CGameContext::SnapSwitchers()
 }
 
 void CDoor::SetOpen(bool Open)
