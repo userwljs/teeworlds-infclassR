@@ -13,7 +13,7 @@
 #include <game/server/infclass/damage_context.h>
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/entities/ic_character.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 #include <game/server/teeinfo.h>
 

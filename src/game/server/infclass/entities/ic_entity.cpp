@@ -4,7 +4,7 @@
 
 #include <game/animation.h>
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 CIcEntity::CIcEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, std::optional<int> Owner,
 	int ProximityRadius) :
@@ -14,9 +14,9 @@ CIcEntity::CIcEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, std::
 	SetOwner(Owner.value_or(-1));
 }
 
-CInfClassGameController *CIcEntity::GameController() const
+CIcGameController *CIcEntity::GameController() const
 {
-	return static_cast<CInfClassGameController*>(GameServer()->m_pController);
+	return static_cast<CIcGameController*>(GameServer()->m_pController);
 }
 
 void CIcEntity::SetOwner(int ClientId)

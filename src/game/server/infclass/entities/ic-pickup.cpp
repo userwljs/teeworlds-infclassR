@@ -9,7 +9,7 @@
 
 #include <game/server/infclass/classes/infcplayerclass.h>
 #include <game/server/infclass/entities/ic_character.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/snap_filter.h>
 
 int CIcPickup::EntityId = CGameWorld::ENTTYPE_PICKUP;

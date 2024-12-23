@@ -8,7 +8,7 @@
 #include <game/server/infclass/classes/infcplayerclass.h>
 #include <game/server/infclass/classes/infected/infected.h>
 #include <game/infclass/damage_type.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 #include <game/server/infclass/snap_filter.h>
 

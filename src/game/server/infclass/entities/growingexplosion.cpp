@@ -8,7 +8,7 @@
 #include <game/server/infclass/classes/infcplayerclass.h>
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/entities/slug-slime.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 #include "ic_character.h"
 

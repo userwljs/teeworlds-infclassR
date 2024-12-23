@@ -6,7 +6,7 @@
 
 class CGameContext;
 class CIcCharacter;
-class CInfClassGameController;
+class CIcGameController;
 class CInfClassPlayerClass;
 struct SpawnContext;
 
@@ -41,13 +41,13 @@ class CIcPlayer : public CPlayer
 	MACRO_ALLOC_POOL_ID()
 
 public:
-	CIcPlayer(CInfClassGameController *pGameController, int UniqueClientId, int ClientId, int Team);
+	CIcPlayer(CIcGameController *pGameController, int UniqueClientId, int ClientId, int Team);
 	~CIcPlayer() override;
 
 	static CIcPlayer *GetInstance(CPlayer *pPlayer);
 	static const CIcPlayer *GetInstance(const CPlayer *pPlayer);
 
-	CInfClassGameController *GameController() const;
+	CIcGameController *GameController() const;
 
 	void TryRespawn() override;
 
@@ -156,7 +156,7 @@ protected:
 	CSkinContext m_DiffTeamSkinContext;
 	SkinGetter m_SkinGetter;
 
-	CInfClassGameController *m_pGameController = nullptr;
+	CIcGameController *m_pGameController = nullptr;
 	CInfClassPlayerClass *m_pInfcPlayerClass = nullptr;
 	int m_HumanTime{};
 	int m_InfectionTick;

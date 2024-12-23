@@ -14,7 +14,7 @@ class icArray;
 
 class CGameContext;
 class CIcCharacter;
-class CInfClassGameController;
+class CIcGameController;
 
 class CIcEntity : public CEntity
 {
@@ -22,7 +22,7 @@ public:
 	CIcEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), std::optional<int> Owner = std::nullopt,
 		int ProximityRadius = 0);
 
-	CInfClassGameController *GameController() const;
+	CIcGameController *GameController() const;
 
 	bool HasOwner() const { return m_Owner.has_value(); }
 	int GetOwner() const { return m_Owner.value_or(-1); }

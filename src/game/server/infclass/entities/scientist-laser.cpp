@@ -7,7 +7,7 @@
 #include <game/infclass/damage_type.h>
 #include <game/infclass/weapons.h>
 #include <game/server/infclass/classes/humans/human.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 #include "growingexplosion.h"
 #include "ic_character.h"

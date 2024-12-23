@@ -16,12 +16,12 @@
 #include <game/server/infclass/entities/plasma.h>
 #include <game/server/infclass/entities/superweapon-indicator.h>
 #include <game/server/infclass/entities/white-hole.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 
 MACRO_ALLOC_POOL_ID_IMPL(CIcCharacter, MAX_CLIENTS)
 
-CIcCharacter::CIcCharacter(CInfClassGameController *pGameController) :
+CIcCharacter::CIcCharacter(CIcGameController *pGameController) :
 	CCharacter(pGameController->GameWorld()), m_pGameController(pGameController)
 {
 	m_FlagId = Server()->SnapNewId();
@@ -1805,14 +1805,14 @@ void CIcCharacter::HandleMapMenu()
 	}
 	else
 	{
-		EPlayerClass NewClass = CInfClassGameController::MenuClassToPlayerClass(HoveredMenuItem);
+		EPlayerClass NewClass = CIcGameController::MenuClassToPlayerClass(HoveredMenuItem);
 		CLASS_AVAILABILITY Availability = GameController()->GetPlayerClassAvailability(NewClass, pPlayer);
 
 		switch(Availability)
 		{
 		case CLASS_AVAILABILITY::AVAILABLE:
 		{
-			const char *pClassName = CInfClassGameController::GetClassDisplayName(NewClass);
+			const char *pClassName = CIcGameController::GetClassDisplayName(NewClass);
 			GameServer()->SendBroadcast_Localization(GetCid(),
 				EBroadcastPriority::INTERFACE, BROADCAST_DURATION_REALTIME,
 				pClassName, nullptr);
@@ -1864,7 +1864,7 @@ void CIcCharacter::HandleMapMenuClicked()
 
 	CIcPlayer *pPlayer = GetPlayer();
 	int MenuClass = pPlayer->m_MapMenuItem;
-	EPlayerClass NewClass = CInfClassGameController::MenuClassToPlayerClass(MenuClass);
+	EPlayerClass NewClass = CIcGameController::MenuClassToPlayerClass(MenuClass);
 	if(NewClass == EPlayerClass::Random)
 	{
 		NewClass = GameController()->ChooseHumanClass(pPlayer);

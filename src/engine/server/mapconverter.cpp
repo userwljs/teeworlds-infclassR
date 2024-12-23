@@ -13,7 +13,7 @@
 #include <game/infclass/classes.h>
 #include <game/layers.h>
 #include <game/server/infclass/classes/humans/human.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/teeinfo.h>
 
 #include <limits>
@@ -980,7 +980,7 @@ int CMapConverter::Finalize()
 	for(int ClassIndex = 0; ClassIndex < NUM_MENUCLASS; ++ClassIndex)
 	{
 		CSkinContext SkinContext;
-		SkinContext.PlayerClass = CInfClassGameController::MenuClassToPlayerClass(ClassIndex);
+		SkinContext.PlayerClass = CIcGameController::MenuClassToPlayerClass(ClassIndex);
 
 		CWeakSkinInfo ClassTeeInfo;
 		if(ClassIndex == MENUCLASS_RANDOM)
@@ -1094,10 +1094,10 @@ int CMapConverter::Finalize()
 				{
 					int ClassMask = 0;
 
-					EPlayerClass PlayerClass = CInfClassGameController::MenuClassToPlayerClass(i);
-					if(CInfClassGameController::IsDefenderClass(PlayerClass))
+					EPlayerClass PlayerClass = CIcGameController::MenuClassToPlayerClass(i);
+					if(CIcGameController::IsDefenderClass(PlayerClass))
 						ClassMask = MASK_DEFENDER;
-					else if(CInfClassGameController::IsSupportClass(PlayerClass))
+					else if(CIcGameController::IsSupportClass(PlayerClass))
 						ClassMask = MASK_SUPPORT;
 					else if(PlayerClass == EPlayerClass::Medic)
 						ClassMask = MASK_MEDIC;
@@ -1238,7 +1238,7 @@ int CMapConverter::Finalize()
 						{
 							CSkinContext SkinContext;
 							SkinContext.PlayerClass = PlayerClass;
-							const char *pClassName = CInfClassGameController::GetClassDisplayName(PlayerClass);
+							const char *pClassName = CIcGameController::GetClassDisplayName(PlayerClass);
 							CInfClassHuman::SetupSkin(SkinContext, &SkinInfo, DDNetVersion, InfClassVersion);
 							EventsDirector::SetupSkin(SkinContext, &SkinInfo, DDNetVersion, InfClassVersion);
 							bool Black = false;

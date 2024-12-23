@@ -6,7 +6,7 @@
 
 #include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/entities/ic_character.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 
 int CSuperWeaponIndicator::EntityId{};

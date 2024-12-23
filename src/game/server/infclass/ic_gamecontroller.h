@@ -74,11 +74,11 @@ struct FunRoundConfiguration
 	EPlayerClass HumanClass = EPlayerClass::Invalid;
 };
 
-class CInfClassGameController : public IGameController
+class CIcGameController : public IGameController
 {
 public:
-	CInfClassGameController(class CGameContext *pGameServer);
-	~CInfClassGameController() override;
+	CIcGameController(class CGameContext *pGameServer);
+	~CIcGameController() override;
 
 	const char *GameType() const override;
 

@@ -1,4 +1,4 @@
-#include "infcgamecontroller.h"
+#include "ic_gamecontroller.h"
 
 #include <game/server/infclass/entities/biologist-mine.h>
 #include <game/server/infclass/entities/bouncing-bullet.h>
@@ -20,7 +20,7 @@
 #include <game/server/infclass/entities/turret.h>
 #include <game/server/infclass/entities/white-hole.h>
 
-void CInfClassGameController::RegisterEntityTypes()
+void CIcGameController::RegisterEntityTypes()
 {
 	GameWorld()->RegisterEntityType<CBiologistMine>();
 	GameWorld()->RegisterEntityType<CBouncingBullet>();
@@ -43,7 +43,7 @@ void CInfClassGameController::RegisterEntityTypes()
 	GameWorld()->RegisterEntityType<CWhiteHole>();
 }
 
-void CInfClassGameController::DestroyChildEntities(int OwnerId)
+void CIcGameController::DestroyChildEntities(int OwnerId)
 {
 	const int InfCEntities[] = {
 		CGameWorld::ENTTYPE_PICKUP,

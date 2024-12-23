@@ -3,7 +3,7 @@
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/events-director.h>
 
 #include "classes/humans/human.h"
@@ -14,7 +14,7 @@
 
 MACRO_ALLOC_POOL_ID_IMPL(CIcPlayer, MAX_CLIENTS)
 
-CIcPlayer::CIcPlayer(CInfClassGameController *pGameController, int UniqueClientId, int ClientId, int Team)
+CIcPlayer::CIcPlayer(CIcGameController *pGameController, int UniqueClientId, int ClientId, int Team)
 	: CPlayer(pGameController->GameServer(), UniqueClientId, ClientId, Team)
 	, m_pGameController(pGameController)
 {
@@ -34,7 +34,7 @@ CIcPlayer::~CIcPlayer()
 	SetCharacterClass(nullptr);
 }
 
-CInfClassGameController *CIcPlayer::GameController() const
+CIcGameController *CIcPlayer::GameController() const
 {
 	return m_pGameController;
 }
@@ -708,7 +708,7 @@ const char *CIcPlayer::GetClan(int SnappingClient) const
 
 	if(SnapScoreMode == EPlayerScoreMode::Class)
 	{
-		const char *ClassName = CInfClassGameController::GetClanForClass(GetClass(), "?????");
+		const char *ClassName = CIcGameController::GetClanForClass(GetClass(), "?????");
 		str_format(aBuf, sizeof(aBuf), "%s%s", Server()->IsClientLogged(GetCid()) ? "@" : " ", ClassName);
 	}
 	else if(SnapScoreMode == EPlayerScoreMode::Time)
@@ -790,7 +790,7 @@ void CIcPlayer::SendClassIntro()
 	const EPlayerClass Class = GetClass();
 	if(!IsBot() && (Class != EPlayerClass::None) && (Class != EPlayerClass::Invalid))
 	{
-		const char *pClassName = CInfClassGameController::GetClassDisplayName(Class);
+		const char *pClassName = CIcGameController::GetClassDisplayName(Class);
 		const char *pTranslated = Server()->Localization()->Localize(GetLanguage(), pClassName);
 
 		if(IsHuman())
@@ -803,7 +803,7 @@ void CIcPlayer::SendClassIntro()
 		int Index = static_cast<int>(Class);
 		if(!m_aKnownClasses[Index])
 		{
-			const char *className = CInfClassGameController::GetClassName(Class);
+			const char *className = CIcGameController::GetClassName(Class);
 			GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, _("Type “/help {str:ClassName}” for more information about your class"), "ClassName", className, NULL);
 			m_aKnownClasses[Index] = true;
 		}

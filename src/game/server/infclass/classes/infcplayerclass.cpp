@@ -5,7 +5,7 @@
 #include <game/gamecore.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/entities/ic_character.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 #include <game/server/teeinfo.h>
 
@@ -37,7 +37,7 @@ CGameWorld *CInfClassPlayerClass::GameWorld() const
 	return nullptr;
 }
 
-CInfClassGameController *CInfClassPlayerClass::GameController() const
+CIcGameController *CInfClassPlayerClass::GameController() const
 {
 	if(m_pPlayer)
 		return m_pPlayer->GameController();

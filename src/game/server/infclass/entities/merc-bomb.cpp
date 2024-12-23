@@ -6,7 +6,7 @@
 #include "merc-bomb.h"
 
 #include <game/infclass/damage_type.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 #include "growingexplosion.h"
 #include "ic_character.h"

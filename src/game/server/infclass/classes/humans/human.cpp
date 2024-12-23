@@ -30,7 +30,7 @@
 #include <game/server/infclass/entities/soldier-bomb.h>
 #include <game/server/infclass/entities/turret.h>
 #include <game/server/infclass/entities/white-hole.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 #include <game/server/teeinfo.h>
 

@@ -1,6 +1,6 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.				*/
-#include "infcgamecontroller.h"
+#include "ic_gamecontroller.h"
 
 #include "events-director.h"
 
@@ -152,11 +152,11 @@ struct SurvivalWaveConfiguration
 
 icArray<SurvivalWaveConfiguration, MaxWaves> m_SurvivalWaves;
 
-int64_t CInfClassGameController::m_LastTipTime = 0;
+int64_t CIcGameController::m_LastTipTime = 0;
 
-IGameController *CreateInfclassModController(CGameContext *pGameServer) { return new CInfClassGameController(pGameServer); }
+IGameController *CreateInfclassModController(CGameContext *pGameServer) { return new CIcGameController(pGameServer); }
 
-CInfClassGameController::CInfClassGameController(class CGameContext *pGameServer)
+CIcGameController::CIcGameController(class CGameContext *pGameServer)
 : IGameController(pGameServer)
 {
 	m_Teams.m_Core.m_IsInfclass = true;
@@ -206,19 +206,19 @@ CInfClassGameController::CInfClassGameController(class CGameContext *pGameServer
 	ReservePlayerOwnSnapItems();
 }
 
-CInfClassGameController::~CInfClassGameController()
+CIcGameController::~CIcGameController()
 {
 	FreePlayerOwnSnapItems();
 
 	if(m_GrowingMap) delete[] m_GrowingMap;
 }
 
-const char *CInfClassGameController::GameType() const
+const char *CIcGameController::GameType() const
 {
 	return "InfClassR";
 }
 
-void CInfClassGameController::IncreaseCurrentRoundCounter()
+void CIcGameController::IncreaseCurrentRoundCounter()
 {
 	IGameController::IncreaseCurrentRoundCounter();
 
@@ -227,7 +227,7 @@ void CInfClassGameController::IncreaseCurrentRoundCounter()
 	MaybeSuggestMoreRounds();
 }
 
-void CInfClassGameController::DoTeamBalance()
+void CIcGameController::DoTeamBalance()
 {
 	int NumHumans = 0;
 	int NumInfected = 0;
@@ -261,7 +261,7 @@ void CInfClassGameController::DoTeamBalance()
 	}
 }
 
-void CInfClassGameController::OnPlayerConnect(CPlayer *pPlayer)
+void CIcGameController::OnPlayerConnect(CPlayer *pPlayer)
 {
 	IGameController::OnPlayerConnect(pPlayer);
 	int ClientId = pPlayer->GetCid();
@@ -301,7 +301,7 @@ void CInfClassGameController::OnPlayerConnect(CPlayer *pPlayer)
 	}
 }
 
-void CInfClassGameController::OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType Type, const char *pReason)
+void CIcGameController::OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType Type, const char *pReason)
 {
 	Server()->RoundStatistics()->ResetPlayer(pBasePlayer->GetCid());
 
@@ -361,7 +361,7 @@ void CInfClassGameController::OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDr
 	IGameController::OnPlayerDisconnect(pBasePlayer, Type, pReason);
 }
 
-void CInfClassGameController::OnReset()
+void CIcGameController::OnReset()
 {
 	// IGameController::OnReset();
 
@@ -375,7 +375,7 @@ void CInfClassGameController::OnReset()
 	}
 }
 
-void CInfClassGameController::DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfectiousPlayer, EPlayerClass PreviousClass)
+void CIcGameController::DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfectiousPlayer, EPlayerClass PreviousClass)
 {
 	if(GetRoundType() == ERoundType::Survival)
 	{
@@ -449,7 +449,7 @@ void CInfClassGameController::DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *p
 	}
 }
 
-void CInfClassGameController::OnHeroFlagCollected(int ClientId)
+void CIcGameController::OnHeroFlagCollected(int ClientId)
 {
 	GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, _("The Hero found the flag!"), NULL);
 	GameServer()->CreateSoundGlobal(SOUND_CTF_CAPTURE);
@@ -461,7 +461,7 @@ void CInfClassGameController::OnHeroFlagCollected(int ClientId)
 	m_HeroGiftTick = Tick + GetHeroFlagCooldown() * Server()->TickSpeed();
 }
 
-float CInfClassGameController::GetHeroFlagCooldown() const
+float CIcGameController::GetHeroFlagCooldown() const
 {
 	if(GetRoundType() == ERoundType::Survival)
 	{
@@ -483,7 +483,7 @@ float CInfClassGameController::GetHeroFlagCooldown() const
 	return 15 + (120 * t);
 }
 
-bool CInfClassGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv)
+bool CIcGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv)
 {
 	bool Result = IGameController::OnEntity(pName, Pivot, P0, P1, P2, P3, PosEnv);
 	vec2 Pos = (P0 + P1 + P2 + P3)/4.0f;
@@ -532,7 +532,7 @@ bool CInfClassGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, v
 	return Result;
 }
 
-void CInfClassGameController::HandleCharacterTiles(CIcCharacter *pCharacter)
+void CIcGameController::HandleCharacterTiles(CIcCharacter *pCharacter)
 {
 	ZoneData Data0;
 	ZoneData Data1;
@@ -599,7 +599,7 @@ void CInfClassGameController::HandleCharacterTiles(CIcCharacter *pCharacter)
 	}
 }
 
-void CInfClassGameController::HandleLastHookers()
+void CIcGameController::HandleLastHookers()
 {
 	const int CurrentTick = Server()->Tick();
 	ClientsArray CharacterHookedBy[MAX_CLIENTS]{};
@@ -642,7 +642,7 @@ void CInfClassGameController::HandleLastHookers()
 	}
 }
 
-bool CInfClassGameController::CanSeeDetails(int Who, int Whom) const
+bool CIcGameController::CanSeeDetails(int Who, int Whom) const
 {
 	if(Who == SERVER_DEMO_CLIENT)
 		return true;
@@ -661,7 +661,7 @@ bool CInfClassGameController::CanSeeDetails(int Who, int Whom) const
 	return pWho->IsHuman() == pWhom->IsHuman();
 }
 
-int64_t CInfClassGameController::GetBlindCharactersMask(int ExcludeCid) const
+int64_t CIcGameController::GetBlindCharactersMask(int ExcludeCid) const
 {
 	int64_t Mask = 0;
 
@@ -682,7 +682,7 @@ int64_t CInfClassGameController::GetBlindCharactersMask(int ExcludeCid) const
 	return Mask;
 }
 
-int64_t CInfClassGameController::GetMaskForPlayerWorldEvent(int Asker, int ExceptId)
+int64_t CIcGameController::GetMaskForPlayerWorldEvent(int Asker, int ExceptId)
 {
 	if(Asker == -1)
 		return CmaskAllExceptOne(ExceptId);
@@ -694,7 +694,7 @@ int64_t CInfClassGameController::GetMaskForPlayerWorldEvent(int Asker, int Excep
 	return m_Teams.TeamMask(GetPlayerTeam(Asker), ExceptId, Asker);
 }
 
-bool CInfClassGameController::HumanWallAllowedInPos(const vec2 &Pos) const
+bool CIcGameController::HumanWallAllowedInPos(const vec2 &Pos) const
 {
 	const float Radius = 32.0f;
 
@@ -717,12 +717,12 @@ bool CInfClassGameController::HumanWallAllowedInPos(const vec2 &Pos) const
 	return true;
 }
 
-int CInfClassGameController::GetZoneValueAt(int ZoneHandle, const vec2 &Pos, ZoneData *pData) const
+int CIcGameController::GetZoneValueAt(int ZoneHandle, const vec2 &Pos, ZoneData *pData) const
 {
 	return GameServer()->Collision()->GetZoneValueAt(ZoneHandle, Pos, pData);
 }
 
-int CInfClassGameController::GetDamageZoneValueAt(const vec2 &Pos, ZoneData *pData) const
+int CIcGameController::GetDamageZoneValueAt(const vec2 &Pos, ZoneData *pData) const
 {
 	int DamageIndex = GetZoneValueAt(m_ZoneHandle_icDamage, Pos, pData);
 	if(!DamageIndex && m_VanillaMapLoaded)
@@ -743,17 +743,17 @@ int CInfClassGameController::GetDamageZoneValueAt(const vec2 &Pos, ZoneData *pDa
 	return DamageIndex;
 }
 
-EZoneTele CInfClassGameController::GetTeleportZoneValueAt(const vec2 &Pos, ZoneData *pData) const
+EZoneTele CIcGameController::GetTeleportZoneValueAt(const vec2 &Pos, ZoneData *pData) const
 {
 	return static_cast<EZoneTele>(GetZoneValueAt(m_ZoneHandle_icTeleport, Pos, pData));
 }
 
-int CInfClassGameController::GetBonusZoneValueAt(const vec2 &Pos, ZoneData *pData) const
+int CIcGameController::GetBonusZoneValueAt(const vec2 &Pos, ZoneData *pData) const
 {
 	return GetZoneValueAt(m_ZoneHandle_icBonus, Pos, pData);
 }
 
-void CInfClassGameController::ExecuteFileEx(const char *pBaseName)
+void CIcGameController::ExecuteFileEx(const char *pBaseName)
 {
 	char aBuf[256];
 	const char *pFileName = pBaseName;
@@ -795,7 +795,7 @@ void CInfClassGameController::ExecuteFileEx(const char *pBaseName)
 	Console()->ExecuteFile(pFileName, -1, true);
 }
 
-void CInfClassGameController::CreateExplosion(const vec2 &Pos, int Owner, EDamageType DamageType, float DamageFactor)
+void CIcGameController::CreateExplosion(const vec2 &Pos, int Owner, EDamageType DamageType, float DamageFactor)
 {
 	int Weapon = WEAPON_WORLD;
 	GameServer()->CreateExplosion(Pos, Owner, Weapon);
@@ -845,7 +845,7 @@ void CInfClassGameController::CreateExplosion(const vec2 &Pos, int Owner, EDamag
 }
 
 // Thanks to Stitch for the idea
-void CInfClassGameController::CreateExplosionDisk(vec2 Pos, float InnerRadius, float DamageRadius, int Damage, float Force, int Owner, EDamageType DamageType)
+void CIcGameController::CreateExplosionDisk(vec2 Pos, float InnerRadius, float DamageRadius, int Damage, float Force, int Owner, EDamageType DamageType)
 {
 	CreateExplosionDiskGfx(Pos, InnerRadius, DamageRadius, Owner);
 
@@ -872,7 +872,7 @@ void CInfClassGameController::CreateExplosionDisk(vec2 Pos, float InnerRadius, f
 	}
 }
 
-void CInfClassGameController::CreateExplosionDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner)
+void CIcGameController::CreateExplosionDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner)
 {
 	int Weapon = WEAPON_WORLD;
 	GameServer()->CreateExplosion(Pos, Owner, Weapon);
@@ -889,7 +889,7 @@ void CInfClassGameController::CreateExplosionDiskGfx(vec2 Pos, float InnerRadius
 	}
 }
 
-void CInfClassGameController::SendHammerDot(const vec2 &Pos, int SnapId)
+void CIcGameController::SendHammerDot(const vec2 &Pos, int SnapId)
 {
 	CNetObj_Projectile *pObj = Server()->SnapNewItem<CNetObj_Projectile>(SnapId);
 	if(!pObj)
@@ -903,7 +903,7 @@ void CInfClassGameController::SendHammerDot(const vec2 &Pos, int SnapId)
 	pObj->m_StartTick = Server()->Tick();
 }
 
-void CInfClassGameController::SendServerParams(int ClientId) const
+void CIcGameController::SendServerParams(int ClientId) const
 {
 	CNetMsg_InfClass_ServerParams Msg{};
 	Msg.m_Version = 1;
@@ -940,7 +940,7 @@ void CInfClassGameController::SendServerParams(int ClientId) const
 	}
 }
 
-void CInfClassGameController::ResetFinalExplosion()
+void CIcGameController::ResetFinalExplosion()
 {
 	m_FinalExplosionState = EFinalExplosionState::NotStarted;
 
@@ -956,12 +956,12 @@ void CInfClassGameController::ResetFinalExplosion()
 	}
 }
 
-void CInfClassGameController::SaveRoundRules()
+void CIcGameController::SaveRoundRules()
 {
 	SendServerParams(-1);
 }
 
-void CInfClassGameController::StartSurvivalGame()
+void CIcGameController::StartSurvivalGame()
 {
 	m_SurvivalState.Scores.Clear();
 	m_SurvivalState.Kills = 0;
@@ -984,7 +984,7 @@ void CInfClassGameController::StartSurvivalGame()
 	}
 }
 
-void CInfClassGameController::EndSurvivalGame()
+void CIcGameController::EndSurvivalGame()
 {
 	// Sync the scores
 	for(PlayerScore &Score : m_SurvivalState.Scores)
@@ -1052,23 +1052,23 @@ void CInfClassGameController::EndSurvivalGame()
 	m_SurvivalState.KilledPlayers.Clear();
 }
 
-int CInfClassGameController::GetRoundTick() const
+int CIcGameController::GetRoundTick() const
 {
 	return Server()->Tick() - m_RoundStartTick;
 }
 
-int CInfClassGameController::GetInfectionTick() const
+int CIcGameController::GetInfectionTick() const
 {
 	return Server()->Tick() - GetInfectionStartTick();
 }
 
-int CInfClassGameController::GetInfectionStartTick() const
+int CIcGameController::GetInfectionStartTick() const
 {
 	const int InfectionTick = m_RoundStartTick + Server()->TickSpeed() * GetInfectionDelay();
 	return InfectionTick;
 }
 
-bool CInfClassGameController::IsDefenderClass(EPlayerClass PlayerClass)
+bool CIcGameController::IsDefenderClass(EPlayerClass PlayerClass)
 {
 	switch (PlayerClass)
 	{
@@ -1083,7 +1083,7 @@ bool CInfClassGameController::IsDefenderClass(EPlayerClass PlayerClass)
 	}
 }
 
-bool CInfClassGameController::IsSupportClass(EPlayerClass PlayerClass)
+bool CIcGameController::IsSupportClass(EPlayerClass PlayerClass)
 {
 	switch (PlayerClass)
 	{
@@ -1096,7 +1096,7 @@ bool CInfClassGameController::IsSupportClass(EPlayerClass PlayerClass)
 	}
 }
 
-EPlayerClass CInfClassGameController::GetClassByName(const char *pClassName, bool *pOk)
+EPlayerClass CIcGameController::GetClassByName(const char *pClassName, bool *pOk)
 {
 	struct ExtraName
 	{
@@ -1132,8 +1132,8 @@ EPlayerClass CInfClassGameController::GetClassByName(const char *pClassName, boo
 
 	for(EPlayerClass PlayerClass : AllPlayerClasses)
 	{
-		const char *pSingularName = CInfClassGameController::GetClassName(PlayerClass);
-		const char *pPluralName = CInfClassGameController::GetClassPluralName(PlayerClass);
+		const char *pSingularName = CIcGameController::GetClassName(PlayerClass);
+		const char *pPluralName = CIcGameController::GetClassPluralName(PlayerClass);
 		if((str_comp(pClassName, pSingularName) == 0) || (str_comp(pClassName, pPluralName) == 0)) {
 			return static_cast<EPlayerClass>(PlayerClass);
 		}
@@ -1146,12 +1146,12 @@ EPlayerClass CInfClassGameController::GetClassByName(const char *pClassName, boo
 	return EPlayerClass::Invalid;
 }
 
-const char *CInfClassGameController::GetClassName(EPlayerClass PlayerClass)
+const char *CIcGameController::GetClassName(EPlayerClass PlayerClass)
 {
 	return toString(PlayerClass);
 }
 
-const char *CInfClassGameController::GetClassPluralName(EPlayerClass PlayerClass)
+const char *CIcGameController::GetClassPluralName(EPlayerClass PlayerClass)
 {
 	switch(PlayerClass)
 	{
@@ -1208,7 +1208,7 @@ const char *CInfClassGameController::GetClassPluralName(EPlayerClass PlayerClass
 	return "unknown";
 }
 
-const char *CInfClassGameController::GetClassDisplayName(EPlayerClass PlayerClass, const char *pDefaultText)
+const char *CIcGameController::GetClassDisplayName(EPlayerClass PlayerClass, const char *pDefaultText)
 {
 	switch(PlayerClass)
 	{
@@ -1265,7 +1265,7 @@ const char *CInfClassGameController::GetClassDisplayName(EPlayerClass PlayerClas
 	return pDefaultText ? pDefaultText : "Unknown";
 }
 
-const char *CInfClassGameController::GetClassDisplayNameForKilledBy(EPlayerClass PlayerClass, const char *pDefaultText)
+const char *CIcGameController::GetClassDisplayNameForKilledBy(EPlayerClass PlayerClass, const char *pDefaultText)
 {
 	switch(PlayerClass)
 	{
@@ -1300,7 +1300,7 @@ const char *CInfClassGameController::GetClassDisplayNameForKilledBy(EPlayerClass
 	return pDefaultText ? pDefaultText : "Unknown";
 }
 
-const char *CInfClassGameController::GetClanForClass(EPlayerClass PlayerClass, const char *pDefaultText)
+const char *CIcGameController::GetClanForClass(EPlayerClass PlayerClass, const char *pDefaultText)
 {
 	switch (PlayerClass)
 	{
@@ -1309,7 +1309,7 @@ const char *CInfClassGameController::GetClanForClass(EPlayerClass PlayerClass, c
 	}
 }
 
-const char *CInfClassGameController::GetClassPluralDisplayName(EPlayerClass PlayerClass)
+const char *CIcGameController::GetClassPluralDisplayName(EPlayerClass PlayerClass)
 {
 	switch(PlayerClass)
 	{
@@ -1365,7 +1365,7 @@ const char *CInfClassGameController::GetClassPluralDisplayName(EPlayerClass Play
 	return _("Unknown");
 }
 
-EPlayerClass CInfClassGameController::MenuClassToPlayerClass(int MenuClass)
+EPlayerClass CIcGameController::MenuClassToPlayerClass(int MenuClass)
 {
 	EPlayerClass PlayerClass = EPlayerClass::Invalid;
 	switch(MenuClass)
@@ -1408,17 +1408,17 @@ EPlayerClass CInfClassGameController::MenuClassToPlayerClass(int MenuClass)
 	return PlayerClass;
 }
 
-int CInfClassGameController::GetPlayerTeam(int ClientId) const
+int CIcGameController::GetPlayerTeam(int ClientId) const
 {
 	return m_Teams.m_Core.Team(ClientId);
 }
 
-void CInfClassGameController::SetPlayerInfected(int ClientId, bool Infected)
+void CIcGameController::SetPlayerInfected(int ClientId, bool Infected)
 {
 	return m_Teams.m_Core.SetInfected(ClientId, Infected);
 }
 
-void CInfClassGameController::RegisterChatCommands(IConsole *pConsole)
+void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 {
 	Console()->Register("inf_set_weapon_fire_delay", "i[weapon] i[msec]", CFGFLAG_SERVER, ConSetWeaponFireDelay, this,
 		"Set InfClass weapon fire delay");
@@ -1472,9 +1472,9 @@ void CInfClassGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("santa", "", CFGFLAG_CHAT, ChatWitch, this, "Call the Santa");
 }
 
-void CInfClassGameController::ConSetWeaponFireDelay(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetWeaponFireDelay(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	if(pResult->NumArguments() != 2)
 		return;
 
@@ -1492,9 +1492,9 @@ void CInfClassGameController::ConSetWeaponFireDelay(IConsole::IResult *pResult, 
 	pSelf->SetFireDelay(static_cast<EInfclassWeapon>(WeaponId), Interval);
 }
 
-void CInfClassGameController::ConSetWeaponAmmoRegen(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetWeaponAmmoRegen(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	if(pResult->NumArguments() != 2)
 		return;
 
@@ -1514,9 +1514,9 @@ void CInfClassGameController::ConSetWeaponAmmoRegen(IConsole::IResult *pResult, 
 	return;
 }
 
-void CInfClassGameController::ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	if(pResult->NumArguments() != 2)
 		return;
 
@@ -1534,9 +1534,9 @@ void CInfClassGameController::ConSetWeaponMaxAmmo(IConsole::IResult *pResult, vo
 	pSelf->SetMaxAmmo(static_cast<EInfclassWeapon>(WeaponId), Interval);
 }
 
-void CInfClassGameController::ConRestoreClientName(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConRestoreClientName(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 
 	int PlayerId = pResult->GetInteger(0);
 
@@ -1550,9 +1550,9 @@ void CInfClassGameController::ConRestoreClientName(IConsole::IResult *pResult, v
 	pSelf->Server()->SetClientName(PlayerId, pPlayer->GetOriginalName());
 }
 
-void CInfClassGameController::ConSetClientName(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetClientName(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 
 	int PlayerId = pResult->GetInteger(0);
 	const char *pNewName = pResult->GetString(1);
@@ -1572,9 +1572,9 @@ void CInfClassGameController::ConSetClientName(IConsole::IResult *pResult, void 
 	pSelf->Server()->SetClientName(PlayerId, pNewName);
 }
 
-void CInfClassGameController::ConLockClientName(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConLockClientName(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 
 	int PlayerId = pResult->GetInteger(0);
 	int Lock = pResult->GetInteger(1);
@@ -1593,25 +1593,25 @@ void CInfClassGameController::ConLockClientName(IConsole::IResult *pResult, void
 	pPlayer->m_ClientNameLocked = Lock != 0;
 }
 
-void CInfClassGameController::ConPreferClass(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConPreferClass(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	int ClientId = pResult->GetClientId();
 
 	const char *pClassName = pResult->GetString(0);
 	pSelf->SetPreferredClass(ClientId, pClassName);
 }
 
-void CInfClassGameController::ConAlwaysRandom(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConAlwaysRandom(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	int ClientId = pResult->GetClientId();
 
 	bool Random = pResult->GetInteger(0) > 0;
 	pSelf->SetPreferredClass(ClientId, Random ? EPlayerClass::Random : EPlayerClass::Invalid);
 }
 
-void CInfClassGameController::SetPreferredClass(int ClientId, const char *pClassName)
+void CIcGameController::SetPreferredClass(int ClientId, const char *pClassName)
 {
 	bool Ok = false;
 	EPlayerClass PlayerClass = GetClassByName(pClassName, &Ok);
@@ -1625,7 +1625,7 @@ void CInfClassGameController::SetPreferredClass(int ClientId, const char *pClass
 	SetPreferredClass(ClientId, PlayerClass);
 }
 
-void CInfClassGameController::SetPreferredClass(int ClientId, EPlayerClass Class)
+void CIcGameController::SetPreferredClass(int ClientId, EPlayerClass Class)
 {
 	if(!IsHumanClass(Class))
 	{
@@ -1665,9 +1665,9 @@ void CInfClassGameController::SetPreferredClass(int ClientId, EPlayerClass Class
 	}
 }
 
-void CInfClassGameController::ConAntiPing(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConAntiPing(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	int ClientId = pResult->GetClientId();
 
 	int Arg = pResult->GetInteger(0);
@@ -1677,13 +1677,13 @@ void CInfClassGameController::ConAntiPing(IConsole::IResult *pResult, void *pUse
 	pPlayer->SetAntiPingEnabled(Arg > 0);
 }
 
-void CInfClassGameController::ConUserSetClass(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConUserSetClass(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->ConUserSetClass(pResult);
 }
 
-void CInfClassGameController::ConUserSetClass(IConsole::IResult *pResult)
+void CIcGameController::ConUserSetClass(IConsole::IResult *pResult)
 {
 	int ClientId = pResult->GetClientId();
 	if(!Config()->m_InfTrainingMode)
@@ -1716,13 +1716,13 @@ void CInfClassGameController::ConUserSetClass(IConsole::IResult *pResult)
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "inf_set_class", "Unknown class");
 }
 
-void CInfClassGameController::ConSetClass(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetClass(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->ConSetClass(pResult);
 }
 
-void CInfClassGameController::ConSetClass(IConsole::IResult *pResult)
+void CIcGameController::ConSetClass(IConsole::IResult *pResult)
 {
 	int PlayerId = pResult->GetInteger(0);
 	const char *pClassName = pResult->GetString(1);
@@ -1748,7 +1748,7 @@ void CInfClassGameController::ConSetClass(IConsole::IResult *pResult)
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "inf_set_class", "Unknown class");
 }
 
-FunRoundConfiguration CInfClassGameController::ParseFunRoundConfigArguments(IConsole::IResult *pResult)
+FunRoundConfiguration CIcGameController::ParseFunRoundConfigArguments(IConsole::IResult *pResult)
 {
 	FunRoundConfiguration FunRoundConfig;
 
@@ -1756,7 +1756,7 @@ FunRoundConfiguration CInfClassGameController::ParseFunRoundConfigArguments(ICon
 	{
 		const char *pArgument = pResult->GetString(argN);
 		bool Ok = true;
-		const EPlayerClass PlayerClass = CInfClassGameController::GetClassByName(pArgument, &Ok);
+		const EPlayerClass PlayerClass = CIcGameController::GetClassByName(pArgument, &Ok);
 		if(!Ok)
 		{
 			// Ignore other words (there can be "undeads vs heroes", ignore "vs" in such case)
@@ -1775,14 +1775,14 @@ FunRoundConfiguration CInfClassGameController::ParseFunRoundConfigArguments(ICon
 	return FunRoundConfig;
 }
 
-void CInfClassGameController::ConQueueSpecialRound(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConQueueSpecialRound(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	const char *pRoundTypeName = pResult->GetString(0);
 	pSelf->ConQueueRound(pRoundTypeName);
 }
 
-void CInfClassGameController::ConQueueRound(const char *pRoundTypeName)
+void CIcGameController::ConQueueRound(const char *pRoundTypeName)
 {
 	ERoundType Type = fromString<ERoundType>(pRoundTypeName);
 	if(Type == ERoundType::Invalid)
@@ -1792,9 +1792,9 @@ void CInfClassGameController::ConQueueRound(const char *pRoundTypeName)
 	QueueRoundType(Type);
 }
 
-void CInfClassGameController::ConStartRound(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConStartRound(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	const char *pRoundTypeName = pResult->NumArguments() > 0 ? pResult->GetString(0) : nullptr;
 	if(pRoundTypeName)
 	{
@@ -1810,9 +1810,9 @@ void CInfClassGameController::ConStartRound(IConsole::IResult *pResult, void *pU
 	pSelf->StartRound();
 }
 
-void CInfClassGameController::ConStartFunRound(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConStartFunRound(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	if(pSelf->m_FunRoundConfigurations.empty())
 	{
 		int ClientId = pResult->GetClientId();
@@ -1832,9 +1832,9 @@ void CInfClassGameController::ConStartFunRound(IConsole::IResult *pResult, void 
 	pSelf->StartRound();
 }
 
-void CInfClassGameController::ConQueueFunRound(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConQueueFunRound(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 
 	if(pSelf->m_FunRoundConfigurations.empty())
 	{
@@ -1854,9 +1854,9 @@ void CInfClassGameController::ConQueueFunRound(IConsole::IResult *pResult, void 
 	pSelf->QueueRoundType(ERoundType::Fun);
 }
 
-void CInfClassGameController::ConStartSpecialFunRound(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConStartSpecialFunRound(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	FunRoundConfiguration FunRoundConfig = ParseFunRoundConfigArguments(pResult);
 
 	std::vector<FunRoundConfiguration> aOldConfigurations;
@@ -1873,16 +1873,16 @@ void CInfClassGameController::ConStartSpecialFunRound(IConsole::IResult *pResult
 	std::swap(pSelf->m_FunRoundConfigurations, aOldConfigurations);
 }
 
-void CInfClassGameController::ConClearFunRounds(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConClearFunRounds(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->m_FunRoundConfigurations.clear();
 	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "fun rounds cleared");
 }
 
-void CInfClassGameController::ConAddFunRound(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConAddFunRound(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	FunRoundConfiguration FunRoundConfig = ParseFunRoundConfigArguments(pResult);
 
 	if((FunRoundConfig.HumanClass == EPlayerClass::Invalid) || (FunRoundConfig.InfectedClass == EPlayerClass::Invalid))
@@ -1893,8 +1893,8 @@ void CInfClassGameController::ConAddFunRound(IConsole::IResult *pResult, void *p
 	else
 	{
 		char aBuf[256];
-		const char *HumanClassText = CInfClassGameController::GetClassPluralDisplayName(FunRoundConfig.HumanClass);
-		const char *InfectedClassText = CInfClassGameController::GetClassPluralDisplayName(FunRoundConfig.InfectedClass);
+		const char *HumanClassText = CIcGameController::GetClassPluralDisplayName(FunRoundConfig.HumanClass);
+		const char *InfectedClassText = CIcGameController::GetClassPluralDisplayName(FunRoundConfig.InfectedClass);
 		str_format(aBuf, sizeof(aBuf), "Added fun round: %s vs %s", InfectedClassText, HumanClassText);
 		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 	}
@@ -1902,26 +1902,26 @@ void CInfClassGameController::ConAddFunRound(IConsole::IResult *pResult, void *p
 	pSelf->m_FunRoundConfigurations.push_back(FunRoundConfig);
 }
 
-void CInfClassGameController::ConStartFastRound(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConStartFastRound(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->QueueRoundType(ERoundType::Fast);
 	pSelf->StartRound();
 }
 
-void CInfClassGameController::ConQueueFastRound(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConQueueFastRound(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->QueueRoundType(ERoundType::Fast);
 }
 
-void CInfClassGameController::ConPrintPlayerPickingTimestamp(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConPrintPlayerPickingTimestamp(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->ConPrintPlayerPickingTimestamp(pResult);
 }
 
-void CInfClassGameController::ConPrintPlayerPickingTimestamp(IConsole::IResult *pResult)
+void CIcGameController::ConPrintPlayerPickingTimestamp(IConsole::IResult *pResult)
 {
 	char aBuf[256];
 	int CurrentTimestamp = time_timestamp();
@@ -1950,34 +1950,34 @@ void CInfClassGameController::ConPrintPlayerPickingTimestamp(IConsole::IResult *
 	}
 }
 
-void CInfClassGameController::ConMapRotationStatus(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConMapRotationStatus(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->ConSmartMapRotationStatus();
 }
 
-void CInfClassGameController::ConSaveMapsData(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSaveMapsData(IConsole::IResult *pResult, void *pUserData)
 {
 	const char *pFileName = pResult->GetString(0);
 
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->SaveMapRotationData(pFileName);
 }
 
-void CInfClassGameController::ConPrintMapsData(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConPrintMapsData(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->PrintMapRotationData();
 }
 
-void CInfClassGameController::ConResetMapData(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConResetMapData(IConsole::IResult *pResult, void *pUserData)
 {
 	const char *pMapName = pResult->GetString(0);
 
 	ResetMapInfo(pMapName);
 }
 
-void CInfClassGameController::ConAddMapData(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConAddMapData(IConsole::IResult *pResult, void *pUserData)
 {
 	const char *pMapName = pResult->GetString(0);
 	int Timestamp = pResult->GetInteger(1);
@@ -1985,13 +1985,13 @@ void CInfClassGameController::ConAddMapData(IConsole::IResult *pResult, void *pU
 	AddMapTimestamp(pMapName, Timestamp);
 }
 
-void CInfClassGameController::ConSetMapMinMaxPlayers(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetMapMinMaxPlayers(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	return pSelf->ConSetMapMinMaxPlayers(pResult);
 }
 
-void CInfClassGameController::ConSetMapMinMaxPlayers(IConsole::IResult *pResult)
+void CIcGameController::ConSetMapMinMaxPlayers(IConsole::IResult *pResult)
 {
 	if((pResult->NumArguments() < 2) || (pResult->NumArguments() > 3))
 	{
@@ -2005,13 +2005,13 @@ void CInfClassGameController::ConSetMapMinMaxPlayers(IConsole::IResult *pResult)
 	SetMapMinMaxPlayers(pMapName, MinPlayers, MaxPlayers);
 }
 
-void CInfClassGameController::ConSavePosition(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSavePosition(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	return pSelf->ConSavePosition(pResult);
 }
 
-void CInfClassGameController::ConSavePosition(IConsole::IResult *pResult)
+void CIcGameController::ConSavePosition(IConsole::IResult *pResult)
 {
 	int ClientId = pResult->GetClientId();
 	if(!Config()->m_InfTrainingMode)
@@ -2050,13 +2050,13 @@ void CInfClassGameController::ConSavePosition(IConsole::IResult *pResult)
 	pPlayer->AddSavedPosition(Position);
 }
 
-void CInfClassGameController::ConLoadPosition(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConLoadPosition(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	return pSelf->ConLoadPosition(pResult);
 }
 
-void CInfClassGameController::ConLoadPosition(IConsole::IResult *pResult)
+void CIcGameController::ConLoadPosition(IConsole::IResult *pResult)
 {
 	int ClientId = pResult->GetClientId();
 	if(!Config()->m_InfTrainingMode)
@@ -2095,13 +2095,13 @@ void CInfClassGameController::ConLoadPosition(IConsole::IResult *pResult)
 	pCharacter->ResetHook();
 }
 
-void CInfClassGameController::ConSetHealthArmor(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetHealthArmor(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	return pSelf->ConSetHealthArmor(pResult);
 }
 
-void CInfClassGameController::ConSetHealthArmor(IConsole::IResult *pResult)
+void CIcGameController::ConSetHealthArmor(IConsole::IResult *pResult)
 {
 	int ClientId = pResult->GetInteger(0);
 	int Health = pResult->GetInteger(1);
@@ -2116,13 +2116,13 @@ void CInfClassGameController::ConSetHealthArmor(IConsole::IResult *pResult)
 	pCharacter->SetHealthArmor(Health, Armor);
 }
 
-void CInfClassGameController::ConSetInvincible(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetInvincible(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	return pSelf->ConSetInvincible(pResult);
 }
 
-void CInfClassGameController::ConSetInvincible(IConsole::IResult *pResult)
+void CIcGameController::ConSetInvincible(IConsole::IResult *pResult)
 {
 	int ClientId = pResult->GetInteger(0);
 	int Invincible = pResult->GetInteger(1);
@@ -2136,13 +2136,13 @@ void CInfClassGameController::ConSetInvincible(IConsole::IResult *pResult)
 	pCharacter->SetInvincible(Invincible);
 }
 
-void CInfClassGameController::ConSetHookProtection(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetHookProtection(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	return pSelf->ConSetHookProtection(pResult);
 }
 
-void CInfClassGameController::ConSetHookProtection(IConsole::IResult *pResult)
+void CIcGameController::ConSetHookProtection(IConsole::IResult *pResult)
 {
 	int ClientId = pResult->GetInteger(0);
 	int Protection = pResult->GetInteger(1);
@@ -2157,13 +2157,13 @@ void CInfClassGameController::ConSetHookProtection(IConsole::IResult *pResult)
 	pPlayer->SetHookProtection(Protection, Automatic);
 }
 
-void CInfClassGameController::ConGiveUpgrade(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConGiveUpgrade(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	return pSelf->ConGiveUpgrade(pResult);
 }
 
-void CInfClassGameController::ConGiveUpgrade(IConsole::IResult *pResult)
+void CIcGameController::ConGiveUpgrade(IConsole::IResult *pResult)
 {
 	int ClientId = pResult->GetInteger(0);
 
@@ -2176,13 +2176,13 @@ void CInfClassGameController::ConGiveUpgrade(IConsole::IResult *pResult)
 	pPlayer->GetCharacterClass()->GiveUpgrade();
 }
 
-void CInfClassGameController::ConSetDrop(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ConSetDrop(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	return pSelf->ConSetDrop(pResult);
 }
 
-void CInfClassGameController::ConSetDrop(IConsole::IResult *pResult)
+void CIcGameController::ConSetDrop(IConsole::IResult *pResult)
 {
 	const int ClientId = pResult->GetInteger(0);
 	CIcCharacter *pCharacter = GetCharacter(ClientId);
@@ -2201,13 +2201,13 @@ void CInfClassGameController::ConSetDrop(IConsole::IResult *pResult)
 	pCharacter->SetDropLevel(DropLevel);
 }
 
-void CInfClassGameController::ChatWitch(IConsole::IResult *pResult, void *pUserData)
+void CIcGameController::ChatWitch(IConsole::IResult *pResult, void *pUserData)
 {
-	CInfClassGameController *pSelf = (CInfClassGameController *)pUserData;
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	pSelf->ChatWitch(pResult);
 }
 
-void CInfClassGameController::ChatWitch(IConsole::IResult *pResult)
+void CIcGameController::ChatWitch(IConsole::IResult *pResult)
 {
 	int ClientId = pResult->GetClientId();
 	const int REQUIRED_CALLERS_COUNT = 5;
@@ -2379,17 +2379,17 @@ void CInfClassGameController::ChatWitch(IConsole::IResult *pResult)
 	}
 }
 
-CDoor *CInfClassGameController::AddDoor(const vec2 &From, const vec2 &To)
+CDoor *CIcGameController::AddDoor(const vec2 &From, const vec2 &To)
 {
 	return new CDoor(GameServer(), From, To);
 }
 
-IConsole *CInfClassGameController::Console() const
+IConsole *CIcGameController::Console() const
 {
 	return GameServer()->Console();
 }
 
-CIcPlayer *CInfClassGameController::GetPlayer(int ClientId) const
+CIcPlayer *CIcGameController::GetPlayer(int ClientId) const
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS)
 		return nullptr;
@@ -2397,23 +2397,23 @@ CIcPlayer *CInfClassGameController::GetPlayer(int ClientId) const
 	return CIcPlayer::GetInstance(GameServer()->m_apPlayers[ClientId]);
 }
 
-CIcCharacter *CInfClassGameController::GetCharacter(int ClientId) const
+CIcCharacter *CIcGameController::GetCharacter(int ClientId) const
 {
 	CIcPlayer *pPlayer = GetPlayer(ClientId);
 	return pPlayer ? pPlayer->GetCharacter() : nullptr;
 }
 
-int CInfClassGameController::GetPlayerOwnCursorId(int ClientId) const
+int CIcGameController::GetPlayerOwnCursorId(int ClientId) const
 {
 	return m_PlayerOwnCursorId;
 }
 
-void CInfClassGameController::SortCharactersByDistance(ClientsArray *pCharacterIds, const vec2 &Center, const float MaxDistance)
+void CIcGameController::SortCharactersByDistance(ClientsArray *pCharacterIds, const vec2 &Center, const float MaxDistance)
 {
 	SortCharactersByDistance(*pCharacterIds, pCharacterIds, Center, MaxDistance);
 }
 
-void CInfClassGameController::SortCharactersByDistance(const ClientsArray &Input, ClientsArray *pOutput, const vec2 &Center, const float MaxDistance)
+void CIcGameController::SortCharactersByDistance(const ClientsArray &Input, ClientsArray *pOutput, const vec2 &Center, const float MaxDistance)
 {
 	struct DistanceItem
 	{
@@ -2458,7 +2458,7 @@ void CInfClassGameController::SortCharactersByDistance(const ClientsArray &Input
 	}
 }
 
-void CInfClassGameController::GetSortedTargetsInRange(const vec2 &Center, const float Radius, const ClientsArray &SkipList, ClientsArray *pOutput)
+void CIcGameController::GetSortedTargetsInRange(const vec2 &Center, const float Radius, const ClientsArray &SkipList, ClientsArray *pOutput)
 {
 	ClientsArray PossibleCids;
 
@@ -2477,7 +2477,7 @@ void CInfClassGameController::GetSortedTargetsInRange(const vec2 &Center, const 
 	SortCharactersByDistance(PossibleCids, pOutput, Center, Radius);
 }
 
-void CInfClassGameController::UpdateNinjaTargets()
+void CIcGameController::UpdateNinjaTargets()
 {
 	m_NinjaTargets.Clear();
 
@@ -2510,17 +2510,17 @@ void CInfClassGameController::UpdateNinjaTargets()
 	}
 }
 
-void CInfClassGameController::ReservePlayerOwnSnapItems()
+void CIcGameController::ReservePlayerOwnSnapItems()
 {
 	m_PlayerOwnCursorId = Server()->SnapNewId();
 }
 
-void CInfClassGameController::FreePlayerOwnSnapItems()
+void CIcGameController::FreePlayerOwnSnapItems()
 {
 	Server()->SnapFreeId(m_PlayerOwnCursorId);
 }
 
-void CInfClassGameController::SendHintMessage()
+void CIcGameController::SendHintMessage()
 {
 	if((g_Config.m_TipsInterval == 0) || (time_get() - m_LastTipTime < time_freq() * g_Config.m_TipsInterval * 60))
 		return;
@@ -2568,7 +2568,7 @@ void CInfClassGameController::SendHintMessage()
 	}
 }
 
-void CInfClassGameController::FormatHintMessage(const CHintMessage &Message, dynamic_string *pBuffer, const char *pLanguage) const
+void CIcGameController::FormatHintMessage(const CHintMessage &Message, dynamic_string *pBuffer, const char *pLanguage) const
 {
 	pBuffer->clear();
 	pBuffer->append("TIP: ");
@@ -2582,7 +2582,7 @@ void CInfClassGameController::FormatHintMessage(const CHintMessage &Message, dyn
 	}
 }
 
-void CInfClassGameController::OnInfectionTriggered()
+void CIcGameController::OnInfectionTriggered()
 {
 	int NumHumans = 0;
 	int NumInfected = 0;
@@ -2598,7 +2598,7 @@ void CInfClassGameController::OnInfectionTriggered()
 	MaybeSuggestMoreRounds();
 }
 
-void CInfClassGameController::StartInfectionGameplay(int PlayersToInfect)
+void CIcGameController::StartInfectionGameplay(int PlayersToInfect)
 {
 	InfectHumans(PlayersToInfect);
 
@@ -2625,7 +2625,7 @@ void CInfClassGameController::StartInfectionGameplay(int PlayersToInfect)
 	}
 }
 
-void CInfClassGameController::MaybeSuggestMoreRounds()
+void CIcGameController::MaybeSuggestMoreRounds()
 {
 	if(m_MoreRoundsSuggested)
 		return;
@@ -2639,12 +2639,12 @@ void CInfClassGameController::MaybeSuggestMoreRounds()
 	m_SuggestMoreRounds = true;
 }
 
-CGameWorld *CInfClassGameController::GameWorld()
+CGameWorld *CIcGameController::GameWorld()
 {
 	return &GameServer()->m_World;
 }
 
-void CInfClassGameController::StartRound()
+void CIcGameController::StartRound()
 {
 	const bool StartAfterGameOver = IsGameOver();
 
@@ -2709,7 +2709,7 @@ void CInfClassGameController::StartRound()
 	OnStartRound();
 }
 
-void CInfClassGameController::ResetRoundData()
+void CIcGameController::ResetRoundData()
 {
 	Server()->ResetStatistics();
 
@@ -2726,13 +2726,13 @@ void CInfClassGameController::ResetRoundData()
 	m_WitchCallers.Clear();
 }
 
-void CInfClassGameController::EndRound()
+void CIcGameController::EndRound()
 {
 	// The EndRound() override is called only from the IGameController on map skipped or changed
 	EndRound(ROUND_END_REASON::CANCELED);
 }
 
-void CInfClassGameController::EndRound(ROUND_END_REASON Reason)
+void CIcGameController::EndRound(ROUND_END_REASON Reason)
 {
 	int NumHumans = 0;
 	int NumInfected = 0;
@@ -2787,7 +2787,7 @@ void CInfClassGameController::EndRound(ROUND_END_REASON Reason)
 	m_RoundStarted = false;
 }
 
-void CInfClassGameController::DoTeamChange(CPlayer *pBasePlayer, int Team, bool DoChatMsg)
+void CIcGameController::DoTeamChange(CPlayer *pBasePlayer, int Team, bool DoChatMsg)
 {
 	CIcPlayer *pPlayer = CIcPlayer::GetInstance(pBasePlayer);
 	Team = ClampTeam(Team);
@@ -2816,7 +2816,7 @@ void CInfClassGameController::DoTeamChange(CPlayer *pBasePlayer, int Team, bool 
 	}
 }
 
-void CInfClassGameController::GetPlayerCounter(int ClientException, int& NumHumans, int& NumInfected)
+void CIcGameController::GetPlayerCounter(int ClientException, int& NumHumans, int& NumInfected)
 {
 	NumHumans = 0;
 	NumInfected = 0;
@@ -2832,7 +2832,7 @@ void CInfClassGameController::GetPlayerCounter(int ClientException, int& NumHuma
 	}
 }
 
-int CInfClassGameController::GetMinimumInfectedForPlayers(int PlayersNumber) const
+int CIcGameController::GetMinimumInfectedForPlayers(int PlayersNumber) const
 {
 	if(m_RoundMinimumInfected.has_value())
 		return m_RoundMinimumInfected.value();
@@ -2870,13 +2870,13 @@ int CInfClassGameController::GetMinimumInfectedForPlayers(int PlayersNumber) con
 	return NumFirstInfected;
 }
 
-int CInfClassGameController::InfectedBonusArmor() const
+int CIcGameController::InfectedBonusArmor() const
 {
 	const float Factor = clamp<float>(m_InfBalanceBoostFactor, 0, 1);
 	return Factor * 10;
 }
 
-void CInfClassGameController::SendKillMessage(int Victim, const DeathContext &Context)
+void CIcGameController::SendKillMessage(int Victim, const DeathContext &Context)
 {
 	EDamageType DamageType = Context.DamageType;
 	int VanillaWeapon = DamageTypeToWeapon(DamageType);
@@ -2959,7 +2959,7 @@ void CInfClassGameController::SendKillMessage(int Victim, const DeathContext &Co
 	OnKillOrInfection(Victim, Context);
 }
 
-void CInfClassGameController::OnKillOrInfection(int Victim, const DeathContext &Context)
+void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Context)
 {
 	if(GetRoundType() != ERoundType::Survival)
 		return;
@@ -3152,7 +3152,7 @@ void CInfClassGameController::OnKillOrInfection(int Victim, const DeathContext &
 	}
 }
 
-int CInfClassGameController::GetClientIdForNewWitch() const
+int CIcGameController::GetClientIdForNewWitch() const
 {
 	ClientsArray SuitableInfected;
 	ClientsArray SafeInfected;
@@ -3215,7 +3215,7 @@ int CInfClassGameController::GetClientIdForNewWitch() const
 	return Candidates[id];
 }
 
-bool CInfClassGameController::IsSafeWitchCandidate(int ClientId) const
+bool CIcGameController::IsSafeWitchCandidate(int ClientId) const
 {
 	constexpr double MaxInactiveSeconds = 5;
 	constexpr double SafeRadius = 1000;
@@ -3252,7 +3252,7 @@ bool CInfClassGameController::IsSafeWitchCandidate(int ClientId) const
 	return true;
 }
 
-CInfClassGameController::PlayerScore *CInfClassGameController::GetSurvivalPlayerScore(int ClientId)
+CIcGameController::PlayerScore *CIcGameController::GetSurvivalPlayerScore(int ClientId)
 {
 	for(PlayerScore &Score : m_SurvivalState.Scores)
 	{
@@ -3263,7 +3263,7 @@ CInfClassGameController::PlayerScore *CInfClassGameController::GetSurvivalPlayer
 	return nullptr;
 }
 
-CInfClassGameController::PlayerScore *CInfClassGameController::EnsureSurvivalPlayerScore(int ClientId)
+CIcGameController::PlayerScore *CIcGameController::EnsureSurvivalPlayerScore(int ClientId)
 {
 	PlayerScore *pScore = GetSurvivalPlayerScore(ClientId);
 	if(pScore)
@@ -3278,7 +3278,7 @@ CInfClassGameController::PlayerScore *CInfClassGameController::EnsureSurvivalPla
 	return &Score;
 }
 
-void CInfClassGameController::TickBeforeWorld()
+void CIcGameController::TickBeforeWorld()
 {
 	// update core properties important for hook
 	for(int i = 0; i < MAX_CLIENTS; i++)
@@ -3291,7 +3291,7 @@ void CInfClassGameController::TickBeforeWorld()
 		}
 	}
 }
-void CInfClassGameController::Tick()
+void CIcGameController::Tick()
 {
 	IGameController::Tick();
 
@@ -3392,17 +3392,17 @@ void CInfClassGameController::Tick()
 		SendHintMessage();
 }
 
-void CInfClassGameController::OnGameRestart()
+void CIcGameController::OnGameRestart()
 {
 	IGameController::OnGameRestart();
 }
 
-void CInfClassGameController::RoundTickBeforeInitialInfection()
+void CIcGameController::RoundTickBeforeInitialInfection()
 {
 	BroadcastInfectionComing(GetInfectionStartTick());
 }
 
-void CInfClassGameController::RoundTickAfterInitialInfection()
+void CIcGameController::RoundTickAfterInitialInfection()
 {
 	bool StartInfectionTrigger = GetInfectionStartTick() == Server()->Tick();
 
@@ -3428,7 +3428,7 @@ void CInfClassGameController::RoundTickAfterInitialInfection()
 	UpdateBalanceFactors();
 }
 
-void CInfClassGameController::PreparePlayerToJoin(CIcPlayer *pPlayer)
+void CIcGameController::PreparePlayerToJoin(CIcPlayer *pPlayer)
 {
 	if(IsInfectionStarted())
 	{
@@ -3440,7 +3440,7 @@ void CInfClassGameController::PreparePlayerToJoin(CIcPlayer *pPlayer)
 	}
 }
 
-void CInfClassGameController::SetPlayerPickedTimestamp(CIcPlayer *pPlayer, int Timestamp) const
+void CIcGameController::SetPlayerPickedTimestamp(CIcPlayer *pPlayer, int Timestamp) const
 {
 	const int PrevInfectionTimestamp = pPlayer->GetInfectionTimestamp();
 	pPlayer->SetInfectionTimestamp(Timestamp);
@@ -3456,7 +3456,7 @@ void CInfClassGameController::SetPlayerPickedTimestamp(CIcPlayer *pPlayer, int T
 	}
 }
 
-uint32_t CInfClassGameController::InfectHumans(uint32_t NumHumansToInfect)
+uint32_t CIcGameController::InfectHumans(uint32_t NumHumansToInfect)
 {
 	if(NumHumansToInfect == 0)
 		return 0;
@@ -3513,7 +3513,7 @@ uint32_t CInfClassGameController::InfectHumans(uint32_t NumHumansToInfect)
 	return NewInfected;
 }
 
-void CInfClassGameController::ForcePlayersBalance(uint32_t PlayersToBalance)
+void CIcGameController::ForcePlayersBalance(uint32_t PlayersToBalance)
 {
 	// Force balance
 	InfectHumans(PlayersToBalance);
@@ -3521,7 +3521,7 @@ void CInfClassGameController::ForcePlayersBalance(uint32_t PlayersToBalance)
 		_("Someone was infected to balance the game."), nullptr);
 }
 
-void CInfClassGameController::UpdateBalanceFactors()
+void CIcGameController::UpdateBalanceFactors()
 {
 	int NumHumans = 0;
 	int NumInfected = 0;
@@ -3549,7 +3549,7 @@ void CInfClassGameController::UpdateBalanceFactors()
 	m_InfBalanceBoostFactor = 0;
 }
 
-void CInfClassGameController::MaybeSendStatistics()
+void CIcGameController::MaybeSendStatistics()
 {
 	// skip some maps that are not very fair
 	if (
@@ -3568,7 +3568,7 @@ void CInfClassGameController::MaybeSendStatistics()
 	Server()->SendStatistics();
 }
 
-void CInfClassGameController::CancelTheRound(ROUND_CANCELATION_REASON Reason)
+void CIcGameController::CancelTheRound(ROUND_CANCELATION_REASON Reason)
 {
 	switch(Reason)
 	{
@@ -3585,7 +3585,7 @@ void CInfClassGameController::CancelTheRound(ROUND_CANCELATION_REASON Reason)
 	EndRound(ROUND_END_REASON::CANCELED);
 }
 
-void CInfClassGameController::AnnounceTheWinner(int NumHumans)
+void CIcGameController::AnnounceTheWinner(int NumHumans)
 {
 	if(NumHumans)
 	{
@@ -3621,7 +3621,7 @@ void CInfClassGameController::AnnounceTheWinner(int NumHumans)
 	EndRound(ROUND_END_REASON::FINISHED);
 }
 
-void CInfClassGameController::BroadcastInfectionComing(int InfectionTick)
+void CIcGameController::BroadcastInfectionComing(int InfectionTick)
 {
 	if(InfectionTick <= Server()->Tick())
 		return;
@@ -3636,7 +3636,7 @@ void CInfClassGameController::BroadcastInfectionComing(int InfectionTick)
 		nullptr);
 }
 
-void CInfClassGameController::MaybeDropPickup(CIcCharacter *pVictim)
+void CIcGameController::MaybeDropPickup(CIcCharacter *pVictim)
 {
 	const int DropMaxLevel = pVictim->GetDropLevel();
 	if(DropMaxLevel <= 0)
@@ -3708,7 +3708,7 @@ void CInfClassGameController::MaybeDropPickup(CIcCharacter *pVictim)
 	}
 }
 
-bool CInfClassGameController::IsInfectionStarted() const
+bool CIcGameController::IsInfectionStarted() const
 {
 	if(Config()->m_InfTrainingMode)
 		return false;
@@ -3716,12 +3716,12 @@ bool CInfClassGameController::IsInfectionStarted() const
 	return GetInfectionStartTick() <= Server()->Tick();
 }
 
-bool CInfClassGameController::MapRotationEnabled() const
+bool CIcGameController::MapRotationEnabled() const
 {
 	return true;
 }
 
-void CInfClassGameController::OnTeamChangeRequested(int ClientId, int Team)
+void CIcGameController::OnTeamChangeRequested(int ClientId, int Team)
 {
 	CPlayer *pPlayer = GetPlayer(ClientId);
 	// Switch team on given client and kill/respawn him
@@ -3740,7 +3740,7 @@ void CInfClassGameController::OnTeamChangeRequested(int ClientId, int Team)
 	}
 }
 
-bool CInfClassGameController::CanJoinTeam(int Team, int ClientId)
+bool CIcGameController::CanJoinTeam(int Team, int ClientId)
 {
 	if(Team != TEAM_SPECTATORS)
 	{
@@ -3781,7 +3781,7 @@ bool CInfClassGameController::CanJoinTeam(int Team, int ClientId)
 	return false;
 }
 
-bool CInfClassGameController::AreTurretsEnabled() const
+bool CIcGameController::AreTurretsEnabled() const
 {
 	if(!Config()->m_InfTurretEnable)
 		return false;
@@ -3792,7 +3792,7 @@ bool CInfClassGameController::AreTurretsEnabled() const
 	return Server()->GetActivePlayerCount() >= static_cast<uint32_t>(Config()->m_InfMinPlayersForTurrets);
 }
 
-int CInfClassGameController::InfTurretDuration() const
+int CIcGameController::InfTurretDuration() const
 {
 	if(GetRoundType() == ERoundType::Survival)
 		return 20;
@@ -3800,12 +3800,12 @@ int CInfClassGameController::InfTurretDuration() const
 	return Config()->m_InfTurretDuration;
 }
 
-bool CInfClassGameController::MercBombsEnabled() const
+bool CIcGameController::MercBombsEnabled() const
 {
 	return GetRoundType() != ERoundType::Fun;
 }
 
-bool CInfClassGameController::WhiteHoleEnabled() const
+bool CIcGameController::WhiteHoleEnabled() const
 {
 	if(GetRoundType() == ERoundType::Survival)
 		return true;
@@ -3819,7 +3819,7 @@ bool CInfClassGameController::WhiteHoleEnabled() const
 	return Config()->m_InfWhiteHoleProbability > 0;
 }
 
-float CInfClassGameController::GetWhiteHoleLifeSpan() const
+float CIcGameController::GetWhiteHoleLifeSpan() const
 {
 	if(GetRoundType() == ERoundType::Survival)
 		return 15;
@@ -3827,17 +3827,17 @@ float CInfClassGameController::GetWhiteHoleLifeSpan() const
 	return Config()->m_InfWhiteHoleLifeSpan;
 }
 
-int CInfClassGameController::MinimumInfectedForRevival() const
+int CIcGameController::MinimumInfectedForRevival() const
 {
 	return Config()->m_InfRevivalMinInfected;
 }
 
-bool CInfClassGameController::IsClassChooserEnabled() const
+bool CIcGameController::IsClassChooserEnabled() const
 {
 	return Config()->m_InfClassChooser && Server()->GetTimeShiftUnit();
 }
 
-int CInfClassGameController::GetTaxiMode() const
+int CIcGameController::GetTaxiMode() const
 {
 	if(GetRoundType() == ERoundType::Survival)
 		return 0;
@@ -3845,7 +3845,7 @@ int CInfClassGameController::GetTaxiMode() const
 	return Config()->m_InfTaxi;
 }
 
-int CInfClassGameController::GetGhoulStomackSize() const
+int CIcGameController::GetGhoulStomackSize() const
 {
 	if(GetRoundType() == ERoundType::Fun)
 		return Config()->m_FunRoundGhoulStomachSize;
@@ -3853,7 +3853,7 @@ int CInfClassGameController::GetGhoulStomackSize() const
 	return Config()->m_InfGhoulStomachSize;
 }
 
-EPlayerScoreMode CInfClassGameController::GetPlayerScoreMode(int SnappingClient) const
+EPlayerScoreMode CIcGameController::GetPlayerScoreMode(int SnappingClient) const
 {
 	if(IsGameOver())
 	{
@@ -3878,7 +3878,7 @@ EPlayerScoreMode CInfClassGameController::GetPlayerScoreMode(int SnappingClient)
 	return EPlayerScoreMode::Class;
 }
 
-float CInfClassGameController::GetTimeLimitMinutes() const
+float CIcGameController::GetTimeLimitMinutes() const
 {
 	if(Config()->m_InfTrainingMode)
 		return 0;
@@ -3899,32 +3899,32 @@ float CInfClassGameController::GetTimeLimitMinutes() const
 	}
 }
 
-int CInfClassGameController::GetTimeLimitSeconds() const
+int CIcGameController::GetTimeLimitSeconds() const
 {
 	return GetTimeLimitMinutes() * 60;
 }
 
-void CInfClassGameController::SetTimeLimitSeconds(float Seconds)
+void CIcGameController::SetTimeLimitSeconds(float Seconds)
 {
 	m_RoundTimeLimitSeconds = Seconds;
 }
 
-int CInfClassGameController::GetInfectionDelay() const
+int CIcGameController::GetInfectionDelay() const
 {
 	return m_RoundInfectionDelaySeconds.value_or(Config()->m_InfInitialInfectionDelay);
 }
 
-void CInfClassGameController::SetInfectionDelay(int Seconds)
+void CIcGameController::SetInfectionDelay(int Seconds)
 {
 	m_RoundInfectionDelaySeconds = Seconds;
 }
 
-bool CInfClassGameController::HeroGiftAvailable() const
+bool CIcGameController::HeroGiftAvailable() const
 {
 	return Server()->Tick() >= m_HeroGiftTick;
 }
 
-bool CInfClassGameController::GetHeroFlagPosition(vec2 *pFlagPosition) const
+bool CIcGameController::GetHeroFlagPosition(vec2 *pFlagPosition) const
 {
 	int NbPos = m_HeroFlagPositions.size();
 	if (NbPos == 0)
@@ -3944,7 +3944,7 @@ bool CInfClassGameController::GetHeroFlagPosition(vec2 *pFlagPosition) const
 	return false;
 }
 
-bool CInfClassGameController::IsPositionAvailableForHumans(const vec2 &Position) const
+bool CIcGameController::IsPositionAvailableForHumans(const vec2 &Position) const
 {
 	int DamageZoneValue = GetDamageZoneValueAt(Position);
 	switch(DamageZoneValue)
@@ -3959,7 +3959,7 @@ bool CInfClassGameController::IsPositionAvailableForHumans(const vec2 &Position)
 	}
 }
 
-void CInfClassGameController::StartFunRound()
+void CIcGameController::StartFunRound()
 {
 	if(m_FunRoundConfigurations.empty())
 		return;
@@ -3981,8 +3981,8 @@ void CInfClassGameController::StartFunRound()
 	const char *random_phrase = phrases[random_int(0, phrases.size() - 1)];
 	m_FunRoundConfiguration = Configuration;
 
-	const char *HumanClassText = CInfClassGameController::GetClassPluralDisplayName(Configuration.HumanClass);
-	const char *InfectedClassText = CInfClassGameController::GetClassPluralDisplayName(Configuration.InfectedClass);
+	const char *HumanClassText = CIcGameController::GetClassPluralDisplayName(Configuration.HumanClass);
+	const char *InfectedClassText = CIcGameController::GetClassPluralDisplayName(Configuration.InfectedClass);
 
 	str_format(aBuf, sizeof(aBuf), "%s! %s vs %s%s", pTitle, InfectedClassText, HumanClassText, random_phrase);
 
@@ -3999,12 +3999,12 @@ void CInfClassGameController::StartFunRound()
 	}
 }
 
-void CInfClassGameController::EndFunRound()
+void CIcGameController::EndFunRound()
 {
 	m_FunRoundsPassed++;
 }
 
-void CInfClassGameController::StartSurvivalRound()
+void CIcGameController::StartSurvivalRound()
 {
 	GameServer()->m_World.m_ResetRequested = false;
 
@@ -4058,7 +4058,7 @@ void CInfClassGameController::StartSurvivalRound()
 	SetRoundMinimumInfected(0);
 }
 
-void CInfClassGameController::EndSurvivalRound()
+void CIcGameController::EndSurvivalRound()
 {
 	int NumHumans = 0;
 	int NumInfected = 0;
@@ -4128,7 +4128,7 @@ void CInfClassGameController::EndSurvivalRound()
 	QueueRoundType(ERoundType::Survival);
 }
 
-void CInfClassGameController::EnsureFinalExplosionIsStarted()
+void CIcGameController::EnsureFinalExplosionIsStarted()
 {
 	if(m_FinalExplosionState == EFinalExplosionState::NotStarted)
 	{
@@ -4136,7 +4136,7 @@ void CInfClassGameController::EnsureFinalExplosionIsStarted()
 	}
 }
 
-void CInfClassGameController::StartFinalExplosion()
+void CIcGameController::StartFinalExplosion()
 {
 	dbg_assert(m_FinalExplosionState == EFinalExplosionState::NotStarted, "Invalid final explosion start");
 	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
@@ -4154,7 +4154,7 @@ void CInfClassGameController::StartFinalExplosion()
 	m_FinalExplosionState = EFinalExplosionState::Started;
 }
 
-void CInfClassGameController::ProgressFinalExplosion()
+void CIcGameController::ProgressFinalExplosion()
 {
 	if (m_FinalExplosionState != EFinalExplosionState::Started)
 	{
@@ -4227,7 +4227,7 @@ void CInfClassGameController::ProgressFinalExplosion()
 	}
 }
 
-void CInfClassGameController::Snap(int SnappingClient)
+void CIcGameController::Snap(int SnappingClient)
 {
 	CNetObj_GameInfo *pGameInfoObj = Server()->SnapNewItem<CNetObj_GameInfo>(0);
 	if(!pGameInfoObj)
@@ -4295,7 +4295,7 @@ void CInfClassGameController::Snap(int SnappingClient)
 	pGameDataObj->m_FlagCarrierBlue = FLAG_ATSTAND;
 }
 
-CPlayer *CInfClassGameController::CreatePlayer(int ClientId, bool IsSpectator, void *pData)
+CPlayer *CIcGameController::CreatePlayer(int ClientId, bool IsSpectator, void *pData)
 {
 	CIcPlayer *pPlayer = nullptr;
 	if(IsSpectator)
@@ -4323,12 +4323,12 @@ CPlayer *CInfClassGameController::CreatePlayer(int ClientId, bool IsSpectator, v
 	return pPlayer;
 }
 
-int CInfClassGameController::PersistentClientDataSize() const
+int CIcGameController::PersistentClientDataSize() const
 {
 	return sizeof(InfclassPlayerPersistantData);
 }
 
-bool CInfClassGameController::GetClientPersistentData(int ClientId, void *pData) const
+bool CIcGameController::GetClientPersistentData(int ClientId, void *pData) const
 {
 	const CIcPlayer *pPlayer = GetPlayer(ClientId);
 	if(!pPlayer)
@@ -4343,7 +4343,7 @@ bool CInfClassGameController::GetClientPersistentData(int ClientId, void *pData)
 	return true;
 }
 
-void CInfClassGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const char *pHelpPage) const
+void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const char *pHelpPage) const
 {
 	dynamic_string &Buffer = *pBuffer;
 	const char *pLanguage = GetPlayer(ClientId)->GetLanguage();
@@ -4441,7 +4441,7 @@ void CInfClassGameController::GetHelpText(dynamic_string *pBuffer, int ClientId,
 	else
 	{
 		bool Ok = true;
-		EPlayerClass PlayerClass = CInfClassGameController::GetClassByName(pHelpPage, &Ok);
+		EPlayerClass PlayerClass = CIcGameController::GetClassByName(pHelpPage, &Ok);
 		if(Ok)
 		{
 			GetClassHelpPage(&Buffer, pLanguage, PlayerClass);
@@ -4449,7 +4449,7 @@ void CInfClassGameController::GetHelpText(dynamic_string *pBuffer, int ClientId,
 	}
 }
 
-bool CInfClassGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pLanguage, EPlayerClass PlayerClass) const
+bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pLanguage, EPlayerClass PlayerClass) const
 {
 	dynamic_string &Buffer = *pOutput;
 
@@ -4492,7 +4492,7 @@ bool CInfClassGameController::GetClassHelpPage(dynamic_string *pOutput, const ch
 
 	static const int HeroNumArmorGift = 4;
 
-	MakeHeader(CInfClassGameController::GetClassDisplayName(PlayerClass));
+	MakeHeader(CIcGameController::GetClassDisplayName(PlayerClass));
 
 	switch(PlayerClass)
 	{
@@ -4666,7 +4666,7 @@ bool CInfClassGameController::GetClassHelpPage(dynamic_string *pOutput, const ch
 	return true;
 }
 
-void CInfClassGameController::SnapMapMenu(int SnappingClient, CNetObj_GameInfo *pGameInfoObj)
+void CIcGameController::SnapMapMenu(int SnappingClient, CNetObj_GameInfo *pGameInfoObj)
 {
 	if(SnappingClient < 0)
 		return;
@@ -4738,7 +4738,7 @@ void CInfClassGameController::SnapMapMenu(int SnappingClient, CNetObj_GameInfo *
 	pGameInfoObj->m_TimeLimit += (TimeShift / Server()->TickSpeed()) / 60;
 }
 
-void CInfClassGameController::FallInLoveIfInfectedEarly(CIcCharacter *pCharacter)
+void CIcGameController::FallInLoveIfInfectedEarly(CIcCharacter *pCharacter)
 {
 	if(!pCharacter)
 		return;
@@ -4752,7 +4752,7 @@ void CInfClassGameController::FallInLoveIfInfectedEarly(CIcCharacter *pCharacter
 	pCharacter->LoveEffect(LoveDuration);
 }
 
-void CInfClassGameController::RewardTheKillers(CIcCharacter *pVictim, const DeathContext &Context)
+void CIcGameController::RewardTheKillers(CIcCharacter *pVictim, const DeathContext &Context)
 {
 	// do scoreing
 	if(Context.Killer < 0)
@@ -4841,13 +4841,13 @@ void CInfClassGameController::RewardTheKillers(CIcCharacter *pVictim, const Deat
 	}
 }
 
-int CInfClassGameController::OnCharacterDeath(class CCharacter *pAbstractVictim, class CPlayer *pAbstractKiller, int Weapon)
+int CIcGameController::OnCharacterDeath(class CCharacter *pAbstractVictim, class CPlayer *pAbstractKiller, int Weapon)
 {
-	dbg_msg("server", "CRITICAL ERROR: CInfClassGameController::OnCharacterDeath(class CCharacter *, class CPlayer *, int) must never be called");
+	dbg_msg("server", "CRITICAL ERROR: CIcGameController::OnCharacterDeath(class CCharacter *, class CPlayer *, int) must never be called");
 	return 0;
 }
 
-void CInfClassGameController::OnCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext)
+void CIcGameController::OnCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext)
 {
 	const EDamageType DamageType = pContext->DamageType;
 	const int Killer = pContext->Killer;
@@ -5009,7 +5009,7 @@ void CInfClassGameController::OnCharacterDeath(CIcCharacter *pVictim, DeathConte
 	}
 }
 
-void CInfClassGameController::OnCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context)
+void CIcGameController::OnCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context)
 {
 	IGameController::OnCharacterSpawn(pCharacter);
 
@@ -5037,7 +5037,7 @@ void CInfClassGameController::OnCharacterSpawned(CIcCharacter *pCharacter, const
 	}
 }
 
-void CInfClassGameController::OnClassChooserRequested(CIcCharacter *pCharacter)
+void CIcGameController::OnClassChooserRequested(CIcCharacter *pCharacter)
 {
 	CIcPlayer *pPlayer = pCharacter->GetPlayer();
 
@@ -5071,7 +5071,7 @@ void CInfClassGameController::OnClassChooserRequested(CIcCharacter *pCharacter)
 	}
 }
 
-void CInfClassGameController::CheckRoundFailed()
+void CIcGameController::CheckRoundFailed()
 {
 	if(m_Warmup)
 		return;
@@ -5137,7 +5137,7 @@ void CInfClassGameController::CheckRoundFailed()
 	}
 }
 
-float CInfClassGameController::GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const
+float CIcGameController::GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const
 {
 	const CIcPlayer *pInfPlayer = CIcPlayer::GetInstance(pPlayer);
 
@@ -5147,7 +5147,7 @@ float CInfClassGameController::GetMaxInactiveTimeSeconds(const CPlayer *pPlayer)
 	return pInfPlayer->IsHuman() ? HumanMaxInactiveTimeSecs : InfectedMaxInactiveTimeSecs;
 }
 
-void CInfClassGameController::DoWincheck()
+void CIcGameController::DoWincheck()
 {
 	if(!IsWinCheckEnabled())
 		return;
@@ -5207,7 +5207,7 @@ void CInfClassGameController::DoWincheck()
 	}
 }
 
-bool CInfClassGameController::IsSpawnable(vec2 Pos, EZoneTele TeleZoneIndex)
+bool CIcGameController::IsSpawnable(vec2 Pos, EZoneTele TeleZoneIndex)
 {
 	//First check if there is a tee too close
 	CCharacter *aEnts[MAX_CLIENTS];
@@ -5241,7 +5241,7 @@ bool CInfClassGameController::IsSpawnable(vec2 Pos, EZoneTele TeleZoneIndex)
 	return true;
 }
 
-bool CInfClassGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
+bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 {
 	// spectators can't spawn
 	if(pPlayer->GetTeam() == TEAM_SPECTATORS)
@@ -5331,7 +5331,7 @@ bool CInfClassGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pCont
 	return false;
 }
 
-EPlayerClass CInfClassGameController::ChooseHumanClass(const CIcPlayer *pPlayer) const
+EPlayerClass CIcGameController::ChooseHumanClass(const CIcPlayer *pPlayer) const
 {
 	double Probability[NB_PLAYERCLASS]{};
 	auto GetClassProbabilityRef = [&Probability](EPlayerClass PlayerClass) -> double & {
@@ -5388,7 +5388,7 @@ EPlayerClass CInfClassGameController::ChooseHumanClass(const CIcPlayer *pPlayer)
 	return static_cast<EPlayerClass>(Result);
 }
 
-EPlayerClass CInfClassGameController::ChooseInfectedClass(const CIcPlayer *pPlayer) const
+EPlayerClass CIcGameController::ChooseInfectedClass(const CIcPlayer *pPlayer) const
 {
 	// if(pPlayer->InfectionType() == INFECTION_TYPE::RESTORE_INF_CLASS)
 	{
@@ -5469,37 +5469,37 @@ EPlayerClass CInfClassGameController::ChooseInfectedClass(const CIcPlayer *pPlay
 	return Class;
 }
 
-int CInfClassGameController::GetFireDelay(EInfclassWeapon WID) const
+int CIcGameController::GetFireDelay(EInfclassWeapon WID) const
 {
 	return m_InfFireDelay[static_cast<int>(WID)];
 }
 
-void CInfClassGameController::SetFireDelay(EInfclassWeapon WID, int Time)
+void CIcGameController::SetFireDelay(EInfclassWeapon WID, int Time)
 {
 	m_InfFireDelay[static_cast<int>(WID)] = Time;
 }
 
-int CInfClassGameController::GetAmmoRegenTime(EInfclassWeapon WID) const
+int CIcGameController::GetAmmoRegenTime(EInfclassWeapon WID) const
 {
 	return m_InfAmmoRegenTime[static_cast<int>(WID)];
 }
 
-void CInfClassGameController::SetAmmoRegenTime(EInfclassWeapon WID, int Time)
+void CIcGameController::SetAmmoRegenTime(EInfclassWeapon WID, int Time)
 {
 	m_InfAmmoRegenTime[static_cast<int>(WID)] = Time;
 }
 
-int CInfClassGameController::GetMaxAmmo(EInfclassWeapon WID) const
+int CIcGameController::GetMaxAmmo(EInfclassWeapon WID) const
 {
 	return m_InfMaxAmmo[static_cast<int>(WID)];
 }
 
-void CInfClassGameController::SetMaxAmmo(EInfclassWeapon WID, int n)
+void CIcGameController::SetMaxAmmo(EInfclassWeapon WID, int n)
 {
 	m_InfMaxAmmo[static_cast<int>(WID)] = n;
 }
 
-void CInfClassGameController::InitWeapons()
+void CIcGameController::InitWeapons()
 {
 	SetFireDelay(EInfclassWeapon::NONE, 0);
 	SetFireDelay(EInfclassWeapon::HAMMER, 125);
@@ -5609,7 +5609,7 @@ void CInfClassGameController::InitWeapons()
 	SetMaxAmmo(EInfclassWeapon::BOOMER_EXPLOSION, -1);
 }
 
-bool CInfClassGameController::GetPlayerClassEnabled(EPlayerClass PlayerClass) const
+bool CIcGameController::GetPlayerClassEnabled(EPlayerClass PlayerClass) const
 {
 	if(GetRoundType() == ERoundType::Fun)
 	{
@@ -5656,7 +5656,7 @@ bool CInfClassGameController::GetPlayerClassEnabled(EPlayerClass PlayerClass) co
 	return false;
 }
 
-bool CInfClassGameController::SetPlayerClassEnabled(EPlayerClass PlayerClass, bool Enabled)
+bool CIcGameController::SetPlayerClassEnabled(EPlayerClass PlayerClass, bool Enabled)
 {
 	const int Value = Enabled ? 1 : 0;
 	switch(PlayerClass)
@@ -5699,7 +5699,7 @@ bool CInfClassGameController::SetPlayerClassEnabled(EPlayerClass PlayerClass, bo
 	return true;
 }
 
-bool CInfClassGameController::SetPlayerClassProbability(EPlayerClass PlayerClass, int Probability)
+bool CIcGameController::SetPlayerClassProbability(EPlayerClass PlayerClass, int Probability)
 {
 	switch (PlayerClass)
 	{
@@ -5744,7 +5744,7 @@ bool CInfClassGameController::SetPlayerClassProbability(EPlayerClass PlayerClass
 	return true;
 }
 
-uint32_t CInfClassGameController::GetMinPlayersForClass(EPlayerClass PlayerClass) const
+uint32_t CIcGameController::GetMinPlayersForClass(EPlayerClass PlayerClass) const
 {
 	switch(PlayerClass)
 	{
@@ -5755,7 +5755,7 @@ uint32_t CInfClassGameController::GetMinPlayersForClass(EPlayerClass PlayerClass
 	}
 }
 
-uint32_t CInfClassGameController::GetClassPlayerLimit(EPlayerClass PlayerClass) const
+uint32_t CIcGameController::GetClassPlayerLimit(EPlayerClass PlayerClass) const
 {
 	switch(PlayerClass)
 	{
@@ -5770,7 +5770,7 @@ uint32_t CInfClassGameController::GetClassPlayerLimit(EPlayerClass PlayerClass) 
 	}
 }
 
-int CInfClassGameController::GetPlayerClassProbability(EPlayerClass PlayerClass) const
+int CIcGameController::GetPlayerClassProbability(EPlayerClass PlayerClass) const
 {
 	if(GetRoundType() == ERoundType::Fun)
 	{
@@ -5809,7 +5809,7 @@ int CInfClassGameController::GetPlayerClassProbability(EPlayerClass PlayerClass)
 	return 0;
 }
 
-int CInfClassGameController::GetInfectedCount(EPlayerClass InfectedPlayerClass) const
+int CIcGameController::GetInfectedCount(EPlayerClass InfectedPlayerClass) const
 {
 	int Count = 0;
 	for(int i = 0; i < MAX_CLIENTS; i++)
@@ -5832,37 +5832,37 @@ int CInfClassGameController::GetInfectedCount(EPlayerClass InfectedPlayerClass) 
 	return Count;
 }
 
-bool CInfClassGameController::IsWinCheckEnabled() const
+bool CIcGameController::IsWinCheckEnabled() const
 {
 	return m_WinCheckEnabled.value_or(true);
 }
 
-void CInfClassGameController::SetWinCheckEnabled(bool Enabled)
+void CIcGameController::SetWinCheckEnabled(bool Enabled)
 {
 	m_WinCheckEnabled = Enabled;
 }
 
-bool CInfClassGameController::GetVotesEnabled() const
+bool CIcGameController::GetVotesEnabled() const
 {
 	return m_VotesEnabled.value_or(!m_InfectedStarted);
 }
 
-void CInfClassGameController::SetVotesEnabled(bool Enabled)
+void CIcGameController::SetVotesEnabled(bool Enabled)
 {
 	m_VotesEnabled = Enabled;
 }
 
-int CInfClassGameController::GetMinPlayers() const
+int CIcGameController::GetMinPlayers() const
 {
 	return m_RoundMinimumPlayers.value_or(Config()->m_InfMinPlayers);
 }
 
-void CInfClassGameController::SetRoundMinimumPlayers(int Number)
+void CIcGameController::SetRoundMinimumPlayers(int Number)
 {
 	m_RoundMinimumPlayers = Number;
 }
 
-int CInfClassGameController::GetMinimumInfected() const
+int CIcGameController::GetMinimumInfected() const
 {
 	if(m_RoundMinimumInfected.has_value())
 		return m_RoundMinimumInfected.value();
@@ -5881,17 +5881,17 @@ int CInfClassGameController::GetMinimumInfected() const
 	return GetMinimumInfectedForPlayers(NumPlayers);
 }
 
-void CInfClassGameController::SetRoundMinimumInfected(int Number)
+void CIcGameController::SetRoundMinimumInfected(int Number)
 {
 	m_RoundMinimumInfected = Number;
 }
 
-void CInfClassGameController::ResetRoundMinimumInfected()
+void CIcGameController::ResetRoundMinimumInfected()
 {
 	m_RoundMinimumInfected.reset();
 }
 
-ERoundType CInfClassGameController::GetDefaultRoundType() const
+ERoundType CIcGameController::GetDefaultRoundType() const
 {
 	// Never return invalid
 	ERoundType RoundType = fromString<ERoundType>(Config()->m_InfDefaultRoundType);
@@ -5901,18 +5901,18 @@ ERoundType CInfClassGameController::GetDefaultRoundType() const
 	return RoundType;
 }
 
-ERoundType CInfClassGameController::GetRoundType() const
+ERoundType CIcGameController::GetRoundType() const
 {
 	return m_RoundType;
 }
 
-void CInfClassGameController::QueueRoundType(ERoundType RoundType)
+void CIcGameController::QueueRoundType(ERoundType RoundType)
 {
 	dbg_msg("controller", "Queued round: %s", toString(RoundType));
 	m_QueuedRoundType = RoundType;
 }
 
-CLASS_AVAILABILITY CInfClassGameController::GetPlayerClassAvailability(EPlayerClass PlayerClass, const CIcPlayer *pForPlayer) const
+CLASS_AVAILABILITY CIcGameController::GetPlayerClassAvailability(EPlayerClass PlayerClass, const CIcPlayer *pForPlayer) const
 {
 	if(!GetPlayerClassEnabled(PlayerClass))
 		return CLASS_AVAILABILITY::DISABLED;
@@ -6002,12 +6002,12 @@ CLASS_AVAILABILITY CInfClassGameController::GetPlayerClassAvailability(EPlayerCl
 	return CLASS_AVAILABILITY::AVAILABLE;
 }
 
-bool CInfClassGameController::CanVote()
+bool CIcGameController::CanVote()
 {
 	return GetVotesEnabled();
 }
 
-void CInfClassGameController::OnPlayerVoteCommand(int ClientId, int Vote)
+void CIcGameController::OnPlayerVoteCommand(int ClientId, int Vote)
 {
 	CIcPlayer *pPlayer = GetPlayer(ClientId);
 	if(!pPlayer)
@@ -6052,7 +6052,7 @@ void CInfClassGameController::OnPlayerVoteCommand(int ClientId, int Vote)
 	}
 }
 
-void CInfClassGameController::OnPlayerClassChanged(CIcPlayer *pPlayer)
+void CIcGameController::OnPlayerClassChanged(CIcPlayer *pPlayer)
 {
 	SetPlayerInfected(pPlayer->GetCid(), pPlayer->IsInfected());
 	Server()->ExpireServerInfo();

@@ -8,7 +8,7 @@
 
 #include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/entities/merc-bomb.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 static const int MercLaserDamage = 0;
 

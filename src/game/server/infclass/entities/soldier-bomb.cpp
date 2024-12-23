@@ -7,7 +7,7 @@
 #include <game/infclass/damage_type.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/entities/ic_character.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 #include <cmath>
 

@@ -4,7 +4,7 @@
 #include <engine/shared/config.h>
 
 #include <game/infclass/damage_type.h>
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 
 #include "scientist-mine.h"

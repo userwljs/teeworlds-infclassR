@@ -4,7 +4,7 @@
 #include <game/generated/protocol.h>
 #include <game/server/gamecontext.h>
 
-#include <game/server/infclass/infcgamecontroller.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 #include "ic_character.h"
 

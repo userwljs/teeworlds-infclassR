@@ -7,7 +7,7 @@
 #include <game/server/entities_filter.h>
 
 class CGameContext;
-class CInfClassGameController;
+class CIcGameController;
 class CIcPlayer;
 class CInfClassPlayerClass;
 class CWhiteHole;
@@ -87,7 +87,7 @@ class CIcCharacter : public CCharacter
 {
 	MACRO_ALLOC_POOL_ID()
 public:
-	CIcCharacter(CInfClassGameController *pGameController);
+	CIcCharacter(CIcGameController *pGameController);
 	~CIcCharacter() override;
 
 	static const CIcCharacter *GetInstance(const CCharacter *pCharacter);
@@ -183,7 +183,7 @@ public:
 	vec2 Velocity() const;
 	float Speed() const;
 
-	CInfClassGameController *GameController() const { return m_pGameController; }
+	CIcGameController *GameController() const { return m_pGameController; }
 	CGameContext *GameContext() const;
 
 	bool CanDie() const;
@@ -298,7 +298,7 @@ protected:
 	void PrepareToDie(DeathContext *pContext);
 
 protected:
-	CInfClassGameController *m_pGameController = nullptr;
+	CIcGameController *m_pGameController = nullptr;
 	CInfClassPlayerClass *m_pClass = nullptr;
 
 	CNetObj_PlayerInput m_InputBackup;

@@ -10,7 +10,7 @@ class CGameContext;
 class CGameWorld;
 class CIcCharacter;
 class CInfClassGameContext;
-class CInfClassGameController;
+class CIcGameController;
 class CIcPlayer;
 class IServer;
 
@@ -122,7 +122,7 @@ public:
 	CGameContext *GameContext() const;
 	CGameContext *GameServer() const;
 	CGameWorld *GameWorld() const;
-	CInfClassGameController *GameController() const;
+	CIcGameController *GameController() const;
 	CConfig *Config();
 	const CConfig *Config() const;
 	IServer *Server() const;
