@@ -11,9 +11,9 @@
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/death_context.h>
 #include <game/server/infclass/entities/flyingpoint.h>
-#include <game/server/infclass/entities/ic-pickup.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_door.h>
+#include <game/server/infclass/entities/ic_pickup.h>
 #include <game/server/infclass/ic_player.h>
 
 #include <base/tl/ic_array.h>
