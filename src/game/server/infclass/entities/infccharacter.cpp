@@ -1,20 +1,16 @@
 #include "infccharacter.h"
-#include "engine/server.h"
-#include "game/infclass/classes.h"
-#include "game/server/entities/character.h"
 
+#include <engine/server.h>
 #include <engine/server/mapconverter.h>
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
 
 #include <game/collision.h>
-
 #include <game/generated/server_data.h>
+#include <game/infclass/damage_type.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/classes/infcplayerclass.h>
-
 #include <game/server/infclass/damage_context.h>
-#include <game/infclass/damage_type.h>
 #include <game/server/infclass/death_context.h>
 #include <game/server/infclass/entities/ic_projectile.h>
 #include <game/server/infclass/entities/plasma.h>
@@ -2002,6 +1998,7 @@ void CInfClassCharacter::Die(int Killer, int Weapon)
 		break;
 	default:
 		dbg_msg("infclass", "Invalid Die() event: victim=%d, killer=%d, weapon=%d", GetCid(), Killer, Weapon);
+		break;
 	}
 
 	Die(Killer, DamageType);
