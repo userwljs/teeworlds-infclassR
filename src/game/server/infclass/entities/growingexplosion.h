@@ -42,7 +42,7 @@ public:
 	void SetTriggeredBy(int CID);
 
 private:
-	void ProcessMercenaryBombHit(CInfClassCharacter *pCharacter);
+	void ProcessMercenaryBombHit(CIcCharacter *pCharacter);
 
 	int m_MaxGrowing;
 	int m_GrowingMap_Length;

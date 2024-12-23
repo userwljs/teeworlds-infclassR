@@ -3,7 +3,7 @@
 #include "engine/server.h"
 #include "engine/shared/config.h"
 #include "game/server/gamecontext.h"
-#include "game/server/infclass/entities/infccharacter.h"
+#include "game/server/infclass/entities/ic_character.h"
 #include "game/server/infclass/entities/ic_entity.h"
 #include "game/server/player.h"
 
@@ -54,7 +54,7 @@ bool SnapFiltersPassed(const CIcEntity *pEntity, int SnappingClient, FilterFlags
 
 	if(Flags & EFilterFlag::SameTeam)
 	{
-		const CInfClassCharacter *pOwner = pEntity->GetOwnerCharacter();
+		const CIcCharacter *pOwner = pEntity->GetOwnerCharacter();
 		if(pOwner && (pOwner->IsInfected() == pSnappingPlayer->IsInfected()))
 		{
 			return true;

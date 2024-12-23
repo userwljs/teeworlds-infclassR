@@ -26,8 +26,8 @@ public:
 	void Snap(int SnappingClient) override;
 	float HitRadius() const { return 4.0f; }
 
-	void Hit(CInfClassCharacter *pCharacter);
-	void Die(CInfClassCharacter *pKiller);
+	void Hit(CIcCharacter *pCharacter);
+	void Die(CIcCharacter *pKiller);
 
 	float GetReloadDuration() const { return m_ReloadDuration; }
 	void SetReloadDuration(float Seconds);

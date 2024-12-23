@@ -5,7 +5,7 @@
 
 #include <game/server/infclass/classes/infcplayerclass.h>
 
-#include "infccharacter.h"
+#include "ic_character.h"
 #include "slug-slime.h"
 
 int CSlugSlime::EntityId{};
@@ -34,7 +34,7 @@ void CSlugSlime::Tick()
 	}
 
 	// Find other players
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		if (p->IsSolo())
 			continue;

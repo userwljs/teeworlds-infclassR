@@ -11,9 +11,9 @@
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/infcplayer.h>
 
-#include "infccharacter.h"
+#include "ic_character.h"
 
-void CMedicLaser::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, float StartEnergy)
+void CMedicLaser::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext, float StartEnergy)
 {
 	if(pFireContext->AmmoAvailable < 10)
 	{
@@ -34,10 +34,10 @@ CMedicLaser::CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, f
 {
 }
 
-bool CMedicLaser::OnCharacterHit(CInfClassCharacter *pHit)
+bool CMedicLaser::OnCharacterHit(CIcCharacter *pHit)
 {
-	CInfClassCharacter *pInfected = pHit;
-	CInfClassCharacter *pMedic = GetOwnerCharacter();
+	CIcCharacter *pInfected = pHit;
+	CIcCharacter *pMedic = GetOwnerCharacter();
 	if(!pMedic)
 		return false;
 

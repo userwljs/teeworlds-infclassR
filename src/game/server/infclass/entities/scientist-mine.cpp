@@ -9,7 +9,7 @@
 
 #include "scientist-mine.h"
 
-#include "infccharacter.h"
+#include "ic_character.h"
 #include "growingexplosion.h"
 
 int CScientistMine::EntityId{};
@@ -47,7 +47,7 @@ void CScientistMine::Explode(int DetonatedBy, vec2 Direction)
 	GameWorld()->DestroyEntity(this);
 	
 	//Self damage
-	CInfClassCharacter *OwnerChar = GetOwnerCharacter();
+	CIcCharacter *OwnerChar = GetOwnerCharacter();
 	if(OwnerChar)
 	{
 		constexpr int MaxSelfDamage = 4;
@@ -123,10 +123,10 @@ void CScientistMine::Tick()
 		return;
 
 	// Find other players
-	CInfClassCharacter *pTriggerCharacter = nullptr;
+	CIcCharacter *pTriggerCharacter = nullptr;
 	float ClosestLength = CCharacterCore::PhysicalSize() + GetProximityRadius();
 
-	for(TEntityPtr<CInfClassCharacter> pChr = GameWorld()->FindFirst<CInfClassCharacter>(); pChr; ++pChr)
+	for(TEntityPtr<CIcCharacter> pChr = GameWorld()->FindFirst<CIcCharacter>(); pChr; ++pChr)
 	{
 		if(!pChr->IsInfected() || !pChr->CanDie())
 			continue;

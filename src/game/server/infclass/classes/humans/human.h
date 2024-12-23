@@ -24,7 +24,7 @@ public:
 	explicit CInfClassHuman(CInfClassPlayer *pPlayer);
 
 	static CInfClassHuman *GetInstance(CInfClassPlayer *pPlayer);
-	static CInfClassHuman *GetInstance(CInfClassCharacter *pCharacter);
+	static CInfClassHuman *GetInstance(CIcCharacter *pCharacter);
 	static CInfClassHuman *GetInstance(CInfClassPlayerClass *pClass);
 
 	bool IsHuman() const final { return true; }
@@ -52,8 +52,8 @@ public:
 	void OnCharacterSpawned(const SpawnContext &Context) override;
 	void OnCharacterDamage(SDamageContext *pContext) override;
 
-	void OnKilledCharacter(CInfClassCharacter *pVictim, const DeathContext &Context) override;
-	void OnHumanHammerHitHuman(CInfClassCharacter *pTarget);
+	void OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context) override;
+	void OnHumanHammerHitHuman(CIcCharacter *pTarget);
 
 	void OnHookAttachedPlayer() override;
 
@@ -72,7 +72,7 @@ public:
 	void RemoveWhiteHole();
 
 	void UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints);
-	void OnHeroFlagTaken(CInfClassCharacter *pHero);
+	void OnHeroFlagTaken(CIcCharacter *pHero);
 	void OnWhiteHoleSpawned(CWhiteHole *pWhiteHole);
 	void GiveUpgrade() override;
 

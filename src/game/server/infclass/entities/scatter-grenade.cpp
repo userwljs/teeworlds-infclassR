@@ -9,7 +9,7 @@
 
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/entities/growingexplosion.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 
 int CScatterGrenade::EntityId{};
 
@@ -51,10 +51,10 @@ void CScatterGrenade::Tick()
 	if(m_ExplodeOnContact)
 	{
 		const float ProjectileRadius = 6.0f;
-		const CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
+		const CIcCharacter *pOwnerChar = GetOwnerCharacter();
 		const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
-		CharacterFilter OnlyOtherTeamFilter = IsInfected ? CInfClassCharacter::GetHumansFilter() : CInfClassCharacter::GetInfectedFilter();
-		CInfClassCharacter *TargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, CurPos, ProjectileRadius, CurPos, OnlyOtherTeamFilter));
+		CharacterFilter OnlyOtherTeamFilter = IsInfected ? CIcCharacter::GetHumansFilter() : CIcCharacter::GetInfectedFilter();
+		CIcCharacter *TargetChr = CIcCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, CurPos, ProjectileRadius, CurPos, OnlyOtherTeamFilter));
 
 		if(TargetChr)
 		{

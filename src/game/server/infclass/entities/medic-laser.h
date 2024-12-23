@@ -6,12 +6,12 @@
 class CMedicLaser : public CInfClassLaser
 {
 public:
-	static void OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, float StartEnergy);
+	static void OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext, float StartEnergy);
 
 	CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, EInfclassWeapon Weapon);
 
 protected:
-	bool OnCharacterHit(CInfClassCharacter *pHit) final;
+	bool OnCharacterHit(CIcCharacter *pHit) final;
 
 };
 

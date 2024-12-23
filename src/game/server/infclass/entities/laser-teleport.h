@@ -10,8 +10,8 @@ class CLaserTeleport : public CIcEntity
 public:
 	static int EntityId;
 
-	static void OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, int SelfDamage);
-	static std::optional<vec2> FindPortalPosition(CInfClassCharacter *pCharacter);
+	static void OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext, int SelfDamage);
+	static std::optional<vec2> FindPortalPosition(CIcCharacter *pCharacter);
 
 	CLaserTeleport(CGameContext *pGameContext, vec2 StartPos, vec2 EndPos);
 

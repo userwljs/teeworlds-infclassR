@@ -4,7 +4,7 @@
 #include <engine/shared/config.h>
 #include <game/gamecore.h>
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/infcplayer.h>
 #include <game/server/teeinfo.h>
@@ -131,7 +131,7 @@ void CInfClassPlayerClass::ResetUpgradeLevel()
 	m_UpgradeLevel = 0;
 }
 
-void CInfClassPlayerClass::SetCharacter(CInfClassCharacter *character)
+void CInfClassPlayerClass::SetCharacter(CIcCharacter *character)
 {
 	if(m_pCharacter == character)
 	{
@@ -364,7 +364,7 @@ void CInfClassPlayerClass::OnCharacterDamage(SDamageContext *pContext)
 {
 }
 
-void CInfClassPlayerClass::OnKilledCharacter(CInfClassCharacter *pVictim, const DeathContext &Context)
+void CInfClassPlayerClass::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context)
 {
 }
 
@@ -446,7 +446,7 @@ void CInfClassPlayerClass::BroadcastWeaponState() const
 {
 }
 
-void CInfClassPlayerClass::CreateHammerHit(const vec2 &ProjStartPos, const CInfClassCharacter *pTarget)
+void CInfClassPlayerClass::CreateHammerHit(const vec2 &ProjStartPos, const CIcCharacter *pTarget)
 {
 	const vec2 VecToTarget(pTarget->GetPos() - ProjStartPos);
 	if(length(VecToTarget) > 0.0f)

@@ -10,7 +10,7 @@
 #include <game/server/infclass/infcgamecontroller.h>
 
 #include "growingexplosion.h"
-#include "infccharacter.h"
+#include "ic_character.h"
 #include "white-hole.h"
 
 CScientistLaser::CScientistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg)
@@ -19,7 +19,7 @@ CScientistLaser::CScientistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Dire
 	DoBounce();
 }
 
-bool CScientistLaser::OnCharacterHit(CInfClassCharacter *pHit)
+bool CScientistLaser::OnCharacterHit(CIcCharacter *pHit)
 {
 	return true;
 }
@@ -62,7 +62,7 @@ void CScientistLaser::DoBounce()
 void CScientistLaser::CreateWhiteHole(const vec2 &CenterPos, const vec2 &To)
 {
 	// Create a white hole entity
-	CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
+	CIcCharacter *pOwnerChar = GetOwnerCharacter();
 	CInfClassHuman *pHuman = CInfClassHuman::GetInstance(pOwnerChar->GetPlayer());
 
 	if(!pHuman || !pHuman->HasWhiteHole())

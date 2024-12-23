@@ -10,7 +10,7 @@
 #include "classes/infcplayerclass.h"
 #include "classes/infected/infected.h"
 #include "engine/server.h"
-#include "entities/infccharacter.h"
+#include "entities/ic_character.h"
 
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassPlayer, MAX_CLIENTS)
 
@@ -46,7 +46,7 @@ void CInfClassPlayer::TryRespawn()
 		return;
 
 	m_Spawning = false;
-	CInfClassCharacter *pCharacter = new(m_ClientId) CInfClassCharacter(GameController());
+	CIcCharacter *pCharacter = new(m_ClientId) CIcCharacter(GameController());
 
 	m_pCharacter = pCharacter;
 	m_pCharacter->Spawn(this, Context.SpawnPos);
@@ -163,7 +163,7 @@ void CInfClassPlayer::Snap(int SnappingClient)
 	if(m_FollowTargetTicks > 0)
 		pDDNetPlayer->m_Flags |= EXPLAYERFLAG_SPEC;
 
-	CInfClassCharacter *pCharacter = GetCharacter();
+	CIcCharacter *pCharacter = GetCharacter();
 	if(pCharacter && pCharacter->IsSleeping())
 	{
 		pDDNetPlayer->m_Flags |= EXPLAYERFLAG_AFK;
@@ -354,14 +354,14 @@ void CInfClassPlayer::SetPreviouslyPickedClass(EPlayerClass Class)
 	m_PickedClass = Class;
 }
 
-CInfClassCharacter *CInfClassPlayer::GetCharacter()
+CIcCharacter *CInfClassPlayer::GetCharacter()
 {
-	return CInfClassCharacter::GetInstance(m_pCharacter);
+	return CIcCharacter::GetInstance(m_pCharacter);
 }
 
-const CInfClassCharacter *CInfClassPlayer::GetCharacter() const
+const CIcCharacter *CInfClassPlayer::GetCharacter() const
 {
-	return static_cast<const CInfClassCharacter*>(m_pCharacter);
+	return static_cast<const CIcCharacter*>(m_pCharacter);
 }
 
 void CInfClassPlayer::SetCharacterClass(CInfClassPlayerClass *pClass)
@@ -430,14 +430,14 @@ void CInfClassPlayer::SetClass(EPlayerClass NewClass)
 	// IGameServer::Tick() which also invalidates possible auto class selection.
 	if(!GameServer()->m_World.m_ResetRequested)
 	{
-		CInfClassCharacter *pCharacter = GetCharacter();
+		CIcCharacter *pCharacter = GetCharacter();
 		m_pInfcPlayerClass->SetCharacter(pCharacter);
 		if(pCharacter && !SameTeam)
 		{
 			// Changed team (was not an infected but is infected now or vice versa)
 			pCharacter->ResetHelpers();
 			pCharacter->SetPassenger(nullptr);
-			CInfClassCharacter *pDriver = pCharacter->GetTaxi();
+			CIcCharacter *pDriver = pCharacter->GetTaxi();
 			if(pDriver)
 			{
 				pDriver->SetPassenger(nullptr);
@@ -687,7 +687,7 @@ void CInfClassPlayer::ApplyMaxHP()
 
 void CInfClassPlayer::OnCharacterSpawned(const SpawnContext &Context)
 {
-	CInfClassCharacter *pCharacter = GetCharacter();
+	CIcCharacter *pCharacter = GetCharacter();
 
 	m_pInfcPlayerClass->SetCharacter(pCharacter);
 	pCharacter->OnCharacterSpawned(Context);
@@ -754,7 +754,7 @@ void CInfClassPlayer::UpdateSpectatorPos()
 
 	if(g_Config.m_SvStrictSpectateMode)
 	{
-		const CInfClassCharacter *pCharacter = pTarget->GetCharacter();
+		const CIcCharacter *pCharacter = pTarget->GetCharacter();
 		if(pCharacter && pCharacter->IsInvisible())
 			return;
 	}

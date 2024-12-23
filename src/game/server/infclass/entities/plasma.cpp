@@ -8,7 +8,7 @@
 #include <game/server/gamecontext.h>
 
 #include <game/infclass/damage_type.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
 int CPlasma::EntityId{};
@@ -38,7 +38,7 @@ void CPlasma::Tick()
 	m_LifeSpan--;
 	
 	// tracking, position and collision calculation
-	CInfClassCharacter *pTarget = GameController()->GetCharacter(m_TrackedPlayer);
+	CIcCharacter *pTarget = GameController()->GetCharacter(m_TrackedPlayer);
 	if(pTarget)
 	{
 		float Dist = distance(GetPos(), pTarget->GetPos());

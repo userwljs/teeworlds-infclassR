@@ -13,7 +13,7 @@ class CSoldierBomb : public CPlacedObject
 {
 public:
 	static int EntityId;
-	static void OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext);
+	static void OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext);
 
 	CSoldierBomb(CGameContext *pGameContext, vec2 Pos, int Owner);
 	~CSoldierBomb() override;

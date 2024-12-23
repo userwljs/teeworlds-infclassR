@@ -83,20 +83,20 @@ const char *toString(SpawnContext::SPAWN_TYPE SpawnType);
 
 using ClientsArray = icArray<int, MAX_CLIENTS>;
 
-class CInfClassCharacter : public CCharacter
+class CIcCharacter : public CCharacter
 {
 	MACRO_ALLOC_POOL_ID()
 public:
-	CInfClassCharacter(CInfClassGameController *pGameController);
-	~CInfClassCharacter() override;
+	CIcCharacter(CInfClassGameController *pGameController);
+	~CIcCharacter() override;
 
-	static const CInfClassCharacter *GetInstance(const CCharacter *pCharacter);
-	static CInfClassCharacter *GetInstance(CCharacter *pCharacter);
+	static const CIcCharacter *GetInstance(const CCharacter *pCharacter);
+	static CIcCharacter *GetInstance(CCharacter *pCharacter);
 
 	static CharacterFilter GetInfectedFilter();
 	static CharacterFilter GetHumansFilter();
 	CharacterFilter GetExceptThisCharacterFilter();
-	static CharacterFilter GetExceptCharactersFilter(const icArray<const CInfClassCharacter *, 10> &aCharacters);
+	static CharacterFilter GetExceptCharactersFilter(const icArray<const CIcCharacter *, 10> &aCharacters);
 	static CharacterFilter GetFilterAllOff(CharacterFilter Filter1, CharacterFilter Filter2);
 
 	void OnCharacterSpawned(const SpawnContext &Context);
@@ -259,12 +259,12 @@ public:
 	void SaturateVelocity(vec2 Force, float MaxSpeed);
 	bool IsPassenger() const;
 	bool HasPassenger() const;
-	CInfClassCharacter *GetPassenger() const;
-	CInfClassCharacter *GetTaxi() const;
+	CIcCharacter *GetPassenger() const;
+	CIcCharacter *GetTaxi() const;
 	// Driver is the last Taxi in a chain
-	CInfClassCharacter *GetTaxiDriver() const;
-	void SetPassenger(CInfClassCharacter *pPassenger);
-	void TryBecomePassenger(CInfClassCharacter *pTargetDriver);
+	CIcCharacter *GetTaxiDriver() const;
+	void SetPassenger(CIcCharacter *pPassenger);
+	void TryBecomePassenger(CIcCharacter *pTargetDriver);
 	int GetInfZoneTick();
 
 	bool HasSuperWeaponIndicator() const;
@@ -353,14 +353,14 @@ protected:
 	int m_HealTick = 0;
 };
 
-inline const CInfClassCharacter *CInfClassCharacter::GetInstance(const CCharacter *pCharacter)
+inline const CIcCharacter *CIcCharacter::GetInstance(const CCharacter *pCharacter)
 {
-	return static_cast<const CInfClassCharacter *>(pCharacter);
+	return static_cast<const CIcCharacter *>(pCharacter);
 }
 
-inline CInfClassCharacter *CInfClassCharacter::GetInstance(CCharacter *pCharacter)
+inline CIcCharacter *CIcCharacter::GetInstance(CCharacter *pCharacter)
 {
-	return static_cast<CInfClassCharacter *>(pCharacter);
+	return static_cast<CIcCharacter *>(pCharacter);
 }
 
 #endif // GAME_SERVER_INFCLASS_ENTITIES_CHARACTER_H

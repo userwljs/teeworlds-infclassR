@@ -12,7 +12,7 @@ class CBiologistMine : public CPlacedObject
 public:
 	static int EntityId;
 
-	static void OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, int Lasers);
+	static void OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext, int Lasers);
 
 	enum
 	{

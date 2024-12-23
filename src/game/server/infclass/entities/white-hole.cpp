@@ -11,7 +11,7 @@
 #include <game/server/infclass/infcplayer.h>
 
 #include "growingexplosion.h"
-#include "infccharacter.h"
+#include "ic_character.h"
 
 int CWhiteHole::EntityId{};
 
@@ -30,7 +30,7 @@ CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner)
 		m_Ids[i] = Server()->SnapNewId();
 	}
 
-	CInfClassCharacter *pOwner = GetOwnerCharacter();
+	CIcCharacter *pOwner = GetOwnerCharacter();
 	CInfClassHuman *pHuman = CInfClassHuman::GetInstance(pOwner);
 	if(pHuman)
 	{
@@ -161,7 +161,7 @@ void CWhiteHole::MoveCharacters()
 	vec2 Dir;
 	float Distance, Intensity;
 	// Find a player to pull
-	for(TEntityPtr<CInfClassCharacter> pCharacter = GameWorld()->FindFirst<CInfClassCharacter>(); pCharacter; ++pCharacter)
+	for(TEntityPtr<CIcCharacter> pCharacter = GameWorld()->FindFirst<CIcCharacter>(); pCharacter; ++pCharacter)
 	{
 		if(!Config()->m_InfWhiteHoleAffectsHumans && pCharacter->IsHuman())
 			continue; // stops humans from being sucked in, if config var is set

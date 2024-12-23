@@ -8,7 +8,7 @@
 #include <engine/shared/config.h>
 
 #include <game/server/infclass/classes/humans/human.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/snap_filter.h>
 
@@ -44,7 +44,7 @@ void CHeroFlag::ResetCooldown()
 	m_SpawnTick = Server()->Tick() + Server()->TickSpeed() * GameController()->GetHeroFlagCooldown();
 }
 
-void CHeroFlag::GiveGift(CInfClassCharacter *pHero)
+void CHeroFlag::GiveGift(CIcCharacter *pHero)
 {
 	CInfClassHuman *pHeroClass = CInfClassHuman::GetInstance(pHero);
 	if(!pHeroClass)
@@ -73,7 +73,7 @@ void CHeroFlag::Tick()
 	if(Server()->Tick() < GetSpawnTick())
 		return;
 
-	CInfClassCharacter *pOwner = GetOwnerCharacter();
+	CIcCharacter *pOwner = GetOwnerCharacter();
 	if(!pOwner)
 		return;
 
@@ -115,7 +115,7 @@ void CHeroFlag::Snap(int SnappingClient)
 	if(!DoSnapForClient(SnappingClient))
 		return;
 
-	const CInfClassCharacter *pOwner = GetOwnerCharacter();
+	const CIcCharacter *pOwner = GetOwnerCharacter();
 	if(!pOwner)
 		return;
 

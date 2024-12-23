@@ -2,7 +2,7 @@
 
 #include <engine/server.h>
 #include <game/server/infclass/infcgamecontroller.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 
 CPlacedObject::CPlacedObject(CGameContext *pGameContext, int ObjectType, vec2 Pos, int Owner, int ProximityRadius)
 	: CIcEntity(pGameContext, ObjectType, Pos, Owner, ProximityRadius)
@@ -70,7 +70,7 @@ bool CPlacedObject::DoSnapForClient(int SnappingClient)
 	if(NetworkClipped(SnappingClient) && (!m_Pos2.has_value() || NetworkClipped(SnappingClient, m_Pos2.value())))
 		return false;
 
-	const CInfClassCharacter *pCharacter = GameController()->GetCharacter(SnappingClient);
+	const CIcCharacter *pCharacter = GameController()->GetCharacter(SnappingClient);
 	if(pCharacter && pCharacter->IsBlind())
 		return false;
 

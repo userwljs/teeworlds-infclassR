@@ -15,8 +15,8 @@ class CInfClassInfected : public CInfClassPlayerClass
 public:
 	CInfClassInfected(CInfClassPlayer *pPlayer);
 
-	static const CInfClassInfected *GetInstance(const CInfClassCharacter *pCharacter);
-	static CInfClassInfected *GetInstance(CInfClassCharacter *pCharacter);
+	static const CInfClassInfected *GetInstance(const CIcCharacter *pCharacter);
+	static CInfClassInfected *GetInstance(CIcCharacter *pCharacter);
 
 	bool IsHuman() const final { return false; }
 

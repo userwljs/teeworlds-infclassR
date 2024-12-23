@@ -12,7 +12,7 @@
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
 #include "looper-wall.h"
-#include "infccharacter.h"
+#include "ic_character.h"
 
 static const float g_BarrierMaxLength = 400.0;
 static const float g_BarrierRadius = 0.0;
@@ -73,7 +73,7 @@ void CLooperWall::Tick()
 	}
 
 	// Find other players
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		if(p->IsHuman())
 			continue;
@@ -182,7 +182,7 @@ void CLooperWall::Snap(int SnappingClient)
 	}
 }
 
-void CLooperWall::OnHitInfected(CInfClassCharacter *pCharacter)
+void CLooperWall::OnHitInfected(CIcCharacter *pCharacter)
 {
 	float Reduction = Config()->m_InfLooperBarrierTimeReduce * 0.01f;
 

@@ -6,12 +6,12 @@
 class CBlindingLaser : public CInfClassLaser
 {
 public:
-	static void OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext);
+	static void OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext);
 
 	CBlindingLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner);
 
 protected:
-	bool OnCharacterHit(CInfClassCharacter *pHit) final;
+	bool OnCharacterHit(CIcCharacter *pHit) final;
 	void DoBounce() final;
 
 };

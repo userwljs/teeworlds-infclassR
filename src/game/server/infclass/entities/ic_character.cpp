@@ -1,4 +1,4 @@
-#include "infccharacter.h"
+#include "ic_character.h"
 
 #include <engine/server.h>
 #include <engine/server/mapconverter.h>
@@ -19,9 +19,9 @@
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/infcplayer.h>
 
-MACRO_ALLOC_POOL_ID_IMPL(CInfClassCharacter, MAX_CLIENTS)
+MACRO_ALLOC_POOL_ID_IMPL(CIcCharacter, MAX_CLIENTS)
 
-CInfClassCharacter::CInfClassCharacter(CInfClassGameController *pGameController) :
+CIcCharacter::CIcCharacter(CInfClassGameController *pGameController) :
 	CCharacter(pGameController->GameWorld()), m_pGameController(pGameController)
 {
 	m_FlagId = Server()->SnapNewId();
@@ -29,59 +29,59 @@ CInfClassCharacter::CInfClassCharacter(CInfClassGameController *pGameController)
 	m_CursorId = Server()->SnapNewId();
 }
 
-CInfClassCharacter::~CInfClassCharacter()
+CIcCharacter::~CIcCharacter()
 {
 	FreeChildSnapIds();
 	ResetClassObject();
 }
 
-CharacterFilter CInfClassCharacter::GetInfectedFilter()
+CharacterFilter CIcCharacter::GetInfectedFilter()
 {
 	const auto InfectedEntitiesFilter = [](const CCharacter *pEntity) {
-		const CInfClassCharacter *pInfEntity = CInfClassCharacter::GetInstance(pEntity);
+		const CIcCharacter *pInfEntity = CIcCharacter::GetInstance(pEntity);
 		return !pInfEntity->IsHuman();
 	};
 
 	return InfectedEntitiesFilter;
 }
 
-CharacterFilter CInfClassCharacter::GetHumansFilter()
+CharacterFilter CIcCharacter::GetHumansFilter()
 {
 	const auto HumansEntitiesFilter = [](const CCharacter *pEntity) {
-		const CInfClassCharacter *pInfEntity = CInfClassCharacter::GetInstance(pEntity);
+		const CIcCharacter *pInfEntity = CIcCharacter::GetInstance(pEntity);
 		return pInfEntity->IsHuman();
 	};
 
 	return HumansEntitiesFilter;
 }
 
-CharacterFilter CInfClassCharacter::GetExceptThisCharacterFilter()
+CharacterFilter CIcCharacter::GetExceptThisCharacterFilter()
 {
 	static int s_ExceptCharacterId{};
 	s_ExceptCharacterId = GetCid();
 
 	const auto ExceptThisCharFilter = [](const CCharacter *pCh) {
-		const CInfClassCharacter *pCharacter = CInfClassCharacter::GetInstance(pCh);
+		const CIcCharacter *pCharacter = CIcCharacter::GetInstance(pCh);
 		return pCharacter->GetCid() != s_ExceptCharacterId;
 	};
 
 	return ExceptThisCharFilter;
 }
 
-CharacterFilter CInfClassCharacter::GetExceptCharactersFilter(const icArray<const CInfClassCharacter *, 10> &aCharacters)
+CharacterFilter CIcCharacter::GetExceptCharactersFilter(const icArray<const CIcCharacter *, 10> &aCharacters)
 {
-	static icArray<const CInfClassCharacter *, 10> s_aFilterCharacters;
+	static icArray<const CIcCharacter *, 10> s_aFilterCharacters;
 	s_aFilterCharacters = aCharacters;
 
 	const auto ExceptCharactersFilter = [](const CCharacter *pCh) {
-		const CInfClassCharacter *pCharacter = CInfClassCharacter::GetInstance(pCh);
+		const CIcCharacter *pCharacter = CIcCharacter::GetInstance(pCh);
 		return !s_aFilterCharacters.Contains(pCharacter);
 	};
 
 	return ExceptCharactersFilter;
 }
 
-CharacterFilter CInfClassCharacter::GetFilterAllOff(CharacterFilter Filter1, CharacterFilter Filter2)
+CharacterFilter CIcCharacter::GetFilterAllOff(CharacterFilter Filter1, CharacterFilter Filter2)
 {
 	static icArray<CharacterFilter, 4> s_aCombinedCharacterFilters;
 	s_aCombinedCharacterFilters.Clear();
@@ -101,7 +101,7 @@ CharacterFilter CInfClassCharacter::GetFilterAllOff(CharacterFilter Filter1, Cha
 	return CombinedCharactersFilter;
 }
 
-void CInfClassCharacter::ResetClassObject()
+void CIcCharacter::ResetClassObject()
 {
 	if(m_pClass)
 	{
@@ -113,7 +113,7 @@ void CInfClassCharacter::ResetClassObject()
 	m_pClass = nullptr;
 }
 
-void CInfClassCharacter::OnCharacterSpawned(const SpawnContext &Context)
+void CIcCharacter::OnCharacterSpawned(const SpawnContext &Context)
 {
 	m_NeededFaketuning = FAKETUNE_NOCOLL;
 
@@ -152,7 +152,7 @@ void CInfClassCharacter::OnCharacterSpawned(const SpawnContext &Context)
 	GameController()->OnCharacterSpawned(this, Context);
 }
 
-void CInfClassCharacter::OnCharacterInInfectionZone()
+void CIcCharacter::OnCharacterInInfectionZone()
 {
 	if(IsInfected())
 	{
@@ -188,7 +188,7 @@ void CInfClassCharacter::OnCharacterInInfectionZone()
 	}
 }
 
-void CInfClassCharacter::OnCharacterOutOfInfectionZone()
+void CIcCharacter::OnCharacterOutOfInfectionZone()
 {
 	if(m_InfZoneTick == -1)
 		return;
@@ -204,7 +204,7 @@ void CInfClassCharacter::OnCharacterOutOfInfectionZone()
 	m_ProtectionTick = 0;
 }
 
-void CInfClassCharacter::OnCharacterInDamageZone(float Damage, float DamageInterval)
+void CIcCharacter::OnCharacterInDamageZone(float Damage, float DamageInterval)
 {
 	constexpr EDamageType DamageType = EDamageType::DAMAGE_TILE;
 
@@ -229,14 +229,14 @@ void CInfClassCharacter::OnCharacterInDamageZone(float Damage, float DamageInter
 	}
 }
 
-void CInfClassCharacter::Destroy()
+void CIcCharacter::Destroy()
 {
 	ResetClassObject();
 	DestroyChildEntities();
 	CCharacter::Destroy();
 }
 
-void CInfClassCharacter::TickBeforeWorld()
+void CIcCharacter::TickBeforeWorld()
 {
 	const int CurrentTick = Server()->Tick();
 
@@ -257,7 +257,7 @@ void CInfClassCharacter::TickBeforeWorld()
 	UpdateCoreSolo();
 }
 
-void CInfClassCharacter::Tick()
+void CIcCharacter::Tick()
 {
 	if(!m_pClass)
 	{
@@ -315,7 +315,7 @@ void CInfClassCharacter::Tick()
 	m_pClass->OnCharacterTick();
 }
 
-void CInfClassCharacter::TickDeferred()
+void CIcCharacter::TickDeferred()
 {
 	int Events = m_Core.m_TriggeredEvents;
 
@@ -357,7 +357,7 @@ void CInfClassCharacter::TickDeferred()
 	}
 }
 
-void CInfClassCharacter::TickPaused()
+void CIcCharacter::TickPaused()
 {
 	if(m_pClass)
 		m_pClass->OnCharacterTickPaused();
@@ -380,7 +380,7 @@ void CInfClassCharacter::TickPaused()
 	}
 }
 
-void CInfClassCharacter::Snap(int SnappingClient)
+void CIcCharacter::Snap(int SnappingClient)
 {
 	int Id = GetCid();
 
@@ -475,9 +475,9 @@ void CInfClassCharacter::Snap(int SnappingClient)
 	pDDNetCharacter->m_TargetY = m_Core.m_Input.m_TargetY;
 }
 
-void CInfClassCharacter::SpecialSnapForClient(int SnappingClient, bool *pDoSnap)
+void CIcCharacter::SpecialSnapForClient(int SnappingClient, bool *pDoSnap)
 {
-	CInfClassCharacter *pDestCharacter = GameController()->GetCharacter(SnappingClient);
+	CIcCharacter *pDestCharacter = GameController()->GetCharacter(SnappingClient);
 	if((GetCid() != SnappingClient) && pDestCharacter && pDestCharacter->IsBlind())
 	{
 		*pDoSnap = false;
@@ -491,7 +491,7 @@ void CInfClassCharacter::SpecialSnapForClient(int SnappingClient, bool *pDoSnap)
 	}
 }
 
-void CInfClassCharacter::HandleNinja()
+void CIcCharacter::HandleNinja()
 {
 	if(IsFrozen())
 		return;
@@ -502,7 +502,7 @@ void CInfClassCharacter::HandleNinja()
 	m_pClass->HandleNinja();
 }
 
-void CInfClassCharacter::HandleNinjaMove(float NinjaVelocity)
+void CIcCharacter::HandleNinjaMove(float NinjaVelocity)
 {
 	SetVelocity(m_DartDir * NinjaVelocity);
 
@@ -513,7 +513,7 @@ void CInfClassCharacter::HandleNinjaMove(float NinjaVelocity)
 	ResetVelocity();
 }
 
-void CInfClassCharacter::HandleWeaponSwitch()
+void CIcCharacter::HandleWeaponSwitch()
 {
 	// select Weapon
 	int Next = CountInput(m_LatestPrevInput.m_NextWeapon, m_LatestInput.m_NextWeapon).m_Presses;
@@ -554,7 +554,7 @@ void CInfClassCharacter::HandleWeaponSwitch()
 	}
 }
 
-void CInfClassCharacter::FireWeapon()
+void CIcCharacter::FireWeapon()
 {
 	if(m_AntiFireTime > 0)
 		return;
@@ -643,7 +643,7 @@ void CInfClassCharacter::FireWeapon()
 	}
 }
 
-bool CInfClassCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDamageType DamageType, float *pDamagePointsLeft)
+bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDamageType DamageType, float *pDamagePointsLeft)
 {
 	float TakenPlaceholder{};
 	float &DamageLeft = pDamagePointsLeft ? *pDamagePointsLeft : TakenPlaceholder;
@@ -702,7 +702,7 @@ bool CInfClassCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From,
 
 	//KillerPlayer
 	CInfClassPlayer *pKillerPlayer = GameController()->GetPlayer(From);
-	CInfClassCharacter *pKillerChar = nullptr;
+	CIcCharacter *pKillerChar = nullptr;
 	if(pKillerPlayer)
 		pKillerChar = pKillerPlayer->GetCharacter();
 
@@ -890,7 +890,7 @@ bool CInfClassCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From,
 	return true;
 }
 
-bool CInfClassCharacter::Heal(int HitPoints, std::optional<int> FromCid)
+bool CIcCharacter::Heal(int HitPoints, std::optional<int> FromCid)
 {
 	if(GetClass() && GetClass()->IsHealingDisabled())
 	{
@@ -916,7 +916,7 @@ bool CInfClassCharacter::Heal(int HitPoints, std::optional<int> FromCid)
 	return Healed;
 }
 
-bool CInfClassCharacter::GiveHealth(int HitPoints, std::optional<int> FromCid)
+bool CIcCharacter::GiveHealth(int HitPoints, std::optional<int> FromCid)
 {
 	if(GetClass() && GetClass()->IsHealingDisabled())
 	{
@@ -941,7 +941,7 @@ bool CInfClassCharacter::GiveHealth(int HitPoints, std::optional<int> FromCid)
 	return Healed;
 }
 
-bool CInfClassCharacter::GiveArmor(int HitPoints, std::optional<int> FromCid)
+bool CIcCharacter::GiveArmor(int HitPoints, std::optional<int> FromCid)
 {
 	if(GetClass() && GetClass()->IsHealingDisabled())
 	{
@@ -966,12 +966,12 @@ bool CInfClassCharacter::GiveArmor(int HitPoints, std::optional<int> FromCid)
 	return Armored;
 }
 
-void CInfClassCharacter::SetJumpsLimit(int Limit)
+void CIcCharacter::SetJumpsLimit(int Limit)
 {
 	m_Core.m_Jumps = Limit;
 }
 
-EPlayerClass CInfClassCharacter::GetPlayerClass() const
+EPlayerClass CIcCharacter::GetPlayerClass() const
 {
 	if(!m_pPlayer)
 		return EPlayerClass::None;
@@ -979,12 +979,12 @@ EPlayerClass CInfClassCharacter::GetPlayerClass() const
 		return m_pPlayer->GetClass();
 }
 
-void CInfClassCharacter::SetDropLevel(int Level)
+void CIcCharacter::SetDropLevel(int Level)
 {
 	m_DropLevel = Level;
 }
 
-void CInfClassCharacter::HandleDamage(int From, int Damage, EDamageType DamageType)
+void CIcCharacter::HandleDamage(int From, int Damage, EDamageType DamageType)
 {
 	if(!m_TakenDamageDetails.IsEmpty())
 	{
@@ -1011,7 +1011,7 @@ void CInfClassCharacter::HandleDamage(int From, int Damage, EDamageType DamageTy
 	m_TakenDamageDetails.Add(Hit);
 }
 
-void CInfClassCharacter::OnTotalHealthChanged(int Difference)
+void CIcCharacter::OnTotalHealthChanged(int Difference)
 {
 	if(Difference > 0)
 	{
@@ -1024,7 +1024,7 @@ void CInfClassCharacter::OnTotalHealthChanged(int Difference)
 	}
 }
 
-void CInfClassCharacter::PrepareToDie(DeathContext *pContext)
+void CIcCharacter::PrepareToDie(DeathContext *pContext)
 {
 	switch(pContext->DamageType)
 	{
@@ -1065,27 +1065,27 @@ void CInfClassCharacter::PrepareToDie(DeathContext *pContext)
 }
 
 // TODO: Move those to CInfClassHuman
-bool CInfClassCharacter::PositionIsLocked() const
+bool CIcCharacter::PositionIsLocked() const
 {
 	return m_PositionLocked;
 }
 
-void CInfClassCharacter::LockPosition()
+void CIcCharacter::LockPosition()
 {
 	m_PositionLocked = true;
 }
 
-void CInfClassCharacter::UnlockPosition()
+void CIcCharacter::UnlockPosition()
 {
 	m_PositionLocked = false;
 }
 
-void CInfClassCharacter::CancelLoveEffect()
+void CIcCharacter::CancelLoveEffect()
 {
 	m_LoveTick = -1;
 }
 
-void CInfClassCharacter::PutToSleep(float Duration, std::optional<int> FromCid)
+void CIcCharacter::PutToSleep(float Duration, std::optional<int> FromCid)
 {
 	int NewTicks = Server()->TickSpeed() * Duration;
 	if (NewTicks > m_SleepingTicks)
@@ -1095,17 +1095,17 @@ void CInfClassCharacter::PutToSleep(float Duration, std::optional<int> FromCid)
 	}
 }
 
-void CInfClassCharacter::CancelSleeping()
+void CIcCharacter::CancelSleeping()
 {
 	m_SleepingTicks = 0;
 }
 
-bool CInfClassCharacter::IsInSlowMotion() const
+bool CIcCharacter::IsInSlowMotion() const
 {
 	return m_SlowMotionTick > 0;
 }
 
-float CInfClassCharacter::SlowMotionEffect(float Duration, std::optional<int> FromCid)
+float CIcCharacter::SlowMotionEffect(float Duration, std::optional<int> FromCid)
 {
 	if(Duration == 0)
 		return 0.0f;
@@ -1130,17 +1130,17 @@ float CInfClassCharacter::SlowMotionEffect(float Duration, std::optional<int> Fr
 	return AddedDuration;
 }
 
-void CInfClassCharacter::CancelSlowMotion()
+void CIcCharacter::CancelSlowMotion()
 {
 	m_SlowMotionTick = -1;
 }
 
-bool CInfClassCharacter::IsPoisoned() const
+bool CIcCharacter::IsPoisoned() const
 {
 	return m_Poison > 0;
 }
 
-void CInfClassCharacter::Poison(int Count, int From, EDamageType DamageType, float Interval)
+void CIcCharacter::Poison(int Count, int From, EDamageType DamageType, float Interval)
 {
 	bool JustPoisoned = m_PoisonTick > Server()->Tick();
 	if(Count > m_Poison + JustPoisoned ? 1 : 0)
@@ -1152,24 +1152,24 @@ void CInfClassCharacter::Poison(int Count, int From, EDamageType DamageType, flo
 	}
 }
 
-void CInfClassCharacter::ResetPoisonEffect()
+void CIcCharacter::ResetPoisonEffect()
 {
 	m_Poison = 0;
 	// Do not reset m_PoisonTick here to prevent extra poisoning
 }
 
-void CInfClassCharacter::ResetMovementsInput()
+void CIcCharacter::ResetMovementsInput()
 {
 	m_Input.m_Jump = 0;
 	m_Input.m_Direction = 0;
 }
 
-void CInfClassCharacter::ResetHookInput()
+void CIcCharacter::ResetHookInput()
 {
 	m_Input.m_Hook = 0;
 }
 
-void CInfClassCharacter::AddHelper(int HelperCid, float Time)
+void CIcCharacter::AddHelper(int HelperCid, float Time)
 {
 	if(HelperCid == GetCid())
 		return;
@@ -1190,13 +1190,13 @@ void CInfClassCharacter::AddHelper(int HelperCid, float Time)
 	dbg_msg("tracking", "%d added as a helper of %d for %d", HelperCid, GetCid(), m_LastHelper.m_Tick);
 }
 
-void CInfClassCharacter::ResetHelpers()
+void CIcCharacter::ResetHelpers()
 {
 	m_LastHelper.m_Cid = -1;
 	m_LastHelper.m_Tick = 0;
 }
 
-void CInfClassCharacter::GetDeathContext(const SDamageContext &DamageContext, DeathContext *pContext) const
+void CIcCharacter::GetDeathContext(const SDamageContext &DamageContext, DeathContext *pContext) const
 {
 	pContext->Killer = DamageContext.Killer;
 	pContext->DamageType = DamageContext.DamageType;
@@ -1310,7 +1310,7 @@ void CInfClassCharacter::GetDeathContext(const SDamageContext &DamageContext, De
 	{
 		if(IsPassenger())
 		{
-			const CInfClassCharacter *pDriver = GetTaxiDriver();
+			const CIcCharacter *pDriver = GetTaxiDriver();
 			if(pDriver->m_LastHookerTick + 1 >= Server()->Tick())
 			{
 				Killers = pDriver->m_LastHookers;
@@ -1418,11 +1418,11 @@ void CInfClassCharacter::GetDeathContext(const SDamageContext &DamageContext, De
 
 	if((Killer >= 0) && (GetCid() != Killer))
 	{
-		const CInfClassCharacter *pKiller = GameController()->GetCharacter(Killer);
+		const CIcCharacter *pKiller = GameController()->GetCharacter(Killer);
 		if(pKiller && pKiller->m_LastHelper.m_Tick > 0)
 		{
 			// Check if the helper is in game
-			const CInfClassCharacter *pKillerHelper = GameController()->GetCharacter(pKiller->m_LastHelper.m_Cid);
+			const CIcCharacter *pKillerHelper = GameController()->GetCharacter(pKiller->m_LastHelper.m_Cid);
 			if(pKillerHelper)
 			{
 				AddUnique(pKiller->m_LastHelper.m_Cid, &Assistants);
@@ -1468,13 +1468,13 @@ void CInfClassCharacter::GetDeathContext(const SDamageContext &DamageContext, De
 	pContext->Assistant = Assistant;
 }
 
-void CInfClassCharacter::UpdateLastHookers(const ClientsArray &Hookers, int HookerTick)
+void CIcCharacter::UpdateLastHookers(const ClientsArray &Hookers, int HookerTick)
 {
 	m_LastHookers = Hookers;
 	m_LastHookerTick = HookerTick;
 }
 
-void CInfClassCharacter::UpdateLastEnforcer(int ClientId, float Force, EDamageType DamageType, int Tick)
+void CIcCharacter::UpdateLastEnforcer(int ClientId, float Force, EDamageType DamageType, int Tick)
 {
 	if(Force < 3)
 		return;
@@ -1501,7 +1501,7 @@ void CInfClassCharacter::UpdateLastEnforcer(int ClientId, float Force, EDamageTy
 	m_EnforcersInfo.Add(Info);
 }
 
-void CInfClassCharacter::RemoveReferencesToCid(int ClientId)
+void CIcCharacter::RemoveReferencesToCid(int ClientId)
 {
 	for(std::size_t i = 0; i < m_EnforcersInfo.Size(); ++i)
 	{
@@ -1526,7 +1526,7 @@ void CInfClassCharacter::RemoveReferencesToCid(int ClientId)
 	std::erase_if(m_TakenDamageDetails, [ClientId](const CDamagePoint &DP) { return DP.From == ClientId; });
 }
 
-void CInfClassCharacter::SaturateVelocity(vec2 Force, float MaxSpeed)
+void CIcCharacter::SaturateVelocity(vec2 Force, float MaxSpeed)
 {
 	if(length(Force) < 0.00001)
 		return;
@@ -1560,17 +1560,17 @@ void CInfClassCharacter::SaturateVelocity(vec2 Force, float MaxSpeed)
 	m_Core.m_Vel = NewVel;
 }
 
-bool CInfClassCharacter::IsPassenger() const
+bool CIcCharacter::IsPassenger() const
 {
 	return m_Core.m_IsPassenger;
 }
 
-bool CInfClassCharacter::HasPassenger() const
+bool CIcCharacter::HasPassenger() const
 {
 	return m_Core.m_Passenger;
 }
 
-CInfClassCharacter *CInfClassCharacter::GetPassenger() const
+CIcCharacter *CIcCharacter::GetPassenger() const
 {
 	if(!m_Core.m_Passenger)
 	{
@@ -1587,7 +1587,7 @@ CInfClassCharacter *CInfClassCharacter::GetPassenger() const
 	return nullptr;
 }
 
-CInfClassCharacter *CInfClassCharacter::GetTaxi() const
+CIcCharacter *CIcCharacter::GetTaxi() const
 {
 	if(!IsPassenger())
 	{
@@ -1604,10 +1604,10 @@ CInfClassCharacter *CInfClassCharacter::GetTaxi() const
 	return nullptr;
 }
 
-CInfClassCharacter *CInfClassCharacter::GetTaxiDriver() const
+CIcCharacter *CIcCharacter::GetTaxiDriver() const
 {
-	CInfClassCharacter *pDriver = nullptr;
-	CInfClassCharacter *pTaxi = GetTaxi();
+	CIcCharacter *pDriver = nullptr;
+	CIcCharacter *pTaxi = GetTaxi();
 	while(pTaxi)
 	{
 		pDriver = pTaxi;
@@ -1616,17 +1616,17 @@ CInfClassCharacter *CInfClassCharacter::GetTaxiDriver() const
 	return pDriver;
 }
 
-void CInfClassCharacter::SetPassenger(CInfClassCharacter *pPassenger)
+void CIcCharacter::SetPassenger(CIcCharacter *pPassenger)
 {
 	m_Core.SetPassenger(pPassenger ? &pPassenger->m_Core : nullptr);
 }
 
-void CInfClassCharacter::TryBecomePassenger(CInfClassCharacter *pTargetDriver)
+void CIcCharacter::TryBecomePassenger(CIcCharacter *pTargetDriver)
 {
 	m_Core.TryBecomePassenger(&pTargetDriver->m_Core);
 }
 
-int CInfClassCharacter::GetInfZoneTick() // returns how many ticks long a player is already in InfZone
+int CIcCharacter::GetInfZoneTick() // returns how many ticks long a player is already in InfZone
 {
 	if(m_InfZoneTick < 0)
 		return 0;
@@ -1634,12 +1634,12 @@ int CInfClassCharacter::GetInfZoneTick() // returns how many ticks long a player
 	return Server()->Tick() - m_InfZoneTick;
 }
 
-bool CInfClassCharacter::HasSuperWeaponIndicator() const
+bool CIcCharacter::HasSuperWeaponIndicator() const
 {
 	return m_HasIndicator;
 }
 
-void CInfClassCharacter::SetSuperWeaponIndicatorEnabled(bool Enabled)
+void CIcCharacter::SetSuperWeaponIndicatorEnabled(bool Enabled)
 {
 	if(m_HasIndicator == Enabled)
 		return;
@@ -1652,7 +1652,7 @@ void CInfClassCharacter::SetSuperWeaponIndicatorEnabled(bool Enabled)
 	m_HasIndicator = Enabled;
 }
 
-EInfclassWeapon CInfClassCharacter::GetInfWeaponId(int WID) const
+EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 {
 	if(WID < 0)
 		WID = m_ActiveWeapon;
@@ -1758,22 +1758,22 @@ EInfclassWeapon CInfClassCharacter::GetInfWeaponId(int WID) const
 	}
 }
 
-CGameWorld *CInfClassCharacter::GameWorld() const
+CGameWorld *CIcCharacter::GameWorld() const
 {
 	return m_pGameController->GameWorld();
 }
 
-const IServer *CInfClassCharacter::Server() const
+const IServer *CIcCharacter::Server() const
 {
 	return m_pGameController->GameWorld()->Server();
 }
 
-void CInfClassCharacter::OpenClassChooser()
+void CIcCharacter::OpenClassChooser()
 {
 	GameController()->OnClassChooserRequested(this);
 }
 
-void CInfClassCharacter::HandleMapMenu()
+void CIcCharacter::HandleMapMenu()
 {
 	CInfClassPlayer *pPlayer = GetPlayer();
 	if(GetPlayerClass() != EPlayerClass::None)
@@ -1858,7 +1858,7 @@ void CInfClassCharacter::HandleMapMenu()
 	}
 }
 
-void CInfClassCharacter::HandleMapMenuClicked()
+void CIcCharacter::HandleMapMenuClicked()
 {
 	bool Random = false;
 
@@ -1897,7 +1897,7 @@ void CInfClassCharacter::HandleMapMenuClicked()
 	}
 }
 
-void CInfClassCharacter::HandleWeaponsRegen()
+void CIcCharacter::HandleWeaponsRegen()
 {
 	if(!m_pClass)
 	{
@@ -1932,7 +1932,7 @@ void CInfClassCharacter::HandleWeaponsRegen()
 	}
 }
 
-void CInfClassCharacter::HandleIndirectKillerCleanup()
+void CIcCharacter::HandleIndirectKillerCleanup()
 {
 	bool CharacterControlsItsPosition = IsGrounded() || m_Core.m_HookState == HOOK_GRABBED || m_Core.m_IsPassenger;
 
@@ -1985,7 +1985,7 @@ void CInfClassCharacter::HandleIndirectKillerCleanup()
 	}
 }
 
-void CInfClassCharacter::Die(int Killer, int Weapon)
+void CIcCharacter::Die(int Killer, int Weapon)
 {
 	EDamageType DamageType = EDamageType::INVALID;
 	switch(Weapon)
@@ -2004,9 +2004,9 @@ void CInfClassCharacter::Die(int Killer, int Weapon)
 	Die(Killer, DamageType);
 }
 
-void CInfClassCharacter::Die(int Killer, EDamageType DamageType)
+void CIcCharacter::Die(int Killer, EDamageType DamageType)
 {
-	dbg_msg("server", "CInfClassCharacter::Die: victim: %d, killer: %d, DT: %d", GetCid(), Killer, static_cast<int>(DamageType));
+	dbg_msg("server", "CIcCharacter::Die: victim: %d, killer: %d, DT: %d", GetCid(), Killer, static_cast<int>(DamageType));
 
 	SDamageContext DamageContext;
 	DamageContext.Killer = Killer;
@@ -2019,7 +2019,7 @@ void CInfClassCharacter::Die(int Killer, EDamageType DamageType)
 	Die(&Context);
 }
 
-void CInfClassCharacter::Die(DeathContext *pContext)
+void CIcCharacter::Die(DeathContext *pContext)
 {
 	if(!IsAlive())
 	{
@@ -2059,28 +2059,28 @@ void CInfClassCharacter::Die(DeathContext *pContext)
 	}
 }
 
-void CInfClassCharacter::GiveWeapon(int Weapon, int Ammo)
+void CIcCharacter::GiveWeapon(int Weapon, int Ammo)
 {
 	m_aWeapons[Weapon].m_Got = true;
 	AddAmmo(Weapon, Ammo);
 }
 
-void CInfClassCharacter::SetActiveWeapon(int Weapon)
+void CIcCharacter::SetActiveWeapon(int Weapon)
 {
 	m_ActiveWeapon = Weapon;
 }
 
-void CInfClassCharacter::SetLastWeapon(int Weapon)
+void CIcCharacter::SetLastWeapon(int Weapon)
 {
 	m_LastWeapon = Weapon;
 }
 
-bool CInfClassCharacter::HasWeapon(int Weapon) const
+bool CIcCharacter::HasWeapon(int Weapon) const
 {
 	return m_aWeapons[Weapon].m_Got;
 }
 
-bool CInfClassCharacter::HasWeapon(EWeaponClass WeaponClass) const
+bool CIcCharacter::HasWeapon(EWeaponClass WeaponClass) const
 {
 	for (int WeaponSlot = 0; WeaponSlot < NUM_WEAPONS; ++WeaponSlot)
 	{
@@ -2098,7 +2098,7 @@ bool CInfClassCharacter::HasWeapon(EWeaponClass WeaponClass) const
 	return false;
 }
 
-void CInfClassCharacter::TakeAllWeapons()
+void CIcCharacter::TakeAllWeapons()
 {
 	for (WeaponStat &weapon : m_aWeapons)
 	{
@@ -2107,7 +2107,7 @@ void CInfClassCharacter::TakeAllWeapons()
 	}
 }
 
-void CInfClassCharacter::AddAmmo(int Weapon, int Ammo)
+void CIcCharacter::AddAmmo(int Weapon, int Ammo)
 {
 	if(!m_aWeapons[Weapon].m_Got)
 		return;
@@ -2125,12 +2125,12 @@ void CInfClassCharacter::AddAmmo(int Weapon, int Ammo)
 	m_aWeapons[Weapon].m_Ammo = minimum(Params.MaxAmmo, TargetAmmo);
 }
 
-int CInfClassCharacter::GetAmmo(int Weapon) const
+int CIcCharacter::GetAmmo(int Weapon) const
 {
 	return m_aWeapons[Weapon].m_Ammo;
 }
 
-int CInfClassCharacter::TakeAmmo(int Weapon, int Amount)
+int CIcCharacter::TakeAmmo(int Weapon, int Amount)
 {
 	auto &Ammo = m_aWeapons[Weapon].m_Ammo;
 	if(!m_aWeapons[Weapon].m_Got || (Ammo < 0))
@@ -2142,12 +2142,12 @@ int CInfClassCharacter::TakeAmmo(int Weapon, int Amount)
 	return Amount;
 }
 
-CInfClassPlayer *CInfClassCharacter::GetPlayer()
+CInfClassPlayer *CIcCharacter::GetPlayer()
 {
 	return static_cast<CInfClassPlayer*>(m_pPlayer);
 }
 
-void CInfClassCharacter::SetClass(CInfClassPlayerClass *pClass)
+void CIcCharacter::SetClass(CInfClassPlayerClass *pClass)
 {
 	m_pClass = pClass;
 
@@ -2171,47 +2171,47 @@ void CInfClassCharacter::SetClass(CInfClassPlayerClass *pClass)
 	}
 }
 
-CInputCount CInfClassCharacter::CountFireInput() const
+CInputCount CIcCharacter::CountFireInput() const
 {
 	return CountInput(m_LatestPrevInput.m_Fire, m_LatestInput.m_Fire);
 }
 
-bool CInfClassCharacter::FireJustPressed() const
+bool CIcCharacter::FireJustPressed() const
 {
 	return m_LatestInput.m_Fire & 1;
 }
 
-void CInfClassCharacter::SetReloadTimer(int Ticks)
+void CIcCharacter::SetReloadTimer(int Ticks)
 {
 	m_ReloadTimer = Ticks;
 }
 
-void CInfClassCharacter::SetReloadDuration(float Seconds)
+void CIcCharacter::SetReloadDuration(float Seconds)
 {
 	m_ReloadTimer = Server()->TickSpeed() * Seconds;
 }
 
-void CInfClassCharacter::SetAntiFire()
+void CIcCharacter::SetAntiFire()
 {
 	SetAntiFireDuration(Config()->m_InfAntiFireTime / 1000.0f);
 }
 
-void CInfClassCharacter::SetAntiFireDuration(float Seconds)
+void CIcCharacter::SetAntiFireDuration(float Seconds)
 {
 	m_AntiFireTime = Server()->TickSpeed() * Seconds;
 }
 
-vec2 CInfClassCharacter::GetHookPos() const
+vec2 CIcCharacter::GetHookPos() const
 {
 	return m_Core.m_HookPos;
 }
 
-int CInfClassCharacter::GetHookedPlayer() const
+int CIcCharacter::GetHookedPlayer() const
 {
 	return m_Core.HookedPlayer();
 }
 
-void CInfClassCharacter::SetHookedPlayer(int ClientId)
+void CIcCharacter::SetHookedPlayer(int ClientId)
 {
 	m_Core.SetHookedPlayer(ClientId);
 
@@ -2221,7 +2221,7 @@ void CInfClassCharacter::SetHookedPlayer(int ClientId)
 		m_Core.m_TriggeredEvents |= COREEVENT_HOOK_ATTACH_PLAYER;
 		m_Core.m_HookState = HOOK_GRABBED;
 
-		const CInfClassCharacter *pCharacter = GameController()->GetCharacter(ClientId);
+		const CIcCharacter *pCharacter = GameController()->GetCharacter(ClientId);
 		const CCharacterCore *pCharCore = pCharacter ? &pCharacter->m_Core : nullptr;
 		if(pCharCore)
 		{
@@ -2230,27 +2230,27 @@ void CInfClassCharacter::SetHookedPlayer(int ClientId)
 	}
 }
 
-vec2 CInfClassCharacter::Velocity() const
+vec2 CIcCharacter::Velocity() const
 {
 	return m_Core.m_Vel;
 }
 
-float CInfClassCharacter::Speed() const
+float CIcCharacter::Speed() const
 {
 	return length(m_Core.m_Vel);
 }
 
-CGameContext *CInfClassCharacter::GameContext() const
+CGameContext *CIcCharacter::GameContext() const
 {
 	return m_pGameController->GameServer();
 }
 
-bool CInfClassCharacter::CanDie() const
+bool CIcCharacter::CanDie() const
 {
 	return IsAlive() && m_pClass && m_pClass->CanDie();
 }
 
-bool CInfClassCharacter::CanJump() const
+bool CIcCharacter::CanJump() const
 {
 	// 1 bit = to keep track if a jump has been made on this input
 	if(m_Core.m_Jumped & 1)
@@ -2262,37 +2262,37 @@ bool CInfClassCharacter::CanJump() const
 	return true;
 }
 
-bool CInfClassCharacter::IsInvisible() const
+bool CIcCharacter::IsInvisible() const
 {
 	return m_IsInvisible;
 }
 
-bool CInfClassCharacter::HasGrantedInvisibility() const
+bool CIcCharacter::HasGrantedInvisibility() const
 {
 	return Server()->Tick() < m_GrantedInvisibilityUntilTick;
 }
 
-bool CInfClassCharacter::IsSolo() const
+bool CIcCharacter::IsSolo() const
 {
 	return m_Core.m_Solo;
 }
 
-bool CInfClassCharacter::IsInvincible() const
+bool CIcCharacter::IsInvincible() const
 {
 	return m_Invincible || (m_ProtectionTick > 0);
 }
 
-void CInfClassCharacter::SetInvincible(int Invincible)
+void CIcCharacter::SetInvincible(int Invincible)
 {
 	m_Invincible = Invincible;
 }
 
-bool CInfClassCharacter::HasHallucination() const
+bool CIcCharacter::HasHallucination() const
 {
 	return m_HallucinationTick > 0;
 }
 
-void CInfClassCharacter::Freeze(float Time, int Player, FREEZEREASON Reason)
+void CIcCharacter::Freeze(float Time, int Player, FREEZEREASON Reason)
 {
 	if(m_IsFrozen && m_FreezeReason == FREEZEREASON_UNDEAD)
 		return;
@@ -2306,12 +2306,12 @@ void CInfClassCharacter::Freeze(float Time, int Player, FREEZEREASON Reason)
 	m_Core.m_FreezeStart = Server()->Tick();
 }
 
-bool CInfClassCharacter::IsFrozen() const
+bool CIcCharacter::IsFrozen() const
 {
 	return m_IsFrozen;
 }
 
-void CInfClassCharacter::Unfreeze()
+void CIcCharacter::Unfreeze()
 {
 	m_IsFrozen = false;
 	m_FrozenTime = 0;
@@ -2330,7 +2330,7 @@ void CInfClassCharacter::Unfreeze()
 	}
 }
 
-void CInfClassCharacter::TryUnfreeze(int UnfreezerCid)
+void CIcCharacter::TryUnfreeze(int UnfreezerCid)
 {
 	if(!IsFrozen())
 		return;
@@ -2349,22 +2349,22 @@ void CInfClassCharacter::TryUnfreeze(int UnfreezerCid)
 	}
 }
 
-int CInfClassCharacter::GetFreezer() const
+int CIcCharacter::GetFreezer() const
 {
 	return IsFrozen() ? m_LastFreezer : -1;
 }
 
-int CInfClassCharacter::FreezeStartTick() const
+int CIcCharacter::FreezeStartTick() const
 {
 	return m_Core.m_FreezeStart;
 }
 
-void CInfClassCharacter::ResetBlindness()
+void CIcCharacter::ResetBlindness()
 {
 	m_BlindnessTicks = 0;
 }
 
-void CInfClassCharacter::MakeBlind(float Duration, std::optional<int> FromCid)
+void CIcCharacter::MakeBlind(float Duration, std::optional<int> FromCid)
 {
 	m_BlindnessTicks = Server()->TickSpeed() * Duration;
 	m_LastBlinder = FromCid;
@@ -2372,7 +2372,7 @@ void CInfClassCharacter::MakeBlind(float Duration, std::optional<int> FromCid)
 	GameServer()->SendEmoticon(GetCid(), EMOTICON_QUESTION);
 }
 
-float CInfClassCharacter::WebHookLength() const
+float CIcCharacter::WebHookLength() const
 {
 	if((GetEffectiveHookMode() != 1) && !g_Config.m_InfSpiderCatchHumans)
 		return 0;
@@ -2383,12 +2383,12 @@ float CInfClassCharacter::WebHookLength() const
 	return distance(m_Core.m_Pos, m_Core.m_HookPos);
 }
 
-void CInfClassCharacter::GiveRandomClassSelectionBonus()
+void CIcCharacter::GiveRandomClassSelectionBonus()
 {
 	IncreaseArmor(10);
 }
 
-void CInfClassCharacter::MakeVisible()
+void CIcCharacter::MakeVisible()
 {
 	if(m_IsInvisible)
 	{
@@ -2397,12 +2397,12 @@ void CInfClassCharacter::MakeVisible()
 	}
 }
 
-void CInfClassCharacter::MakeInvisible()
+void CIcCharacter::MakeInvisible()
 {
 	m_IsInvisible = true;
 }
 
-void CInfClassCharacter::GrantInvisibility(float Duration)
+void CIcCharacter::GrantInvisibility(float Duration)
 {
 	m_GrantedInvisibilityUntilTick = Server()->Tick() + Server()->TickSpeed() * Duration;
 	if(Duration > 0)
@@ -2411,7 +2411,7 @@ void CInfClassCharacter::GrantInvisibility(float Duration)
 	}
 }
 
-void CInfClassCharacter::SetSoloForDuration(float Duration)
+void CIcCharacter::SetSoloForDuration(float Duration)
 {
 	if(Duration > 0)
 		m_SoloUntilTick = Server()->Tick() + Server()->TickSpeed() * Duration;
@@ -2421,7 +2421,7 @@ void CInfClassCharacter::SetSoloForDuration(float Duration)
 	UpdateCoreSolo();
 }
 
-void CInfClassCharacter::GrantSpawnProtection(float Duration)
+void CIcCharacter::GrantSpawnProtection(float Duration)
 {
 	// Indicate time left being protected via eyes
 	m_ProtectionTick = Server()->TickSpeed() * Duration;
@@ -2431,7 +2431,7 @@ void CInfClassCharacter::GrantSpawnProtection(float Duration)
 	}
 }
 
-void CInfClassCharacter::PreCoreTick()
+void CIcCharacter::PreCoreTick()
 {
 	m_InputBackup = m_Input;
 	const int CurrentTick = Server()->Tick();
@@ -2531,7 +2531,7 @@ void CInfClassCharacter::PreCoreTick()
 	}
 }
 
-void CInfClassCharacter::PostCoreTick()
+void CIcCharacter::PostCoreTick()
 {
 	CCharacter::PostCoreTick();
 
@@ -2564,7 +2564,7 @@ void CInfClassCharacter::PostCoreTick()
 	m_Input = m_InputBackup;
 }
 
-void CInfClassCharacter::SnapCharacter(int SnappingClient, int Id)
+void CIcCharacter::SnapCharacter(int SnappingClient, int Id)
 {
 	CCharacterCore *pCore;
 	int Tick, Weapon = m_ActiveWeapon;
@@ -2683,7 +2683,7 @@ void CInfClassCharacter::SnapCharacter(int SnappingClient, int Id)
 	pCharacter->m_PlayerFlags = GetPlayer()->m_PlayerFlags;
 }
 
-void CInfClassCharacter::ClassSpawnAttributes()
+void CIcCharacter::ClassSpawnAttributes()
 {
 	int Armor = m_Armor;
 	m_IsInvisible = false;
@@ -2697,14 +2697,14 @@ void CInfClassCharacter::ClassSpawnAttributes()
 	SetHealthArmor(10, Armor);
 }
 
-void CInfClassCharacter::DestroyChildEntities()
+void CIcCharacter::DestroyChildEntities()
 {
 	GameController()->DestroyChildEntities(GetCid());
 
 	m_HookMode = 0;
 }
 
-void CInfClassCharacter::FreeChildSnapIds()
+void CIcCharacter::FreeChildSnapIds()
 {
 	if(m_FlagId >= 0)
 	{
@@ -2723,12 +2723,12 @@ void CInfClassCharacter::FreeChildSnapIds()
 	}
 }
 
-void CInfClassCharacter::UpdateCoreSolo()
+void CIcCharacter::UpdateCoreSolo()
 {
 	SetSolo(m_SoloUntilTick.has_value());
 }
 
-void CInfClassCharacter::UpdateTuningParam()
+void CIcCharacter::UpdateTuningParam()
 {
 	CTuningParams* pTuningParams = &m_pPlayer->m_NextTuningParams;
 	

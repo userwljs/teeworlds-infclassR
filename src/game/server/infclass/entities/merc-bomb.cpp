@@ -9,7 +9,7 @@
 #include <game/server/infclass/infcgamecontroller.h>
 
 #include "growingexplosion.h"
-#include "infccharacter.h"
+#include "ic_character.h"
 
 int CMercenaryBomb::EntityId{};
 static const float s_MercBombRadius = 80.0f;
@@ -55,10 +55,10 @@ void CMercenaryBomb::Tick()
 		m_LoadingTick--;
 	
 	// Find other players
-	CInfClassCharacter *pTriggerCharacter = nullptr;
+	CIcCharacter *pTriggerCharacter = nullptr;
 	float ClosestLength = CCharacterCore::PhysicalSize() + GetProximityRadius();
 
-	for(TEntityPtr<CInfClassCharacter> pChr = GameWorld()->FindFirst<CInfClassCharacter>(); pChr; ++pChr)
+	for(TEntityPtr<CIcCharacter> pChr = GameWorld()->FindFirst<CIcCharacter>(); pChr; ++pChr)
 	{
 		if(!pChr->IsInfected() || !pChr->CanDie())
 			continue;

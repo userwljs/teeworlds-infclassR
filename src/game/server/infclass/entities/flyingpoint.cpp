@@ -3,7 +3,7 @@
 #include "flyingpoint.h"
 
 #include <game/server/infclass/classes/infcplayerclass.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
 int CFlyingPoint::EntityId{};
@@ -19,7 +19,7 @@ CFlyingPoint::CFlyingPoint(CGameContext *pGameContext, vec2 Pos, int TrackedPlay
 
 void CFlyingPoint::Tick()
 {
-	CInfClassCharacter *OwnerChar = GetOwnerCharacter();
+	CIcCharacter *OwnerChar = GetOwnerCharacter();
 	if(OwnerChar)
 	{
 		float Dist = distance(m_Pos, OwnerChar->GetPos());

@@ -4,13 +4,13 @@
 
 #include <game/infclass/damage_type.h>
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/infcplayer.h>
 
 int CLaserTeleport::EntityId{};
 
-void CLaserTeleport::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, int SelfDamage)
+void CLaserTeleport::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext, int SelfDamage)
 {
 	if(pFireContext->NoAmmo)
 		return;
@@ -39,7 +39,7 @@ void CLaserTeleport::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *
 	new CLaserTeleport(pCharacter->GameServer(), PortalPos.value(), OldPos);
 }
 
-std::optional<vec2> CLaserTeleport::FindPortalPosition(CInfClassCharacter *pCharacter)
+std::optional<vec2> CLaserTeleport::FindPortalPosition(CIcCharacter *pCharacter)
 {
 	vec2 PortalShift = vec2(pCharacter->m_Input.m_TargetX, pCharacter->m_Input.m_TargetY);
 	vec2 PortalDir = normalize(PortalShift);

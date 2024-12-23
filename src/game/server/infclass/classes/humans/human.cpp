@@ -17,8 +17,8 @@
 #include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/growingexplosion.h>
 #include <game/server/infclass/entities/hero-flag.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_projectile.h>
-#include <game/server/infclass/entities/infccharacter.h>
 #include <game/server/infclass/entities/laser-teleport.h>
 #include <game/server/infclass/entities/looper-wall.h>
 #include <game/server/infclass/entities/medic-laser.h>
@@ -52,7 +52,7 @@ CInfClassHuman *CInfClassHuman::GetInstance(CInfClassPlayer *pPlayer)
 	return GetInstance(pClass);
 }
 
-CInfClassHuman *CInfClassHuman::GetInstance(CInfClassCharacter *pCharacter)
+CInfClassHuman *CInfClassHuman::GetInstance(CIcCharacter *pCharacter)
 {
 	CInfClassPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
 	return GetInstance(pClass);
@@ -584,7 +584,7 @@ void CInfClassHuman::OnCharacterDamage(SDamageContext *pContext)
 	}
 }
 
-void CInfClassHuman::OnKilledCharacter(CInfClassCharacter *pVictim, const DeathContext &Context)
+void CInfClassHuman::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context)
 {
 	if(!m_pCharacter)
 		return;
@@ -635,7 +635,7 @@ void CInfClassHuman::OnKilledCharacter(CInfClassCharacter *pVictim, const DeathC
 	}
 }
 
-void CInfClassHuman::OnHumanHammerHitHuman(CInfClassCharacter *pTarget)
+void CInfClassHuman::OnHumanHammerHitHuman(CIcCharacter *pTarget)
 {
 	if(GetPlayerClass() == EPlayerClass::Medic)
 	{
@@ -676,7 +676,7 @@ void CInfClassHuman::OnHookAttachedPlayer()
 	if(!GameController()->GetTaxiMode())
 		return;
 
-	CInfClassCharacter *pHookedCharacter = GameController()->GetCharacter(m_pCharacter->GetHookedPlayer());
+	CIcCharacter *pHookedCharacter = GameController()->GetCharacter(m_pCharacter->GetHookedPlayer());
 	if(!pHookedCharacter || !pHookedCharacter->IsHuman())
 		return;
 
@@ -714,7 +714,7 @@ void CInfClassHuman::HandleNinja()
 		if(NewPos != OldPos)
 		{
 			// Find other players
-			for(TEntityPtr<CInfClassCharacter> pTarget = GameWorld()->FindFirst<CInfClassCharacter>(); pTarget; ++pTarget)
+			for(TEntityPtr<CIcCharacter> pTarget = GameWorld()->FindFirst<CIcCharacter>(); pTarget; ++pTarget)
 			{
 				if(m_apHitObjects.Capacity() == m_apHitObjects.Size())
 				{
@@ -817,7 +817,7 @@ void CInfClassHuman::OnHammerFired(WeaponFireContext *pFireContext)
 	int Hits = 0;
 	for(const int TargetCid : Targets)
 	{
-		CInfClassCharacter *pTarget = GameController()->GetCharacter(TargetCid);
+		CIcCharacter *pTarget = GameController()->GetCharacter(TargetCid);
 		if(pTarget->IsSolo())
 			continue;
 
@@ -1193,7 +1193,7 @@ void CInfClassHuman::DestroyChildEntities()
 
 	if(m_pHeroFlag)
 	{
-		// The flag removed in CInfClassCharacter::DestroyChildEntities()
+		// The flag removed in CIcCharacter::DestroyChildEntities()
 		// delete m_pHeroFlag;
 		m_pHeroFlag = nullptr;
 	}
@@ -2076,7 +2076,7 @@ void CInfClassHuman::UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints)
 	pBomb->SetLoad(NewLoad);
 }
 
-void CInfClassHuman::OnHeroFlagTaken(CInfClassCharacter *pHero)
+void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 {
 	if(!m_pCharacter)
 		return;
@@ -2124,7 +2124,7 @@ void CInfClassHuman::OnHeroFlagTaken(CInfClassCharacter *pHero)
 	GameController()->OnHeroFlagCollected(GetCid());
 
 	// Find other players
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		if(p->IsInfected() || p == m_pCharacter)
 			continue;

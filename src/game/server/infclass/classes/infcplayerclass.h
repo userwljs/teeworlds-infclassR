@@ -8,7 +8,7 @@
 class CConfig;
 class CGameContext;
 class CGameWorld;
-class CInfClassCharacter;
+class CIcCharacter;
 class CInfClassGameContext;
 class CInfClassGameController;
 class CInfClassPlayer;
@@ -53,7 +53,7 @@ public:
 	CInfClassPlayerClass(CInfClassPlayer *pPlayer);
 	virtual ~CInfClassPlayerClass() = default;
 
-	void SetCharacter(CInfClassCharacter *character);
+	void SetCharacter(CIcCharacter *character);
 
 	virtual bool IsHuman() const = 0;
 	bool IsZombie() const;
@@ -99,7 +99,7 @@ public:
 	virtual void OnCharacterDeath(EDamageType DamageType);
 	virtual void OnCharacterDamage(SDamageContext *pContext);
 
-	virtual void OnKilledCharacter(CInfClassCharacter *pVictim, const DeathContext &Context);
+	virtual void OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context);
 
 	virtual void OnHookAttachedPlayer();
 
@@ -142,10 +142,10 @@ protected:
 	virtual void DestroyChildEntities();
 	virtual void BroadcastWeaponState() const;
 
-	void CreateHammerHit(const vec2 &ProjStartPos, const CInfClassCharacter *pTarget);
+	void CreateHammerHit(const vec2 &ProjStartPos, const CIcCharacter *pTarget);
 
 	CInfClassPlayer *m_pPlayer = nullptr;
-	CInfClassCharacter *m_pCharacter = nullptr;
+	CIcCharacter *m_pCharacter = nullptr;
 	int m_NormalEmote;
 
 	int m_UpgradeLevel = 0;

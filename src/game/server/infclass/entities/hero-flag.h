@@ -5,7 +5,7 @@
 
 #include "ic_entity.h"
 
-class CInfClassCharacter;
+class CIcCharacter;
 
 class CHeroFlag : public CIcEntity
 {
@@ -20,7 +20,7 @@ public:
 	~CHeroFlag() override;
 
 	void FindPosition();
-	void GiveGift(CInfClassCharacter *pHero);
+	void GiveGift(CIcCharacter *pHero);
 
 	bool IsAvailable() const { return m_HasSpawnPosition; }
 	int GetSpawnTick() const { return m_SpawnTick; }

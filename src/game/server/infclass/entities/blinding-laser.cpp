@@ -6,9 +6,9 @@
 
 #include <game/server/infclass/infcgamecontroller.h>
 
-#include "infccharacter.h"
+#include "ic_character.h"
 
-void CBlindingLaser::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext)
+void CBlindingLaser::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext)
 {
 	if(pFireContext->NoAmmo)
 		return;
@@ -23,7 +23,7 @@ CBlindingLaser::CBlindingLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direct
 {
 }
 
-bool CBlindingLaser::OnCharacterHit(CInfClassCharacter *pHit)
+bool CBlindingLaser::OnCharacterHit(CIcCharacter *pHit)
 {
 	pHit->MakeBlind(Config()->m_InfBlindnessDuration, GetOwner());
 	return true;

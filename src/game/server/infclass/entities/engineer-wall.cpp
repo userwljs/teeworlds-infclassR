@@ -14,7 +14,7 @@
 
 #include "engineer-wall.h"
 #include "game/server/infclass/entities/ic_entity.h"
-#include "infccharacter.h"
+#include "ic_character.h"
 
 static const float g_BarrierMaxLength = 300.0;
 static const float g_BarrierRadius = 0.0;
@@ -54,7 +54,7 @@ void CEngineerWall::Tick()
 		m_WallFlashTicks--;
 
 	// Find other players
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		if(p->IsHuman())
 			continue;
@@ -120,7 +120,7 @@ void CEngineerWall::Snap(int SnappingClient)
 	}
 }
 
-void CEngineerWall::OnHitInfected(CInfClassCharacter *pCharacter)
+void CEngineerWall::OnHitInfected(CIcCharacter *pCharacter)
 {
 	CInfClassInfected *pInfected = CInfClassInfected::GetInstance(pCharacter);
 

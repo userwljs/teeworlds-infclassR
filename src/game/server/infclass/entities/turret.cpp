@@ -13,7 +13,7 @@
 #include <game/server/infclass/infcplayer.h>
 
 #include "infc-laser.h"
-#include "infccharacter.h"
+#include "ic_character.h"
 #include "plasma.h"
 
 #include <iterator> // std::size
@@ -73,12 +73,12 @@ void CTurret::Tick()
 	if(IsMarkedForDestroy())
 		return;
 
-	CInfClassCharacter *pKiller = nullptr;
+	CIcCharacter *pKiller = nullptr;
 	float ClosestLength = CCharacterCore::PhysicalSize() + HitRadius();
 	ClosestLength *= ClosestLength;
 	const float HitRange2 = ClosestLength;
 
-	for(TEntityPtr<CInfClassCharacter> pChr = GameWorld()->FindFirst<CInfClassCharacter>(); pChr; ++pChr)
+	for(TEntityPtr<CIcCharacter> pChr = GameWorld()->FindFirst<CIcCharacter>(); pChr; ++pChr)
 	{
 		if(!pChr->IsInfected() || !pChr->CanDie())
 			continue;
@@ -138,7 +138,7 @@ void CTurret::Tick()
 void CTurret::AttackTargets()
 {
 	// warmup finished, ready to find target
-	for(TEntityPtr<CInfClassCharacter> pChr = GameWorld()->FindFirst<CInfClassCharacter>(); pChr; ++pChr)
+	for(TEntityPtr<CIcCharacter> pChr = GameWorld()->FindFirst<CIcCharacter>(); pChr; ++pChr)
 	{
 		if(!m_ammunition)
 			break;
@@ -230,13 +230,13 @@ void CTurret::Snap(int SnappingClient)
 	}
 }
 
-void CTurret::Hit(CInfClassCharacter *pCharacter)
+void CTurret::Hit(CIcCharacter *pCharacter)
 {
 	pCharacter->TakeDamage(vec2(0.f, 0.f), Config()->m_InfTurretSelfDestructDmg, GetOwner(), EDamageType::TURRET_DESTRUCTION);
 	GameServer()->CreateSound(m_Pos, SOUND_LASER_FIRE);
 }
 
-void CTurret::Die(CInfClassCharacter *pKiller)
+void CTurret::Die(CIcCharacter *pKiller)
 {
 	if(!IsDestructable())
 		return;

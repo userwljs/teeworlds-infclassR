@@ -5,7 +5,7 @@
 #include "superweapon-indicator.h"
 
 #include <game/server/infclass/classes/humans/human.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/infcplayer.h>
 
@@ -62,7 +62,7 @@ void CSuperWeaponIndicator::Tick()
 	if(IsMarkedForDestroy())
 		return;
 
-	CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
+	CIcCharacter *pOwnerChar = GetOwnerCharacter();
 	CInfClassHuman *pHuman = CInfClassHuman::GetInstance(pOwnerChar);
 
 	if(!pHuman)

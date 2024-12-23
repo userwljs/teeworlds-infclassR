@@ -5,7 +5,7 @@
 #include <game/infclass/damage_type.h>
 #include <game/infclass/weapons.h>
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 
 CBiologistLaser::CBiologistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner, int Dmg) :
 	CInfClassLaser(pGameContext, Pos, Direction, 400.0f, Owner, Dmg, EInfclassWeapon::BIOLOGIST_MINE_LASER)
@@ -18,7 +18,7 @@ CBiologistLaser::CBiologistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Dire
 
 bool CBiologistLaser::HitCharacter(vec2 From, vec2 To)
 {
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		if(p->IsHuman())
 			continue;

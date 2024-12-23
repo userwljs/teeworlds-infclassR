@@ -31,7 +31,7 @@ void CIcEntity::SetOwner(int ClientId)
 	}
 }
 
-CInfClassCharacter *CIcEntity::GetOwnerCharacter() const
+CIcCharacter *CIcEntity::GetOwnerCharacter() const
 {
 	return m_Owner.has_value() ? GameController()->GetCharacter(m_Owner.value()) : nullptr;
 }

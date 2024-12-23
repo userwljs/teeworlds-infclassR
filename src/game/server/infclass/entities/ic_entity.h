@@ -13,7 +13,7 @@ template <class T, int StackCapacity>
 class icArray;
 
 class CGameContext;
-class CInfClassCharacter;
+class CIcCharacter;
 class CInfClassGameController;
 
 class CIcEntity : public CEntity
@@ -28,7 +28,7 @@ public:
 	int GetOwner() const { return m_Owner.value_or(-1); }
 	void SetOwner(int ClientId);
 
-	CInfClassCharacter *GetOwnerCharacter() const;
+	CIcCharacter *GetOwnerCharacter() const;
 
 	static EntityFilter GetOwnerFilterFunction(int Owner);
 	EntityFilter GetOwnerFilterFunction();

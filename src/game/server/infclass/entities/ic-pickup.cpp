@@ -8,7 +8,7 @@
 #include <game/server/player.h>
 
 #include <game/server/infclass/classes/infcplayerclass.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/snap_filter.h>
 
@@ -62,10 +62,10 @@ void CIcPickup::Tick()
 	CIcEntity::Tick();
 
 	// Check if a player intersected us
-	CInfClassCharacter *pChr = nullptr;
+	CIcCharacter *pChr = nullptr;
 	if(GetOwner() >= 0)
 	{
-		CInfClassCharacter *pOwner = GetOwnerCharacter();
+		CIcCharacter *pOwner = GetOwnerCharacter();
 		if(pOwner && (distance(GetPos(), pOwner->GetPos()) < PickupPhysSize + pOwner->GetProximityRadius()))
 		{
 			pChr = pOwner;
@@ -73,7 +73,7 @@ void CIcPickup::Tick()
 	}
 	else
 	{
-		pChr = (CInfClassCharacter *)GameWorld()->ClosestEntity(m_Pos, PickupPhysSize, CGameWorld::ENTTYPE_CHARACTER, 0);
+		pChr = (CIcCharacter *)GameWorld()->ClosestEntity(m_Pos, PickupPhysSize, CGameWorld::ENTTYPE_CHARACTER, 0);
 	}
 
 	if(pChr && pChr->IsAlive())

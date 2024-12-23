@@ -9,7 +9,7 @@
 #include <game/infclass/weapons.h>
 #include <game/server/gamecontext.h>
 
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
 CInfClassLaser::CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon) :
@@ -26,15 +26,15 @@ CInfClassLaser::CInfClassLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direct
 bool CInfClassLaser::HitCharacter(vec2 From, vec2 To)
 {
 	vec2 At;
-	CInfClassCharacter *pOwnerChar = GameController()->GetCharacter(GetOwner());
-	icArray<const CInfClassCharacter*, 10> IgnoreHits;
-	CharacterFilter HitsFilter = CInfClassCharacter::GetExceptCharactersFilter(IgnoreHits);
+	CIcCharacter *pOwnerChar = GameController()->GetCharacter(GetOwner());
+	icArray<const CIcCharacter*, 10> IgnoreHits;
+	CharacterFilter HitsFilter = CIcCharacter::GetExceptCharactersFilter(IgnoreHits);
 	const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
-	CharacterFilter OnlyOtherTeamFilter = IsInfected ? CInfClassCharacter::GetHumansFilter() : CInfClassCharacter::GetInfectedFilter();
-	CharacterFilter CombinedFilter = CInfClassCharacter::GetFilterAllOff(HitsFilter, OnlyOtherTeamFilter);
+	CharacterFilter OnlyOtherTeamFilter = IsInfected ? CIcCharacter::GetHumansFilter() : CIcCharacter::GetInfectedFilter();
+	CharacterFilter CombinedFilter = CIcCharacter::GetFilterAllOff(HitsFilter, OnlyOtherTeamFilter);
 
 	CCharacter *pIntersect = GameWorld()->IntersectCharacter(m_Pos, To, 0.f, At, CombinedFilter);
-	CInfClassCharacter *pHit = CInfClassCharacter::GetInstance(pIntersect);
+	CIcCharacter *pHit = CIcCharacter::GetInstance(pIntersect);
 
 	if(!pHit)
 		return false;
@@ -46,7 +46,7 @@ bool CInfClassLaser::HitCharacter(vec2 From, vec2 To)
 	return OnCharacterHit(pHit);
 }
 
-bool CInfClassLaser::OnCharacterHit(CInfClassCharacter *pHit)
+bool CInfClassLaser::OnCharacterHit(CIcCharacter *pHit)
 {
 	pHit->TakeDamage(vec2(0.f, 0.f), m_Dmg, GetOwner(), GetDamageType());
 

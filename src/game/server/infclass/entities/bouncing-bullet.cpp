@@ -8,7 +8,7 @@
 #include <game/infclass/damage_type.h>
 
 #include "bouncing-bullet.h"
-#include "infccharacter.h"
+#include "ic_character.h"
 
 int CBouncingBullet::EntityId{};
 
@@ -68,10 +68,10 @@ void CBouncingBullet::Tick()
 	int Collide = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CurPos, nullptr, &NewPos);
 
 	const float ProjectileRadius = 6.0f;
-	const CInfClassCharacter *pOwnerChar = GetOwnerCharacter();
+	const CIcCharacter *pOwnerChar = GetOwnerCharacter();
 	const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
-	CharacterFilter Filter = IsInfected ? CInfClassCharacter::GetHumansFilter() : CInfClassCharacter::GetInfectedFilter();
-	CInfClassCharacter *pTargetChr = CInfClassCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, NewPos, ProjectileRadius, NewPos, Filter));
+	CharacterFilter Filter = IsInfected ? CIcCharacter::GetHumansFilter() : CIcCharacter::GetInfectedFilter();
+	CIcCharacter *pTargetChr = CIcCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, NewPos, ProjectileRadius, NewPos, Filter));
 
 	if(pTargetChr)
 	{

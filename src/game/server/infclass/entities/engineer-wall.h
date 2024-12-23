@@ -5,7 +5,7 @@
 
 #include <game/server/infclass/entities/ic_placed_object.h>
 
-class CInfClassCharacter;
+class CIcCharacter;
 
 class CEngineerWall : public CPlacedObject
 {
@@ -18,7 +18,7 @@ public:
 	void Tick() override;
 	void TickPaused() override;
 	void Snap(int SnappingClient) override;
-	void OnHitInfected(CInfClassCharacter *pCharacter);
+	void OnHitInfected(CIcCharacter *pCharacter);
 
 private:
 	void PrepareSnapData();

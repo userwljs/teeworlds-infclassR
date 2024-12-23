@@ -6,7 +6,7 @@
 
 #include <game/infclass/damage_type.h>
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
 #include <cmath>
@@ -15,7 +15,7 @@ constexpr float SoldierBombRadius = 60.0f;
 
 int CSoldierBomb::EntityId{};
 
-void CSoldierBomb::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext)
+void CSoldierBomb::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext)
 {
 	vec2 Pos = pCharacter->GetPos();
 	vec2 ProjStartPos = Pos + pCharacter->GetDirection() * pCharacter->GetProximityRadius() * 0.75f;

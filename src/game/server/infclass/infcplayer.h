@@ -5,7 +5,7 @@
 #include <base/tl/ic_array.h>
 
 class CGameContext;
-class CInfClassCharacter;
+class CIcCharacter;
 class CInfClassGameController;
 class CInfClassPlayerClass;
 struct SpawnContext;
@@ -73,8 +73,8 @@ public:
 	void HandleInfection();
 	void KillCharacter(int Weapon = WEAPON_GAME) override;
 
-	CInfClassCharacter *GetCharacter();
-	const CInfClassCharacter *GetCharacter() const;
+	CIcCharacter *GetCharacter();
+	const CIcCharacter *GetCharacter() const;
 	CInfClassPlayerClass *GetCharacterClass() { return m_pInfcPlayerClass; }
 	const CInfClassPlayerClass *GetCharacterClass() const { return m_pInfcPlayerClass; }
 	void SetCharacterClass(CInfClassPlayerClass *pClass);

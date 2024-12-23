@@ -13,7 +13,7 @@
 class CDoor;
 class CGameWorld;
 class CHintMessage;
-class CInfClassCharacter;
+class CIcCharacter;
 class CInfClassPlayer;
 struct CNetObj_GameInfo;
 struct SpawnContext;
@@ -99,7 +99,7 @@ public:
 	bool GetClassHelpPage(dynamic_string *pOutput, const char *pLanguage, EPlayerClass PlayerClass) const;
 
 	bool OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv) override;
-	void HandleCharacterTiles(CInfClassCharacter *pCharacter);
+	void HandleCharacterTiles(CIcCharacter *pCharacter);
 	void HandleLastHookers();
 
 	bool CanSeeDetails(int Who, int Whom) const;
@@ -122,9 +122,9 @@ public:
 	void SendServerParams(int ClientId) const;
 
 	int OnCharacterDeath(class CCharacter *pVictim, class CPlayer *pKiller, int Weapon) override;
-	void OnCharacterDeath(CInfClassCharacter *pVictim, DeathContext *pContext);
-	void OnCharacterSpawned(CInfClassCharacter *pCharacter, const SpawnContext &Context);
-	void OnClassChooserRequested(CInfClassCharacter *pCharacter);
+	void OnCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext);
+	void OnCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context);
+	void OnClassChooserRequested(CIcCharacter *pCharacter);
 	void CheckRoundFailed();
 	float GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const override;
 	void DoWincheck() override;
@@ -189,7 +189,7 @@ public:
 	void OnReset() override;
 
 	void DoPlayerInfection(CInfClassPlayer *pPlayer, CInfClassPlayer *pInfectiousPlayer, EPlayerClass PreviousClass);
-	void MaybeDropPickup(CInfClassCharacter *pVictim);
+	void MaybeDropPickup(CIcCharacter *pVictim);
 
 	void OnHeroFlagCollected(int ClientId);
 	float GetHeroFlagCooldown() const;
@@ -325,7 +325,7 @@ public:
 	CGameWorld *GameWorld();
 	IConsole *Console() const;
 	CInfClassPlayer *GetPlayer(int ClientId) const;
-	CInfClassCharacter *GetCharacter(int ClientId) const;
+	CIcCharacter *GetCharacter(int ClientId) const;
 	int GetPlayerOwnCursorId(int ClientId) const;
 
 	void SortCharactersByDistance(ClientsArray *pCharacterIds, const vec2 &Center, const float MaxDistance = 0);
@@ -368,8 +368,8 @@ private:
 
 	void MaybeSuggestMoreRounds();
 	void SnapMapMenu(int SnappingClient, CNetObj_GameInfo *pGameInfoObj);
-	void FallInLoveIfInfectedEarly(CInfClassCharacter *pCharacter);
-	void RewardTheKillers(CInfClassCharacter *pVictim, const DeathContext &Context);
+	void FallInLoveIfInfectedEarly(CIcCharacter *pCharacter);
+	void RewardTheKillers(CIcCharacter *pVictim, const DeathContext &Context);
 	void GetPlayerCounter(int ClientException, int& NumHumans, int& NumInfected);
 	int GetMinimumInfectedForPlayers(int PlayersNumber) const;
 

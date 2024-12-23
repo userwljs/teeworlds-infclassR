@@ -10,7 +10,7 @@
 #include <game/server/infclass/entities/slug-slime.h>
 #include <game/server/infclass/infcgamecontroller.h>
 
-#include "infccharacter.h"
+#include "ic_character.h"
 
 namespace {
 
@@ -279,7 +279,7 @@ void CGrowingExplosion::Tick()
 	}
 	
 	// Find other players
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		int tileX = m_MaxGrowing + static_cast<int>(round(p->m_Pos.x))/32 - m_SeedX;
 		int tileY = m_MaxGrowing + static_cast<int>(round(p->m_Pos.y))/32 - m_SeedY;
@@ -423,7 +423,7 @@ void CGrowingExplosion::SetTriggeredBy(int CID)
 	 m_TriggeredByCid = CID;
 }
 
-void CGrowingExplosion::ProcessMercenaryBombHit(CInfClassCharacter *pCharacter)
+void CGrowingExplosion::ProcessMercenaryBombHit(CIcCharacter *pCharacter)
 {
 	float Power = m_MaxGrowing / 16.0; // 0..1
 	float InnerRadius = 96.0f;

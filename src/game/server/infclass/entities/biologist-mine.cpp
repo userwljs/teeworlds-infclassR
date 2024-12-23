@@ -5,11 +5,11 @@
 
 #include "biologist-laser.h"
 #include "biologist-mine.h"
-#include "infccharacter.h"
+#include "ic_character.h"
 
 int CBiologistMine::EntityId{};
 
-void CBiologistMine::OnFired(CInfClassCharacter *pCharacter, WeaponFireContext *pFireContext, int Lasers)
+void CBiologistMine::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireContext, int Lasers)
 {
 	if(pFireContext->AmmoAvailable < 10)
 	{
@@ -113,7 +113,7 @@ void CBiologistMine::Tick()
 	
 	
 	// Find other players
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		if(p->IsHuman()) continue;
 		if(!p->CanDie()) continue;

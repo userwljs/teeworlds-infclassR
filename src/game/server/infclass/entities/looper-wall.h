@@ -18,7 +18,7 @@ public:
 	void Snap(int SnappingClient) override;
 
 private:
-	void OnHitInfected(CInfClassCharacter *pCharacter);
+	void OnHitInfected(CIcCharacter *pCharacter);
 
 	void PrepareSnapData();
 

@@ -11,8 +11,8 @@
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/death_context.h>
 #include <game/server/infclass/entities/flyingpoint.h>
-#include <game/server/infclass/entities/infccharacter.h>
 #include <game/server/infclass/entities/ic-pickup.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_door.h>
 #include <game/server/infclass/infcplayer.h>
 
@@ -309,7 +309,7 @@ void CInfClassGameController::OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDr
 	{
 		if(pPlayer && (pPlayer != pBasePlayer))
 		{
-			CInfClassCharacter *pCharacter = CInfClassCharacter::GetInstance(pPlayer->GetCharacter());
+			CIcCharacter *pCharacter = CIcCharacter::GetInstance(pPlayer->GetCharacter());
 			if(pCharacter)
 			{
 				pCharacter->RemoveReferencesToCid(pBasePlayer->GetCid());
@@ -410,7 +410,7 @@ void CInfClassGameController::DoPlayerInfection(CInfClassPlayer *pPlayer, CInfCl
 				"VictimName", Server()->ClientName(pPlayer->GetCid()),
 				nullptr);
 			GameServer()->SendEmoticon(pInfectiousPlayer->GetCid(), EMOTICON_SORRY);
-			CInfClassCharacter *pGuiltyCharacter = pInfectiousPlayer->GetCharacter();
+			CIcCharacter *pGuiltyCharacter = pInfectiousPlayer->GetCharacter();
 			if(pGuiltyCharacter)
 			{
 				const float GuiltyPlayerFreeze = 3;
@@ -435,7 +435,7 @@ void CInfClassGameController::DoPlayerInfection(CInfClassPlayer *pPlayer, CInfCl
 	}
 
 	//Search for hook
-	for(TEntityPtr<CInfClassCharacter> pHook = GameWorld()->FindFirst<CInfClassCharacter>(); pHook; ++pHook)
+	for(TEntityPtr<CIcCharacter> pHook = GameWorld()->FindFirst<CIcCharacter>(); pHook; ++pHook)
 	{
 		if(
 			pHook->GetPlayer() &&
@@ -532,7 +532,7 @@ bool CInfClassGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, v
 	return Result;
 }
 
-void CInfClassGameController::HandleCharacterTiles(CInfClassCharacter *pCharacter)
+void CInfClassGameController::HandleCharacterTiles(CIcCharacter *pCharacter)
 {
 	ZoneData Data0;
 	ZoneData Data1;
@@ -606,7 +606,7 @@ void CInfClassGameController::HandleLastHookers()
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
-		CInfClassCharacter *pCharacter = GetCharacter(i);
+		CIcCharacter *pCharacter = GetCharacter(i);
 		if(!pCharacter)
 		{
 			continue;
@@ -628,7 +628,7 @@ void CInfClassGameController::HandleLastHookers()
 		{
 			continue;
 		}
-		CInfClassCharacter *pHookedCharacter = GetCharacter(TargetCid);
+		CIcCharacter *pHookedCharacter = GetCharacter(TargetCid);
 		if(!pHookedCharacter)
 		{
 			continue;
@@ -670,7 +670,7 @@ int64_t CInfClassGameController::GetBlindCharactersMask(int ExcludeCid) const
 		if(i == ExcludeCid)
 			continue;
 
-		const CInfClassCharacter *pTarget = GetCharacter(i);
+		const CIcCharacter *pTarget = GetCharacter(i);
 		if(!pTarget)
 			continue;
 		if(!pTarget->IsBlind())
@@ -687,7 +687,7 @@ int64_t CInfClassGameController::GetMaskForPlayerWorldEvent(int Asker, int Excep
 	if(Asker == -1)
 		return CmaskAllExceptOne(ExceptId);
 
-	const CInfClassCharacter *pCharacter = GetCharacter(Asker);
+	const CIcCharacter *pCharacter = GetCharacter(Asker);
 	if(!pCharacter || !pCharacter->IsInvisible())
 		return CmaskAllExceptOne(ExceptId);
 
@@ -807,7 +807,7 @@ void CInfClassGameController::CreateExplosion(const vec2 &Pos, int Owner, EDamag
 		if(DamageType == EDamageType::WHITE_HOLE)
 			AffectOwner = false;
 
-		CInfClassCharacter *apEnts[MAX_CLIENTS];
+		CIcCharacter *apEnts[MAX_CLIENTS];
 		float Radius = 135.0f;
 		float InnerRadius = 48.0f;
 		int Num = GameWorld()->FindEntities(Pos, Radius, (CEntity**)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
@@ -852,7 +852,7 @@ void CInfClassGameController::CreateExplosionDisk(vec2 Pos, float InnerRadius, f
 	if(Damage > 0)
 	{
 		// deal damage
-		CInfClassCharacter *apEnts[MAX_CLIENTS];
+		CIcCharacter *apEnts[MAX_CLIENTS];
 		int Num = GameWorld()->FindEntities(Pos, DamageRadius, (CEntity**)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
 		for(int i = 0; i < Num; i++)
 		{
@@ -974,7 +974,7 @@ void CInfClassGameController::StartSurvivalGame()
 		if(pPlayer)
 		{
 			pPlayer->ResetRoundData();
-			CInfClassCharacter *pCharacter = pPlayer->GetCharacter();
+			CIcCharacter *pCharacter = pPlayer->GetCharacter();
 			if(pCharacter)
 			{
 				pPlayer->KillCharacter();
@@ -2020,7 +2020,7 @@ void CInfClassGameController::ConSavePosition(IConsole::IResult *pResult)
 		return;
 	}
 
-	CInfClassCharacter *pCharacter = GetCharacter(ClientId);
+	CIcCharacter *pCharacter = GetCharacter(ClientId);
 	if(!pCharacter)
 	{
 		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("Unable to save the position: you have no character to save its position"), nullptr);
@@ -2065,7 +2065,7 @@ void CInfClassGameController::ConLoadPosition(IConsole::IResult *pResult)
 		return;
 	}
 
-	CInfClassCharacter *pCharacter = GetCharacter(ClientId);
+	CIcCharacter *pCharacter = GetCharacter(ClientId);
 	if(!pCharacter)
 	{
 		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("Unable to load the position: you have no character to load its position"), nullptr);
@@ -2107,7 +2107,7 @@ void CInfClassGameController::ConSetHealthArmor(IConsole::IResult *pResult)
 	int Health = pResult->GetInteger(1);
 	int Armor = pResult->GetInteger(2);
 
-	CInfClassCharacter *pCharacter = GetCharacter(ClientId);
+	CIcCharacter *pCharacter = GetCharacter(ClientId);
 	if(!pCharacter)
 	{
 		return;
@@ -2127,7 +2127,7 @@ void CInfClassGameController::ConSetInvincible(IConsole::IResult *pResult)
 	int ClientId = pResult->GetInteger(0);
 	int Invincible = pResult->GetInteger(1);
 
-	CInfClassCharacter *pCharacter = GetCharacter(ClientId);
+	CIcCharacter *pCharacter = GetCharacter(ClientId);
 	if(!pCharacter)
 	{
 		return;
@@ -2185,7 +2185,7 @@ void CInfClassGameController::ConSetDrop(IConsole::IResult *pResult, void *pUser
 void CInfClassGameController::ConSetDrop(IConsole::IResult *pResult)
 {
 	const int ClientId = pResult->GetInteger(0);
-	CInfClassCharacter *pCharacter = GetCharacter(ClientId);
+	CIcCharacter *pCharacter = GetCharacter(ClientId);
 	if(!pCharacter || !pCharacter->IsAlive())
 	{
 		return;
@@ -2397,7 +2397,7 @@ CInfClassPlayer *CInfClassGameController::GetPlayer(int ClientId) const
 	return CInfClassPlayer::GetInstance(GameServer()->m_apPlayers[ClientId]);
 }
 
-CInfClassCharacter *CInfClassGameController::GetCharacter(int ClientId) const
+CIcCharacter *CInfClassGameController::GetCharacter(int ClientId) const
 {
 	CInfClassPlayer *pPlayer = GetPlayer(ClientId);
 	return pPlayer ? pPlayer->GetCharacter() : nullptr;
@@ -2610,7 +2610,7 @@ void CInfClassGameController::StartInfectionGameplay(int PlayersToInfect)
 		{
 			pPlayer->SetClass(ChooseHumanClass(pPlayer));
 			pPlayer->SetRandomClassChoosen();
-			CInfClassCharacter *pCharacter = Iter.Player()->GetCharacter();
+			CIcCharacter *pCharacter = Iter.Player()->GetCharacter();
 			if(pCharacter)
 			{
 				pCharacter->GiveRandomClassSelectionBonus();
@@ -2987,7 +2987,7 @@ void CInfClassGameController::OnKillOrInfection(int Victim, const DeathContext &
 		m_SurvivalState.KilledPlayers.Add(Victim);
 	}
 
-	const CInfClassCharacter *pVictimCharacter = pVictim->GetCharacter();
+	const CIcCharacter *pVictimCharacter = pVictim->GetCharacter();
 	if(pKiller && pKiller != pVictim)
 	{
 		const EPlayerClass KillerClass = pKiller->GetClass();
@@ -3057,7 +3057,7 @@ void CInfClassGameController::OnKillOrInfection(int Victim, const DeathContext &
 			break;
 		}
 
-		const CInfClassCharacter *pVictimCharacter = pVictim->GetCharacter();
+		const CIcCharacter *pVictimCharacter = pVictim->GetCharacter();
 		if(pVictimCharacter->GetAttackTick() + TickSpeed * 1.25f < Tick)
 		{
 			PossibleMessages.Add("{str:PlayerName} kinda gave up.");
@@ -3227,17 +3227,17 @@ bool CInfClassGameController::IsSafeWitchCandidate(int ClientId) const
 	if(Server()->Tick() > pPlayer->m_LastActionTick + MaxInactiveSeconds * Server()->TickSpeed())
 		return false;
 
-	const CInfClassCharacter *pCharacter = GetCharacter(ClientId);
+	const CIcCharacter *pCharacter = GetCharacter(ClientId);
 	if(pCharacter && pCharacter->IsAlive())
 	{
-		icArray<CInfClassCharacter *, MAX_CLIENTS> aCharsNearby;
+		icArray<CIcCharacter *, MAX_CLIENTS> aCharsNearby;
 		int Num = GameServer()->m_World.FindEntities(pCharacter->GetPos(), SafeRadius,
 			reinterpret_cast<CEntity**>(aCharsNearby.begin()),
 			aCharsNearby.Capacity(),
 			CGameWorld::ENTTYPE_CHARACTER);
 		aCharsNearby.Resize(Num);
 
-		for(const CInfClassCharacter *pCharNearby : aCharsNearby)
+		for(const CIcCharacter *pCharNearby : aCharsNearby)
 		{
 			if(pCharNearby == pCharacter)
 				continue;
@@ -3283,7 +3283,7 @@ void CInfClassGameController::TickBeforeWorld()
 	// update core properties important for hook
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
-		CInfClassCharacter *pCharacter = GetCharacter(i);
+		CIcCharacter *pCharacter = GetCharacter(i);
 		if(pCharacter)
 		{
 			pCharacter->TickBeforeWorld();
@@ -3636,7 +3636,7 @@ void CInfClassGameController::BroadcastInfectionComing(int InfectionTick)
 		nullptr);
 }
 
-void CInfClassGameController::MaybeDropPickup(CInfClassCharacter *pVictim)
+void CInfClassGameController::MaybeDropPickup(CIcCharacter *pVictim)
 {
 	const int DropMaxLevel = pVictim->GetDropLevel();
 	if(DropMaxLevel <= 0)
@@ -3678,7 +3678,7 @@ void CInfClassGameController::MaybeDropPickup(CInfClassCharacter *pVictim)
 
 	for(int ClientId = 0; ClientId < MAX_CLIENTS; ++ClientId)
 	{
-		const CInfClassCharacter *pCharacter = GetCharacter(ClientId);
+		const CIcCharacter *pCharacter = GetCharacter(ClientId);
 		if(!pCharacter)
 			continue;
 
@@ -4117,7 +4117,7 @@ void CInfClassGameController::EndSurvivalRound()
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
-		CInfClassCharacter *pCharacter = GetCharacter(i);
+		CIcCharacter *pCharacter = GetCharacter(i);
 		if(pCharacter && pCharacter->IsHuman())
 		{
 			m_SurvivalState.SurvivedPlayers.Add(i);
@@ -4139,7 +4139,7 @@ void CInfClassGameController::EnsureFinalExplosionIsStarted()
 void CInfClassGameController::StartFinalExplosion()
 {
 	dbg_assert(m_FinalExplosionState == EFinalExplosionState::NotStarted, "Invalid final explosion start");
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		if(p->IsInfected())
 		{
@@ -4198,7 +4198,7 @@ void CInfClassGameController::ProgressFinalExplosion()
 		}
 	}
 
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		if(p->IsHuman())
 			continue;
@@ -4738,7 +4738,7 @@ void CInfClassGameController::SnapMapMenu(int SnappingClient, CNetObj_GameInfo *
 	pGameInfoObj->m_TimeLimit += (TimeShift / Server()->TickSpeed()) / 60;
 }
 
-void CInfClassGameController::FallInLoveIfInfectedEarly(CInfClassCharacter *pCharacter)
+void CInfClassGameController::FallInLoveIfInfectedEarly(CIcCharacter *pCharacter)
 {
 	if(!pCharacter)
 		return;
@@ -4752,7 +4752,7 @@ void CInfClassGameController::FallInLoveIfInfectedEarly(CInfClassCharacter *pCha
 	pCharacter->LoveEffect(LoveDuration);
 }
 
-void CInfClassGameController::RewardTheKillers(CInfClassCharacter *pVictim, const DeathContext &Context)
+void CInfClassGameController::RewardTheKillers(CIcCharacter *pVictim, const DeathContext &Context)
 {
 	// do scoreing
 	if(Context.Killer < 0)
@@ -4783,7 +4783,7 @@ void CInfClassGameController::RewardTheKillers(CInfClassCharacter *pVictim, cons
 	}
 	else
 	{
-		CInfClassCharacter *pKillerCharacter = pKiller->GetCharacter();
+		CIcCharacter *pKillerCharacter = pKiller->GetCharacter();
 		if(pKillerCharacter)
 		{
 			// set attacker's face to happy (taunt!)
@@ -4847,7 +4847,7 @@ int CInfClassGameController::OnCharacterDeath(class CCharacter *pAbstractVictim,
 	return 0;
 }
 
-void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, DeathContext *pContext)
+void CInfClassGameController::OnCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext)
 {
 	const EDamageType DamageType = pContext->DamageType;
 	const int Killer = pContext->Killer;
@@ -4876,7 +4876,7 @@ void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, Deat
 		}
 
 		//Find the nearest ghoul
-		for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+		for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 		{
 			if(p->GetPlayerClass() != EPlayerClass::Ghoul || p.data() == pVictim)
 				continue;
@@ -5009,7 +5009,7 @@ void CInfClassGameController::OnCharacterDeath(CInfClassCharacter *pVictim, Deat
 	}
 }
 
-void CInfClassGameController::OnCharacterSpawned(CInfClassCharacter *pCharacter, const SpawnContext &Context)
+void CInfClassGameController::OnCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context)
 {
 	IGameController::OnCharacterSpawn(pCharacter);
 
@@ -5037,7 +5037,7 @@ void CInfClassGameController::OnCharacterSpawned(CInfClassCharacter *pCharacter,
 	}
 }
 
-void CInfClassGameController::OnClassChooserRequested(CInfClassCharacter *pCharacter)
+void CInfClassGameController::OnClassChooserRequested(CIcCharacter *pCharacter)
 {
 	CInfClassPlayer *pPlayer = pCharacter->GetPlayer();
 
@@ -5287,7 +5287,7 @@ bool CInfClassGameController::TryRespawn(CInfClassPlayer *pPlayer, SpawnContext 
 			if(Iter.Player()->GetClass() != EPlayerClass::Witch)
 				continue;
 
-			const CInfClassCharacter *pCharacter = Iter.Player()->GetCharacter();
+			const CIcCharacter *pCharacter = Iter.Player()->GetCharacter();
 			if(!pCharacter || !pCharacter->IsAlive())
 				continue;
 

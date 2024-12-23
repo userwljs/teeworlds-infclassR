@@ -12,7 +12,7 @@
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/damage_context.h>
 #include <game/infclass/damage_type.h>
-#include <game/server/infclass/entities/infccharacter.h>
+#include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/infcgamecontroller.h>
 #include <game/server/infclass/infcplayer.h>
 #include <game/server/teeinfo.h>
@@ -25,7 +25,7 @@ CInfClassInfected::CInfClassInfected(CInfClassPlayer *pPlayer)
 	SetNormalEmote(EMOTE_ANGRY);
 }
 
-const CInfClassInfected *CInfClassInfected::GetInstance(const CInfClassCharacter *pCharacter)
+const CInfClassInfected *CInfClassInfected::GetInstance(const CIcCharacter *pCharacter)
 {
 	const CInfClassPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
 	if(pClass && pClass->IsZombie())
@@ -36,7 +36,7 @@ const CInfClassInfected *CInfClassInfected::GetInstance(const CInfClassCharacter
 	return nullptr;
 }
 
-CInfClassInfected *CInfClassInfected::GetInstance(CInfClassCharacter *pCharacter)
+CInfClassInfected *CInfClassInfected::GetInstance(CIcCharacter *pCharacter)
 {
 	CInfClassPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
 	if(pClass && pClass->IsZombie())
@@ -299,7 +299,7 @@ void CInfClassInfected::OnCharacterPostCoreTick()
 	int HookerPlayer = m_pCharacter->Core()->HookedPlayer();
 	if(HookerPlayer >= 0)
 	{
-		CInfClassCharacter *pVictimChar = GameController()->GetCharacter(HookerPlayer);
+		CIcCharacter *pVictimChar = GameController()->GetCharacter(HookerPlayer);
 		if(pVictimChar && pVictimChar->IsHuman())
 		{
 			float Rate = 1.0f;
@@ -542,7 +542,7 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 				break;
 			}
 
-			CInfClassCharacter *pTarget = GameController()->GetCharacter(TargetCid);
+			CIcCharacter *pTarget = GameController()->GetCharacter(TargetCid);
 			if (pTarget->IsSolo())
 				continue;
 
@@ -698,20 +698,20 @@ void CInfClassInfected::DoBoomerExplosion()
 		Force *= 0.5f;
 	}
 
-	CInfClassCharacter *pBestBFTarget = nullptr;
+	CIcCharacter *pBestBFTarget = nullptr;
 
 	const int SlimeDamage = Config()->m_InfSlimePoisonDamage;
 	const float SlimeDamageInterval = 1.25f;
 
 	{
-		CInfClassCharacter *apEnts[MAX_CLIENTS];
+		CIcCharacter *apEnts[MAX_CLIENTS];
 		int Num = GameWorld()->FindEntities(GetPos(), DamageRadius, (CEntity**)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
 		float ClosestCharacterDistance = DamageRadius * 2;
 
 		const vec2 Pos = GetPos();
 		for(int i = 0; i < Num; i++)
 		{
-			CInfClassCharacter *pTarget = apEnts[i];
+			CIcCharacter *pTarget = apEnts[i];
 			if(pTarget == m_pCharacter)
 				continue;
 
@@ -890,7 +890,7 @@ void CInfClassInfected::SpiderPreCoreTick()
 	if(m_pCharacter->WebHookLength() > 48.0f && m_pCharacter->GetHookedPlayer() < 0)
 	{
 		// Find other players
-		for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+		for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 		{
 			if(p->IsInfected())
 				continue;
@@ -955,7 +955,7 @@ bool CInfClassInfected::HasHumansNearby()
 			}
 		}
 	}
-	for(TEntityPtr<CInfClassCharacter> p = GameWorld()->FindFirst<CInfClassCharacter>(); p; ++p)
+	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
 		if(p->IsInfected())
 			continue;
