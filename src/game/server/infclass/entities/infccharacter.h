@@ -332,6 +332,7 @@ protected:
 
 	bool m_IsFrozen = false;
 	int m_FrozenTime;
+	int m_LastFreezer = -1;
 	FREEZEREASON m_FreezeReason;
 
 	int m_SlowMotionTick;

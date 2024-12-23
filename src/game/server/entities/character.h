@@ -205,7 +205,6 @@ public:
 	int m_LoveTick;
 	int m_HallucinationTick;
 	int m_SlipperyTick;
-	int m_LastFreezer;
 	int m_HookMode;
 	int m_InWater;
 
