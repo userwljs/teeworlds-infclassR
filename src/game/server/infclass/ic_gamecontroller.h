@@ -7,8 +7,9 @@
 #include <game/infclass/weapons.h>
 #include <game/server/gamecontroller.h>
 
-#include <base/tl/ic_array.h>
 #include <engine/console.h>
+
+#include <base/tl/ic_array.h>
 
 class CDoor;
 class CGameWorld;

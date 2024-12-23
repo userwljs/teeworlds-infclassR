@@ -1,10 +1,11 @@
 #ifndef GAME_SERVER_INFCLASS_ENTITIES_CHARACTER_H
 #define GAME_SERVER_INFCLASS_ENTITIES_CHARACTER_H
 
-#include <base/tl/ic_array.h>
 #include <game/infclass/classes.h>
 #include <game/server/entities/character.h>
 #include <game/server/entities_filter.h>
+
+#include <base/tl/ic_array.h>
 
 class CGameContext;
 class CIcGameController;

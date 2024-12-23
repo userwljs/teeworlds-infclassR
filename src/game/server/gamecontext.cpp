@@ -16,11 +16,12 @@
 #include <game/version.h>
 #include <game/collision.h>
 #include <game/gamecore.h>
-#include <algorithm>
 
 #include <game/server/entities/character.h>
 #include <game/server/gamecontroller.h>
 #include <game/server/player.h>
+
+#include <algorithm>
 
 extern IGameController *CreateInfclassModController(CGameContext *pGameServer);
 

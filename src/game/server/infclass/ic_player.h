@@ -1,18 +1,17 @@
 #ifndef GAME_SERVER_INFCLASS_PLAYER_H
 #define GAME_SERVER_INFCLASS_PLAYER_H
 
-#include <game/gamecore.h>
 #include <base/tl/ic_array.h>
+
+#include <game/gamecore.h>
+#include <game/server/player.h>
+#include <game/server/skininfo.h>
 
 class CGameContext;
 class CIcCharacter;
 class CIcGameController;
 class CIcPlayerClass;
 struct SpawnContext;
-
-// We actually have to include player.h after all this stuff above.
-#include <game/server/player.h>
-#include <game/server/skininfo.h>
 
 enum class INFECTION_TYPE
 {

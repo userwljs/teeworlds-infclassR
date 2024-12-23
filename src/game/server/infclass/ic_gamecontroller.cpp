@@ -2,40 +2,39 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.				*/
 #include "ic_gamecontroller.h"
 
-#include "events-director.h"
-
-#include "game/infclass/classes.h"
-
-#include <game/server/gamecontext.h>
-#include <game/server/infclass/classes/ic_playerclass.h>
+#include <game/infclass/classes.h>
 #include <game/infclass/damage_type.h>
+#include <game/server/infclass/classes/humans/human.h>
+#include <game/server/infclass/classes/ic_playerclass.h>
+#include <game/server/infclass/classes/infected/infected.h>
 #include <game/server/infclass/death_context.h>
 #include <game/server/infclass/entities/flyingpoint.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_door.h>
 #include <game/server/infclass/entities/ic_pickup.h>
+#include <game/server/infclass/events-director.h>
 #include <game/server/infclass/ic_player.h>
+
+#include <game/generated/protocol.h>
+#include <game/mapitems.h>
+#include <game/server/gamecontext.h>
+#include <game/version.h>
+
+#include <engine/message.h>
+#include <engine/server/mapconverter.h>
+#include <engine/server/roundstatistics.h>
+#include <engine/shared/config.h>
+#include <engine/shared/config.h>
+#include <engine/shared/network.h>
+#include <engine/shared/protocolglue.h>
 
 #include <base/tl/ic_array.h>
 #include <base/tl/ic_enum.h>
-#include <engine/shared/config.h>
-#include <engine/server/mapconverter.h>
-#include <engine/shared/protocolglue.h>
-#include <engine/server/roundstatistics.h>
-#include <engine/shared/config.h>
-#include <engine/shared/network.h>
-#include <game/mapitems.h>
+
+#include <algorithm>
+#include <array>
 #include <iterator>
 #include <time.h>
-
-#include <engine/message.h>
-#include <game/generated/protocol.h>
-#include <game/server/infclass/classes/humans/human.h>
-#include <game/server/infclass/classes/infected/infected.h>
-#include <game/version.h>
-
-#include <array>
-#include <algorithm>
 
 const int InfClassModeSpecialSkip = 0x100;
 
