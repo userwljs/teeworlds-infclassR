@@ -211,8 +211,6 @@ public:
 public:
 	vec2 GetDirection() const;
 
-	bool IsInfected() const;
-	bool IsHuman() const;
 	void SetAntiFire();
 	bool IsInLove() const;
 	void LoveEffect(float Time);

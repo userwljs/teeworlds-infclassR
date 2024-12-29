@@ -1169,6 +1169,16 @@ void CIcCharacter::ResetHookInput()
 	m_Input.m_Hook = 0;
 }
 
+bool CIcCharacter::IsInfected() const
+{
+	return m_pPlayer->IsInfected();
+}
+
+bool CIcCharacter::IsHuman() const
+{
+	return m_pPlayer->IsHuman();
+}
+
 void CIcCharacter::AddHelper(int HelperCid, float Time)
 {
 	if(HelperCid == GetCid())

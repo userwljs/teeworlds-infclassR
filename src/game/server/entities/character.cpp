@@ -757,16 +757,6 @@ EPlayerClass CCharacter::PrivateGetPlayerClass() const
 		return m_pPlayer->GetClass();
 }
 
-bool CCharacter::IsInfected() const
-{
-	return m_pPlayer->IsInfected();
-}
-
-bool CCharacter::IsHuman() const
-{
-	return m_pPlayer->IsHuman();
-}
-
 bool CCharacter::IsInLove() const
 {
 	return m_LoveTick > 0;

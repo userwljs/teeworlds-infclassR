@@ -246,6 +246,9 @@ public:
 	int GetFlagId() const { return m_FlagId; }
 	int GetHeartId() const { return m_HeartId; }
 
+	bool IsInfected() const;
+	bool IsHuman() const;
+
 	void AddHelper(int HelperCid, float Time);
 	void ResetHelpers();
 
