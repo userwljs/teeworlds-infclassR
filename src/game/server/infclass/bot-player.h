@@ -204,8 +204,8 @@ public:
 	void OnTuningChanged() override;
 
 	void UpdateTarget();
-	int UpdateHumanTarget(const ClientsArray &Targets);
-	int UpdateInfectedTarget(const ClientsArray &Targets);
+	std::optional<int> GetHumanTarget(const ClientsArray &Targets) const;
+	std::optional<int> GetInfectedTarget(const ClientsArray &Targets) const;
 	std::optional<vec2> GetNewPOI() const;
 	void UpdatePOITarget();
 	void OnTargetLost();

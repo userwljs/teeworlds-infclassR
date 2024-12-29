@@ -375,7 +375,7 @@ void CBotPlayer::UpdateTarget()
 		GameController()->SortCharactersByDistance(&Targets, LookupFromPos, LookupRadius);
 	}
 
-	int TargetId = -1;
+	std::optional<int> TargetId;
 
 	const int HookedPlayer = m_pCharacter->Core()->HookedPlayer();
 	if(Targets.Contains(HookedPlayer))
@@ -387,15 +387,15 @@ void CBotPlayer::UpdateTarget()
 		if(IsHuman())
 		{
 
-			TargetId = UpdateHumanTarget(Targets);
+			TargetId = GetHumanTarget(Targets);
 		}
 		else
 		{
-			TargetId = UpdateInfectedTarget(Targets);
+			TargetId = GetInfectedTarget(Targets);
 		}
 	}
 
-	if(TargetId < 0)
+	if(!TargetId.has_value())
 	{
 		if(m_BotState == EBotState::Roaming)
 		{
@@ -408,8 +408,8 @@ void CBotPlayer::UpdateTarget()
 		return;
 	}
 
-	m_LastTarget = TargetId;
-	m_LastTargetSeenAtPos = GameController()->GetCharacter(TargetId)->GetPos();
+	m_LastTarget = TargetId.value();
+	m_LastTargetSeenAtPos = GameController()->GetCharacter(TargetId.value())->GetPos();
 	m_LastSeenTick = Server()->Tick();
 
 	if(IsInfected())
@@ -421,97 +421,92 @@ void CBotPlayer::UpdateTarget()
 	SetState(EBotState::Hunting);
 }
 
-int CBotPlayer::UpdateHumanTarget(const ClientsArray &Targets)
+std::optional<int> CBotPlayer::GetHumanTarget(const ClientsArray &Targets) const
 {
 	const vec2 &Pos = m_pCharacter->GetPos();
-	int CanAttackID = -1;
-	int AvailableMedicID = -1;
-	int CanHealID = -1;
-	int NearestHumanID = -1;
-	int NeedTargets = 3;
+	std::optional<int> CanAttackId;
+	std::optional<int> AvailableMedicId;
+	std::optional<int> CanHealId;
+	std::optional<int> NearestHumanId;
+	int CheckNumTargets = 3;
 
 	for(int CandidateId : Targets)
 	{
 		const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
+		if (!pChar->IsAlive() || pChar->IsInvisible())
+			continue;
+
+		if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos()))
+			continue;
+
+		if(pChar->IsHuman())
+		{
+			if(!NearestHumanId.has_value())
+			{
+				NearestHumanId = CandidateId;
+				--CheckNumTargets;
+			}
+		}
+
 		if(GetClass() == EPlayerClass::Medic)
 		{
 			if(!pChar->IsHuman())
 				continue;
-		}
 
-		if (!pChar->IsAlive() || pChar->IsInvisible())
-			continue;
+			if(!AvailableMedicId.has_value())
+			{
+				if(pChar->GetPlayerClass() == EPlayerClass::Medic)
+				{
+					AvailableMedicId = CandidateId;
+					--CheckNumTargets;
+				}
+			}
 
-		vec2 Out;
-		vec2 Before;
-
-		if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos(), &Out, &Before))
-		{
-			continue;
+			if(!CanHealId.has_value())
+			{
+				if((pChar->GetPlayerClass() != EPlayerClass::Hero) && pChar->GetArmor() < 10)
+				{
+					CanHealId = CandidateId;
+					--CheckNumTargets;
+				}
+			}
 		}
 
 		if(pChar->IsInfected())
 		{
-			CanAttackID = CandidateId;
+			CanAttackId = CandidateId;
 			break;
 		}
 
-		if(GetClass() == EPlayerClass::Medic)
-		{
-			if(NearestHumanID < 0)
-			{
-				NearestHumanID = CandidateId;
-				NeedTargets -= 1;
-			}
-
-			if(AvailableMedicID < 0)
-			{
-				if(pChar->GetPlayerClass() == EPlayerClass::Medic)
-				{
-					AvailableMedicID = CandidateId;
-					NeedTargets -= 1;
-				}
-			}
-
-			if(CanHealID < 0)
-			{
-				if((pChar->GetPlayerClass() != EPlayerClass::Hero) && pChar->GetArmor() < 10)
-				{
-					CanHealID = CandidateId;
-					NeedTargets -= 1;
-				}
-			}
-		}
-
-		if (NeedTargets == 0)
+		if (CheckNumTargets == 0)
 		{
 			break;
 		}
 	}
 
-	if(CanAttackID >= 0)
+	if(CanAttackId.has_value())
 	{
-		return CanAttackID;
+		return CanAttackId;
 	}
 
-	if((AvailableMedicID >= 0) && (GetCharacter()->GetArmor() < 10))
+	if((AvailableMedicId.has_value()) && (GetCharacter()->GetArmor() < 10))
 	{
-		return AvailableMedicID;
+		return AvailableMedicId;
 	}
 
-	if(CanHealID >= 0)
+	if(CanHealId.has_value())
 	{
-		return CanHealID;
+		return CanHealId;
 	}
 
-	return NearestHumanID;
+	return NearestHumanId;
 }
 
-int CBotPlayer::UpdateInfectedTarget(const ClientsArray &Targets)
+std::optional<int> CBotPlayer::GetInfectedTarget(const ClientsArray &Targets) const
 {
 	const vec2 &Pos = m_pCharacter->GetPos();
 
-	int BestTarget = -1;
+	std::optional<int> BestTarget;
 
 	const std::set<int> &aAttachedPlayers = m_pCharacter->Core()->m_AttachedPlayers;
 	const auto PlayerAttached = [&aAttachedPlayers](int ClientID) -> bool {
@@ -532,7 +527,7 @@ int CBotPlayer::UpdateInfectedTarget(const ClientsArray &Targets)
 		if (!pChar->IsHuman() || !pChar->IsAlive() || pChar->IsInvisible())
 			continue;
 
-		if(BestTarget >= 0)
+		if(BestTarget.has_value())
 		{
 			if(!PlayerAttached(CandidateId))
 				continue;
@@ -543,7 +538,7 @@ int CBotPlayer::UpdateInfectedTarget(const ClientsArray &Targets)
 			continue;
 		}
 
-		if(BestTarget < 0)
+		if(!BestTarget.has_value())
 		{
 			BestTarget = CandidateId;
 			if(aAttachedPlayers.empty())
