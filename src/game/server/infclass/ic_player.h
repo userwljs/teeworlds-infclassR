@@ -99,9 +99,10 @@ public:
 
 	int DieTick() const { return m_DieTick; }
 
-	void ResetTheTargetToFollow();
-	void SetFollowTarget(int ClientId, float Duration);
-	int TargetToFollow() const;
+	bool SpecialCameraIsActive() const;
+	void ResetSpecialCamera();
+	int GetSpecialCameraTargetCid() const;
+	void SetSpecialCameraTargetCid(int ClientId, float Duration);
 
 	int GetSpectatingCid() const;
 
@@ -146,8 +147,7 @@ protected:
 	const char *GetClan(int SnappingClient = -1) const override;
 	void HandleAutoRespawn() override;
 	void UpdateSpectatorPos();
-
-	bool IsForcedToSpectate() const;
+	void UpdateSpecialCamera();
 
 	void SendClassIntro();
 
@@ -183,8 +183,8 @@ protected:
 
 	int m_SelfKillAttemptTick = -1;
 
-	int m_FollowTargetId = -1;
-	int m_FollowTargetTicks = 0;
+	std::optional<int> m_FollowTargetId;
+	std::optional<int> m_SpecialCameraTicks;
 
 	int m_MapMenu = 0;
 	int m_MapMenuTick = -1;

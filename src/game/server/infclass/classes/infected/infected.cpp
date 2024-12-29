@@ -770,7 +770,7 @@ void CInfClassInfected::DoBoomerExplosion()
 
 	if(pBestBFTarget)
 	{
-		m_pPlayer->SetFollowTarget(pBestBFTarget->GetCid(), 5.0);
+		m_pPlayer->SetSpecialCameraTargetCid(pBestBFTarget->GetCid(), 5.0);
 		m_pPlayer->m_DieTick = Server()->Tick() + Server()->TickSpeed() * 10;
 	}
 }

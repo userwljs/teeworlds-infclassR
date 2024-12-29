@@ -4870,7 +4870,7 @@ void CIcGameController::OnCharacterDeath(CIcCharacter *pVictim, DeathContext *pC
 			const CIcPlayer *pKiller = GetPlayer(pContext->Killer);
 			if(pKiller && pKiller->IsInfected() && pKiller->GetCharacter())
 			{
-				pVictim->GetPlayer()->SetFollowTarget(pKiller->GetCid(), 5.0);
+				pVictim->GetPlayer()->SetSpecialCameraTargetCid(pKiller->GetCid(), 5.0);
 			}
 		}
 

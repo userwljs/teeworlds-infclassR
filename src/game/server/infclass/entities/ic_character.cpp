@@ -2326,7 +2326,7 @@ void CIcCharacter::Unfreeze()
 	if(m_FreezeReason == FREEZEREASON_UNDEAD)
 	{
 		m_Health = 10.0;
-		GetPlayer()->ResetTheTargetToFollow();
+		GetPlayer()->ResetSpecialCamera();
 	}
 }
 
@@ -2636,12 +2636,7 @@ void CIcCharacter::SnapCharacter(int SnappingClient, int Id)
 	int SnappingSpectatorId = -1;
 	if(pSnappingClient)
 	{
-		SnappingSpectatorId = pSnappingClient->m_SpectatorId;
-		int FollowingCid = pSnappingClient->TargetToFollow();
-		if(FollowingCid >= 0)
-		{
-			SnappingSpectatorId = FollowingCid;
-		}
+		SnappingSpectatorId = pSnappingClient->GetSpectatingCid();
 	}
 
 	int NormalizedArmor = clamp<int>(std::ceil(m_Armor * 10.0f / m_MaxArmor), 0, 10);

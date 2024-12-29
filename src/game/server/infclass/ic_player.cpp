@@ -110,23 +110,19 @@ void CIcPlayer::Tick()
 
 	if(!GameServer()->m_World.m_Paused)
 	{
-		if(m_FollowTargetTicks > 0)
+		if(m_SpecialCameraTicks.has_value())
 		{
-			--m_FollowTargetTicks;
-			if(m_FollowTargetTicks == 0)
+			--m_SpecialCameraTicks.value();
+			if(m_SpecialCameraTicks.value() <= 0)
 			{
-				m_FollowTargetId = -1;
-			}
-			else if(IsForcedToSpectate())
-			{
-				const CIcPlayer *pFollowedPlayer = GameController()->GetPlayer(TargetToFollow());
-				m_ViewPos = pFollowedPlayer->m_ViewPos;
-			}
-			else
-			{
-				ResetTheTargetToFollow();
+				ResetSpecialCamera();
 			}
 		}
+	}
+
+	if(SpecialCameraIsActive())
+	{
+		UpdateSpecialCamera();
 	}
 }
 
@@ -160,7 +156,7 @@ void CIcPlayer::Snap(int SnappingClient)
 	pDDNetPlayer->m_Flags = 0;
 	if(m_Afk)
 		pDDNetPlayer->m_Flags |= EXPLAYERFLAG_AFK;
-	if(m_FollowTargetTicks > 0)
+	if(SpecialCameraIsActive())
 		pDDNetPlayer->m_Flags |= EXPLAYERFLAG_SPEC;
 
 	CIcCharacter *pCharacter = GetCharacter();
@@ -199,13 +195,13 @@ void CIcPlayer::Snap(int SnappingClient)
 		GetCharacterClass()->OnPlayerSnap(SnappingClient, InfClassVersion);
 	}
 
-	if(!IsSpectator() && (m_FollowTargetTicks > 0) && (SnappingClient == m_ClientId))
+	if((SnappingClient == m_ClientId) && SpecialCameraIsActive())
 	{
 		CNetObj_SpectatorInfo *pSpectatorInfo = Server()->SnapNewItem<CNetObj_SpectatorInfo>(m_ClientId);
 		if(!pSpectatorInfo)
 			return;
 
-		pSpectatorInfo->m_SpectatorId = TargetToFollow();
+		pSpectatorInfo->m_SpectatorId = GetSpecialCameraTargetCid();
 		pSpectatorInfo->m_X = m_ViewPos.x;
 		pSpectatorInfo->m_Y = m_ViewPos.y;
 	}
@@ -530,32 +526,34 @@ void CIcPlayer::SetScoreMode(EPlayerScoreMode Mode)
 	m_ScoreMode = Mode;
 }
 
-void CIcPlayer::ResetTheTargetToFollow()
+void CIcPlayer::ResetSpecialCamera()
 {
-	SetFollowTarget(-1, 0);
+	m_SpecialCameraTicks.reset();
+	m_FollowTargetId.reset();
 }
 
-void CIcPlayer::SetFollowTarget(int ClientId, float Duration)
+int CIcPlayer::GetSpecialCameraTargetCid() const
 {
+	return m_FollowTargetId.value_or(SPEC_FOLLOW);
+}
+
+void CIcPlayer::SetSpecialCameraTargetCid(int ClientId, float Duration)
+{
+	if(Duration < 0 || ClientId < 0)
+	{
+		ResetSpecialCamera();
+		return;
+	}
+
 	m_FollowTargetId = ClientId;
-	if(m_FollowTargetId < 0)
-	{
-		m_FollowTargetTicks = 0;
-	}
-	else
-	{
-		m_FollowTargetTicks = Duration * Server()->TickSpeed();
-	}
-}
+	m_SpecialCameraTicks = Duration * Server()->TickSpeed();
 
-int CIcPlayer::TargetToFollow() const
-{
-	return m_FollowTargetTicks > 0 ? m_FollowTargetId : -1;
+	UpdateSpecialCamera();
 }
 
 int CIcPlayer::GetSpectatingCid() const
 {
-	int TargetCid = TargetToFollow();
+	int TargetCid = GetSpecialCameraTargetCid();
 	if (TargetCid < 0)
 	{
 		TargetCid = m_SpectatorId;
@@ -692,7 +690,7 @@ void CIcPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	m_pInfcPlayerClass->SetCharacter(pCharacter);
 	pCharacter->OnCharacterSpawned(Context);
 
-	ResetTheTargetToFollow();
+	ResetSpecialCamera();
 	ApplyMaxHP();
 }
 
@@ -762,27 +760,33 @@ void CIcPlayer::UpdateSpectatorPos()
 	m_ViewPos = GameServer()->m_apPlayers[m_SpectatorId]->m_ViewPos;
 }
 
-bool CIcPlayer::IsForcedToSpectate() const
+bool CIcPlayer::SpecialCameraIsActive() const
 {
 	if(!g_Config.m_InfEnableFollowingCamera)
 	{
 		return false;
 	}
 
-	if (IsSpectator() || (m_pCharacter && m_pCharacter->IsAlive()))
+	if (IsSpectator())
 		return false;
 
-	int Target = TargetToFollow();
-	if (Target >= 0)
+	return m_FollowTargetId.has_value();
+}
+
+void CIcPlayer::UpdateSpecialCamera()
+{
+	if(m_FollowTargetId.has_value())
 	{
-		const CIcPlayer *pFollowedPlayer = GameController()->GetPlayer(Target);
-		if(pFollowedPlayer && pFollowedPlayer->GetCharacter() && (!pFollowedPlayer->IsHuman() || (pFollowedPlayer->IsHuman() == IsHuman())))
+		const CIcCharacter *pFollowedCharacter = GameController()->GetCharacter(m_FollowTargetId.value());
+		if(pFollowedCharacter && pFollowedCharacter->IsAlive() && (!pFollowedCharacter->IsHuman() || (pFollowedCharacter->IsHuman() == IsHuman())))
 		{
-			return true;
+			m_ViewPos = pFollowedCharacter->GetPos();
+		}
+		else
+		{
+			ResetSpecialCamera();
 		}
 	}
-
-	return false;
 }
 
 void CIcPlayer::SendClassIntro()
