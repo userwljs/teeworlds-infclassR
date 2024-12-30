@@ -408,6 +408,17 @@ void CBotPlayer::UpdateTarget()
 		return;
 	}
 
+	if(IsDebugEnabled(VERBOSE_MAIN))
+	{
+		if((m_BotState == EBotState::Roaming) && TargetId.has_value())
+		{
+			const float LookupRadius = GetLookupRadius();
+			const float LookupOffset = GetLookupOffset();
+			const vec2 LookupFromPos = Pos + pCharacter->GetDirection() * LookupOffset;
+			m_BotUtils.GetDebugSink()->HighlightCircle(LookupFromPos, LookupRadius);
+		}
+	}
+
 	const int CurrentTick = Server()->Tick();
 	if((m_LastTarget != TargetId) || (CurrentTick > m_LastSeenTick + Server()->TickSpeed() * 1.0f))
 	{
