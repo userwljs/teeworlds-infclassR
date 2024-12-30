@@ -122,6 +122,7 @@ public:
 		GNUC_ATTRIBUTE((format(printf, 3, 4)));
 	virtual void HighlightPosition(const vec2 &Position) = 0;
 	virtual void HighlightLineSegment(const vec2 &From, const vec2 &To) = 0;
+	virtual void HighlightCircle(const vec2 &Center, float Radius, int Segments = 12) = 0;
 };
 
 template<typename T, T DefaultValue>

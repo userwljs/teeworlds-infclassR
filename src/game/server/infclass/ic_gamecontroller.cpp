@@ -219,6 +219,20 @@ public:
 		m_pGameContext->CreateLaserDotEvent(From, To, m_pGameContext->Server()->TickSpeed() * 2.0f);
 	}
 
+	void HighlightCircle(const vec2 &Center, float Radius, int Segments) override
+	{
+		if (Segments < 6)
+			Segments = 6;
+
+		float AngleStep = 2.0f * pi / Segments;
+		for(int i = 0; i < Segments; ++i)
+		{
+			vec2 From = Center + direction(AngleStep * i) * Radius;
+			vec2 To = Center + direction(AngleStep * (i + 1)) * Radius;
+			HighlightLineSegment(From, To);
+		}
+	}
+
 protected:
 	CGameContext *m_pGameContext = nullptr;
 };

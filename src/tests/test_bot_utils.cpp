@@ -96,6 +96,7 @@ public:
 	void SendFormattedMessage(int VerbosityLevel, const char *pMessage) const override {}
 	void HighlightPosition(const vec2 &Position) override {}
 	void HighlightLineSegment(const vec2 &From, const vec2 &To) override {}
+	void HighlightCircle(const vec2 &Center, float Radius, int Segments) override {}
 };
 
 constexpr float operator"" _t(long double LengthInTiles)
