@@ -408,9 +408,14 @@ void CBotPlayer::UpdateTarget()
 		return;
 	}
 
+	const int CurrentTick = Server()->Tick();
+	if((m_LastTarget != TargetId) || (CurrentTick > m_LastSeenTick + Server()->TickSpeed() * 1.0f))
+	{
+		m_TargetSinceTick = CurrentTick;
+	}
 	m_LastTarget = TargetId.value();
 	m_LastTargetSeenAtPos = GameController()->GetCharacter(TargetId.value())->GetPos();
-	m_LastSeenTick = Server()->Tick();
+	m_LastSeenTick = CurrentTick;
 
 	if(IsInfected())
 	{
@@ -506,55 +511,46 @@ std::optional<int> CBotPlayer::GetInfectedTarget(const ClientsArray &Targets) co
 {
 	const vec2 &Pos = m_pCharacter->GetPos();
 
-	std::optional<int> BestTarget;
+	icArray<int, 8> ClosestTargets;
+	ClientsArray PreferredTargets;
+
+	const int CurrentTick = Server()->Tick();
+	const int TicksSinceTargetSwitched = CurrentTick > m_TargetSinceTick ? CurrentTick - m_TargetSinceTick : 0;
+	const bool PreferSameTarget = TicksSinceTargetSwitched < Server()->TickSpeed() * 0.75f;
 
 	const std::set<int> &aAttachedPlayers = m_pCharacter->Core()->m_AttachedPlayers;
-	const auto PlayerAttached = [&aAttachedPlayers](int ClientID) -> bool {
-		for(int AttachedCID : aAttachedPlayers)
-		{
-			if(ClientID == AttachedCID)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	};
-
 	for(int CandidateId : Targets)
 	{
 		const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
 		if (!pChar->IsHuman() || !pChar->IsAlive() || pChar->IsInvisible())
 			continue;
 
-		if(BestTarget.has_value())
-		{
-			if(!PlayerAttached(CandidateId))
-				continue;
-		}
-
 		if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos()))
 		{
 			continue;
 		}
 
-		if(!BestTarget.has_value())
+		if(PreferSameTarget && (CandidateId == m_LastTarget))
 		{
-			BestTarget = CandidateId;
-			if(aAttachedPlayers.empty())
-			{
-				break;
-			}
+			PreferredTargets.InsertAt(0, CandidateId);
 		}
 
-		if(PlayerAttached(CandidateId))
+		if(aAttachedPlayers.contains(CandidateId))
 		{
-			BestTarget = CandidateId;
+			PreferredTargets.Add(CandidateId);
+		}
+
+		ClosestTargets.Add(CandidateId);
+		if(ClosestTargets.Size() == ClosestTargets.Capacity())
+		{
 			break;
 		}
 	}
 
-	return BestTarget;
+	if(ClosestTargets.IsEmpty())
+		return {};
+
+	return PreferredTargets.IsEmpty() ? ClosestTargets.First() : PreferredTargets.First();
 }
 
 std::optional<vec2> CBotPlayer::GetNewPOI() const

@@ -348,6 +348,7 @@ protected:
 	int m_LookForPoiDisabledUntilTick = -1;
 	int m_FleeingSinceTick = -1;
 	int m_LastSeenTick = -1;
+	int m_TargetSinceTick{};
 	int m_LastFireTick = -1;
 	int m_LastWeaponSwitchTick = 0;
 	int m_NextRandomFireTick = 0;
