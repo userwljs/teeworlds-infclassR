@@ -877,6 +877,9 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 						{
 							BotDebugMessage(VERBOSE_STEPS, "Decide to jump over");
 							WantToJump = true;
+							m_JumpFromPosition = Pos;
+							m_JumpTargetPosition.x = std::numeric_limits<float>::quiet_NaN();
+							m_JumpTargetPosition.y = Pos.y;
 						}
 
 						PushDecision(WantToJump ? EDecision::Jump : EDecision::NoJump);
@@ -896,6 +899,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 							m_JumpFromPosition = Pos;
 							m_WantedJumps = std::max(MaxJumps, 3);
 							m_JumpTargetPosition.x = std::numeric_limits<float>::quiet_NaN();
+							m_JumpTargetPosition.y = Pos.y;
 						}
 					}
 				}
