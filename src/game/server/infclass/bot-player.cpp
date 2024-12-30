@@ -1188,7 +1188,8 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	if(Tick >= m_CachedSameGroundTargetUntilTick)
 	{
-		m_CachedSameGroundTarget = m_BotUtils.IsReachableByGround(Pos, m_LastTargetSeenAtPos, AvailableJumps, 25);
+		DIRECTION CheckDir = Tick % 2 ? DIRECTION_RIGHT : DIRECTION_LEFT;
+		m_CachedSameGroundTarget = m_BotUtils.IsReachableByGround(Pos, m_LastTargetSeenAtPos + vec2(ProximityRadius * CheckDir, 0), AvailableJumps, 25);
 		m_CachedSameGroundTargetUntilTick = Tick + 11;
 	}
 
