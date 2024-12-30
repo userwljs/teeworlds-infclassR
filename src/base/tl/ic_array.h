@@ -44,6 +44,7 @@ public:
 
 	constexpr void Add(const T &Value);
 	constexpr void AddWithOverwrite(const T &Value);
+	constexpr void InsertAt(std::size_t Index, const T &Value);
 
 	void RemoveLast();
 
@@ -174,6 +175,23 @@ inline constexpr void icArray<T, StackCapacity>::AddWithOverwrite(const T &Value
 		RemoveAt(0);
 
 	Add(Value);
+}
+
+template<class T, int StackCapacity>
+inline constexpr void icArray<T, StackCapacity>::InsertAt(std::size_t Index, const T &Value)
+{
+	if(Index > m_Size)
+		return;
+
+	if(m_Size > 0)
+	{
+		for(std::size_t i = m_Size - 1; i > Index; --i)
+		{
+			std::swap(m_Data[i + 1], m_Data[i]);
+		}
+	}
+	m_Data[Index] = Value;
+	++m_Size;
 }
 
 template<class T, int StackCapacity>
