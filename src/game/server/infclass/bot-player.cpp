@@ -3542,7 +3542,7 @@ float CBotPlayer::GetLookupRadius() const
 
 float CBotPlayer::GetLookupOffset() const
 {
-	return 300.0f;
+	return m_BotState == EBotState::Hunting ? 32.0f : 300.0f;
 }
 
 STilePosition CBotPlayer::JumpPosToShortPos(const vec2 &JumpTarget, const vec2 &JumpFromPosition) const
