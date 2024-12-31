@@ -56,6 +56,11 @@ enum
 	CHATCATEGORY_ACCUSATION,
 };
 
+enum
+{
+	SUPPRESS_CHAT_MESSAGE = 1,
+};
+
 /* INFECTION MODIFICATION END *****************************************/
 
 class IServer : public IInterface
@@ -305,6 +310,7 @@ public:
 	};
 	virtual void SetRconCid(int ClientId) = 0;
 	virtual int GetAuthedState(int ClientId) const = 0;
+	virtual void Mute(int ClientId, int Seconds, const char *pReason, int Flags = 0) = 0;
 	virtual void Kick(int ClientId, const char *pReason) = 0;
 	virtual void Ban(int ClientId, int Seconds, const char *pReason) = 0;
 	virtual void RedirectClient(int ClientId, int Port, bool Verbose = false) = 0;

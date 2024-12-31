@@ -576,6 +576,26 @@ void CServer::SetClientFlags(int ClientId, int Flags)
 	m_aClients[ClientId].m_Flags = Flags;
 }
 
+void CServer::Mute(int ClientId, int Seconds, const char *pReason, int Flags)
+{
+	if(ClientId < 0 || ClientId >= MAX_CLIENTS || m_aClients[ClientId].m_State == CClient::STATE_EMPTY)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "invalid client id to mute");
+		return;
+	}
+
+	m_aClients[ClientId].m_Session.m_MuteTick = TickSpeed() * Seconds;
+
+	if(Flags & SUPPRESS_CHAT_MESSAGE)
+		return;
+
+	int Duration = Seconds;
+	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_ACCUSATION, _("{str:Victim} has been muted for {sec:Duration} ({str:Reason})"),
+		"Victim", ClientName(ClientId),
+		"Duration", &Duration,
+		"Reason", pReason, nullptr);
+}
+
 void CServer::Kick(int ClientId, const char *pReason)
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS || m_aClients[ClientId].m_State == CClient::STATE_EMPTY)
@@ -3306,26 +3326,21 @@ void CServer::ConUnmute(IConsole::IResult *pResult, void *pUser)
 
 void CServer::ConMute(IConsole::IResult *pResult, void *pUser)
 {
-	CServer* pThis = (CServer *)pUser;
-	
+	CServer *pThis = (CServer *)pUser;
+
 	const char *pStr = pResult->GetString(0);
-	int Minutes = pResult->NumArguments()>1 ? clamp(pResult->GetInteger(1), 0, 44640) : 5;
-	const char *pReason = pResult->NumArguments()>2 ? pResult->GetString(2) : "No reason given";
-	
+	int Minutes = pResult->NumArguments() > 1 ? clamp(pResult->GetInteger(1), 0, 44640) : 5;
+	const char *pReason = pResult->NumArguments() > 2 ? pResult->GetString(2) : "No reason given";
+
 	if(str_isallnum(pStr))
 	{
 		int ClientId = str_toint(pStr);
-		if(ClientId < 0 || ClientId >= MAX_CLIENTS || pThis->m_aClients[ClientId].m_State == CServer::CClient::STATE_EMPTY)
-			pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", "Invalid client id");
-		else
-		{
-			int Time = 60*Minutes;
-			pThis->m_aClients[ClientId].m_Session.m_MuteTick = pThis->TickSpeed()*60*Minutes;
-			pThis->GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_ACCUSATION, _("{str:Victim} has been muted for {sec:Duration} ({str:Reason})"), "Victim", pThis->ClientName(ClientId) ,"Duration", &Time, "Reason", pReason, NULL);
-		}
+		pThis->Mute(ClientId, 60 * Minutes, pReason);
 	}
 	else
+	{
 		pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", "Invalid client id");
+	}
 }
 
 void CServer::ConWhisper(IConsole::IResult *pResult, void *pUser)

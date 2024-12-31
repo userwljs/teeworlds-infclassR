@@ -314,6 +314,7 @@ public:
 	void SetClientScore(int ClientId, std::optional<int> Score) override;
 	void SetClientFlags(int ClientId, int Flags) override;
 
+	void Mute(int ClientId, int Seconds, const char *pReason, int Flags = 0) override;
 	void Kick(int ClientId, const char *pReason) override;
 	void Ban(int ClientId, int Seconds, const char *pReason) override;
 	void RedirectClient(int ClientId, int Port, bool Verbose = false) override;

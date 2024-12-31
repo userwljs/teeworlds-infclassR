@@ -1785,6 +1785,15 @@ void CGameContext::OnClientEnter(int ClientId)
 
 	mem_zero(&m_aLastPlayerInput[ClientId], sizeof(m_aLastPlayerInput[ClientId]));
 	m_aPlayerHasInput[ClientId] = false;
+
+	// initial chat delay
+	if(Config()->m_SvChatInitialDelay != 0 && !Server()->ClientPrevIngame(ClientId))
+	{
+		char aBuf[128];
+		str_format(aBuf, sizeof(aBuf), "This server has an initial chat delay, you will need to wait %d seconds before talking.", Config()->m_SvChatInitialDelay);
+		SendChatTarget(ClientId, aBuf);
+		Server()->Mute(ClientId, Config()->m_SvChatInitialDelay, "Initial chat delay", SUPPRESS_CHAT_MESSAGE);
+	}
 }
 
 bool CGameContext::OnClientDataPersist(int ClientId, void *pData)
