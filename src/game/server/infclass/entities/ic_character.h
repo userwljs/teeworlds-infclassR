@@ -229,7 +229,7 @@ public:
 
 	bool IsSleeping() const { return m_SleepingTicks > 0; }
 	void PutToSleep(float Duration, std::optional<int> FromCid = {});
-	void CancelSleeping();
+	void CancelSleeping(std::optional<int> ByCid = {});
 
 	bool IsInSlowMotion() const;
 	float SlowMotionEffect(float Duration, std::optional<int> FromCid = {});

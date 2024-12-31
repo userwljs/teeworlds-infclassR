@@ -351,9 +351,9 @@ void CIcCharacter::TickDeferred()
 		m_pClass->OnCharacterTickDeferred();
 	}
 
-	if(!m_Core.m_AttachedPlayers.empty())
+	if(IsSleeping() && !m_Core.m_AttachedPlayers.empty())
 	{
-		CancelSleeping();
+		CancelSleeping(*m_Core.m_AttachedPlayers.begin());
 	}
 }
 
@@ -666,7 +666,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		if(DamageIsPhysical)
 		{
 			FloatDmg *= Config()->m_InfSleeperTakeDamageRatio;
-			CancelSleeping();
+			CancelSleeping(From);
 		}
 		else
 		{
@@ -1095,7 +1095,7 @@ void CIcCharacter::PutToSleep(float Duration, std::optional<int> FromCid)
 	}
 }
 
-void CIcCharacter::CancelSleeping()
+void CIcCharacter::CancelSleeping(std::optional<int> ByCid)
 {
 	m_SleepingTicks = 0;
 }
