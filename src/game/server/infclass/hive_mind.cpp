@@ -93,6 +93,7 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 	}
 
 	m_aHumanPositions.Clear();
+	m_aInfectedPositions.Clear();
 	m_aInfectedBots.Clear();
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
@@ -106,6 +107,7 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 		}
 		else if (pPlayer->IsBot())
 		{
+			m_aInfectedPositions.Add(pPlayer->GetCharacter()->GetPos());
 			m_aInfectedBots.Add(i);
 		}
 	}
@@ -336,7 +338,7 @@ void CHiveMind::ValidateDirection(CBotPlayer *pPlayer)
 	float LeftPos = Pos.x - Limit;
 	float RightPos = Pos.x + Limit;
 
-	for(const vec2 &HumanPos : m_aHumanPositions)
+	for(const vec2 &HumanPos : pPlayer->IsInfected() ? m_aHumanPositions : m_aInfectedPositions)
 	{
 		if(HumanPos.x > RightPos)
 		{

@@ -2648,7 +2648,8 @@ void CBotPlayer::GetNewObjection()
 
 		const vec2 &OwnPos = GetCharacter()->GetPos();
 
-		for(const vec2 &HumanPos : s_HiveMind.GetHumanPositions())
+		const bool SeekForHumans = IsInfected() || GetClass() == EPlayerClass::Medic;
+		for(const vec2 &HumanPos : SeekForHumans ? s_HiveMind.GetHumanPositions() : s_HiveMind.GetInfectedPositions())
 		{
 			if(HumanPos.y > OwnPos.y)
 			{

@@ -37,6 +37,10 @@ public:
 	{
 		return m_aHumanPositions;
 	}
+	const icArray<vec2, MAX_CLIENTS> &GetInfectedPositions()
+	{
+		return m_aInfectedPositions;
+	}
 
 protected:
 	static constexpr int MaxAttacksInTimespan = 2;
@@ -69,6 +73,7 @@ protected:
 	icArray<GroupItem, MAX_CLIENTS> m_Groups;
 
 	icArray<vec2, MAX_CLIENTS> m_aHumanPositions;
+	icArray<vec2, MAX_CLIENTS> m_aInfectedPositions;
 	icArray<int, MAX_CLIENTS> m_aInfectedBots;
 	icArray<int, MAX_CLIENTS> m_aBotsProcessingQueue;
 	icFifoArray<STilePosition, 320> m_aCheckedPos;
