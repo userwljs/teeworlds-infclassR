@@ -15,6 +15,7 @@ template<typename T>
 T fromString(const char *pString);
 
 class CGameWorld;
+class CHiveMind;
 class CIcEntity;
 
 using ClientsArray = icArray<int, MAX_CLIENTS>;
@@ -306,6 +307,7 @@ protected:
 	CGameWorld *GameWorld() const;
 	void UpdateCharacterState();
 	void UpdatePOIState();
+	CHiveMind &GetHiveMind() const;
 
 	void PickBestWeapon(float DistanceToTarget);
 	DIRECTION DoLandingManeuves() const;

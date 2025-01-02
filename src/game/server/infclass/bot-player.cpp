@@ -246,7 +246,7 @@ void CBotPlayer::Tick()
 			}
 
 			UpdateTarget();
-			s_HiveMind.ValidateDirection(this);
+			GetHiveMind().ValidateDirection(this);
 		}
 		else
 		{
@@ -430,7 +430,7 @@ void CBotPlayer::UpdateTarget()
 
 	if(IsInfected())
 	{
-		s_HiveMind.ReportTargetFound(this, m_LastTargetSeenAtPos);
+		GetHiveMind().ReportTargetFound(this, m_LastTargetSeenAtPos);
 		ma_CheckPoints.Clear();
 	}
 
@@ -572,7 +572,7 @@ std::optional<vec2> CBotPlayer::GetNewPOI() const
 	if (IsHuman())
 		return std::nullopt;
 
-	if (!s_HiveMind.HasPOI())
+	if (!GetHiveMind().HasPOI())
 		return std::nullopt;
 
 	float TargetCooldown = 2.0f;
@@ -582,7 +582,7 @@ std::optional<vec2> CBotPlayer::GetNewPOI() const
 	}
 
 	const vec2 &Pos = GetCharacter()->GetPos();
-	std::optional<vec2> newPOI = s_HiveMind.PickPOI(Pos);
+	std::optional<vec2> newPOI = GetHiveMind().PickPOI(Pos);
 	if(!newPOI.has_value())
 		return std::nullopt;
 
@@ -729,7 +729,7 @@ void CBotPlayer::OnKilled()
 
 	if(!IsHuman())
 	{
-		s_HiveMind.ReportKilled(this);
+		GetHiveMind().ReportKilled(this);
 	}
 }
 
@@ -819,7 +819,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		else
 		{
 			BotDebugMessage(VERBOSE_TRACE1, "No wall");
-			if(s_HiveMind.TryToComputeDecision(this))
+			if(GetHiveMind().TryToComputeDecision(this))
 			{
 				vec2 JumpTarget;
 				if(!NoWantedJump && g_Config.m_InfBotBackjump && !IsHuman())
@@ -964,7 +964,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		if(CanJump)
 		{
 			vec2 JumpTarget;
-			if((m_WantedJumps <= 0) && (m_pCharacter->Core()->m_Vel.y > -3) && s_HiveMind.TryToComputeDecision(this))
+			if((m_WantedJumps <= 0) && (m_pCharacter->Core()->m_Vel.y > -3) && GetHiveMind().TryToComputeDecision(this))
 			{
 				BotDebugMessage(VERBOSE_TRACE1, "Considering jump from the air");
 				int MaybeWantJumps = 0;
@@ -1219,7 +1219,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			if(SpeedRate < 0.75f || SpeedRate > 3.0f)
 				return false;
 
-			return s_HiveMind.TryJump(this, SpeedRate);
+			return GetHiveMind().TryJump(this, SpeedRate);
 		};
 
 		if(Tick > m_NextHuntingJumpTick)
@@ -1647,7 +1647,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	if(m_HookUntilTick >= Tick)
 	{
 		m_HookAimingRemainingTicks.reset();
-		if(s_HiveMind.TryHook(GetCid(), m_LastTarget))
+		if(GetHiveMind().TryHook(GetCid(), m_LastTarget))
 		{
 			pInput->m_Hook = 1;
 		}
@@ -1664,7 +1664,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		{
 			if(WeaponClass == EWeaponClass::HAMMER)
 			{
-				WantToFire = s_HiveMind.TryAttack(m_LastTarget);
+				WantToFire = GetHiveMind().TryAttack(m_LastTarget);
 			}
 		}
 	}
@@ -2649,7 +2649,7 @@ void CBotPlayer::GetNewObjection()
 		const vec2 &OwnPos = GetCharacter()->GetPos();
 
 		const bool SeekForHumans = IsInfected() || GetClass() == EPlayerClass::Medic;
-		for(const vec2 &HumanPos : SeekForHumans ? s_HiveMind.GetHumanPositions() : s_HiveMind.GetInfectedPositions())
+		for(const vec2 &HumanPos : SeekForHumans ? GetHiveMind().GetHumanPositions() : GetHiveMind().GetInfectedPositions())
 		{
 			if(HumanPos.y > OwnPos.y)
 			{
@@ -2887,7 +2887,7 @@ bool CBotPlayer::MaybeFallDown() const
 
 	if(!IsHuman())
 	{
-		EDecision GoodDecision = s_HiveMind.GetGoodDecision(this);
+		EDecision GoodDecision = GetHiveMind().GetGoodDecision(this);
 		// Good decision:
 		switch(GoodDecision)
 		{
@@ -2966,7 +2966,7 @@ bool CBotPlayer::MaybeJumpOnPlatform(const vec2 &JumpTargetPosition, bool ForceI
 		}
 	}
 
-	const bool Checked = HasPosition || (!IsHuman() && s_HiveMind.IsPositionChecked(ShortPos));
+	const bool Checked = HasPosition || (!IsHuman() && GetHiveMind().IsPositionChecked(ShortPos));
 	if(Checked && ForceIgnoreIfChecked)
 		return false;
 
@@ -2984,7 +2984,7 @@ bool CBotPlayer::MaybeJumpOnPlatform(const vec2 &JumpTargetPosition, bool ForceI
 	if(!IsHuman())
 	{
 		DIRECTION CheckDirection = JumpTargetPosition.x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT;
-		EDecision GoodDecision = s_HiveMind.GetGoodDecision(this, CheckDirection);
+		EDecision GoodDecision = GetHiveMind().GetGoodDecision(this, CheckDirection);
 		if(GoodDecision != EDecision::Invalid)
 		{
 			// Definitely go!
@@ -3229,7 +3229,7 @@ void CBotPlayer::PushCheckedPosition(const STilePosition &ShortPos)
 	ma_CheckPoints.Add({ShortPos, Tick});
 	if(!IsHuman())
 	{
-		s_HiveMind.PushCheckedPosition(ShortPos, Tick);
+		GetHiveMind().PushCheckedPosition(ShortPos, Tick);
 	}
 }
 
@@ -3288,6 +3288,11 @@ void CBotPlayer::UpdatePOIState()
 	{
 		m_CachedPOIReachableByGround = false;
 	}
+}
+
+CHiveMind &CBotPlayer::GetHiveMind() const
+{
+	return s_HiveMind;
 }
 
 void CBotPlayer::PickBestWeapon(float DistanceToTarget)
