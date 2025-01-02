@@ -249,11 +249,14 @@ function setup_wave4()
     bot_conf.DropLevel = 2
     add_tweak(bot_conf, "threat-aware")
 
-    for i = 1,2 do
-        bot_conf = Game.Controller:SurvivalAddBot(wave, "bat")
-        bot_conf.SpawnSecond = 20
-        bot_conf.RespawnInterval = 2
-        add_tweak(bot_conf, "strong-hook")
+    if survival_difficulty_level > 1 then
+        local n = survival_difficulty_level - 1
+        for i = 1,n do
+            bot_conf = Game.Controller:SurvivalAddBot(wave, "bat")
+            bot_conf.SpawnSecond = 20 + i * 0.2
+            bot_conf.RespawnInterval = 2
+            add_tweak(bot_conf, "strong-hook")
+        end
     end
 end
 
