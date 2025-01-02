@@ -497,6 +497,7 @@ private:
 	ClientsArray m_WitchCallers;
 
 	void RemoveBots();
+	void ResetSpawnedBotsTracking();
 
 	int RequestBotID();
 	CBaseBotPlayer *AddBot(int Team = 0);

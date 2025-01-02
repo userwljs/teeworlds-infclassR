@@ -4620,6 +4620,11 @@ void CIcGameController::RemoveBots()
 		RemoveBot(pBot, "Cleanup");
 	}
 
+	ResetSpawnedBotsTracking();
+}
+
+void CIcGameController::ResetSpawnedBotsTracking()
+{
 	m_SpawnedWaveBots = 0;
 	for(bool &Spawned : m_SpawnedWaveMap)
 	{
