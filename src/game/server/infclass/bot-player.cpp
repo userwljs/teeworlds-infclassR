@@ -515,7 +515,10 @@ std::optional<int> CBotPlayer::GetHumanTarget(const ClientsArray &Targets) const
 		return CanHealId;
 	}
 
-	return NearestHumanId;
+	if(GetClass() == EPlayerClass::Medic)
+		return NearestHumanId;
+
+	return std::nullopt;
 }
 
 std::optional<int> CBotPlayer::GetInfectedTarget(const ClientsArray &Targets) const
