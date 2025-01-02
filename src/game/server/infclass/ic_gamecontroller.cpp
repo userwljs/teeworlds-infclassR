@@ -4329,6 +4329,7 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 			PossibleMessages.Add(("{str:PlayerName} rode the blast wave for the last time."));
 			break;
 		case EDamageType::BOOMER_EXPLOSION:
+			PossibleMessages.Add(("{str:PlayerName} was evaporated by {str:Killer}."));
 			PossibleMessages.Add(("{str:PlayerName} was exploded by {str:Killer}."));
 			PossibleMessages.Add(("{str:PlayerName} was eliminated by {str:Killer}."));
 			PossibleMessages.Add(("{str:PlayerName} met a boomer."));
@@ -4382,10 +4383,14 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 			if(Context.DamageType == EDamageType::DRYING_HOOK)
 			{
 				PossibleMessages.Add(("{str:PlayerName} was drained by {str:Killer}."));
+				PossibleMessages.Add(("{str:PlayerName} was smoked out by {str:Killer}."));
 			}
 			break;
 		case EPlayerClass::Ghost:
 			PossibleMessages.Add(("{str:PlayerName} was surprised by {str:Killer}."));
+			PossibleMessages.Add(("{str:PlayerName} was been spirited away by {str:Killer}."));
+			PossibleMessages.Add(("{str:PlayerName} was dematerialized by ghostly shenanigans!"));
+			PossibleMessages.Add(("Boo! {str:PlayerName} was scared to death!"));
 			break;
 		case EPlayerClass::Bat:
 			PossibleMessages.Add(("{str:PlayerName} was bitten by {str:Killer}."));
@@ -4405,10 +4410,10 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 			if(pVictimCharacter->GetAttackTick() + TickSpeed * 1.25f < Tick)
 			{
 				PossibleMessages.Add("{str:PlayerName} kinda gave up.");
+				PossibleMessages.Add("{str:PlayerName} was too exhausted for this fight.");
 			}
 			else if(pVictimCharacter->GetLastNoAmmoSoundTick() + Server()->TickSpeed() * 0.6 < Tick)
 			{
-				PossibleMessages.Add("{str:PlayerName} had no ammo to kill them all.");
 				static const icArray<int, 2> aWeaponsWithoutReload = {
 					WEAPON_HAMMER,
 					WEAPON_NINJA,
@@ -4416,13 +4421,15 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 
 				if(!aWeaponsWithoutReload.Contains(pVictimCharacter->GetActiveWeapon()))
 				{
-					PossibleMessages.Add("{str:PlayerName} forgot to reload timely.");
+					PossibleMessages.Add("{str:PlayerName} had no ammo to kill them all.");
+					PossibleMessages.Add("{str:PlayerName} had no ammo to reload.");
 				}
 			}
 		}
 
 		const char *apPlayerKilledByMessages[] = {
 			"{str:PlayerName} was destroyed by {str:Killer}.",
+			"{str:PlayerName} was wrecked by {str:Killer}.",
 			"{str:PlayerName} was slain by {str:Killer}.",
 			"{str:PlayerName} was decapitated by {str:Killer}.",
 			"{str:PlayerName} was chopped up by {str:Killer}.",
