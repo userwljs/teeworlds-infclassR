@@ -89,7 +89,6 @@ public:
 
 	void TickBeforeWorld() override;
 	void Tick() override;
-	void OnGameRestart() override;
 	void Snap(int SnappingClient) override;
 
 	CPlayer *CreatePlayer(int ClientId, bool IsSpectator, void *pData) override;

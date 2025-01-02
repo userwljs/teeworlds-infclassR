@@ -3391,11 +3391,6 @@ void CIcGameController::Tick()
 		SendHintMessage();
 }
 
-void CIcGameController::OnGameRestart()
-{
-	IGameController::OnGameRestart();
-}
-
 void CIcGameController::RoundTickBeforeInitialInfection()
 {
 	BroadcastInfectionComing(GetInfectionStartTick());
