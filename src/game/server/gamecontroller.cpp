@@ -1076,6 +1076,7 @@ void IGameController::DoTeamBalance()
 	}
 
 	m_UnbalancedTick = -1;
+	GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "Teams have been balanced");
 }
 
 int IGameController::OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int Weapon)
