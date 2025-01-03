@@ -2577,7 +2577,11 @@ void CIcCharacter::PostCoreTick()
 void CIcCharacter::SnapCharacter(int SnappingClient, int Id)
 {
 	CCharacterCore *pCore;
-	int Tick, Weapon = m_ActiveWeapon;
+	int Tick;
+	int Weapon = m_ActiveWeapon;
+	int AmmoCount = 0;
+	int Health = 0;
+	int Armor = 0;
 
 	// write down the m_Core
 	if(!m_ReckoningTick || GameServer()->m_World.m_Paused)
@@ -2591,25 +2595,45 @@ void CIcCharacter::SnapCharacter(int SnappingClient, int Id)
 		pCore = &m_SendCore;
 	}
 
+	const CIcPlayer *pSnappingClient = GameController()->GetPlayer(SnappingClient);
+	int ClientVersion = Server()->GetClientInfclassVersion(SnappingClient);
+	int SnappingSpectatorId = -1;
+	if(pSnappingClient)
+	{
+		SnappingSpectatorId = pSnappingClient->GetSpectatingCid();
+	}
+
+	int Emote = m_EmoteType;
 	int EmoteNormal = m_pPlayer->GetDefaultEmote();
 
-	CNetObj_Character *pCharacter = Server()->SnapNewItem<CNetObj_Character>(Id);
-	if(!pCharacter)
-		return;
-	pCharacter->m_Tick = Tick;
-	pCore->Write(pCharacter);
-	if(pCharacter->m_HookedPlayer != -1)
-	{
-		if(!Server()->Translate(pCharacter->m_HookedPlayer, SnappingClient))
-			pCharacter->m_HookedPlayer = -1;
-	}
-	pCharacter->m_Emote = m_EmoteType;
-
-	pCharacter->m_AmmoCount = 0;
-	pCharacter->m_Health = 0;
-	pCharacter->m_Armor = 0;
-
 	/* INFECTION MODIFICATION START ***************************************/
+	if(IsInvisible())
+	{
+		if(ClientVersion < VERSION_INFC_160)
+		{
+			Emote = EMOTE_BLINK;
+		}
+	}
+
+	int NormalizedArmor = clamp<int>(std::ceil(m_Armor * 10.0f / m_MaxArmor), 0, 10);
+	if(GameController()->CanSeeDetails(SnappingClient, GetCid()) ||
+		(!g_Config.m_SvStrictSpectateMode && m_pPlayer->GetCid() == SnappingSpectatorId))
+	{
+		Health = m_Health;
+		Armor = NormalizedArmor;
+		if(m_aWeapons[m_ActiveWeapon].m_Ammo > 0)
+			AmmoCount = m_aWeapons[m_ActiveWeapon].m_Ammo;
+	}
+	else if(pSnappingClient && pSnappingClient->IsHuman() == m_pPlayer->IsHuman())
+	{
+		Health = m_Health;
+		Armor = NormalizedArmor;
+	}
+
+	if(GetInfWeaponId(m_ActiveWeapon) == EInfclassWeapon::MERCENARY_GUN)
+	{
+		AmmoCount /= (GameController()->GetMaxAmmo(EInfclassWeapon::MERCENARY_GUN) / 10);
+	}
 	if(GetInfWeaponId(m_ActiveWeapon) == EInfclassWeapon::NINJA_KATANA)
 	{
 		Weapon = WEAPON_NINJA;
@@ -2624,67 +2648,48 @@ void CIcCharacter::SnapCharacter(int SnappingClient, int Id)
 			Weapon = -1;
 		}
 	}
+	int HookTick = pCore->m_HookTick;
 	if(GetPlayerClass() == EPlayerClass::Spider)
 	{
-		pCharacter->m_HookTick -= (g_Config.m_InfSpiderHookTime - 1) * SERVER_TICK_SPEED - SERVER_TICK_SPEED / 5;
-		if(pCharacter->m_HookTick < 0)
-			pCharacter->m_HookTick = 0;
+		HookTick -= (g_Config.m_InfSpiderHookTime - 1) * SERVER_TICK_SPEED - SERVER_TICK_SPEED / 5;
+		if(HookTick < 0)
+			HookTick = 0;
 	}
 	if(GetPlayerClass() == EPlayerClass::Bat)
 	{
-		pCharacter->m_HookTick -= (g_Config.m_InfBatHookTime - 1) * SERVER_TICK_SPEED - SERVER_TICK_SPEED / 5;
-		if(pCharacter->m_HookTick < 0)
-			pCharacter->m_HookTick = 0;
+		HookTick -= (g_Config.m_InfBatHookTime - 1) * SERVER_TICK_SPEED - SERVER_TICK_SPEED / 5;
+		if(HookTick < 0)
+			HookTick = 0;
 	}
 	/* INFECTION MODIFICATION END *****************************************/
+
+	if(Emote == EmoteNormal)
+	{
+		if(5 * Server()->TickSpeed() - ((Server()->Tick() - m_LastAction) % (5 * Server()->TickSpeed())) < 5)
+			Emote = EMOTE_BLINK;
+	}
+
+	CNetObj_Character *pCharacter = Server()->SnapNewItem<CNetObj_Character>(Id);
+	if(!pCharacter)
+		return;
+	pCore->Write(pCharacter);
+
+	pCharacter->m_HookTick = HookTick;
+	pCharacter->m_Tick = Tick;
+	pCharacter->m_Emote = Emote;
+
+	if(pCharacter->m_HookedPlayer != -1)
+	{
+		if(!Server()->Translate(pCharacter->m_HookedPlayer, SnappingClient))
+			pCharacter->m_HookedPlayer = -1;
+	}
+
 	pCharacter->m_AttackTick = m_AttackTick;
 	pCharacter->m_Direction = m_Input.m_Direction;
 	pCharacter->m_Weapon = Weapon;
-
-	const CIcPlayer *pSnappingClient = GameController()->GetPlayer(SnappingClient);
-	int ClientVersion = Server()->GetClientInfclassVersion(SnappingClient);
-	int SnappingSpectatorId = -1;
-	if(pSnappingClient)
-	{
-		SnappingSpectatorId = pSnappingClient->GetSpectatingCid();
-	}
-
-	int NormalizedArmor = clamp<int>(std::ceil(m_Armor * 10.0f / m_MaxArmor), 0, 10);
-	if(GameController()->CanSeeDetails(SnappingClient, GetCid()) ||
-		(!g_Config.m_SvStrictSpectateMode && m_pPlayer->GetCid() == SnappingSpectatorId))
-	{
-		pCharacter->m_Health = m_Health;
-		pCharacter->m_Armor = NormalizedArmor;
-		if(m_aWeapons[m_ActiveWeapon].m_Ammo > 0)
-			pCharacter->m_AmmoCount = m_aWeapons[m_ActiveWeapon].m_Ammo;
-	}
-	else if(pSnappingClient && pSnappingClient->IsHuman() == m_pPlayer->IsHuman())
-	{
-		pCharacter->m_Health = m_Health;
-		pCharacter->m_Armor = NormalizedArmor;
-	}
-
-	if(IsInvisible())
-	{
-		if(ClientVersion < VERSION_INFC_160)
-		{
-			pCharacter->m_Emote = EMOTE_BLINK;
-		}
-	}
-
-	/* INFECTION MODIFICATION START ***************************************/
-	if(GetInfWeaponId(m_ActiveWeapon) == EInfclassWeapon::MERCENARY_GUN)
-	{
-		pCharacter->m_AmmoCount /= (GameController()->GetMaxAmmo(EInfclassWeapon::MERCENARY_GUN) / 10);
-	}
-	/* INFECTION MODIFICATION END *****************************************/
-
-	if(pCharacter->m_Emote == EmoteNormal)
-	{
-		if(250 - ((Server()->Tick() - m_LastAction) % (250)) < 5)
-			pCharacter->m_Emote = EMOTE_BLINK;
-	}
-
+	pCharacter->m_AmmoCount = AmmoCount;
+	pCharacter->m_Health = Health;
+	pCharacter->m_Armor = Armor;
 	pCharacter->m_PlayerFlags = GetPlayer()->m_PlayerFlags;
 }
 
