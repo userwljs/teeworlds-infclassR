@@ -102,6 +102,7 @@ void CMercenaryBomb::Snap(int SnappingClient)
 	if(!DoSnapForClient(SnappingClient))
 		return;
 
+	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 	if(Server()->GetClientInfclassVersion(SnappingClient))
 	{
 		CNetObj_InfClassObject *pInfClassObject = SnapInfClassObject();
@@ -112,18 +113,12 @@ void CMercenaryBomb::Snap(int SnappingClient)
 	float AngleStart = (2.0f * pi * Server()->Tick()/static_cast<float>(Server()->TickSpeed()))/10.0f;
 	float AngleStep = 2.0f * pi / static_cast<float>(CMercenaryBomb::NUM_SIDE);
 	float R = 50.0f * static_cast<float>(m_Load) / Config()->m_InfMercBombs;
+
+	CSnapContext Context(SnappingClientVersion);
 	for(int i = 0; i < CMercenaryBomb::NUM_SIDE; i++)
 	{
 		vec2 PosStart = m_Pos + vec2(R * cos(AngleStart + AngleStep*i), R * sin(AngleStart + AngleStep*i));
-
-		CNetObj_Pickup *pP = Server()->SnapNewItem<CNetObj_Pickup>(m_Ids[i]);
-		if(!pP)
-			return;
-
-		pP->m_X = (int)PosStart.x;
-		pP->m_Y = (int)PosStart.y;
-		pP->m_Type = POWERUP_HEALTH;
-		pP->m_Subtype = 0;
+		GameServer()->SnapPickup(Context, m_Ids[i], PosStart, POWERUP_HEALTH, 0);
 	}
 
 	if(SnappingClient == GetOwner() && m_LoadingTick > 0)
