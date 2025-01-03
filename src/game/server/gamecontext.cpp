@@ -5163,7 +5163,17 @@ void CGameContext::WhisperId(int ClientId, int VictimId, const char *pMessage)
 
 	char aBuf[256];
 
-	if(GetClientVersion(ClientId) >= VERSION_DDNET_WHISPER)
+	if(Server()->IsSixup(ClientId))
+	{
+		protocol7::CNetMsg_Sv_Chat Msg;
+		Msg.m_ClientId = ClientId;
+		Msg.m_Mode = protocol7::CHAT_WHISPER;
+		Msg.m_pMessage = aCensoredMessage;
+		Msg.m_TargetId = VictimId;
+
+		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, ClientId);
+	}
+	else if(GetClientVersion(ClientId) >= VERSION_DDNET_WHISPER)
 	{
 		CNetMsg_Sv_Chat Msg;
 		Msg.m_Team = CHAT_WHISPER_SEND;
@@ -5188,7 +5198,17 @@ void CGameContext::WhisperId(int ClientId, int VictimId, const char *pMessage)
 		return;
 	}
 
-	if(GetClientVersion(VictimId) >= VERSION_DDNET_WHISPER)
+	if(Server()->IsSixup(VictimId))
+	{
+		protocol7::CNetMsg_Sv_Chat Msg;
+		Msg.m_ClientId = ClientId;
+		Msg.m_Mode = protocol7::CHAT_WHISPER;
+		Msg.m_pMessage = aCensoredMessage;
+		Msg.m_TargetId = VictimId;
+
+		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, VictimId);
+	}
+	else if(GetClientVersion(VictimId) >= VERSION_DDNET_WHISPER)
 	{
 		CNetMsg_Sv_Chat Msg2;
 		Msg2.m_Team = CHAT_WHISPER_RECV;
