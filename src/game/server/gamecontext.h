@@ -77,6 +77,7 @@ class CGameContext : public IGameServer
 	IStorage *m_pStorage;
 	CLayers m_Layers;
 	CCollision m_Collision;
+	protocol7::CNetObjHandler m_NetObjHandler7;
 	CNetObjHandler m_NetObjHandler;
 	CTuningParams m_Tuning;
 

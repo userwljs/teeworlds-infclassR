@@ -1260,7 +1260,9 @@ int CServer::NewClientCallback(int ClientId, void *pUser, bool Sixup)
 	pThis->m_aClients[ClientId].m_InfClassVersion = 0;
 	pThis->m_aClients[ClientId].m_Quitting = false;
 	pThis->m_aClients[ClientId].Reset();
-	
+
+	pThis->m_aClients[ClientId].m_Sixup = Sixup;
+
 	//Getback session about the client
 	IServer::CClientSession* pSession = pThis->m_NetSession.GetData(pThis->m_NetServer.ClientAddr(ClientId));
 	if(pSession)
@@ -1612,6 +1614,39 @@ bool CServer::GenerateClientMap(const char *pMapFilePath, const char *pMapName)
 		m_ClientMapFileName[MAP_TYPE_SIX] = aClientMapFileName;
 	}
 
+	// load sixup version of the map
+	if(Config()->m_SvSixup)
+	{
+		// FIXME: maps7
+		void *pData;
+		if(!Storage()->ReadFile(aClientMapName, IStorage::TYPE_ALL, &pData, &m_aCurrentMapSize[MAP_TYPE_SIXUP]))
+		{
+			Config()->m_SvSixup = 0;
+			if(m_pRegister)
+			{
+				m_pRegister->OnConfigChange();
+			}
+			log_error("sixup", "couldn't load map %s", aClientMapName);
+			log_info("sixup", "disabling 0.7 compatibility");
+		}
+		else
+		{
+			free(m_apCurrentMapData[MAP_TYPE_SIXUP]);
+			m_apCurrentMapData[MAP_TYPE_SIXUP] = (unsigned char *)pData;
+
+			m_aCurrentMapSha256[MAP_TYPE_SIXUP] = sha256(m_apCurrentMapData[MAP_TYPE_SIXUP], m_aCurrentMapSize[MAP_TYPE_SIXUP]);
+			m_aCurrentMapCrc[MAP_TYPE_SIXUP] = crc32(0, m_apCurrentMapData[MAP_TYPE_SIXUP], m_aCurrentMapSize[MAP_TYPE_SIXUP]);
+			sha256_str(m_aCurrentMapSha256[MAP_TYPE_SIXUP], aSha256, sizeof(aSha256));
+			str_format(aBufMsg, sizeof(aBufMsg), "%s sha256 is %s", aClientMapName, aSha256);
+			Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "sixup", aBufMsg);
+		}
+	}
+	if(!Config()->m_SvSixup)
+	{
+		free(m_apCurrentMapData[MAP_TYPE_SIXUP]);
+		m_apCurrentMapData[MAP_TYPE_SIXUP] = 0;
+	}
+
 	return true;
 }
 
@@ -1736,6 +1771,15 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			if((pPacket->m_Flags&NET_CHUNKFLAG_VITAL) == 0 || m_aClients[ClientId].m_State < CClient::STATE_CONNECTING)
 				return;
 
+			if(m_aClients[ClientId].m_Sixup)
+			{
+				for(int i = 0; i < Config()->m_SvMapWindow; i++)
+				{
+					SendMapData(ClientId, m_aClients[ClientId].m_NextMapChunk++);
+				}
+				return;
+			}
+
 			int Chunk = Unpacker.GetInt();
 			if(Unpacker.Error())
 			{
@@ -1785,6 +1829,16 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				
 				if(m_aClients[ClientId].m_WaitingTime <= 0)
 				{
+					if(!IsSixup(ClientId))
+					{
+						SendServerInfo(m_NetServer.ClientAddr(ClientId), -1, SERVERINFO_EXTENDED, false);
+					}
+					else
+					{
+						CMsgPacker Msgp(protocol7::NETMSG_SERVERINFO, true, true);
+						GetServerInfoSixup(&Msgp, -1, false);
+						SendMsg(&Msgp, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientId);
+					}
 					GameServer()->OnClientEnter(ClientId);
 				}
 			}
@@ -2804,6 +2858,40 @@ int CServer::LoadMap(const char *pMapName)
 				Storage()->ReadFile(aBuf, IStorage::TYPE_ALL, &pData, &m_aCurrentMapSize[MAP_TYPE_SIX]);
 				m_apCurrentMapData[MAP_TYPE_SIX] = (unsigned char *)pData;
 			}
+
+			// load sixup version of the map
+			if(Config()->m_SvSixup)
+			{
+				// FIXME: maps7
+				str_format(aBuf, sizeof(aBuf), "maps/%s.map", pMapName);
+				void *pData;
+				if(!Storage()->ReadFile(aBuf, IStorage::TYPE_ALL, &pData, &m_aCurrentMapSize[MAP_TYPE_SIXUP]))
+				{
+					Config()->m_SvSixup = 0;
+					if(m_pRegister)
+					{
+						m_pRegister->OnConfigChange();
+					}
+					log_error("sixup", "couldn't load map %s", aBuf);
+					log_info("sixup", "disabling 0.7 compatibility");
+				}
+				else
+				{
+					free(m_apCurrentMapData[MAP_TYPE_SIXUP]);
+					m_apCurrentMapData[MAP_TYPE_SIXUP] = (unsigned char *)pData;
+
+					m_aCurrentMapSha256[MAP_TYPE_SIXUP] = sha256(m_apCurrentMapData[MAP_TYPE_SIXUP], m_aCurrentMapSize[MAP_TYPE_SIXUP]);
+					m_aCurrentMapCrc[MAP_TYPE_SIXUP] = crc32(0, m_apCurrentMapData[MAP_TYPE_SIXUP], m_aCurrentMapSize[MAP_TYPE_SIXUP]);
+					sha256_str(m_aCurrentMapSha256[MAP_TYPE_SIXUP], aSha256, sizeof(aSha256));
+					str_format(aBufMsg, sizeof(aBufMsg), "%s sha256 is %s", aBuf, aSha256);
+					Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "sixup", aBufMsg);
+				}
+			}
+			if(!Config()->m_SvSixup)
+			{
+				free(m_apCurrentMapData[MAP_TYPE_SIXUP]);
+				m_apCurrentMapData[MAP_TYPE_SIXUP] = 0;
+			}
 		}
 
 		pLoadedMapFileName = pMapFileName;
@@ -3175,6 +3263,16 @@ int CServer::Run()
 							}
 							else if(m_aClients[ClientId].m_State == CClient::STATE_INGAME)
 							{
+								if(!IsSixup(ClientId))
+								{
+									SendServerInfo(m_NetServer.ClientAddr(ClientId), -1, SERVERINFO_EXTENDED, false);
+								}
+								else
+								{
+									CMsgPacker Msgp(protocol7::NETMSG_SERVERINFO, true, true);
+									GetServerInfoSixup(&Msgp, -1, false);
+									SendMsg(&Msgp, MSGFLAG_VITAL | MSGFLAG_FLUSH, ClientId);
+								}
 								GameServer()->OnClientEnter(ClientId);
 							}
 						}
