@@ -4841,7 +4841,7 @@ int CIcGameController::OnCharacterDeath(class CCharacter *pAbstractVictim, class
 	return 0;
 }
 
-void CIcGameController::OnCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext)
+void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext)
 {
 	const EDamageType DamageType = pContext->DamageType;
 	const int Killer = pContext->Killer;
@@ -5003,10 +5003,8 @@ void CIcGameController::OnCharacterDeath(CIcCharacter *pVictim, DeathContext *pC
 	}
 }
 
-void CIcGameController::OnCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context)
+void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context)
 {
-	IGameController::OnCharacterSpawn(pCharacter);
-
 	CIcPlayer *pPlayer = pCharacter->GetPlayer();
 	if(!IsInfectionStarted() && pPlayer->RandomClassChoosen())
 	{

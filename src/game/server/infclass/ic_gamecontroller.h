@@ -122,8 +122,8 @@ public:
 	void SendServerParams(int ClientId) const;
 
 	int OnCharacterDeath(class CCharacter *pVictim, class CPlayer *pKiller, int Weapon) override;
-	void OnCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext);
-	void OnCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context);
+	void OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext);
+	void OnIcCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context);
 	void OnClassChooserRequested(CIcCharacter *pCharacter);
 	void CheckRoundFailed();
 	float GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const override;

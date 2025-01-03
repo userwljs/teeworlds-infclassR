@@ -149,7 +149,7 @@ void CIcCharacter::OnCharacterSpawned(const SpawnContext &Context)
 
 	m_pClass->OnCharacterSpawned(Context);
 
-	GameController()->OnCharacterSpawned(this, Context);
+	GameController()->OnIcCharacterSpawned(this, Context);
 }
 
 void CIcCharacter::OnCharacterInInfectionZone()
@@ -2046,7 +2046,7 @@ void CIcCharacter::Die(DeathContext *pContext)
 
 	// we got to wait 0.5 secs before respawning
 	m_pPlayer->m_RespawnTick = Server()->Tick()+Server()->TickSpeed()/2;
-	GameController()->OnCharacterDeath(this, pContext);
+	GameController()->OnIcCharacterDeath(this, pContext);
 
 	// a nice sound
 	GameServer()->CreateSound(GetPos(), SOUND_PLAYER_DIE);
