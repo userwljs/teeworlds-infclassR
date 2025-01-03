@@ -78,7 +78,7 @@ struct FunRoundConfiguration
 class CIcGameController : public IGameController
 {
 public:
-	CIcGameController(class CGameContext *pGameServer);
+	CIcGameController(CGameContext *pGameServer);
 	~CIcGameController() override;
 
 	const char *GameType() const override;
@@ -121,7 +121,7 @@ public:
 	void SendHammerDot(const vec2 &Pos, int SnapId);
 	void SendServerParams(int ClientId) const;
 
-	int OnCharacterDeath(class CCharacter *pVictim, class CPlayer *pKiller, int Weapon) override;
+	int OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;
 	void OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext);
 	void OnIcCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context);
 	void OnClassChooserRequested(CIcCharacter *pCharacter);
@@ -132,7 +132,7 @@ public:
 	void ResetRoundData();
 	void EndRound() override;
 	void EndRound(ROUND_END_REASON Reason);
-	void DoTeamChange(class CPlayer *pPlayer, int Team, bool DoChatMsg = true) override;
+	void DoTeamChange(CPlayer *pPlayer, int Team, bool DoChatMsg = true) override;
 	bool TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext);
 	EPlayerClass ChooseHumanClass(const CIcPlayer *pPlayer) const;
 	EPlayerClass ChooseInfectedClass(const CIcPlayer *pPlayer) const;
@@ -258,11 +258,11 @@ public:
 	int GetPlayerTeam(int ClientId) const override;
 	void SetPlayerInfected(int ClientId, bool Infected);
 
-	void RegisterChatCommands(class IConsole *pConsole) override;
+	void RegisterChatCommands(IConsole *pConsole) override;
 
-	static void ConSetWeaponFireDelay(class IConsole::IResult *pResult, void *pUserData);
-	static void ConSetWeaponAmmoRegen(class IConsole::IResult *pResult, void *pUserData);
-	static void ConSetWeaponMaxAmmo(class IConsole::IResult *pResult, void *pUserData);
+	static void ConSetWeaponFireDelay(IConsole::IResult *pResult, void *pUserData);
+	static void ConSetWeaponAmmoRegen(IConsole::IResult *pResult, void *pUserData);
+	static void ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pUserData);
 
 	static void ConSetClientName(IConsole::IResult *pResult, void *pUserData);
 	static void ConRestoreClientName(IConsole::IResult *pResult, void *pUserData);
