@@ -201,7 +201,6 @@ protected:
 	int m_InAirTick;
 
 public:
-	bool m_HasIndicator;
 	int m_LoveTick;
 	int m_HallucinationTick;
 	int m_SlipperyTick;

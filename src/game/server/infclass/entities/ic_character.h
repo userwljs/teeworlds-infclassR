@@ -334,6 +334,7 @@ protected:
 	int m_SleepingTicks = 0;
 	std::optional<int> m_PutToSleepBy;
 
+	bool m_HasIndicator{};
 	bool m_IsFrozen = false;
 	int m_FrozenTime;
 	int m_LastFreezer = -1;

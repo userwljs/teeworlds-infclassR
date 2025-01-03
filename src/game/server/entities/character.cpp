@@ -31,7 +31,6 @@ CCharacter::CCharacter(CGameWorld *pWorld) :
 	m_InAirTick = 0;
 	m_InWater = 0;
 	m_WaterJumpLifeSpan = 0;
-	m_HasIndicator = false;
 /* INFECTION MODIFICATION END *****************************************/
 }
 
