@@ -240,6 +240,20 @@ void CCharacter::HandleWeapons()
 
 CAmmoParams CCharacter::GetAmmoParams(EWeapon Weapon) const
 {
+	switch(Weapon)
+	{
+	case WEAPON_HAMMER:
+	case WEAPON_NINJA:
+		return {.MaxAmmo = -1};
+	case WEAPON_GUN:
+	case WEAPON_SHOTGUN:
+	case WEAPON_GRENADE:
+	case WEAPON_LASER:
+		return {.MaxAmmo = 10};
+	default:
+		break;
+	}
+
 	return {};
 }
 

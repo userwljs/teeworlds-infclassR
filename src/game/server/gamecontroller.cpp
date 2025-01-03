@@ -1089,6 +1089,13 @@ int IGameController::OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int
 void IGameController::OnCharacterSpawn(CCharacter *pCharacter)
 {
 	pCharacter->SetTeams(&m_Teams);
+
+	// default health
+	pCharacter->IncreaseHealth(10);
+
+	// give default weapons
+	pCharacter->GiveWeapon(WEAPON_HAMMER);
+	pCharacter->GiveWeapon(WEAPON_GUN);
 }
 
 void IGameController::OnStartRound()
