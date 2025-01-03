@@ -62,6 +62,12 @@ class CPlayer;
 class IEngine;
 class IGameController;
 
+struct CViewParams
+{
+	vec2 ViewPos{};
+	vec2 ShowDistance{};
+};
+
 class CGameContext : public IGameServer
 {
 	IServer *m_pServer;
@@ -236,6 +242,10 @@ public:
 	void OnPreSnap() override;
 	void OnSnap(int ClientId) override;
 	void OnPostSnap() override;
+
+	std::optional<CViewParams> GetClientViewParams(int SnappingClient) const;
+	bool NetworkClipped(int SnappingClient, vec2 CheckPos) const;
+	bool NetworkClippedLine(int SnappingClient, vec2 StartPos, vec2 EndPos) const;
 
 	void UpdatePlayerMaps();
 

@@ -61,7 +61,7 @@ void CDoor::Reset()
 
 void CDoor::Snap(int SnappingClientId)
 {
-	const std::optional<CViewParams> ViewParams = GetViewParams(GameServer(), SnappingClientId);
+	const std::optional<CViewParams> ViewParams = GameServer()->GetClientViewParams(SnappingClientId);
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClientId);
 

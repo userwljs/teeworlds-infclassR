@@ -4675,6 +4675,50 @@ void CGameContext::OnPostSnap()
 	m_Events.Clear();
 }
 
+std::optional<CViewParams> CGameContext::GetClientViewParams(int SnappingClient) const
+{
+	if(SnappingClient == SERVER_DEMO_CLIENT || m_apPlayers[SnappingClient]->m_ShowAll)
+		return {};
+
+	const CPlayer *pPlayer = m_apPlayers[SnappingClient];
+	return CViewParams{pPlayer->m_ViewPos, pPlayer->m_ShowDistance};
+}
+
+bool CGameContext::NetworkClipped(int SnappingClient, vec2 CheckPos) const
+{
+	if(SnappingClient == SERVER_DEMO_CLIENT || m_apPlayers[SnappingClient]->m_ShowAll)
+		return false;
+
+	float dx = m_apPlayers[SnappingClient]->m_ViewPos.x - CheckPos.x;
+	if(absolute(dx) > m_apPlayers[SnappingClient]->m_ShowDistance.x)
+		return true;
+
+	float dy = m_apPlayers[SnappingClient]->m_ViewPos.y - CheckPos.y;
+	return absolute(dy) > m_apPlayers[SnappingClient]->m_ShowDistance.y;
+}
+
+bool CGameContext::NetworkClippedLine(int SnappingClient, vec2 StartPos, vec2 EndPos) const
+{
+	if(SnappingClient == SERVER_DEMO_CLIENT || m_apPlayers[SnappingClient]->m_ShowAll)
+		return false;
+
+	vec2 &ViewPos = m_apPlayers[SnappingClient]->m_ViewPos;
+	vec2 &ShowDistance = m_apPlayers[SnappingClient]->m_ShowDistance;
+
+	vec2 DistanceToLine, ClosestPoint;
+	if(closest_point_on_line(StartPos, EndPos, ViewPos, ClosestPoint))
+	{
+		DistanceToLine = ViewPos - ClosestPoint;
+	}
+	else
+	{
+		// No line section was passed but two equal points
+		DistanceToLine = ViewPos - StartPos;
+	}
+	float ClippDistance = maximum(ShowDistance.x, ShowDistance.y);
+	return (absolute(DistanceToLine.x) > ClippDistance || absolute(DistanceToLine.y) > ClippDistance);
+}
+
 void CGameContext::UpdatePlayerMaps()
 {
 	const auto DistCompare = [](std::pair<float, int> a, std::pair<float, int> b) -> bool {

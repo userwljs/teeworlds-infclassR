@@ -36,67 +36,23 @@ CEntity::~CEntity()
 
 bool CEntity::NetworkClipped(int SnappingClient) const
 {
-	return ::NetworkClipped(m_pGameWorld->GameServer(), SnappingClient, m_Pos);
+	return m_pGameWorld->GameServer()->NetworkClipped(SnappingClient, m_Pos);
 }
 
 bool CEntity::NetworkClipped(int SnappingClient, vec2 CheckPos) const
 {
-	return ::NetworkClipped(m_pGameWorld->GameServer(), SnappingClient, CheckPos);
+	return m_pGameWorld->GameServer()->NetworkClipped(SnappingClient, CheckPos);
 }
 
 bool CEntity::NetworkClippedLine(int SnappingClient, vec2 StartPos, vec2 EndPos) const
 {
-	return ::NetworkClippedLine(m_pGameWorld->GameServer(), SnappingClient, StartPos, EndPos);
+	return m_pGameWorld->GameServer()->NetworkClippedLine(SnappingClient, StartPos, EndPos);
 }
 
 bool CEntity::GameLayerClipped(vec2 CheckPos)
 {
 	return round_to_int(CheckPos.x) / 32 < -200 || round_to_int(CheckPos.x) / 32 > GameServer()->Collision()->GetWidth() + 200 ||
 	       round_to_int(CheckPos.y) / 32 < -200 || round_to_int(CheckPos.y) / 32 > GameServer()->Collision()->GetHeight() + 200;
-}
-
-std::optional<CViewParams> GetViewParams(const CGameContext *pGameServer, int SnappingClient)
-{
-	if(SnappingClient == SERVER_DEMO_CLIENT || pGameServer->m_apPlayers[SnappingClient]->m_ShowAll)
-		return {};
-
-	const CPlayer *pPlayer = pGameServer->m_apPlayers[SnappingClient];
-	return CViewParams{pPlayer->m_ViewPos, pPlayer->m_ShowDistance};
-}
-
-bool NetworkClipped(const CGameContext *pGameServer, int SnappingClient, vec2 CheckPos)
-{
-	if(SnappingClient == SERVER_DEMO_CLIENT || pGameServer->m_apPlayers[SnappingClient]->m_ShowAll)
-		return false;
-
-	float dx = pGameServer->m_apPlayers[SnappingClient]->m_ViewPos.x - CheckPos.x;
-	if(absolute(dx) > pGameServer->m_apPlayers[SnappingClient]->m_ShowDistance.x)
-		return true;
-
-	float dy = pGameServer->m_apPlayers[SnappingClient]->m_ViewPos.y - CheckPos.y;
-	return absolute(dy) > pGameServer->m_apPlayers[SnappingClient]->m_ShowDistance.y;
-}
-
-bool NetworkClippedLine(const CGameContext *pGameServer, int SnappingClient, vec2 StartPos, vec2 EndPos)
-{
-	if(SnappingClient == SERVER_DEMO_CLIENT || pGameServer->m_apPlayers[SnappingClient]->m_ShowAll)
-		return false;
-
-	vec2 &ViewPos = pGameServer->m_apPlayers[SnappingClient]->m_ViewPos;
-	vec2 &ShowDistance = pGameServer->m_apPlayers[SnappingClient]->m_ShowDistance;
-
-	vec2 DistanceToLine, ClosestPoint;
-	if(closest_point_on_line(StartPos, EndPos, ViewPos, ClosestPoint))
-	{
-		DistanceToLine = ViewPos - ClosestPoint;
-	}
-	else
-	{
-		// No line section was passed but two equal points
-		DistanceToLine = ViewPos - StartPos;
-	}
-	float ClippDistance = maximum(ShowDistance.x, ShowDistance.y);
-	return (absolute(DistanceToLine.x) > ClippDistance || absolute(DistanceToLine.y) > ClippDistance);
 }
 
 CAnimatedEntity::CAnimatedEntity(CGameWorld *pGameWorld, int Objtype, vec2 Pivot) :

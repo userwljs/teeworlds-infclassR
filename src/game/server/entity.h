@@ -142,17 +142,6 @@ public:
 	vec2 m_Pos;
 };
 
-struct CViewParams
-{
-	vec2 ViewPos{};
-	vec2 ShowDistance{};
-};
-
-std::optional<CViewParams> GetViewParams(const CGameContext *pGameServer, int SnappingClient);
-
-bool NetworkClipped(const CGameContext *pGameServer, int SnappingClient, vec2 CheckPos);
-bool NetworkClippedLine(const CGameContext *pGameServer, int SnappingClient, vec2 StartPos, vec2 EndPos);
-
 class CAnimatedEntity : public CEntity
 {
 protected:
