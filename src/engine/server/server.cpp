@@ -40,6 +40,8 @@
 #include "server.h"
 
 #include <cstring>
+#include <zlib.h>
+
 /* INFECTION MODIFICATION START ***************************************/
 #include <engine/server/mapconverter.h>
 #include <engine/server/crypt.h>
@@ -1161,7 +1163,10 @@ int CServer::ClientRejoinCallback(int ClientId, void *pUser)
 	CServer *pThis = (CServer *)pUser;
 
 	pThis->m_aClients[ClientId].m_Authed = AUTHED_NO;
-	pThis->m_aClients[ClientId].m_pRconCmdToSend = 0;
+	pThis->m_aClients[ClientId].m_pRconCmdToSend = nullptr;
+	pThis->m_aClients[ClientId].m_DDNetVersion = VERSION_NONE;
+	pThis->m_aClients[ClientId].m_GotDDNetVersionPacket = false;
+	pThis->m_aClients[ClientId].m_DDNetVersionSettled = false;
 	pThis->m_aClients[ClientId].m_Quitting = false;
 
 	pThis->m_aClients[ClientId].Reset();
@@ -1247,12 +1252,12 @@ int CServer::NewClientCallback(int ClientId, void *pUser, bool Sixup)
 	pThis->m_aClients[ClientId].m_AuthTries = 0;
 	pThis->m_aClients[ClientId].m_Traffic = 0;
 	pThis->m_aClients[ClientId].m_TrafficSince = 0;
+	pThis->m_aClients[ClientId].m_pRconCmdToSend = nullptr;
 	pThis->m_aClients[ClientId].m_ShowIps = false;
 	pThis->m_aClients[ClientId].m_DDNetVersion = VERSION_NONE;
 	pThis->m_aClients[ClientId].m_GotDDNetVersionPacket = false;
 	pThis->m_aClients[ClientId].m_DDNetVersionSettled = false;
 	pThis->m_aClients[ClientId].m_InfClassVersion = 0;
-	pThis->m_aClients[ClientId].m_pRconCmdToSend = 0;
 	pThis->m_aClients[ClientId].m_Quitting = false;
 	
 	memset(&pThis->m_aClients[ClientId].m_Addr, 0, sizeof(NETADDR));
@@ -1309,7 +1314,7 @@ int CServer::DelClientCallback(int ClientId, EClientDropType Type, const char *p
 	pThis->m_aClients[ClientId].m_Country = -1;
 	pThis->m_aClients[ClientId].m_Authed = AUTHED_NO;
 	pThis->m_aClients[ClientId].m_AuthTries = 0;
-	pThis->m_aClients[ClientId].m_pRconCmdToSend = 0;
+	pThis->m_aClients[ClientId].m_pRconCmdToSend = nullptr;
 	pThis->m_aClients[ClientId].m_Traffic = 0;
 	pThis->m_aClients[ClientId].m_TrafficSince = 0;
 	pThis->m_aClients[ClientId].m_ShowIps = false;
@@ -1734,6 +1739,10 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				return;
 
 			int Chunk = Unpacker.GetInt();
+			if(Unpacker.Error())
+			{
+				return;
+			}
 			if(Chunk != m_aClients[ClientId].m_NextMapChunk || !Config()->m_SvFastDownload)
 			{
 				SendMapData(ClientId, Chunk);
@@ -1779,7 +1788,6 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				if(m_aClients[ClientId].m_WaitingTime <= 0)
 				{
 					GameServer()->OnClientEnter(ClientId);
-					ExpireServerInfo();
 				}
 			}
 		}
@@ -1879,99 +1887,122 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 		}
 		else if(Msg == NETMSG_RCON_AUTH)
 		{
-			const char *pPw;
-			Unpacker.GetString(); // login name, not used
-			pPw = Unpacker.GetString(CUnpacker::SANITIZE_CC);
-
-			if((pPacket->m_Flags&NET_CHUNKFLAG_VITAL) != 0 && Unpacker.Error() == 0)
+			if((pPacket->m_Flags & NET_CHUNKFLAG_VITAL) == 0)
 			{
-				if(g_Config.m_SvRconPassword[0] == 0 && g_Config.m_SvRconModPassword[0] == 0)
-				{
-					SendRconLine(ClientId, "No rcon password set on server. Set sv_rcon_password and/or sv_rcon_mod_password to enable the remote console.");
-				}
-				else if(g_Config.m_SvRconTokenCheck && !m_NetServer.HasSecurityToken(ClientId))
-				{
-					SendRconLine(ClientId, "You must use a client that support anti-spoof protection (DDNet-like)");
-				}
-#ifdef CONF_SQL
-				else if(m_aClients[ClientId].m_UserId < 0)
-				{
-					SendRconLine(ClientId, "You must be logged to your account. Please use /login");
-				}
-#endif
-				else if(g_Config.m_SvRconPassword[0] && str_comp(pPw, g_Config.m_SvRconPassword) == 0)
-				{
-#ifdef CONF_SQL
-					if(m_aClients[ClientId].m_UserLevel == SQL_USERLEVEL_ADMIN)
-					{
-#endif
-						CMsgPacker Msg(NETMSG_RCON_AUTH_STATUS, true);
-						Msg.AddInt(1);	//authed
-						Msg.AddInt(1);	//cmdlist
-						SendMsg(&Msg, MSGFLAG_VITAL, ClientId);
+				return;
+			}
+			if(!IsSixup(ClientId))
+			{
+				Unpacker.GetString(); // login name, not used
+			}
+			const char *pPw = Unpacker.GetString(CUnpacker::SANITIZE_CC);
+			if(Unpacker.Error())
+			{
+				return;
+			}
 
-						m_aClients[ClientId].m_Authed = AUTHED_ADMIN;
-						GameServer()->OnSetAuthed(ClientId, m_aClients[ClientId].m_Authed);
-						int SendRconCmds = Unpacker.GetInt();
-						if(Unpacker.Error() == 0 && SendRconCmds)
-							m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(IConsole::ACCESS_LEVEL_ADMIN, CFGFLAG_SERVER);
-						SendRconLine(ClientId, "Admin authentication successful. Full remote console access granted.");
-						char aBuf[256];
-						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (admin)", ClientId);
-						Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+			if(g_Config.m_SvRconPassword[0] == 0 && g_Config.m_SvRconModPassword[0] == 0)
+			{
+				SendRconLine(ClientId, "No rcon password set on server. Set sv_rcon_password and/or sv_rcon_mod_password to enable the remote console.");
+			}
+			else if(g_Config.m_SvRconTokenCheck && !m_NetServer.HasSecurityToken(ClientId))
+			{
+				SendRconLine(ClientId, "You must use a client that support anti-spoof protection (DDNet-like)");
+			}
 #ifdef CONF_SQL
+			else if(m_aClients[ClientId].m_UserId < 0)
+			{
+				SendRconLine(ClientId, "You must be logged to your account. Please use /login");
+			}
+#endif
+			else if(g_Config.m_SvRconPassword[0] && str_comp(pPw, g_Config.m_SvRconPassword) == 0)
+			{
+#ifdef CONF_SQL
+				if(m_aClients[ClientId].m_UserLevel == SQL_USERLEVEL_ADMIN)
+				{
+#endif
+					if(!IsSixup(ClientId))
+					{
+						CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
+						Msgp.AddInt(1); //authed
+						Msgp.AddInt(1); //cmdlist
+						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
 					}
 					else
 					{
-						SendRconLine(ClientId, "You are not admin.");
+						CMsgPacker Msgp(protocol7::NETMSG_RCON_AUTH_ON, true, true);
+						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
 					}
-#endif
-				}
-				else if(g_Config.m_SvRconModPassword[0] && str_comp(pPw, g_Config.m_SvRconModPassword) == 0)
-				{
-#ifdef CONF_SQL
-					if(m_aClients[ClientId].m_UserLevel == SQL_USERLEVEL_ADMIN || m_aClients[ClientId].m_UserLevel == SQL_USERLEVEL_MOD)
-					{
-#endif
-						CMsgPacker Msg(NETMSG_RCON_AUTH_STATUS, true);
-						Msg.AddInt(1);	//authed
-						Msg.AddInt(1);	//cmdlist
-						SendMsg(&Msg, MSGFLAG_VITAL, ClientId);
 
-						m_aClients[ClientId].m_Authed = AUTHED_MOD;
-						int SendRconCmds = Unpacker.GetInt();
-						if(Unpacker.Error() == 0 && SendRconCmds)
-							m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(IConsole::ACCESS_LEVEL_MOD, CFGFLAG_SERVER);
-						SendRconLine(ClientId, "Moderator authentication successful. Limited remote console access granted.");
-						char aBuf[256];
-						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (moderator)", ClientId);
-						Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+					m_aClients[ClientId].m_Authed = AUTHED_ADMIN;
+					GameServer()->OnSetAuthed(ClientId, m_aClients[ClientId].m_Authed);
+					int SendRconCmds = Unpacker.GetInt();
+					if(Unpacker.Error() == 0 && SendRconCmds)
+						m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(IConsole::ACCESS_LEVEL_ADMIN, CFGFLAG_SERVER);
+					SendRconLine(ClientId, "Admin authentication successful. Full remote console access granted.");
+					char aBuf[256];
+					str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (admin)", ClientId);
+					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 #ifdef CONF_SQL
-					}
-					else
-					{
-						SendRconLine(ClientId, "You are not moderator.");
-					}
-#endif
-				}
-				else if(g_Config.m_SvRconMaxTries)
-				{
-					m_aClients[ClientId].m_AuthTries++;
-					char aBuf[128];
-					str_format(aBuf, sizeof(aBuf), "Wrong password %d/%d.", m_aClients[ClientId].m_AuthTries, g_Config.m_SvRconMaxTries);
-					SendRconLine(ClientId, aBuf);
-					if(m_aClients[ClientId].m_AuthTries >= g_Config.m_SvRconMaxTries)
-					{
-						if(!g_Config.m_SvRconBantime)
-							m_NetServer.Drop(ClientId, EClientDropType::Kick, "Too many remote console authentication tries");
-						else
-							m_ServerBan.BanAddr(m_NetServer.ClientAddr(ClientId), g_Config.m_SvRconBantime*60, "Too many remote console authentication tries");
-					}
 				}
 				else
 				{
-					SendRconLine(ClientId, "Wrong password.");
+					SendRconLine(ClientId, "You are not admin.");
 				}
+#endif
+			}
+			else if(g_Config.m_SvRconModPassword[0] && str_comp(pPw, g_Config.m_SvRconModPassword) == 0)
+			{
+#ifdef CONF_SQL
+				if(m_aClients[ClientId].m_UserLevel == SQL_USERLEVEL_ADMIN || m_aClients[ClientId].m_UserLevel == SQL_USERLEVEL_MOD)
+				{
+#endif
+					if(!IsSixup(ClientId))
+					{
+						CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
+						Msgp.AddInt(1); //authed
+						Msgp.AddInt(1); //cmdlist
+						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
+					}
+					else
+					{
+						CMsgPacker Msgp(protocol7::NETMSG_RCON_AUTH_ON, true, true);
+						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
+					}
+
+					m_aClients[ClientId].m_Authed = AUTHED_MOD;
+					int SendRconCmds = Unpacker.GetInt();
+					if(Unpacker.Error() == 0 && SendRconCmds)
+						m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(IConsole::ACCESS_LEVEL_MOD, CFGFLAG_SERVER);
+					SendRconLine(ClientId, "Moderator authentication successful. Limited remote console access granted.");
+					char aBuf[256];
+					str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (moderator)", ClientId);
+					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+#ifdef CONF_SQL
+				}
+				else
+				{
+					SendRconLine(ClientId, "You are not moderator.");
+				}
+#endif
+			}
+			else if(Config()->m_SvRconMaxTries)
+			{
+				m_aClients[ClientId].m_AuthTries++;
+				char aBuf[128];
+				str_format(aBuf, sizeof(aBuf), "Wrong password %d/%d.", m_aClients[ClientId].m_AuthTries, g_Config.m_SvRconMaxTries);
+				SendRconLine(ClientId, aBuf);
+				if(m_aClients[ClientId].m_AuthTries >= g_Config.m_SvRconMaxTries)
+				{
+					if(!g_Config.m_SvRconBantime)
+						m_NetServer.Drop(ClientId, EClientDropType::Kick, "Too many remote console authentication tries");
+					else
+						m_ServerBan.BanAddr(m_NetServer.ClientAddr(ClientId), g_Config.m_SvRconBantime*60, "Too many remote console authentication tries");
+				}
+			}
+			else
+			{
+				SendRconLine(ClientId, "Wrong password.");
 			}
 		}
 		else if(Msg == NETMSG_PING)
@@ -2007,11 +2038,10 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			}
 		}
 	}
-	else
+	else if((pPacket->m_Flags & NET_CHUNKFLAG_VITAL) != 0 && m_aClients[ClientId].m_State >= CClient::STATE_READY)
 	{
 		// game message
-		if((pPacket->m_Flags & NET_CHUNKFLAG_VITAL) != 0 && m_aClients[ClientId].m_State >= CClient::STATE_READY)
-			GameServer()->OnMessage(Msg, &Unpacker, ClientId);
+		GameServer()->OnMessage(Msg, &Unpacker, ClientId);
 	}
 }
 

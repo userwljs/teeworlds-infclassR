@@ -1954,6 +1954,11 @@ void CGameContext::GetMapNameFromCommand(char* pMapName, const char *pCommand)
 	pMapName[k] = 0;
 }
 
+bool CheckClientId2(int ClientId)
+{
+	return ClientId >= 0 && ClientId < MAX_CLIENTS;
+}
+
 void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientId)
 {
 	void *pRawMsg = m_NetObjHandler.SecureUnpackMsg(*pMsgId, pUnpacker);
@@ -4780,13 +4785,6 @@ bool CGameContext::ProcessSpamProtection(int ClientId, bool RespectChatInitialDe
 	}
 
 	return false;
-}
-
-bool CheckClientId2(int ClientId)
-{
-	if(ClientId < 0 || ClientId >= MAX_CLIENTS)
-		return false;
-	return true;
 }
 
 void CGameContext::Whisper(int ClientId, char *pStr)
