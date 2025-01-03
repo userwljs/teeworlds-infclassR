@@ -178,6 +178,12 @@ void CCharacter::HandleWeaponSwitch()
 	if(m_QueuedWeapon != -1)
 		WantedWeapon = m_QueuedWeapon;
 
+	bool Anything = false;
+	for(int i = 0; i < NUM_WEAPONS - 1; ++i)
+		if(m_aWeapons[i].m_Got)
+			Anything = true;
+	if(!Anything)
+		return;
 	// select Weapon
 	int Next = CountInput(m_LatestPrevInput.m_NextWeapon, m_LatestInput.m_NextWeapon).m_Presses;
 	int Prev = CountInput(m_LatestPrevInput.m_PrevWeapon, m_LatestInput.m_PrevWeapon).m_Presses;
@@ -186,7 +192,7 @@ void CCharacter::HandleWeaponSwitch()
 	{
 		while(Next) // Next Weapon selection
 		{
-			WantedWeapon = (WantedWeapon+1)%NUM_WEAPONS;
+			WantedWeapon = (WantedWeapon + 1) % NUM_WEAPONS;
 			if(m_aWeapons[WantedWeapon].m_Got)
 				Next--;
 		}
@@ -196,7 +202,7 @@ void CCharacter::HandleWeaponSwitch()
 	{
 		while(Prev) // Prev Weapon selection
 		{
-			WantedWeapon = (WantedWeapon-1)<0?NUM_WEAPONS-1:WantedWeapon-1;
+			WantedWeapon = (WantedWeapon - 1) < 0 ? NUM_WEAPONS - 1 : WantedWeapon - 1;
 			if(m_aWeapons[WantedWeapon].m_Got)
 				Prev--;
 		}
