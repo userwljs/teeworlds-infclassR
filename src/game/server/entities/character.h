@@ -10,6 +10,12 @@
 class CGameTeams;
 enum class EPlayerClass;
 
+struct CAmmoParams
+{
+	int MaxAmmo = 0;
+	int RegenInterval = 0;
+};
+
 enum
 {
 	FAKETUNE_FREEZE = 1,
@@ -77,6 +83,16 @@ public:
 	int GetMaxArmor() const { return m_MaxArmor; }
 	void SetMaxArmor(int Amount);
 
+	virtual CAmmoParams GetAmmoParams(int Weapon) const;
+
+	void AddAmmo(int Weapon, int Ammo);
+	int GetAmmo(int Weapon) const;
+	int TakeAmmo(int Weapon, int Amount);
+
+	void GiveWeapon(int Weapon, int Ammo);
+	void TakeAllWeapons();
+
+	int ActiveWeapon() const { return m_ActiveWeapon; }
 	void SetActiveWeapon(int Weapon);
 
 	void SetEmote(int Emote, int Tick);
@@ -100,7 +116,7 @@ protected:
 	bool m_Alive;
 	int m_NeededFaketuning;
 
-	struct WeaponStat
+	struct CWeaponStat
 	{
 		int m_AmmoRegenStart;
 		int m_Ammo;

@@ -60,12 +60,6 @@ struct WeaponFireContext
 	float ReloadInterval = 0;
 };
 
-struct CAmmoParams
-{
-	int MaxAmmo = 0;
-	int RegenInterval = 0;
-};
-
 struct SpawnContext
 {
 	enum SPAWN_TYPE
@@ -145,18 +139,11 @@ public:
 	void Die(int Killer, EDamageType DamageType);
 	void Die(DeathContext *pContext);
 
-	void GiveWeapon(int Weapon, int Ammo);
+	CAmmoParams GetAmmoParams(int Weapon) const override;
 
-	int ActiveWeapon() const { return m_ActiveWeapon; }
-	void SetActiveWeapon(int Weapon);
 	void SetLastWeapon(int Weapon);
 	bool HasWeapon(int Weapon) const;
 	bool HasWeapon(EWeaponClass WeaponClass) const;
-	void TakeAllWeapons();
-
-	void AddAmmo(int Weapon, int Ammo);
-	int GetAmmo(int Weapon) const;
-	int TakeAmmo(int Weapon, int Amount);
 
 	CIcPlayer *GetPlayer();
 

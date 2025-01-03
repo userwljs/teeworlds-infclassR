@@ -238,6 +238,57 @@ void CCharacter::HandleWeapons()
 	FireWeapon();
 }
 
+CAmmoParams CCharacter::GetAmmoParams(int Weapon) const
+{
+	return {};
+}
+
+void CCharacter::AddAmmo(int Weapon, int Ammo)
+{
+	if(!m_aWeapons[Weapon].m_Got)
+		return;
+
+	CAmmoParams Params = GetAmmoParams(Weapon);
+
+	if(Ammo < 0)
+		Ammo = Params.MaxAmmo;
+
+	int TargetAmmo = maximum(0, m_aWeapons[Weapon].m_Ammo) + Ammo;
+	m_aWeapons[Weapon].m_Ammo = minimum(Params.MaxAmmo, TargetAmmo);
+}
+
+int CCharacter::GetAmmo(int Weapon) const
+{
+	return m_aWeapons[Weapon].m_Ammo;
+}
+
+int CCharacter::TakeAmmo(int Weapon, int Amount)
+{
+	auto &Ammo = m_aWeapons[Weapon].m_Ammo;
+	if(!m_aWeapons[Weapon].m_Got || (Ammo < 0))
+		return 0;
+
+	if(Amount > Ammo)
+		Amount = Ammo;
+	Ammo -= Amount;
+	return Amount;
+}
+
+void CCharacter::GiveWeapon(int Weapon, int Ammo)
+{
+	m_aWeapons[Weapon].m_Got = true;
+	AddAmmo(Weapon, Ammo);
+}
+
+void CCharacter::TakeAllWeapons()
+{
+	for (CWeaponStat &Weapon : m_aWeapons)
+	{
+		Weapon.m_Got = false;
+		Weapon.m_Ammo = 0;
+	}
+}
+
 void CCharacter::SetActiveWeapon(int Weapon)
 {
 	m_ActiveWeapon = Weapon;
