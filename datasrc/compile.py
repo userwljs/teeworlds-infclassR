@@ -25,8 +25,8 @@ def create_flags_table(names):
 	return lines
 
 
-def EmitEnum(names, num):
-	print("enum")
+def EmitEnum(enum_name, names, num):
+	print(f"enum {enum_name}")
 	print("{")
 	print(f"\t{names[0]}=0,")
 	for name in names[1:]:
@@ -82,8 +82,8 @@ def gen_network_header():
 			print(line)
 		print("")
 
-	EmitEnum([f"SOUND_{i.name.value.upper()}" for i in content.container.sounds.items], "NUM_SOUNDS")
-	EmitEnum([f"WEAPON_{i.name.value.upper()}" for i in content.container.weapons.id.items], "NUM_WEAPONS")
+	EmitEnum("ESound", [f"SOUND_{i.name.value.upper()}" for i in content.container.sounds.items], "NUM_SOUNDS")
+	EmitEnum("EWeapon", [f"WEAPON_{i.name.value.upper()}" for i in content.container.weapons.id.items], "NUM_WEAPONS")
 
 	print("""
 class CNetObjHandler
@@ -390,9 +390,9 @@ def gen_common_content_header():
 	print('extern CDataContainer *g_pData;')
 
 	# enums
-	EmitEnum([f"IMAGE_{i.name.value.upper()}" for i in content.container.images.items], "NUM_IMAGES")
-	EmitEnum([f"ANIM_{i.name.value.upper()}" for i in content.container.animations.items], "NUM_ANIMS")
-	EmitEnum([f"SPRITE_{i.name.value.upper()}" for i in content.container.sprites.items], "NUM_SPRITES")
+	EmitEnum("EImage", [f"IMAGE_{i.name.value.upper()}" for i in content.container.images.items], "NUM_IMAGES")
+	EmitEnum("EAnim", [f"ANIM_{i.name.value.upper()}" for i in content.container.animations.items], "NUM_ANIMS")
+	EmitEnum("ESprite", [f"SPRITE_{i.name.value.upper()}" for i in content.container.sprites.items], "NUM_SPRITES")
 
 def gen_common_content_source():
 	EmitDefinition(content.container, "datacontainer")
