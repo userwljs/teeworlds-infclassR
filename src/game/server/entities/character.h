@@ -179,6 +179,20 @@ public:
 	void TeleportToTeleId(int TeleNumber, int TeleType);
 
 protected:
+	struct CCharacterSnapContext
+	{
+		int SnappingClient;
+		int Id;
+		const CCharacterCore *pCore;
+		int HookTick;
+		int Tick;
+		int Emote;
+		int Weapon;
+		int AmmoCount;
+		int Health;
+		int Armor;
+	};
+
 	EPlayerClass PrivateGetPlayerClass() const;
 
 	// info for dead reckoning
@@ -188,7 +202,8 @@ protected:
 
 	// DDRace
 
-	virtual void SnapCharacter(int SnappingClient, int Id);
+	void SnapCharacter(int SnappingClient, int Id);
+	virtual void PrepareSnapContext(CCharacterSnapContext &SnapContext) const;
 
 	/* INFECTION MODIFICATION START ***************************************/
 protected:

@@ -285,7 +285,7 @@ protected:
 	void PreCoreTick() override;
 	void PostCoreTick() override;
 
-	void SnapCharacter(int SnappingClient, int Id) override;
+	void PrepareSnapContext(CCharacterSnapContext &SnapContext) const override;
 
 	void ClassSpawnAttributes();
 	void DestroyChildEntities();

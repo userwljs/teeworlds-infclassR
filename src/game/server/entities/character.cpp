@@ -523,50 +523,63 @@ void CCharacter::Die(int Killer, int Weapon)
 //TODO: Move the emote stuff to a function
 void CCharacter::SnapCharacter(int SnappingClient, int Id)
 {
-	CCharacterCore *pCore;
-	int Tick = 0;
+	CCharacterSnapContext SnapContext{
+		.SnappingClient = SnappingClient,
+		.Id = Id,
+	};
+	PrepareSnapContext(SnapContext);
+
+	CNetObj_Character *pCharacter = Server()->SnapNewItem<CNetObj_Character>(SnapContext.Id);
+	if(!pCharacter)
+		return;
+
+	SnapContext.pCore->Write(pCharacter);
+
+	pCharacter->m_HookTick = SnapContext.HookTick;
+	pCharacter->m_Tick = SnapContext.Tick;
+	pCharacter->m_Emote = SnapContext.Emote;
+
+	if(pCharacter->m_HookedPlayer != -1)
+	{
+		if(!Server()->Translate(pCharacter->m_HookedPlayer, SnapContext.SnappingClient))
+			pCharacter->m_HookedPlayer = -1;
+	}
+
+	pCharacter->m_AttackTick = m_AttackTick;
+	pCharacter->m_Direction = m_Input.m_Direction;
+	pCharacter->m_Weapon = SnapContext.Weapon;
+	pCharacter->m_AmmoCount = SnapContext.AmmoCount;
+	pCharacter->m_Health = SnapContext.Health;
+	pCharacter->m_Armor = SnapContext.Armor;
+	pCharacter->m_PlayerFlags = GetPlayer()->m_PlayerFlags;
+}
+
+void CCharacter::PrepareSnapContext(CCharacterSnapContext &SnapContext) const
+{
+	SnapContext.Emote = m_EmoteType;
+	SnapContext.Weapon = m_ActiveWeapon;
+	SnapContext.Health = m_Health;
+	SnapContext.Armor = m_Armor;
 
 	// write down the m_Core
 	if(!m_ReckoningTick || GameServer()->m_World.m_Paused)
 	{
-		Tick = 0;
-		pCore = &m_Core;
+		SnapContext.Tick = 0;
+		SnapContext.pCore = &m_Core;
 	}
 	else
 	{
-		Tick = m_ReckoningTick;
-		pCore = &m_SendCore;
+		SnapContext.Tick = m_ReckoningTick;
+		SnapContext.pCore = &m_SendCore;
 	}
 
 	int EmoteNormal = m_pPlayer->GetDefaultEmote();
 
-	CNetObj_Character *pCharacter = Server()->SnapNewItem<CNetObj_Character>(Id);
-	if(!pCharacter)
-		return;
-
-	pCharacter->m_Tick = Tick;
-	pCore->Write(pCharacter);
-	if(pCharacter->m_HookedPlayer != -1)
+	if(SnapContext.Emote == EmoteNormal)
 	{
-		if(!Server()->Translate(pCharacter->m_HookedPlayer, SnappingClient))
-			pCharacter->m_HookedPlayer = -1;
+		if(5 * Server()->TickSpeed() - ((Server()->Tick() - m_LastAction) % (5 * Server()->TickSpeed())) < 5)
+			SnapContext.Emote = EMOTE_BLINK;
 	}
-	pCharacter->m_Emote = m_EmoteType;
-	pCharacter->m_AmmoCount = 0;
-	pCharacter->m_AttackTick = m_AttackTick;
-	pCharacter->m_Direction = m_Input.m_Direction;
-	pCharacter->m_Weapon = m_ActiveWeapon;
-
-	pCharacter->m_Health = m_Health;
-	pCharacter->m_Armor = m_Armor;
-
-	if(pCharacter->m_Emote == EmoteNormal)
-	{
-		if(250 - ((Server()->Tick() - m_LastAction) % (250)) < 5)
-			pCharacter->m_Emote = EMOTE_BLINK;
-	}
-
-	pCharacter->m_PlayerFlags = GetPlayer()->m_PlayerFlags;
 }
 
 bool CCharacter::CanSnapCharacter(int SnappingClient)
