@@ -1068,7 +1068,9 @@ void IGameController::DoTeamBalance()
 				pPlayer->m_LastActionTick = Temp;
 
 				pPlayer->Respawn();
-				pPlayer->m_ForceBalanced = true;
+				char aBuf[128];
+				str_format(aBuf, sizeof(aBuf), "You were moved to %s due to team balancing", GetTeamName(pPlayer->GetTeam()));
+				GameServer()->SendBroadcast(pPlayer->GetCid(), aBuf, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE);
 			}
 		} while (--NumBalance);
 
