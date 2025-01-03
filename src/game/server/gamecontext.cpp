@@ -963,6 +963,7 @@ void CGameContext::SendKillMessage(int Killer, int Victim, int Weapon, int ModeS
 //
 void CGameContext::StartVote(const char *pDesc, const char *pCommand, const char *pReason)
 {
+	const char *pSixupDesc = pDesc;
 	// check if a vote is already running
 	if(m_VoteCloseTime)
 		return;
@@ -985,6 +986,7 @@ void CGameContext::StartVote(const char *pDesc, const char *pCommand, const char
 	// start vote
 	m_VoteCloseTime = time_get() + time_freq() * g_Config.m_SvVoteTime;
 	str_copy(m_aVoteDescription, pDesc);
+	str_copy(m_aSixupVoteDescription, pSixupDesc, sizeof(m_aSixupVoteDescription));
 	str_copy(m_aVoteCommand, pCommand);
 	str_copy(m_aVoteReason, pReason);
 	SendVoteSet(-1);
@@ -1033,20 +1035,62 @@ void CGameContext::EndVote()
 
 void CGameContext::SendVoteSet(int ClientId)
 {
-	CNetMsg_Sv_VoteSet Msg;
+	::CNetMsg_Sv_VoteSet Msg6;
+	protocol7::CNetMsg_Sv_VoteSet Msg7;
+
+	Msg7.m_ClientId = m_VoteCreator;
 	if(m_VoteCloseTime)
 	{
-		Msg.m_Timeout = (m_VoteCloseTime-time_get())/time_freq();
-		Msg.m_pDescription = m_aVoteDescription;
-		Msg.m_pReason = m_aVoteReason;
+		Msg6.m_Timeout = Msg7.m_Timeout = (m_VoteCloseTime - time_get()) / time_freq();
+		Msg6.m_pDescription = m_aVoteDescription;
+		Msg7.m_pDescription = m_aSixupVoteDescription;
+		Msg6.m_pReason = Msg7.m_pReason = m_aVoteReason;
+
+		int &Type = (Msg7.m_Type = protocol7::VOTE_UNKNOWN);
+		if(IsKickVote())
+			Type = protocol7::VOTE_START_KICK;
+		else if(IsSpecVote())
+			Type = protocol7::VOTE_START_SPEC;
+		else if(IsOptionVote())
+			Type = protocol7::VOTE_START_OP;
 	}
 	else
 	{
-		Msg.m_Timeout = 0;
-		Msg.m_pDescription = "";
-		Msg.m_pReason = "";
+		Msg6.m_Timeout = Msg7.m_Timeout = 0;
+		Msg6.m_pDescription = Msg7.m_pDescription = "";
+		Msg6.m_pReason = Msg7.m_pReason = "";
+
+		int &Type = (Msg7.m_Type = protocol7::VOTE_UNKNOWN);
+		if(m_VoteEnforce == VOTE_ENFORCE_NO || m_VoteEnforce == VOTE_ENFORCE_NO_ADMIN)
+			Type = protocol7::VOTE_END_FAIL;
+		else if(m_VoteEnforce == VOTE_ENFORCE_YES || m_VoteEnforce == VOTE_ENFORCE_YES_ADMIN)
+			Type = protocol7::VOTE_END_PASS;
+		else if(m_VoteEnforce == VOTE_ENFORCE_ABORT || m_VoteEnforce == VOTE_ENFORCE_CANCEL)
+			Type = protocol7::VOTE_END_ABORT;
+
+		if(m_VoteEnforce == VOTE_ENFORCE_NO_ADMIN || m_VoteEnforce == VOTE_ENFORCE_YES_ADMIN)
+			Msg7.m_ClientId = -1;
 	}
-	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, ClientId);
+
+	if(ClientId == -1)
+	{
+		for(int i = 0; i < Server()->MaxClients(); i++)
+		{
+			if(!m_apPlayers[i])
+				continue;
+			if(!Server()->IsSixup(i))
+				Server()->SendPackMsg(&Msg6, MSGFLAG_VITAL, i);
+			else
+				Server()->SendPackMsg(&Msg7, MSGFLAG_VITAL, i);
+		}
+	}
+	else
+	{
+		if(!Server()->IsSixup(ClientId))
+			Server()->SendPackMsg(&Msg6, MSGFLAG_VITAL, ClientId);
+		else
+			Server()->SendPackMsg(&Msg7, MSGFLAG_VITAL, ClientId);
+	}
 }
 
 void CGameContext::SendVoteStatus(int ClientId, int Total, int Yes, int No)
@@ -1261,6 +1305,7 @@ void CGameContext::OnTick()
 				str_format(aCmd, sizeof(aCmd), "ban %d %d Banned by vote", i, g_Config.m_SvVoteKickBantime*3);
 				str_format(aDesc, sizeof(aDesc), "Ban \"%s\"", Server()->ClientName(i));
 				m_VoteBanClientId = i;
+				m_VoteType = VOTE_TYPE_KICK;
 				StartVote(aDesc, aCmd, "");
 				continue;
 			}
@@ -2390,6 +2435,7 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 	if(RateLimitPlayerVote(ClientId))
 		return;
 
+	m_VoteType = VOTE_TYPE_UNKNOWN;
 	char aChatmsg[512] = {0};
 	char aDesc[VOTE_DESC_LENGTH] = {0};
 	char aCmd[VOTE_CMD_LENGTH] = {0};
@@ -2536,6 +2582,8 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 					str_format(aCmd, sizeof(aCmd), "%s", pMsg->m_pValue);
 				}
 			}
+
+			m_VoteType = VOTE_TYPE_OPTION;
 		}
 		else if(str_comp_nocase(pMsg->m_pType, "spectate") == 0)
 		{
@@ -2569,6 +2617,7 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 			str_format(aChatmsg, sizeof(aChatmsg), "'%s' called for vote to move '%s' to spectators (%s)", Server()->ClientName(ClientId), Server()->ClientName(SpectateId), aReason);
 			str_format(aDesc, sizeof(aDesc), "move '%s' to spectators", Server()->ClientName(SpectateId));
 			str_format(aCmd, sizeof(aCmd), "set_team %d -1 %d", SpectateId, g_Config.m_SvVoteSpectateRejoindelay);
+			m_VoteType = VOTE_TYPE_SPECTATE;
 		}
 
 		// Start a vote
