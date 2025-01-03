@@ -74,6 +74,9 @@ public:
 	bool Spawn(class CPlayer *pPlayer, vec2 Pos);
 	bool Remove();
 
+	int GetHealth() const { return m_Health; }
+	int GetArmor() const { return m_Armor; }
+
 	bool IncreaseHealth(int Amount);
 	bool IncreaseArmor(int Amount);
 	bool IncreaseOverallHp(int Amount);

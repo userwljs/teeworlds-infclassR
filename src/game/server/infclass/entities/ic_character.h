@@ -119,9 +119,6 @@ public:
 	bool GiveHealth(int HitPoints, std::optional<int> FromCid = {});
 	bool GiveArmor(int HitPoints, std::optional<int> FromCid = {});
 
-	int GetHealth() const { return m_Health; }
-	int GetArmor() const { return m_Armor; }
-
 	void SetJumpsLimit(int Limit);
 
 	EPlayerClass GetPlayerClass() const;
