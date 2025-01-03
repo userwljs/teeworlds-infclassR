@@ -205,11 +205,13 @@ int CIcPlayerClass::GetDefaultEmote() const
 	return EmoteNormal;
 }
 
-void CIcPlayerClass::GetAmmoRegenParams(int Weapon, WeaponRegenParams *pParams)
+CAmmoParams CIcPlayerClass::GetAmmoParams(int Weapon) const
 {
+	CAmmoParams Params;
 	EInfclassWeapon InfWID = m_pCharacter->GetInfWeaponId(Weapon);
-	pParams->RegenInterval = GameController()->GetAmmoRegenTime(InfWID);
-	pParams->MaxAmmo = GameController()->GetMaxAmmo(InfWID);
+	Params.RegenInterval = GameController()->GetAmmoRegenTime(InfWID);
+	Params.MaxAmmo = GameController()->GetMaxAmmo(InfWID);
+	return Params;
 }
 
 int CIcPlayerClass::GetJumps() const

@@ -60,7 +60,7 @@ struct WeaponFireContext
 	float ReloadInterval = 0;
 };
 
-struct WeaponRegenParams
+struct CAmmoParams
 {
 	int MaxAmmo = 0;
 	int RegenInterval = 0;

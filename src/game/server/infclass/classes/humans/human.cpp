@@ -139,24 +139,23 @@ bool CInfClassHuman::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pOutp
 }
 
 
-void CInfClassHuman::GetAmmoRegenParams(int Weapon, WeaponRegenParams *pParams)
+CAmmoParams CInfClassHuman::GetAmmoParams(int Weapon) const
 {
+	CAmmoParams Params = CIcPlayerClass::GetAmmoParams(Weapon);
 	EInfclassWeapon InfWID = m_pCharacter->GetInfWeaponId(Weapon);
-	pParams->MaxAmmo = GameController()->GetMaxAmmo(InfWID);
-	pParams->RegenInterval = GameController()->GetAmmoRegenTime(InfWID);
 
 	const float RegenIntervalModifier = m_WeaponRegenIntervalModifier[Weapon];
-	pParams->RegenInterval *= RegenIntervalModifier;
+	Params.RegenInterval *= RegenIntervalModifier;
 
 	switch(InfWID)
 	{
 	case EInfclassWeapon::NINJA_GRENADE:
-		pParams->MaxAmmo = minimum(pParams->MaxAmmo + m_NinjaAmmoBuff, 10);
+		Params.MaxAmmo = minimum(Params.MaxAmmo + m_NinjaAmmoBuff, 10);
 		break;
 	case EInfclassWeapon::MERCENARY_GUN:
 		if(m_pCharacter->GetInAirTick() > Server()->TickSpeed() * 4)
 		{
-			pParams->RegenInterval = 0;
+			Params.RegenInterval = 0;
 		}
 		break;
 	default:
@@ -165,8 +164,10 @@ void CInfClassHuman::GetAmmoRegenParams(int Weapon, WeaponRegenParams *pParams)
 
 	if((Config()->m_InfTaxi == 1) && m_pCharacter->IsPassenger())
 	{
-		pParams->RegenInterval = 0;
+		Params.RegenInterval = 0;
 	}
+
+	return Params;
 }
 
 int CInfClassHuman::GetJumps() const

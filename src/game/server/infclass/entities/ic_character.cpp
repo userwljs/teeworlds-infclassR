@@ -1924,8 +1924,7 @@ void CIcCharacter::HandleWeaponsRegen()
 			}
 		}
 
-		WeaponRegenParams Params;
-		m_pClass->GetAmmoRegenParams(i, &Params);
+		CAmmoParams Params = m_pClass->GetAmmoParams(i);
 
 		if(Params.RegenInterval)
 		{
@@ -2125,8 +2124,7 @@ void CIcCharacter::AddAmmo(int Weapon, int Ammo)
 	if(!m_pClass)
 		return;
 
-	WeaponRegenParams Params;
-	m_pClass->GetAmmoRegenParams(Weapon, &Params);
+	CAmmoParams Params = m_pClass->GetAmmoParams(Weapon);
 
 	if(Ammo < 0)
 		Ammo = Params.MaxAmmo;

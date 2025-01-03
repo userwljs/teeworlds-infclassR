@@ -17,7 +17,7 @@ struct SpawnContext;
 struct SDamageContext;
 struct DeathContext;
 struct WeaponFireContext;
-struct WeaponRegenParams;
+struct CAmmoParams;
 
 enum class EDamageType;
 
@@ -63,7 +63,7 @@ public:
 	virtual void ResetNormalEmote();
 	void SetNormalEmote(int Emote);
 	int GetDefaultEmote() const;
-	virtual void GetAmmoRegenParams(int Weapon, WeaponRegenParams *pParams);
+	virtual CAmmoParams GetAmmoParams(int Weapon) const;
 	virtual int GetJumps() const;
 
 	virtual bool CanDie() const;
