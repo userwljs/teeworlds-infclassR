@@ -1924,7 +1924,7 @@ void CIcCharacter::HandleWeaponsRegen()
 			}
 		}
 
-		CAmmoParams Params = GetAmmoParams(i);
+		CAmmoParams Params = GetAmmoParams(static_cast<EWeapon>(i));
 
 		if(Params.RegenInterval)
 		{
@@ -2068,7 +2068,7 @@ void CIcCharacter::Die(DeathContext *pContext)
 	}
 }
 
-CAmmoParams CIcCharacter::GetAmmoParams(int Weapon) const
+CAmmoParams CIcCharacter::GetAmmoParams(EWeapon Weapon) const
 {
 	if (!m_pClass)
 		return {};

@@ -83,13 +83,13 @@ public:
 	int GetMaxArmor() const { return m_MaxArmor; }
 	void SetMaxArmor(int Amount);
 
-	virtual CAmmoParams GetAmmoParams(int Weapon) const;
+	virtual CAmmoParams GetAmmoParams(EWeapon Weapon) const;
 
-	void AddAmmo(int Weapon, int Ammo);
-	int GetAmmo(int Weapon) const;
-	int TakeAmmo(int Weapon, int Amount);
+	void AddAmmo(EWeapon Weapon, int Ammo);
+	int GetAmmo(EWeapon Weapon) const;
+	int TakeAmmo(EWeapon Weapon, int Amount);
 
-	void GiveWeapon(int Weapon, int Ammo);
+	void GiveWeapon(EWeapon Weapon, int Ammo = -1);
 	void TakeAllWeapons();
 
 	int ActiveWeapon() const { return m_ActiveWeapon; }

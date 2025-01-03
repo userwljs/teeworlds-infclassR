@@ -139,7 +139,7 @@ public:
 	void Die(int Killer, EDamageType DamageType);
 	void Die(DeathContext *pContext);
 
-	CAmmoParams GetAmmoParams(int Weapon) const override;
+	CAmmoParams GetAmmoParams(EWeapon Weapon) const override;
 
 	void SetLastWeapon(int Weapon);
 	bool HasWeapon(int Weapon) const;

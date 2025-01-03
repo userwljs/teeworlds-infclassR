@@ -190,7 +190,7 @@ void CInfClassHuman::GiveGift(EGiftType GiftType)
 	m_pCharacter->IncreaseHealth(1);
 	m_pCharacter->GiveArmor(4);
 
-	const auto AllWeaponsWithAmmo =
+	const EWeapon AllWeaponsWithAmmo[] =
 		{
 			WEAPON_GUN,
 			WEAPON_SHOTGUN,
@@ -198,7 +198,7 @@ void CInfClassHuman::GiveGift(EGiftType GiftType)
 			WEAPON_LASER,
 		};
 
-	for(int WeaponSlot : AllWeaponsWithAmmo)
+	for(EWeapon WeaponSlot : AllWeaponsWithAmmo)
 	{
 		if(m_pCharacter->HasWeapon(WeaponSlot))
 		{
