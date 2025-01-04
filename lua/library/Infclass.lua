@@ -383,6 +383,11 @@ function CIcGameController:SetHumanSpawnEnabled(index, enabled) end
 function CIcGameController:SetInfectedSpawnEnabled(index, enabled) end
 
 -- SURVIVAL STUFF
+---@class TweaksArray
+local TweaksArray = {}
+
+---@param tweak_name string
+function TweaksArray:Add(tweak_name) end
 
 ---@class SurvivalBotConfiguration
 ---@field Class string The class name
@@ -395,6 +400,9 @@ function CIcGameController:SetInfectedSpawnEnabled(index, enabled) end
 ---@field RespawnInterval number Respawn interval in seconds
 ---@field Tag string
 local SurvivalBotConfiguration = {}
+
+---@return TweaksArray
+function SurvivalBotConfiguration:GetTweaks() end
 
 ---@class SurvivalGameConfiguration
 ---@field MaxPlayers number

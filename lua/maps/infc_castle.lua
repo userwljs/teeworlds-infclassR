@@ -60,6 +60,9 @@ function add_boss_infected(wave, player_class)
     return bot_conf
 end
 
+---@param wave number
+---@param player_class string
+---@param witch_id number
 ---@return SurvivalBotConfiguration
 function add_witch_infected(wave, player_class, witch_id)
     local bot_conf = add_bot_with_tweaks(wave, player_class)
@@ -485,7 +488,7 @@ function on_control_point_effect(control_point)
     for_each_human_character(give_bonus)
 end
 
-function get_max_players_for_difficulty(difficulty)
+function get_max_players_for_difficulty(difficulty, hp_multiplier)
     local max_players = difficulty + 2
     if max_players > 6 then
         max_players = 6
@@ -527,11 +530,10 @@ function update_difficulty()
         Config.inf_hive_hooks = 3
     end
 
-    survival_max_players = get_max_players_for_difficulty(survival_difficulty_level)
-
     local game_conf = Game.Controller:SurvivalGetGameConfiguration()
-    game_conf.MaxPlayers = survival_max_players
     game_conf.Hardmode = castle_hardmode
+
+    update_max_players()
 end
 
 function start_survival_game(base_difficulty)
@@ -631,7 +633,7 @@ end
 
 function survival_setup_votes()
     for i = 1,6 do
-        local vote_name = string.format("Start survival (%d, %d players max)", i, get_max_players_for_difficulty(i))
+        local vote_name = string.format("Start survival (%d, %d players max)", i, get_max_players_for_difficulty(i, 1))
         local vote_command = string.format("lua start_survival_game(%d)", i)
         Game.Context:RemoveVote(vote_command)
         Game.Context:InsertVote(i - 1, vote_name, vote_command)
