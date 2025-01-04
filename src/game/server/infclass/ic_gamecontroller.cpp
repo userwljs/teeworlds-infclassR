@@ -660,9 +660,9 @@ bool CIcGameController::CanSeeDetails(int Who, int Whom) const
 	return pWho->IsHuman() == pWhom->IsHuman();
 }
 
-int64_t CIcGameController::GetBlindCharactersMask(int ExcludeCid) const
+CClientMask CIcGameController::GetBlindCharactersMask(int ExcludeCid) const
 {
-	int64_t Mask = 0;
+	CClientMask Mask;
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
@@ -675,20 +675,20 @@ int64_t CIcGameController::GetBlindCharactersMask(int ExcludeCid) const
 		if(!pTarget->IsBlind())
 			continue;
 
-		Mask |= 1LL << i;
+		Mask.set(i);
 	}
 
 	return Mask;
 }
 
-int64_t CIcGameController::GetMaskForPlayerWorldEvent(int Asker, int ExceptId)
+CClientMask CIcGameController::GetMaskForPlayerWorldEvent(int Asker, int ExceptId)
 {
 	if(Asker == -1)
-		return CmaskAllExceptOne(ExceptId);
+		return CClientMask().set().reset(ExceptId);
 
 	const CIcCharacter *pCharacter = GetCharacter(Asker);
 	if(!pCharacter || !pCharacter->IsInvisible())
-		return CmaskAllExceptOne(ExceptId);
+		return CClientMask().set().reset(ExceptId);
 
 	return m_Teams.TeamMask(GetPlayerTeam(Asker), ExceptId, Asker);
 }

@@ -323,18 +323,18 @@ void CIcCharacter::TickDeferred()
 
 	if(Events & COREEVENT_AIR_JUMP)
 	{
-		const int64_t MaskOnlyBlind = GameController()->GetBlindCharactersMask(GetCid());
-		if(MaskOnlyBlind)
+		const CClientMask MaskOnlyBlind = GameController()->GetBlindCharactersMask(GetCid());
+		if(MaskOnlyBlind.any())
 		{
 			GameServer()->CreateSound(GetPos(), SOUND_PLAYER_AIRJUMP, MaskOnlyBlind);
 		}
 	}
 
 	// Ghost events
-	int64_t MaskEsceptSelf = CmaskAllExceptOne(m_pPlayer->GetCid());
+	CClientMask MaskEsceptSelf = CClientMask().set().reset(m_pPlayer->GetCid());
 
 	if(Events & COREEVENT_HOOK_ATTACH_PLAYER)
-		GameServer()->CreateSound(GetPos(), SOUND_HOOK_ATTACH_PLAYER, CmaskAll());
+		GameServer()->CreateSound(GetPos(), SOUND_HOOK_ATTACH_PLAYER);
 
 	if(GetPlayerClass() != EPlayerClass::Ghost || !m_IsInvisible)
 	{
@@ -904,7 +904,7 @@ bool CIcCharacter::Heal(int HitPoints, std::optional<int> FromCid)
 	{
 		SetEmote(EMOTE_HAPPY, Server()->Tick() + Server()->TickSpeed());
 		int Sound = HadFullHealth ? SOUND_PICKUP_ARMOR : SOUND_PICKUP_HEALTH;
-		GameContext()->CreateSound(GetPos(), Sound, CmaskOne(GetCid()));
+		GameContext()->CreateSound(GetPos(), Sound, CClientMask().set().reset(GetCid()));
 
 		if(FromCid.has_value())
 		{
@@ -929,7 +929,7 @@ bool CIcCharacter::GiveHealth(int HitPoints, std::optional<int> FromCid)
 	{
 		SetEmote(EMOTE_HAPPY, Server()->Tick() + Server()->TickSpeed());
 		int Sound = SOUND_PICKUP_HEALTH;
-		GameContext()->CreateSound(GetPos(), Sound, CmaskOne(GetCid()));
+		GameContext()->CreateSound(GetPos(), Sound, CClientMask().set().reset(GetCid()));
 
 		if(FromCid.has_value())
 		{
@@ -954,7 +954,7 @@ bool CIcCharacter::GiveArmor(int HitPoints, std::optional<int> FromCid)
 	{
 		SetEmote(EMOTE_HAPPY, Server()->Tick() + Server()->TickSpeed());
 		int Sound = SOUND_PICKUP_ARMOR;
-		GameContext()->CreateSound(GetPos(), Sound, CmaskOne(GetCid()));
+		GameContext()->CreateSound(GetPos(), Sound, CClientMask().set().reset(GetCid()));
 
 		if(FromCid.has_value())
 		{

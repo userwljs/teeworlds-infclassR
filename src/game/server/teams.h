@@ -36,7 +36,7 @@ public:
 	// returns nullptr if successful, error string if failed
 	const char *SetCharacterTeam(int ClientId, int Team);
 
-	int64_t TeamMask(int Team, int ExceptId = -1, int Asker = -1);
+	CClientMask TeamMask(int Team, int ExceptId = -1, int Asker = -1);
 
 	int Count(int Team) const;
 

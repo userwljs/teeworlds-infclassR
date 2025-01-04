@@ -28,16 +28,16 @@ const char *CGameTeams::SetCharacterTeam(int ClientId, int Team)
 	return nullptr;
 }
 
-int64_t CGameTeams::TeamMask(int Team, int ExceptId, int Asker)
+CClientMask CGameTeams::TeamMask(int Team, int ExceptId, int Asker)
 {
 	if(Team == TEAM_SUPER)
 	{
 		if(ExceptId == -1)
-			return 0xffffffffffffffff;
-		return 0xffffffffffffffff & ~(1 << ExceptId);
+			return CClientMask().set();
+		return CClientMask().set().reset(ExceptId);
 	}
 
-	int64_t Mask = 0;
+	CClientMask Mask;
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
 		if(i == ExceptId)
@@ -98,7 +98,7 @@ int64_t CGameTeams::TeamMask(int Team, int ExceptId, int Asker)
 			}
 		}
 
-		Mask |= 1LL << i;
+		Mask.set(i);
 	}
 	return Mask;
 }

@@ -194,12 +194,12 @@ public:
 	CVoteOptionServer *m_pVoteOptionLast;
 
 	// helper functions
-	void CreateDamageInd(vec2 Pos, float AngleMod, int Amount, int64_t Mask = -1);
-	void CreateExplosion(vec2 Pos, int Owner, int Weapon, int64_t Mask = -1);
-	void CreateHammerHit(vec2 Pos, int64_t Mask = -1);
-	void CreatePlayerSpawn(vec2 Pos, int64_t Mask = -1);
-	void CreateDeath(vec2 Pos, int Who, int64_t Mask = -1);
-	void CreateSound(vec2 Pos, int Sound, int64_t Mask = -1);
+	void CreateDamageInd(vec2 Pos, float AngleMod, int Amount, CClientMask Mask = CClientMask().set());
+	void CreateExplosion(vec2 Pos, int Owner, int Weapon, CClientMask Mask = CClientMask().set());
+	void CreateHammerHit(vec2 Pos, CClientMask Mask = CClientMask().set());
+	void CreatePlayerSpawn(vec2 Pos, CClientMask Mask = CClientMask().set());
+	void CreateDeath(vec2 Pos, int Who, CClientMask Mask = CClientMask().set());
+	void CreateSound(vec2 Pos, int Sound, CClientMask Mask = CClientMask().set());
 	void CreateSoundGlobal(int Sound, int Target = -1);
 
 	bool SnapLaserObject(const CSnapContext &Context, int SnapId, const vec2 &To, const vec2 &From, int StartTick, int Owner = -1, int LaserType = -1, int Subtype = -1, int SwitchNumber = -1);
@@ -455,8 +455,4 @@ public:
 	bool IsVersionBanned(int Version);
 };
 
-inline int64_t CmaskAll() { return -1LL; }
-inline int64_t CmaskOne(int ClientId) { return 1LL<<ClientId; }
-inline int64_t CmaskAllExceptOne(int ClientId) { return CmaskAll()^CmaskOne(ClientId); }
-inline bool CmaskIsSet(int64_t Mask, int ClientId) { return (Mask&CmaskOne(ClientId)) != 0; }
 #endif

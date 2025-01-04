@@ -103,8 +103,8 @@ public:
 	void HandleLastHookers();
 
 	bool CanSeeDetails(int Who, int Whom) const;
-	int64_t GetBlindCharactersMask(int ExcludeCid) const;
-	int64_t GetMaskForPlayerWorldEvent(int Asker, int ExceptId = -1);
+	CClientMask GetBlindCharactersMask(int ExcludeCid) const;
+	CClientMask GetMaskForPlayerWorldEvent(int Asker, int ExceptId = -1);
 
 	bool HumanWallAllowedInPos(const vec2 &Pos) const;
 	int GetZoneValueAt(int ZoneHandle, const vec2 &Pos, ZoneData *pData = nullptr) const;

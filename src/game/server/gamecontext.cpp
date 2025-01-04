@@ -208,7 +208,7 @@ void CGameContext::FillAntibot(CAntibotRoundData *pData)
 {
 }
 
-void CGameContext::CreateDamageInd(vec2 Pos, float Angle, int Amount, int64_t Mask)
+void CGameContext::CreateDamageInd(vec2 Pos, float Angle, int Amount, CClientMask Mask)
 {
 	float a = 3 * 3.14159f / 2 + Angle;
 	//float a = get_angle(dir);
@@ -227,7 +227,7 @@ void CGameContext::CreateDamageInd(vec2 Pos, float Angle, int Amount, int64_t Ma
 	}
 }
 
-void CGameContext::CreateHammerHit(vec2 Pos, int64_t Mask)
+void CGameContext::CreateHammerHit(vec2 Pos, CClientMask Mask)
 {
 	// create the event
 	CNetEvent_HammerHit *pEvent = (CNetEvent_HammerHit *)m_Events.Create(NETEVENTTYPE_HAMMERHIT, sizeof(CNetEvent_HammerHit), Mask);
@@ -269,7 +269,7 @@ void CGameContext::CreateLoveEvent(vec2 Pos)
 	m_LoveDots.add(State);
 }
 
-void CGameContext::CreateExplosion(vec2 Pos, int Owner, int Weapon, int64_t Mask)
+void CGameContext::CreateExplosion(vec2 Pos, int Owner, int Weapon, CClientMask Mask)
 {
 	// create the event
 	CNetEvent_Explosion *pEvent = (CNetEvent_Explosion *)m_Events.Create(NETEVENTTYPE_EXPLOSION, sizeof(CNetEvent_Explosion), Mask);
@@ -292,7 +292,7 @@ void create_smoke(vec2 Pos)
 	}
 }*/
 
-void CGameContext::CreatePlayerSpawn(vec2 Pos, int64_t Mask)
+void CGameContext::CreatePlayerSpawn(vec2 Pos, CClientMask Mask)
 {
 	// create the event
 	CNetEvent_Spawn *ev = (CNetEvent_Spawn *)m_Events.Create(NETEVENTTYPE_SPAWN, sizeof(CNetEvent_Spawn), Mask);
@@ -303,7 +303,7 @@ void CGameContext::CreatePlayerSpawn(vec2 Pos, int64_t Mask)
 	}
 }
 
-void CGameContext::CreateDeath(vec2 Pos, int ClientId, int64_t Mask)
+void CGameContext::CreateDeath(vec2 Pos, int ClientId, CClientMask Mask)
 {
 	// create the event
 	CNetEvent_Death *pEvent = (CNetEvent_Death *)m_Events.Create(NETEVENTTYPE_DEATH, sizeof(CNetEvent_Death), Mask);
@@ -315,7 +315,7 @@ void CGameContext::CreateDeath(vec2 Pos, int ClientId, int64_t Mask)
 	}
 }
 
-void CGameContext::CreateSound(vec2 Pos, int Sound, int64_t Mask)
+void CGameContext::CreateSound(vec2 Pos, int Sound, CClientMask Mask)
 {
 	if(Sound < 0)
 		return;
@@ -1389,11 +1389,12 @@ void CGameContext::OnTick()
 			
 			if(Sound >= 0)
 			{
-				int Mask = CmaskOne(i);
+				CClientMask Mask;
+				Mask.set(i);
 				for(int j = 0; j < MAX_CLIENTS; j++)
 				{
 					if(m_apPlayers[j] && m_apPlayers[j]->GetTeam() == TEAM_SPECTATORS && m_apPlayers[j]->m_SpectatorId == i)
-						Mask |= CmaskOne(j);
+						Mask.set(j);
 				}
 				CreateSound(m_apPlayers[i]->m_ViewPos, Sound, Mask);
 			}
