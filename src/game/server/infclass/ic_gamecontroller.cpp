@@ -416,8 +416,6 @@ void CIcGameController::OnPlayerConnect(CPlayer *pPlayer)
 
 	Server()->RoundStatistics()->ResetPlayer(ClientId);
 
-	SendServerParams(pPlayer->GetCid());
-
 	if(!Server()->ClientPrevIngame(ClientId))
 	{
 		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} entered and joined the game"), "PlayerName", Server()->ClientName(ClientId), nullptr);
@@ -6115,6 +6113,8 @@ void CIcGameController::Snap(int SnappingClient)
 		pGameInfoEx->m_Flags2 |= GAMEINFOFLAG2_NO_SKIN_CHANGE_FOR_FROZEN;
 		pGameInfoEx->m_Version = GAMEINFO_CURVERSION;
 	}
+
+	SendServerParams(SnappingClient);
 
 	CNetObj_GameData *pGameDataObj = Server()->SnapNewItem<CNetObj_GameData>(0);
 	if(!pGameDataObj)
