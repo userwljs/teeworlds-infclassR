@@ -1199,6 +1199,7 @@ if(BUILD_TESTS)
   )
   enable_testing()
   set(TESTS
+    "test_CGameWorld"
     "test_icArray"
     "test_icFifoArray"
   )
