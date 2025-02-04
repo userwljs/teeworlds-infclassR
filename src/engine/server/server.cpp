@@ -478,7 +478,12 @@ bool CServer::SetClientNameImpl(int ClientId, const char *pNameRequest, bool Set
 	if(m_aClients[ClientId].m_State < CClient::STATE_READY)
 		return false;
 
-	CNameBan *pBanned = IsNameBanned(pNameRequest, m_vNameBans);
+	// trim the name
+	char aTrimmedName[MAX_NAME_LENGTH];
+	str_copy(aTrimmedName, str_utf8_skip_whitespaces(pNameRequest));
+	str_utf8_trim_right(aTrimmedName);
+
+	CNameBan *pBanned = IsNameBanned(aTrimmedName, m_vNameBans);
 	if(pBanned)
 	{
 		if(m_aClients[ClientId].m_State == CClient::STATE_READY && Set)
@@ -496,17 +501,12 @@ bool CServer::SetClientNameImpl(int ClientId, const char *pNameRequest, bool Set
 
 			char aAddrStr[NETADDR_MAXSTRSIZE];
 			net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), false);
-			str_format(aBuf, sizeof(aBuf), "client ip=%s banned for using name '%s'", aAddrStr, pNameRequest);
+			str_format(aBuf, sizeof(aBuf), "client ip=%s banned for using name '%s'", aAddrStr, aTrimmedName);
 			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "name_ban", aBuf);
 			Ban(ClientId, -1, "");
 		}
 		return false;
 	}
-
-	// trim the name
-	char aTrimmedName[MAX_NAME_LENGTH];
-	str_copy(aTrimmedName, str_utf8_skip_whitespaces(pNameRequest));
-	str_utf8_trim_right(aTrimmedName);
 
 	char aNameTry[MAX_NAME_LENGTH];
 	str_copy(aNameTry, aTrimmedName);
