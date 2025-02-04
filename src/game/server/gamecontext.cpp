@@ -2141,10 +2141,10 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 
 			switch(Server()->GetAuthedState(ClientId))
 			{
-			case IServer::AUTHED_ADMIN:
+			case AUTHED_ADMIN:
 				Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_ADMIN);
 				break;
-			case IServer::AUTHED_MOD:
+			case AUTHED_MOD:
 				Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_MOD);
 				break;
 			default:
@@ -2215,7 +2215,7 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 			SendChatTarget(ClientId, "Unable to kick a server-side bot");
 			return;
 		}
-		if(Server()->GetAuthedState(KickId) != IServer::AUTHED_NO)
+		if(Server()->GetAuthedState(KickId) != AUTHED_NO)
 		{
 			SendChatTarget(ClientId, "You can't kick admins");
 			char aBufKick[128];
@@ -2229,7 +2229,7 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 	else
 	{
 		const int Authed = Server()->GetAuthedState(ClientId);
-		if(pPlayer->GetTeam() == TEAM_SPECTATORS && (Authed != IServer::AUTHED_ADMIN))
+		if(pPlayer->GetTeam() == TEAM_SPECTATORS && (Authed != AUTHED_ADMIN))
 		{
 			SendChatTarget(ClientId, "Spectators aren't allowed to start a vote.");
 			return;
@@ -2288,7 +2288,7 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 					if(g_Config.m_InfMinPlayerNumberForMapVote <= 1 || OptionVoteType == OTHER_OPTION_VOTE_TYPE)
 					{
 						// (this is not a map vote) or ("InfMinPlayerNumberForMapVote <= 1" and we keep default behaviour)
-						if(!m_pController->CanVote() && (Authed != IServer::AUTHED_ADMIN))
+						if(!m_pController->CanVote() && (Authed != AUTHED_ADMIN))
 						{
 							SendChatTarget(ClientId, "Votes are only allowed when the round start.");
 							return;
@@ -2317,7 +2317,7 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 
 			if(!pOption)
 			{
-				if(Authed != IServer::AUTHED_ADMIN) // allow admins to call any vote they want
+				if(Authed != AUTHED_ADMIN) // allow admins to call any vote they want
 				{
 					str_format(aChatmsg, sizeof(aChatmsg), "'%s' isn't an option on this server", pMsg->m_pValue);
 					SendChatTarget(ClientId, aChatmsg);

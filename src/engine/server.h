@@ -74,14 +74,6 @@ public:
 	class CLocalization* m_pLocalization;
 
 public:
-	enum
-	{
-		AUTHED_NO=0,
-		AUTHED_MOD,
-		AUTHED_ADMIN,
-	};
-	
-public:
 	/*
 		Structure: CClientInfo
 	*/

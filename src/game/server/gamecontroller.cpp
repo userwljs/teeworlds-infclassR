@@ -158,7 +158,7 @@ void IGameController::DoActivityCheck()
 			continue;
 		if(pPlayer->GetTeam() == TEAM_SPECTATORS)
 			continue;
-		if(Server()->GetAuthedState(i) != IServer::AUTHED_NO)
+		if(Server()->GetAuthedState(i) != AUTHED_NO)
 			continue;
 		if(pPlayer->IsBot())
 			continue;

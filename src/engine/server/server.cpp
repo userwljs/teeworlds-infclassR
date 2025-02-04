@@ -3446,10 +3446,11 @@ void CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 				for(int c=str_length(aBufName); c<((int)sizeof(aBufName))-1; c++)
 					aBufName[c] = ' ';
 				aBufName[sizeof(aBufName)-1] = 0;
-				
-				int AuthLevel = pThis->m_aClients[i].m_Authed == CServer::AUTHED_ADMIN ? 2 :
-										pThis->m_aClients[i].m_Authed == CServer::AUTHED_MOD ? 1 : 0;
-				
+
+				int AuthLevel = pThis->m_aClients[i].m_Authed == AUTHED_ADMIN ? 2 :
+								pThis->m_aClients[i].m_Authed == AUTHED_MOD   ? 1 :
+																				0;
+
 				str_format(aBuf, sizeof(aBuf), "(#%02i) %s: [antispoof=%d] [login=%d] [level=%d] [ip=%s] [version=%d] [inf=%d]",
 					i,
 					aBufName,
@@ -3696,7 +3697,7 @@ void CServer::ConchainModCommandUpdate(IConsole::IResult *pResult, void *pUserDa
 		{
 			for(int i = 0; i < MAX_CLIENTS; ++i)
 			{
-				if(pThis->m_aClients[i].m_State == CServer::CClient::STATE_EMPTY || pThis->m_aClients[i].m_Authed != CServer::AUTHED_MOD ||
+				if(pThis->m_aClients[i].m_State == CServer::CClient::STATE_EMPTY || pThis->m_aClients[i].m_Authed != AUTHED_MOD ||
 					(pThis->m_aClients[i].m_pRconCmdToSend && str_comp(pResult->GetString(0), pThis->m_aClients[i].m_pRconCmdToSend->m_pName) >= 0))
 					continue;
 
