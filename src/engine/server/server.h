@@ -21,14 +21,18 @@
 #include <engine/shared/snapshot.h>
 #include <game/voting.h>
 
-#include <list>
-#include <string>
+/* INFECTION MODIFICATION START ***************************************/
+#include <engine/server/accounts.h>
+/* INFECTION MODIFICATION END *****************************************/
 
 /* DDNET MODIFICATION START *******************************************/
 #include "base/logger.h"
 /* DDNET MODIFICATION END *********************************************/
 
 #include "name_ban.h"
+
+#include <optional>
+#include <string>
 
 class CLogMessage;
 
@@ -193,8 +197,8 @@ public:
 		bool m_HasPersistentData;
 		void *m_pPersistentData;
 
-		void Reset(bool ResetScore=true);
-		
+		void Reset(bool ResetScore = true);
+
 		int m_NbRound;
 		
 		char m_aLanguage[16];
@@ -206,7 +210,7 @@ public:
 		
 		//Login
 		int m_LogInstance;
-		int m_UserId;
+		std::optional<int> m_UserId{};
 #ifdef CONF_SQL
 		int m_UserLevel;
 #endif
@@ -435,6 +439,8 @@ public:
 	static void ConMapReload(IConsole::IResult *pResult, void *pUser);
 	static void ConLogout(IConsole::IResult *pResult, void *pUser);
 	static void ConShowIps(IConsole::IResult *pResult, void *pUser);
+	static void ConAccounts(IConsole::IResult *pResult, void *pUser);
+	void ConAccounts(IConsole::IResult *pResult);
 
 	static void ConchainSpecialInfoupdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
 	static void ConchainMaxclientsperipUpdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData);
@@ -529,13 +535,17 @@ public:
 	void RefreshChallenge() override;
 	int GetUserLevel(int ClientId) override;
 #else
-	void Register(int ClientId, const char* pUsername, const char* pPassword, const char* pEmail) override;
-	void Login(int ClientId, const char* pUsername, const char* pPassword) override;
+	void Register(int ClientId, const char *pUsername = nullptr, const char *pPassword = nullptr) override;
+	void Login(int ClientId, const char *pUsername, const char *pPassword) override;
 	void Logout(int ClientId) override;
 #endif
 private:
+	void OnAuthFailed(int ClientId);
+	void AuthTick();
 	bool GenerateClientMap(const char *pMapFilePath, const char *pMapName);
-	
+	std::optional<int> GetClientIdByUserId(int UserId) const;
+	void TakeUserName(int ClientId);
+
 public:
 	class CGameServerCmd
 	{
@@ -551,7 +561,10 @@ private:
 
 	IServer::CMapVote m_MapVotes[MAX_VOTE_OPTIONS];
 	int m_MapVotesCounter;
-	
+
+	CClientAccountRequests m_AccountsRequests[MAX_CLIENTS];
+	char m_aServerSalt[ServerSaltMaxLength]{};
+
 #ifdef CONF_SQL
 public:
 	array<CGameServerCmd*> m_lGameServerCmds;

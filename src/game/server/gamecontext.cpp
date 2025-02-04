@@ -2509,11 +2509,34 @@ void CGameContext::OnSetTeamNetMessage(const CNetMsg_Cl_SetTeam *pMsg, int Clien
 	}
 
 	/* INFECTION MODIFICATION START ***************************************/
-	if(pMsg->m_Team == TEAM_SPECTATORS && !m_pController->CanJoinTeam(TEAM_SPECTATORS, ClientId))
+	if(pMsg->m_Team == TEAM_SPECTATORS)
 	{
-		SendBroadcast_Localization(ClientId, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, _("You can't join the spectators right now"), NULL);
-		return;
+		if(!m_pController->CanJoinTeam(TEAM_SPECTATORS, ClientId))
+		{
+			SendBroadcast_Localization(ClientId, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
+				_("You can't join the spectators right now"), nullptr);
+			return;
+		}
 	}
+	else
+	{
+		const bool AccountsAreMandatory = str_comp(Config()->m_SvAccounts, "mandatory") == 0;
+		if(AccountsAreMandatory)
+		{
+			if(!Server()->IsClientLogged(ClientId))
+			{
+				const char *pText = _("You have to log in to join the game");
+				SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT,
+					pText, nullptr);
+				SendBroadcast_Localization(ClientId,
+					EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
+					pText, nullptr);
+
+				return;
+			}
+		}
+	}
+
 	/* INFECTION MODIFICATION END *****************************************/
 
 	m_pController->OnTeamChangeRequested(ClientId, pMsg->m_Team);
@@ -3990,24 +4013,19 @@ void CGameContext::ConRegister(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
 	int ClientId = pResult->GetClientId();
-	
 	const char *pLogin = pResult->GetString(0);
 	const char *pPassword = pResult->GetString(1);
-	const char *pEmail = nullptr;
-	
-	if(pResult->NumArguments()>2)
-		pEmail = pResult->GetString(2);
-	
-	pSelf->Server()->Register(ClientId, pLogin, pPassword, pEmail);
+
+	pSelf->Server()->Register(ClientId, pLogin, pPassword);
 }
 
 void CGameContext::ConLogin(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
 	int ClientId = pResult->GetClientId();
-	
 	const char *pLogin = pResult->GetString(0);
 	const char *pPassword = pResult->GetString(1);
+
 	pSelf->Server()->Login(ClientId, pLogin, pPassword);
 }
 
@@ -4227,7 +4245,41 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 
 	dynamic_string Buffer;
 
-	m_pController->GetHelpText(&Buffer, ClientId, pHelpPage);
+	if(pHelpPage && ((str_comp_nocase(pHelpPage, "accounts") == 0) || (str_comp_nocase(pHelpPage, "registration") == 0)))
+	{
+		Buffer.append("~~ ");
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Accounts"), nullptr);
+		Buffer.append(" ~~\n\n");
+		bool AccountsDisabled{};
+		if(str_comp(Config()->m_SvAccounts, "mandatory") == 0)
+		{
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You have to use an account to play on this server."), nullptr);
+		}
+		else if (str_comp(Config()->m_SvAccounts, "enabled") == 0)
+		{
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You can use an account to unlock some features on this server."), nullptr);
+		}
+		else
+		{
+			AccountsDisabled = true;
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Account system is currently disabled."), nullptr);
+		}
+		if(!AccountsDisabled)
+		{
+			Buffer.append("\n\n");
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You can use RCON interface or chat commands to register and log in."), NULL);
+			Buffer.append("\n\n");
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use `/register` without arguments to start registration via RCON."), NULL);
+			Buffer.append("\n\n");
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use `/register <username> <password>` to register via chat commands."), NULL);
+			Buffer.append("\n\n");
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use RCON or `/login <username> <password>` to login into an existing account."), NULL);
+		}
+	}
+	else
+	{
+		m_pController->GetHelpText(&Buffer, ClientId, pHelpPage);
+	}
 
 	if(Buffer.empty())
 	{
@@ -4353,14 +4405,14 @@ void CGameContext::ConCmdList(IConsole::IResult *pResult, void *pUserData)
 	Buffer.append("\n\n");
 	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/changelog", NULL);
 	Buffer.append("\n\n");
-#ifdef CONF_SQL
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/register, /login, /logout, /setemail", NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/register, /login, /logout", NULL);
 	Buffer.append("\n\n");
+#ifdef CONF_SQL
 	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/challenge, /top10, /rank, /goal", NULL);
 	Buffer.append("\n\n");
 #endif
 	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Press <F3> or <F4> to enable or disable hook protection"), NULL);
-			
+
 	pSelf->SendMOTD(ClientId, Buffer.buffer());
 }
 
@@ -4462,7 +4514,8 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("version", "", CFGFLAG_SERVER, ConVersion, this, "Display information about the server version and build");
 
 	Console()->Register("about", "", CFGFLAG_CHAT, ConAbout, this, "Display information about the mod");
-	Console()->Register("register", "s[username] s[password] ?s[email]", CFGFLAG_CHAT, ConRegister, this, "Create an account");
+
+	Console()->Register("register", "?s[name] ?s[password]", CFGFLAG_CHAT, ConRegister, this, "Start creating an account");
 	Console()->Register("login", "s[username] s[password]", CFGFLAG_CHAT, ConLogin, this, "Login to an account");
 	Console()->Register("logout", "", CFGFLAG_CHAT, ConLogout, this, "Logout");
 
@@ -5022,6 +5075,16 @@ void CGameContext::WhisperId(int ClientId, int VictimId, const char *pMessage)
 	{
 		m_apPlayers[ClientId]->m_LastWhisperTo = VictimId;
 		m_apPlayers[ClientId]->m_LastChat = Server()->Tick();
+	}
+
+	const bool AccountsAreMandatory = str_comp(Config()->m_SvAccounts, "mandatory") == 0;
+	if(AccountsAreMandatory)
+	{
+		if(!Server()->IsClientLogged(ClientId))
+		{
+			SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You have to log in to chat or join the game"));
+			return;
+		}
 	}
 
 	char aCensoredMessage[256];

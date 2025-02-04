@@ -1220,6 +1220,12 @@ void IGameController::Snap(int SnappingClient)
 
 int IGameController::GetAutoTeam(int NotThisId)
 {
+	const bool AccountsAreMandatory = str_comp(Config()->m_SvAccounts, "mandatory") == 0;
+	if(AccountsAreMandatory)
+	{
+		return TEAM_SPECTATORS;
+	}
+
 	// this will force the auto balancer to work overtime as well
 #ifdef CONF_DEBUG
 	if(g_Config.m_DbgStress)
@@ -1273,6 +1279,19 @@ bool IGameController::CanJoinTeam(int Team, int ClientId)
 {
 	if(Team == TEAM_SPECTATORS)
 		return true;
+
+	const bool AccountsAreMandatory = str_comp(Config()->m_SvAccounts, "mandatory") == 0;
+	if(AccountsAreMandatory)
+	{
+		if(!Server()->IsClientLogged(ClientId))
+		{
+			GameServer()->SendBroadcast_Localization(ClientId,
+				EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
+				_("You have to log in to join the game"));
+
+			return false;
+		}
+	}
 
 	if(GameServer()->m_apPlayers[ClientId] && GameServer()->m_apPlayers[ClientId]->GetTeam() != TEAM_SPECTATORS)
 		return true;
