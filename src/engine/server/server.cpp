@@ -1901,46 +1901,36 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				return;
 			}
 
+			std::optional<int> LoggedInAuthLevel;
 			if(g_Config.m_SvRconPassword[0] == 0 && g_Config.m_SvRconModPassword[0] == 0)
 			{
 				SendRconLine(ClientId, "No rcon password set on server. Set sv_rcon_password and/or sv_rcon_mod_password to enable the remote console.");
+				return;
 			}
 			else if(g_Config.m_SvRconTokenCheck && !m_NetServer.HasSecurityToken(ClientId))
 			{
 				SendRconLine(ClientId, "You must use a client that support anti-spoof protection (DDNet-like)");
+				return;
 			}
-			else if(g_Config.m_SvRconPassword[0] && str_comp(pPw, g_Config.m_SvRconPassword) == 0)
-			{
-					if(!IsSixup(ClientId))
-					{
-						CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
-						Msgp.AddInt(1); //authed
-						Msgp.AddInt(1); //cmdlist
-						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
-					}
-					else
-					{
-						CMsgPacker Msgp(protocol7::NETMSG_RCON_AUTH_ON, true, true);
-						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
-					}
 
-					m_aClients[ClientId].m_Authed = AUTHED_ADMIN;
-					GameServer()->OnSetAuthed(ClientId, m_aClients[ClientId].m_Authed);
-					int SendRconCmds = Unpacker.GetInt();
-					if(Unpacker.Error() == 0 && SendRconCmds)
-						m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(IConsole::ACCESS_LEVEL_ADMIN, CFGFLAG_SERVER);
-					SendRconLine(ClientId, "Admin authentication successful. Full remote console access granted.");
-					char aBuf[256];
-					str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (admin)", ClientId);
-					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+			if(g_Config.m_SvRconPassword[0] && str_comp(pPw, g_Config.m_SvRconPassword) == 0)
+			{
+				LoggedInAuthLevel = AUTHED_ADMIN;
 			}
 			else if(g_Config.m_SvRconModPassword[0] && str_comp(pPw, g_Config.m_SvRconModPassword) == 0)
 			{
+				LoggedInAuthLevel = AUTHED_MOD;
+			}
+
+			if(LoggedInAuthLevel.has_value())
+			{
+				if(m_aClients[ClientId].m_Authed != LoggedInAuthLevel.value())
+				{
 					if(!IsSixup(ClientId))
 					{
 						CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
-						Msgp.AddInt(1); //authed
-						Msgp.AddInt(1); //cmdlist
+						Msgp.AddInt(1); // authed
+						Msgp.AddInt(1); // cmdlist
 						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
 					}
 					else
@@ -1949,14 +1939,53 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
 					}
 
-					m_aClients[ClientId].m_Authed = AUTHED_MOD;
-					int SendRconCmds = Unpacker.GetInt();
-					if(Unpacker.Error() == 0 && SendRconCmds)
-						m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(IConsole::ACCESS_LEVEL_MOD, CFGFLAG_SERVER);
-					SendRconLine(ClientId, "Moderator authentication successful. Limited remote console access granted.");
+					m_aClients[ClientId].m_Authed = LoggedInAuthLevel.value();
+					bool SendRconCmds = IsSixup(ClientId) ? true : (Unpacker.GetInt() > 0);
+					if(!Unpacker.Error() && SendRconCmds)
+					{
+						int ConsoleAccessLevel{};
+						switch(LoggedInAuthLevel.value())
+						{
+						case AUTHED_ADMIN:
+							ConsoleAccessLevel = IConsole::ACCESS_LEVEL_ADMIN;
+							break;
+						case AUTHED_MOD:
+							ConsoleAccessLevel = IConsole::ACCESS_LEVEL_ADMIN;
+							break;
+						default:
+							ConsoleAccessLevel = IConsole::ACCESS_LEVEL_USER;
+							break;
+						}
+
+						m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(ConsoleAccessLevel, CFGFLAG_SERVER);
+					}
+
 					char aBuf[256];
-					str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (moderator)", ClientId);
+					switch(LoggedInAuthLevel.value())
+					{
+					case AUTHED_ADMIN:
+					{
+						SendRconLine(ClientId, "Admin authentication successful. Full remote console access granted.");
+						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (admin)", ClientId);
+						break;
+					}
+					case AUTHED_MOD:
+					{
+						SendRconLine(ClientId, "Moderator authentication successful. Limited remote console access granted.");
+						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (moderator)", ClientId);
+						break;
+					}
+					case AUTHED_HELPER:
+					{
+						SendRconLine(ClientId, "Helper authentication successful. Limited remote console access granted.");
+						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (helper)", ClientId);
+						break;
+					}
+					}
 					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+
+					GameServer()->OnSetAuthed(ClientId, m_aClients[ClientId].m_Authed);
+				}
 			}
 			else if(Config()->m_SvRconMaxTries)
 			{
@@ -1969,7 +1998,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					if(!g_Config.m_SvRconBantime)
 						m_NetServer.Drop(ClientId, EClientDropType::Kick, "Too many remote console authentication tries");
 					else
-						m_ServerBan.BanAddr(m_NetServer.ClientAddr(ClientId), g_Config.m_SvRconBantime*60, "Too many remote console authentication tries");
+						m_ServerBan.BanAddr(m_NetServer.ClientAddr(ClientId), g_Config.m_SvRconBantime * 60, "Too many remote console authentication tries");
 				}
 			}
 			else
