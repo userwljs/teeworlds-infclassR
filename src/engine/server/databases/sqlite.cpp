@@ -11,10 +11,8 @@ class CSqliteConnection : public IDbConnection
 {
 public:
 	CSqliteConnection(const char *pFilename, bool Setup);
-	virtual ~CSqliteConnection();
+	~CSqliteConnection() override;
 	void Print(IConsole *pConsole, const char *pMode) override;
-
-	CSqliteConnection *Copy() override;
 
 	const char *BinaryCollate() const override { return "BINARY"; }
 	void ToUnixTimestamp(const char *pTimestamp, char *aBuf, unsigned int BufferSize) override;
@@ -39,6 +37,7 @@ public:
 	void BindInt(int Idx, int Value) override;
 	void BindInt64(int Idx, int64_t Value) override;
 	void BindFloat(int Idx, float Value) override;
+	void BindNull(int Idx) override;
 
 	void Print() override;
 	bool Step(bool *pEnd, char *pError, int ErrorSize) override;
@@ -67,6 +66,8 @@ private:
 	bool m_Done; // no more rows available for Step
 	// returns false, if the query succeeded
 	bool Execute(const char *pQuery, char *pError, int ErrorSize);
+	// returns true on failure
+	bool ConnectImpl(char *pError, int ErrorSize);
 
 	// returns true if an error was formatted
 	bool FormatError(int Result, char *pError, int ErrorSize);
@@ -108,18 +109,22 @@ void CSqliteConnection::ToUnixTimestamp(const char *pTimestamp, char *aBuf, unsi
 	str_format(aBuf, BufferSize, "strftime('%%s', %s)", pTimestamp);
 }
 
-CSqliteConnection *CSqliteConnection::Copy()
-{
-	return new CSqliteConnection(m_aFilename, m_Setup);
-}
-
 bool CSqliteConnection::Connect(char *pError, int ErrorSize)
 {
 	if(m_InUse.exchange(true))
 	{
-		dbg_assert(0, "Tried connecting while the connection is in use");
+		dbg_assert(false, "Tried connecting while the connection is in use");
 	}
+	if(ConnectImpl(pError, ErrorSize))
+	{
+		m_InUse.store(false);
+		return true;
+	}
+	return false;
+}
 
+bool CSqliteConnection::ConnectImpl(char *pError, int ErrorSize)
+{
 	if(m_pDb != nullptr)
 	{
 		return false;
@@ -233,6 +238,13 @@ void CSqliteConnection::BindInt64(int Idx, int64_t Value)
 void CSqliteConnection::BindFloat(int Idx, float Value)
 {
 	int Result = sqlite3_bind_double(m_pStmt, Idx, (double)Value);
+	AssertNoError(Result);
+	m_Done = false;
+}
+
+void CSqliteConnection::BindNull(int Idx)
+{
+	int Result = sqlite3_bind_null(m_pStmt, Idx);
 	AssertNoError(Result);
 	m_Done = false;
 }
