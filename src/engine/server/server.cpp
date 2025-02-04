@@ -1909,18 +1909,8 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			{
 				SendRconLine(ClientId, "You must use a client that support anti-spoof protection (DDNet-like)");
 			}
-#ifdef CONF_SQL
-			else if(m_aClients[ClientId].m_UserId < 0)
-			{
-				SendRconLine(ClientId, "You must be logged to your account. Please use /login");
-			}
-#endif
 			else if(g_Config.m_SvRconPassword[0] && str_comp(pPw, g_Config.m_SvRconPassword) == 0)
 			{
-#ifdef CONF_SQL
-				if(m_aClients[ClientId].m_UserLevel == SQL_USERLEVEL_ADMIN)
-				{
-#endif
 					if(!IsSixup(ClientId))
 					{
 						CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
@@ -1943,20 +1933,9 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					char aBuf[256];
 					str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (admin)", ClientId);
 					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-#ifdef CONF_SQL
-				}
-				else
-				{
-					SendRconLine(ClientId, "You are not admin.");
-				}
-#endif
 			}
 			else if(g_Config.m_SvRconModPassword[0] && str_comp(pPw, g_Config.m_SvRconModPassword) == 0)
 			{
-#ifdef CONF_SQL
-				if(m_aClients[ClientId].m_UserLevel == SQL_USERLEVEL_ADMIN || m_aClients[ClientId].m_UserLevel == SQL_USERLEVEL_MOD)
-				{
-#endif
 					if(!IsSixup(ClientId))
 					{
 						CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
@@ -1978,13 +1957,6 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					char aBuf[256];
 					str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (moderator)", ClientId);
 					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-#ifdef CONF_SQL
-				}
-				else
-				{
-					SendRconLine(ClientId, "You are not moderator.");
-				}
-#endif
 			}
 			else if(Config()->m_SvRconMaxTries)
 			{
