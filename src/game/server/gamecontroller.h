@@ -217,7 +217,7 @@ public:
 	virtual const char *GetTeamName(int Team);
 	virtual int GetAutoTeam(int NotThisId);
 	virtual void OnTeamChangeRequested(int ClientId, int Team) {};
-	virtual bool CanJoinTeam(int Team, int NotThisId);
+	virtual bool CanJoinTeam(int Team, int ClientId);
 	bool CanChangeTeam(CPlayer *pPplayer, int JoinTeam);
 	int ClampTeam(int Team);
 

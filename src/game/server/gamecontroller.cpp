@@ -1259,15 +1259,18 @@ bool IGameController::CanSpawn(int Team, vec2 *pOutPos) const
 	return false;
 }
 
-bool IGameController::CanJoinTeam(int Team, int NotThisId)
+bool IGameController::CanJoinTeam(int Team, int ClientId)
 {
-	if(Team == TEAM_SPECTATORS || (GameServer()->m_apPlayers[NotThisId] && GameServer()->m_apPlayers[NotThisId]->GetTeam() != TEAM_SPECTATORS))
+	if(Team == TEAM_SPECTATORS)
+		return true;
+
+	if(GameServer()->m_apPlayers[ClientId] && GameServer()->m_apPlayers[ClientId]->GetTeam() != TEAM_SPECTATORS)
 		return true;
 
 	int aNumplayers[2] = {0, 0};
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
-		if(GameServer()->m_apPlayers[i] && i != NotThisId)
+		if(GameServer()->m_apPlayers[i] && i != ClientId)
 		{
 			if(GameServer()->m_apPlayers[i]->GetTeam() >= TEAM_RED && GameServer()->m_apPlayers[i]->GetTeam() <= TEAM_BLUE)
 				aNumplayers[GameServer()->m_apPlayers[i]->GetTeam()]++;
@@ -1279,7 +1282,7 @@ bool IGameController::CanJoinTeam(int Team, int NotThisId)
 	{
 		char aBuf[128];
 		str_format(aBuf, sizeof(aBuf), "Only %d active players are allowed", Server()->MaxClients() - g_Config.m_SvSpectatorSlots);
-		GameServer()->SendBroadcast(NotThisId, aBuf, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE);
+		GameServer()->SendBroadcast(ClientId, aBuf, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE);
 	}
 
 	return NumbersAreOk;
