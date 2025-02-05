@@ -1738,9 +1738,7 @@ void CGameContext::OnClientEnter(int ClientId)
 
 	m_pController->OnPlayerConnect(m_apPlayers[ClientId]);
 
-	// world.insert_entity(&players[client_id]);
 	m_apPlayers[ClientId]->m_IsInGame = true;
-	m_apPlayers[ClientId]->Respawn();
 
 	{
 		CNetMsg_Sv_CommandInfoGroupStart Msg;
