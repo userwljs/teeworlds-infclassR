@@ -683,12 +683,15 @@ CClientMask CIcGameController::GetBlindCharactersMask(int ExcludeCid) const
 
 CClientMask CIcGameController::GetMaskForPlayerWorldEvent(int Asker, int ExceptId)
 {
-	if(Asker == -1)
-		return CClientMask().set().reset(ExceptId);
+	dbg_assert(Asker >= 0, "Incorrect client id");
 
 	const CIcCharacter *pCharacter = GetCharacter(Asker);
 	if(!pCharacter || !pCharacter->IsInvisible())
+	{
+		if(ExceptId == -1)
+			return CClientMask().set();
 		return CClientMask().set().reset(ExceptId);
+	}
 
 	return m_Teams.TeamMask(GetPlayerTeam(Asker), ExceptId, Asker);
 }
