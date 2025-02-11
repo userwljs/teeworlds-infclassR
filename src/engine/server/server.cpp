@@ -1259,8 +1259,6 @@ int CServer::NewClientCallback(int ClientId, void *pUser, bool Sixup)
 	pThis->m_aClients[ClientId].m_DDNetVersionSettled = false;
 	pThis->m_aClients[ClientId].m_InfClassVersion = 0;
 	pThis->m_aClients[ClientId].m_Quitting = false;
-	
-	memset(&pThis->m_aClients[ClientId].m_Addr, 0, sizeof(NETADDR));
 	pThis->m_aClients[ClientId].Reset();
 	
 	//Getback session about the client
