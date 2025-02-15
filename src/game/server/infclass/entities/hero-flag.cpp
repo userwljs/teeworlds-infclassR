@@ -2,11 +2,11 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include "hero-flag.h"
 
-#include <game/server/gamecontext.h>
-#include <engine/server/server.h>
+#include <engine/server.h>
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
 
+#include <game/server/gamecontext.h>
 #include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/ic_gamecontroller.h>
