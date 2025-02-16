@@ -3941,6 +3941,11 @@ void CIcGameController::StartRound()
 	m_RoundStarted = true;
 	IGameController::StartRound();
 
+	if(GetRoundType() == ERoundType::Survival)
+	{
+		m_WaveStartTick = Server()->Tick();
+	}
+
 	if(StartAfterGameOver)
 	{
 		if(!HardMode())
