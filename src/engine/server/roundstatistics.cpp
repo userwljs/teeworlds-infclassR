@@ -4,54 +4,54 @@
 
 #include <game/infclass/classes.h>
 
-int CRoundStatistics::CPlayerStats::OnScoreEvent(int EventType, EPlayerClass Class)
+int CRoundStatistics::CPlayerStats::OnScoreEvent(EScoreEvent EventType, EPlayerClass Class)
 {
 	int Points = 0;
 	switch(EventType)
 	{
-	case SCOREEVENT_HUMAN_SURVIVE:
+	case EScoreEvent::HUMAN_SURVIVE:
 		Points = 50;
 		break;
-	case SCOREEVENT_HUMAN_SUICIDE:
+	case EScoreEvent::HUMAN_SUICIDE:
 		Points = -10;
 		break;
-	case SCOREEVENT_INFECTION:
+	case EScoreEvent::INFECTION:
 		Points = 30;
 		break;
-	case SCOREEVENT_KILL_INFECTED:
+	case EScoreEvent::KILL_INFECTED:
 		Points = 10;
 		break;
-	case SCOREEVENT_KILL_TARGET:
+	case EScoreEvent::KILL_TARGET:
 		Points = 20;
 		break;
-	case SCOREEVENT_KILL_WITCH:
+	case EScoreEvent::KILL_WITCH:
 		Points = 50;
 		break;
-	case SCOREEVENT_KILL_UNDEAD:
+	case EScoreEvent::KILL_UNDEAD:
 		Points = 50;
 		break;
-	case SCOREEVENT_DESTROY_TURRET:
+	case EScoreEvent::DESTROY_TURRET:
 		Points = 10;
 		break;
-	case SCOREEVENT_HELP_FREEZE:
+	case EScoreEvent::HELP_FREEZE:
 		Points = 10;
 		break;
-	case SCOREEVENT_HELP_HOOK_BARRIER:
+	case EScoreEvent::HELP_HOOK_BARRIER:
 		Points = 10;
 		break;
-	case SCOREEVENT_HELP_HOOK_INFECTION:
+	case EScoreEvent::HELP_HOOK_INFECTION:
 		Points = 10;
 		break;
-	case SCOREEVENT_HUMAN_HEALING:
+	case EScoreEvent::HUMAN_HEALING:
 		Points = 10;
 		break;
-	case SCOREEVENT_HERO_FLAG:
+	case EScoreEvent::HERO_FLAG:
 		Points = 10;
 		break;
-	case SCOREEVENT_BONUS:
+	case EScoreEvent::BONUS:
 		Points = 50;
 		break;
-	case SCOREEVENT_MEDIC_REVIVE:
+	case EScoreEvent::MEDIC_REVIVE:
 		Points = 50;
 		break;
 	}
@@ -73,7 +73,7 @@ void CRoundStatistics::ResetPlayer(int ClientId)
 		m_aPlayers[ClientId].Reset();
 }
 
-void CRoundStatistics::OnScoreEvent(int ClientId, int EventType, EPlayerClass Class, const char* Name, IConsole* console)
+void CRoundStatistics::OnScoreEvent(int ClientId, EScoreEvent EventType, EPlayerClass Class, const char* Name, IConsole* console)
 {
 	if(ClientId >= 0 && ClientId < MAX_CLIENTS) {
 		int Score = m_aPlayers[ClientId].OnScoreEvent(EventType, Class);
@@ -93,7 +93,7 @@ void CRoundStatistics::SetPlayerAsWinner(int ClientId)
 		m_aPlayers[ClientId].m_Won = true;
 }
 
-CRoundStatistics::CPlayerStats* CRoundStatistics::PlayerStatistics(int ClientId)
+CRoundStatistics::CPlayerStats *CRoundStatistics::PlayerStatistics(int ClientId)
 {
 	if(ClientId >= 0 && ClientId < MAX_CLIENTS)
 		return &m_aPlayers[ClientId];

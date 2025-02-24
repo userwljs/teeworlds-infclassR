@@ -114,7 +114,7 @@ bool CMedicLaser::OnCharacterHit(CIcCharacter *pHit)
 			nullptr
 		);
 		int ClientId = pMedic->GetCid();
-		Server()->RoundStatistics()->OnScoreEvent(ClientId, SCOREEVENT_MEDIC_REVIVE, pMedic->GetPlayerClass(), Server()->ClientName(ClientId), GameServer()->Console());
+		Server()->RoundStatistics()->OnScoreEvent(ClientId, EScoreEvent::MEDIC_REVIVE, pMedic->GetPlayerClass(), Server()->ClientName(ClientId), GameServer()->Console());
 	}
 	return true;
 }

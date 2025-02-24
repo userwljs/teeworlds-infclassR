@@ -250,7 +250,7 @@ void CTurret::Die(CIcCharacter *pKiller)
 		nullptr);
 
 	// increase score
-	Server()->RoundStatistics()->OnScoreEvent(ClientId, SCOREEVENT_DESTROY_TURRET, pKiller->GetPlayerClass(), Server()->ClientName(ClientId), GameServer()->Console());
+	Server()->RoundStatistics()->OnScoreEvent(ClientId, EScoreEvent::DESTROY_TURRET, pKiller->GetPlayerClass(), Server()->ClientName(ClientId), GameServer()->Console());
 	GameServer()->SendScoreSound(pKiller->GetCid());
 	Reset();
 }

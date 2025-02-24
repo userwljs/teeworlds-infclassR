@@ -438,7 +438,7 @@ void CIcGameController::DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfect
 				_("You have infected {str:VictimName}, +3 points"),
 				"VictimName", Server()->ClientName(pPlayer->GetCid()),
 				nullptr);
-			Server()->RoundStatistics()->OnScoreEvent(InfectedByCid, SCOREEVENT_INFECTION,
+			Server()->RoundStatistics()->OnScoreEvent(InfectedByCid, EScoreEvent::INFECTION,
 				pInfectiousPlayer->GetClass(), Server()->ClientName(InfectedByCid), Console());
 			GameServer()->SendScoreSound(InfectedByCid);
 		}
@@ -453,7 +453,7 @@ void CIcGameController::DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfect
 			pHook->GetCid() != InfectedByCid
 		)
 		{
-			Server()->RoundStatistics()->OnScoreEvent(pHook->GetCid(), SCOREEVENT_HELP_HOOK_INFECTION, pHook->GetPlayerClass(), Server()->ClientName(pHook->GetCid()), Console());
+			Server()->RoundStatistics()->OnScoreEvent(pHook->GetCid(), EScoreEvent::HELP_HOOK_INFECTION, pHook->GetPlayerClass(), Server()->ClientName(pHook->GetCid()), Console());
 			GameServer()->SendScoreSound(pHook->GetCid());
 		}
 	}
@@ -3622,7 +3622,7 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 			if(Iter.Player()->IsHuman())
 			{
 				//TAG_SCORE
-				Server()->RoundStatistics()->OnScoreEvent(Iter.ClientId(), SCOREEVENT_HUMAN_SURVIVE, Iter.Player()->GetClass(), Server()->ClientName(Iter.ClientId()), Console());
+				Server()->RoundStatistics()->OnScoreEvent(Iter.ClientId(), EScoreEvent::HUMAN_SURVIVE, Iter.Player()->GetClass(), Server()->ClientName(Iter.ClientId()), Console());
 				Server()->RoundStatistics()->SetPlayerAsWinner(Iter.ClientId());
 				GameServer()->SendScoreSound(Iter.ClientId());
 
@@ -4799,7 +4799,7 @@ void CIcGameController::RewardTheKillers(CIcCharacter *pVictim, const DeathConte
 	{
 		if(pKiller->IsHuman())
 		{
-			Server()->RoundStatistics()->OnScoreEvent(pKiller->GetCid(), SCOREEVENT_HUMAN_SUICIDE, pKiller->GetClass(), Server()->ClientName(pKiller->GetCid()), Console());
+			Server()->RoundStatistics()->OnScoreEvent(pKiller->GetCid(), EScoreEvent::HUMAN_SUICIDE, pKiller->GetClass(), Server()->ClientName(pKiller->GetCid()), Console());
 		}
 	}
 	else
@@ -4821,18 +4821,18 @@ void CIcGameController::RewardTheKillers(CIcCharacter *pVictim, const DeathConte
 	if(pVictim->IsInfected())
 	{
 		EPlayerClass VictimClass = static_cast<EPlayerClass>(pVictim->GetPlayerClass());
-		int ScoreEvent = SCOREEVENT_KILL_INFECTED;
+		EScoreEvent ScoreEvent = EScoreEvent::KILL_INFECTED;
 		bool ClassSpecialProcessingEnabled = (GetRoundType() != ERoundType::Fun) || (GetPlayerClassProbability(VictimClass) == 0);
 		if(ClassSpecialProcessingEnabled)
 		{
 			switch(VictimClass)
 			{
 			case EPlayerClass::Witch:
-				ScoreEvent = SCOREEVENT_KILL_WITCH;
+				ScoreEvent = EScoreEvent::KILL_WITCH;
 				GameServer()->SendChatTarget_Localization(pKiller->GetCid(), CHATCATEGORY_SCORE, _("You have killed a witch, +5 points"), NULL);
 				break;
 			case EPlayerClass::Undead:
-				ScoreEvent = SCOREEVENT_KILL_UNDEAD;
+				ScoreEvent = EScoreEvent::KILL_UNDEAD;
 				GameServer()->SendChatTarget_Localization(pKiller->GetCid(), CHATCATEGORY_SCORE, _("You have killed an undead! +5 points"), NULL);
 				break;
 			default:

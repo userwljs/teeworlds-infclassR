@@ -93,7 +93,8 @@ void CHeroFlag::Tick()
 		if(Server()->GetActivePlayerCount() > 3)
 		{
 			int ClientId = pOwner->GetCid();
-			Server()->RoundStatistics()->OnScoreEvent(ClientId, SCOREEVENT_HERO_FLAG, pOwner->GetPlayerClass(), Server()->ClientName(ClientId), GameServer()->Console());
+			Server()->RoundStatistics()->OnScoreEvent(ClientId, EScoreEvent::HERO_FLAG,
+				pOwner->GetPlayerClass(), Server()->ClientName(ClientId), GameServer()->Console());
 			GameServer()->SendScoreSound(pOwner->GetCid());
 		}
 	}

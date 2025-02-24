@@ -441,7 +441,7 @@ void CInfClassHuman::OnCharacterTick()
 			m_pCharacter->SetEmote(EMOTE_HAPPY, Server()->Tick() + Server()->TickSpeed());
 			GiveGift(EGiftType::BonusZone);
 
-			Server()->RoundStatistics()->OnScoreEvent(GetCid(), SCOREEVENT_BONUS, GetPlayerClass(),
+			Server()->RoundStatistics()->OnScoreEvent(GetCid(), EScoreEvent::BONUS, GetPlayerClass(),
 				Server()->ClientName(GetCid()), GameServer()->Console());
 			GameServer()->SendScoreSound(GetCid());
 		}
@@ -650,7 +650,7 @@ void CInfClassHuman::OnHumanHammerHitHuman(CIcCharacter *pTarget)
 
 				if(pTarget->GetArmor() == MaxArmor)
 				{
-					Server()->RoundStatistics()->OnScoreEvent(GetCid(), SCOREEVENT_HUMAN_HEALING,
+					Server()->RoundStatistics()->OnScoreEvent(GetCid(), EScoreEvent::HUMAN_HEALING,
 						GetPlayerClass(), Server()->ClientName(GetCid()), GameServer()->Console());
 					GameServer()->SendScoreSound(GetCid());
 					m_pCharacter->AddAmmo(WEAPON_GRENADE, 1);
@@ -1591,7 +1591,7 @@ void CInfClassHuman::ResetUpgrades()
 void CInfClassHuman::OnNinjaTargetKiller(bool Assisted)
 {
 	GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("You have eliminated your target, +2 points"), NULL);
-	Server()->RoundStatistics()->OnScoreEvent(GetCid(), SCOREEVENT_KILL_TARGET, GetPlayerClass(), Server()->ClientName(GetCid()), GameServer()->Console());
+	Server()->RoundStatistics()->OnScoreEvent(GetCid(), EScoreEvent::KILL_TARGET, GetPlayerClass(), Server()->ClientName(GetCid()), GameServer()->Console());
 
 	if(m_pCharacter)
 	{
