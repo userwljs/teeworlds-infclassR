@@ -643,11 +643,12 @@ void CInfClassHuman::OnHumanHammerHitHuman(CIcCharacter *pTarget)
 		if(pTarget->GetPlayerClass() != EPlayerClass::Hero)
 		{
 			const int HadArmor = pTarget->GetArmor();
-			if(HadArmor < 10)
+			const int MaxArmor = pTarget->GetMaxArmor();
+			if(HadArmor < MaxArmor)
 			{
 				pTarget->GiveArmor(4, GetCid());
 
-				if(pTarget->GetArmor() == 10)
+				if(pTarget->GetArmor() == MaxArmor)
 				{
 					Server()->RoundStatistics()->OnScoreEvent(GetCid(), SCOREEVENT_HUMAN_HEALING,
 						GetPlayerClass(), Server()->ClientName(GetCid()), GameServer()->Console());
