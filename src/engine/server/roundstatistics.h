@@ -41,7 +41,7 @@ public:
 		CPlayerStats() = default;
 
 		void Reset() { *this = CPlayerStats{}; }
-		int OnScoreEvent(EScoreEvent EventType, EPlayerClass Class);
+		int OnScoreEvent(EScoreEvent EventType, EPlayerClass Class, std::optional<int> Param = std::nullopt);
 	};
 
 public:
@@ -54,7 +54,8 @@ public:
 	CRoundStatistics() = default;
 	void Reset() { *this = CRoundStatistics{}; }
 	void ResetPlayer(int ClientId);
-	void OnScoreEvent(int ClientId, EScoreEvent EventType, EPlayerClass Class, const char* Name, IConsole* console);
+	void OnScoreEvent(int ClientId, EScoreEvent EventType, EPlayerClass Class, const char *pName, IConsole *console,
+		std::optional<int> Param1 = std::nullopt);
 	void SetPlayerAsWinner(int ClientId);
 	
 	CRoundStatistics::CPlayerStats* PlayerStatistics(int ClientId);

@@ -2,7 +2,7 @@
 
 #include <base/system.h>
 
-int CRoundStatistics::CPlayerStats::OnScoreEvent(EScoreEvent EventType, EPlayerClass Class)
+int CRoundStatistics::CPlayerStats::OnScoreEvent(EScoreEvent EventType, EPlayerClass Class, std::optional<int> Param)
 {
 	if(Class == EPlayerClass::Invalid)
 		return 0;
@@ -74,10 +74,10 @@ void CRoundStatistics::ResetPlayer(int ClientId)
 		m_aPlayers[ClientId].Reset();
 }
 
-void CRoundStatistics::OnScoreEvent(int ClientId, EScoreEvent EventType, EPlayerClass Class, const char* Name, IConsole* console)
+void CRoundStatistics::OnScoreEvent(int ClientId, EScoreEvent EventType, EPlayerClass Class, const char* Name, IConsole* console, std::optional<int> Param1)
 {
 	if(ClientId >= 0 && ClientId < MAX_CLIENTS) {
-		int Score = m_aPlayers[ClientId].OnScoreEvent(EventType, Class);
+		int Score = m_aPlayers[ClientId].OnScoreEvent(EventType, Class, Param1);
 
 		char aBuf[256];
 		str_format(aBuf, sizeof(aBuf), "score player='%s' amount='%d'",
