@@ -22,6 +22,7 @@ MACRO_CONFIG_STR(InfConverterId, inf_converter_id, 16, "v2.1", CFGFLAG_SERVER, "
 MACRO_CONFIG_INT(InfConverterForceRegeneration, inf_converter_force_regeneration, 0, 0, 1, CFGFLAG_SERVER, "Always (re)generate client map (regardless of cache)")
 
 MACRO_CONFIG_STR(SvAccounts, sv_accounts, 16, "disabled", CFGFLAG_SERVER, "Accounts: disabled, enabled, mandatory")
+MACRO_CONFIG_INT(SvAccountsRegistration, sv_accounts_registration, 0, 0, 1, CFGFLAG_SERVER, "Accounts registration toggle")
 
 MACRO_CONFIG_STR(SvMapsBaseUrl, sv_maps_base_url, 128, "", CFGFLAG_SERVER, "Client maps base URL (HTTPS)")
 MACRO_CONFIG_INT(SvShowOpenDoors, sv_show_open_doors, 0, 0, 1, CFGFLAG_SERVER, "Show open doors (0 = no, 1 = yes)")

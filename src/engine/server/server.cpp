@@ -5447,6 +5447,13 @@ void CServer::ShowStats(int ClientId, int UserId)
 
 void CServer::Register(int ClientId, const char *pUsername, const char *pPassword)
 {
+	if (Config()->m_SvAccountsRegistration == 0)
+	{
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("The registration is currently disabled on the server"), nullptr);
+		return;
+	}
+
 	CClientAccountRequests &Requests = m_AccountsRequests[ClientId];
 	if(m_aClients[ClientId].m_UserId.has_value())
 	{
