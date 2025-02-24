@@ -2053,6 +2053,28 @@ void CGameContext::CensorMessage(char *pCensoredMessage, const char *pMessage, i
 	str_copy(pCensoredMessage, pMessage, Size);
 }
 
+bool CGameContext::MessageTriggersBanOrKick(int FromCid, const char *pMessage)
+{
+	const char aKrx[] = "bro, check out this client: kr​xclient";
+	if (str_comp_num(pMessage, aKrx, sizeof(aKrx)) == 0)
+	{
+		char aAddrStr[NETADDR_MAXSTRSIZE]{};
+		Server()->GetClientAddr(FromCid, aAddrStr, sizeof(aAddrStr));
+
+		const CPlayer *pPlayer = GetPlayer(FromCid);
+		const char *pTimeout = pPlayer->m_aTimeoutCode[0] ? pPlayer->m_aTimeoutCode : "<none>";
+
+		char aBuf[256];
+		str_format(aBuf, sizeof(aBuf), "Auto ban IP '%s' to get rid of client '%s' (%d) with timeout code '%s' for message '%s'", aAddrStr, Server()->ClientName(FromCid), FromCid, pTimeout, pMessage);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+
+		Server()->Ban(FromCid, 1000 * 60, "krx");
+		return true;
+	}
+
+	return false;
+}
+
 void CGameContext::OnMessage(int MsgId, CUnpacker *pUnpacker, int ClientId)
 {
 	void *pRawMsg = PreProcessMsg(&MsgId, pUnpacker, ClientId);
@@ -5116,6 +5138,9 @@ void CGameContext::WhisperId(int ClientId, int VictimId, const char *pMessage)
 	{
 		return;
 	}
+
+	if(MessageTriggersBanOrKick(ClientId, pMessage))
+		return;
 
 	if(GetClientVersion(VictimId) >= VERSION_DDNET_WHISPER)
 	{
