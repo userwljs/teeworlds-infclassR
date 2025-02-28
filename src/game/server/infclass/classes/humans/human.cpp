@@ -643,15 +643,15 @@ void CInfClassHuman::OnHumanHammerHitHuman(CIcCharacter *pTarget)
 		if(pTarget->GetPlayerClass() != EPlayerClass::Hero)
 		{
 			const int HadArmor = pTarget->GetArmor();
-			const int MaxArmor = pTarget->GetMaxArmor();
-			if(HadArmor < MaxArmor)
+			if(pTarget->GiveArmor(4, GetCid()))
 			{
-				pTarget->GiveArmor(4, GetCid());
+				const int GivenArmor = pTarget->GetArmor() - HadArmor;
+				Server()->RoundStatistics()->OnScoreEvent(GetCid(), EScoreEvent::HUMAN_HEALING,
+					GetPlayerClass(), Server()->ClientName(GetCid()), GameServer()->Console(),
+					GivenArmor);
 
-				if(pTarget->GetArmor() == MaxArmor)
+				if(pTarget->GetArmor() == pTarget->GetMaxArmor())
 				{
-					Server()->RoundStatistics()->OnScoreEvent(GetCid(), EScoreEvent::HUMAN_HEALING,
-						GetPlayerClass(), Server()->ClientName(GetCid()), GameServer()->Console());
 					GameServer()->SendScoreSound(GetCid());
 					m_pCharacter->AddAmmo(WEAPON_GRENADE, 1);
 				}

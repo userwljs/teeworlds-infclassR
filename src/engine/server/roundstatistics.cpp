@@ -44,7 +44,8 @@ int CRoundStatistics::CPlayerStats::OnScoreEvent(EScoreEvent EventType, EPlayerC
 		Points = 10;
 		break;
 	case EScoreEvent::HUMAN_HEALING:
-		Points = 10;
+	case EScoreEvent::HUMAN_HEALING_WITH_NADES:
+		Points = Param.value_or(10);
 		break;
 	case EScoreEvent::HERO_FLAG:
 		Points = 10;

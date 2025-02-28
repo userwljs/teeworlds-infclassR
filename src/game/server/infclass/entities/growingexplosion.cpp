@@ -3,7 +3,9 @@
 
 #include "growingexplosion.h"
 
+#include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
+
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/infclass/damage_type.h>
@@ -299,13 +301,27 @@ void CGrowingExplosion::Tick()
 				switch(m_ExplosionEffect)
 				{
 				case EGrowingExplosionEffect::HEAL_HUMANS:
+				{
 					if(!p->IsHuman())
 					{
 						continue;
 					}
-					p->GiveArmor(1, GetOwner());
+
+					const int HadArmor = p->GetArmor();
+					if(p->GiveArmor(1, GetOwner()) && HasOwner())
+					{
+						if(p->GetCid() != GetOwner())
+						{
+							const int GivenArmor = p->GetArmor() - HadArmor;
+							Server()->RoundStatistics()->OnScoreEvent(GetOwner(), EScoreEvent::HUMAN_HEALING_WITH_NADES,
+								EPlayerClass::Medic, Server()->ClientName(GetOwner()), GameServer()->Console(),
+								GivenArmor);
+						}
+					}
+
 					m_Hit[p->GetCid()] = true;
 					break;
+				}
 				case EGrowingExplosionEffect::BOOM_INFECTED:
 				{
 					ProcessMercenaryBombHit(p);
