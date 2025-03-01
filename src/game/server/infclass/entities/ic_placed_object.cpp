@@ -28,7 +28,7 @@ void CPlacedObject::MoveTo(const vec2 &Position)
 
 void CPlacedObject::SetSecondPosition(vec2 Position)
 {
-	if(m_MaxLength.value() && distance(m_Pos, Position) > m_MaxLength.value())
+	if(m_MaxLength.has_value() && distance(m_Pos, Position) > m_MaxLength.value())
 	{
 		m_Pos2 = m_Pos + normalize(Position - m_Pos) * m_MaxLength.value();
 	}
