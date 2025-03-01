@@ -55,17 +55,17 @@ CharacterFilter CIcCharacter::GetHumansFilter()
 	return HumansEntitiesFilter;
 }
 
-CharacterFilter CIcCharacter::GetExceptThisCharacterFilter()
+CharacterFilter CIcCharacter::GetExceptCharacterFilter(int ClientId)
 {
 	static int s_ExceptCharacterId{};
-	s_ExceptCharacterId = GetCid();
+	s_ExceptCharacterId = ClientId;
 
-	const auto ExceptThisCharFilter = [](const CCharacter *pCh) {
+	const auto ExceptCharacterFilter = [](const CCharacter *pCh) {
 		const CIcCharacter *pCharacter = CIcCharacter::GetInstance(pCh);
 		return pCharacter->GetCid() != s_ExceptCharacterId;
 	};
 
-	return ExceptThisCharFilter;
+	return ExceptCharacterFilter;
 }
 
 CharacterFilter CIcCharacter::GetExceptCharactersFilter(const icArray<const CIcCharacter *, 10> &aCharacters)

@@ -90,7 +90,7 @@ public:
 
 	static CharacterFilter GetInfectedFilter();
 	static CharacterFilter GetHumansFilter();
-	CharacterFilter GetExceptThisCharacterFilter();
+	static CharacterFilter GetExceptCharacterFilter(int ClientId);
 	static CharacterFilter GetExceptCharactersFilter(const icArray<const CIcCharacter *, 10> &aCharacters);
 	static CharacterFilter GetFilterAllOff(CharacterFilter Filter1, CharacterFilter Filter2);
 
