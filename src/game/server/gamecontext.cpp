@@ -2659,6 +2659,11 @@ void CGameContext::ConConverse(IConsole::IResult *pResult, void *pUserData)
 	// This will never be called
 }
 
+void CGameContext::ConMute(IConsole::IResult *pResult, void *pUserData)
+{
+	// This will never be called
+}
+
 void CGameContext::ConShowOthers(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
@@ -4411,6 +4416,8 @@ void CGameContext::RegisterChatCommands()
 	Console()->Register("c", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)");
 	Console()->Register("converse", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)");
 	Console()->Register("msg", "s[player or group name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Check '/help msg' for details");
+
+	Console()->Register("mute", "r[player name]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConMute, this, "Mute player with specified id for x minutes for any reason");
 
 	Console()->Register("timeout", "?s[code]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConTimeout, this, "Set timeout protection code s");
 
