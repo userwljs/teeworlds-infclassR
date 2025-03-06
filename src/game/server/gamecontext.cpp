@@ -4369,11 +4369,11 @@ void CGameContext::OnConsoleInit()
 	//Chat Command
 	Console()->Register("version", "", CFGFLAG_SERVER, ConVersion, this, "Display information about the server version and build");
 
-	Console()->Register("credits", "", CFGFLAG_CHAT, ConCredits, this, "Shows the credits of the mod");
 	Console()->Register("about", "", CFGFLAG_CHAT, ConAbout, this, "Display information about the mod");
 	Console()->Register("register", "s[username] s[password] ?s[email]", CFGFLAG_CHAT, ConRegister, this, "Create an account");
 	Console()->Register("login", "s[username] s[password]", CFGFLAG_CHAT, ConLogin, this, "Login to an account");
 	Console()->Register("logout", "", CFGFLAG_CHAT, ConLogout, this, "Logout");
+
 #ifdef CONF_SQL
 	Console()->Register("setemail", "s[email]", CFGFLAG_CHAT, ConSetEmail, this, "Change your email");
 	
@@ -4383,9 +4383,36 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("goal", "?s[classname]", CFGFLAG_CHAT, ConGoal, this, "Show your goal");
 	Console()->Register("stats", "i", CFGFLAG_CHAT, ConStats, this, "Show stats by id");
 #endif
-	Console()->Register("help", "?s[page]", CFGFLAG_CHAT, ConHelp, this, "Display help");
 	Console()->Register("reload_changelog", "?i[page]", CFGFLAG_SERVER, ConReloadChangeLog, this, "Reload the changelog file");
-	Console()->Register("changelog", "?i[page]", CFGFLAG_CHAT, ConChangeLog, this, "Display a changelog page");
+
+/* INFECTION MODIFICATION END *****************************************/
+
+	Console()->Chain("sv_motd", ConchainSpecialMotdupdate, this);
+
+	Console()->Chain("sv_maprotation", ConchainSyncMapRotation, this);
+
+	RegisterChatCommands();
+
+	InitGeolocation();
+}
+
+void CGameContext::RegisterChatCommands()
+{
+	Console()->Register("credits", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConCredits, this, "Shows the credits of the DDNet mod");
+	Console()->Register("rules", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConRules, this, "Shows the server rules");
+	Console()->Register("help", "?s[page]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConHelp, this, "Display help");
+	Console()->Register("info", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConInfo, this, "Shows info about this server");
+	Console()->Register("changelog", "?i[page]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConChangeLog, this, "Display a changelog page");
+	Console()->Register("cmdlist", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConCmdList, this, "List of commands");
+
+	Console()->Register("me", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConMe, this, "Like the famous irc command '/me says hi' will display '<yourname> says hi'");
+	Console()->Register("w", "s[player name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConWhisper, this, "Whisper something to someone (private message)");
+	Console()->Register("whisper", "s[player name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConWhisper, this, "Whisper something to someone (private message)");
+	Console()->Register("c", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)");
+	Console()->Register("converse", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)");
+	Console()->Register("msg", "s[player or group name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Check '/help msg' for details");
+
+	Console()->Register("timeout", "?s[code]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConTimeout, this, "Set timeout protection code s");
 
 	static char aLangs[256] = {};
 	if(!aLangs[0])
@@ -4406,31 +4433,9 @@ void CGameContext::OnConsoleInit()
 
 	if(aLangs[0])
 	{
-		Console()->Register("language", aLangs, CFGFLAG_CHAT, ConLanguage, this, "Set the language");
-		Console()->Register("lang", aLangs, CFGFLAG_CHAT, ConLanguage, this, "Set the language");
+		Console()->Register("language", aLangs, CFGFLAG_CHAT | CFGFLAG_SERVER, ConLanguage, this, "Set the language");
+		Console()->Register("lang", aLangs, CFGFLAG_CHAT | CFGFLAG_SERVER, ConLanguage, this, "Set the language");
 	}
-	Console()->Register("cmdlist", "", CFGFLAG_CHAT, ConCmdList, this, "List of commands");
-/* INFECTION MODIFICATION END *****************************************/
-
-	Console()->Chain("sv_motd", ConchainSpecialMotdupdate, this);
-
-	Console()->Chain("sv_maprotation", ConchainSyncMapRotation, this);
-
-#define CHAT_COMMAND(name, params, flags, callback, userdata, help) m_pConsole->Register(name, params, flags, callback, userdata, help);
-	// From ddracechat.h
-	CHAT_COMMAND("rules", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConRules, this, "Shows the server rules")
-	CHAT_COMMAND("info", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConInfo, this, "Shows info about this server")
-	CHAT_COMMAND("me", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConMe, this, "Like the famous irc command '/me says hi' will display '<yourname> says hi'")
-	CHAT_COMMAND("w", "s[player name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConWhisper, this, "Whisper something to someone (private message)")
-	CHAT_COMMAND("whisper", "s[player name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConWhisper, this, "Whisper something to someone (private message)")
-	CHAT_COMMAND("c", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)")
-	CHAT_COMMAND("converse", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)")
-	CHAT_COMMAND("timeout", "?s[code]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConTimeout, this, "Set timeout protection code s")
-
-	CHAT_COMMAND("msg", "s[player or group name] r[message]", CFGFLAG_CHAT | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Check '/help msg' for details")
-#undef CHAT_COMMAND
-
-	InitGeolocation();
 }
 
 void CGameContext::OnInit(const void *pPersistentData)

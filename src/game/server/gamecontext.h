@@ -235,6 +235,7 @@ public:
 	// engine events
 	void OnInit(const void *pPersistentData) override;
 	void OnConsoleInit() override;
+	void RegisterChatCommands();
 	void OnMapChange(char *pNewMapName, int MapNameSize) override;
 	void OnShutdown(const void *pPersistentData) override;
 
