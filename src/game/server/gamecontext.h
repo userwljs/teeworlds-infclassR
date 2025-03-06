@@ -349,7 +349,7 @@ private:
 	void Whisper(int ClientId, char *pStr);
 	void WhisperId(int ClientId, int VictimId, const char *pMessage);
 	void Converse(int ClientId, const char *pStr);
-	void MutePlayer(const char* pStr, int ClientId);
+	void MutePlayer(int ClientId, char *pStr);
 
 	void InitGeolocation();
 

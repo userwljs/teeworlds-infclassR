@@ -3928,20 +3928,34 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 	}
 }
 
-void CGameContext::MutePlayer(const char* pStr, int ClientId)
+void CGameContext::MutePlayer(int ClientId, char *pStr)
 {
-	for(int i=0; i<MAX_CLIENTS; i++)
+	const char *pName = ParseStringArgumentInplace(pStr);
+	if (pName == nullptr || pName[0] == '\0')
 	{
-		if(m_apPlayers[i] && str_comp(Server()->ClientName(i), pStr) == 0)
-		{
-			CGameContext::m_ClientMuted[ClientId][i] = !CGameContext::m_ClientMuted[ClientId][i];
-			
-			if(CGameContext::m_ClientMuted[ClientId][i])
-				SendChatTarget(ClientId, "Player muted. Mute will persist until you or the muted player disconnects.");
-			else
-				SendChatTarget(ClientId, "Player unmuted. You can see their messages again.");
-			break;
-		}
+		SendChatTarget(ClientId, "Invalid player name");
+		return;
+	}
+
+	std::optional<int> Target = GetClientId(pName);
+
+	if(!Target.has_value())
+	{
+		char aBuf[256];
+		str_format(aBuf, sizeof(aBuf), "No player with name \"%s\" found", pName);
+		SendChatTarget(ClientId, aBuf);
+		return;
+	}
+	const int TargetId = Target.value();
+
+	CGameContext::m_ClientMuted[ClientId][TargetId] = !CGameContext::m_ClientMuted[ClientId][TargetId];
+	if(CGameContext::m_ClientMuted[ClientId][TargetId])
+	{
+		SendChatTarget(ClientId, "Player muted. Mute will persist until you or the muted player disconnects.");
+	}
+	else
+	{
+		SendChatTarget(ClientId, "Player unmuted. You can see their messages again.");
 	}
 }
 
