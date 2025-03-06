@@ -1953,6 +1953,68 @@ void CGameContext::GetMapNameFromCommand(char* pMapName, const char *pCommand)
 	pMapName[k] = 0;
 }
 
+char *CGameContext::ParseStringArgumentInplace(char *&pInput) const
+{
+	pInput = str_skip_whitespaces(pInput);
+	char *pArgument{};
+
+	// add token
+	if(*pInput == '"')
+	{
+		pInput++;
+		pArgument = pInput;
+
+		char *pDst = pInput; // we might have to process escape data
+		while(true)
+		{
+			if(pInput[0] == '"')
+				break;
+			else if(pInput[0] == '\\')
+			{
+				if(pInput[1] == '\\')
+					pInput++; // skip due to escape
+				else if(pInput[1] == '"')
+					pInput++; // skip due to escape
+			}
+			else if(pInput[0] == 0)
+				return nullptr; // return error
+
+			*pDst = *pInput;
+			pDst++;
+			pInput++;
+		}
+
+		// write null termination
+		*pDst = 0;
+
+		pInput++;
+	}
+	else
+	{
+		pArgument = pInput;
+		pInput = str_skip_to_whitespace(pInput);
+
+		if(pInput[0] != '\0') // check for end of string
+		{
+			pInput[0] = '\0';
+			pInput++;
+		}
+	}
+
+	return pArgument;
+}
+
+std::optional<int> CGameContext::GetClientId(const char *pName) const
+{
+	for(int i = 0; i < MAX_CLIENTS; ++i)
+	{
+		if(str_comp(pName, Server()->ClientName(i)) == 0)
+			return i;
+	}
+
+	return std::nullopt;
+}
+
 bool CheckClientId2(int ClientId)
 {
 	return ClientId >= 0 && ClientId < MAX_CLIENTS;
@@ -2126,7 +2188,9 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 		}
 		else if(str_comp_num(pMsg->m_pMessage + 1, "mute ", 5) == 0)
 		{
-			MutePlayer(pMsg->m_pMessage + 6, ClientId);
+			char aMsg[256];
+			str_copy(aMsg, pMsg->m_pMessage + 6);
+			MutePlayer(ClientId, aMsg);
 		}
 		else
 		{
@@ -4847,96 +4911,16 @@ void CGameContext::Whisper(int ClientId, char *pStr)
 	if(ProcessSpamProtection(ClientId))
 		return;
 
-	pStr = str_skip_whitespaces(pStr);
-
-	char *pName;
-	int Victim;
-	bool Error = false;
-
-	// add token
-	if(*pStr == '"')
-	{
-		pStr++;
-
-		pName = pStr;
-		char *pDst = pStr; // we might have to process escape data
-		while(true)
-		{
-			if(pStr[0] == '"')
-			{
-				break;
-			}
-			else if(pStr[0] == '\\')
-			{
-				if(pStr[1] == '\\')
-					pStr++; // skip due to escape
-				else if(pStr[1] == '"')
-					pStr++; // skip due to escape
-			}
-			else if(pStr[0] == 0)
-			{
-				Error = true;
-				break;
-			}
-
-			*pDst = *pStr;
-			pDst++;
-			pStr++;
-		}
-
-		if(!Error)
-		{
-			// write null termination
-			*pDst = 0;
-
-			pStr++;
-
-			for(Victim = 0; Victim < MAX_CLIENTS; Victim++)
-				if(str_comp(pName, Server()->ClientName(Victim)) == 0)
-					break;
-		}
-	}
-	else
-	{
-		pName = pStr;
-		while(true)
-		{
-			if(pStr[0] == 0)
-			{
-				Error = true;
-				break;
-			}
-			if(pStr[0] == ' ')
-			{
-				pStr[0] = 0;
-				for(Victim = 0; Victim < MAX_CLIENTS; Victim++)
-					if(str_comp(pName, Server()->ClientName(Victim)) == 0)
-						break;
-
-				pStr[0] = ' ';
-
-				if(Victim < MAX_CLIENTS)
-					break;
-			}
-			pStr++;
-		}
-	}
-
-	if(pStr[0] != ' ')
-	{
-		Error = true;
-	}
-
-	*pStr = 0;
-	pStr++;
-
-	if(Error)
+	char *pName = ParseStringArgumentInplace(pStr);
+	if (pName == nullptr || pName[0] == '\0' || pStr[0] == '\0')
 	{
 		SendChatTarget(ClientId, "Invalid whisper");
 		return;
 	}
 
-	if(Victim >= MAX_CLIENTS || !CheckClientId2(Victim))
+	std::optional<int> Target = GetClientId(pName);
+
+	if(!Target.has_value())
 	{
 		char aBuf[256];
 		str_format(aBuf, sizeof(aBuf), "No player with name \"%s\" found", pName);
@@ -4944,7 +4928,7 @@ void CGameContext::Whisper(int ClientId, char *pStr)
 		return;
 	}
 
-	WhisperId(ClientId, Victim, pStr);
+	WhisperId(ClientId, Target.value(), pStr);
 }
 
 void CGameContext::WhisperId(int ClientId, int VictimId, const char *pMessage)

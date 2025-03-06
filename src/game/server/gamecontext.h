@@ -367,6 +367,8 @@ private:
 	
 	static OPTION_VOTE_TYPE GetOptionVoteType(const char *pVoteCommand);
 	void GetMapNameFromCommand(char* pMapName, const char *pCommand);
+	char *ParseStringArgumentInplace(char *&pInput) const;
+	std::optional<int> GetClientId(const char *pName) const;
 
 public:
 	virtual void SendBroadcast(int To, const char *pText, EBroadcastPriority Priority, int LifeSpan);
