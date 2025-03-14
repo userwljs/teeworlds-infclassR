@@ -10,7 +10,7 @@
 #include <game/server/infclass/entities/merc-bomb.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 
-static const int MercLaserDamage = 0;
+static constexpr int MercLaserDamage = 0;
 
 CMercenaryLaser::CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, float UpgradePoints)
 	: CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, MercLaserDamage, EInfclassWeapon::MERCENARY_UPGRADE_LASER)
@@ -21,18 +21,33 @@ CMercenaryLaser::CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Dire
 
 bool CMercenaryLaser::HitCharacter(vec2 From, vec2 To)
 {
-	vec2 At;
-	CEntity *pHitMercBomb = GameWorld()->IntersectEntity(m_Pos, To, 80.0f, &At, CMercenaryBomb::EntityId, GetOwnerFilterFunction());
-	if(pHitMercBomb)
+	CMercenaryBomb *pCurrentBomb = nullptr;
+	for(TEntityPtr<CMercenaryBomb> pBomb = GameWorld()->FindFirst<CMercenaryBomb>(); pBomb; ++pBomb)
 	{
-		CMercenaryBomb *pBomb = static_cast<CMercenaryBomb*>(pHitMercBomb);
-		CInfClassHuman *pMercClass = CInfClassHuman::GetInstance(GetOwnerCharacter());
-		pMercClass->UpgradeMercBomb(pBomb, m_UpgradePoints);
+		if(pBomb->GetOwner() == GetOwner())
+		{
+			pCurrentBomb = pBomb;
+			break;
+		}
+	}
 
-		m_From = From;
-		m_Pos = At;
-		m_Energy = -1;
-		return true;
+	if (pCurrentBomb == nullptr)
+		return false;
+
+	vec2 IntersectPos;
+	if(closest_point_on_line(From, To, pCurrentBomb->GetPos(), IntersectPos))
+	{
+		float Len = distance(pCurrentBomb->GetPos(), IntersectPos);
+		if(Len < pCurrentBomb->GetLaserHitRadius())
+		{
+			CInfClassHuman *pMercClass = CInfClassHuman::GetInstance(GetOwnerCharacter());
+			pMercClass->UpgradeMercBomb(pCurrentBomb, m_UpgradePoints);
+
+			m_From = From;
+			m_Pos = IntersectPos;
+			m_Energy = -1;
+			return true;
+		}
 	}
 
 	return false;

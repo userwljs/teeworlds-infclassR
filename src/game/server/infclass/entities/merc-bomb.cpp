@@ -46,6 +46,11 @@ void CMercenaryBomb::SetLoad(float Load)
 	m_Load = Load;
 }
 
+float CMercenaryBomb::GetLaserHitRadius() const
+{
+	return std::max<float>(s_MercBombRadius, GetProximityRadius());
+}
+
 void CMercenaryBomb::Tick()
 {
 	if(IsMarkedForDestroy())
@@ -108,6 +113,8 @@ void CMercenaryBomb::Snap(int SnappingClient)
 		CNetObj_InfClassObject *pInfClassObject = SnapInfClassObject();
 		if(!pInfClassObject)
 			return;
+
+		pInfClassObject->m_Data1 = f2fx(GetLaserHitRadius());
 	}
 
 	float AngleStart = (2.0f * pi * Server()->Tick()/static_cast<float>(Server()->TickSpeed()))/10.0f;

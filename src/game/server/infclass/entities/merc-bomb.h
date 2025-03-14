@@ -29,6 +29,8 @@ public:
 	void SetLoad(float Load);
 	float GetLoad() const { return m_Load; }
 
+	float GetLaserHitRadius() const;
+
 private:
 	int m_Ids[NUM_IDS];
 
