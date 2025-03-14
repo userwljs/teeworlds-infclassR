@@ -37,7 +37,7 @@ void CPlacedObject::SetSecondPosition(vec2 Position)
 		m_Pos2 = Position;
 	}
 
-	m_InfClassObjectFlags = INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION;
+	m_InfClassObjectFlags |= INFCLASS_OBJECT_FLAG_HAS_SECOND_POSITION;
 }
 
 void CPlacedObject::SetMaxLength(float Length)
