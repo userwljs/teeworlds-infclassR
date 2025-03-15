@@ -1444,6 +1444,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 		"Set InfClass weapon ammo regen interval");
 	Console()->Register("inf_set_weapon_max_ammo", "s[weapon] i[ammo]", CFGFLAG_SERVER, ConSetWeaponMaxAmmo, this,
 		"Set InfClass weapon max ammo");
+	Console()->Register("inf_weapon_force", "s[weapon] ?f[force]", CFGFLAG_SERVER, ConWeaponForce, this, "Set InfClass weapon (base) force");
 	Console()->Register("inf_list_weapons", "", CFGFLAG_SERVER, ConListWeapons, this, "List InfClass weapon names");
 
 	pConsole->Register("restore_client_name", "i[ClientId]", CFGFLAG_SERVER, ConRestoreClientName, this, "Set the name of a player");
@@ -1572,6 +1573,43 @@ void CIcGameController::ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pU
 	}
 
 	pSelf->SetMaxAmmo(WeaponId, Interval);
+}
+
+void CIcGameController::ConWeaponForce(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	if(pResult->NumArguments() < 1)
+		return;
+
+	EInfclassWeapon WeaponId = GetWeaponIdFromConArgument(pResult, 0);
+	if (WeaponId == EInfclassWeapon::Invalid)
+	{
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", gs_aInvalidWeaponIdMsg);
+		return;
+	}
+
+	if (pResult->NumArguments() < 2)
+	{
+		CFixedPointNumber Force = pSelf->GetWeaponForce(WeaponId);
+		char aBuf[32];
+		str_format(aBuf, sizeof(aBuf), "Value: %s", Force.AsStr());
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "console", aBuf);
+	}
+
+	float Force = pResult->GetFloat(1);
+	if(Force < 0)
+	{
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", "Negative values are not allowed.");
+		return;
+	}
+
+	if (Force > 1000)
+	{
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", "The given value is beyond all reasonable limits. Please use values in range from 0.1 to 100.");
+		return;
+	}
+
+	pSelf->SetWeaponForce(WeaponId, Force);
 }
 
 void CIcGameController::ConListWeapons(IConsole::IResult *pResult, void *pUserData)
@@ -5534,6 +5572,16 @@ EPlayerClass CIcGameController::ChooseInfectedClass(const CIcPlayer *pPlayer) co
 	return Class;
 }
 
+float CIcGameController::GetWeaponForce(EInfclassWeapon WID) const
+{
+	return m_aInfWeaponForce[static_cast<std::size_t>(WID)];
+}
+
+void CIcGameController::SetWeaponForce(EInfclassWeapon WID, float Force)
+{
+	m_aInfWeaponForce[static_cast<std::size_t>(WID)] = Force;
+}
+
 int CIcGameController::GetFireDelay(EInfclassWeapon WID) const
 {
 	return m_InfFireDelay[static_cast<int>(WID)];
@@ -5566,6 +5614,36 @@ void CIcGameController::SetMaxAmmo(EInfclassWeapon WID, int n)
 
 void CIcGameController::InitWeapons()
 {
+	SetWeaponForce(EInfclassWeapon::NONE, 0);
+	SetWeaponForce(EInfclassWeapon::HAMMER, 10);
+	SetWeaponForce(EInfclassWeapon::GUN, 0);
+	SetWeaponForce(EInfclassWeapon::SHOTGUN, 2);
+	SetWeaponForce(EInfclassWeapon::GRENADE, 0);
+	SetWeaponForce(EInfclassWeapon::LASER, 0);
+	SetWeaponForce(EInfclassWeapon::NINJA, 10);
+	SetWeaponForce(EInfclassWeapon::ENGINEER_LASER, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::SOLDIER_GRENADE, GetWeaponForce(EInfclassWeapon::GRENADE));
+	SetWeaponForce(EInfclassWeapon::EXPLOSIVE_LASER, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::TELEPORT_GUN, GetWeaponForce(EInfclassWeapon::GRENADE));
+	SetWeaponForce(EInfclassWeapon::HEALING_GRENADE, GetWeaponForce(EInfclassWeapon::GRENADE));
+	SetWeaponForce(EInfclassWeapon::MEDIC_LASER, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::MEDIC_SHOTGUN, 10);
+	SetWeaponForce(EInfclassWeapon::HERO_SHOTGUN, GetWeaponForce(EInfclassWeapon::SHOTGUN));
+	SetWeaponForce(EInfclassWeapon::RICOCHET_SHOTGUN, GetWeaponForce(EInfclassWeapon::SHOTGUN));
+	SetWeaponForce(EInfclassWeapon::BIOLOGIST_MINE_LASER, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::LOOPER_LASER, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::LOOPER_GRENADE, GetWeaponForce(EInfclassWeapon::GRENADE));
+	SetWeaponForce(EInfclassWeapon::HERO_LASER, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::HERO_GRENADE, GetWeaponForce(EInfclassWeapon::GRENADE));
+	SetWeaponForce(EInfclassWeapon::SNIPER_RIFLE, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::NINJA_KATANA, GetWeaponForce(EInfclassWeapon::NINJA));
+	SetWeaponForce(EInfclassWeapon::NINJA_GRENADE, GetWeaponForce(EInfclassWeapon::GRENADE));
+	SetWeaponForce(EInfclassWeapon::POISON_GRENADE, GetWeaponForce(EInfclassWeapon::GRENADE));
+	SetWeaponForce(EInfclassWeapon::MERCENARY_GUN, GetWeaponForce(EInfclassWeapon::GUN));
+	SetWeaponForce(EInfclassWeapon::MERCENARY_UPGRADE_LASER, 0);
+	SetWeaponForce(EInfclassWeapon::BLINDING_LASER, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::TRANQUILIZER_RIFLE, GetWeaponForce(EInfclassWeapon::LASER));
+
 	SetFireDelay(EInfclassWeapon::NONE, 0);
 	SetFireDelay(EInfclassWeapon::HAMMER, 125);
 	SetFireDelay(EInfclassWeapon::GUN, 125);
@@ -5658,6 +5736,11 @@ void CIcGameController::InitWeapons()
 	SetMaxAmmo(EInfclassWeapon::TRANQUILIZER_RIFLE, 10);
 
 	// Infected weapons
+	SetWeaponForce(EInfclassWeapon::JAWS, GetWeaponForce(EInfclassWeapon::HAMMER));
+	SetWeaponForce(EInfclassWeapon::SLIME, GetWeaponForce(EInfclassWeapon::HAMMER));
+	SetWeaponForce(EInfclassWeapon::INFECTED_HAMMER, GetWeaponForce(EInfclassWeapon::HAMMER));
+	SetWeaponForce(EInfclassWeapon::BOOMER_EXPLOSION, 52);
+
 	SetFireDelay(EInfclassWeapon::JAWS, GetFireDelay(EInfclassWeapon::HAMMER));
 	SetFireDelay(EInfclassWeapon::SLIME, GetFireDelay(EInfclassWeapon::HAMMER));
 	SetFireDelay(EInfclassWeapon::INFECTED_HAMMER, GetFireDelay(EInfclassWeapon::HAMMER));

@@ -6,6 +6,7 @@
 #include <game/server/gamecontext.h>
 
 #include <game/infclass/damage_type.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 #include "bouncing-bullet.h"
 #include "ic_character.h"
@@ -76,9 +77,10 @@ void CBouncingBullet::Tick()
 	if(pTargetChr)
 	{
 		const float Damage = 1.33f;
+		const float Force = GameController()->GetWeaponForce(EInfclassWeapon::RICOCHET_SHOTGUN);
 		if(pTargetChr)
 		{
-			pTargetChr->TakeDamage(m_Direction * 2, Damage, GetOwner(), EDamageType::BIOLOGIST_SHOTGUN);
+			pTargetChr->TakeDamage(m_Direction * Force, Damage, GetOwner(), EDamageType::BIOLOGIST_SHOTGUN);
 		}
 
 		GameWorld()->DestroyEntity(this);

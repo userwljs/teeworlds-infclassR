@@ -689,7 +689,9 @@ void CInfClassHuman::HandleNinja()
 {
 	if(GetPlayerClass() != EPlayerClass::Ninja)
 		return;
-	if(m_pCharacter->GetInfWeaponId(m_pCharacter->GetActiveWeapon()) != EInfclassWeapon::NINJA_KATANA)
+
+	EInfclassWeapon Weapon = m_pCharacter->GetInfWeaponId(m_pCharacter->GetActiveWeapon());
+	if(Weapon != EInfclassWeapon::NINJA_KATANA)
 		return;
 
 	m_pCharacter->m_DartLifeSpan--;
@@ -697,6 +699,7 @@ void CInfClassHuman::HandleNinja()
 	auto &m_DartLifeSpan = m_pCharacter->m_DartLifeSpan;
 	auto &m_DartDir = m_pCharacter->m_DartDir;
 	auto &m_DartOldVelAmount = m_pCharacter->m_DartOldVelAmount;
+	const float Force = GameController()->GetWeaponForce(Weapon);
 
 	if(m_DartLifeSpan == 0)
 	{
@@ -744,7 +747,7 @@ void CInfClassHuman::HandleNinja()
 				// set his velocity to fast upward (for now)
 				m_apHitObjects.Add(pTarget);
 
-				pTarget->TakeDamage(vec2(0, -10.0f), minimum(g_pData->m_Weapons.m_Ninja.m_pBase->m_Damage + m_NinjaExtraDamage, 20), GetCid(), EDamageType::NINJA);
+				pTarget->TakeDamage(vec2(0, -Force), minimum(g_pData->m_Weapons.m_Ninja.m_pBase->m_Damage + m_NinjaExtraDamage, 20), GetCid(), EDamageType::NINJA);
 			}
 		}
 	}
@@ -834,7 +837,8 @@ void CInfClassHuman::OnHammerFired(WeaponFireContext *pFireContext)
 			else
 				Dir = vec2(0.f, -1.f);
 
-			vec2 Force = vec2(0.f, -1.f) + normalize(Dir + vec2(0.f, -1.1f)) * 10.0f;
+			float BaseForce = GameController()->GetWeaponForce(pFireContext->InfClassWeapon);
+			vec2 Force = vec2(0.f, -1.f) + normalize(Dir + vec2(0.f, -1.1f)) * BaseForce;
 
 			int Damage = 20;
 			if(GameController()->GetRoundType() == ERoundType::Survival)
@@ -880,7 +884,7 @@ void CInfClassHuman::OnGunFired(WeaponFireContext *pFireContext)
 		DamageType = EDamageType::MERCENARY_GUN;
 
 	int Damage = 1;
-	float Force = 0;
+	float Force = GameController()->GetWeaponForce(pFireContext->InfClassWeapon);
 	{
 		[[maybe_unused]] CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_GUN,
 			GetCid(),
@@ -912,7 +916,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 	vec2 Direction = GetDirection();
 	vec2 ProjStartPos = GetProjectileStartPos(GetProximityRadius() * 0.75f);
 
-	float Force = 2.0f;
+	float Force = GameController()->GetWeaponForce(pFireContext->InfClassWeapon);
 	float SpreadingValue = 0.07f;
 	int ShotSpread = 3;
 	EDamageType DamageType = EDamageType::SHOTGUN;
@@ -923,7 +927,6 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 		ShotSpread = 1;
 		break;
 	case EPlayerClass::Medic:
-		Force = 10.0f;
 		DamageType = EDamageType::MEDIC_SHOTGUN;
 		break;
 	default:

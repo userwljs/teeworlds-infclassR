@@ -554,7 +554,8 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 			else
 				Dir = vec2(0.f, -1.f);
 
-			vec2 Force = vec2(0.f, -1.f) + normalize(Dir + vec2(0.f, -1.1f)) * 10.0f;
+			float BaseForce = GameController()->GetWeaponForce(pFireContext->InfClassWeapon);
+			vec2 Force = vec2(0.f, -1.f) + normalize(Dir + vec2(0.f, -1.1f)) * BaseForce;
 
 			if(pTarget->IsInfected())
 			{
@@ -686,7 +687,7 @@ void CInfClassInfected::DoBoomerExplosion()
 	float InnerRadius = 60.0f;
 	float DamageRadius = 80.5f;
 	int Damage = 14;
-	float Force = 52;
+	float Force = GameController()->GetWeaponForce(EInfclassWeapon::BOOMER_EXPLOSION);
 
 	bool SlimeExplosion = false;
 	SlimeExplosion = GameController()->GetRoundType() == ERoundType::Survival;

@@ -141,6 +141,9 @@ public:
 	EPlayerClass ChooseHumanClass(const CIcPlayer *pPlayer) const;
 	EPlayerClass ChooseInfectedClass(const CIcPlayer *pPlayer) const;
 
+	float GetWeaponForce(EInfclassWeapon WID) const;
+	void SetWeaponForce(EInfclassWeapon WID, float Force);
+
 	int GetFireDelay(EInfclassWeapon WID) const;
 	void SetFireDelay(EInfclassWeapon WID, int Time);
 
@@ -270,6 +273,7 @@ public:
 	static void ConSetWeaponFireDelay(IConsole::IResult *pResult, void *pUserData);
 	static void ConSetWeaponAmmoRegen(IConsole::IResult *pResult, void *pUserData);
 	static void ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pUserData);
+	static void ConWeaponForce(IConsole::IResult *pResult, void *pUserData);
 	static void ConListWeapons(IConsole::IResult *pResult, void *pUserData);
 
 	static void ConSetClientName(IConsole::IResult *pResult, void *pUserData);
@@ -449,6 +453,7 @@ private:
 	int m_InfAmmoRegenTime[NB_INFWEAPON]{};
 	int m_InfFireDelay[NB_INFWEAPON]{};
 	int m_InfMaxAmmo[NB_INFWEAPON]{};
+	float m_aInfWeaponForce[NB_INFWEAPON]{};
 	static int64_t m_LastTipTime;
 };
 
