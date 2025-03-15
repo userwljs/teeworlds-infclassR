@@ -15,23 +15,20 @@
 int CIcProjectile::EntityId{};
 
 CIcProjectile::CIcProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 Pos, vec2 Dir, int Span,
-		int Damage, bool Explosive, float Force, int SoundImpact, EDamageType DamageType)
-: CIcEntity(pGameContext, EntityId, Pos, Owner)
+	int Damage, float Force, EDamageType DamageType) :
+	CIcEntity(pGameContext, EntityId, Pos, Owner)
 {
 	m_Type = Type;
 	m_Direction = Dir;
 	m_LifeSpan = Span;
 	m_Force = Force;
 	m_Damage = Damage;
-	m_SoundImpact = SoundImpact;
 	m_DamageType = DamageType;
 	m_StartTick = Server()->Tick();
-	m_Explosive = Explosive;
 
 	GameWorld()->InsertEntity(this);
 	
 /* INFECTION MODIFICATION START ***************************************/
-	m_IsFlashGrenade = false;
 	m_StartPos = Pos;
 	m_Weapon = DamageTypeToWeapon(DamageType, &m_TakeDamageMode);
 /* INFECTION MODIFICATION END *****************************************/
@@ -45,7 +42,10 @@ CIcProjectile *CIcProjectile::MakeGrenade(CGameContext *pGameContext, vec2 Pos, 
 		Pos,
 		Direction,
 		(int)(pGameContext->Server()->TickSpeed() * pGameContext->Tuning()->m_GrenadeLifetime),
-		1, true, Force, SOUND_GRENADE_EXPLODE, DamageType);
+		1, Force, DamageType);
+
+	pProj->SetExplosive(true);
+	pProj->SetSoundImpact(SOUND_GRENADE_EXPLODE);
 
 	return pProj;
 }
@@ -96,9 +96,12 @@ void CIcProjectile::Tick()
 	if(TargetChr || Collide || m_LifeSpan < 0 || GameLayerClipped(CurPos))
 	{
 		if(m_LifeSpan >= 0 || (m_Weapon == WEAPON_GRENADE))
-			GameServer()->CreateSound(CurPos, m_SoundImpact);
+		{
+			if(m_SoundImpact.has_value())
+				GameServer()->CreateSound(CurPos, m_SoundImpact.value());
+		}
 
-		if(m_IsFlashGrenade)
+		if(m_FlashRadius)
 		{
 			vec2 Dir = normalize(PrevPos - CurPos);
 			if(length(Dir) > 1.1) Dir = normalize(m_StartPos - CurPos);
@@ -126,7 +129,7 @@ void CIcProjectile::Tick()
 
 		GameWorld()->DestroyEntity(this);
 	}
-	
+
 /* INFECTION MODIFICATION END *****************************************/
 }
 
@@ -158,14 +161,19 @@ void CIcProjectile::Snap(int SnappingClient)
 }
 
 /* INFECTION MODIFICATION START ***************************************/
-void CIcProjectile::FlashGrenade()
-{
-	m_IsFlashGrenade = true;
-}
-
 void CIcProjectile::SetFlashRadius(int Radius)
 {
 	m_FlashRadius = Radius;
+}
+
+void CIcProjectile::SetExplosive(bool Value)
+{
+	m_Explosive = Value;
+}
+
+void CIcProjectile::SetSoundImpact(std::optional<ESound> Sound)
+{
+	m_SoundImpact = Sound;
 }
 
 /* INFECTION MODIFICATION END *****************************************/

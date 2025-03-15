@@ -879,13 +879,15 @@ void CInfClassHuman::OnGunFired(WeaponFireContext *pFireContext)
 	if(GetPlayerClass() == EPlayerClass::Mercenary)
 		DamageType = EDamageType::MERCENARY_GUN;
 
+	int Damage = 1;
+	float Force = 0;
 	{
 		[[maybe_unused]] CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_GUN,
 			GetCid(),
 			ProjStartPos,
 			Direction,
 			(int)(Server()->TickSpeed()*GameServer()->Tuning()->m_GunLifetime),
-			1, 0, 0, -1, DamageType);
+			Damage, Force, DamageType);
 	}
 
 	if(GetPlayerClass() == EPlayerClass::Mercenary)
@@ -954,7 +956,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 				ProjStartPos,
 				Direction,
 				(int)(Server()->TickSpeed() * LifeTime),
-				Damage, false, Force, -1, DamageType);
+				Damage, Force, DamageType);
 		}
 	}
 
@@ -988,7 +990,6 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 
 	if(pFireContext->InfClassWeapon == EInfclassWeapon::NINJA_GRENADE)
 	{
-		pProj->FlashGrenade();
 		pProj->SetFlashRadius(8);
 	}
 
