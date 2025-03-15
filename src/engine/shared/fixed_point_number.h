@@ -13,11 +13,13 @@ public:
 
 	constexpr CFixedPointNumber &operator=(float Value);
 	constexpr operator float() const;
+	static constexpr float MaxValue();
 
 	const char *AsStr() const;
 
 protected:
-	int32_t m_Value = 0;
+	using Underlying = int32_t;
+	Underlying m_Value = 0;
 };
 
 inline constexpr CFixedPointNumber::CFixedPointNumber(float Value)
@@ -34,6 +36,12 @@ inline constexpr CFixedPointNumber &CFixedPointNumber::operator=(float Value)
 inline constexpr CFixedPointNumber::operator float() const
 {
 	return m_Value / 1000.0f;
+}
+
+inline constexpr float CFixedPointNumber::MaxValue()
+{
+	constexpr Underlying v = (std::numeric_limits<Underlying>::max() / 100);
+	return CFixedPointNumber{v / 1000.0f};
 }
 
 #endif // ENGINE_SHARED_FIXED_POINT_NUMBER_H
