@@ -1,5 +1,36 @@
 # Changelog
 
+## InfclassR v1.6.0 - TBD
+
+Balance:
+- Medic rifle now reloads twice as fast if the laser didn't hit any target
+- Medic revival rifle replaced with tranquilizer rifle which puts the hit infected into sleep for 4 seconds
+- Rebalanced Medic scores
+  - Added score for healing with Grenades
+  - Healing with hammer now gives 0.1 score points per HP restored (gave 1 point per complete healing)
+
+Fixes:
+- Fixed `/mute` command was not listed in chat commands (e.g. for autocompletion)
+- Fixed `/mute` didn't work with quotes (e.g. `/mute "nameless tee"` now works as expected)
+- Fixed Merc Bomb hit radius for the upgrading laser was almost twice bigger than it should be
+
+Maintenance:
+- Implemented floating-point config variable type
+- Added `inf_enable_tranquilizer_rifle` (use `0` to re-enable Medic's revival)
+- Added `inf_tranquilizer_dose` (Tranquilier dose per rifle shot (effect duration))
+- Added `inf_sleeper_take_damage_ratio` (`1` by default)
+- Added `inf_undead_freeze_duration` (`10` by default)
+- Added `sv_maps_base_url` for https downloads
+- Added `sv_use_ddnet_skins` (this can break the game for players with "Vanilla skins only" option enabled)
+- Added support for `sv_chat_initial_delay`
+
+Others:
+- Implemented vanilla maps support
+  - Classes menu is disabled
+  - `TILE_DEATH` mapped to `ZONE_DAMAGE_DEATH`
+- Implemented (race) checkpoints tracking
+- The base (unmodded) game now works more or less
+
 ## InfclassR v1.5.3 - 2024-08-27
 Hotfix:
 - Fixed infected player could fire as human during the tick of infection
