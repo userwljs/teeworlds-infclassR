@@ -13,6 +13,8 @@ public:
 	CIcProjectile(CGameContext *pGameContext, int Type, int Owner, vec2 Pos, vec2 Dir, int Span,
 		int Damage, bool Explosive, float Force, int SoundImpact, EDamageType DamageType);
 
+	static CIcProjectile *MakeGrenade(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner, EDamageType DamageType);
+
 	vec2 GetPos(float Time);
 	void FillInfo(CNetObj_Projectile *pProj);
 

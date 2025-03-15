@@ -37,6 +37,19 @@ CIcProjectile::CIcProjectile(CGameContext *pGameContext, int Type, int Owner, ve
 /* INFECTION MODIFICATION END *****************************************/
 }
 
+CIcProjectile *CIcProjectile::MakeGrenade(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner, EDamageType DamageType)
+{
+	float Force = 0;
+	CIcProjectile *pProj = new CIcProjectile(pGameContext, WEAPON_GRENADE,
+		Owner,
+		Pos,
+		Direction,
+		(int)(pGameContext->Server()->TickSpeed() * pGameContext->Tuning()->m_GrenadeLifetime),
+		1, true, Force, SOUND_GRENADE_EXPLODE, DamageType);
+
+	return pProj;
+}
+
 vec2 CIcProjectile::GetPos(float Time)
 {
 	float Curvature = 0;

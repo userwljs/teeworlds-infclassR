@@ -984,14 +984,9 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 
 	vec2 Direction = GetDirection();
 	vec2 ProjStartPos = GetPos() + Direction * GetProximityRadius() * 0.75f;
-	CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_GRENADE,
-		GetCid(),
-		ProjStartPos,
-		Direction,
-		(int)(Server()->TickSpeed() * GameServer()->Tuning()->m_GrenadeLifetime),
-		1, true, 0, SOUND_GRENADE_EXPLODE, EDamageType::GRENADE);
+	CIcProjectile *pProj = CIcProjectile::MakeGrenade(GameContext(), ProjStartPos, Direction, GetCid(), EDamageType::GRENADE);
 
-	if(GetPlayerClass() == EPlayerClass::Ninja)
+	if(pFireContext->InfClassWeapon == EInfclassWeapon::NINJA_GRENADE)
 	{
 		pProj->FlashGrenade();
 		pProj->SetFlashRadius(8);
