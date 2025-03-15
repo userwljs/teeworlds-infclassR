@@ -106,7 +106,7 @@ void CIcProjectile::Tick()
 			vec2 Dir = normalize(PrevPos - CurPos);
 			if(length(Dir) > 1.1) Dir = normalize(m_StartPos - CurPos);
 			
-			new CGrowingExplosion(GameServer(), CurPos, Dir, GetOwner(), m_FlashRadius, EDamageType::STUNNING_GRENADE);
+			new CGrowingExplosion(GameServer(), CurPos, Dir, GetOwner(), m_FlashRadius, m_DamageType);
 		}
 		else if(m_Explosive)
 		{
