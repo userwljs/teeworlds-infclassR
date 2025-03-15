@@ -1474,24 +1474,35 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("santa", "", CFGFLAG_CHAT, ChatWitch, this, "Call the Santa");
 }
 
+EInfclassWeapon CIcGameController::GetWeaponIdFromConArgument(IConsole::IResult *pResult, unsigned int Index)
+{
+	const int WeaponIdInt = pResult->GetInteger(Index);
+	if((WeaponIdInt >= 0) && (WeaponIdInt < NB_INFWEAPON))
+	{
+		return static_cast<EInfclassWeapon>(WeaponIdInt);
+	}
+	return EInfclassWeapon::Invalid;
+}
+
 void CIcGameController::ConSetWeaponFireDelay(IConsole::IResult *pResult, void *pUserData)
 {
 	CIcGameController *pSelf = (CIcGameController *)pUserData;
 	if(pResult->NumArguments() != 2)
 		return;
 
-	int WeaponId = pResult->GetInteger(0);
-	if((WeaponId < 0) || (WeaponId >= NB_INFWEAPON))
+	EInfclassWeapon WeaponId = GetWeaponIdFromConArgument(pResult, 0);
+	if (WeaponId == EInfclassWeapon::Invalid)
 	{
 		return;
 	}
+
 	int Interval = pResult->GetInteger(1);
 	if(Interval < 0)
 	{
 		return;
 	}
 
-	pSelf->SetFireDelay(static_cast<EInfclassWeapon>(WeaponId), Interval);
+	pSelf->SetFireDelay(WeaponId, Interval);
 }
 
 void CIcGameController::ConSetWeaponAmmoRegen(IConsole::IResult *pResult, void *pUserData)
@@ -1500,18 +1511,19 @@ void CIcGameController::ConSetWeaponAmmoRegen(IConsole::IResult *pResult, void *
 	if(pResult->NumArguments() != 2)
 		return;
 
-	int WeaponId = pResult->GetInteger(0);
-	if((WeaponId < 0) || (WeaponId >= NB_INFWEAPON))
+	EInfclassWeapon WeaponId = GetWeaponIdFromConArgument(pResult, 0);
+	if (WeaponId == EInfclassWeapon::Invalid)
 	{
 		return;
 	}
+
 	int Interval = pResult->GetInteger(1);
 	if(Interval < 0)
 	{
 		return;
 	}
 
-	pSelf->SetAmmoRegenTime(static_cast<EInfclassWeapon>(WeaponId), Interval);
+	pSelf->SetAmmoRegenTime(WeaponId, Interval);
 
 	return;
 }
@@ -1522,8 +1534,8 @@ void CIcGameController::ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pU
 	if(pResult->NumArguments() != 2)
 		return;
 
-	int WeaponId = pResult->GetInteger(0);
-	if((WeaponId < 0) || (WeaponId >= NB_INFWEAPON))
+	EInfclassWeapon WeaponId = GetWeaponIdFromConArgument(pResult, 0);
+	if (WeaponId == EInfclassWeapon::Invalid)
 	{
 		return;
 	}
@@ -1533,7 +1545,7 @@ void CIcGameController::ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pU
 		return;
 	}
 
-	pSelf->SetMaxAmmo(static_cast<EInfclassWeapon>(WeaponId), Interval);
+	pSelf->SetMaxAmmo(WeaponId, Interval);
 }
 
 void CIcGameController::ConRestoreClientName(IConsole::IResult *pResult, void *pUserData)

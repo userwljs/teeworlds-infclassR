@@ -260,6 +260,7 @@ public:
 
 	void RegisterChatCommands(IConsole *pConsole) override;
 
+	static EInfclassWeapon GetWeaponIdFromConArgument(IConsole::IResult *pResult, unsigned Index);
 	static void ConSetWeaponFireDelay(IConsole::IResult *pResult, void *pUserData);
 	static void ConSetWeaponAmmoRegen(IConsole::IResult *pResult, void *pUserData);
 	static void ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pUserData);
