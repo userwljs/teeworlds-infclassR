@@ -1436,11 +1436,11 @@ void CIcGameController::SetPlayerInfected(int ClientId, bool Infected)
 
 void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 {
-	Console()->Register("inf_set_weapon_fire_delay", "i[weapon] i[msec]", CFGFLAG_SERVER, ConSetWeaponFireDelay, this,
+	Console()->Register("inf_set_weapon_fire_delay", "s[weapon] i[msec]", CFGFLAG_SERVER, ConSetWeaponFireDelay, this,
 		"Set InfClass weapon fire delay");
-	Console()->Register("inf_set_weapon_ammo_regen", "i[weapon] i[msec]", CFGFLAG_SERVER, ConSetWeaponAmmoRegen, this,
+	Console()->Register("inf_set_weapon_ammo_regen", "s[weapon] i[msec]", CFGFLAG_SERVER, ConSetWeaponAmmoRegen, this,
 		"Set InfClass weapon ammo regen interval");
-	Console()->Register("inf_set_weapon_max_ammo", "i[weapon] i[ammo]", CFGFLAG_SERVER, ConSetWeaponMaxAmmo, this,
+	Console()->Register("inf_set_weapon_max_ammo", "s[weapon] i[ammo]", CFGFLAG_SERVER, ConSetWeaponMaxAmmo, this,
 		"Set InfClass weapon max ammo");
 
 	pConsole->Register("restore_client_name", "i[ClientId]", CFGFLAG_SERVER, ConRestoreClientName, this, "Set the name of a player");
@@ -1490,12 +1490,18 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 
 EInfclassWeapon CIcGameController::GetWeaponIdFromConArgument(IConsole::IResult *pResult, unsigned int Index)
 {
-	const int WeaponIdInt = pResult->GetInteger(Index);
-	if((WeaponIdInt >= 0) && (WeaponIdInt < NB_INFWEAPON))
+	EInfclassWeapon WeaponId = fromString<EInfclassWeapon>(pResult->GetString(Index));
+	if (WeaponId == EInfclassWeapon::Invalid)
 	{
-		return static_cast<EInfclassWeapon>(WeaponIdInt);
+		// Fallback to old index-based setup
+		const int WeaponIdInt = pResult->GetInteger(Index);
+		if((WeaponIdInt >= 0) && (WeaponIdInt < NB_INFWEAPON))
+		{
+			WeaponId = static_cast<EInfclassWeapon>(WeaponIdInt);
+		}
 	}
-	return EInfclassWeapon::Invalid;
+
+	return WeaponId;
 }
 
 void CIcGameController::ConSetWeaponFireDelay(IConsole::IResult *pResult, void *pUserData)
