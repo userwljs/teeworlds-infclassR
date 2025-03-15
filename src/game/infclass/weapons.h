@@ -65,4 +65,5 @@ enum class EWeaponClass
 	SELF_EXPLOSION,
 };
 
+const char *toString(EInfclassWeapon Weapon);
 EWeaponClass GetWeaponClassById(EInfclassWeapon Weapon);
