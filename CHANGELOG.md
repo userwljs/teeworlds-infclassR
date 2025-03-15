@@ -3,6 +3,7 @@
 ## InfclassR v1.6.0 - TBD
 
 Balance:
+- Medic shotgun force changed from 10 to 6
 - Medic rifle now reloads twice as fast if the laser didn't hit any target
 - Medic revival rifle replaced with tranquilizer rifle which puts the hit infected into sleep for 4 seconds
 - Rebalanced Medic scores

@@ -5627,7 +5627,7 @@ void CIcGameController::InitWeapons()
 	SetWeaponForce(EInfclassWeapon::TELEPORT_GUN, GetWeaponForce(EInfclassWeapon::GRENADE));
 	SetWeaponForce(EInfclassWeapon::HEALING_GRENADE, GetWeaponForce(EInfclassWeapon::GRENADE));
 	SetWeaponForce(EInfclassWeapon::MEDIC_LASER, GetWeaponForce(EInfclassWeapon::LASER));
-	SetWeaponForce(EInfclassWeapon::MEDIC_SHOTGUN, 10);
+	SetWeaponForce(EInfclassWeapon::MEDIC_SHOTGUN, 6);
 	SetWeaponForce(EInfclassWeapon::HERO_SHOTGUN, GetWeaponForce(EInfclassWeapon::SHOTGUN));
 	SetWeaponForce(EInfclassWeapon::RICOCHET_SHOTGUN, GetWeaponForce(EInfclassWeapon::SHOTGUN));
 	SetWeaponForce(EInfclassWeapon::BIOLOGIST_MINE_LASER, GetWeaponForce(EInfclassWeapon::LASER));
