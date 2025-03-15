@@ -20,6 +20,8 @@ Maintenance:
 - Added `inf_tranquilizer_dose` (Tranquilier dose per rifle shot (effect duration))
 - Added `inf_sleeper_take_damage_ratio` (`1` by default)
 - Added `inf_undead_freeze_duration` (`10` by default)
+- Added `inf_list_weapons` RCON command
+- `inf_set_weapon_fire_delay`, `inf_set_weapon_ammo_regen`, `inf_set_weapon_max_ammo` now accepts weapon names
 - Added `sv_maps_base_url` for https downloads
 - Added `sv_use_ddnet_skins` (this can break the game for players with "Vanilla skins only" option enabled)
 - Added support for `sv_chat_initial_delay`

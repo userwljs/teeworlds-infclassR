@@ -95,6 +95,8 @@ public:
 	void *m_pArg1Value{};
 };
 
+static const char gs_aInvalidWeaponIdMsg[] = "Invalid weapon id."
+											 " Use 'inf_list_weapons' to get the list of the available weapons.";
 static const CHintMessage gs_aHintMessages[] = {
 	_("Taxi prevents ammo regeneration for all passengers."),
 	_("Choosing a random class grants full armor."),
@@ -1442,6 +1444,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 		"Set InfClass weapon ammo regen interval");
 	Console()->Register("inf_set_weapon_max_ammo", "s[weapon] i[ammo]", CFGFLAG_SERVER, ConSetWeaponMaxAmmo, this,
 		"Set InfClass weapon max ammo");
+	Console()->Register("inf_list_weapons", "", CFGFLAG_SERVER, ConListWeapons, this, "List InfClass weapon names");
 
 	pConsole->Register("restore_client_name", "i[ClientId]", CFGFLAG_SERVER, ConRestoreClientName, this, "Set the name of a player");
 	pConsole->Register("set_client_name", "i[ClientId] r[name]", CFGFLAG_SERVER, ConSetClientName, this, "Set the name of a player (and also lock it)");
@@ -1513,6 +1516,7 @@ void CIcGameController::ConSetWeaponFireDelay(IConsole::IResult *pResult, void *
 	EInfclassWeapon WeaponId = GetWeaponIdFromConArgument(pResult, 0);
 	if (WeaponId == EInfclassWeapon::Invalid)
 	{
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", gs_aInvalidWeaponIdMsg);
 		return;
 	}
 
@@ -1534,6 +1538,7 @@ void CIcGameController::ConSetWeaponAmmoRegen(IConsole::IResult *pResult, void *
 	EInfclassWeapon WeaponId = GetWeaponIdFromConArgument(pResult, 0);
 	if (WeaponId == EInfclassWeapon::Invalid)
 	{
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", gs_aInvalidWeaponIdMsg);
 		return;
 	}
 
@@ -1557,6 +1562,7 @@ void CIcGameController::ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pU
 	EInfclassWeapon WeaponId = GetWeaponIdFromConArgument(pResult, 0);
 	if (WeaponId == EInfclassWeapon::Invalid)
 	{
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", gs_aInvalidWeaponIdMsg);
 		return;
 	}
 	int Interval = pResult->GetInteger(1);
@@ -1566,6 +1572,36 @@ void CIcGameController::ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pU
 	}
 
 	pSelf->SetMaxAmmo(WeaponId, Interval);
+}
+
+void CIcGameController::ConListWeapons(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+
+	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", "Available weapons:");
+	std::string line;
+	std::size_t WeaponIndex = 0;
+	bool LastWeaponProcessed{};
+	do
+	{
+		line = "    ";
+		for(;; ++WeaponIndex)
+		{
+			LastWeaponProcessed = WeaponIndex + 1 == NB_INFWEAPON;
+			EInfclassWeapon WeaponId = static_cast<EInfclassWeapon>(WeaponIndex);
+			line += toString(WeaponId);
+			if(LastWeaponProcessed)
+				break;
+
+			line += ", ";
+			if(line.size() > 80)
+			{
+				break;
+			}
+		}
+
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", line.c_str());
+	} while(!LastWeaponProcessed);
 }
 
 void CIcGameController::ConRestoreClientName(IConsole::IResult *pResult, void *pUserData)

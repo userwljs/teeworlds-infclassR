@@ -270,6 +270,7 @@ public:
 	static void ConSetWeaponFireDelay(IConsole::IResult *pResult, void *pUserData);
 	static void ConSetWeaponAmmoRegen(IConsole::IResult *pResult, void *pUserData);
 	static void ConSetWeaponMaxAmmo(IConsole::IResult *pResult, void *pUserData);
+	static void ConListWeapons(IConsole::IResult *pResult, void *pUserData);
 
 	static void ConSetClientName(IConsole::IResult *pResult, void *pUserData);
 	static void ConRestoreClientName(IConsole::IResult *pResult, void *pUserData);
