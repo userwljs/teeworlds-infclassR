@@ -879,9 +879,13 @@ void CInfClassHuman::OnGunFired(WeaponFireContext *pFireContext)
 	vec2 ProjStartPos = GetProjectileStartPos(GetProximityRadius() * 0.75f);
 
 	EDamageType DamageType = EDamageType::GUN;
-	
-	if(GetPlayerClass() == EPlayerClass::Mercenary)
+	ESound FireSound = SOUND_GUN_FIRE;
+
+	if(pFireContext->InfClassWeapon == EInfclassWeapon::MERCENARY_GUN)
+	{
 		DamageType = EDamageType::MERCENARY_GUN;
+		FireSound = SOUND_HOOK_LOOP;
+	}
 
 	int Damage = 1;
 	float Force = GameController()->GetWeaponForce(pFireContext->InfClassWeapon);
@@ -894,25 +898,21 @@ void CInfClassHuman::OnGunFired(WeaponFireContext *pFireContext)
 			Damage, Force, DamageType);
 	}
 
-	if(GetPlayerClass() == EPlayerClass::Mercenary)
+	if(pFireContext->InfClassWeapon == EInfclassWeapon::MERCENARY_GUN)
 	{
 		float MaxSpeed = GameServer()->Tuning()->m_GroundControlSpeed * 1.7f;
 		vec2 Recoil = Direction * (-MaxSpeed / 5.0f);
 		m_pCharacter->SaturateVelocity(Recoil, MaxSpeed);
+	}
 
-		GameServer()->CreateSound(GetPos(), SOUND_HOOK_LOOP);
-	}
-	else
-	{
-		GameServer()->CreateSound(GetPos(), SOUND_GUN_FIRE);
-	}
+	GameServer()->CreateSound(GetPos(), FireSound);
 }
 
 void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 {
 	if(pFireContext->NoAmmo)
 		return;
-	
+
 	vec2 Direction = GetDirection();
 	vec2 ProjStartPos = GetProjectileStartPos(GetProximityRadius() * 0.75f);
 
@@ -921,12 +921,12 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 	int ShotSpread = 3;
 	EDamageType DamageType = EDamageType::SHOTGUN;
 
-	switch(GetPlayerClass())
+	switch(pFireContext->InfClassWeapon)
 	{
-	case EPlayerClass::Biologist:
+	case EInfclassWeapon::RICOCHET_SHOTGUN:
 		ShotSpread = 1;
 		break;
-	case EPlayerClass::Medic:
+	case EInfclassWeapon::MEDIC_SHOTGUN:
 		DamageType = EDamageType::MEDIC_SHOTGUN;
 		break;
 	default:
@@ -944,7 +944,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 
 		float LifeTime = GameServer()->Tuning()->m_ShotgunLifetime + 0.1f * static_cast<float>(pFireContext->AmmoAvailable)/10.0f;
 
-		if(GetPlayerClass() == EPlayerClass::Biologist)
+		if(pFireContext->InfClassWeapon == EInfclassWeapon::RICOCHET_SHOTGUN)
 		{
 			[[maybe_unused]] CBouncingBullet *pProj = new CBouncingBullet(GameServer(),
 				GetCid(),
