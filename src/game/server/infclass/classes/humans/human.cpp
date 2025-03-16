@@ -614,12 +614,9 @@ void CInfClassHuman::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext
 		{
 			OnNinjaTargetKiller(Assisted);
 		}
-		if(GameController()->GetRoundType() == ERoundType::Survival)
+		if(Context.DamageType == EDamageType::NINJA)
 		{
-			if(Context.DamageType == EDamageType::NINJA)
-			{
-				m_pCharacter->Heal(1);
-			}
+			m_pCharacter->Heal(1);
 		}
 		break;
 	case EPlayerClass::Medic:
@@ -1599,15 +1596,11 @@ void CInfClassHuman::OnNinjaTargetKiller(bool Assisted)
 	if(m_pCharacter)
 	{
 		GiveNinjaBuf();
-
-		if(!Assisted)
-		{
-			m_pCharacter->Heal(4);
-		}
 	}
 
 	int PlayerCounter = Server()->GetActivePlayerCount();
-	int CooldownTicks = Server()->TickSpeed()*(10 + 3 * maximum(0, 16 - PlayerCounter));
+	int CooldownTicks = Server()->TickSpeed() * (10 + 3 * maximum(0, 16 - PlayerCounter));
+
 	m_NinjaTargetCid = -1;
 	m_NinjaTargetTick = Server()->Tick() + CooldownTicks;
 }
