@@ -28,7 +28,7 @@ public:
 protected:
 	EDamageType GetDamageType() const;
 
-	virtual bool HitCharacter(vec2 From, vec2 To);
+	virtual bool HitTarget(vec2 From, vec2 To);
 	virtual bool OnCharacterHit(CIcCharacter *pHit);
 
 protected:

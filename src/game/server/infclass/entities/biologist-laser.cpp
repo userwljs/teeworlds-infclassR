@@ -16,7 +16,7 @@ CBiologistLaser::CBiologistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Dire
 	DoBounce();
 }
 
-bool CBiologistLaser::HitCharacter(vec2 From, vec2 To)
+bool CBiologistLaser::HitTarget(vec2 From, vec2 To)
 {
 	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{

@@ -19,7 +19,7 @@ CMercenaryLaser::CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Dire
 	CIcLaser::DoBounce();
 }
 
-bool CMercenaryLaser::HitCharacter(vec2 From, vec2 To)
+bool CMercenaryLaser::HitTarget(vec2 From, vec2 To)
 {
 	CMercenaryBomb *pCurrentBomb = nullptr;
 	for(TEntityPtr<CMercenaryBomb> pBomb = GameWorld()->FindFirst<CMercenaryBomb>(); pBomb; ++pBomb)

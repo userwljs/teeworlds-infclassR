@@ -38,7 +38,7 @@ void CScientistLaser::DoBounce()
 
 	if(GameServer()->Collision()->IntersectLineWeapon(m_Pos, To, 0x0, &To))
 	{
-		if(!HitCharacter(m_Pos, To))
+		if(!HitTarget(m_Pos, To))
 		{
 			m_From = m_Pos;
 			m_Pos = To;
@@ -47,7 +47,7 @@ void CScientistLaser::DoBounce()
 	}
 	else
 	{
-		if(!HitCharacter(m_Pos, To))
+		if(!HitTarget(m_Pos, To))
 		{
 			m_From = m_Pos;
 			m_Pos = To;

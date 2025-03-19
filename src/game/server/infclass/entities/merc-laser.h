@@ -10,7 +10,7 @@ class CMercenaryLaser final : public CIcLaser
 public:
 	CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, float UpgradePoints);
 
-	bool HitCharacter(vec2 From, vec2 To) override;
+	bool HitTarget(vec2 From, vec2 To) override;
 	void DoBounce() override;
 
 protected:

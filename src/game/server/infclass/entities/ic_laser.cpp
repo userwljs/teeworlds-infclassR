@@ -23,7 +23,7 @@ CIcLaser::CIcLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float S
 	GameWorld()->InsertEntity(this);
 }
 
-bool CIcLaser::HitCharacter(vec2 From, vec2 To)
+bool CIcLaser::HitTarget(vec2 From, vec2 To)
 {
 	vec2 At;
 	CIcCharacter *pOwnerChar = GameController()->GetCharacter(GetOwner());
@@ -74,7 +74,7 @@ void CIcLaser::DoBounce()
 
 	if(GameServer()->Collision()->IntersectLineWeapon(m_Pos, To, 0x0, &To))
 	{
-		if(!HitCharacter(m_Pos, To))
+		if(!HitTarget(m_Pos, To))
 		{
 			// intersected
 			m_From = m_Pos;
@@ -98,7 +98,7 @@ void CIcLaser::DoBounce()
 	}
 	else
 	{
-		if(!HitCharacter(m_Pos, To))
+		if(!HitTarget(m_Pos, To))
 		{
 			m_From = m_Pos;
 			m_Pos = To;

@@ -11,7 +11,7 @@ public:
 	CBiologistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner, int Dmg);
 
 protected:
-	bool HitCharacter(vec2 From, vec2 To) final;
+	bool HitTarget(vec2 From, vec2 To) final;
 };
 
 #endif
