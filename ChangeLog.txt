@@ -1,3 +1,15 @@
+InfclassR v1.6.0_alpha2
+- Ninja now gains 1HP per killed infected
+- Removed Ninja +4HP gain on target killed
+- Medic shotgun force reduced by 40% (from 10 to 6)
+- Medic rifle now reloads twice as fast if the laser didn't hit any target
+- Medic revival rifle replaced with tranquilizer rifle
+  which puts the hit infected into sleep for 4 seconds
+- Rebalanced Medic scores
+- Fixed MercBomb laser hit radius
+- Fixed `/mute` command was not listed in chat commands
+- Fixed `/mute` didn't work with quotes
+
 InfclassR v1.5.0_alpha8
 - Fixed Ghost kept invisible on some actions
 - Scientist white hole spawning and final explosion now does not push the owner
