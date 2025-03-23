@@ -58,6 +58,8 @@ bool CMedicLaser::OnCharacterHit(CIcCharacter *pHit)
 			return true;
 		}
 		pHit->PutToSleep(EffectDuration, GetOwner());
+		float DeepSleepDuration = std::min<float>(0.5f, EffectDuration);
+		pHit->PutToDeepSleep(DeepSleepDuration, GetOwner());
 		return true;
 	}
 
