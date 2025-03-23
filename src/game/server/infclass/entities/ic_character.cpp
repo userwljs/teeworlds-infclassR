@@ -271,14 +271,23 @@ void CIcCharacter::Tick()
 
 	CCharacter::Tick();
 
-	if(m_SleepingTicks > 0)
+	int SleepTicks = std::max(m_SleepTicks, m_DeepSleepTicks);
+	if(SleepTicks > 0)
 	{
-		--m_SleepingTicks;
-		int EffectSec = 1 + (m_SleepingTicks / Server()->TickSpeed());
+		int EffectSec = 1 + (SleepTicks / Server()->TickSpeed());
 		GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE, BROADCAST_DURATION_REALTIME,
 			_("You are sleeping: {sec:EffectDuration}"),
 			"EffectDuration", &EffectSec,
 			nullptr);
+
+		for(int *pEffectTicks : {&m_SleepTicks, &m_DeepSleepTicks})
+		{
+			int &EffectTicks = *pEffectTicks;
+			if(EffectTicks > 0)
+			{
+				--EffectTicks;
+			}
+		}
 	}
 	else if(m_BlindnessTicks > 0)
 	{
@@ -353,7 +362,7 @@ void CIcCharacter::TickDeferred()
 
 	if(IsSleeping() && !m_Core.m_AttachedPlayers.empty())
 	{
-		CancelSleeping(*m_Core.m_AttachedPlayers.begin());
+		CancelSleep(*m_Core.m_AttachedPlayers.begin());
 	}
 }
 
@@ -666,14 +675,14 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		if(DamageIsPhysical)
 		{
 			FloatDmg *= Config()->m_InfSleeperTakeDamageRatio;
-			CancelSleeping(From);
+			CancelSleep(From);
 		}
 		else
 		{
 			const int MaxTicks = Server()->TickSpeed() * 3.0f;
-			if(m_SleepingTicks > MaxTicks)
+			if(m_SleepTicks > MaxTicks)
 			{
-				m_SleepingTicks = MaxTicks;
+				m_SleepTicks = MaxTicks;
 			}
 		}
 	}
@@ -1089,16 +1098,33 @@ void CIcCharacter::CancelLoveEffect()
 void CIcCharacter::PutToSleep(float Duration, std::optional<int> FromCid)
 {
 	int NewTicks = Server()->TickSpeed() * Duration;
-	if (NewTicks > m_SleepingTicks)
+	if(NewTicks > m_SleepTicks)
 	{
-		m_SleepingTicks = NewTicks;
+		m_SleepTicks = NewTicks;
 		m_PutToSleepBy = FromCid;
 	}
 }
 
-void CIcCharacter::CancelSleeping(std::optional<int> ByCid)
+void CIcCharacter::PutToDeepSleep(float Duration, std::optional<int> FromCid)
 {
-	m_SleepingTicks = 0;
+	int NewTicks = Server()->TickSpeed() * Duration;
+	if(NewTicks > m_DeepSleepTicks)
+	{
+		m_DeepSleepTicks = NewTicks;
+		m_PutToDeepSleepBy = FromCid;
+	}
+}
+
+void CIcCharacter::CancelSleep(std::optional<int> ByCid)
+{
+	m_SleepTicks = 0;
+	m_PutToSleepBy.reset();
+}
+
+void CIcCharacter::CancelDeepSleep(std::optional<int> ByCid)
+{
+	m_DeepSleepTicks = 0;
+	m_PutToDeepSleepBy.reset();
 }
 
 bool CIcCharacter::IsInSlowMotion() const
