@@ -468,6 +468,7 @@ void CIcGameController::OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType
 		str_copy(pScore->aPlayerName, Server()->ClientName(pPlayer->GetCid()));
 		pScore->ClientId = -1;
 		pScore->Kills = pPlayer->GetKills();
+		pScore->Assists = pPlayer->GetAssists();
 	}
 	m_SurvivalState.SurvivedPlayers.RemoveOne(pPlayer->GetCid());
 	m_SurvivalState.KilledPlayers.RemoveOne(pPlayer->GetCid());
@@ -1214,11 +1215,12 @@ void CIcGameController::EndSurvivalGame()
 
 		CIcPlayer *pPlayer = GetPlayer(Score.ClientId);
 		Score.Kills = pPlayer->GetKills();
+		Score.Assists = pPlayer->GetAssists();
 		str_copy(Score.aPlayerName, Server()->ClientName(pPlayer->GetCid()));
 	}
 
 	const auto Sorter = [](const PlayerScore &s1, const PlayerScore &s2) -> bool {
-		return s1.Kills > s2.Kills;
+		return s1.GetScore() > s2.GetScore();
 	};
 
 	std::stable_sort(m_SurvivalState.Scores.begin(), m_SurvivalState.Scores.end(), Sorter);
@@ -1226,14 +1228,15 @@ void CIcGameController::EndSurvivalGame()
 	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Score", nullptr);
 	for(const PlayerScore &Score : m_SurvivalState.Scores)
 	{
+		int ScoreValue = Score.GetScore();
 		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "- {str:PlayerName}: {int:Score}",
 			"PlayerName", Score.aPlayerName,
-			"Score", &Score.Kills,
+			"Score", &ScoreValue,
 			nullptr);
 	}
 	int Score = m_SurvivalState.Kills;
-	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Total team score: {int:Score}",
-		"Score", &Score,
+	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Total team kills: {int:Kills}",
+		"Kills", &Score,
 		nullptr);
 
 	if(m_BestSurvivalScore)

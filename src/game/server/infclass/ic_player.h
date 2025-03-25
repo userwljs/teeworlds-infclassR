@@ -140,6 +140,7 @@ public:
 	void ApplyMaxHP();
 
 	int GetKills() const { return m_Kills; }
+	int GetAssists() const { return m_Assists; }
 	int GetDeaths() const { return m_Deaths; }
 
 	virtual void OnCharacterHPChanged(){};

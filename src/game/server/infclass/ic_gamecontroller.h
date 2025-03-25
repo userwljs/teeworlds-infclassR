@@ -516,9 +516,15 @@ private:
 
 	struct PlayerScore
 	{
-		char aPlayerName[MAX_NAME_LENGTH];
-		int Kills;
-		int ClientId;
+		char aPlayerName[MAX_NAME_LENGTH]{};
+		uint32_t Kills{};
+		uint32_t Assists{};
+		int ClientId{};
+
+		uint32_t GetScore() const
+		{
+			return Kills + Assists / 2;
+		}
 	};
 
 	struct
