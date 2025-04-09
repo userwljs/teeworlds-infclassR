@@ -705,7 +705,7 @@ void CInfClassInfected::DoBoomerExplosion()
 	CIcCharacter *pBestBFTarget = nullptr;
 
 	const int SlimeDamage = Config()->m_InfSlimePoisonDamage;
-	const float SlimeDamageInterval = 1.25f;
+	const float SlimeDamageInterval = Config()->m_InfSlimePoisonInterval;
 
 	{
 		CIcCharacter *apEnts[MAX_CLIENTS];
