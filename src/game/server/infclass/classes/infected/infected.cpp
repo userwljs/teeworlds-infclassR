@@ -690,7 +690,11 @@ void CInfClassInfected::DoBoomerExplosion()
 	float Force = GameController()->GetWeaponForce(EInfclassWeapon::BOOMER_EXPLOSION);
 
 	bool SlimeExplosion = false;
-	SlimeExplosion = GameController()->GetRoundType() == ERoundType::Survival;
+	if(GameController()->GetRoundType() == ERoundType::Survival)
+	{
+		SlimeExplosion = true;
+		Damage = 10;
+	}
 
 	if(SlimeExplosion)
 	{
