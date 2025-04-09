@@ -314,6 +314,15 @@ void CIcCharacter::Tick()
 				GameServer()->CreateDeath(GetPos(), m_PoisonFrom);
 			}
 		}
+		else if(m_PoisonEffectInterval > 1.0)
+		{
+			int DeathEventsPerInterval = std::ceil(m_PoisonEffectInterval);
+			int DeathEventsTicks = Server()->TickSpeed() * m_PoisonEffectInterval / DeathEventsPerInterval;
+			if ((CurrentTick - m_PoisonTick) % DeathEventsTicks == 0)
+			{
+				GameServer()->CreateDeath(GetPos(), m_PoisonFrom);
+			}
+		}
 	}
 
 	if(m_LastHelper.m_Tick > 0)
