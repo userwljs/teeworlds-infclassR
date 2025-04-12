@@ -6,24 +6,54 @@
 Submod.SurvivalGame = "survival"
 active_submod = Submod.SurvivalGame
 
+DebugLevel1 = 1
+
+function dbg_msg(level, text)
+    if debug_messages_target ~= nil then
+        Game.Context:SendChatTarget(debug_messages_target, string.format("Lua: %s", text))
+    end
+end
+
 function add_tweak(bot_conf, tweak)
     local tweaks = bot_conf:GetTweaks()
     tweaks:Add(tweak)
 end
 
-survival_difficulty_level = 0
-survival_allow_extra_players = 0
-survival_max_players = 0
-survival_players = 0
-survival_current_wave = 0
-survival_hp_multiplier = 1
-survival_max_drop_level = 2
+function get_seen_enemy_seconds_ago(player_id)
+    local bot_player = Game.Controller:GetBot(player_id)
+    if bot_player == nil then
+        return 1000
+    end
+    local tick = bot_player.LastSeenTargetAtTick
+    if tick == nil then
+        return 1000
+    end
+    local current_tick = Game.Server.Tick
+    return (current_tick - tick) / 50
+end
 
-survival_default_tweaks = nil
+if Survival_game_initialized == nil then
+    Survival_game_initialized = true
 
-OldConfig = {}
+    survival_difficulty_level = 0
+    survival_allow_extra_players = 0
+    survival_max_players = 0
+    survival_players = 0
+    Survival_current_wave = 0
+    survival_hp_multiplier = 1
+    survival_max_drop_level = 2
+    Survival_witch_id = nil
+    Survival_witch_spawned_waves = 0
+    Survival_witch_next_check_time = nil
 
-Survival_spawn_zones = nil
+    survival_default_tweaks = nil
+
+    Survival_tag_witch = "witch"
+
+    OldConfig = {}
+
+    Survival_spawn_zones = nil
+end
 
 ---@return SurvivalBotConfiguration
 function add_bot_with_tweaks(wave, player_class)
@@ -49,6 +79,18 @@ end
 function add_boss_infected(wave, player_class)
     local bot_conf = Game.Controller:SurvivalAddBot(wave, player_class)
     bot_conf.Tag = "boss"
+    bot_conf.Lives = 1
+    return bot_conf
+end
+
+---@param wave number
+---@param player_class string
+---@param witch_id number
+---@return SurvivalBotConfiguration
+function add_witch_infected(wave, player_class, witch_id)
+    local bot_conf = add_bot_with_tweaks(wave, player_class)
+    bot_conf.HP = 10 * survival_hp_multiplier
+    bot_conf.SpawnWitchId = witch_id
     bot_conf.Lives = 1
     return bot_conf
 end
@@ -152,7 +194,7 @@ function setup_wave2()
     end
 
     bot_conf = add_boss_infected(wave, "spider")
-    bot_conf.SpawnSecond = 25
+    bot_conf.SpawnSecond = 25 - survival_difficulty_level
 
     local boss_hp = {60, 80, 120, 180, 240, 240}
 
@@ -160,6 +202,7 @@ function setup_wave2()
     bot_conf.DropLevel = 1
     add_tweak(bot_conf, "threat-aware")
     add_tweak(bot_conf, "strong-hook")
+    add_tweak(bot_conf, "can-flee")
 end
 
 function setup_wave3()
@@ -244,9 +287,10 @@ function setup_wave4()
 
     bot_conf = add_boss_infected(wave, "witch")
     bot_conf.SpawnSecond = 20
-    local boss_hp = {120, 160, 220, 280, 320, 360}
+    local boss_hp = {80, 120, 180, 240, 300, 360}
     bot_conf.HP = boss_hp[survival_difficulty_level] * survival_hp_multiplier
     bot_conf.DropLevel = 2
+    bot_conf.Tag = Survival_tag_witch
     add_tweak(bot_conf, "threat-aware")
 
     if survival_difficulty_level > 1 then
@@ -327,10 +371,29 @@ function setup_wave6()
     local wave = 6
     local bot_conf = nil
 
-    for i = 1,4 do
+    local set_zone = do_nothing
+
+    if Survival_spawn_zones ~= nil then
+        local zones_count = table.getn(Survival_spawn_zones)
+
+        local zone = Survival_spawn_zones[math.random(1, zones_count)]
+        local spawns_count = table.getn(zone)
+
+        set_zone = function (bot_conf)
+            local spawn_point_id = zone[math.random(1, spawns_count)]
+            bot_conf.SpawnPointId = spawn_point_id
+        end
+    end
+
+    local spawn_second = 1
+    local ghosts_count = 3 + survival_difficulty_level
+    for i = 1,ghosts_count do
         bot_conf = add_normal_infected(wave, "ghost")
         bot_conf.Lives = 2
+        bot_conf.SpawnSecond = spawn_second
         bot_conf.RespawnInterval = 1
+        set_zone(bot_conf)
+        spawn_second = spawn_second + 0.1
     end
 
     if survival_difficulty_level >= 4 then
@@ -376,7 +439,6 @@ function setup_wave6()
     bot_conf.DropLevel = max_drop_level
 
     local after_tank_sec = 50
-    local set_zone = do_nothing
 
     if Survival_spawn_zones ~= nil then
         local zones_count = table.getn(Survival_spawn_zones)
@@ -390,49 +452,33 @@ function setup_wave6()
         end
     end
 
-    local witch_spawn_sec = after_tank_sec + 2
-    local infected_n = 2
+    local pre_witch_sec = after_tank_sec
 
-    if survival_difficulty_level >= 3 then
-        infected_n = survival_difficulty_level
-    end
+    local infected_n = 2
 
     for i = 1,infected_n do
         bot_conf = add_normal_infected(wave, "slug")
-        bot_conf.SpawnSecond = after_tank_sec + i * 0.2
-        bot_conf.HP = 5
+        bot_conf.SpawnSecond = pre_witch_sec + i * 0.2
         set_zone(bot_conf)
     end
     for i = 1,infected_n do
         bot_conf = add_normal_infected(wave, "spider")
-        bot_conf.SpawnSecond = after_tank_sec + 1 + i * 0.2
-        bot_conf.HP = 5
-        set_zone(bot_conf)
-    end
-
-    if survival_difficulty_level >= 3 then
-        local witch_hp = {0, 0, 80, 120, 180, 240}
-        bot_conf = Game.Controller:SurvivalAddBot(wave, "witch")
-        bot_conf.SpawnSecond = witch_spawn_sec
-        bot_conf.Lives = 1
-        bot_conf.HP = witch_hp[survival_difficulty_level] * survival_hp_multiplier
-        add_tweak(bot_conf, "threat-aware")
-        add_tweak(bot_conf, "can-flee")
+        bot_conf.SpawnSecond = pre_witch_sec + 1 + i * 0.2
         set_zone(bot_conf)
     end
     for i = 1,infected_n do
         bot_conf = add_normal_infected(wave, "boomer")
-        bot_conf.SpawnSecond = witch_spawn_sec + 2 + i * 0.2
+        bot_conf.SpawnSecond = pre_witch_sec + 2 + i * 0.2
         set_zone(bot_conf)
     end
-    for i = 1,survival_difficulty_level do
+    for i = 1,infected_n do
         bot_conf = add_normal_infected(wave, "hunter")
-        bot_conf.SpawnSecond = witch_spawn_sec + 2 + i * 0.2
+        bot_conf.SpawnSecond = pre_witch_sec + 2 + i * 0.2
         set_zone(bot_conf)
     end
-    for i = 1,survival_difficulty_level do
+    for i = 1,infected_n do
         bot_conf = add_normal_infected(wave, "bat")
-        bot_conf.SpawnSecond = witch_spawn_sec + 2 + i * 0.1
+        bot_conf.SpawnSecond = pre_witch_sec + 2 + i * 0.1
         set_zone(bot_conf)
     end
 
@@ -440,25 +486,223 @@ function setup_wave6()
         local n = survival_difficulty_level - 2
         for i = 1,n do
             bot_conf = add_normal_infected(wave, "smoker")
-            bot_conf.SpawnSecond = witch_spawn_sec + 5 + i * 0.4
-        set_zone(bot_conf)
+            bot_conf.SpawnSecond = pre_witch_sec + 5 + i * 0.4
+            set_zone(bot_conf)
         end
         for i = 1,n do
             bot_conf = add_normal_infected(wave, "voodoo")
-            bot_conf.SpawnSecond = witch_spawn_sec + 5 + i * 0.5
+            bot_conf.SpawnSecond = pre_witch_sec + 5 + i * 0.5
+            set_zone(bot_conf)
+        end
+
+        local witch_hp = {0, 0, 80, 120, 180, 240}
+        bot_conf = Game.Controller:SurvivalAddBot(wave, "witch")
+        bot_conf.SpawnSecond = after_tank_sec + 2
+        bot_conf.Lives = 1
+        bot_conf.HP = witch_hp[survival_difficulty_level] * survival_hp_multiplier
+        bot_conf.Tag = Survival_tag_witch
+        add_tweak(bot_conf, "threat-aware")
+        add_tweak(bot_conf, "can-flee")
         set_zone(bot_conf)
+    end
+end
+
+---@return number
+function Survival_get_witch_horde_interval()
+    if Survival_current_wave < 5 then
+        local intervals = {10, 8, 7, 7, 6, 6, 5}
+        return intervals[survival_difficulty_level]
+    end
+
+    local intervals = {6, 5, 4, 3, 2, 1, 1}
+    return intervals[survival_difficulty_level]
+end
+
+---@param start_second number
+function Survival_spawn_initial_witch_wave(start_second, witch_id)
+    dbg_msg(DebugLevel1, "Survival_spawn_initial_witch_wave")
+    local wave = Survival_current_wave
+
+    local spawned_count = 0
+
+    local function add_infected(infected_class)
+        local bot_conf = add_witch_infected(wave, infected_class, witch_id)
+        bot_conf.SpawnSecond = start_second
+        spawned_count = spawned_count + 1
+        return bot_conf
+    end
+
+    local classes = {
+        "smoker", "smoker", "bat", "bat",
+        "hunter", "hunter", "voodoo", "voodoo",
+        "hunter", "smoker", "bat", "voodoo",
+        "spider", "spider", "smoker", "smoker",
+        "voodoo", "voodoo", "boomer", "boomer",
+        "slug", "slug", "bat", "bat",
+    }
+    local wanted_count = survival_difficulty_level * 4
+    for i,infected_class in ipairs(classes) do
+        add_infected(infected_class)
+        if spawned_count >= wanted_count then
+            return
         end
     end
 end
 
--- function on_game_character_death(victim_id, killer_id, weapon_str)
--- end
+---@param start_second number
+function Survival_spawn_hit_witch_wave(start_second, witch_id)
+    dbg_msg(DebugLevel1, "Survival_spawn_hit_witch_wave")
+    local wave = Survival_current_wave
+
+    local spawned_count = 0
+
+    local function add_infected(infected_class)
+        local bot_conf = add_witch_infected(wave, infected_class, witch_id)
+        bot_conf.SpawnSecond = start_second
+        spawned_count = spawned_count + 1
+        return bot_conf
+    end
+
+    local classes = {
+        "smoker", "smoker", "bat", "bat",
+        "hunter", "hunter", "voodoo", "voodoo",
+        "hunter", "smoker", "bat", "voodoo",
+        "spider", "spider", "smoker", "smoker",
+        "voodoo", "voodoo", "boomer", "boomer",
+        "slug", "slug", "bat", "bat",
+    }
+    local wanted_count = survival_difficulty_level * 2
+    for i,infected_class in ipairs(classes) do
+        add_infected(infected_class)
+        if spawned_count >= wanted_count then
+            return
+        end
+    end
+end
+
+---@param start_second number
+function Survival_spawn_severely_hit_witch_wave(start_second, witch_id)
+    dbg_msg(DebugLevel1, "Survival_spawn_severely_hit_witch_wave")
+    local wave = Survival_current_wave
+
+    local spawned_count = 0
+
+    local function add_infected(infected_class)
+        local bot_conf = add_witch_infected(wave, infected_class, witch_id)
+        bot_conf.SpawnSecond = start_second
+        spawned_count = spawned_count + 1
+        return bot_conf
+    end
+
+    local classes = {
+        "smoker", "smoker", "bat", "bat",
+        "hunter", "hunter", "voodoo", "voodoo",
+        "hunter", "smoker", "bat", "voodoo",
+        "spider", "spider", "smoker", "smoker",
+        "voodoo", "voodoo", "boomer", "boomer",
+        "slug", "slug", "bat", "bat",
+    }
+    local wanted_count = survival_difficulty_level * 3
+    for i,infected_class in ipairs(classes) do
+        add_infected(infected_class)
+        if spawned_count >= wanted_count then
+            return
+        end
+    end
+end
+
+---@param start_second number
+function Survival_spawn_critical_hp_witch_wave(start_second, witch_id)
+    dbg_msg(DebugLevel1, "Survival_spawn_critical_hp_witch_wave")
+    local wave = Survival_current_wave
+
+    local spawned_count = 0
+
+    local function add_infected(infected_class)
+        local bot_conf = add_witch_infected(wave, infected_class, witch_id)
+        bot_conf.SpawnSecond = start_second
+        spawned_count = spawned_count + 1
+        return bot_conf
+    end
+
+    local classes = {
+        "bat", "bat", "bat", "bat",
+        "boomer", "boomer", "boomer", "boomer",
+        "ghoul", "ghoul", "slug", "slug",
+        "ghost", "ghost", "ghost", "ghost",
+        "slug", "ghost", "ghost", "ghost",
+        "ghost", "ghost", "ghost", "ghost",
+    }
+    local wanted_count = survival_difficulty_level * 4
+    for i,infected_class in ipairs(classes) do
+        local bot_conf = add_infected(infected_class)
+        if i > 4 then
+            bot_conf.SpawnSecond = start_second + i * 0.1
+        end
+        if bot_conf.Class == "ghoul" then
+            bot_conf.HP = survival_difficulty_level * 10
+            bot_conf.SpawnSecond = start_second + 3 + i * 0.1
+        end
+        if spawned_count >= wanted_count then
+            return
+        end
+    end
+end
+
+-- Check the witch status and maybe spawn a wave
+function Survival_check_the_witch(witch_id)
+    dbg_msg(DebugLevel1, "Checking the witch")
+    local start_second = Game.Controller:GetSecondsAfterInfection() + 0.125
+    if Survival_witch_prev_spawn_time == nil then
+        Survival_spawn_initial_witch_wave(start_second, witch_id)
+        Survival_witch_prev_spawn_time = start_second
+        return
+    end
+
+    local witch_hp_rate = get_character_hp_rate(witch_id)
+    if Survival_current_wave < 5 then
+        if Survival_witch_hp_rate > 0.4 and witch_hp_rate <= 0.4 then
+            Survival_spawn_severely_hit_witch_wave(start_second, witch_id)
+            Survival_witch_prev_spawn_time = start_second
+            Survival_witch_hp_rate = witch_hp_rate
+            return
+        end
+    else
+        if Survival_witch_hp_rate > 0.6 and witch_hp_rate <= 0.6 then
+            Survival_spawn_severely_hit_witch_wave(start_second, witch_id)
+            Survival_witch_prev_spawn_time = start_second
+            Survival_witch_hp_rate = witch_hp_rate
+            return
+        end
+        if Survival_witch_hp_rate > 0.25 and witch_hp_rate <= 0.25 then
+            Survival_spawn_critical_hp_witch_wave(start_second, witch_id)
+            Survival_witch_prev_spawn_time = start_second
+            Survival_witch_hp_rate = witch_hp_rate
+            return
+        end
+    end
+
+    local interval = Survival_get_witch_horde_interval()
+    if start_second > Survival_witch_prev_spawn_time + interval then
+        local damaged = witch_hp_rate < Survival_witch_hp_rate
+        local seen_enemy = get_seen_enemy_seconds_ago(witch_id) < 1.0
+        if damaged or seen_enemy then
+            Survival_spawn_hit_witch_wave(start_second, witch_id)
+            Survival_witch_prev_spawn_time = start_second
+            Survival_witch_hp_rate = witch_hp_rate
+        end
+    end
+end
+
+function Survival_schedule_next_witch_check()
+    Survival_witch_next_check_time = Game.Controller:GetSecondsAfterInfection() + 0.5
+end
 
 function on_control_point_effect(control_point)
     if control_point:IsInfected() then
         return
     end
-    ---@param character CInfClassCharacter
+    ---@param character CIcCharacter
     local function give_bonus(character)
         character:GiveArmor(2, -1)
     end
@@ -491,18 +735,22 @@ function update_difficulty()
     if survival_difficulty_level <= 2 then
         Config.inf_bot_lives = 2
         Config.inf_survival_infected_spawning_delay = 5
+        Config.inf_stunning_hammer_duration = 0.5
     elseif survival_difficulty_level == 3 then
         Config.inf_bot_lives = 3
         Config.inf_survival_infected_spawning_delay = 4
+        Config.inf_stunning_hammer_duration = 0.75
     elseif survival_difficulty_level == 4 then
         Config.inf_bot_lives = 4
         Config.inf_survival_infected_spawning_delay = 4
+        Config.inf_stunning_hammer_duration = 0.85
     else
         Config.inf_bot_lives = 5
         Config.inf_survival_infected_spawning_delay = 3
+        Config.inf_stunning_hammer_duration = 1.0
     end
 
-    if survival_difficulty_level <= 2 then
+    if survival_difficulty_level <= 3 then
         Config.inf_hive_hooks = 2
     else
         Config.inf_hive_hooks = 3
@@ -510,6 +758,12 @@ function update_difficulty()
 
     local game_conf = Game.Controller:SurvivalGetGameConfiguration()
     game_conf.Hardmode = false
+
+    if survival_difficulty_level >= 6 then
+        survival_max_drop_level = 3
+    else
+        survival_max_drop_level = 2
+    end
 end
 
 function setup_wave_n(wave_number)
@@ -529,14 +783,48 @@ function setup_wave_n(wave_number)
 end
 
 function setup_this_wave()
-    setup_wave_n(survival_current_wave)
-    survival_current_wave = survival_current_wave + 1
+    setup_wave_n(Survival_current_wave)
 end
 
-function survival_on_tick()
+function Survival_on_tick()
     local tick = Game.Server.Tick
     if (tick + 1) == Game.Controller.InfectionStartTick then
+        Survival_current_wave = Survival_current_wave + 1
         setup_this_wave()
+    end
+
+    local current_second = Game.Controller:GetSecondsAfterInfection()
+    if Survival_witch_next_check_time ~= nil then
+        if current_second >= Survival_witch_next_check_time then
+            Survival_check_the_witch(Survival_witch_id)
+            Survival_schedule_next_witch_check()
+        end
+    end
+end
+
+function Survival_on_character_spawned(player_id, spawn_type)
+    local spawned_character = Game.Controller:GetCharacter(player_id)
+    if spawned_character == nil then
+        return
+    end
+
+    if spawned_character:IsInfected() == false then
+        return
+    end
+
+    local spawned_player = Game.Controller:GetPlayer(player_id)
+    if spawned_player.Tag == Survival_tag_witch then
+        Survival_witch_id = player_id
+        Survival_witch_prev_spawn_time = nil
+        Survival_witch_hp_rate = 1
+        Survival_check_the_witch(Survival_witch_id)
+        Survival_schedule_next_witch_check()
+    end
+end
+
+function Survival_on_character_death(victim_id, killer_id, weapon_str)
+    if victim_id == Survival_witch_id then
+        Survival_witch_next_check_time = nil
     end
 end
 
@@ -561,7 +849,7 @@ function start_survival_game(base_difficulty, hp_multiplier)
     Game.Controller:SurvivalAddWave(5, "The Tomato")
     Game.Controller:SurvivalAddWave(6, "The Goodbye")
 
-    survival_current_wave = 1
+    Survival_current_wave = 0
 
     Game.Controller:PrepareSurvival()
     Game.Controller:QueueRound("survival")
@@ -581,9 +869,12 @@ end
 function survival_init()
     OldConfig.inf_enable_tranquilizer_rifle = Config.inf_enable_tranquilizer_rifle
     OldConfig.inf_tranquilizer_dose = Config.inf_tranquilizer_dose
+    OldConfig.inf_proba_spawn_near_witch = Config.inf_proba_spawn_near_witch
+    OldConfig.inf_stunning_hammer_duration = Config.inf_stunning_hammer_duration
 
     Config.inf_enable_tranquilizer_rifle = 1
     Config.inf_tranquilizer_dose = 7.5
+    Config.inf_proba_spawn_near_witch = 0
 
     -- Kill-based survival
     Config.inf_survival_mode = 1
@@ -593,7 +884,26 @@ function survival_init()
     Config.sv_vote_spectate = 1
 end
 
-function survival_on_shutdown()
+---@param reason string
+function Survival_on_round_end(reason)
+    if reason ~= "finished" then
+        return
+    end
+
+    if Survival_current_wave == 6 then
+        return
+    end
+
+
+    ---@param character CIcCharacter
+    local function give_bonus(character)
+        local gain = {10, 8, 6, 4, 2, 2}
+        character:IncreaseOverallHp(gain[survival_difficulty_level])
+    end
+    for_each_human_character(give_bonus)
+end
+
+function Survival_on_shutdown()
     for key,value in pairs(OldConfig) do
         Config[key] = value
     end
@@ -611,10 +921,12 @@ end
 function Survival_init()
     Survival_initialized = true
     survival_init()
-    -- on_event("on_character_death", on_game_character_death)
 
-    on_event("on_tick", survival_on_tick)
-    on_event("on_shutdown", survival_on_shutdown)
+    on_event("on_tick", Survival_on_tick)
+    on_event("on_round_end", Survival_on_round_end)
+    on_event("on_shutdown", Survival_on_shutdown)
+    on_event("on_character_spawned", Survival_on_character_spawned)
+    on_event("on_character_death", Survival_on_character_death)
 end
 
 if Survival_initialized == nil then
