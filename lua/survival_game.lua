@@ -454,28 +454,6 @@ end
 -- function on_game_character_death(victim_id, killer_id, weapon_str)
 -- end
 
-function for_each_human_character(callback)
-    ---@param ch CInfClassCharacter
-    ---@return boolean
-    local function acceptable(ch)
-        if ch == nil then
-            return false
-        end
-        if ch:IsInfected() or not ch.IsAlive() then
-            return false
-        end
-
-        return true
-    end
-
-    for i = 0,63 do
-        local character = Game.Controller:GetCharacter(i)
-        if acceptable(character) then
-            callback(character)
-        end
-    end
-end
-
 function on_control_point_effect(control_point)
     if control_point:IsInfected() then
         return
