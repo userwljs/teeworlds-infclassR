@@ -170,7 +170,7 @@ function check_sleepers()
             else
                 if not character:IsSleeping() then
                     sleeper_descriptor.ignore = true
-                    on_castle_sleeper_awaken(sleeper_descriptor.sleeper_id)
+                    on_castle_sleeper_awaken(sleeper_descriptor.sleeper_id, character:AwakenedBy())
                 end
             end
         end
@@ -404,16 +404,26 @@ function Castle_schedule_next_witch_wave()
     Castle_witch_next_wave_time = Game.Controller:GetSecondsAfterInfection() + Castle_horde_spawn_intervals[survival_difficulty_level]
 end
 
-function on_witch_awaken(sleeper_id)
-    Game.Context:SendChatTarget(-1, "The Witch was awakened!")
+---@param sleeper_id number
+---@param awaken_by_id number
+function on_witch_awaken(sleeper_id, awaken_by_id)
+    local awaken_by_player = Game.Controller:GetPlayer(awaken_by_id)
+    if awaken_by_player == nil then
+        Game.Context:SendChatTarget(-1, "The Witch was awakened!")
+    else
+        local name = Game.Server:GetClientName(awaken_by_id)
+        Game.Context:SendChatTarget(-1, string.format("The Witch was awakened by '%s'", name))
+    end
 
     Castle_witch_id = sleeper_id
     Castle_spawn_witch_wave()
     Castle_schedule_next_witch_wave()
 end
 
-function on_castle_sleeper_awaken(sleeper_id)
-    on_witch_awaken(sleeper_id)
+---@param sleeper_id number
+---@param awaken_by_id number
+function on_castle_sleeper_awaken(sleeper_id, awaken_by_id)
+    on_witch_awaken(sleeper_id, awaken_by_id)
 end
 
 function on_boss_killed(victim_id)
