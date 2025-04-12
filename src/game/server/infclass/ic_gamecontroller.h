@@ -26,11 +26,15 @@ enum class EDamageType;
 enum class ROUND_CANCELATION_REASON;
 enum class EPlayerScoreMode;
 
-enum class ROUND_END_REASON
+enum class ERoundEndReason
 {
 	FINISHED,
 	CANCELED,
+
+	COUNT,
+	INVALID = COUNT
 };
+const char *toString(ERoundEndReason Reason);
 
 static const int MaxWaves = 20;
 
@@ -131,7 +135,7 @@ public:
 	void StartRound() override;
 	void ResetRoundData();
 	void EndRound() override;
-	void EndRound(ROUND_END_REASON Reason);
+	void EndRound(ERoundEndReason Reason);
 	void DoTeamChange(CPlayer *pPlayer, int Team, bool DoChatMsg = true) override;
 	bool TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext);
 	EPlayerClass ChooseHumanClass(const CIcPlayer *pPlayer) const;

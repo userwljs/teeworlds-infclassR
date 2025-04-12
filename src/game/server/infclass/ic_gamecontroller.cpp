@@ -38,6 +38,17 @@
 
 const int InfClassModeSpecialSkip = 0x100;
 
+static const char *gs_aRoundEndReasonNames[] = {
+	"finished",
+	"canceled",
+	"invalid",
+};
+
+const char *toString(ERoundEndReason Reason)
+{
+	return toStringImpl(Reason, gs_aRoundEndReasonNames);
+}
+
 static const char *gs_aRoundNames[] = {
 	"classic",
 	"fun",
@@ -2743,17 +2754,17 @@ void CIcGameController::ResetRoundData()
 void CIcGameController::EndRound()
 {
 	// The EndRound() override is called only from the IGameController on map skipped or changed
-	EndRound(ROUND_END_REASON::CANCELED);
+	EndRound(ERoundEndReason::CANCELED);
 }
 
-void CIcGameController::EndRound(ROUND_END_REASON Reason)
+void CIcGameController::EndRound(ERoundEndReason Reason)
 {
 	int NumHumans = 0;
 	int NumInfected = 0;
 	{
 		GetPlayerCounter(-1, NumHumans, NumInfected);
 
-		const char *pWinnerTeam = Reason == ROUND_END_REASON::FINISHED ? (NumHumans > 0 ? "humans" : "zombies") : "none";
+		const char *pWinnerTeam = Reason == ERoundEndReason::FINISHED ? (NumHumans > 0 ? "humans" : "zombies") : "none";
 		const char *pRoundType = toString(GetRoundType());
 
 		// Win check
@@ -2768,12 +2779,12 @@ void CIcGameController::EndRound(ROUND_END_REASON Reason)
 	ResetFinalExplosion();
 	IGameController::EndRound();
 
-	if(Reason == ROUND_END_REASON::FINISHED)
+	if(Reason == ERoundEndReason::FINISHED)
 	{
 		MaybeSendStatistics();
 		Server()->OnRoundIsOver();
 	}
-	else if(Reason == ROUND_END_REASON::CANCELED)
+	else if(Reason == ERoundEndReason::CANCELED)
 	{
 		if(!m_InfectedStarted || (NumHumans + NumInfected) < 2)
 		{
@@ -3591,7 +3602,7 @@ void CIcGameController::CancelTheRound(ROUND_CANCELATION_REASON Reason)
 		break;
 	}
 
-	EndRound(ROUND_END_REASON::CANCELED);
+	EndRound(ERoundEndReason::CANCELED);
 }
 
 void CIcGameController::AnnounceTheWinner(int NumHumans)
@@ -3627,7 +3638,7 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTED, _("Infected won the round in {sec:RoundDuration}"), "RoundDuration", &Seconds, NULL);
 	}
 
-	EndRound(ROUND_END_REASON::FINISHED);
+	EndRound(ERoundEndReason::FINISHED);
 }
 
 void CIcGameController::BroadcastInfectionComing(int InfectionTick)
