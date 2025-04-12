@@ -692,6 +692,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 			if(m_SleepTicks > MaxTicks)
 			{
 				m_SleepTicks = MaxTicks;
+				m_AwakenedBy = From;
 			}
 		}
 	}
@@ -1126,14 +1127,23 @@ void CIcCharacter::PutToDeepSleep(float Duration, std::optional<int> FromCid)
 
 void CIcCharacter::CancelSleep(std::optional<int> ByCid)
 {
-	m_SleepTicks = 0;
-	m_PutToSleepBy.reset();
+	if(m_SleepTicks)
+	{
+		m_SleepTicks = 0;
+		m_PutToSleepBy.reset();
+		m_AwakenedBy = ByCid;
+	}
 }
 
 void CIcCharacter::CancelDeepSleep(std::optional<int> ByCid)
 {
 	m_DeepSleepTicks = 0;
 	m_PutToDeepSleepBy.reset();
+}
+
+int CIcCharacter::AwakenedBy() const
+{
+	return m_AwakenedBy.value_or(-1);
 }
 
 bool CIcCharacter::IsInSlowMotion() const

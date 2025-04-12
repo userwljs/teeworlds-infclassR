@@ -217,6 +217,7 @@ public:
 	void PutToDeepSleep(float Duration, std::optional<int> FromCid = {});
 	void CancelSleep(std::optional<int> ByCid = {});
 	void CancelDeepSleep(std::optional<int> ByCid = {});
+	int AwakenedBy() const;
 
 	bool IsInSlowMotion() const;
 	float SlowMotionEffect(float Duration, std::optional<int> FromCid = {});
@@ -325,6 +326,7 @@ protected:
 	int m_DeepSleepTicks = 0;
 	std::optional<int> m_PutToSleepBy;
 	std::optional<int> m_PutToDeepSleepBy;
+	std::optional<int> m_AwakenedBy;
 
 	bool m_HasIndicator{};
 	bool m_IsFrozen = false;
