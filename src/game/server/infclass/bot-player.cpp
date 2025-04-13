@@ -2925,6 +2925,7 @@ bool CBotPlayer::MaybeFallDown() const
 		}
 	}
 
+#if 0
 	EDecision PreviousDecision = GetPreviousDecision();
 	if(PreviousDecision == EDecision::Jump)
 	{
@@ -2936,6 +2937,7 @@ bool CBotPlayer::MaybeFallDown() const
 		BotDebugMessage(VERBOSE_STEPS, "Didn't jump previously, jump now");
 		return false;
 	}
+#endif
 
 	if(m_RoamingObjection == EObjection::CheckTheBottom)
 	{
