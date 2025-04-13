@@ -4141,7 +4141,6 @@ void CIcGameController::EndSurvivalRound()
 		if(pCharacter && pCharacter->IsHuman())
 		{
 			m_SurvivalState.SurvivedPlayers.Add(i);
-			pCharacter->IncreaseOverallHp(10);
 		}
 	}
 
