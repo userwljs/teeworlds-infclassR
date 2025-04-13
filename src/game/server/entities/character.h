@@ -233,7 +233,8 @@ protected:
 
 	/* INFECTION MODIFICATION START ***************************************/
 protected:
-	virtual void OnTotalHealthChanged(int Difference) {};
+	virtual void OnTotalHealthChanged(int Difference) {}
+	virtual void OnMaxHealthArmorChanged() {}
 
 	ERaceState m_RaceState{};
 	std::optional<int> m_RaceStartTick;

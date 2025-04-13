@@ -240,6 +240,9 @@ public:
 	void AddHelper(int HelperCid, float Time);
 	void ResetHelpers();
 
+	void UpdateEffectsFactor();
+	float EffectsRatio() const;
+
 	void GetDeathContext(const SDamageContext &DamageContext, DeathContext *pContext) const;
 
 	void UpdateLastHookers(const ClientsArray &Hookers, int HookerTick);
@@ -290,6 +293,8 @@ protected:
 	void HandleDamage(int From, int Damage, EDamageType DamageType);
 
 	void OnTotalHealthChanged(int Difference) override;
+	void OnMaxHealthArmorChanged() override;
+
 	void PrepareToDie(DeathContext *pContext);
 
 protected:
@@ -327,6 +332,7 @@ protected:
 	std::optional<int> m_PutToSleepBy;
 	std::optional<int> m_PutToDeepSleepBy;
 	std::optional<int> m_AwakenedBy;
+	float m_EffectsFactor{};
 
 	bool m_HasIndicator{};
 	bool m_IsFrozen = false;

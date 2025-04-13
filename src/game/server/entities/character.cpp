@@ -584,6 +584,7 @@ int CCharacter::GetHealthArmorSum()
 void CCharacter::SetMaxArmor(int Amount)
 {
 	m_MaxArmor = Amount;
+	OnMaxHealthArmorChanged();
 }
 
 void CCharacter::Die(int Killer, int Weapon)

@@ -27,6 +27,8 @@ CIcCharacter::CIcCharacter(CIcGameController *pGameController, CNetObj_PlayerInp
 	m_FlagId = Server()->SnapNewId();
 	m_HeartId = Server()->SnapNewId();
 	m_CursorId = Server()->SnapNewId();
+
+	m_EffectsFactor = 1;
 }
 
 CIcCharacter::~CIcCharacter()
@@ -1044,6 +1046,11 @@ void CIcCharacter::OnTotalHealthChanged(int Difference)
 	}
 }
 
+void CIcCharacter::OnMaxHealthArmorChanged()
+{
+	UpdateEffectsFactor();
+}
+
 void CIcCharacter::PrepareToDie(DeathContext *pContext)
 {
 	switch(pContext->DamageType)
@@ -1250,6 +1257,15 @@ void CIcCharacter::ResetHelpers()
 {
 	m_LastHelper.m_Cid = -1;
 	m_LastHelper.m_Tick = 0;
+}
+
+void CIcCharacter::UpdateEffectsFactor()
+{
+	float WeightRate = (10 + GetMaxArmor()) / 20.0f;
+	// Rate 1 for standard 10 hp 10 armor
+	// Rate 0.5 for 80 total hp
+	// Rate 0.25 for 160 total hp
+	m_EffectsFactor = 1.0f / std::sqrt(WeightRate);
 }
 
 void CIcCharacter::GetDeathContext(const SDamageContext &DamageContext, DeathContext *pContext) const
