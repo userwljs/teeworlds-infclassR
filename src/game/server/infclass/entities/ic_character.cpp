@@ -2326,6 +2326,10 @@ void CIcCharacter::Freeze(float Time, int Player, FREEZEREASON Reason)
 	if(m_IsFrozen && m_FreezeReason == FREEZEREASON_UNDEAD)
 		return;
 
+	if(Reason == FREEZEREASON_FLASH)
+	{
+		Time *= m_EffectsFactor;
+	}
 	m_IsFrozen = true;
 	m_FrozenTime = Server()->TickSpeed()*Time;
 	m_FreezeReason = Reason;
@@ -2395,6 +2399,11 @@ void CIcCharacter::ResetBlindness()
 
 void CIcCharacter::MakeBlind(float Duration, std::optional<int> FromCid)
 {
+	if(FromCid.has_value())
+	{
+		Duration *= m_EffectsFactor;
+	}
+
 	m_BlindnessTicks = Server()->TickSpeed() * Duration;
 	m_LastBlinder = FromCid;
 
