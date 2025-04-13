@@ -2929,12 +2929,12 @@ bool CBotPlayer::MaybeFallDown() const
 	EDecision PreviousDecision = GetPreviousDecision();
 	if(PreviousDecision == EDecision::Jump)
 	{
-		BotDebugMessage(VERBOSE_STEPS, "Jumped previously, do not jump now");
+		BotDebugMessage(VERBOSE_STEPS, "Jumped previously, fall down now");
 		return true;
 	}
 	if(PreviousDecision == EDecision::NoJump)
 	{
-		BotDebugMessage(VERBOSE_STEPS, "Didn't jump previously, jump now");
+		BotDebugMessage(VERBOSE_STEPS, "Didn't jump previously, jump over now");
 		return false;
 	}
 #endif
@@ -3036,12 +3036,12 @@ bool CBotPlayer::MaybeJumpOnPlatform(const vec2 &JumpTargetPosition, bool ForceI
 	EDecision PreviousDecision = GetPreviousDecision();
 	if(PreviousDecision == EDecision::Jump)
 	{
-		BotDebugMessage(VERBOSE_STEPS, "Jumped previously, do not jump now");
+		BotDebugMessage(VERBOSE_STEPS, "Jumped onto the platform previously, do not jump now");
 		return false;
 	}
 	if(PreviousDecision == EDecision::NoJump)
 	{
-		BotDebugMessage(VERBOSE_STEPS, "Didn't jump previously, jump now");
+		BotDebugMessage(VERBOSE_STEPS, "Didn't jump on the platform previously, jump now");
 		return true;
 	}
 
@@ -3051,12 +3051,12 @@ bool CBotPlayer::MaybeJumpOnPlatform(const vec2 &JumpTargetPosition, bool ForceI
 		{
 			if(random_prob(ChanceToCheckUncheckedPosition))
 			{
-				BotDebugMessage(VERBOSE_STEPS, "Jump by a chance (check the bottom)");
+				BotDebugMessage(VERBOSE_STEPS, "Jump onto the platform by a chance (check the bottom)");
 				return true;
 			}
 		}
 
-		BotDebugMessage(VERBOSE_STEPS, "Do not jump (check the bottom)");
+		BotDebugMessage(VERBOSE_STEPS, "Do not jump onto the platform (check the bottom)");
 		return false;
 	}
 
@@ -3066,18 +3066,18 @@ bool CBotPlayer::MaybeJumpOnPlatform(const vec2 &JumpTargetPosition, bool ForceI
 		{
 			if(random_prob(ChanceToCheckUncheckedPosition))
 			{
-				BotDebugMessage(VERBOSE_STEPS, "Jump by a chance (check the mid)");
+				BotDebugMessage(VERBOSE_STEPS, "Jump onto the platform by a chance (check the mid)");
 				return true;
 			}
 		}
 
-		BotDebugMessage(VERBOSE_STEPS, "Do not jump (check the mid)");
+		BotDebugMessage(VERBOSE_STEPS, "Do not jump onto the platform (check the mid)");
 		return false;
 	}
 
 	if(m_RoamingObjection == EObjection::CheckTheTop)
 	{
-		BotDebugMessage(VERBOSE_STEPS, "Do jump (check the top)");
+		BotDebugMessage(VERBOSE_STEPS, "Do jump onto the platform (check the top)");
 		return true;
 	}
 
