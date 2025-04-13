@@ -345,10 +345,13 @@ protected:
 	float m_JumpExtraProbability = 0;
 
 	int m_LastTarget = -1;
+	std::optional<int> m_IgnoreTarget{};
+	int m_IgnoreTargetUntil{};
 	vec2 m_LastTargetSeenAtPos;
 	std::optional<vec2> m_POIPos;
 	int m_LookForPoiDisabledUntilTick = -1;
 	int m_FleeingSinceTick = -1;
+	int m_TargetUnreachableTicks = 0;
 	int m_LastSeenTick = -1;
 	int m_TargetSinceTick{};
 	int m_LastFireTick = -1;

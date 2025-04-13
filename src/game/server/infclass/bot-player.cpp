@@ -245,6 +245,9 @@ void CBotPlayer::Tick()
 				m_HookAimingRemainingTicks.value()--;
 			}
 
+			if(m_IgnoreTarget.has_value() && T > m_IgnoreTargetUntil)
+				m_IgnoreTarget.reset();
+
 			UpdateTarget();
 			GetHiveMind().ValidateDirection(this);
 		}
@@ -278,6 +281,7 @@ void CBotPlayer::TickPaused()
 	m_HookUntilTick++;
 	if (m_HookAimingRemainingTicks.has_value())
 		m_HookAimingRemainingTicks.value()++;
+	m_IgnoreTargetUntil++;
 
 	for(auto &IgnoredPosition : ma_IgnorePoints)
 	{
@@ -365,6 +369,9 @@ void CBotPlayer::UpdateTarget()
 		const vec2 LookupFromPos = Pos + pCharacter->GetDirection() * LookupOffset;
 		for(int i = 0; i < MAX_CLIENTS; ++i)
 		{
+			if(i == m_IgnoreTarget)
+				continue;
+
 			const CIcCharacter *pChar = GameController()->GetCharacter(i);
 			if(pChar && !pChar->IsSolo())
 			{
@@ -1199,6 +1206,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	bool WantToJump = false;
 	bool WantGoDown = false;
+	bool TargetIsReachable = true;
 
 	if(Tick >= m_CachedSameGroundTargetUntilTick)
 	{
@@ -1748,6 +1756,21 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		SetState(EBotState::Fleeing);
 		SetRoamingDirection(OppositeDirection(DirectionToTarget));
 		m_FleeingSinceTick = Tick;
+	}
+
+	if (CanJump && !WantToJump && AbsXToTarget < 4.0_Tiles && std::abs(VectorToTarget.y) > HitDistance)
+	{
+		++m_TargetUnreachableTicks;
+	}
+	else
+	{
+		m_TargetUnreachableTicks = 0;
+	}
+
+	if (m_TargetUnreachableTicks > Server()->TickSpeed() * 1.5)
+	{
+		m_IgnoreTarget = m_LastTarget;
+		m_IgnoreTargetUntil = Tick + Server()->TickSpeed() * 1.5f;
 	}
 }
 
