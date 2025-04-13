@@ -904,7 +904,7 @@ bool CIcCharacter::Heal(int HitPoints, std::optional<int> FromCid)
 	{
 		SetEmote(EMOTE_HAPPY, Server()->Tick() + Server()->TickSpeed());
 		int Sound = HadFullHealth ? SOUND_PICKUP_ARMOR : SOUND_PICKUP_HEALTH;
-		GameContext()->CreateSound(GetPos(), Sound, CClientMask().set().reset(GetCid()));
+		GameContext()->CreateSound(GetPos(), Sound, CClientMask().set(GetCid()));
 
 		if(FromCid.has_value())
 		{
@@ -929,7 +929,7 @@ bool CIcCharacter::GiveHealth(int HitPoints, std::optional<int> FromCid)
 	{
 		SetEmote(EMOTE_HAPPY, Server()->Tick() + Server()->TickSpeed());
 		int Sound = SOUND_PICKUP_HEALTH;
-		GameContext()->CreateSound(GetPos(), Sound, CClientMask().set().reset(GetCid()));
+		GameContext()->CreateSound(GetPos(), Sound, CClientMask().set(GetCid()));
 
 		if(FromCid.has_value())
 		{
@@ -954,7 +954,7 @@ bool CIcCharacter::GiveArmor(int HitPoints, std::optional<int> FromCid)
 	{
 		SetEmote(EMOTE_HAPPY, Server()->Tick() + Server()->TickSpeed());
 		int Sound = SOUND_PICKUP_ARMOR;
-		GameContext()->CreateSound(GetPos(), Sound, CClientMask().set().reset(GetCid()));
+		GameContext()->CreateSound(GetPos(), Sound, CClientMask().set(GetCid()));
 
 		if(FromCid.has_value())
 		{
