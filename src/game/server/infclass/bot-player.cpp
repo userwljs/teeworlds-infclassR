@@ -603,13 +603,19 @@ std::optional<vec2> CBotPlayer::GetNewPOI() const
 void CBotPlayer::UpdatePOITarget()
 {
 	std::optional<vec2> newPOI = GetNewPOI();
+	const vec2 &Pos = GetCharacter()->GetPos();
 	if(newPOI.has_value() && (m_RoamingObjection != EObjection::CheckPOI))
 	{
 		const int Tick = Server()->Tick();
+		constexpr float TryReachDistance = 4 * TileSize;
 		if(Tick > m_LookForPoiDisabledUntilTick)
 		{
 			const float MaxLookingForPOI = 5.0f;
 			m_LookForPoiDisabledUntilTick = Tick + Server()->TickSpeed() * MaxLookingForPOI;
+			SetObjection(EObjection::CheckPOI);
+		}
+		else if(distance2(Pos, newPOI.value()) < TryReachDistance * TryReachDistance)
+		{
 			SetObjection(EObjection::CheckPOI);
 		}
 	}
@@ -618,7 +624,6 @@ void CBotPlayer::UpdatePOITarget()
 	{
 		if(newPOI.has_value())
 		{
-			const vec2 &Pos = GetCharacter()->GetPos();
 			SetRoamingDirection(newPOI.value().x > Pos.x ? DIRECTION_RIGHT : DIRECTION_LEFT);
 		}
 		else
@@ -793,7 +798,20 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	const int DirectionSign = m_RoamingDirection;
 	const float VelX = m_pCharacter->Core()->m_Vel.x;
 
-	const bool NoWantedJump = m_RoamingObjection == EObjection::CheckPOI && m_CachedPOIReachableByGround;
+	bool NoWantedJump = false;
+	if(m_RoamingObjection == EObjection::CheckPOI)
+	{
+		if(m_CachedPOIReachableByGround)
+		{
+			vec2 VectorToPoi = m_POIPos.value() - Pos;
+			if(std::abs(VectorToPoi.x) < 1.5_Tiles && VectorToPoi.y < -ProximityRadius)
+			{
+				NoWantedJump = false;
+				WantToJump = true;
+			}
+		}
+	}
+
 	if(IsGrounded())
 	{
 		if(HasWallInRoamingDirection)
