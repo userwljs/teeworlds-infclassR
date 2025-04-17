@@ -736,6 +736,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 	}
 
 	GetClass()->OnCharacterDamage(&DamageContext);
+	GetPlayer()->OnCharacterDamage(DamageContext);
 
 	const bool DmgFromHuman = pKillerPlayer && pKillerPlayer->IsHuman();
 	if(DmgFromHuman && (GetPlayerClass() == EPlayerClass::Soldier) && (Weapon == WEAPON_HAMMER))

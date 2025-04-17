@@ -11,7 +11,10 @@ class CGameContext;
 class CIcCharacter;
 class CIcGameController;
 class CIcPlayerClass;
+struct SDamageContext;
 struct SpawnContext;
+
+enum class EDamageType;
 
 enum class INFECTION_TYPE
 {
@@ -138,6 +141,7 @@ public:
 	int GetDeaths() const { return m_Deaths; }
 
 	virtual void OnCharacterHPChanged(){};
+	virtual void OnCharacterDamage(const SDamageContext &DamageContext){};
 
 public:
 	int m_MapMenuItem = -1;
