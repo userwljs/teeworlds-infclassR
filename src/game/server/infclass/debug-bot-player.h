@@ -16,6 +16,7 @@ public:
 	void Tick() override;
 
 	void OnCharacterSpawned(const SpawnContext &Context) override;
+	void OnCharacterDamage(const SDamageContext &Context) override;
 
 	void UpdateName() override;
 };

@@ -2,9 +2,11 @@
 
 #include <base/tl/ic_enum.h>
 #include <engine/shared/config.h>
+#include <game/infclass/damage_type.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/bot_utils.h>
 #include <game/server/infclass/classes/ic_playerclass.h>
+#include <game/server/infclass/damage_context.h>
 #include <game/server/infclass/entities/biologist-mine.h>
 #include <game/server/infclass/entities/control-point.h>
 #include <game/server/infclass/entities/engineer-wall.h>
@@ -309,6 +311,44 @@ void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
 
 	SetObjection(EObjection::Lookup);
 	ChangeRoamingBehavior();
+}
+
+void CBotPlayer::OnCharacterDamage(const SDamageContext &Context)
+{
+	CBaseBotPlayer::OnCharacterDamage(Context);
+
+	if(m_BotState != EBotState::Hunting)
+	{
+		bool DamageIsPhysical{};
+		switch(Context.DamageType)
+		{
+		case EDamageType::SLUG_SLIME:
+		case EDamageType::MERCENARY_GRENADE:
+			DamageIsPhysical = false;
+			break;
+		default:
+			DamageIsPhysical = true;
+			break;
+		}
+
+		if(!DamageIsPhysical)
+			return;
+
+		CIcCharacter *pDamageFromCharacter = GameController()->GetCharacter(Context.Killer);
+		if(!pDamageFromCharacter)
+			return;
+
+		const vec2 &Pos = m_pCharacter->GetPos();
+		vec2 VectorToTarget = pDamageFromCharacter->GetPos() - Pos;
+		if(VectorToTarget.x > TileSizeF)
+		{
+			SetRoamingDirection(DIRECTION_RIGHT);
+		}
+		else if(VectorToTarget.x < -TileSizeF)
+		{
+			SetRoamingDirection(DIRECTION_LEFT);
+		}
+	}
 }
 
 void CBotPlayer::OnTuningChanged()

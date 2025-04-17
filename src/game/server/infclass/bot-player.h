@@ -202,6 +202,7 @@ public:
 	void TickPaused();
 
 	void OnCharacterSpawned(const SpawnContext &Context) override;
+	void OnCharacterDamage(const SDamageContext &Context) override;
 	void OnTuningChanged() override;
 
 	void UpdateTarget();

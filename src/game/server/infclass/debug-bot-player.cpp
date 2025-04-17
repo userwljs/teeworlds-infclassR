@@ -31,6 +31,11 @@ void CDebugPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	CIcPlayer::OnCharacterSpawned(Context);
 }
 
+void CDebugPlayer::OnCharacterDamage(const SDamageContext &Context)
+{
+	CIcPlayer::OnCharacterDamage(Context);
+}
+
 void CDebugPlayer::UpdateName()
 {
 	// Do nothing
