@@ -212,7 +212,7 @@ public:
 
 	void CancelLoveEffect();
 
-	bool IsSleeping() const { return (m_SleepTicks > 0) || (m_DeepSleepTicks > 0); }
+	bool IsSleeping() const { return m_SleepThisTick; }
 	void PutToSleep(float Duration, std::optional<int> FromCid = {});
 	void PutToDeepSleep(float Duration, std::optional<int> FromCid = {});
 	void CancelSleep(std::optional<int> ByCid = {});
@@ -327,6 +327,7 @@ protected:
 	icArray<CDamagePoint, 4> m_TakenDamageDetails;
 	bool m_PositionLocked = false;
 
+	bool m_SleepThisTick{};
 	int m_SleepTicks = 0;
 	int m_DeepSleepTicks = 0;
 	std::optional<int> m_PutToSleepBy;

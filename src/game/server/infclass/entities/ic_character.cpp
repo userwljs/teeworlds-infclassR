@@ -245,6 +245,7 @@ void CIcCharacter::TickBeforeWorld()
 	m_Core.m_Infected = IsInfected();
 	m_Core.m_InLove = IsInLove();
 	m_Core.m_HookProtected = GetPlayer()->HookProtectionEnabled();
+	m_SleepThisTick = std::max(m_SleepTicks, m_DeepSleepTicks) > 0;
 
 	for(std::optional<int> *pTick : {
 			&m_SoloUntilTick,
