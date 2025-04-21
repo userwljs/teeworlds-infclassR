@@ -661,10 +661,10 @@ int CCollision::GetZoneHandle(const char* pName)
 		return -1;
 	
 	int Handle = m_Zones.size();
-	m_Zones.add(array<int>());
-	
-	array<int>& LayerList = m_Zones[Handle];
-	
+	m_Zones.add({});
+
+	array<CMapItemLayer *> &LayerList = m_Zones[Handle];
+
 	char aLayerName[12];
 	for(int l = 0; l < m_pLayers->ZoneGroup()->m_NumLayers; l++)
 	{
@@ -675,14 +675,14 @@ int CCollision::GetZoneHandle(const char* pName)
 			CMapItemLayerTilemap *pTLayer = (CMapItemLayerTilemap *)pLayer;
 			IntsToStr(pTLayer->m_aName, sizeof(aLayerName)/sizeof(int), aLayerName);
 			if(str_comp(pName, aLayerName) == 0)
-				LayerList.add(l);
+				LayerList.add(pLayer);
 		}
 		else if(pLayer->m_Type == LAYERTYPE_QUADS)
 		{
 			CMapItemLayerQuads *pQLayer = (CMapItemLayerQuads *)pLayer;
 			IntsToStr(pQLayer->m_aName, sizeof(aLayerName)/sizeof(int), aLayerName);
 			if(str_comp(pName, aLayerName) == 0)
-				LayerList.add(l);
+				LayerList.add(pLayer);
 		}
 	}
 	
@@ -830,9 +830,7 @@ int CCollision::GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData
 	
 	for(int i = 0; i < m_Zones[ZoneHandle].size(); i++)
 	{
-		int l = m_Zones[ZoneHandle][i];
-		
-		CMapItemLayer *pLayer = m_pLayers->GetLayer(m_pLayers->ZoneGroup()->m_StartLayer+l);
+		CMapItemLayer *pLayer = m_Zones[ZoneHandle][i];
 		if(pLayer->m_Type == LAYERTYPE_TILES)
 		{
 			CMapItemLayerTilemap *pTLayer = (CMapItemLayerTilemap *)pLayer;

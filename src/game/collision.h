@@ -11,6 +11,7 @@
 
 class CTile;
 class CLayers;
+class CMapItemLayer;
 class CTeleTile;
 class CSpeedupTile;
 
@@ -44,8 +45,8 @@ class CCollision
 	CLayers *m_pLayers;
 	
 	double m_Time;
-	
-	array< array<int> > m_Zones;
+
+	array<array<CMapItemLayer *>> m_Zones;
 
 	bool IsSolid(int x, int y) const;
 
