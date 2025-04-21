@@ -836,11 +836,11 @@ int CCollision::GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData
 			CMapItemLayerTilemap *pTLayer = (CMapItemLayerTilemap *)pLayer;
 			
 			CTile *pTiles = (CTile *) m_pLayers->Map()->GetData(pTLayer->m_Data);
-			
-			int Nx = clamp(round_to_int(x)/32, 0, pTLayer->m_Width-1);
-			int Ny = clamp(round_to_int(y)/32, 0, pTLayer->m_Height-1);
-			
-			int TileIndex = (pTiles[Ny*pTLayer->m_Width+Nx].m_Index > 128 ? 0 : pTiles[Ny*pTLayer->m_Width+Nx].m_Index);
+
+			int Nx = clamp(static_cast<int>(x) / 32, 0, pTLayer->m_Width - 1);
+			int Ny = clamp(static_cast<int>(y) / 32, 0, pTLayer->m_Height - 1);
+
+			int TileIndex = (pTiles[Ny * pTLayer->m_Width + Nx].m_Index > 128 ? 0 : pTiles[Ny * pTLayer->m_Width + Nx].m_Index);
 			if(TileIndex > 0)
 				Index = TileIndex;
 		}
