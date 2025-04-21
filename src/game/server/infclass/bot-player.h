@@ -319,6 +319,7 @@ protected:
 	bool IsThreatAware() const;
 	bool CanFlee() const;
 	bool CanJumpOnce() const;
+	bool CanJumpOnceImpl() const;
 	float GetMaxHookDistance() const;
 	EThreatLevel CareAboutThreatLevel() const;
 	float GetLookupRadius() const;
@@ -373,6 +374,7 @@ protected:
 
 	int m_StateUpdateTick = 0;
 	bool m_CachedGrounded = false;
+	mutable std::optional<bool> m_CachedCanJumpOnce{};
 	bool m_CachedPOIReachableByGround = false;
 
 	bool m_CachedSameGroundTarget = false;

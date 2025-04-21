@@ -820,8 +820,6 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 	const float ProximityRadius = GetCharacter()->GetProximityRadius();
 
-	bool CanJump = CanJumpOnce();
-
 	int MaxJumps = GetAvailableJumps();
 
 	bool WantToJump = false;
@@ -858,7 +856,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		{
 			BotDebugMessage(VERBOSE_STEPS, "Has wall");
 			vec2 JumpTarget;
-			const int WantJumps = CanJump ? GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &JumpTarget) : 0;
+			const int WantJumps = CanJumpOnce() ? GetJumpsNeededToGetOverWall(m_RoamingDirection, MaxJumps, &JumpTarget) : 0;
 			if(WantJumps)
 			{
 				if(MaybeJumpOverWall(JumpTarget))
@@ -1009,9 +1007,8 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		// 'Not grounded' branch
 		if(HasDangerInRoamingHorizontalDirection)
 		{
-			const vec2 PredictedPos2 = m_BotUtils.PredictMovement(Pos, GetCharacter()->Core()->m_Vel, Server()->TickSpeed() * PredictTime, m_RoamingDirection);
-
-			BotDebugMessage(VERBOSE_STEPS, "Predicted move to %.2fx%.2f", PredictedPos2.x / TileSizeF, PredictedPos2.y / TileSizeF);
+			// const vec2 PredictedPos2 = m_BotUtils.PredictMovement(Pos, GetCharacter()->Core()->m_Vel, Server()->TickSpeed() * PredictTime, m_RoamingDirection);
+			// BotDebugMessage(VERBOSE_STEPS, "Predicted move to %.2fx%.2f", PredictedPos2.x / TileSizeF, PredictedPos2.y / TileSizeF);
 
 			if(VelX * DirectionSign > 0.05)
 			{
@@ -1026,7 +1023,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 			BotDebugMessage(VERBOSE_STEPS, "Hold on! The danger is there");
 		}
 
-		if(CanJump)
+		if(CanJumpOnce())
 		{
 			vec2 JumpTarget;
 			if((m_WantedJumps <= 0) && (m_pCharacter->Core()->m_Vel.y > -3) && GetHiveMind().TryToComputeDecision(this))
@@ -1188,7 +1185,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 		}
 	}
 
-	if(!std::isnan(m_JumpTargetPosition.x) && (WantToJump || (!CanJump && ((VelX > 0) == (VectorToTarget.x > 0))))) // todo: match direction
+	if(!std::isnan(m_JumpTargetPosition.x) && (WantToJump || ((VelX > 0) == (VectorToTarget.x > 0)))) // todo: match direction
 	{
 		pInput->m_TargetX = VectorToTarget.x;
 		pInput->m_TargetY = VectorToTarget.y;
@@ -1232,8 +1229,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	const float PredictTime = 0.25f; // Predict 1/4 of the next second
 
 	const float ProximityRadius = GetCharacter()->GetProximityRadius();
-
-	bool CanJump = CanJumpOnce();
 
 	const float Gravity = m_NextTuningParams.m_Gravity;
 	const vec2 VectorToTarget = m_LastTargetSeenAtPos - Pos;
@@ -1372,7 +1367,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 			if(RatioY > 0.98f)
 			{
-				if(!CanJump)
+				if(!CanJumpOnce())
 				{
 					UnreachableByY = true;
 				}
@@ -1604,7 +1599,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	if(WantToJump)
 	{
-		WantToJump = CanJump;
+		WantToJump = CanJumpOnce();
 	}
 
 	SetRoamingDirection(Direction);
@@ -1816,7 +1811,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		m_FleeingSinceTick = Tick;
 	}
 
-	if (CanJump && !WantToJump && AbsXToTarget < 4.0_Tiles && std::abs(VectorToTarget.y) > HitDistance)
+	if (!WantToJump && AbsXToTarget < 4.0_Tiles && std::abs(VectorToTarget.y) > HitDistance)
 	{
 		++m_TargetUnreachableTicks;
 	}
@@ -1825,10 +1820,10 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		m_TargetUnreachableTicks = 0;
 	}
 
-	if (m_TargetUnreachableTicks > Server()->TickSpeed() * 1.5)
+	if (m_TargetUnreachableTicks > Server()->TickSpeed() * 2)
 	{
 		m_IgnoreTarget = m_LastTarget;
-		m_IgnoreTargetUntil = Tick + Server()->TickSpeed() * 1.5f;
+		m_IgnoreTargetUntil = Tick + Server()->TickSpeed() * 2;
 	}
 }
 
@@ -2063,16 +2058,14 @@ bool CBotPlayer::HasDamageTiles(const vec2 &From, const vec2 &To, float Radius) 
 	}
 
 	const vec2 Diff = To - From;
-	const float Length = length(Diff);
-	const vec2 NormalizedDiff = Diff / Length;
-	float HalfRadius = Radius / 2;
+	float CheckRadius = Radius * 0.65;
 
-	const auto PositionIsBad = [this, BadIndices, HalfRadius](const vec2 &CheckPos) -> bool {
+	const auto PositionIsBad = [this, BadIndices, CheckRadius](const vec2 &CheckPos) -> bool {
 		// TODO: Optimize in 2x: progress from -HalfRadius to Length+HalfRadius and use +-vec2(NormalizedDiff.y, NormalizedDiff.x) to check the points
-		int DamageIndex1 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(-HalfRadius, +HalfRadius));
-		int DamageIndex2 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(+HalfRadius, +HalfRadius));
-		int DamageIndex3 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(+HalfRadius, -HalfRadius));
-		int DamageIndex4 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(-HalfRadius, -HalfRadius));
+		int DamageIndex1 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(-CheckRadius, +CheckRadius));
+		int DamageIndex2 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(+CheckRadius, +CheckRadius));
+		int DamageIndex3 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(+CheckRadius, -CheckRadius));
+		int DamageIndex4 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(-CheckRadius, -CheckRadius));
 		if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2) || BadIndices.Contains(DamageIndex3) || BadIndices.Contains(DamageIndex4))
 		{
 			return true;
@@ -2084,6 +2077,8 @@ bool CBotPlayer::HasDamageTiles(const vec2 &From, const vec2 &To, float Radius) 
 	if(PositionIsBad(From) || PositionIsBad(To))
 		return true;
 
+	const float Length = length(Diff);
+	const vec2 NormalizedDiff = Diff / Length;
 	constexpr int Step = 4;
 	int Progress = Step;
 	while(Progress < Length)
@@ -3344,6 +3339,7 @@ void CBotPlayer::UpdateCharacterState()
 
 	const CIcCharacter *pCharacter = GetCharacter();
 	m_CachedGrounded = pCharacter && pCharacter->IsGrounded();
+	m_CachedCanJumpOnce.reset();
 
 	m_WantedJumps = 0;
 	m_AirJumps = 0;
@@ -3589,6 +3585,14 @@ bool CBotPlayer::CanFlee() const
 }
 
 bool CBotPlayer::CanJumpOnce() const
+{
+	if(!m_CachedCanJumpOnce.has_value())
+		m_CachedCanJumpOnce = CanJumpOnceImpl();
+
+	return m_CachedCanJumpOnce.value();
+}
+
+bool CBotPlayer::CanJumpOnceImpl() const
 {
 	if(!IsGrounded() && !GetCharacter()->CanJump())
 		return false;
