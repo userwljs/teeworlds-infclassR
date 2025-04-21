@@ -2074,6 +2074,13 @@ bool CBotPlayer::HasDamageTiles(const vec2 &From, const vec2 &To, float Radius) 
 		return false;
 	};
 
+	const int Tick = Server()->Tick();
+	bool QuickCheck = m_MaxHP < 60 && ((Tick % 6) != (m_ClientId % 6));
+	if(QuickCheck)
+	{
+		return PositionIsBad(To);
+	}
+
 	if(PositionIsBad(From) || PositionIsBad(To))
 		return true;
 
