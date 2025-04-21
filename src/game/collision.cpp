@@ -815,7 +815,7 @@ struct SAnimationTransformCache
 	int PosEnv = -1;
 };
 
-int CCollision::GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData)
+int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
 {
 	if(!m_pLayers->ZoneGroup())
 		return 0;
@@ -827,27 +827,29 @@ int CCollision::GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData
 	int ExtraData = 0;
 
 	SAnimationTransformCache AnimationCache;
-	
-	for(int i = 0; i < m_Zones[ZoneHandle].size(); i++)
+
+	const array<CMapItemLayer *> &Zone = m_Zones[ZoneHandle];
+	for(int i = 0; i < Zone.size(); i++)
 	{
-		CMapItemLayer *pLayer = m_Zones[ZoneHandle][i];
+		const CMapItemLayer *pLayer = Zone[i];
 		if(pLayer->m_Type == LAYERTYPE_TILES)
 		{
-			CMapItemLayerTilemap *pTLayer = (CMapItemLayerTilemap *)pLayer;
-			
-			CTile *pTiles = (CTile *) m_pLayers->Map()->GetData(pTLayer->m_Data);
+			const CMapItemLayerTilemap *pTLayer = (const CMapItemLayerTilemap *)pLayer;
+			const CTile *pTiles = (const CTile *) m_pLayers->Map()->GetData(pTLayer->m_Data);
 
-			int Nx = clamp(static_cast<int>(x) / 32, 0, pTLayer->m_Width - 1);
-			int Ny = clamp(static_cast<int>(y) / 32, 0, pTLayer->m_Height - 1);
+			int Nx = clamp(static_cast<int>(Pos.x) / 32, 0, pTLayer->m_Width - 1);
+			int Ny = clamp(static_cast<int>(Pos.y) / 32, 0, pTLayer->m_Height - 1);
 
 			int TileIndex = (pTiles[Ny * pTLayer->m_Width + Nx].m_Index > 128 ? 0 : pTiles[Ny * pTLayer->m_Width + Nx].m_Index);
 			if(TileIndex > 0)
+			{
 				Index = TileIndex;
+				break;
+			}
 		}
 		else if(pLayer->m_Type == LAYERTYPE_QUADS)
 		{
-			CMapItemLayerQuads *pQLayer = (CMapItemLayerQuads *)pLayer;
-			
+			const CMapItemLayerQuads *pQLayer = (const CMapItemLayerQuads *)pLayer;
 			const CQuad *pQuads = (const CQuad *) m_pLayers->Map()->GetDataSwapped(pQLayer->m_Data);
 
 			for(int q = 0; q < pQLayer->m_NumQuads; q++)
@@ -880,15 +882,16 @@ int CCollision::GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData
 					Rotate(&center, &p3, Angle);
 				}
 
-				if(OutOfRange(x, p0.x, p1.x, p2.x, p3.x))
+				if(OutOfRange(Pos.x, p0.x, p1.x, p2.x, p3.x))
 					continue;
-				if(OutOfRange(y, p0.y, p1.y, p2.y, p3.y))
+				if(OutOfRange(Pos.y, p0.y, p1.y, p2.y, p3.y))
 					continue;
 				
-				if(InsideQuad(p0, p1, p2, p3, vec2(x, y)))
+				if(InsideQuad(p0, p1, p2, p3, Pos))
 				{
 					Index = pQuads[q].m_ColorEnvOffset;
 					ExtraData = pQuads[q].m_aColors[0].g;
+					break;
 				}
 			}
 		}

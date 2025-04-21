@@ -99,8 +99,8 @@ public:
 	
 	//This function return an Handle to access all zone layers with the name "pName"
 	int GetZoneHandle(const char* pName);
-	int GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData = nullptr);
-	int GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData = nullptr) { return GetZoneValueAt(ZoneHandle, Pos.x, Pos.y, pData); }
+	int GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData = nullptr);
+	int GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData = nullptr) { return GetZoneValueAt(ZoneHandle, {x, y}, pData); }
 	
 /* INFECTION MODIFICATION START ***************************************/
 	bool AreConnected(vec2 Pos1, vec2 Pos2, float Radius) const;
