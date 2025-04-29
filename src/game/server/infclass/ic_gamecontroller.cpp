@@ -4585,6 +4585,8 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 	case EPlayerClass::Biologist:
 		AddLine(_C("Biologist", "The Biologist has a shotgun with bouncing bullets and can create a"
 								" spring laser trap by shooting with the laser rifle."));
+		AddLine(_C("Biologist", "They are also immune to continuous poison effect, and can stop it"
+			" on teammates with the Hammer."));
 		break;
 	case EPlayerClass::Looper:
 		AddLine(_C("Looper", "The Looper has a laser wall that slows down the infected and a"
