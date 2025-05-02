@@ -39,7 +39,7 @@ bool CIcLaser::HitTarget(vec2 From, vec2 To)
 	while(pHit)
 	{
 		IgnoreHits.Add(pHit);
-		bool Confirmed = OnCharacterHit(pHit);
+		bool Confirmed = OnCharacterHit(pHit, At);
 		if(Confirmed)
 		{
 			m_From = From;
@@ -55,7 +55,7 @@ bool CIcLaser::HitTarget(vec2 From, vec2 To)
 	return false;
 }
 
-bool CIcLaser::OnCharacterHit(CIcCharacter *pHit)
+bool CIcLaser::OnCharacterHit(CIcCharacter *pHit, const vec2 &At)
 {
 	float DamageLeft = 0;
 	pHit->TakeDamage(vec2(0.f, 0.f), m_Dmg, GetOwner(), GetDamageType(), &DamageLeft);

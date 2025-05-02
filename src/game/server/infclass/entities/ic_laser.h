@@ -30,7 +30,7 @@ protected:
 	EDamageType GetDamageType() const;
 
 	virtual bool HitTarget(vec2 From, vec2 To);
-	virtual bool OnCharacterHit(CIcCharacter *pHit);
+	virtual bool OnCharacterHit(CIcCharacter *pHit, const vec2 &At);
 
 protected:
 	vec2 m_From;

@@ -11,7 +11,7 @@ public:
 	CScientistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg);
 
 protected:
-	bool OnCharacterHit(CIcCharacter *pHit) final;
+	bool OnCharacterHit(CIcCharacter *pHit, const vec2 &At) final;
 	void DoBounce() final;
 	void CreateWhiteHole(const vec2 &CenterPos, const vec2 &To);
 };

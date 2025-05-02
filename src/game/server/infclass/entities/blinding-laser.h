@@ -11,7 +11,7 @@ public:
 	CBlindingLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner);
 
 protected:
-	bool OnCharacterHit(CIcCharacter *pHit) final;
+	bool OnCharacterHit(CIcCharacter *pHit, const vec2 &At) final;
 	void DoBounce() final;
 
 };

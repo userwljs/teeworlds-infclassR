@@ -19,7 +19,7 @@ CScientistLaser::CScientistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Dire
 	DoBounce();
 }
 
-bool CScientistLaser::OnCharacterHit(CIcCharacter *pHit)
+bool CScientistLaser::OnCharacterHit(CIcCharacter *pHit, const vec2 &At)
 {
 	return true;
 }

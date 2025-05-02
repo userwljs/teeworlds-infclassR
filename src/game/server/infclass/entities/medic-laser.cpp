@@ -34,7 +34,7 @@ CMedicLaser::CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, f
 {
 }
 
-bool CMedicLaser::OnCharacterHit(CIcCharacter *pHit)
+bool CMedicLaser::OnCharacterHit(CIcCharacter *pHit, const vec2 &At)
 {
 	CIcCharacter *pInfected = pHit;
 	CIcCharacter *pMedic = GetOwnerCharacter();

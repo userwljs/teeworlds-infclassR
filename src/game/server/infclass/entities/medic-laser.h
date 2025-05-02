@@ -11,7 +11,7 @@ public:
 	CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, EInfclassWeapon Weapon);
 
 protected:
-	bool OnCharacterHit(CIcCharacter *pHit) final;
+	bool OnCharacterHit(CIcCharacter *pHit, const vec2 &At) final;
 
 };
 
