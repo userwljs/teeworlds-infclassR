@@ -422,7 +422,6 @@ void CInfClassInfected::OnCharacterDeath(EDamageType DamageType)
 	if(GetPlayerClass() == EPlayerClass::Ghoul)
 	{
 		IncreaseGhoulLevel(-20);
-		UpdateSkin();
 	}
 
 	if(GetPlayerClass() == EPlayerClass::Boomer)
@@ -1068,6 +1067,7 @@ float CInfClassInfected::GetGhoulPercent() const
 void CInfClassInfected::IncreaseGhoulLevel(int Diff)
 {
 	GetPlayer()->IncreaseGhoulLevel(Diff);
+	UpdateSkin();
 }
 
 int CInfClassInfected::GetGhoulLevel() const
