@@ -252,7 +252,7 @@ void CIcCharacter::TickBeforeWorld()
 		GetClass()->UpdateSkin();
 	}
 
-	m_Core.m_ReflectingProjectiles = IsReflectingProjectiles();
+	m_Core.m_ReflectingProjectiles = IsInDeepDefence();
 	const bool WasDead = IsDead();
 	for(std::optional<int> *pTick : {
 			&m_SoloUntilTick,
@@ -2379,7 +2379,7 @@ bool CIcCharacter::IsSolo() const
 
 bool CIcCharacter::IsReflectingProjectiles() const
 {
-	return IsInvincible() || IsInDeepDefence();
+	return m_Core.m_ReflectingProjectiles;
 }
 
 bool CIcCharacter::IsInDeepDefence() const
