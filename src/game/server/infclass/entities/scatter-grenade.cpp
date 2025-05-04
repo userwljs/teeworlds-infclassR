@@ -47,20 +47,6 @@ void CScatterGrenade::Tick()
 	m_ActualPos = CurPos;
 	m_ActualDir = normalize(CurPos - PrevPos);
 
-	if(m_ExplodeOnContact)
-	{
-		const float ProjectileRadius = 6.0f;
-		const CIcCharacter *pOwnerChar = GetOwnerCharacter();
-		const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
-		CharacterFilter OnlyOtherTeamFilter = IsInfected ? CIcCharacter::GetHumansFilter() : CIcCharacter::GetInfectedFilter();
-		const CIcCharacter *pHit = CIcCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, CurPos, ProjectileRadius, CurPos, OnlyOtherTeamFilter));
-
-		if(pHit)
-		{
-			Explode();
-		}
-	}
-
 	if(GameLayerClipped(CurPos))
 	{
 		GameWorld()->DestroyEntity(this);
@@ -69,6 +55,22 @@ void CScatterGrenade::Tick()
 
 	vec2 NewPos;
 	int Collide = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CurPos, nullptr, &NewPos);
+
+	if(m_ExplodeOnContact)
+	{
+		const float ProjectileRadius = 6.0f;
+		const CIcCharacter *pOwnerChar = GetOwnerCharacter();
+		const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
+		CharacterFilter OnlyOtherTeamFilter = IsInfected ? CIcCharacter::GetHumansFilter() : CIcCharacter::GetInfectedFilter();
+		const CIcCharacter *pHit = CIcCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, NewPos, ProjectileRadius, NewPos, OnlyOtherTeamFilter));
+
+		if(pHit)
+		{
+			Explode();
+			return;
+		}
+	}
+
 	if(Collide)
 	{
 		if(m_IsFlashGrenade)
