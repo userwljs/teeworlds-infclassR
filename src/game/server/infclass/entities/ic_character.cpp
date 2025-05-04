@@ -484,7 +484,7 @@ void CIcCharacter::SpecialSnapForClient(int SnappingClient, bool *pDoSnap)
 		return;
 	}
 
-	if((IsInvisible() || IsSolo()) && !GameController()->CanSeeDetails(SnappingClient, GetCid()))
+	if((IsSolo() || !IsVisibleForPlayer(SnappingClient)) && !GameController()->CanSeeDetails(SnappingClient, GetCid()))
 	{
 		*pDoSnap = false;
 		return;
@@ -2222,6 +2222,11 @@ bool CIcCharacter::CanJump() const
 		return false;
 
 	return true;
+}
+
+bool CIcCharacter::IsVisibleForPlayer(int ClientId) const
+{
+	return !IsInvisible();
 }
 
 bool CIcCharacter::IsInvisible() const

@@ -177,6 +177,7 @@ public:
 
 	int GetInAirTick() const { return m_InAirTick; }
 
+	bool IsVisibleForPlayer(int ClientId) const;
 	bool IsInvisible() const;
 	bool HasGrantedInvisibility() const;
 	bool IsSolo() const;
