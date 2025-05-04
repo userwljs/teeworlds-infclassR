@@ -2382,6 +2382,11 @@ bool CIcCharacter::IsReflectingProjectiles() const
 	return m_Core.m_ReflectingProjectiles;
 }
 
+bool CIcCharacter::IsDeepDefenceRequested() const
+{
+	return m_WantDeepDefence;
+}
+
 bool CIcCharacter::IsInDeepDefence() const
 {
 	return m_InDeepDefenceForThisTick;

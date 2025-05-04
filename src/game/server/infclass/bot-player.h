@@ -219,6 +219,7 @@ public:
 	void UpdateHumanBotControls();
 	void ScheduleRandomFire();
 
+	void SetDeepDefenceActive(bool Active);
 	void FindPath();
 
 	const char *DumpBot() override;
@@ -313,6 +314,7 @@ protected:
 	void PickBestWeapon(float DistanceToTarget);
 	DIRECTION DoLandingManeuves() const;
 
+	bool CanDeepDefence() const;
 	bool CanHook() const;
 	bool WeakHook() const;
 	bool StrongHook() const;
@@ -348,6 +350,8 @@ protected:
 
 	int m_LastDamageTick{};
 	int m_LastTarget = -1;
+	bool m_WantDeepDefence{};
+	float m_DistanceToTarget{};
 	std::optional<int> m_IgnoreTarget{};
 	int m_IgnoreTargetUntil{};
 	vec2 m_LastTargetSeenAtPos;
@@ -355,6 +359,8 @@ protected:
 	int m_LookForPoiDisabledUntilTick = -1;
 	int m_FleeingSinceTick = -1;
 	int m_TargetUnreachableTicks = 0;
+	int m_NoTargetsInCloseRangeForTicks = 0;
+	int m_DeepDefenceChangedTick = 0;
 	int m_LastSeenTick = -1;
 	int m_TargetSinceTick{};
 	int m_LastFireTick = -1;

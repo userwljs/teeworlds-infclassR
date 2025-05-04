@@ -284,6 +284,7 @@ void CBotPlayer::TickPaused()
 	if (m_HookAimingRemainingTicks.has_value())
 		m_HookAimingRemainingTicks.value()++;
 	m_IgnoreTargetUntil++;
+	m_DeepDefenceChangedTick++;
 
 	for(auto &IgnoredPosition : ma_IgnorePoints)
 	{
@@ -354,6 +355,24 @@ void CBotPlayer::OnCharacterDamage(const SDamageContext &Context)
 			SetRoamingDirection(DIRECTION_LEFT);
 		}
 	}
+
+	if(CanDeepDefence())
+	{
+		if(m_BotState == EBotState::Hunting)
+		{
+			m_NoTargetsInCloseRangeForTicks += Context.Damage / 2;
+		}
+		else
+		{
+			if(Context.Damage > 1)
+			{
+				if(random_prob(0.1f * Context.Damage))
+				{
+					m_WantDeepDefence = true;
+				}
+			}
+		}
+	}
 }
 
 void CBotPlayer::OnTuningChanged()
@@ -387,6 +406,7 @@ void CBotPlayer::OnTuningChanged()
 
 void CBotPlayer::UpdateTarget()
 {
+	const int CurrentTick = Server()->Tick();
 	const CIcCharacter *pCharacter = GetCharacter();
 	if(!pCharacter)
 	{
@@ -453,9 +473,18 @@ void CBotPlayer::UpdateTarget()
 		{
 			UpdatePOITarget();
 		}
-		else if (m_BotState == EBotState::Hunting)
+		else if(m_BotState == EBotState::Hunting)
 		{
 			OnTargetLost();
+		}
+
+		if(pCharacter->IsInDeepDefence())
+		{
+			constexpr float CalmDownTime = 2.5f;
+			if(CurrentTick > m_LastDamageTick + Server()->TickSpeed() * CalmDownTime)
+			{
+				SetDeepDefenceActive(false);
+			}
 		}
 		return;
 	}
@@ -471,7 +500,6 @@ void CBotPlayer::UpdateTarget()
 		}
 	}
 
-	const int CurrentTick = Server()->Tick();
 	if((m_LastTarget != TargetId) || (CurrentTick > m_LastSeenTick + Server()->TickSpeed() * 1.0f))
 	{
 		m_TargetSinceTick = CurrentTick;
@@ -479,6 +507,20 @@ void CBotPlayer::UpdateTarget()
 	m_LastTarget = TargetId.value();
 	m_LastTargetSeenAtPos = GameController()->GetCharacter(TargetId.value())->GetPos();
 	m_LastSeenTick = CurrentTick;
+
+	if(pCharacter->IsInDeepDefence())
+	{
+		float Len2 = distance_squared(pCharacter->GetPos(), m_LastTargetSeenAtPos);
+		float HitDistance = TileSizeF;
+		if(pCharacter->GetActiveWeapon() == WEAPON_HAMMER)
+		{
+			HitDistance = GetCharacterClass()->GetHammerProjOffset() + GetCharacterClass()->GetHammerRange() + m_pCharacter->GetProximityRadius();
+		}
+		if(Len2 < HitDistance * HitDistance)
+		{
+			SetDeepDefenceActive(false);
+		}
+	}
 
 	if(IsInfected())
 	{
@@ -808,6 +850,18 @@ void CBotPlayer::UpdateActiveWeapon()
 
 void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 {
+	if(IsGrounded() && m_WantDeepDefence)
+	{
+		SetDeepDefenceActive(true);
+	}
+
+	CIcCharacter *pCharacter = GetCharacter();
+	if(pCharacter->IsInDeepDefence() || pCharacter->IsDeepDefenceRequested())
+	{
+		m_WantDeepDefence = false;
+		return;
+	}
+
 	if(m_RoamingDirection == DIRECTION_NONE)
 	{
 		SetRoamingDirection(DIRECTION(random_int(-1, 1)));
@@ -1227,6 +1281,14 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 
 void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 {
+	m_WantDeepDefence = false;
+
+	CIcCharacter *pCharacter = GetCharacter();
+	if(pCharacter->IsInDeepDefence() || pCharacter->IsDeepDefenceRequested())
+	{
+		return;
+	}
+
 	const int Tick = Server()->Tick();
 	const int TickSpeed = Server()->TickSpeed();
 	const vec2 &Pos = GetCharacter()->GetPos();
@@ -1655,6 +1717,19 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	}
 
 	bool WantToFire{};
+
+	if(CanDeepDefence())
+	{
+		if(Distance < HitDistance)
+		{
+			m_NoTargetsInCloseRangeForTicks = 0;
+		}
+		else if(Distance >= m_DistanceToTarget)
+		{
+			++m_NoTargetsInCloseRangeForTicks;
+		}
+	}
+
 	if(Distance < HitDistance)
 	{
 		if(GetCharacter()->GetReloadTimer() <= 0)
@@ -1816,7 +1891,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		m_FleeingSinceTick = Tick;
 	}
 
-	if (!WantToJump && AbsXToTarget < 4.0_Tiles && std::abs(VectorToTarget.y) > HitDistance)
+	if(AbsXToTarget < 4.0_Tiles && std::abs(VectorToTarget.y) > HitDistance)
 	{
 		++m_TargetUnreachableTicks;
 	}
@@ -1825,11 +1900,29 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 		m_TargetUnreachableTicks = 0;
 	}
 
-	if (m_TargetUnreachableTicks > Server()->TickSpeed() * 2)
+	if(!CanDeepDefence() && (m_TargetUnreachableTicks > Server()->TickSpeed() * 2))
 	{
 		m_IgnoreTarget = m_LastTarget;
 		m_IgnoreTargetUntil = Tick + Server()->TickSpeed() * 2;
 	}
+
+	if(CanDeepDefence() && IsGrounded())
+	{
+		constexpr float MaxTime = 3.0f;
+		if(m_NoTargetsInCloseRangeForTicks >= TickSpeed * MaxTime)
+		{
+			SetDeepDefenceActive(true);
+
+			if(pCharacter->IsInDeepDefence() || pCharacter->IsDeepDefenceRequested())
+			{
+				pInput->m_Direction = 0;
+				pInput->m_Jump = 0;
+				pInput->m_Fire = 0;
+			}
+		}
+	}
+
+	m_DistanceToTarget = Distance;
 }
 
 void CBotPlayer::UpdateHumanBotControls()
@@ -1910,6 +2003,26 @@ void CBotPlayer::ScheduleRandomFire()
 	}
 
 	m_NextRandomFireTick = Server()->Tick() + Server()->TickSpeed() * FireInterval;
+}
+
+void CBotPlayer::SetDeepDefenceActive(bool Active)
+{
+	constexpr float MinTimeBetweenDefenceChanges = 1.25f;
+	if(Server()->Tick() < m_DeepDefenceChangedTick + Server()->TickSpeed() * MinTimeBetweenDefenceChanges)
+		return;
+
+	m_DeepDefenceChangedTick = Server()->Tick();
+	CIcCharacter *pCharacter = GetCharacter();
+	pCharacter->SetDeepDefence(Active);
+	if(Active)
+	{
+		pCharacter->LockPosition();
+	}
+	else
+	{
+		pCharacter->UnlockPosition();
+		m_NoTargetsInCloseRangeForTicks = 0;
+	}
 }
 
 const char *CBotPlayer::DumpBot()
@@ -3555,6 +3668,11 @@ CBotPlayer::DIRECTION CBotPlayer::DoLandingManeuves() const
 	}
 
 	return m_RoamingDirection;
+}
+
+bool CBotPlayer::CanDeepDefence() const
+{
+	return GetClass() == EPlayerClass::Tank;
 }
 
 bool CBotPlayer::CanHook() const
