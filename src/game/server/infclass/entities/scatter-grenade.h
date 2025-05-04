@@ -12,23 +12,25 @@ public:
 
 	CScatterGrenade(CGameContext *pGameContext, int Owner, vec2 Pos, vec2 Dir);
 
-	vec2 GetPos(float Time);
-	void FillInfo(CNetObj_Projectile *pProj);
+	vec2 GetPos(float Time) const;
+	void FillInfo(CNetObj_Projectile *pProj) const;
 
-	virtual void Tick();
-	virtual void TickPaused();
-	virtual void Explode();
-	virtual void Snap(int SnappingClient);
-	virtual void FlashGrenade();
+	void Tick() override;
+	void TickPaused() override;
+	void Snap(int SnappingClient) override;
+	void Explode();
+	void FlashGrenade();
 	void ExplodeOnContact();
 
 private:
+	void OnCollided(const vec2 &At);
+
 	vec2 m_ActualPos;
 	vec2 m_ActualDir;
 	vec2 m_Direction;
 	int m_StartTick;
-	bool m_IsFlashGrenade;
-	bool m_ExplodeOnContact = false;
+	bool m_IsFlashGrenade{};
+	bool m_ExplodeOnContact{};
 };
 
 #endif
