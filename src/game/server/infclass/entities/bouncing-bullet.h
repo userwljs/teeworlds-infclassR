@@ -12,8 +12,8 @@ public:
 
 	CBouncingBullet(CGameContext *pGameContext, int Owner, vec2 Pos, vec2 Dir);
 
-	vec2 GetPos(float Time);
-	void FillInfo(CNetObj_Projectile *pProj);
+	vec2 GetPos(float Time) const;
+	void FillInfo(CNetObj_Projectile *pProj) const;
 
 	virtual void Tick();
 	virtual void TickPaused();

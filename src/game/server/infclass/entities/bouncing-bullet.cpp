@@ -12,8 +12,8 @@
 
 int CBouncingBullet::EntityId{};
 
-CBouncingBullet::CBouncingBullet(CGameContext *pGameContext, int Owner, vec2 Pos, vec2 Dir)
-	: CIcEntity(pGameContext, EntityId, Pos, Owner)
+CBouncingBullet::CBouncingBullet(CGameContext *pGameContext, int Owner, vec2 Pos, vec2 Dir) :
+	CIcEntity(pGameContext, EntityId, Pos, Owner)
 {
 	m_ActualPos = Pos;
 	m_ActualDir = Dir;
@@ -22,11 +22,11 @@ CBouncingBullet::CBouncingBullet(CGameContext *pGameContext, int Owner, vec2 Pos
 	SetLifespan(2.0f);
 	m_BounceLeft = 3; // the number of time that a bullet can bounce. It's usefull to remove bullets laying on the ground
 	m_DistanceLeft = 1200; // the max distance a bullet can travel
-	
+
 	GameWorld()->InsertEntity(this);
 }
 
-vec2 CBouncingBullet::GetPos(float Time)
+vec2 CBouncingBullet::GetPos(float Time) const
 {
 	float Curvature = GameServer()->Tuning()->m_ShotgunCurvature;
 	float Speed = GameServer()->Tuning()->m_ShotgunSpeed;
@@ -48,22 +48,22 @@ void CBouncingBullet::Tick()
 	if(IsMarkedForDestroy())
 		return;
 
-	float Pt = (Server()->Tick()-m_StartTick-1)/(float)Server()->TickSpeed();
-	float Ct = (Server()->Tick()-m_StartTick)/(float)Server()->TickSpeed();
+	float Pt = (Server()->Tick() - m_StartTick - 1) / (float)Server()->TickSpeed();
+	float Ct = (Server()->Tick() - m_StartTick) / (float)Server()->TickSpeed();
 	vec2 PrevPos = GetPos(Pt);
 	vec2 CurPos = GetPos(Ct);
-	
+
 	m_ActualPos = CurPos;
 	m_ActualDir = normalize(CurPos - PrevPos);
 
 	m_DistanceLeft -= distance(CurPos, PrevPos);
-	
+
 	if(GameLayerClipped(CurPos) || m_BounceLeft < 0 || m_DistanceLeft < 0.0f)
 	{
 		GameWorld()->DestroyEntity(this);
 		return;
 	}
-	
+
 	vec2 NewPos;
 	int Collide = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CurPos, nullptr, &NewPos);
 
@@ -127,19 +127,19 @@ void CBouncingBullet::Tick()
 	}
 }
 
-void CBouncingBullet::FillInfo(CNetObj_Projectile *pProj)
+void CBouncingBullet::FillInfo(CNetObj_Projectile *pProj) const
 {
 	pProj->m_X = (int)m_Pos.x;
 	pProj->m_Y = (int)m_Pos.y;
-	pProj->m_VelX = (int)(m_Direction.x*100.0f);
-	pProj->m_VelY = (int)(m_Direction.y*100.0f);
+	pProj->m_VelX = (int)(m_Direction.x * 100.0f);
+	pProj->m_VelY = (int)(m_Direction.y * 100.0f);
 	pProj->m_StartTick = m_StartTick;
 	pProj->m_Type = WEAPON_SHOTGUN;
 }
 
 void CBouncingBullet::Snap(int SnappingClient)
 {
-	float Ct = (Server()->Tick()-m_StartTick)/(float)Server()->TickSpeed();
+	float Ct = (Server()->Tick() - m_StartTick) / (float)Server()->TickSpeed();
 
 	if(NetworkClipped(SnappingClient, GetPos(Ct)))
 		return;
