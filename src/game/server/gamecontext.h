@@ -133,6 +133,7 @@ public:
 	CGameWorld *GameWorld() { return &m_World; }
 	CCollision *Collision() { return &m_Collision; }
 	CTuningParams *Tuning() { return &m_Tuning; }
+	const CTuningParams *Tuning() const { return &m_Tuning; }
 	virtual class CLayers *Layers() { return &m_Layers; }
 
 	CGameContext();
