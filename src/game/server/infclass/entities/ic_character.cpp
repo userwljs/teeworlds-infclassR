@@ -246,6 +246,11 @@ void CIcCharacter::TickBeforeWorld()
 	m_Core.m_InLove = IsInLove();
 	m_Core.m_HookProtected = GetPlayer()->HookProtectionEnabled();
 	m_SleepThisTick = std::max(m_SleepTicks, m_DeepSleepTicks) > 0;
+	if(m_InDeepDefenceForThisTick != m_WantDeepDefence)
+	{
+		m_InDeepDefenceForThisTick = m_WantDeepDefence;
+		GetClass()->UpdateSkin();
+	}
 
 	m_Core.m_ReflectingProjectiles = IsReflectingProjectiles();
 	const bool WasDead = IsDead();
@@ -341,6 +346,11 @@ void CIcCharacter::Tick()
 	}
 
 	m_pClass->OnCharacterTick();
+
+	if(m_Core.m_Input.m_Direction)
+	{
+		SetDeepDefence(false);
+	}
 }
 
 void CIcCharacter::TickDeferred()
@@ -514,8 +524,17 @@ void CIcCharacter::Snap(int SnappingClient)
 	{
 		pDDNetCharacter->m_Flags |= CHARACTERFLAG_PRACTICE_MODE;
 	}
-	pDDNetCharacter->m_TargetX = m_Core.m_Input.m_TargetX;
-	pDDNetCharacter->m_TargetY = m_Core.m_Input.m_TargetY;
+
+	if(IsInDeepDefence())
+	{
+		pDDNetCharacter->m_TargetX = m_Input.m_TargetX = 0;
+		pDDNetCharacter->m_TargetY = m_Input.m_TargetY = 1;
+	}
+	else
+	{
+		pDDNetCharacter->m_TargetX = m_Core.m_Input.m_TargetX;
+		pDDNetCharacter->m_TargetY = m_Core.m_Input.m_TargetY;
+	}
 }
 
 void CIcCharacter::SpecialSnapForClient(int SnappingClient, bool *pDoSnap)
@@ -738,7 +757,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		DamageContext.Weapon = DamageTypeToWeapon(DamageType, &DamageContext.Mode);
 	}
 
-	const int &Weapon = DamageContext.Weapon;
+	const int Weapon = DamageContext.Weapon;
 	TAKEDAMAGEMODE &Mode = DamageContext.Mode;
 	int &Dmg = DamageContext.Damage;
 
@@ -779,8 +798,22 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		Mode = TAKEDAMAGEMODE::NOINFECTION;
 	}
 
+	if(Weapon >= 0)
+	{
+		if(IsInDeepDefence())
+		{
+			DamageContext.Damage = 0;
+			DamageContext.Force = vec2{};
+		}
+	}
+
 	GetClass()->OnCharacterDamage(&DamageContext);
 	GetPlayer()->OnCharacterDamage(DamageContext);
+
+	if(IsInDeepDefence())
+	{
+		return false;
+	}
 
 	const bool DmgFromHuman = pKillerPlayer && pKillerPlayer->IsHuman();
 	if(DmgFromHuman && (GetPlayerClass() == EPlayerClass::Soldier) && (Weapon == WEAPON_HAMMER))
@@ -2345,7 +2378,12 @@ bool CIcCharacter::IsSolo() const
 
 bool CIcCharacter::IsReflectingProjectiles() const
 {
-	return IsInvincible();
+	return IsInvincible() || IsInDeepDefence();
+}
+
+bool CIcCharacter::IsInDeepDefence() const
+{
+	return m_InDeepDefenceForThisTick;
 }
 
 bool CIcCharacter::IsInvincible() const
@@ -2356,6 +2394,14 @@ bool CIcCharacter::IsInvincible() const
 void CIcCharacter::SetInvincible(int Invincible)
 {
 	m_Invincible = Invincible;
+}
+
+void CIcCharacter::SetDeepDefence(bool Active)
+{
+	if (m_WantDeepDefence == Active)
+		return;
+
+	m_WantDeepDefence = Active;
 }
 
 bool CIcCharacter::HasHallucination() const
@@ -2726,7 +2772,7 @@ void CIcCharacter::PrepareSnapContext(CCharacterSnapContext &SnapContext) const
 	}
 
 	int DDNetVersion = Server()->GetClientVersion(SnappingClient);
-	bool NoWeapon = IsDead() || (GetPlayerClass() == EPlayerClass::Boomer);
+	bool NoWeapon = IsDead() || IsInDeepDefence() || (GetPlayerClass() == EPlayerClass::Boomer);
 	if(NoWeapon)
 	{
 		if(DDNetVersion >= 18080)

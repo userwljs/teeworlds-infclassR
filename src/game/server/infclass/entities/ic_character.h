@@ -183,8 +183,10 @@ public:
 	bool HasGrantedInvisibility() const;
 	bool IsSolo() const;
 	bool IsReflectingProjectiles() const;
+	bool IsInDeepDefence() const;
 	bool IsInvincible() const; // Invincible here means "ignores all damage"
 	void SetInvincible(int Invincible);
+	void SetDeepDefence(bool Active);
 	bool HasHallucination() const;
 	void Freeze(float Time, int Player, FREEZEREASON Reason);
 	bool IsFrozen() const;
@@ -356,6 +358,8 @@ protected:
 	int m_PoisonFrom = 0;
 	EDamageType m_PoisonDamageType;
 
+	bool m_InDeepDefenceForThisTick{};
+	bool m_WantDeepDefence{};
 	bool m_IsInvisible = false;
 	int m_AntiFireTime = 0;
 	int m_GrantedInvisibilityUntilTick = 0;

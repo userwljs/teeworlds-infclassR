@@ -185,6 +185,9 @@ int CIcPlayerClass::GetDefaultEmote() const
 	if(m_pCharacter->IsInvisible())
 		EmoteNormal = EMOTE_BLINK;
 
+	if(m_pCharacter->IsInDeepDefence())
+		EmoteNormal = EMOTE_BLINK;
+
 	if(m_pCharacter->IsInLove())
 		EmoteNormal = EMOTE_HAPPY;
 
