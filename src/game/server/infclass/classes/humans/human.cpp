@@ -522,11 +522,6 @@ void CInfClassHuman::OnCharacterPreCoreTick()
 				{
 					m_pCharacter->UnlockPosition();
 				}
-				else
-				{
-					m_pCharacter->ResetMovementsInput();
-					m_PositionLockPosition = m_pCharacter->GetPos();
-				}
 			}
 		}
 			break;
@@ -663,19 +658,6 @@ void CInfClassHuman::OnCharacterTickPaused()
 void CInfClassHuman::OnCharacterPostCoreTick()
 {
 	CIcPlayerClass::OnCharacterPostCoreTick();
-
-	switch(GetPlayerClass())
-	{
-	case EPlayerClass::Sniper:
-		if(m_pCharacter->PositionIsLocked())
-		{
-			m_pCharacter->ResetVelocity();
-			m_pCharacter->SetPosition(m_PositionLockPosition);
-		}
-		break;
-	default:
-		break;
-	}
 }
 
 void CInfClassHuman::OnCharacterSnap(int SnappingClient)

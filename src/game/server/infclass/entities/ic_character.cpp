@@ -1156,6 +1156,7 @@ bool CIcCharacter::PositionIsLocked() const
 void CIcCharacter::LockPosition()
 {
 	m_PositionLocked = true;
+	m_PositionLockedAt = GetPos();
 }
 
 void CIcCharacter::UnlockPosition()
@@ -2704,6 +2705,11 @@ void CIcCharacter::PostCoreTick()
 			m_pClass->OnHookAttachedPlayer();
 		}
 
+		if(PositionIsLocked())
+		{
+			ResetVelocity();
+			SetPosition(m_PositionLockedAt);
+		}
 		m_pClass->OnCharacterPostCoreTick();
 	}
 

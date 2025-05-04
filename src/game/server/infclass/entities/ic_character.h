@@ -334,6 +334,7 @@ protected:
 	int m_DamageTaken = 0;
 	icArray<CDamagePoint, 4> m_TakenDamageDetails;
 	bool m_PositionLocked = false;
+	vec2 m_PositionLockedAt{};
 
 	bool m_SleepThisTick{};
 	int m_SleepTicks = 0;
