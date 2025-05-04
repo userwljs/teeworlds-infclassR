@@ -1948,7 +1948,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 							ConsoleAccessLevel = EAccessLevel::ADMIN;
 							break;
 						case AUTHED_MOD:
-							ConsoleAccessLevel = EAccessLevel::ADMIN;
+							ConsoleAccessLevel = EAccessLevel::MOD;
 							break;
 						default:
 							ConsoleAccessLevel = EAccessLevel::USER;
