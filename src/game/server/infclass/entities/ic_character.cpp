@@ -336,7 +336,7 @@ void CIcCharacter::TickDeferred()
 	if(Events & COREEVENT_HOOK_ATTACH_PLAYER)
 		GameServer()->CreateSound(GetPos(), SOUND_HOOK_ATTACH_PLAYER);
 
-	if(GetPlayerClass() != EPlayerClass::Ghost || !m_IsInvisible)
+	if(!IsInvisible())
 	{
 		if(Events & COREEVENT_GROUND_JUMP)
 			GameServer()->CreateSound(GetPos(), SOUND_PLAYER_JUMP, MaskEsceptSelf);
