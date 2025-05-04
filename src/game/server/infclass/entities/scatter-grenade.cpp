@@ -66,7 +66,23 @@ void CScatterGrenade::Tick()
 
 		if(pHit)
 		{
-			Explode();
+			if(pHit->IsReflectingProjectiles())
+			{
+				vec2 vel;
+				vel.x = m_Direction.x;
+				vel.y = m_Direction.y + 2 * GameServer()->Tuning()->m_GrenadeCurvature / 10000 * Ct * GameServer()->Tuning()->m_GrenadeSpeed;
+				float Speed = length(vel);
+				vec2 NormalizedVelocity = vel / Speed;
+
+				const vec2 RadiusVector = normalize(NewPos - pHit->GetPos());
+				m_Direction = (NormalizedVelocity + RadiusVector * 2) * Speed * 0.67f;
+
+				OnCollided(NewPos);
+			}
+			else
+			{
+				Explode();
+			}
 			return;
 		}
 	}
