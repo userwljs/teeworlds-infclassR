@@ -67,6 +67,9 @@ void CInfClassInfected::SetupSkinContext(CSkinContext *pOutput, bool ForSameTeam
 	case EPlayerClass::Voodoo:
 		pOutput->ExtraData1 = m_VoodooAboutToDie;
 		break;
+	case EPlayerClass::Tank:
+		pOutput->ExtraData1 = (m_pCharacter && m_pCharacter->IsInDeepDefence()) ? 1 : 0;
+		break;
 	default:
 		pOutput->ExtraData1 = 0;
 		break;
@@ -171,6 +174,18 @@ bool CInfClassInfected::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pO
 		pOutput->ColorFeet = 65414;
 		break;
 	case EPlayerClass::Tank:
+		pOutput->pSkinName = "redstripe";
+		pOutput->UseCustomColor = 1;
+		if(Context.ExtraData1 == 0)
+		{
+			pOutput->ColorBody = 3014400;
+		}
+		else
+		{
+			pOutput->ColorBody = 3293440; // grey-green
+		}
+		pOutput->ColorFeet = 13168;
+		break;
 	case EPlayerClass::Undead:
 		pOutput->pSkinName = "redstripe";
 		pOutput->UseCustomColor = 1;
