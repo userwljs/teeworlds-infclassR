@@ -143,6 +143,7 @@ void CCharacterCore::Reset()
 	m_FreezeStart = 0;
 
 	// Infclass Character
+	m_ReflectingProjectiles = false;
 	m_Passenger = nullptr;
 	m_IsPassenger = false;
 	m_ProbablyStucked = false;

@@ -247,6 +247,7 @@ void CIcCharacter::TickBeforeWorld()
 	m_Core.m_HookProtected = GetPlayer()->HookProtectionEnabled();
 	m_SleepThisTick = std::max(m_SleepTicks, m_DeepSleepTicks) > 0;
 
+	m_Core.m_ReflectingProjectiles = IsReflectingProjectiles();
 	const bool WasDead = IsDead();
 	for(std::optional<int> *pTick : {
 			&m_SoloUntilTick,
@@ -2340,6 +2341,11 @@ bool CIcCharacter::HasGrantedInvisibility() const
 bool CIcCharacter::IsSolo() const
 {
 	return m_Core.m_Solo;
+}
+
+bool CIcCharacter::IsReflectingProjectiles() const
+{
+	return IsInvincible();
 }
 
 bool CIcCharacter::IsInvincible() const

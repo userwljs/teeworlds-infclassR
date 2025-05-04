@@ -182,6 +182,7 @@ public:
 	bool IsInvisible() const;
 	bool HasGrantedInvisibility() const;
 	bool IsSolo() const;
+	bool IsReflectingProjectiles() const;
 	bool IsInvincible() const; // Invincible here means "ignores all damage"
 	void SetInvincible(int Invincible);
 	bool HasHallucination() const;
