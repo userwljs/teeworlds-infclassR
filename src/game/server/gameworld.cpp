@@ -263,12 +263,12 @@ CEntity *CGameWorld::IntersectEntity(vec2 Pos0, vec2 Pos1, float Radius, vec2 *N
 CCharacter *CGameWorld::IntersectCharacter(vec2 Pos0, vec2 Pos1, float Radius, vec2 &NewPos, CharacterFilter FilterFunction, int CollideWith)
 {
 	// Find other players
-	float ClosestLen = distance(Pos0, Pos1) * 100.0f;
+	float ClosestLen2 = distance_squared(Pos0, Pos1) * 100.0f;
 	CCharacter *pClosest = 0;
 
 	CCharacter *p = (CCharacter *)FindFirst(ENTTYPE_CHARACTER);
 	for(; p; p = (CCharacter *)p->TypeNext())
- 	{
+	{
 		if(FilterFunction && !FilterFunction(p))
 			continue;
 
@@ -279,17 +279,19 @@ CCharacter *CGameWorld::IntersectCharacter(vec2 Pos0, vec2 Pos1, float Radius, v
 		if(!closest_point_on_line(Pos0, Pos1, p->m_Pos, IntersectPos))
 			continue;
 
-		float Len = distance(p->m_Pos, IntersectPos);
-		if(Len < p->m_ProximityRadius+Radius)
-		{
-			Len = distance(Pos0, IntersectPos);
-			if(Len < ClosestLen)
-			{
-				NewPos = IntersectPos;
-				ClosestLen = Len;
-				pClosest = p;
-			}
-		}
+		const float MaxDistance = p->m_ProximityRadius + Radius;
+		const float MaxDistance2 = MaxDistance * MaxDistance;
+		const float Len2FromObject = distance_squared(p->m_Pos, IntersectPos);
+		if(Len2FromObject >= MaxDistance2)
+			continue;
+
+		float Len2 = distance_squared(Pos0, IntersectPos);
+		if(Len2 >= ClosestLen2)
+			continue;
+
+		NewPos = IntersectPos;
+		ClosestLen2 = Len2;
+		pClosest = p;
 	}
 
 	return pClosest;
