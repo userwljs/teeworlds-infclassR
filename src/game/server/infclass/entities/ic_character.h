@@ -265,6 +265,9 @@ public:
 
 	CGameWorld *GameWorld() const;
 	const IServer *Server() const;
+
+	const auto &GetTakenDamageDetails() const { return m_TakenDamageDetails; }
+
 protected:
 	void PreCoreTick() override;
 	void PostCoreTick() override;
