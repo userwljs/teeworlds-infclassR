@@ -346,6 +346,7 @@ protected:
 
 	float m_JumpExtraProbability = 0;
 
+	int m_LastDamageTick{};
 	int m_LastTarget = -1;
 	std::optional<int> m_IgnoreTarget{};
 	int m_IgnoreTargetUntil{};

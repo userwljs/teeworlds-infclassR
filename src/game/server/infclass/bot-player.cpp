@@ -317,6 +317,11 @@ void CBotPlayer::OnCharacterDamage(const SDamageContext &Context)
 {
 	CBaseBotPlayer::OnCharacterDamage(Context);
 
+	if(Context.Weapon >= 0)
+	{
+		m_LastDamageTick = Server()->Tick();
+	}
+
 	if(m_BotState != EBotState::Hunting)
 	{
 		bool DamageIsPhysical{};
