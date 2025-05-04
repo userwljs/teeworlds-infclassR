@@ -289,7 +289,18 @@ CCharacter *CGameWorld::IntersectCharacter(vec2 Pos0, vec2 Pos1, float Radius, v
 		if(Len2 >= ClosestLen2)
 			continue;
 
-		NewPos = IntersectPos;
+		bool constexpr UsePreciseHitPosition = true;
+		if(UsePreciseHitPosition)
+		{
+			// Precise intersection makes this behavior different from vanilla Teeworlds/DDNet
+			float Offset = std::sqrt(MaxDistance2 - Len2FromObject);
+			const vec2 IntersectionDir = normalize(Pos1 - Pos0);
+			NewPos = IntersectPos - IntersectionDir * Offset;
+		}
+		else
+		{
+			NewPos = IntersectPos;
+		}
 		ClosestLen2 = Len2;
 		pClosest = p;
 	}
