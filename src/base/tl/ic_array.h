@@ -34,6 +34,7 @@ public:
 	void Resize(std::size_t NewSize);
 
 	constexpr std::size_t Capacity() const;
+	static constexpr std::size_t ArrayCapacity();
 
 	bool IsEmpty() const;
 
@@ -125,6 +126,12 @@ void icArray<T, StackCapacity>::Resize(std::size_t NewSize)
 
 template<class T, int StackCapacity>
 constexpr std::size_t icArray<T, StackCapacity>::Capacity() const
+{
+	return StackCapacity;
+}
+
+template<class T, int StackCapacity>
+constexpr std::size_t icArray<T, StackCapacity>::ArrayCapacity()
 {
 	return StackCapacity;
 }
