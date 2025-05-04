@@ -31,6 +31,7 @@ protected:
 
 	virtual bool HitTarget(vec2 From, vec2 To);
 	virtual bool OnCharacterHit(CIcCharacter *pHit, const vec2 &At);
+	void DoReflect(const vec2 &To);
 
 protected:
 	vec2 m_From;
@@ -45,6 +46,7 @@ protected:
 	int m_Dmg = 0;
 	bool m_Explosive = false;
 	bool m_Piercing = false;
+	std::optional<int> m_IgnoreTarget{};
 };
 
 #endif // GAME_SERVER_INFCLASS_ENTITIES_LASER_H

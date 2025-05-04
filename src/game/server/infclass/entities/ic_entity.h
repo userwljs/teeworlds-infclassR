@@ -6,6 +6,8 @@
 #include <game/server/entity.h>
 #include <game/server/entities_filter.h>
 
+#include <optional>
+
 inline constexpr int TileSize = 32;
 inline constexpr float TileSizeF = 32.0f;
 inline constexpr vec2 Tile2DSize{TileSizeF, TileSizeF};
