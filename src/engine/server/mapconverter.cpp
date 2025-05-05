@@ -657,8 +657,24 @@ void CMapConverter::CopyVersion()
 
 void CMapConverter::CopyMapInfo()
 {
-	CMapItemInfo *pItem = (CMapItemInfo *)Map()->FindItem(MAPITEMTYPE_INFO, 0);
-	m_DataFile.AddItem(MAPITEMTYPE_INFO, 0, sizeof(CMapItemInfo), pItem);
+	CMapItemInfo *pSourceItem = (CMapItemInfo *)Map()->FindItem(MAPITEMTYPE_INFO, 0);
+
+	CMapItemInfo Item;
+	Item.m_Version = 1;
+	const char *pData{};
+	pData = (const char *)Map()->GetData(pSourceItem->m_Author);
+	Item.m_Author = m_DataFile.AddDataString(pData ? pData : "");
+
+	pData = (const char *)Map()->GetData(pSourceItem->m_Version);
+	Item.m_MapVersion = m_DataFile.AddDataString(pData ? pData : "");
+
+	pData = (const char *)Map()->GetData(pSourceItem->m_Credits);
+	Item.m_Credits = m_DataFile.AddDataString(pData ? pData : "");
+
+	pData = (const char *)Map()->GetData(pSourceItem->m_License);
+	Item.m_License = m_DataFile.AddDataString(pData ? pData : "");
+
+	m_DataFile.AddItem(MAPITEMTYPE_INFO, 0, sizeof(Item), &Item);
 }
 
 void CMapConverter::CopyImages()
