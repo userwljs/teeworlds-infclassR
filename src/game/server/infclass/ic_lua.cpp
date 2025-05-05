@@ -2,6 +2,7 @@
 
 #if CONF_LUA
 #include <game/server/infclass/entities/engineer-wall.h>
+#include <game/server/infclass/entities/hero-flag.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_door.h>
 #include <game/server/infclass/entities/ic_entity.h>
@@ -12,6 +13,7 @@
 #include <game/server/map_info.h>
 
 #include <engine/lua.h>
+#include <engine/server/lua_callback.h>
 #include <engine/server/roundstatistics.h>
 
 #include <base/tl/ic_enum.h>
@@ -202,6 +204,25 @@ CLuaPlayersNumber CIcGameController::GetPlayersNumber_Lua(bool IncludeBots)
 	return Result;
 }
 
+void CIcGameController::UpdateHeroFlags_Lua()
+{
+	if(!Lua()->HasGlobalCallable("Is_flag_position_valid"))
+		return;
+
+	for(TEntityPtr<CHeroFlag> pFlag = GameWorld()->FindFirst<CHeroFlag>(); pFlag; ++pFlag)
+	{
+		if(pFlag->IsAvailable())
+		{
+			CIcEntity *pFlagEntity = pFlag;
+			std::optional<bool> allowed = RunCallbackWithResult<bool>(Lua()->GetLuaState(), "Is_flag_position_valid", pFlagEntity);
+			if(allowed.has_value() && allowed.value() != true)
+			{
+				pFlag->FindPosition();
+			}
+		}
+	}
+}
+
 void CIcGameController::RegisterLuaBindings()
 {
 	lua_State *L = Lua()->GetLuaState();
@@ -347,6 +368,7 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("SetHumanSpawnEnabled", &CIcGameController::SetHumanSpawnEnabled)
 			.addFunction("SetInfectedSpawnEnabled", &CIcGameController::SetInfectedSpawnEnabled)
 			.addFunction("IsPositionAvailableForHumans", &CIcGameController::IsPositionAvailableForHumans)
+			.addFunction("UpdateHeroFlags", &CIcGameController::UpdateHeroFlags_Lua)
 
 			.addFunction("StartRound", &CIcGameController::StartRound)
 			.addFunction("FinishRound", &FinishRound_Lua)

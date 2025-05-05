@@ -311,6 +311,7 @@ public:
 	void SetHumanSpawnEnabled(int Index, bool Enabled);
 	void SetInfectedSpawnEnabled(int Index, bool Enabled);
 	CLuaPlayersNumber GetPlayersNumber_Lua(bool IncludeBots = false);
+	void UpdateHeroFlags_Lua();
 #endif
 
 	static FunRoundConfiguration ParseFunRoundConfigArguments(IConsole::IResult *pResult);
