@@ -4,6 +4,12 @@
 #include <base/system.h>
 
 template<typename T>
+concept EnumHasCount = requires { T::Count; } || requires { T::COUNT; };
+
+template<typename T>
+concept EnumHasInvalidKey = requires { T::Invalid; } || requires { T::INVALID; };
+
+template<EnumHasInvalidKey T>
 constexpr T GetEnumInvalidValue()
 {
 	if constexpr(requires { static_cast<int>(T::Invalid); })
@@ -12,7 +18,7 @@ constexpr T GetEnumInvalidValue()
 		return T::INVALID;
 }
 
-template<typename T>
+template<EnumHasCount T>
 constexpr int GetEnumKeysCount()
 {
 	if constexpr(requires { static_cast<int>(T::Count); })
@@ -21,16 +27,27 @@ constexpr int GetEnumKeysCount()
 		return static_cast<int>(T::COUNT);
 }
 
-template<typename T, int NamesCount>
+template<EnumHasCount T, int NamesCount>
 [[nodiscard]] const char *toStringImpl(T Value, const char *(&apNames)[NamesCount])
 {
-	// T::Invalid and T::Count are equal to avoid extra case in switch()
-	static_assert(GetEnumKeysCount<T>() + 1 == NamesCount);
 	int Index = static_cast<int>(Value);
 	if((Index < 0) || (Index >= NamesCount))
 	{
+		// T::Invalid and T::Count are equal to avoid extra case in switch()
+		static_assert(GetEnumKeysCount<T>() + 1 == NamesCount);
 		dbg_msg("ic_enum", "toStringImpl(%d): out of range!", Index);
 		return apNames[static_cast<int>(GetEnumInvalidValue<T>())];
+	}
+	return apNames[Index];
+}
+
+template<typename T, int NamesCount>
+[[nodiscard]] const char *toStringImpl(T Value, const char *(&apNames)[NamesCount], const char *pInvalidStr)
+{
+	int Index = static_cast<int>(Value);
+	if((Index < 0) || (Index >= NamesCount))
+	{
+		return pInvalidStr;
 	}
 	return apNames[Index];
 }
