@@ -3,8 +3,8 @@
 #ifndef GAME_COLLISION_H
 #define GAME_COLLISION_H
 
-#include <base/vmath.h>
 #include <base/tl/array.h>
+#include <base/vmath.h>
 
 #include <map>
 #include <vector>
@@ -37,33 +37,15 @@ struct ZoneData
 
 class CCollision
 {
-	std::vector<EZonePhysics> mv_Physics;
-	std::vector<int8_t> mv_Doors;
-	CTile *m_pTiles;
-	int m_Width;
-	int m_Height;
-	CLayers *m_pLayers;
-	
-	double m_Time;
-
-	array<array<CMapItemLayer *>> m_Zones;
-
-	bool IsSolid(int x, int y) const;
-
 public:
-	enum
-	{
-		ZONEFLAG_DEATH=1,
-		ZONEFLAG_INFECTION=2,
-		ZONEFLAG_NOSPAWN=4,
-	};
-
 	CCollision();
 	~CCollision();
+
 	void Init(class CLayers *pLayers);
 	void InitPhysicalLayer();
 	void InitDoorsLayer();
 	void InitTeleports();
+	void Unload();
 
 	bool CheckPoint(float x, float y) const { return IsSolid(round_to_int(x), round(y)); }
 	bool CheckPoint(vec2 Pos) const { return CheckPoint(Pos.x, Pos.y); }
@@ -77,8 +59,6 @@ public:
 	void MovePoint(vec2 *pInoutPos, vec2 *pInoutVel, float Elasticity, int *pBounces) const;
 	void MoveBox(vec2 *pInoutPos, vec2 *pInoutVel, vec2 Size, vec2 Elasticity, bool *pGrounded = nullptr) const;
 	bool TestBox(vec2 Pos, vec2 Size) const;
-
-	void Dest();
 
 	int GetMoveRestrictions(CALLBACK_SWITCHACTIVE pfnSwitchActive, void *pUser, vec2 Pos, float Distance = 18.0f, int OverrideCenterTileIndex = -1);
 	int GetMoveRestrictions(vec2 Pos, float Distance = 18.0f)
@@ -95,16 +75,14 @@ public:
 	int GetDoorCollisionAt(vec2 Pos) const;
 	int IntersectLineWithDoors(vec2 From, vec2 To, vec2 *pOutCollision = nullptr, vec2 *pOutBeforeCollision = nullptr) const;
 
-	void SetTime(double Time) { m_Time = Time; }
-	
-	//This function return an Handle to access all zone layers with the name "pName"
-	int GetZoneHandle(const char* pName);
+	void SetTime(double Time);
+
+	// This function return an Handle to access all zone layers with the name "pName"
+	int GetZoneHandle(const char *pName);
 	int GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData = nullptr);
 	int GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData = nullptr) { return GetZoneValueAt(ZoneHandle, {x, y}, pData); }
-	
-/* INFECTION MODIFICATION START ***************************************/
+
 	bool AreConnected(vec2 Pos1, vec2 Pos2, float Radius) const;
-/* INFECTION MODIFICATION END *****************************************/
 
 	int GetPureMapIndex(float x, float y) const;
 	int GetPureMapIndex(vec2 Pos) const { return GetPureMapIndex(Pos.x, Pos.y); }
@@ -126,13 +104,28 @@ public:
 	const std::vector<vec2> &TeleCheckOuts(int Number) const;
 
 private:
-	CTeleTile *m_pTele;
+	bool IsSolid(int x, int y) const;
+
+	CLayers *m_pLayers{};
+
+	int m_Width{};
+	int m_Height{};
+
+	CTile *m_pTiles{};
+	CTeleTile *m_pTele{};
+	CSpeedupTile *m_pSpeedup{};
+
 	// TILE_TELEOUT
 	std::map<int, std::vector<vec2>> m_TeleOuts;
 	// TILE_TELECHECKOUT
 	std::map<int, std::vector<vec2>> m_TeleCheckOuts;
 
-	CSpeedupTile *m_pSpeedup;
+	std::vector<EZonePhysics> m_vPhysics;
+	std::vector<int8_t> m_vDoors;
+
+	double m_Time;
+
+	array<array<CMapItemLayer *>> m_Zones;
 };
 
 #endif

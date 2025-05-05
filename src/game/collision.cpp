@@ -1,19 +1,19 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
-#include <base/system.h>
 #include <base/math.h>
+#include <base/system.h>
 #include <base/vmath.h>
 
-#include <math.h>
-#include <engine/map.h>
 #include <engine/kernel.h>
+#include <engine/map.h>
+#include <cmath>
 
-#include <game/mapitems.h>
-#include <game/layers.h>
 #include <game/collision.h>
+#include <game/layers.h>
+#include <game/mapitems.h>
 
-#include <game/gamecore.h>
 #include <game/animation.h>
+#include <game/gamecore.h>
 
 vec2 ClampVel(int MoveRestriction, vec2 Vel)
 {
@@ -38,26 +38,17 @@ vec2 ClampVel(int MoveRestriction, vec2 Vel)
 
 CCollision::CCollision()
 {
-	m_pTiles = 0;
-	m_Width = 0;
-	m_Height = 0;
-	
-	m_pLayers = 0;
-
-	m_pTele = 0;
-	m_pSpeedup = 0;
-
-	m_Time = 0.0;
+	Unload();
 }
 
 CCollision::~CCollision()
 {
-	Dest();
+	Unload();
 }
 
 void CCollision::Init(class CLayers *pLayers)
 {
-	Dest();
+	Unload();
 	m_pLayers = pLayers;
 	m_Width = m_pLayers->GameLayer()->m_Width;
 	m_Height = m_pLayers->GameLayer()->m_Height;
@@ -92,22 +83,22 @@ constexpr EZonePhysics GetPhysicalTileByTile(int Tile)
 
 void CCollision::InitPhysicalLayer()
 {
-	mv_Physics.resize(m_Width * m_Height);
+	m_vPhysics.resize(m_Width * m_Height);
 	for(int Y = 0; Y < m_Height; ++Y)
 	{
 		for(int X = 0; X < m_Width; ++X)
 		{
 			int Index = Y * m_Width + X;
 			int Tile = m_pTiles[Index].m_Index;
-			mv_Physics[Index] = GetPhysicalTileByTile(Tile);
+			m_vPhysics[Index] = GetPhysicalTileByTile(Tile);
 		}
 	}
 }
 
 void CCollision::InitDoorsLayer()
 {
-	mv_Doors.clear();
-	mv_Doors.resize(m_Width * m_Height);
+	m_vDoors.clear();
+	m_vDoors.resize(m_Width * m_Height);
 }
 
 void CCollision::InitTeleports()
@@ -250,13 +241,13 @@ int CCollision::GetMoveRestrictions(CALLBACK_SWITCHACTIVE pfnSwitchActive, void 
 
 void CCollision::SetDoorCollisionAt(int Index, bool HasDoor)
 {
-	if (HasDoor)
+	if(HasDoor)
 	{
-		mv_Doors[Index]++;
+		m_vDoors[Index]++;
 	}
 	else
 	{
-		mv_Doors[Index]--;
+		m_vDoors[Index]--;
 	}
 }
 
@@ -271,7 +262,7 @@ int CCollision::GetDoorCollisionAt(vec2 Pos) const
 	int Ny = clamp(static_cast<int>(Pos.y) / 32, 0, m_Height - 1);
 	int Index = Ny * m_Width + Nx;
 
-	return mv_Doors.at(Index);
+	return m_vDoors.at(Index);
 }
 
 int CCollision::IntersectLineWithDoors(vec2 From, vec2 To, vec2 *pOutCollision, vec2 *pOutBeforeCollision) const
@@ -302,16 +293,21 @@ int CCollision::IntersectLineWithDoors(vec2 From, vec2 To, vec2 *pOutCollision, 
 	return 0;
 }
 
+void CCollision::SetTime(double Time)
+{
+	m_Time = Time;
+}
+
 EZonePhysics CCollision::GetPhysicsTile(int x, int y) const
 {
 	int Nx = clamp(x / 32, 0, m_Width - 1);
 	int Ny = clamp(y / 32, 0, m_Height - 1);
 	int Index = Ny * m_Width + Nx;
 
-	EZonePhysics Value = mv_Physics.at(Index);
-	if (Value == EZonePhysics::Null)
+	EZonePhysics Value = m_vPhysics.at(Index);
+	if(Value == EZonePhysics::Null)
 	{
-		if(mv_Doors.at(Index))
+		if(m_vDoors.at(Index))
 			return EZonePhysics::NoHook;
 	}
 
@@ -331,7 +327,7 @@ int CCollision::GetTile(int x, int y) const
 	if(Index >= TILE_SOLID && Index <= TILE_NOLASER)
 		return Index;
 
-	if(mv_Doors.at(pos))
+	if(m_vDoors.at(pos))
 		return TILE_NOHOOK;
 
 	return 0;
@@ -342,12 +338,12 @@ int CCollision::IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *p
 {
 	vec2 Pos1Pos0 = Pos1 - Pos0;
 	float Distance = length(Pos1Pos0);
-	int End(Distance+1);
+	int End(Distance + 1);
 	vec2 Last = Pos0;
 
 	for(int i = 0; i < End; i++)
 	{
-		float a = i/Distance;
+		float a = i / Distance;
 		vec2 Pos = Pos0 + Pos1Pos0 * a;
 		if(CheckPoint(Pos.x, Pos.y))
 		{
@@ -418,13 +414,13 @@ void CCollision::MovePoint(vec2 *pInoutPos, vec2 *pInoutVel, float Elasticity, i
 bool CCollision::TestBox(vec2 Pos, vec2 Size) const
 {
 	Size *= 0.5f;
-	if(CheckPoint(Pos.x-Size.x, Pos.y-Size.y))
+	if(CheckPoint(Pos.x - Size.x, Pos.y - Size.y))
 		return true;
-	if(CheckPoint(Pos.x+Size.x, Pos.y-Size.y))
+	if(CheckPoint(Pos.x + Size.x, Pos.y - Size.y))
 		return true;
-	if(CheckPoint(Pos.x-Size.x, Pos.y+Size.y))
+	if(CheckPoint(Pos.x - Size.x, Pos.y + Size.y))
 		return true;
-	if(CheckPoint(Pos.x+Size.x, Pos.y+Size.y))
+	if(CheckPoint(Pos.x + Size.x, Pos.y + Size.y))
 		return true;
 
 	if(Size.x > 32)
@@ -476,7 +472,7 @@ void CCollision::MoveBox(vec2 *pInoutPos, vec2 *pInoutVel, vec2 Size, vec2 Elast
 				break;
 			}
 
-			vec2 NewPos = Pos + Vel*Fraction; // TODO: this row is not nice
+			vec2 NewPos = Pos + Vel * Fraction; // TODO: this row is not nice
 
 			// Fraction can be very small and thus the calculation has no effect, no
 			// reason to continue calculating.
@@ -526,14 +522,25 @@ void CCollision::MoveBox(vec2 *pInoutPos, vec2 *pInoutVel, vec2 Size, vec2 Elast
 	*pInoutVel = Vel;
 }
 
-void CCollision::Dest()
+void CCollision::Unload()
 {
-	m_pTiles = 0;
+	m_pTiles = nullptr;
 	m_Width = 0;
 	m_Height = 0;
-	m_pLayers = 0;
-	m_pTele = 0;
-	m_pSpeedup = 0;
+	m_pLayers = nullptr;
+
+	m_TeleOuts.clear();
+	m_TeleCheckOuts.clear();
+
+	m_pTele = nullptr;
+	m_pSpeedup = nullptr;
+
+	m_vPhysics.clear();
+	m_vDoors.clear();
+
+	m_Time = 0;
+
+	m_Zones.clear();
 }
 
 bool CCollision::IsSolid(int x, int y) const
@@ -655,11 +662,11 @@ int CCollision::GetTileFlags(int Index) const
 	return m_pTiles[Index].m_Flags;
 }
 
-int CCollision::GetZoneHandle(const char* pName)
+int CCollision::GetZoneHandle(const char *pName)
 {
 	if(!m_pLayers->ZoneGroup())
 		return -1;
-	
+
 	int Handle = m_Zones.size();
 	m_Zones.add({});
 
@@ -668,66 +675,66 @@ int CCollision::GetZoneHandle(const char* pName)
 	char aLayerName[12];
 	for(int l = 0; l < m_pLayers->ZoneGroup()->m_NumLayers; l++)
 	{
-		CMapItemLayer *pLayer = m_pLayers->GetLayer(m_pLayers->ZoneGroup()->m_StartLayer+l);
-		
+		CMapItemLayer *pLayer = m_pLayers->GetLayer(m_pLayers->ZoneGroup()->m_StartLayer + l);
+
 		if(pLayer->m_Type == LAYERTYPE_TILES)
 		{
 			CMapItemLayerTilemap *pTLayer = (CMapItemLayerTilemap *)pLayer;
-			IntsToStr(pTLayer->m_aName, sizeof(aLayerName)/sizeof(int), aLayerName);
+			IntsToStr(pTLayer->m_aName, sizeof(aLayerName) / sizeof(int), aLayerName);
 			if(str_comp(pName, aLayerName) == 0)
 				LayerList.add(pLayer);
 		}
 		else if(pLayer->m_Type == LAYERTYPE_QUADS)
 		{
 			CMapItemLayerQuads *pQLayer = (CMapItemLayerQuads *)pLayer;
-			IntsToStr(pQLayer->m_aName, sizeof(aLayerName)/sizeof(int), aLayerName);
+			IntsToStr(pQLayer->m_aName, sizeof(aLayerName) / sizeof(int), aLayerName);
 			if(str_comp(pName, aLayerName) == 0)
 				LayerList.add(pLayer);
 		}
 	}
-	
+
 	return Handle;
 }
 
 /* TEEUNIVERSE  BEGIN *************************************************/
 
-inline bool SameSide(const vec2& l0, const vec2& l1, const vec2& p0, const vec2& p1)
+inline bool SameSide(const vec2 &l0, const vec2 &l1, const vec2 &p0, const vec2 &p1)
 {
-	vec2 l0l1 = l1-l0;
-	vec2 l0p0 = p0-l0;
-	vec2 l0p1 = p1-l0;
+	vec2 l0l1 = l1 - l0;
+	vec2 l0p0 = p0 - l0;
+	vec2 l0p1 = p1 - l0;
 
 	// This check helps in some cases but we still have fails in some others.
 	// The fail is reproducible with infc_provence bells
 	if((l0l1 == l0p0) || (l0l1 == l0p1) || (l0p0 == l0p1))
 		return false;
 
-	return sign(l0l1.x*l0p0.y - l0l1.y*l0p0.x) == sign(l0l1.x*l0p1.y - l0l1.y*l0p1.x);
+	return sign(l0l1.x * l0p0.y - l0l1.y * l0p0.x) == sign(l0l1.x * l0p1.y - l0l1.y * l0p1.x);
 }
 
-//t0, t1 and t2 are position of triangle vertices
-inline vec3 BarycentricCoordinates(const vec2& t0, const vec2& t1, const vec2& t2, const vec2& p)
+// t0, t1 and t2 are position of triangle vertices
+inline vec3 BarycentricCoordinates(const vec2 &t0, const vec2 &t1, const vec2 &t2, const vec2 &p)
 {
-    vec2 e0 = t1 - t0;
-    vec2 e1 = t2 - t0;
-    vec2 e2 = p - t0;
-    
-    float d00 = dot(e0, e0);
-    float d01 = dot(e0, e1);
-    float d11 = dot(e1, e1);
-    float d20 = dot(e2, e0);
-    float d21 = dot(e2, e1);
-    float denom = d00 * d11 - d01 * d01;
-    
-    vec3 bary;
-    bary.x = (d11 * d20 - d01 * d21) / denom;
-    bary.y = (d00 * d21 - d01 * d20) / denom;
-    bary.z = 1.0f - bary.x - bary.y;
-    
-    return bary;
+	vec2 e0 = t1 - t0;
+	vec2 e1 = t2 - t0;
+	vec2 e2 = p - t0;
+
+	float d00 = dot(e0, e0);
+	float d01 = dot(e0, e1);
+	float d11 = dot(e1, e1);
+	float d20 = dot(e2, e0);
+	float d21 = dot(e2, e1);
+	float denom = d00 * d11 - d01 * d01;
+
+	vec3 bary;
+	bary.x = (d11 * d20 - d01 * d21) / denom;
+	bary.y = (d00 * d21 - d01 * d20) / denom;
+	bary.z = 1.0f - bary.x - bary.y;
+
+	return bary;
 }
 
-template <typename V>
+template<typename V>
 bool OutOfRange(V value, V q0, V q1, V q2, V q3)
 {
 	if(q0 > q1)
@@ -778,15 +785,15 @@ bool OutOfRange(V value, V q0, V q1, V q2, V q3)
 	return false;
 }
 
-//t0, t1 and t2 are position of triangle vertices
-inline bool InsideTriangle(const vec2& t0, const vec2& t1, const vec2& t2, const vec2& p)
+// t0, t1 and t2 are position of triangle vertices
+inline bool InsideTriangle(const vec2 &t0, const vec2 &t1, const vec2 &t2, const vec2 &p)
 {
-    vec3 bary = BarycentricCoordinates(t0, t1, t2, p);
-    return (bary.x >= 0.0f && bary.y >= 0.0f && bary.x + bary.y < 1.0f);
+	vec3 bary = BarycentricCoordinates(t0, t1, t2, p);
+	return (bary.x >= 0.0f && bary.y >= 0.0f && bary.x + bary.y < 1.0f);
 }
 
-//q0, q1, q2 and q3 are position of quad vertices
-inline bool InsideQuad(const vec2& q0, const vec2& q1, const vec2& q2, const vec2& q3, const vec2& p)
+// q0, q1, q2 and q3 are position of quad vertices
+inline bool InsideQuad(const vec2 &q0, const vec2 &q1, const vec2 &q2, const vec2 &q3, const vec2 &p)
 {
 	return InsideTriangle(q0, q1, q2, p) || InsideTriangle(q1, q2, q3, p);
 #if 0
@@ -819,10 +826,10 @@ int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
 {
 	if(!m_pLayers->ZoneGroup())
 		return 0;
-	
+
 	if(ZoneHandle < 0 || ZoneHandle >= m_Zones.size())
 		return 0;
-	
+
 	int Index = 0;
 	int ExtraData = 0;
 
@@ -835,7 +842,7 @@ int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
 		if(pLayer->m_Type == LAYERTYPE_TILES)
 		{
 			const CMapItemLayerTilemap *pTLayer = (const CMapItemLayerTilemap *)pLayer;
-			const CTile *pTiles = (const CTile *) m_pLayers->Map()->GetData(pTLayer->m_Data);
+			const CTile *pTiles = (const CTile *)m_pLayers->Map()->GetData(pTLayer->m_Data);
 
 			int Nx = clamp(static_cast<int>(Pos.x) / 32, 0, pTLayer->m_Width - 1);
 			int Ny = clamp(static_cast<int>(Pos.y) / 32, 0, pTLayer->m_Height - 1);
@@ -850,7 +857,7 @@ int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
 		else if(pLayer->m_Type == LAYERTYPE_QUADS)
 		{
 			const CMapItemLayerQuads *pQLayer = (const CMapItemLayerQuads *)pLayer;
-			const CQuad *pQuads = (const CQuad *) m_pLayers->Map()->GetDataSwapped(pQLayer->m_Data);
+			const CQuad *pQuads = (const CQuad *)m_pLayers->Map()->GetDataSwapped(pQLayer->m_Data);
 
 			for(int q = 0; q < pQLayer->m_NumQuads; q++)
 			{
@@ -867,12 +874,12 @@ int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
 					Position = AnimationCache.Position;
 					Angle = AnimationCache.Angle;
 				}
-				
+
 				vec2 p0 = Position + vec2(fx2f(pQuads[q].m_aPoints[0].x), fx2f(pQuads[q].m_aPoints[0].y));
 				vec2 p1 = Position + vec2(fx2f(pQuads[q].m_aPoints[1].x), fx2f(pQuads[q].m_aPoints[1].y));
 				vec2 p2 = Position + vec2(fx2f(pQuads[q].m_aPoints[2].x), fx2f(pQuads[q].m_aPoints[2].y));
 				vec2 p3 = Position + vec2(fx2f(pQuads[q].m_aPoints[3].x), fx2f(pQuads[q].m_aPoints[3].y));
-				
+
 				if(Angle != 0)
 				{
 					vec2 center(fx2f(pQuads[q].m_aPoints[4].x), fx2f(pQuads[q].m_aPoints[4].y));
@@ -886,7 +893,7 @@ int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
 					continue;
 				if(OutOfRange(Pos.y, p0.y, p1.y, p2.y, p3.y))
 					continue;
-				
+
 				if(InsideQuad(p0, p1, p2, p3, Pos))
 				{
 					Index = pQuads[q].m_ColorEnvOffset;
@@ -902,7 +909,7 @@ int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
 		pData->Index = Index;
 		pData->ExtraData = ExtraData;
 	}
-	
+
 	return Index;
 }
 
