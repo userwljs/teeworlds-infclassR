@@ -1505,6 +1505,11 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			FleeDistance = TileSize * 7;
 		}
 
+		if(GetClass() == EPlayerClass::Spider)
+		{
+			PreferredDistance = GetMaxHookDistance() - TileSize * 2;
+		}
+
 		if(UnreachableByY)
 		{
 			PreferredDistance = Distance + TileSize * 8;
