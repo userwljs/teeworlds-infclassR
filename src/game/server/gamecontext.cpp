@@ -4485,7 +4485,7 @@ void CGameContext::RegisterChatCommands()
 	Console()->Register("help", "?s[page]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConHelp, this, "Display help");
 	Console()->Register("info", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConInfo, this, "Shows info about this server");
 	Console()->Register("changelog", "?i[page]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConChangeLog, this, "Display a changelog page");
-	Console()->Register("cmdlist", "", CFGFLAG_CHAT | CFGFLAG_SERVER, ConCmdList, this, "List of commands");
+	Console()->Register("cmdlist", "", CFGFLAG_CHAT, ConCmdList, this, "List of commands");
 
 	Console()->Register("me", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConMe, this, "Like the famous irc command '/me says hi' will display '<yourname> says hi'");
 	Console()->Register("w", "s[player name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConWhisper, this, "Whisper something to someone (private message)");
