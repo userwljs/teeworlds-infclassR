@@ -21,6 +21,7 @@ class CGameWorld;
 class CHintMessage;
 class CIcCharacter;
 class CIcPlayer;
+class IDebugSink;
 struct CNetObj_GameInfo;
 struct DeathContext;
 struct SpawnContext;
@@ -443,6 +444,7 @@ public:
 	using IGameController::GameServer;
 	CGameWorld *GameWorld();
 	IConsole *Console() const;
+	IDebugSink *GetDebugSink() const;
 	CIcPlayer *GetPlayer(int ClientId) const;
 	CIcCharacter *GetCharacter(int ClientId) const;
 	int GetPlayerOwnCursorId(int ClientId) const;

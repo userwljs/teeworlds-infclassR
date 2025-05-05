@@ -3571,6 +3571,11 @@ IConsole *CIcGameController::Console() const
 	return GameServer()->Console();
 }
 
+IDebugSink *CIcGameController::GetDebugSink() const
+{
+	return m_pBotUtilsData->m_pDebugSink;
+}
+
 CIcPlayer *CIcGameController::GetPlayer(int ClientId) const
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS)
