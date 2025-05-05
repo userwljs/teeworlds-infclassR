@@ -1509,7 +1509,7 @@ void CServer::UpdateClientRconCommands()
 	{
 		if(m_aClients[ClientId].m_State != CClient::STATE_EMPTY && m_aClients[ClientId].m_Authed)
 		{
-			int ConsoleAccessLevel = m_aClients[ClientId].m_Authed == AUTHED_ADMIN ? IConsole::ACCESS_LEVEL_ADMIN : IConsole::ACCESS_LEVEL_MOD;
+			EAccessLevel ConsoleAccessLevel = m_aClients[ClientId].m_Authed == AUTHED_ADMIN ? EAccessLevel::ADMIN : EAccessLevel::MOD;
 			for(int i = 0; i < MAX_RCONCMD_SEND && m_aClients[ClientId].m_pRconCmdToSend; ++i)
 			{
 				SendRconCmdAdd(m_aClients[ClientId].m_pRconCmdToSend, ClientId);
@@ -1865,20 +1865,20 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				switch(m_aClients[ClientId].m_Authed)
 				{
 					case AUTHED_ADMIN:
-						Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_ADMIN);
+						Console()->SetAccessLevel(EAccessLevel::ADMIN);
 						break;
 					case AUTHED_MOD:
-						Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_MOD);
+						Console()->SetAccessLevel(EAccessLevel::MOD);
 						break;
 					default:
-						Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_USER);
+						Console()->SetAccessLevel(EAccessLevel::USER);
 				}
 				{
 					CRconClientLogger Logger(this, ClientId);
 					CLogScope Scope(&Logger);
 					Console()->ExecuteLineFlag(pCmd, CFGFLAG_SERVER, ClientId);
 				}
-				Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_ADMIN);
+				Console()->SetAccessLevel(EAccessLevel::ADMIN);
 				m_RconClientId = IServer::RCON_CID_SERV;
 				m_RconAuthLevel = AUTHED_ADMIN;
 			}
@@ -1941,17 +1941,17 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					bool SendRconCmds = IsSixup(ClientId) ? true : (Unpacker.GetInt() > 0);
 					if(!Unpacker.Error() && SendRconCmds)
 					{
-						int ConsoleAccessLevel{};
+						EAccessLevel ConsoleAccessLevel{};
 						switch(LoggedInAuthLevel.value())
 						{
 						case AUTHED_ADMIN:
-							ConsoleAccessLevel = IConsole::ACCESS_LEVEL_ADMIN;
+							ConsoleAccessLevel = EAccessLevel::ADMIN;
 							break;
 						case AUTHED_MOD:
-							ConsoleAccessLevel = IConsole::ACCESS_LEVEL_ADMIN;
+							ConsoleAccessLevel = EAccessLevel::ADMIN;
 							break;
 						default:
-							ConsoleAccessLevel = IConsole::ACCESS_LEVEL_USER;
+							ConsoleAccessLevel = EAccessLevel::USER;
 							break;
 						}
 
@@ -3680,7 +3680,7 @@ void CServer::ConchainModCommandUpdate(IConsole::IResult *pResult, void *pUserDa
 	{
 		CServer *pThis = static_cast<CServer *>(pUserData);
 		const IConsole::CCommandInfo *pInfo = pThis->Console()->GetCommandInfo(pResult->GetString(0), CFGFLAG_SERVER, false);
-		int OldAccessLevel = 0;
+		EAccessLevel OldAccessLevel{};
 		if(pInfo)
 			OldAccessLevel = pInfo->GetAccessLevel();
 		pfnCallback(pResult, pCallbackUserData);
@@ -3692,7 +3692,7 @@ void CServer::ConchainModCommandUpdate(IConsole::IResult *pResult, void *pUserDa
 					(pThis->m_aClients[i].m_pRconCmdToSend && str_comp(pResult->GetString(0), pThis->m_aClients[i].m_pRconCmdToSend->m_pName) >= 0))
 					continue;
 
-				if(OldAccessLevel == IConsole::ACCESS_LEVEL_ADMIN)
+				if(OldAccessLevel == EAccessLevel::ADMIN)
 					pThis->SendRconCmdAdd(pInfo, i);
 				else
 					pThis->SendRconCmdRem(pInfo, i);

@@ -11,6 +11,23 @@
 
 static const ColorRGBA gs_ConsoleDefaultColor(1, 1, 1, 1);
 
+enum class EAccessLevel
+{
+	ADMIN,
+	MOD,
+	HELPER,
+	USER,
+};
+
+const char *toString(EAccessLevel AccessLevel);
+std::optional<EAccessLevel> validated(EAccessLevel AccessLevel);
+
+inline auto operator<=>(EAccessLevel Level1, EAccessLevel Level2)
+{
+	using TUnderlying = int;
+	return static_cast<TUnderlying>(Level1) <=> static_cast<TUnderlying>(Level2);
+}
+
 enum LEVEL : char;
 class IConsole : public IInterface
 {
@@ -22,11 +39,6 @@ public:
 		OUTPUT_LEVEL_STANDARD = 0,
 		OUTPUT_LEVEL_ADDINFO,
 		OUTPUT_LEVEL_DEBUG,
-
-		ACCESS_LEVEL_ADMIN = 0,
-		ACCESS_LEVEL_MOD,
-		ACCESS_LEVEL_HELPER,
-		ACCESS_LEVEL_USER,
 
 		TEMPCMD_NAME_LENGTH = 32,
 		TEMPCMD_HELP_LENGTH = 192,
@@ -72,18 +84,18 @@ public:
 	class CCommandInfo
 	{
 	protected:
-		int m_AccessLevel;
+		EAccessLevel m_AccessLevel;
 
 	public:
-		CCommandInfo() { m_AccessLevel = ACCESS_LEVEL_ADMIN; }
+		CCommandInfo() { m_AccessLevel = EAccessLevel::ADMIN; }
 		virtual ~CCommandInfo() {}
 		const char *m_pName;
 		const char *m_pHelp;
 		const char *m_pParams;
 
-		virtual const CCommandInfo *NextCommandInfo(int AccessLevel, int FlagMask) const = 0;
+		virtual const CCommandInfo *NextCommandInfo(EAccessLevel AccessLevel, int FlagMask) const = 0;
 
-		int GetAccessLevel() const { return m_AccessLevel; }
+		EAccessLevel GetAccessLevel() const { return m_AccessLevel; }
 	};
 
 	typedef void (*FTeeHistorianCommandCallback)(int ClientId, int FlagMask, const char *pCmd, IResult *pResult, void *pUser);
@@ -97,7 +109,7 @@ public:
 	static bool EmptyUnknownCommandCallback(const char *pCommand, void *pUser) { return false; }
 
 	virtual void Init() = 0;
-	virtual const CCommandInfo *FirstCommandInfo(int AccessLevel, int Flagmask) const = 0;
+	virtual const CCommandInfo *FirstCommandInfo(EAccessLevel AccessLevel, int Flagmask) const = 0;
 	virtual const CCommandInfo *GetCommandInfo(const char *pName, int FlagMask, bool Temp) = 0;
 	virtual int PossibleCommands(const char *pStr, int FlagMask, bool Temp, FPossibleCallback pfnCallback = EmptyPossibleCommandCallback, void *pUser = nullptr) = 0;
 	virtual void ParseArguments(int NumArgs, const char **ppArguments) = 0;
@@ -122,7 +134,7 @@ public:
 	virtual void SetTeeHistorianCommandCallback(FTeeHistorianCommandCallback pfnCallback, void *pUser) = 0;
 	virtual void SetUnknownCommandCallback(FUnknownCommandCallback pfnCallback, void *pUser) = 0;
 
-	virtual void SetAccessLevel(int AccessLevel) = 0;
+	virtual void SetAccessLevel(EAccessLevel AccessLevel) = 0;
 
 	virtual void ResetServerGameSettings() = 0;
 

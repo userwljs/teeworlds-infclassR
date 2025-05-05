@@ -1744,8 +1744,8 @@ void CGameContext::OnClientEnter(int ClientId)
 		CNetMsg_Sv_CommandInfoGroupStart Msg;
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, ClientId);
 	}
-	for(const IConsole::CCommandInfo *pCmd = Console()->FirstCommandInfo(IConsole::ACCESS_LEVEL_USER, CFGFLAG_CHAT);
-		pCmd; pCmd = pCmd->NextCommandInfo(IConsole::ACCESS_LEVEL_USER, CFGFLAG_CHAT))
+	for(const IConsole::CCommandInfo *pCmd = Console()->FirstCommandInfo(EAccessLevel::USER, CFGFLAG_CHAT);
+		pCmd; pCmd = pCmd->NextCommandInfo(EAccessLevel::USER, CFGFLAG_CHAT))
 	{
 		const char *pName = pCmd->m_pName;
 
@@ -2204,13 +2204,13 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 			switch(Server()->GetAuthedState(ClientId))
 			{
 			case AUTHED_ADMIN:
-				Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_ADMIN);
+				Console()->SetAccessLevel(EAccessLevel::ADMIN);
 				break;
 			case AUTHED_MOD:
-				Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_MOD);
+				Console()->SetAccessLevel(EAccessLevel::MOD);
 				break;
 			default:
-				Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_USER);
+				Console()->SetAccessLevel(EAccessLevel::USER);
 			}
 
 			{
@@ -2223,7 +2223,7 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 			str_format(aBuf, sizeof(aBuf), "%d used %s", ClientId, pMsg->m_pMessage);
 			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "chat-command", aBuf);
 
-			Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_ADMIN);
+			Console()->SetAccessLevel(EAccessLevel::ADMIN);
 		}
 	}
 	else

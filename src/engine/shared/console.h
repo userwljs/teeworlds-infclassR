@@ -5,6 +5,7 @@
 
 #include "memheap.h"
 #include <base/math.h>
+#include <base/system.h>
 #include <engine/console.h>
 #include <engine/storage.h>
 
@@ -19,9 +20,9 @@ class CConsole : public IConsole
 		FCommandCallback m_pfnCallback;
 		void *m_pUserData;
 
-		const CCommandInfo *NextCommandInfo(int AccessLevel, int FlagMask) const override;
+		const CCommandInfo *NextCommandInfo(EAccessLevel AccessLevel, int FlagMask) const override;
 
-		void SetAccessLevel(int AccessLevel) { m_AccessLevel = clamp(AccessLevel, (int)(ACCESS_LEVEL_ADMIN), (int)(ACCESS_LEVEL_USER)); }
+		void SetAccessLevel(EAccessLevel AccessLevel) { m_AccessLevel = validated(AccessLevel).value_or(EAccessLevel::ADMIN); }
 	};
 
 	class CChain
@@ -48,7 +49,7 @@ class CConsole : public IConsole
 	CExecFile *m_pFirstExec;
 	class CConfig *m_pConfig;
 	class IStorage *m_pStorage;
-	int m_AccessLevel;
+	EAccessLevel m_AccessLevel;
 
 	CCommand *m_pRecycleList;
 	CHeap m_TempCommands;
@@ -209,7 +210,7 @@ public:
 	~CConsole();
 
 	void Init() override;
-	const CCommandInfo *FirstCommandInfo(int AccessLevel, int FlagMask) const override;
+	const CCommandInfo *FirstCommandInfo(EAccessLevel AccessLevel, int FlagMask) const override;
 	const CCommandInfo *GetCommandInfo(const char *pName, int FlagMask, bool Temp) override;
 	int PossibleCommands(const char *pStr, int FlagMask, bool Temp, FPossibleCallback pfnCallback, void *pUser) override;
 
@@ -233,7 +234,7 @@ public:
 	void SetTeeHistorianCommandCallback(FTeeHistorianCommandCallback pfnCallback, void *pUser) override;
 	void SetUnknownCommandCallback(FUnknownCommandCallback pfnCallback, void *pUser) override;
 
-	void SetAccessLevel(int AccessLevel) override { m_AccessLevel = clamp(AccessLevel, (int)(ACCESS_LEVEL_ADMIN), (int)(ACCESS_LEVEL_USER)); }
+	void SetAccessLevel(EAccessLevel AccessLevel) override { m_AccessLevel = validated(AccessLevel).value_or(EAccessLevel::ADMIN); }
 	void ResetServerGameSettings() override;
 	// DDRace
 
