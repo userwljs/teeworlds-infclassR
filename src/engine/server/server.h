@@ -36,6 +36,8 @@
 
 class CLogMessage;
 
+enum class EAccessLevel;
+
 class CSnapIdPool
 {
 	enum
@@ -546,6 +548,8 @@ private:
 	std::optional<int> GetClientIdByUserId(int UserId) const;
 	void TakeUserName(int ClientId);
 
+	void SetClientAccessLevel(int ClientId, EAccessLevel AccessLevel, bool SendRconCmds);
+
 public:
 	class CGameServerCmd
 	{
@@ -564,6 +568,14 @@ private:
 
 	CClientAccountRequests m_AccountsRequests[MAX_CLIENTS];
 	char m_aServerSalt[ServerSaltMaxLength]{};
+
+	struct SAccountAccessInfo
+	{
+		int UserId{};
+		EAccessLevel AccessLevel{};
+	};
+
+	std::vector<SAccountAccessInfo> m_vAccountsAccessInfo;
 
 #ifdef CONF_SQL
 public:

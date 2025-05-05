@@ -407,9 +407,19 @@ void CServer::AuthTick()
 								nullptr);
 
 							{
+								EAccessLevel AccessLevel{EAccessLevel::USER};
+								for(const SAccountAccessInfo &AccessInfo : m_vAccountsAccessInfo)
+								{
+									if(AccessInfo.UserId == UserId)
+									{
+										AccessLevel = AccessInfo.AccessLevel;
+										SetClientAccessLevel(ClientId, AccessInfo.AccessLevel, true);
+									}
+								}
+
 								char aBuf[256];
-								str_format(aBuf, sizeof(aBuf), "ClientId=%d authed as %s (UserId %d)",
-									ClientId, pUsername, UserId);
+								str_format(aBuf, sizeof(aBuf), "ClientId=%d authed as %s (UserId %d, %s)",
+									ClientId, pUsername, UserId, toString(AccessLevel));
 								Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "accounts", aBuf);
 							}
 						}
@@ -2056,7 +2066,6 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				return;
 			}
 
-			std::optional<int> LoggedInAuthLevel;
 			if(pName[0])
 			{
 				char aTrimmedName[MAX_NAME_LENGTH];
@@ -2086,79 +2095,20 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				return;
 			}
 
+			std::optional<EAccessLevel> LoggedInAccessLevel;
 			if(g_Config.m_SvRconPassword[0] && str_comp(pPw, g_Config.m_SvRconPassword) == 0)
 			{
-				LoggedInAuthLevel = AUTHED_ADMIN;
+				LoggedInAccessLevel = EAccessLevel::ADMIN;
 			}
 			else if(g_Config.m_SvRconModPassword[0] && str_comp(pPw, g_Config.m_SvRconModPassword) == 0)
 			{
-				LoggedInAuthLevel = AUTHED_MOD;
+				LoggedInAccessLevel = EAccessLevel::MOD;
 			}
 
-			if(LoggedInAuthLevel.has_value())
+			if(LoggedInAccessLevel.has_value())
 			{
-				if(m_aClients[ClientId].m_Authed != LoggedInAuthLevel.value())
-				{
-					if(!IsSixup(ClientId))
-					{
-						CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
-						Msgp.AddInt(1); // authed
-						Msgp.AddInt(1); // cmdlist
-						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
-					}
-					else
-					{
-						CMsgPacker Msgp(protocol7::NETMSG_RCON_AUTH_ON, true, true);
-						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
-					}
-
-					m_aClients[ClientId].m_Authed = LoggedInAuthLevel.value();
-					bool SendRconCmds = IsSixup(ClientId) ? true : (Unpacker.GetInt() > 0);
-					if(!Unpacker.Error() && SendRconCmds)
-					{
-						EAccessLevel ConsoleAccessLevel{};
-						switch(LoggedInAuthLevel.value())
-						{
-						case AUTHED_ADMIN:
-							ConsoleAccessLevel = EAccessLevel::ADMIN;
-							break;
-						case AUTHED_MOD:
-							ConsoleAccessLevel = EAccessLevel::MOD;
-							break;
-						default:
-							ConsoleAccessLevel = EAccessLevel::USER;
-							break;
-						}
-
-						m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(ConsoleAccessLevel, CFGFLAG_SERVER);
-					}
-
-					char aBuf[256];
-					switch(LoggedInAuthLevel.value())
-					{
-					case AUTHED_ADMIN:
-					{
-						SendRconLine(ClientId, "Admin authentication successful. Full remote console access granted.");
-						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (admin)", ClientId);
-						break;
-					}
-					case AUTHED_MOD:
-					{
-						SendRconLine(ClientId, "Moderator authentication successful. Limited remote console access granted.");
-						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (moderator)", ClientId);
-						break;
-					}
-					case AUTHED_HELPER:
-					{
-						SendRconLine(ClientId, "Helper authentication successful. Limited remote console access granted.");
-						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (helper)", ClientId);
-						break;
-					}
-					}
-					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-
-					GameServer()->OnSetAuthed(ClientId, m_aClients[ClientId].m_Authed);
-				}
+				bool SendRconCmds = IsSixup(ClientId) ? true : (Unpacker.GetInt() > 0);
+				SetClientAccessLevel(ClientId, LoggedInAccessLevel.value(), !Unpacker.Error() && SendRconCmds);
 			}
 			else if(Config()->m_SvRconMaxTries)
 			{
@@ -3875,12 +3825,18 @@ void CServer::ConAccounts(IConsole::IResult *pResult)
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    help");
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    status");
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    set_salt [string, at least 3 characters]");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    set_access_level [user_id number] [0: admin, 1: moderator]");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    reset_access_level [user_id number]");
+	};
+	auto InsufficientArguments = [this]() {
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Insufficient arguments.");
 	};
 
 	const char *pOptionStr = pResult->GetString(0);
 	if (!pOptionStr || !pOptionStr[0] || (str_comp(pOptionStr, "status") == 0))
 	{
 		PrintStatus();
+		PrintHelp();
 	}
 	else if(str_comp(pOptionStr, "help") == 0)
 	{
@@ -3901,6 +3857,92 @@ void CServer::ConAccounts(IConsole::IResult *pResult)
 			{
 				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Error: the salt should be at least 3 characters in length");
 			}
+		}
+		else
+		{
+			InsufficientArguments();
+			PrintHelp();
+		}
+	}
+	else if(str_comp(pOptionStr, "set_access_level") == 0)
+	{
+		if(pResult->NumArguments() > 2)
+		{
+			const int UserId = pResult->GetInteger(1);
+			const int RawLevel = pResult->GetInteger(2);
+			EAccessLevel AccessLevel = static_cast<EAccessLevel>(RawLevel);
+			if(RawLevel < 0 || RawLevel > 1)
+			{
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Error: the access level must be a positive number [0: admin, 1: moderator]");
+			}
+			else if(UserId <= 0)
+			{
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Error: the user id must be a positive number");
+			}
+			else
+			{
+				bool Set{};
+				for(SAccountAccessInfo &AccountAccessLevel : m_vAccountsAccessInfo)
+				{
+					if(AccountAccessLevel.UserId == UserId)
+					{
+						AccountAccessLevel.AccessLevel = AccessLevel;
+						Set = true;
+					}
+				}
+
+				if(!Set)
+				{
+					m_vAccountsAccessInfo.push_back({
+						.UserId = UserId,
+						.AccessLevel = AccessLevel,
+					});
+				}
+
+				char aBuf[128];
+				str_format(aBuf, sizeof(aBuf), "User %d access level is now set to %s", UserId, toString(AccessLevel));
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", aBuf);
+			}
+		}
+		else
+		{
+			InsufficientArguments();
+			PrintHelp();
+		}
+	}
+	else if(str_comp(pOptionStr, "reset_access_level") == 0)
+	{
+		if(pResult->NumArguments() > 1)
+		{
+			const int UserId = pResult->GetInteger(1);
+			if(UserId <= 0)
+			{
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Error: the user id must be a positive number");
+			}
+			else
+			{
+				auto InfoIt = std::find_if(std::begin(m_vAccountsAccessInfo), std::end(m_vAccountsAccessInfo), [UserId](const SAccountAccessInfo &Info) {
+					return Info.UserId == UserId;
+				});
+				if(InfoIt == m_vAccountsAccessInfo.end())
+				{
+					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "The given user didn't have a custom access level");
+				}
+				else
+				{
+					EAccessLevel AccessLevel = InfoIt->AccessLevel;
+					m_vAccountsAccessInfo.erase(InfoIt);
+
+					char aBuf[128];
+					str_format(aBuf, sizeof(aBuf), "'%s' access revoked from user %d", toString(AccessLevel), UserId);
+					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", aBuf);
+				}
+			}
+		}
+		else
+		{
+			InsufficientArguments();
+			PrintHelp();
 		}
 	}
 	else
@@ -4160,7 +4202,7 @@ void CServer::RegisterCommands()
 	Console()->Register("logout", "", CFGFLAG_SERVER, ConLogout, this, "Logout of rcon");
 	Console()->Register("show_ips", "?i[show]", CFGFLAG_SERVER, ConShowIps, this, "Show IP addresses in rcon commands (1 = on, 0 = off)");
 
-	Console()->Register("accounts", "?s[command] ?s[arg1]", CFGFLAG_SERVER, ConAccounts, this, "Manage accounts");
+	Console()->Register("accounts", "?s[command] ?s[arg1] ?s[arg2]", CFGFLAG_SERVER, ConAccounts, this, "Manage accounts");
 
 	Console()->Register("record", "?s[file]", CFGFLAG_SERVER | CFGFLAG_STORE, ConRecord, this, "Record to a file");
 	Console()->Register("stoprecord", "", CFGFLAG_SERVER, ConStopRecord, this, "Stop recording");
@@ -6207,6 +6249,75 @@ void CServer::TakeUserName(int ClientId)
 			break;
 		}
 	}
+}
+
+int toAuthed(EAccessLevel AccessLevel)
+{
+	switch(AccessLevel)
+	{
+	case EAccessLevel::ADMIN:
+		return AUTHED_ADMIN;
+	case EAccessLevel::MOD:
+		return AUTHED_MOD;
+	case EAccessLevel::HELPER:
+		return AUTHED_HELPER;
+	case EAccessLevel::USER:
+		break;
+	}
+
+	return AUTHED_NO;
+}
+
+void CServer::SetClientAccessLevel(int ClientId, EAccessLevel AccessLevel, bool SendRconCmds)
+{
+	int Authed = toAuthed(AccessLevel);
+	if(m_aClients[ClientId].m_Authed == Authed)
+		return;
+
+	if(AccessLevel > EAccessLevel::MOD)
+	{
+		return;
+	}
+
+	if(!IsSixup(ClientId))
+	{
+		CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
+		Msgp.AddInt(1); // authed
+		Msgp.AddInt(1); // cmdlist
+		SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
+	}
+	else
+	{
+		CMsgPacker Msgp(protocol7::NETMSG_RCON_AUTH_ON, true, true);
+		SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
+	}
+
+	m_aClients[ClientId].m_Authed = Authed;
+	if(SendRconCmds)
+	{
+		m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(AccessLevel, CFGFLAG_SERVER);
+	}
+
+	char aBuf[256];
+	switch(AccessLevel)
+	{
+	case EAccessLevel::ADMIN:
+		SendRconLine(ClientId, "Admin authentication successful. Full remote console access granted.");
+		break;
+	case EAccessLevel::MOD:
+		SendRconLine(ClientId, "Moderator authentication successful. Limited remote console access granted.");
+		break;
+	case EAccessLevel::HELPER:
+		SendRconLine(ClientId, "Helper authentication successful. Limited remote console access granted.");
+		break;
+	case EAccessLevel::USER:
+		break;
+	}
+
+	str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (%s)", ClientId, toString(AccessLevel));
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+
+	GameServer()->OnSetAuthed(ClientId, m_aClients[ClientId].m_Authed);
 }
 
 void CServer::SetErrorShutdown(const char *pReason)
