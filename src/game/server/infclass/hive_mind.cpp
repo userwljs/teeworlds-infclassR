@@ -276,6 +276,64 @@ bool CHiveMind::HasPOI() const
 	return !m_aPOIs.IsEmpty();
 }
 
+bool CHiveMind::HasDamageTiles(const CBotPlayer *pPlayer, const vec2 &From, const vec2 &To, float Radius)
+{
+	icArray<int, 5> BadIndices = {
+		ZONE_DAMAGE_DEATH,
+	};
+
+	if(pPlayer->IsHuman())
+	{
+		BadIndices.Add(ZONE_DAMAGE_INFECTION);
+	}
+
+	const vec2 Diff = To - From;
+	float CheckRadius = Radius * 0.65;
+
+	const auto PositionIsBad = [this, BadIndices, CheckRadius](const vec2 &CheckPos) -> bool {
+		// TODO: Optimize in 2x: progress from -HalfRadius to Length+HalfRadius and use +-vec2(NormalizedDiff.y, NormalizedDiff.x) to check the points
+		int DamageIndex1 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(-CheckRadius, +CheckRadius));
+		int DamageIndex2 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(+CheckRadius, +CheckRadius));
+		int DamageIndex3 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(+CheckRadius, -CheckRadius));
+		int DamageIndex4 = GameController()->GetDamageZoneValueAt(CheckPos + vec2(-CheckRadius, -CheckRadius));
+		if(BadIndices.Contains(DamageIndex1) || BadIndices.Contains(DamageIndex2) || BadIndices.Contains(DamageIndex3) || BadIndices.Contains(DamageIndex4))
+		{
+			return true;
+		}
+
+		return false;
+	};
+
+	const int Tick = m_Tick;
+	bool QuickCheck = pPlayer->GetMaxHP() < 60 && ((Tick % 6) != (pPlayer->GetCid() % 6));
+	if(QuickCheck)
+	{
+		return PositionIsBad(To);
+	}
+
+	if(PositionIsBad(From) || PositionIsBad(To))
+		return true;
+
+	const float Length = length(Diff);
+	const vec2 NormalizedDiff = Diff / Length;
+	constexpr int Step = 4;
+	int Progress = Step;
+	while(Progress < Length)
+	{
+		const vec2 CheckPos = From + NormalizedDiff * Progress;
+		if(PositionIsBad(CheckPos))
+		{
+			GameController()->GetDebugSink()->SendMessage(VERBOSE_STEPS, "Found danger. Checked from %.2fx%.2f to %.2fx%.2f",
+				From.x / TileSizeF, From.y / TileSizeF, To.x / TileSizeF, To.y / TileSizeF);
+			return true;
+		}
+
+		Progress += Step;
+	}
+
+	return false;
+}
+
 EDecision CHiveMind::GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CBotPlayer::DIRECTION> OptDirection)
 {
 	CBotPlayer::DIRECTION Direction = OptDirection.has_value() ? OptDirection.value() : pPlayer->GetRoamingDirection();

@@ -26,6 +26,8 @@ public:
 	std::optional<vec2> PickPOI(const vec2 &FromPos) const;
 	bool HasPOI() const;
 
+	bool HasDamageTiles(const CBotPlayer *pPlayer, const vec2 &From, const vec2 &To, float Radius);
+
 	EDecision GetGoodDecision(const CBotPlayer *pPlayer, std::optional<CBotPlayer::DIRECTION> OptDirection = std::nullopt);
 
 	void PushCheckedPosition(STilePosition ShortPos, int Tick);
