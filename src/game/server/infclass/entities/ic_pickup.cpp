@@ -179,6 +179,15 @@ void CIcPickup::Tick()
 
 	CIcEntity::Tick();
 
+	if(m_Type == EICPickupType::ClassUpgrade)
+	{
+		if(!GameController()->IsPositionAvailableForHumans(GetPos()))
+		{
+			MarkForDestroy();
+			return;
+		}
+	}
+
 	// Check if a player intersected us
 	CIcCharacter *pChr = nullptr;
 	if(GetOwner() >= 0)
