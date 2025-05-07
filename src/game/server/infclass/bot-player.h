@@ -149,6 +149,7 @@ public:
 
 	void SetBotConfigId(std::optional<int> ConfigId);
 	std::optional<int> GetBotConfigId() const { return m_BotConfigId; }
+	std::optional<int> LastSeenTargetAtTick() const { return m_LastSeenTargetAtTick; }
 
 	void SetTweaks(const TweaksArray &aTweaks);
 	void SetSpawnMinTick(int SpawnTick);
@@ -172,6 +173,7 @@ public:
 protected:
 	TweaksArray m_aTweaks;
 	std::optional<int> m_BotConfigId;
+	std::optional<int> m_LastSeenTargetAtTick;
 	int m_SpawnMinTick = -1;
 	int m_MaxLives = 0;
 	int m_DropLevel = 0;
@@ -361,7 +363,6 @@ protected:
 	int m_TargetUnreachableTicks = 0;
 	int m_NoTargetsInCloseRangeForTicks = 0;
 	int m_DeepDefenceChangedTick = 0;
-	int m_LastSeenTick = -1;
 	int m_TargetSinceTick{};
 	int m_LastFireTick = -1;
 	int m_LastWeaponSwitchTick = 0;

@@ -275,7 +275,8 @@ void CBotPlayer::TickPaused()
 		m_RoamingBehaviorChangeTick++;
 	m_FleeingSinceTick++;
 	m_LastJumpTick++;
-	m_LastSeenTick++;
+	if(m_LastSeenTargetAtTick.has_value())
+		m_LastSeenTargetAtTick.value()++;
 	m_LastFireTick++;
 	m_LastWeaponSwitchTick++;
 	if(m_NextRandomFireTick)
@@ -302,6 +303,7 @@ void CBotPlayer::OnCharacterSpawned(const SpawnContext &Context)
 	CIcPlayer::OnCharacterSpawned(Context);
 	GetCharacter()->SetDropLevel(m_DropLevel);
 
+	m_LastSeenTargetAtTick.reset();
 	m_LastFireTick = -1;
 	m_LastWeaponSwitchTick = 0;
 	m_NextRandomFireTick = 0;
@@ -500,13 +502,13 @@ void CBotPlayer::UpdateTarget()
 		}
 	}
 
-	if((m_LastTarget != TargetId) || (CurrentTick > m_LastSeenTick + Server()->TickSpeed() * 1.0f))
+	if((m_LastTarget != TargetId) || (CurrentTick > m_LastSeenTargetAtTick.value_or(0) + Server()->TickSpeed() * 1.0f))
 	{
 		m_TargetSinceTick = CurrentTick;
 	}
 	m_LastTarget = TargetId.value();
 	m_LastTargetSeenAtPos = GameController()->GetCharacter(TargetId.value())->GetPos();
-	m_LastSeenTick = CurrentTick;
+	m_LastSeenTargetAtTick = CurrentTick;
 
 	if(pCharacter->IsInDeepDefence())
 	{
@@ -670,7 +672,7 @@ std::optional<vec2> CBotPlayer::GetNewPOI() const
 		return std::nullopt;
 
 	float TargetCooldown = 2.0f;
-	if (Server()->Tick() < m_LastSeenTick + Server()->TickSpeed() * TargetCooldown)
+	if (Server()->Tick() < m_LastSeenTargetAtTick.value_or(0) + Server()->TickSpeed() * TargetCooldown)
 	{
 		return std::nullopt;
 	}
@@ -2685,7 +2687,7 @@ void CBotPlayer::MaybeChangeRoamingBehavior()
 
 	if(m_RoamingObjection == EObjection::CheckTheLastSeen)
 	{
-		if(Tick > m_LastSeenTick + Server()->TickSpeed() * LastSeenTrackingDuration)
+		if(Tick > m_LastSeenTargetAtTick.value_or(0) + Server()->TickSpeed() * LastSeenTrackingDuration)
 		{
 			SetObjection(m_TargetLastSeenDirObjection);
 		}
