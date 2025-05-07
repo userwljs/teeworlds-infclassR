@@ -160,6 +160,15 @@ function is_in_range(value, from, to)
     return true
 end
 
+function get_character_hp_rate(player_id)
+    local character = Game.Controller:GetCharacter(player_id)
+    if character == nil then
+        return 0
+    end
+    local max_hp = 10 + character.MaxArmor
+    return character:GetHealthArmorSum() / max_hp
+end
+
 init_base()
 
 print("Runtime v1.0 loaded")
