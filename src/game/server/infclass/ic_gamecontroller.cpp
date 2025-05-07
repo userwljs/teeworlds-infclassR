@@ -3903,6 +3903,7 @@ void CIcGameController::StartRound()
 	m_RoundTimeLimitSeconds.reset();
 	m_RoundInfectionDelaySeconds.reset();
 
+	RemoveBots();
 	for (auto EnabledPoints : m_EnabledSpawnPoints)
 		EnabledPoints.clear();
 
@@ -3958,8 +3959,6 @@ void CIcGameController::StartRound()
 	{
 		if(!HardMode())
 		{
-			RemoveBots();
-
 			for(int CID : m_SurvivalState.KilledPlayers)
 			{
 				CIcPlayer *pPlayer = GetPlayer(CID);
