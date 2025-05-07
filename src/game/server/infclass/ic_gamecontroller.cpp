@@ -120,6 +120,7 @@ static const CHintMessage gs_aHintMessages[] = {
 		&g_Config.m_InfWhiteHoleMinimalKills,
 	},
 	_("Scientist can rocket jump with the laser rifle."),
+	_("Biologist's hammer can stop poison effect on teammates. Look for heart icons."),
 	_("Biologist's bouncy shotgun can be used to hit the infected around corners."),
 	_("Smoker heals by hooking humans."),
 	_("Boomer can infect through narrow walls."),
