@@ -674,8 +674,9 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 						Force.x -= hForce;
 					}
 
-					pTarget->SetEmote(EMOTE_SURPRISE, Server()->Tick() + Server()->TickSpeed() * 1);
-					pTarget->Freeze(0.5f, GetCid(), FREEZEREASON_FLASH);
+					const float StunDuration = Config()->m_InfStunningHammerDuration;
+					pTarget->SetEmote(EMOTE_SURPRISE, Server()->Tick() + Server()->TickSpeed() * (StunDuration + 0.5));
+					pTarget->Freeze(StunDuration, GetCid(), FREEZEREASON_FLASH);
 
 					Damage = 3;
 					DamageType = EDamageType::HAMMER;
