@@ -779,23 +779,28 @@ void CBotPlayer::UpdateControls()
 	NewInput.m_NextWeapon = 0;
 	NewInput.m_PrevWeapon = 0;
 
-	UpdateActiveWeapon();
-	if(IsHuman())
+	const CIcCharacter *pCharacter = GetCharacter();
+	bool Controllable = pCharacter && !pCharacter->IsFrozen() && !pCharacter->IsSleeping();
+	if(Controllable)
 	{
-		UpdateHumanBotControls();
-	}
+		UpdateActiveWeapon();
+		if(IsHuman())
+		{
+			UpdateHumanBotControls();
+		}
 
-	switch(m_BotState)
-	{
-	case EBotState::Roaming:
-	case EBotState::Fleeing:
-		UpdateControlsRoaming(&NewInput);
-		break;
-	case EBotState::Hunting:
-		UpdateControlsHunting(&NewInput);
-		break;
-	case EBotState::Invalid:
-		break;
+		switch(m_BotState)
+		{
+		case EBotState::Roaming:
+		case EBotState::Fleeing:
+			UpdateControlsRoaming(&NewInput);
+			break;
+		case EBotState::Hunting:
+			UpdateControlsHunting(&NewInput);
+			break;
+		case EBotState::Invalid:
+			break;
+		}
 	}
 
 	if(!AiEnabled)
