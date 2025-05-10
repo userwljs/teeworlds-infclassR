@@ -36,7 +36,12 @@ CHeroFlag::~CHeroFlag()
 
 void CHeroFlag::FindPosition()
 {
-	m_HasSpawnPosition = GameController()->GetHeroFlagPosition(&m_Pos);
+	const std::optional<vec2> GivenPosition = GameController()->GetHeroFlagPosition();
+	m_HasSpawnPosition = GivenPosition.has_value();
+	if(GivenPosition.has_value())
+	{
+		SetPos(GivenPosition.value());
+	}
 }
 
 void CHeroFlag::ResetCooldown()

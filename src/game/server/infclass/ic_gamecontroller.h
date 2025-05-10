@@ -226,7 +226,7 @@ public:
 	const ClientsArray &GetValidNinjaTargets() const { return m_NinjaTargets; }
 
 	bool HeroGiftAvailable() const;
-	bool GetHeroFlagPosition(vec2 *pFlagPosition) const;
+	std::optional<vec2> GetHeroFlagPosition() const;
 	bool IsPositionAvailableForHumans(const vec2 &FlagPosition) const;
 
 	void StartFunRound();

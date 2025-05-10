@@ -3945,24 +3945,23 @@ bool CIcGameController::HeroGiftAvailable() const
 	return Server()->Tick() >= m_HeroGiftTick;
 }
 
-bool CIcGameController::GetHeroFlagPosition(vec2 *pFlagPosition) const
+std::optional<vec2> CIcGameController::GetHeroFlagPosition() const
 {
 	int NbPos = m_HeroFlagPositions.size();
-	if (NbPos == 0)
-		return false;
+	if(NbPos == 0)
+		return std::nullopt;
 
 	for(int Attempts = 3; Attempts > 0; Attempts--)
 	{
 		int Index = random_int(0, NbPos - 1);
 		const vec2 Pos = m_HeroFlagPositions[Index];
-		*pFlagPosition = Pos;
 		if(IsPositionAvailableForHumans(Pos))
 		{
-			return true;
+			return Pos;
 		}
 	}
 
-	return false;
+	return std::nullopt;
 }
 
 bool CIcGameController::IsPositionAvailableForHumans(const vec2 &Position) const
