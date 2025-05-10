@@ -67,6 +67,7 @@ struct SpawnContext
 		MapSpawn,
 		WitchSpawn,
 		ControlPoint,
+		Scripted,
 		Count,
 		Invalid = Count
 	};

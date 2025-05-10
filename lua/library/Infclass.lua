@@ -394,6 +394,7 @@ function TweaksArray:Add(tweak_name) end
 ---@field SpawnSecond number Spawn second
 ---@field SpawnPointId number Spawn point ID
 ---@field SpawnWitchId number Spawn witch ID
+---@field ScriptedSpawn boolean Makes the game using lua Get_character_spawn_position() if set
 ---@field Lives number Lives
 ---@field HP number MaxHP
 ---@field DropLevel number Drop level

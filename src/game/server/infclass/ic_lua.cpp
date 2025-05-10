@@ -214,6 +214,16 @@ void SetSurvivalBotSpawnPointId(SurvivalBotConfiguration *pConfiguration, int Sp
 	pConfiguration->SpawnPointId = SpawnPointId;
 }
 
+bool GetSurvivalBotScriptedSpawn(const SurvivalBotConfiguration *pConfiguration)
+{
+	return pConfiguration->ScriptedSpawn;
+}
+
+void SetSurvivalBotScriptedSpawn(SurvivalBotConfiguration *pConfiguration, bool ScriptedSpawn)
+{
+	pConfiguration->ScriptedSpawn = ScriptedSpawn;
+}
+
 int GetSurvivalBotSpawnWitchId(const SurvivalBotConfiguration *pConfiguration)
 {
 	return pConfiguration->SpawnWitchId.value_or(0);
@@ -465,6 +475,7 @@ void CIcGameController::RegisterLuaBindings()
 			.addProperty("SpawnSecond", &GetSurvivalBotConfigurationSpawnSecond_Lua, &SetSurvivalBotConfigurationSpawnSecond_Lua)
 			.addProperty("SpawnPointId", &GetSurvivalBotSpawnPointId, &SetSurvivalBotSpawnPointId)
 			.addProperty("SpawnWitchId", &GetSurvivalBotSpawnWitchId, &SetSurvivalBotSpawnWitchId)
+			.addProperty("ScriptedSpawn", &GetSurvivalBotScriptedSpawn, &SetSurvivalBotScriptedSpawn)
 			.addProperty("Lives", &SurvivalBotConfiguration::Lives)
 			.addProperty("HP", &SurvivalBotConfiguration::HP)
 			.addProperty("DropLevel", &SurvivalBotConfiguration::DropLevel)

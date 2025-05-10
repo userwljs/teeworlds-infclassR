@@ -85,6 +85,7 @@ static const char *gs_aCharacterSpawnTypes[] = {
 	"map",
 	"witch",
 	"control-point",
+	"scripted",
 	"invalid",
 };
 
@@ -7245,6 +7246,27 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 		{
 			const SurvivalBotConfiguration &BotConf = pWaveConf->BotConfigurations[ConfigId.value()];
 
+			if(BotConf.ScriptedSpawn)
+			{
+				if(Lua()->HasGlobalCallable("Get_character_spawn_position"))
+				{
+					std::optional<vec2> Pos = RunCallbackWithResult<vec2>(Lua()->GetLuaState(), "Get_character_spawn_position", pPlayer);
+					if(Pos.has_value())
+					{
+						pContext->SpawnPos = Pos.value();
+						pContext->SpawnType = SpawnContext::Scripted;
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else
+				{
+					// warning
+				}
+			}
 			WantedSpawnIndex = BotConf.SpawnPointId;
 			WantedWitchCid = BotConf.SpawnWitchId;
 		}

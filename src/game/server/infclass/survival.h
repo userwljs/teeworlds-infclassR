@@ -13,10 +13,16 @@ class SurvivalBotConfiguration
 public:
 	EPlayerClass Class{};
 	std::int16_t SpawnMinTick{};
+
 	// SpawnPointId == 0 means any; indices starts with 1
 	std::optional<std::uint16_t> SpawnPointId{};
+
 	// Witch ClientID
 	std::optional<std::uint8_t> SpawnWitchId{};
+
+	// Call LUA to get scripted spawn position
+	bool ScriptedSpawn{};
+
 	int Lives{};
 	int HP{};
 	int DropLevel{};
