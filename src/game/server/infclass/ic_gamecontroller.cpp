@@ -283,8 +283,46 @@ int SurvivalWaveConfiguration::GetTotalInfectedLives() const
 }
 
 SurvivalGameConfiguration m_SurvivalConfiguration;
-std::size_t m_SpawnedWaveBots = 0;
-bool m_SpawnedWaveMap[MaxBotsPerWave] = {};
+
+class CSpawnedBotsTracker
+{
+public:
+	void ResetSpawnedBotsTracking()
+	{
+		m_SpawnedWaveBots = 0;
+		for(bool &Spawned : m_SpawnedWaveMap)
+		{
+			Spawned = false;
+		}
+	}
+
+	std::size_t GetSpawnedCount() const
+	{
+		return m_SpawnedWaveBots;
+	}
+
+	std::size_t GetFirstBotIndex() const
+	{
+		return 0;
+	}
+
+	bool IsBotSpawned(std::size_t BotIndex) const
+	{
+		return m_SpawnedWaveMap[BotIndex];
+	}
+
+	void MarkSpawned(std::size_t BotIndex)
+	{
+		m_SpawnedWaveMap[BotIndex] = true;
+		m_SpawnedWaveBots++;
+	}
+
+private:
+	std::size_t m_SpawnedWaveBots = 0;
+	bool m_SpawnedWaveMap[MaxBotsPerWave] = {};
+};
+
+CSpawnedBotsTracker SpawnedBotsTracker;
 
 int64_t CIcGameController::m_LastTipTime = 0;
 
@@ -2937,7 +2975,7 @@ bool CIcGameController::SurvivalHumansWinConditionsMet() const
 	const SurvivalWaveConfiguration *WaveConf = GetCurrentSurvivalWaveConfiguration();
 	if(WaveConf)
 	{
-		if(m_SpawnedWaveBots < WaveConf->BotConfigurations.Size())
+		if(SpawnedBotsTracker.GetSpawnedCount() < WaveConf->BotConfigurations.Size())
 		{
 			return false;
 		}
@@ -4630,16 +4668,7 @@ void CIcGameController::RemoveBots()
 		RemoveBot(pBot, "Cleanup");
 	}
 
-	ResetSpawnedBotsTracking();
-}
-
-void CIcGameController::ResetSpawnedBotsTracking()
-{
-	m_SpawnedWaveBots = 0;
-	for(bool &Spawned : m_SpawnedWaveMap)
-	{
-		Spawned = false;
-	}
+	SpawnedBotsTracker.ResetSpawnedBotsTracking();
 }
 
 int CIcGameController::RequestBotID()
@@ -4816,12 +4845,13 @@ void CIcGameController::AddMoreBotsAccordingToConfiguration()
 	const SurvivalWaveConfiguration *WaveConf = GetCurrentSurvivalWaveConfiguration();
 	const int InfectionTick = GetInfectionTick();
 	int SpawnAheadTicks = Server()->TickSpeed() * 3;
-	for (std::size_t BotIndex = 0; BotIndex < WaveConf->BotConfigurations.Size(); ++BotIndex)
+	for (std::size_t BotIndex = SpawnedBotsTracker.GetFirstBotIndex(); BotIndex < WaveConf->BotConfigurations.Size(); ++BotIndex)
 	{
-		if(m_SpawnedWaveMap[BotIndex])
+		if(SpawnedBotsTracker.IsBotSpawned(BotIndex))
 			continue;
+
 		const SurvivalBotConfiguration &BotConf = WaveConf->BotConfigurations[BotIndex];
-		if (BotConf.SpawnMinTick < InfectionTick + SpawnAheadTicks)
+		if(BotConf.SpawnMinTick < InfectionTick + SpawnAheadTicks)
 		{
 			CBaseBotPlayer *pBot = AddBot(BotConf);
 			if(!pBot)
@@ -4829,8 +4859,7 @@ void CIcGameController::AddMoreBotsAccordingToConfiguration()
 				break;
 			}
 			pBot->SetBotConfigId(BotIndex);
-			m_SpawnedWaveMap[BotIndex] = true;
-			m_SpawnedWaveBots++;
+			SpawnedBotsTracker.MarkSpawned(BotIndex);
 		}
 	}
 }
