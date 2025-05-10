@@ -5362,9 +5362,8 @@ void CIcGameController::MaybeDropPickup(CIcCharacter *pVictim)
 	if(DropMaxLevel <= 0)
 		return;
 
+	// Unset the drop for the Victim so it won't drop more pickups after this one
 	pVictim->SetDropLevel(0);
-	const vec2 Pos = pVictim->GetPos();
-	const int ZoneIndex = GetDamageZoneValueAt(Pos);
 
 	icArray<int, 4> BadIndices = {
 		ZONE_DAMAGE_DEATH,
@@ -5380,7 +5379,23 @@ void CIcGameController::MaybeDropPickup(CIcCharacter *pVictim)
 		BadIndices.Add(ZONE_DAMAGE_INFECTION);
 	}
 
-	if(BadIndices.Contains(ZoneIndex))
+	const vec2 VictimPos = pVictim->GetPos();
+	const icArray<vec2, 3> aPossiblePositions = {
+		VictimPos, VictimPos + vec2(0, TileSizeF), VictimPos - vec2(0, TileSizeF),
+	};
+
+	std::optional<vec2> Pos{};
+	for(const CTileRoundedPosition Rounded : aPossiblePositions)
+	{
+		const int ZoneIndex = GetDamageZoneValueAt(Rounded.Center());
+		if(BadIndices.Contains(ZoneIndex))
+			continue;
+
+		Pos = Rounded.Center();
+		break;
+	}
+
+	if(!Pos.has_value())
 	{
 		// No drop if noone will be able to pick it up
 		return;
@@ -5422,7 +5437,7 @@ void CIcGameController::MaybeDropPickup(CIcCharacter *pVictim)
 		if(HasSpawnedPickups.Contains(ClientId))
 			continue;
 
-		CIcPickup *p = new CIcPickup(GameServer(), EICPickupType::ClassUpgrade, Pos, ClientId);
+		CIcPickup *p = new CIcPickup(GameServer(), EICPickupType::ClassUpgrade, Pos.value(), ClientId);
 		p->SetUpgrades(Upgrade);
 		p->Spawn();
 	}
