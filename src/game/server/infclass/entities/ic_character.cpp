@@ -1841,7 +1841,7 @@ void CIcCharacter::HandleMapMenu()
 				EBroadcastPriority::INTERFACE, BROADCAST_DURATION_REALTIME,
 				MinPlayers,
 				_P("Need at least {int:MinPlayers} player",
-					"Need at least {int:MinPlayers} players"),
+					"Need at least {int:MinPlayers} players", MinPlayers),
 				"MinPlayers", &MinPlayers,
 				nullptr);
 		}

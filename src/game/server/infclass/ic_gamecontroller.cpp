@@ -115,7 +115,7 @@ static const CHintMessage gs_aHintMessages[] = {
 	_("Scientist can use Taxi to teleport his teammates into safety."),
 	{
 		_P("Scientist can get a white hole after {int:Kills} kill.",
-			"Scientist can get a white hole after {int:Kills} kills."),
+			"Scientist can get a white hole after {int:Kills} kills.", g_Config.m_InfWhiteHoleMinimalKills),
 		"Kills",
 		&g_Config.m_InfWhiteHoleMinimalKills,
 	},
@@ -3612,7 +3612,7 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 	{
 		GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_HUMANS, NumHumans,
 			_P("One human won the round",
-			   "{int:NumHumans} humans won the round"),
+			   "{int:NumHumans} humans won the round", NumHumans),
 			"NumHumans", &NumHumans,
 			nullptr);
 
@@ -4099,7 +4099,7 @@ void CIcGameController::EndSurvivalRound()
 			GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_SCORE, NumWaves,
 				_P(
 					"The survival is over after {int:NumWaves} wave.",
-					"The survival is over after {int:NumWaves} waves."),
+					"The survival is over after {int:NumWaves} waves.", NumWaves),
 					"NumWaves", &NumWaves,
 					nullptr
 					);
@@ -4402,9 +4402,9 @@ void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const
 		Buffer.append("\n\n");
 		Server()->Localization()->Format_LP(Buffer, pLanguage, g_Config.m_InfWhiteHoleMinimalKills,
 			_CP("White hole",
-				"Receive it by killing at least one infected as a Scientist.",
-				"Receive it by killing at least {int:NumKills} of the infected as a Scientist."),
-			"NumKills", &g_Config.m_InfWhiteHoleMinimalKills, NULL);
+				"Receive it by killing at least {int:NumKills} infected as a Scientist.",
+				"Receive it by killing at least {int:NumKills} of the infected as a Scientist.", g_Config.m_InfWhiteHoleMinimalKills),
+			"NumKills", &g_Config.m_InfWhiteHoleMinimalKills, nullptr);
 		Buffer.append("\n\n");
 		Server()->Localization()->Format_L(Buffer, pLanguage, _C("White hole", "Use the laser rifle to place it."), NULL);
 	}
@@ -4526,8 +4526,11 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 								" be charged by hitting it or with a laser rifle."));
 		AddLine_Plural(g_Config.m_InfPoisonDamage,
 			_CP("Mercenary",
-				"Mercenary can also throw poison grenades that deal one damage point and prevent the infected from healing.",
-				"Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing."),
+				"Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage point"
+				" and prevent the infected from healing.",
+				"Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points"
+				" and prevent the infected from healing.",
+				g_Config.m_InfPoisonDamage),
 			"NumDamagePoints", &g_Config.m_InfPoisonDamage);
 		break;
 	case EPlayerClass::Medic:
@@ -4565,8 +4568,8 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 		AddLine(_C("Soldier", "The Soldier creates floating bombs with the hammer."));
 		AddLine_Plural(g_Config.m_InfSoldierBombs,
 			_CP("Soldier",
-				"Each bomb can explode one time.",
-				"Each bomb can explode {int:NumBombs} times."),
+				"Each bomb can explode {int:NumBombs} time.",
+				"Each bomb can explode {int:NumBombs} times.", g_Config.m_InfSoldierBombs),
 			"NumBombs", &g_Config.m_InfSoldierBombs);
 
 		AddLine(_("Use the hammer to place the bomb and explode it multiple times."));
@@ -4580,7 +4583,7 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 				"Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump}"
 				" time before touching the ground.",
 				"Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump}"
-				" times before touching the ground."),
+				" times before touching the ground.", g_Config.m_InfNinjaJump),
 			"NinjaJump", &g_Config.m_InfNinjaJump);
 		AddLine(_("They also have a laser rifle that blinds the target for a short period of time."));
 		AddLine(_("Ninja gets special targets. For killing a target, extra points and abilities"
@@ -4597,8 +4600,8 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 		AddLine(_C("Scientist", "The Scientist can pose floating mines with the hammer."));
 		AddLine_Plural(g_Config.m_InfMineLimit,
 			_CP("Scientist",
-				"Mines are limited to one per player at the same time.",
-				"Mines are limited to {int:NumMines} per player at the same time."),
+				"Mines are limited to {int:NumMines} per player at the same time.",
+				"Mines are limited to {int:NumMines} per player at the same time.", g_Config.m_InfMineLimit),
 			"NumMines", &g_Config.m_InfMineLimit);
 		AddLine(_C("Scientist", "Scientist has also grenades that teleport them."));
 		AddLine(_C("Scientist", "A lucky Scientist devoted to killing can get a white hole that"

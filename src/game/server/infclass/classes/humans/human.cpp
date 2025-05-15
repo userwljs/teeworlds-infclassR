@@ -1408,7 +1408,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			GameServer()->SendBroadcast_Localization_P(GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				NumBombs,
-				_CP("Soldier", "One bomb left", "{int:NumBombs} bombs left"),
+				_CP("Soldier", "{int:NumBombs} bomb left", "{int:NumBombs} bombs left", NumBombs),
 				"NumBombs", &NumBombs,
 				NULL
 			);
@@ -1445,7 +1445,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 		{
 			GameServer()->SendBroadcast_Localization_P(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME, NumMines,
-				_P("One mine is active", "{int:NumMines} mines are active"),
+				_P("{int:NumMines} mine is active", "{int:NumMines} mines are active", NumMines),
 				"NumMines", &NumMines,
 				NULL
 			);
@@ -1465,7 +1465,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			int Seconds = 1 + pOwnWhiteHole->GetLifespan();
 			dynamic_string Buffer;
 			Server()->Localization()->Format_LP(Buffer, GetPlayer()->GetLanguage(), NumMines,
-				_P("One mine is active", "{int:NumMines} mines are active"),
+				_P("{int:NumMines} mine is active", "{int:NumMines} mines are active", NumMines),
 				"NumMines", &NumMines,
 				nullptr);
 			Buffer.append("\n");
@@ -1934,7 +1934,7 @@ void CInfClassHuman::PlaceTurret(WeaponFireContext *pFireContext)
 		m_TurretCount--;
 		int TurretsNumber = m_TurretCount;
 		GameServer()->SendChatTarget_Localization_P(GetCid(), CHATCATEGORY_SCORE, TurretsNumber,
-			_P("Placed a turret, {int:TurretsNumber} turret left", "Placed a turret, {int:TurretsNumber} turrets left"),
+			_P("Placed a turret, {int:TurretsNumber} turret left", "Placed a turret, {int:TurretsNumber} turrets left", TurretsNumber),
 			"TurretsNumber", &TurretsNumber,
 			nullptr);
 	}
@@ -2112,7 +2112,7 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 
 				GameServer()->SendChatTarget_Localization_P(GetCid(), CHATCATEGORY_SCORE, m_TurretCount,
 					_P("You have {int:NumTurrets} turret available, use the Hammer to place it",
-						"You have {int:NumTurrets} turrets available, use the Hammer to place it"),
+						"You have {int:NumTurrets} turrets available, use the Hammer to place it", m_TurretCount),
 					"NumTurrets", &m_TurretCount,
 					nullptr);
 			}

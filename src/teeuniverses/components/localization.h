@@ -24,10 +24,10 @@ struct CLocalizableString
 
 /* BEGIN EDIT *********************************************************/
 #define _(TEXT) TEXT
-#define _P(TEXT_SINGULAR, TEXT_PLURAL) TEXT_PLURAL
+#define _P(TEXT_SINGULAR, TEXT_PLURAL, NUMBER) (NUMBER == 1 ? TEXT_SINGULAR : TEXT_PLURAL)
 #define _C(CONTEXT, TEXT) TEXT
 #define _C_NOOP(CONTEXT, TEXT) TEXT
-#define _CP(CONTEXT, TEXT_SINGULAR, TEXT_PLURAL) TEXT_PLURAL
+#define _CP(CONTEXT, TEXT_SINGULAR, TEXT_PLURAL, NUMBER) (NUMBER == 1 ? TEXT_SINGULAR : TEXT_PLURAL)
 /* END EDIT ***********************************************************/
 
 /* BEGIN EDIT *********************************************************/
