@@ -12,6 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        tests: [true]
         config:
         - {
             name: "Ubuntu 22.04 GCC",
@@ -42,3 +43,10 @@ jobs:
 
     - name: Build the server
       run: ./scripts/scripts/build.sh ci
+
+    - name: Test
+      if: matrix.tests
+      working-directory: ${{github.workspace}}/scripts/ci/build
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest -C Release

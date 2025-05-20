@@ -12,6 +12,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [windows-2019]
+        tests: [true]
         include:
         - os: windows-2019
           cmake-args: -G "Visual Studio 16 2019" -A x64 -DUSE_CONAN=ON
@@ -36,8 +37,14 @@ jobs:
       run: |
         mkdir release
         cd release
-        ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Release ..
+        ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Release -DDOWNLOAD_GTEST=TRUE -DBUILD_TESTS=TRUE ..
         ${{ matrix.cmake-path }}cmake --build . --config Release ${{ matrix.build-args }}
+
+    - name: Test
+      if: matrix.tests
+      run: |
+        cd release
+        ctest -C Release
 
     - name: Package
       run: |
