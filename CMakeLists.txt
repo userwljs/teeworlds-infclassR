@@ -1101,7 +1101,6 @@ foreach(PO_LANG ${PO_LANGS})
     # BYPRODUCTS ${PO_LANG_FILE}
     COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --sort-output --update --backup=off --width=200 ${PO_LANG_FILE} ${PO_TEMPlATE}
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-    DEPENDS ${PO_TEMPlATE}
   )
 endforeach()
 
