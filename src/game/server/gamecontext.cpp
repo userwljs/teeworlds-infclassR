@@ -3675,7 +3675,7 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 	bool CheckDistance = false;
 	vec2 CheckDistancePos = vec2(0.0f, 0.0f);
 	
-	int CheckTeam = -1;
+	std::optional<int> CheckTeam;
 	EPlayerClass CheckClass = EPlayerClass::Invalid;
 #ifdef CONF_SQL
 	int CheckLevel = SQL_USERLEVEL_NORMAL;
@@ -3683,7 +3683,6 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 	
 	if(TeamChat && m_apPlayers[ClientId])
 	{
-		CheckTeam = true;
 		if(m_apPlayers[ClientId]->GetTeam() == TEAM_SPECTATORS)
 			CheckTeam = TEAM_SPECTATORS;
 		if(m_apPlayers[ClientId]->IsInfected())
@@ -3872,7 +3871,7 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 		{
 			if(i != ClientId)
 			{
-				if(CheckTeam >= 0)
+				if(CheckTeam.has_value())
 				{
 					if(CheckTeam == TEAM_SPECTATORS && m_apPlayers[i]->GetTeam() != TEAM_SPECTATORS)
 						continue;
