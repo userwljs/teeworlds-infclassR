@@ -99,7 +99,7 @@ void CLua::ExecScript(const char *pScript, const char *pAsFileName)
 		return;
 
 #if CONF_LUA
-	if(GetLuaState() == NULL)
+	if(GetLuaState() == nullptr)
 	{
 		dbg_msg("lua", "error: tried to exec a script without lua state");
 		return;
@@ -146,7 +146,7 @@ bool CLua::LoadScript(const char *pPath)
 		return false;
 
 #if CONF_LUA
-	if(GetLuaState() == NULL)
+	if(GetLuaState() == nullptr)
 	{
 		dbg_msg("lua", "error: tried to load '%s' without lua state", pPath);
 		return false;
