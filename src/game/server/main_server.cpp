@@ -80,7 +80,7 @@ int main(int argc, const char **argv) // ignore_convention
 	IEngine *pEngine = CreateEngine(GAME_NAME, pFutureConsoleLogger);
 	pKernel->RegisterInterface(pEngine);
 
-	IStorage *pStorage = CreateStorage(IStorage::STORAGETYPE_SERVER, argc, argv);
+	IStorage *pStorage = CreateStorage(IStorage::EInitializationType::SERVER, argc, argv);
 	pKernel->RegisterInterface(pStorage);
 
 	pFutureAssertionLogger->Set(CreateAssertionLogger(pStorage, GAME_NAME));

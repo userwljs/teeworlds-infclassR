@@ -8,7 +8,7 @@ int main(int argc, const char **argv)
 {
 	CCmdlineFix CmdlineFix(&argc, &argv);
 
-	IStorage *pStorage = CreateStorage(IStorage::STORAGETYPE_BASIC, argc, argv);
+	IStorage *pStorage = CreateStorage(IStorage::EInitializationType::BASIC, argc, argv);
 	if(!pStorage || argc != 3)
 		return -1;
 

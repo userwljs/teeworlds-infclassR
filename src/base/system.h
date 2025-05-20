@@ -266,10 +266,14 @@ unsigned io_read(IOHANDLE io, void *buffer, unsigned size);
  * @param result Receives the file's remaining contents.
  * @param result_len Receives the file's remaining length.
  *
+ * @return `true` on success, `false` on failure.
+ *
  * @remark Does NOT guarantee that there are no internal null bytes.
  * @remark The result must be freed after it has been used.
+ * @remark The function will fail if more than 1 GiB of memory would
+ *         have to be allocated. Large files should not be loaded into memory.
  */
-void io_read_all(IOHANDLE io, void **result, unsigned *result_len);
+bool io_read_all(IOHANDLE io, void **result, unsigned *result_len);
 
 /**
  * Reads the rest of the file into a zero-terminated buffer with

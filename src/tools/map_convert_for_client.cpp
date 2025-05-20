@@ -20,7 +20,7 @@ int main(int argc, const char **argv)
 		return -1;
 	}
 
-	IStorage *pStorage = CreateLocalStorage();
+	std::unique_ptr<IStorage> pStorage = CreateLocalStorage();
 	IEngineMap *pMap = CreateEngineMap();
 	IConsole *pConsole = CreateConsole(0).release();
 
@@ -31,7 +31,7 @@ int main(int argc, const char **argv)
 	}
 
 	IKernel *pKernel = IKernel::Create();
-	pKernel->RegisterInterface(pStorage);
+	pKernel->RegisterInterface(pStorage.get());
 	pKernel->RegisterInterface(static_cast<IEngineMap*>(pMap)); // register as both
 	pKernel->RegisterInterface(static_cast<IMap*>(pMap), false);
 	pKernel->RegisterInterface(pConsole);
@@ -47,7 +47,7 @@ int main(int argc, const char **argv)
 	unsigned ServerMapCrc = 0;
 	{
 		CDataFileReader dfServerMap;
-		dfServerMap.Open(pStorage, pSourceFileName, IStorage::TYPE_ALL);
+		dfServerMap.Open(pStorage.get(), pSourceFileName, IStorage::TYPE_ALL);
 		ServerMapCrc = dfServerMap.Crc();
 		dfServerMap.Close();
 	}
@@ -72,7 +72,7 @@ int main(int argc, const char **argv)
 		}
 	}
 
-	CMapConverter MapConverter(pStorage, pMap, pConsole);
+	CMapConverter MapConverter(pStorage.get(), pMap, pConsole);
 	if(!MapConverter.Load())
 		return -2;
 

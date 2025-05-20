@@ -111,9 +111,9 @@ int main(int argc, const char *argv[])
 		return -1;
 	}
 
-	IStorage *pStorage = CreateLocalStorage();
+	std::unique_ptr<IStorage> pStorage = CreateLocalStorage();
 	if(!pStorage)
 		return -1;
 
-	return Process(pStorage, &argv[1]) ? 0 : 1;
+	return Process(pStorage.get(), &argv[1]) ? 0 : 1;
 }

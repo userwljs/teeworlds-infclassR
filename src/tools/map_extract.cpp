@@ -90,7 +90,7 @@ int main(int argc, const char *argv[])
 	CCmdlineFix CmdlineFix(&argc, &argv);
 	log_set_global_logger_default();
 
-	IStorage *pStorage = CreateLocalStorage();
+	std::unique_ptr<IStorage> pStorage = CreateLocalStorage();
 	if(!pStorage)
 		return -1;
 
@@ -115,6 +115,6 @@ int main(int argc, const char *argv[])
 		return -1;
 	}
 
-	int Result = Process(pStorage, argv[1], pDir) ? 0 : 1;
+	int Result = Process(pStorage.get(), argv[1], pDir) ? 0 : 1;
 	return Result;
 }

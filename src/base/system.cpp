@@ -318,12 +318,22 @@ unsigned io_read(IOHANDLE io, void *buffer, unsigned size)
 	return fread(buffer, 1, size, (FILE *)io);
 }
 
-void io_read_all(IOHANDLE io, void **result, unsigned *result_len)
+bool io_read_all(IOHANDLE io, void **result, unsigned *result_len)
 {
-	long signed_len = io_length(io);
-	unsigned len = signed_len < 0 ? 1024 : (unsigned)signed_len; // use default initial size if we couldn't get the length
+	// Loading files larger than 1 GiB into memory is not supported.
+	constexpr int64_t MAX_FILE_SIZE = (int64_t)1024 * 1024 * 1024;
+
+	int64_t real_len = io_length(io);
+	if(real_len > MAX_FILE_SIZE)
+	{
+		*result = nullptr;
+		*result_len = 0;
+		return false;
+	}
+
+	int64_t len = real_len < 0 ? 1024 : real_len; // use default initial size if we couldn't get the length
 	char *buffer = (char *)malloc(len + 1);
-	unsigned read = io_read(io, buffer, len + 1); // +1 to check if the file size is larger than expected
+	int64_t read = io_read(io, buffer, len + 1); // +1 to check if the file size is larger than expected
 	if(read < len)
 	{
 		buffer = (char *)realloc(buffer, read + 1);
@@ -331,7 +341,14 @@ void io_read_all(IOHANDLE io, void **result, unsigned *result_len)
 	}
 	else if(read > len)
 	{
-		unsigned cap = 2 * read;
+		int64_t cap = 2 * read;
+		if(cap > MAX_FILE_SIZE)
+		{
+			free(buffer);
+			*result = nullptr;
+			*result_len = 0;
+			return false;
+		}
 		len = read;
 		buffer = (char *)realloc(buffer, cap);
 		while((read = io_read(io, buffer + len, cap - len)) != 0)
@@ -340,6 +357,13 @@ void io_read_all(IOHANDLE io, void **result, unsigned *result_len)
 			if(len == cap)
 			{
 				cap *= 2;
+				if(cap > MAX_FILE_SIZE)
+				{
+					free(buffer);
+					*result = nullptr;
+					*result_len = 0;
+					return false;
+				}
 				buffer = (char *)realloc(buffer, cap);
 			}
 		}
@@ -348,6 +372,7 @@ void io_read_all(IOHANDLE io, void **result, unsigned *result_len)
 	buffer[len] = 0;
 	*result = buffer;
 	*result_len = len;
+	return true;
 }
 
 char *io_read_all_str(IOHANDLE io)
