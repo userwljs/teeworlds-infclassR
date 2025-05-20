@@ -2863,16 +2863,8 @@ int CServer::LoadMap(const char *pMapName)
 
 static bool IsSeparator(char c) { return c == ';' || c == ' ' || c == ',' || c == '\t'; }
 
-int CServer::Run()
+void CServer::InitPersistentData()
 {
-	if(m_RunServer == UNINITIALIZED)
-		m_RunServer = RUNNING;
-
-	if(Config()->m_Debug)
-	{
-		g_UuidManager.DebugDump();
-	}
-
 	{
 		// int Size = GameServer()->PersistentClientDataSize();
 		for(CClient &Client : m_aClients)
@@ -2885,6 +2877,19 @@ int CServer::Run()
 	}
 
 	m_pPersistentData = malloc(GameServer()->PersistentDataSize());
+}
+
+int CServer::Run()
+{
+	if(m_RunServer == UNINITIALIZED)
+		m_RunServer = RUNNING;
+
+	if(Config()->m_Debug)
+	{
+		g_UuidManager.DebugDump();
+	}
+
+	InitPersistentData();
 
 	//Choose a random map from the rotation
 	if(!str_length(g_Config.m_SvMap) && str_length(g_Config.m_SvMaprotation))

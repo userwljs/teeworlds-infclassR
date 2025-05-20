@@ -421,6 +421,7 @@ public:
 	void StopRecord(int ClientId) override;
 	bool IsRecording(int ClientId) override;
 
+	void InitPersistentData();
 	int Run();
 
 	static void ConKick(IConsole::IResult *pResult, void *pUser);
