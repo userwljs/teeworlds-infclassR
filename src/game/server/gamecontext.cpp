@@ -4525,7 +4525,7 @@ void CGameContext::RegisterChatCommands()
 
 void CGameContext::OnInit(const void *pPersistentData)
 {
-	const CPersistentData *pPersistent = (const CPersistentData *)pPersistentData;
+	[[maybe_unused]] const CPersistentData *pPersistent = (const CPersistentData *)pPersistentData;
 
 	m_pServer = Kernel()->RequestInterface<IServer>();
 	m_pConfig = Kernel()->RequestInterface<IConfigManager>()->Values();

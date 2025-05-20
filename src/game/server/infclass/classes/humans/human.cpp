@@ -880,7 +880,7 @@ void CInfClassHuman::OnGunFired(WeaponFireContext *pFireContext)
 		DamageType = EDamageType::MERCENARY_GUN;
 
 	{
-		CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_GUN,
+		[[maybe_unused]] CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_GUN,
 			GetCid(),
 			ProjStartPos,
 			Direction,
@@ -941,7 +941,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 
 		if(GetPlayerClass() == EPlayerClass::Biologist)
 		{
-			CBouncingBullet *pProj = new CBouncingBullet(GameServer(),
+			[[maybe_unused]] CBouncingBullet *pProj = new CBouncingBullet(GameServer(),
 				GetCid(),
 				ProjStartPos,
 				Direction);
@@ -949,7 +949,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 		else
 		{
 			int Damage = 1;
-			CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_SHOTGUN,
+			[[maybe_unused]] CIcProjectile *pProj = new CIcProjectile(GameContext(), WEAPON_SHOTGUN,
 				GetCid(),
 				ProjStartPos,
 				Direction,
@@ -1975,7 +1975,7 @@ void CInfClassHuman::OnPoisonGrenadeFired(WeaponFireContext *pFireContext)
 	{
 		float a = BaseAngle + random_float() / 3.0f;
 
-		CScatterGrenade *pProj = new CScatterGrenade(GameServer(), GetCid(), GetPos(), vec2(cosf(a), sinf(a)));
+		[[maybe_unused]] CScatterGrenade *pProj = new CScatterGrenade(GameServer(), GetCid(), GetPos(), vec2(cosf(a), sinf(a)));
 	}
 
 	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
