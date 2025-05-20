@@ -307,7 +307,8 @@ void CDemoRecorder::RecordSnapshot(int Tick, const void *pData, int Size)
 		Write(CHUNKTYPE_SNAPSHOT, pData, Size);
 
 		m_LastKeyFrame = Tick;
-		mem_copy(m_aLastSnapshotData, pData, Size);
+		m_aLastSnapshotData.resize(CSnapshot::MAX_SIZE);
+		mem_copy(m_aLastSnapshotData.data(), pData, Size);
 	}
 	else
 	{
@@ -318,12 +319,13 @@ void CDemoRecorder::RecordSnapshot(int Tick, const void *pData, int Size)
 		// write tickmarker
 		WriteTickMarker(Tick, 0);
 
-		DeltaSize = m_pSnapshotDelta->CreateDelta((CSnapshot *)m_aLastSnapshotData, (CSnapshot *)pData, &aDeltaData);
+		dbg_assert(m_aLastSnapshotData.size() == CSnapshot::MAX_SIZE, "CDemoRecorder: Uninitialized LastSnapshotData");
+		DeltaSize = m_pSnapshotDelta->CreateDelta((CSnapshot *)m_aLastSnapshotData.data(), (CSnapshot *)pData, &aDeltaData);
 		if(DeltaSize)
 		{
 			// record delta
 			Write(CHUNKTYPE_DELTA, aDeltaData, DeltaSize);
-			mem_copy(m_aLastSnapshotData, pData, Size);
+			mem_copy(m_aLastSnapshotData.data(), pData, Size);
 		}
 	}
 }

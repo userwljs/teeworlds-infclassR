@@ -21,7 +21,7 @@ class CDemoRecorder : public IDemoRecorder
 	int m_LastTickMarker;
 	int m_LastKeyFrame;
 	int m_FirstTick;
-	unsigned char m_aLastSnapshotData[CSnapshot::MAX_SIZE];
+	std::vector<unsigned char> m_aLastSnapshotData;
 	class CSnapshotDelta *m_pSnapshotDelta;
 	int m_NumTimelineMarkers;
 	int m_aTimelineMarkers[MAX_TIMELINE_MARKERS];
