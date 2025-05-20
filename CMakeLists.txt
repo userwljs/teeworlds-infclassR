@@ -1175,6 +1175,7 @@ endif()
 ########################################################################
 # TESTS
 ########################################################################
+set(DATA_INSTALL_EXCLUDES PATTERN "maps/*coverage.map" EXCLUDE)
 
 if(BUILD_TESTS)
   if(NOT TARGET gtest)
@@ -1210,6 +1211,7 @@ if(BUILD_TESTS)
     target_include_directories(${TEST_NAME} SYSTEM PRIVATE ${GTEST_INCLUDE_DIRS})
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
   endforeach()
+  set(DATA_INSTALL_EXCLUDES "")
 endif()
 
 ########################################################################
@@ -1221,6 +1223,7 @@ install(
     "data/"
   DESTINATION
     "data"
+  ${DATA_INSTALL_EXCLUDES}
 )
 install(
   TARGETS
