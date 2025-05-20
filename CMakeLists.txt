@@ -1226,6 +1226,12 @@ if(BUILD_TESTS)
     "test_icArray"
     "test_icFifoArray"
   )
+  if(USE_LUA)
+    target_compile_definitions(game-test PRIVATE CONF_LUA=1)
+    list(APPEND TESTS "test_Lua")
+  else()
+    target_compile_definitions(game-test PRIVATE CONF_LUA=0)
+  endif()
   foreach(TEST_NAME ${TESTS})
     add_executable(${TEST_NAME} "src/tests/${TEST_NAME}.cpp")
     target_include_directories(${TEST_NAME} SYSTEM PRIVATE ${TOOL_INCLUDE_DIRS})
