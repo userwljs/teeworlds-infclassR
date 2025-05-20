@@ -421,6 +421,7 @@ public:
 	void StopRecord(int ClientId) override;
 	bool IsRecording(int ClientId) override;
 
+	void InitInterfaces();
 	void InitPersistentData();
 	int Run();
 

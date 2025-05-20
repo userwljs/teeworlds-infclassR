@@ -2863,6 +2863,16 @@ int CServer::LoadMap(const char *pMapName)
 
 static bool IsSeparator(char c) { return c == ';' || c == ' ' || c == ',' || c == '\t'; }
 
+void CServer::InitInterfaces()
+{
+	m_pConsole = Kernel()->RequestInterface<IConsole>();
+	m_pGameServer = Kernel()->RequestInterface<IGameServer>();
+	m_pMap = Kernel()->RequestInterface<IEngineMap>();
+	m_pStorage = Kernel()->RequestInterface<IStorage>();
+
+	Kernel()->RegisterInterface(static_cast<IHttp *>(&m_Http), false);
+}
+
 void CServer::InitPersistentData()
 {
 	{
@@ -3902,12 +3912,7 @@ void CServer::ConchainConnLoggingServerChange(IConsole::IResult *pResult, void *
 
 void CServer::RegisterCommands()
 {
-	m_pConsole = Kernel()->RequestInterface<IConsole>();
-	m_pGameServer = Kernel()->RequestInterface<IGameServer>();
-	m_pMap = Kernel()->RequestInterface<IEngineMap>();
-	m_pStorage = Kernel()->RequestInterface<IStorage>();
-
-	Kernel()->RegisterInterface(static_cast<IHttp *>(&m_Http), false);
+	InitInterfaces();
 
 	// register console commands
 	Console()->Register("kick", "i[id] ?r[reason]", CFGFLAG_SERVER, ConKick, this, "Kick player with specified id for any reason");
