@@ -103,7 +103,7 @@ public:
 	*/
 	CEntity *ClosestEntity(vec2 Pos, float Radius, int Type, const CEntity *pNotThis);
 
-	class CEntity *IntersectEntity(vec2 Pos0, vec2 Pos1, float Radius, vec2 *NewPos, int EntityType, EntityFilter FilterFunction);
+	CEntity *IntersectEntity(vec2 Pos0, vec2 Pos1, float Radius, vec2 *NewPos, int EntityType, EntityFilter FilterFunction);
 
 	/*
 		Function: IntersectCharacter

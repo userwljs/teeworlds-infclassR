@@ -34,6 +34,7 @@ public:
 	EntityFilter GetOwnerFilterFunction();
 
 	static EntityFilter GetExceptEntitiesFilterFunction(const icArray<const CEntity *, 10> &aEntities);
+	static EntityFilter GetOnlyEntitiesFilterFunction(const icArray<const CEntity *, 10> &aEntities);
 
 	void Reset() override;
 	void Tick() override;

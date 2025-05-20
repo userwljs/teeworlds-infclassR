@@ -66,6 +66,18 @@ EntityFilter CIcEntity::GetExceptEntitiesFilterFunction(const icArray<const CEnt
 	return ExceptEntitiesFilter;
 }
 
+EntityFilter CIcEntity::GetOnlyEntitiesFilterFunction(const icArray<const CEntity *, 10> &aEntities)
+{
+	static icArray<const CEntity *, 10> s_aFilterEntities;
+	s_aFilterEntities = aEntities;
+
+	const auto ExceptEntitiesFilter = [](const CEntity *pEntity) {
+		return s_aFilterEntities.Contains(pEntity);
+	};
+
+	return ExceptEntitiesFilter;
+}
+
 void CIcEntity::Reset()
 {
 	GameWorld()->DestroyEntity(this);
