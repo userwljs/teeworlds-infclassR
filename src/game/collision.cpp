@@ -235,19 +235,12 @@ int CCollision::GetMoveRestrictions(CALLBACK_SWITCHACTIVE pfnSwitchActive, void 
 		{
 			ModMapIndex = OverrideCenterTileIndex;
 		}
-		for(int Front = 0; Front < 2; Front++)
 		{
 			int Tile;
 			int Flags;
-			if(!Front)
 			{
 				Tile = GetTileIndex(ModMapIndex);
 				Flags = GetTileFlags(ModMapIndex);
-			}
-			else
-			{
-				// Tile = GetFTileIndex(ModMapIndex);
-				// Flags = GetFTileFlags(ModMapIndex);
 			}
 			Restrictions |= ::GetMoveRestrictions(d, Tile, Flags);
 		}

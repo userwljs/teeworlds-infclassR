@@ -2543,13 +2543,11 @@ void CServer::UpdateRegisterServerInfo()
 	{
 		// Full hide
 		ClientCount = 0;
-		PlayerCount = 0;
 		pMapName = "";
 	}
 	else if (Config()->m_SvInfoMaxClients >= 0)
 	{
 		ClientCount = minimum(ClientCount, Config()->m_SvInfoMaxClients);
-		PlayerCount = minimum(ClientCount, PlayerCount);
 	}
 
 	if(pMapName[0])
@@ -2732,12 +2730,6 @@ void CServer::PumpNetwork(bool PacketWaiting)
 			{
 				if(m_aClients[Packet.m_ClientId].m_State == CClient::STATE_REDIRECTED)
 					continue;
-
-				int GameFlags = 0;
-				if(Packet.m_Flags & NET_CHUNKFLAG_VITAL)
-				{
-					GameFlags |= MSGFLAG_VITAL;
-				}
 
 				ProcessClientPacket(&Packet);
 			}
