@@ -15,8 +15,8 @@ public:
 
 	CLaserTeleport(CGameContext *pGameContext, vec2 StartPos, vec2 EndPos);
 
-	virtual void Tick();
-	virtual void Snap(int SnappingClient);
+	void Tick() override;
+	void Snap(int SnappingClient) override;
 
 private:
 	vec2 m_StartPos;

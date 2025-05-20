@@ -15,9 +15,9 @@ public:
 	vec2 GetPos(float Time) const;
 	void FillInfo(CNetObj_Projectile *pProj) const;
 
-	virtual void Tick();
-	virtual void TickPaused();
-	virtual void Snap(int SnappingClient);
+	void Tick() override;
+	void TickPaused() override;
+	void Snap(int SnappingClient) override;
 
 private:
 	vec2 m_ActualPos;

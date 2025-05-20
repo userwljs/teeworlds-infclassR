@@ -301,7 +301,7 @@ public:
 	std::shared_ptr<ILogger> m_pStdoutLogger = nullptr;
 
 	CServer();
-	~CServer();
+	~CServer() override;
 
 	bool IsClientNameAvailable(int ClientId, const char *pNameRequest);
 	bool SetClientNameImpl(int ClientId, const char *pNameRequest, bool Set);
@@ -567,7 +567,7 @@ public:
 public:
 	void AddGameServerCmd(CGameServerCmd* pCmd);
 	
-	virtual CRoundStatistics* RoundStatistics() override { return &m_RoundStatistics; }
+	CRoundStatistics* RoundStatistics() override { return &m_RoundStatistics; }
 	void ResetStatistics() override;
 	void SendStatistics() override;
 

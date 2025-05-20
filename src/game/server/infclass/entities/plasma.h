@@ -13,8 +13,8 @@ public:
 
 	CPlasma(CGameContext *pGameContext, vec2 Pos, int Owner,int TrackedPlayer, vec2 Direction, bool Freeze, bool Explosive);
 
-	virtual void Tick();
-	virtual void Snap(int SnappingClient);
+	void Tick() override;
+	void Snap(int SnappingClient) override;
 
 	void SetDamageType(EDamageType Type);
 

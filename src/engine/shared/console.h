@@ -207,7 +207,7 @@ public:
 	CConfig *Config() { return m_pConfig; }
 
 	CConsole(int FlagMask);
-	~CConsole();
+	~CConsole() override;
 
 	void Init() override;
 	const CCommandInfo *FirstCommandInfo(EAccessLevel AccessLevel, int FlagMask) const override;
@@ -227,8 +227,8 @@ public:
 	void ExecuteLineFlag(const char *pStr, int FlagMask, int ClientId = -1, bool InterpretSemicolons = true) override;
 	bool ExecuteFile(const char *pFilename, int ClientId = -1, bool LogFailure = false, int StorageType = IStorage::TYPE_ALL) override;
 
-	virtual int RegisterPrintCallback(int OutputLevel, FPrintCallback pfnPrintCallback, void *pUserData) override;
-	virtual void SetPrintOutputLevel(int Index, int OutputLevel) override;
+	int RegisterPrintCallback(int OutputLevel, FPrintCallback pfnPrintCallback, void *pUserData) override;
+	void SetPrintOutputLevel(int Index, int OutputLevel) override;
 	char *Format(char *pBuf, int Size, const char *pFrom, const char *pStr) override;
 	void Print(int Level, const char *pFrom, const char *pStr, ColorRGBA PrintColor = gs_ConsoleDefaultColor) override;
 	void SetTeeHistorianCommandCallback(FTeeHistorianCommandCallback pfnCallback, void *pUser) override;

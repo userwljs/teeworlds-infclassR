@@ -19,7 +19,7 @@ public:
 	static int EntityId;
 
 	CMercenaryBomb(CGameContext *pGameContext, vec2 Pos, int Owner);
-	~CMercenaryBomb();
+	~CMercenaryBomb() override;
 
 	void Snap(int SnappingClient) override;
 	void Tick() override;

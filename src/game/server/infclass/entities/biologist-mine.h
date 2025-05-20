@@ -23,10 +23,10 @@ public:
 	
 public:
 	CBiologistMine(CGameContext *pGameContext, vec2 Pos, vec2 EndPos, int Owner, int Lasers, int Damage, int Vertices = NUM_SIDE);
-	virtual ~CBiologistMine();
+	~CBiologistMine() override;
 
-	virtual void Snap(int SnappingClient);
-	virtual void Tick();
+	void Snap(int SnappingClient) override;
+	void Tick() override;
 
 	void Explode();
 

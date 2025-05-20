@@ -137,7 +137,7 @@ public:
 	virtual class CLayers *Layers() { return &m_Layers; }
 
 	CGameContext();
-	~CGameContext();
+	~CGameContext() override;
 
 	void Clear();
 
@@ -378,11 +378,11 @@ public:
 	virtual void ClearBroadcast(int To, EBroadcastPriority Priority);
 	
 	static const char *GetChatCategoryPrefix(int Category);
-	virtual void SendChatTarget_Localization(int To, int Category, const char* pText, ...);
-	virtual void SendChatTarget_Localization_P(int To, int Category, int Number, const char* pText, ...);
+	void SendChatTarget_Localization(int To, int Category, const char* pText, ...) override;
+	void SendChatTarget_Localization_P(int To, int Category, int Number, const char* pText, ...) override;
 	
-	virtual void SendMOTD(int To, const char* pParam);
-	virtual void SendMOTD_Localization(int To, const char* pText, ...);
+	void SendMOTD(int To, const char* pParam) override;
+	void SendMOTD_Localization(int To, const char* pText, ...) override;
 	
 	void CreateLaserDotEvent(vec2 Pos0, vec2 Pos1, int LifeSpan);
 	void CreateHammerDotEvent(vec2 Pos, int LifeSpan);

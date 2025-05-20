@@ -37,10 +37,10 @@ namespace GeoLite2PP
 		public:
 
 			/// Returns a unique name.
-			virtual const char *name( void ) const noexcept;
+			const char *name( void ) const noexcept override;
 
 			/// Convert a MaxMindDB error/status code into a readable text string message.
-			virtual std::string message( int code ) const;
+			std::string message( int code ) const override;
 	};
 
 	/// All error category objects should actually be references to the exact same object, which is provided by this function.
