@@ -1180,6 +1180,22 @@ if(BUILD_TESTS)
   if(NOT TARGET gtest)
     message(SEND_ERROR "GTest not found, unable to build the tests")
   endif()
+  add_library(game-test STATIC
+    "src/test/test.cpp"
+    "src/test/test.h"
+  )
+  list(APPEND TARGETS_OWN game-test)
+  target_sources(game-test PRIVATE
+    ${SERVER_SRC}
+  )
+  target_link_libraries(game-test PUBLIC
+    engine-shared
+    engine-gfx
+    game-shared
+    ${LIBS_SERVER}
+    ${DEPS}
+    ${GTEST_LIBRARIES}
+  )
   enable_testing()
   set(TESTS
     "test_icArray"
@@ -1189,10 +1205,8 @@ if(BUILD_TESTS)
     add_executable(${TEST_NAME} "src/tests/${TEST_NAME}.cpp")
     target_include_directories(${TEST_NAME} SYSTEM PRIVATE ${TOOL_INCLUDE_DIRS})
     target_link_libraries(${TEST_NAME} ${TOOL_LIBS}
-      engine-shared
-      game-shared # engine depends on mapitems_ex.cpp
+      game-test
     )
-    target_link_libraries(${TEST_NAME} ${GTEST_LIBRARIES})
     target_include_directories(${TEST_NAME} SYSTEM PRIVATE ${GTEST_INCLUDE_DIRS})
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
   endforeach()
