@@ -299,7 +299,7 @@ CWeakSkinInfo CIcPlayer::GetSkinInfo(int SnappingClient) const
 	CWeakSkinInfo SkinInfo;
 	if(m_SkinGetter)
 	{
-		IServer::CClientInfo ClientInfo = {0};
+		IServer::CClientInfo ClientInfo = {nullptr};
 		if(SnappingClient != SERVER_DEMO_CLIENT)
 		{
 			Server()->GetClientInfo(SnappingClient, &ClientInfo);

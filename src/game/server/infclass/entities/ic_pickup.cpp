@@ -73,7 +73,7 @@ void CIcPickup::Tick()
 	}
 	else
 	{
-		pChr = (CIcCharacter *)GameWorld()->ClosestEntity(m_Pos, PickupPhysSize, CGameWorld::ENTTYPE_CHARACTER, 0);
+		pChr = (CIcCharacter *)GameWorld()->ClosestEntity(m_Pos, PickupPhysSize, CGameWorld::ENTTYPE_CHARACTER, nullptr);
 	}
 
 	if(pChr && pChr->IsAlive())

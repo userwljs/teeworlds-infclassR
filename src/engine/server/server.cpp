@@ -392,7 +392,7 @@ CServer::CServer()
 
 	m_TickSpeed = SERVER_TICK_SPEED;
 
-	m_pGameServer = 0;
+	m_pGameServer = nullptr;
 
 	m_CurrentGameTick = MIN_TICK;
 	m_RunServer = UNINITIALIZED;
@@ -401,7 +401,7 @@ CServer::CServer()
 
 	for(int i = 0; i < NUM_MAP_TYPES; i++)
 	{
-		m_apCurrentMapData[i] = 0;
+		m_apCurrentMapData[i] = nullptr;
 		m_aCurrentMapSize[i] = 0;
 	}
 
@@ -1090,7 +1090,7 @@ void CServer::DoSnapshot()
 			int DeltaTick = -1;
 			const CSnapshot *pDeltashot = CSnapshot::EmptySnapshot();
 			{
-				int DeltashotSize = m_aClients[i].m_Snapshots.Get(m_aClients[i].m_LastAckedSnapshot, 0, &pDeltashot, 0);
+				int DeltashotSize = m_aClients[i].m_Snapshots.Get(m_aClients[i].m_LastAckedSnapshot, nullptr, &pDeltashot, nullptr);
 				if(DeltashotSize >= 0)
 					DeltaTick = m_aClients[i].m_LastAckedSnapshot;
 				else
@@ -1217,7 +1217,7 @@ int CServer::DelBot(int ClientId)
 	m_aClients[ClientId].m_UserId = -1;
 	m_aClients[ClientId].m_Authed = AUTHED_NO;
 	m_aClients[ClientId].m_AuthTries = 0;
-	m_aClients[ClientId].m_pRconCmdToSend = 0;
+	m_aClients[ClientId].m_pRconCmdToSend = nullptr;
 	m_aClients[ClientId].m_IsBot = false;
 	m_aClients[ClientId].m_Snapshots.PurgeAll();
 	return 0;
@@ -1447,14 +1447,14 @@ void CServer::SendRconLogLine(int ClientId, const CLogMessage *pMessage)
 {
 	const char *pLine = pMessage->m_aLine;
 	const char *pStart = str_find(pLine, "<{");
-	const char *pEnd = pStart == NULL ? NULL : str_find(pStart + 2, "}>");
+	const char *pEnd = pStart == nullptr ? nullptr : str_find(pStart + 2, "}>");
 	const char *pLineWithoutIps;
 	char aLine[512];
 	char aLineWithoutIps[512];
 	aLine[0] = '\0';
 	aLineWithoutIps[0] = '\0';
 
-	if(pStart == NULL || pEnd == NULL)
+	if(pStart == nullptr || pEnd == nullptr)
 	{
 		pLineWithoutIps = pLine;
 	}
@@ -1803,7 +1803,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				m_aClients[ClientId].m_SnapRate = CClient::SNAPRATE_FULL;
 
 			int64_t TagTime;
-			if(m_aClients[ClientId].m_Snapshots.Get(m_aClients[ClientId].m_LastAckedSnapshot, &TagTime, 0, 0) >= 0)
+			if(m_aClients[ClientId].m_Snapshots.Get(m_aClients[ClientId].m_LastAckedSnapshot, &TagTime, nullptr, nullptr) >= 0)
 				m_aClients[ClientId].m_Latency = (int)(((time_get() - TagTime) * 1000) / time_freq());
 
 			// add message to report the input timing
@@ -3153,7 +3153,7 @@ int CServer::Run()
 						{
 							if(m_aClients[ClientId].m_State == CClient::STATE_READY)
 							{
-								void *pPersistentData = 0;
+								void *pPersistentData = nullptr;
 								if(m_aClients[ClientId].m_HasPersistentData)
 								{
 									pPersistentData = m_aClients[ClientId].m_pPersistentData;
@@ -3787,7 +3787,7 @@ void CServer::LogoutClient(int ClientId, const char *pReason)
 	SendMsg(&Msg, MSGFLAG_VITAL, ClientId);
 
 	m_aClients[ClientId].m_AuthTries = 0;
-	m_aClients[ClientId].m_pRconCmdToSend = 0;
+	m_aClients[ClientId].m_pRconCmdToSend = nullptr;
 
 	char aBuf[64];
 	if(*pReason)
@@ -3849,7 +3849,7 @@ void CServer::ConchainSixupUpdate(IConsole::IResult *pResult, void *pUserData, I
 	pfnCallback(pResult, pCallbackUserData);
 	CServer *pThis = static_cast<CServer *>(pUserData);
 	if(pResult->NumArguments() >= 1 && pThis->m_aCurrentMap[0] != '\0')
-		pThis->m_MapReload |= (pThis->m_apCurrentMapData[MAP_TYPE_SIXUP] != 0) != (pResult->GetInteger(0) != 0);
+		pThis->m_MapReload |= (pThis->m_apCurrentMapData[MAP_TYPE_SIXUP] != nullptr) != (pResult->GetInteger(0) != 0);
 }
 
 void CServer::ConchainLoglevel(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData)
@@ -3971,7 +3971,7 @@ void CServer::SnapFreeId(int Id)
 void *CServer::SnapNewItem(int Type, int Id, int Size)
 {
 	dbg_assert(Id >= -1 && Id <= 0xffff, "incorrect id");
-	return Id < 0 ? 0 : m_SnapshotBuilder.NewItem(Type, Id, Size);
+	return Id < 0 ? nullptr : m_SnapshotBuilder.NewItem(Type, Id, Size);
 }
 
 void CServer::SnapSetStaticsize(int ItemType, int Size)
@@ -4016,7 +4016,7 @@ const char *CServer::GetAnnouncementLine(char const *pFileName)
 		CLineReader LineReader;
 		if(!LineReader.OpenFile(m_pStorage->OpenFile(pFileName, IOFLAG_READ, IStorage::TYPE_ALL)))
 		{
-			return 0;
+			return nullptr;
 		}
 		while(const char *pLine = LineReader.Get())
 		{
@@ -4029,7 +4029,7 @@ const char *CServer::GetAnnouncementLine(char const *pFileName)
 
 	if(m_vAnnouncements.empty())
 	{
-		return 0;
+		return nullptr;
 	}
 	else if(m_vAnnouncements.size() == 1)
 	{
@@ -5499,7 +5499,7 @@ void CServer::ResetClientMemoryAboutGame(int ClientId)
 IServer::CClientSession* CServer::GetClientSession(int ClientId)
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS)
-		return 0;
+		return nullptr;
 	
 	return &m_aClients[ClientId].m_Session;
 }
@@ -5667,7 +5667,7 @@ void CServer::RemoveMapVotesForId(int ClientId)
 IServer::CMapVote* CServer::GetMapVote()
 {
 	if (m_MapVotesCounter <= 0)
-		return 0;
+		return nullptr;
 
 	float PlayerCount = GetActivePlayerCount();
 
@@ -5697,7 +5697,7 @@ IServer::CMapVote* CServer::GetMapVote()
 	if (HighestNumIndex >= 0)
 		return &m_MapVotes[HighestNumIndex];
 
-	return 0;
+	return nullptr;
 }
 
 void CServer::ResetMapVotes()

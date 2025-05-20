@@ -110,7 +110,7 @@ int main(int argc, const char **argv) // ignore_convention
 	pKernel->RegisterInterface(pGameServer);
 
 	pServer->m_pLocalization = new CLocalization(pStorage);
-	pServer->m_pLocalization->InitConfig(0, NULL);
+	pServer->m_pLocalization->InitConfig(0, nullptr);
 	if(!pServer->m_pLocalization->Init())
 	{
 		dbg_msg("localization", "could not initialize localization");

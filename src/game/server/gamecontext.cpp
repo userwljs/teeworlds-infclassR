@@ -83,12 +83,12 @@ bool CheckClientId(int ClientId)
 void CGameContext::Construct(int Resetting)
 {
 	m_Resetting = false;
-	m_pServer = 0;
-	m_pConfig = 0;
+	m_pServer = nullptr;
+	m_pConfig = nullptr;
 
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
-		m_apPlayers[i] = 0;
+		m_apPlayers[i] = nullptr;
 		m_aHitSoundState[i] = 0;
 	}
 
@@ -102,11 +102,11 @@ void CGameContext::Construct(int Resetting)
 				CGameContext::m_ClientMuted[i][j] = false;
 	}
 
-	m_pController = 0;
+	m_pController = nullptr;
 	m_aVoteCommand[0] = 0;
 	m_VoteCloseTime = 0;
-	m_pVoteOptionFirst = 0;
-	m_pVoteOptionLast = 0;
+	m_pVoteOptionFirst = nullptr;
+	m_pVoteOptionLast = nullptr;
 	m_NumVoteOptions = 0;
 	m_LastMapVote = 0;
 	m_VoteBanClientId = -1;
@@ -200,7 +200,7 @@ CPlayer *CGameContext::GetPlayer(int ClientId) const
 class CCharacter *CGameContext::GetPlayerChar(int ClientId)
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS || !m_apPlayers[ClientId])
-		return 0;
+		return nullptr;
 	return m_apPlayers[ClientId]->GetCharacter();
 }
 
@@ -897,7 +897,7 @@ void CGameContext::SendChat(int ChatterClientId, int Team, const char *pText, in
 		// send to the clients
 		for(int i = 0; i < Server()->MaxClients(); i++)
 		{
-			if(m_apPlayers[i] != 0)
+			if(m_apPlayers[i] != nullptr)
 			{
 				if(Team == CHAT_SPEC)
 				{
@@ -1637,7 +1637,7 @@ struct CVoteOptionServer *CGameContext::GetVoteOption(int Index)
 		;
 
 	if(Index > 0)
-		return 0;
+		return nullptr;
 	return pCurrent;
 }
 
@@ -1683,7 +1683,7 @@ void CGameContext::ProgressVoteOptions(int ClientId)
 	// get current vote option by index
 	CVoteOptionServer *pCurrent = GetVoteOption(pPl->m_SendVoteIndex);
 
-	while(CurIndex < NumVotesToSend && pCurrent != NULL)
+	while(CurIndex < NumVotesToSend && pCurrent != nullptr)
 	{
 		switch(CurIndex)
 		{
@@ -1874,7 +1874,7 @@ void CGameContext::OnClientDrop(int ClientId, EClientDropType Type, const char *
 
 	m_pController->OnPlayerDisconnect(m_apPlayers[ClientId], Type, pReason);
 	delete m_apPlayers[ClientId];
-	m_apPlayers[ClientId] = 0;
+	m_apPlayers[ClientId] = nullptr;
 
 	m_VoteUpdate = true;
 
@@ -2112,7 +2112,7 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 	// trim right and set maximum length to 256 utf8-characters
 	int Length = 0;
 	const char *p = pMsg->m_pMessage;
-	const char *pEnd = 0;
+	const char *pEnd = nullptr;
 	while(*p)
 	{
 		const char *pStrOld = p;
@@ -2121,9 +2121,9 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 		// check if unicode is not empty
 		if(!str_utf8_isspace(Code))
 		{
-			pEnd = 0;
+			pEnd = nullptr;
 		}
-		else if(pEnd == 0)
+		else if(pEnd == nullptr)
 			pEnd = pStrOld;
 
 		if(++Length >= 256)
@@ -2132,7 +2132,7 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 			break;
 		}
 	}
-	if(pEnd != 0)
+	if(pEnd != nullptr)
 		*(const_cast<char *>(pEnd)) = 0;
 
 	// drop empty and autocreated spam messages (more than 32 characters per second)
@@ -3194,7 +3194,7 @@ bool CGameContext::InsertVote(int Position, const char *pDescription, const char
 	if(Position == m_NumVoteOptions)
 	{
 		// Append
-		pOption->m_pNext = 0;
+		pOption->m_pNext = nullptr;
 		pOption->m_pPrev = m_pVoteOptionLast;
 		if(pOption->m_pPrev)
 			pOption->m_pPrev->m_pNext = pOption;
@@ -3305,8 +3305,8 @@ void CGameContext::RemoveVote(const char *pVoteOption)
 	--m_NumVoteOptions;
 
 	CHeap *pVoteOptionHeap = new CHeap();
-	CVoteOptionServer *pVoteOptionFirst = 0;
-	CVoteOptionServer *pVoteOptionLast = 0;
+	CVoteOptionServer *pVoteOptionFirst = nullptr;
+	CVoteOptionServer *pVoteOptionLast = nullptr;
 	int NumVoteOptions = m_NumVoteOptions;
 	for(CVoteOptionServer *pSrc = m_pVoteOptionFirst; pSrc; pSrc = pSrc->m_pNext)
 	{
@@ -3316,7 +3316,7 @@ void CGameContext::RemoveVote(const char *pVoteOption)
 		// copy option
 		int Len = str_length(pSrc->m_aCommand);
 		CVoteOptionServer *pDst = (CVoteOptionServer *)pVoteOptionHeap->Allocate(sizeof(CVoteOptionServer) + Len);
-		pDst->m_pNext = 0;
+		pDst->m_pNext = nullptr;
 		pDst->m_pPrev = pVoteOptionLast;
 		if(pDst->m_pPrev)
 			pDst->m_pPrev->m_pNext = pDst;
@@ -3342,8 +3342,8 @@ void CGameContext::ClearVotes()
 	CNetMsg_Sv_VoteClearOptions VoteClearOptionsMsg;
 	Server()->SendPackMsg(&VoteClearOptionsMsg, MSGFLAG_VITAL, -1);
 	m_pVoteOptionHeap->Reset();
-	m_pVoteOptionFirst = 0;
-	m_pVoteOptionLast = 0;
+	m_pVoteOptionFirst = nullptr;
+	m_pVoteOptionLast = nullptr;
 	m_NumVoteOptions = 0;
 
 	// reset sending of vote options
@@ -3983,7 +3983,7 @@ void CGameContext::ConRegister(IConsole::IResult *pResult, void *pUserData)
 	
 	const char *pLogin = pResult->GetString(0);
 	const char *pPassword = pResult->GetString(1);
-	const char *pEmail = 0;
+	const char *pEmail = nullptr;
 	
 	if(pResult->NumArguments()>2)
 		pEmail = pResult->GetString(2);
@@ -4282,7 +4282,7 @@ void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 	
 	int ClientId = pResult->GetClientId();
 	
-	const char *pLanguageCode = (pResult->NumArguments()>0) ? pResult->GetString(0) : 0x0;
+	const char *pLanguageCode = (pResult->NumArguments()>0) ? pResult->GetString(0) : nullptr;
 	char aFinalLanguageCode[8];
 	aFinalLanguageCode[0] = 0;
 

@@ -17,8 +17,8 @@ void EscapeParam(char *pDst, const char *pSrc, int Size)
 
 CConfigManager::CConfigManager()
 {
-	m_pStorage = 0;
-	m_ConfigFile = 0;
+	m_pStorage = nullptr;
+	m_ConfigFile = nullptr;
 	m_NumCallbacks = 0;
 	m_Failed = false;
 }
@@ -127,7 +127,7 @@ bool CConfigManager::Save()
 	if(io_close(m_ConfigFile) != 0)
 		m_Failed = true;
 
-	m_ConfigFile = 0;
+	m_ConfigFile = nullptr;
 
 	if(m_Failed)
 	{

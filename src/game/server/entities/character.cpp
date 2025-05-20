@@ -88,7 +88,7 @@ bool CCharacter::Spawn(CPlayer *pPlayer, vec2 Pos)
 void CCharacter::Destroy()
 {	
 	if(m_pPlayer)
-		GameServer()->m_World.m_Core.m_apCharacters[m_pPlayer->GetCid()] = 0;
+		GameServer()->m_World.m_Core.m_apCharacters[m_pPlayer->GetCid()] = nullptr;
 	m_Alive = false;
 }
 

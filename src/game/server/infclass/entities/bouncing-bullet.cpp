@@ -91,10 +91,10 @@ void CBouncingBullet::Tick()
 		vec2 CollisionPos;
 		CollisionPos.x = NewPos.x;
 		CollisionPos.y = CurPos.y;
-		int CollideY = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CollisionPos, NULL, NULL);
+		int CollideY = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CollisionPos, nullptr, nullptr);
 		CollisionPos.x = CurPos.x;
 		CollisionPos.y = NewPos.y;
-		int CollideX = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CollisionPos, NULL, NULL);
+		int CollideX = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CollisionPos, nullptr, nullptr);
 
 		m_Pos = NewPos;
 		m_ActualPos = m_Pos;

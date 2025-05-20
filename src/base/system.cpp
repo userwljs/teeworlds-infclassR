@@ -132,7 +132,7 @@ IOHANDLE io_current_exe()
 			return result;
 		}
 	}
-	return 0;
+	return nullptr;
 #endif
 }
 
@@ -577,18 +577,18 @@ ASYNCIO *aio_new(IOHANDLE io)
 	ASYNCIO *aio = new ASYNCIO;
 	if(!aio)
 	{
-		return 0;
+		return nullptr;
 	}
 	aio->io = io;
 	sphore_init(&aio->sphore);
-	aio->thread = 0;
+	aio->thread = nullptr;
 
 	aio->buffer = (unsigned char *)malloc(ASYNC_BUFSIZE);
 	if(!aio->buffer)
 	{
 		sphore_destroy(&aio->sphore);
 		delete aio;
-		return 0;
+		return nullptr;
 	}
 	aio->buffer_size = ASYNC_BUFSIZE;
 	aio->read_pos = 0;
@@ -603,7 +603,7 @@ ASYNCIO *aio_new(IOHANDLE io)
 		free(aio->buffer);
 		sphore_destroy(&aio->sphore);
 		delete aio;
-		return 0;
+		return nullptr;
 	}
 	return aio;
 }
@@ -725,7 +725,7 @@ void aio_free(ASYNCIO *aio)
 	if(aio->thread)
 	{
 		thread_detach(aio->thread);
-		aio->thread = 0;
+		aio->thread = nullptr;
 	}
 	aio_handle_free_and_unlock(aio);
 }
@@ -745,7 +745,7 @@ void aio_wait(ASYNCIO *aio)
 	{
 		CLockScope ls(aio->lock);
 		thread = aio->thread;
-		aio->thread = 0;
+		aio->thread = nullptr;
 		if(aio->finish == ASYNCIO_RUNNING)
 		{
 			aio->finish = ASYNCIO_EXIT;
@@ -777,7 +777,7 @@ static unsigned long __stdcall thread_run(void *user)
 	void *u = data->u;
 	free(data);
 	threadfunc(u);
-	return 0;
+	return {};
 }
 
 void *thread_init(void (*threadfunc)(void *), void *u, const char *name)
@@ -1163,7 +1163,7 @@ static int priv_net_extract(const char *hostname, char *host, int max_host, int 
 int net_host_lookup_impl(const char *hostname, NETADDR *addr, int types)
 {
 	struct addrinfo hints;
-	struct addrinfo *result = NULL;
+	struct addrinfo *result = nullptr;
 	int e;
 	char host[256];
 	int port = 0;
@@ -1182,7 +1182,7 @@ int net_host_lookup_impl(const char *hostname, NETADDR *addr, int types)
 	else if(types == NETTYPE_IPV6)
 		hints.ai_family = AF_INET6;
 
-	e = getaddrinfo(host, NULL, &hints, &result);
+	e = getaddrinfo(host, nullptr, &hints, &result);
 
 	if(!result)
 		return -1;
@@ -1754,7 +1754,7 @@ int net_udp_recv(NETSOCKET sock, NETADDR *addr, unsigned char **data)
 		if(sock->buffer.pos >= sock->buffer.size)
 		{
 			net_buffer_reinit(&sock->buffer);
-			sock->buffer.size = recvmmsg(sock->ipv4sock, sock->buffer.msgs, VLEN, 0, NULL);
+			sock->buffer.size = recvmmsg(sock->ipv4sock, sock->buffer.msgs, VLEN, 0, nullptr);
 			sock->buffer.pos = 0;
 		}
 	}
@@ -1764,7 +1764,7 @@ int net_udp_recv(NETSOCKET sock, NETADDR *addr, unsigned char **data)
 		if(sock->buffer.pos >= sock->buffer.size)
 		{
 			net_buffer_reinit(&sock->buffer);
-			sock->buffer.size = recvmmsg(sock->ipv6sock, sock->buffer.msgs, VLEN, 0, NULL);
+			sock->buffer.size = recvmmsg(sock->ipv6sock, sock->buffer.msgs, VLEN, 0, nullptr);
 			sock->buffer.pos = 0;
 		}
 	}
@@ -2447,7 +2447,7 @@ void fs_split_file_extension(const char *filename, char *name, size_t name_size,
 
 int fs_parent_dir(char *path)
 {
-	char *parent = 0;
+	char *parent = nullptr;
 	for(; *path; ++path)
 	{
 		if(*path == '/' || *path == '\\')
@@ -2574,9 +2574,9 @@ int net_socket_read_wait(NETSOCKET sock, int time)
 
 	/* don't care about writefds and exceptfds */
 	if(time < 0)
-		select(sockid + 1, &readfds, NULL, NULL, NULL);
+		select(sockid + 1, &readfds, nullptr, nullptr, nullptr);
 	else
-		select(sockid + 1, &readfds, NULL, NULL, &tv);
+		select(sockid + 1, &readfds, nullptr, nullptr, &tv);
 
 	if(sock->ipv4sock >= 0 && FD_ISSET(sock->ipv4sock, &readfds))
 		return 1;
@@ -2592,7 +2592,7 @@ int net_socket_read_wait(NETSOCKET sock, int time)
 
 int64_t time_timestamp()
 {
-	return time(0);
+	return time(nullptr);
 }
 
 static struct tm *time_localtime_threadlocal(time_t *time_data)
@@ -2962,7 +2962,7 @@ const char *str_startswith_nocase(const char *str, const char *prefix)
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -2975,7 +2975,7 @@ const char *str_startswith(const char *str, const char *prefix)
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -2986,7 +2986,7 @@ const char *str_endswith_nocase(const char *str, const char *suffix)
 	const char *strsuffix;
 	if(strl < suffixl)
 	{
-		return 0;
+		return nullptr;
 	}
 	strsuffix = str + strl - suffixl;
 	if(str_comp_nocase(strsuffix, suffix) == 0)
@@ -2995,7 +2995,7 @@ const char *str_endswith_nocase(const char *str, const char *suffix)
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -3006,7 +3006,7 @@ const char *str_endswith(const char *str, const char *suffix)
 	const char *strsuffix;
 	if(strl < suffixl)
 	{
-		return 0;
+		return nullptr;
 	}
 	strsuffix = str + strl - suffixl;
 	if(str_comp(strsuffix, suffix) == 0)
@@ -3015,7 +3015,7 @@ const char *str_endswith(const char *str, const char *suffix)
 	}
 	else
 	{
-		return 0;
+		return nullptr;
 	}
 }
 
@@ -3121,7 +3121,7 @@ const char *str_find_nocase(const char *haystack, const char *needle)
 		haystack++;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 const char *str_find(const char *haystack, const char *needle)
@@ -3140,7 +3140,7 @@ const char *str_find(const char *haystack, const char *needle)
 		haystack++;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 const char *str_rchr(const char *haystack, char needle)
@@ -3743,7 +3743,7 @@ const char *str_utf8_skip_whitespaces(const char *str)
 void str_utf8_trim_right(char *param)
 {
 	const char *str = param;
-	char *end = 0;
+	char *end = nullptr;
 	while(*str)
 	{
 		char *str_old = (char *)str;
@@ -3752,7 +3752,7 @@ void str_utf8_trim_right(char *param)
 		// check if unicode is not empty
 		if(!str_utf8_isspace(code))
 		{
-			end = 0;
+			end = nullptr;
 		}
 		else if(!end)
 		{
@@ -3999,7 +3999,7 @@ static const char *str_token_get(const char *str, const char *delim, int *length
 	else
 		str += len;
 	if(!*str)
-		return NULL;
+		return nullptr;
 
 	*length = strcspn(str, delim);
 	return str;
@@ -4023,10 +4023,10 @@ const char *str_next_token(const char *str, const char *delim, char *buffer, int
 {
 	int len = 0;
 	const char *tok = str_token_get(str, delim, &len);
-	if(len < 0 || tok == NULL)
+	if(len < 0 || tok == nullptr)
 	{
 		buffer[0] = '\0';
-		return NULL;
+		return nullptr;
 	}
 
 	len = buffer_size > len ? len : buffer_size - 1;
@@ -4141,7 +4141,7 @@ PROCESS shell_execute(const char *file, EShellExecuteWindowState window_state)
 	char *argv[2];
 	pid_t pid;
 	argv[0] = (char *)file;
-	argv[1] = NULL;
+	argv[1] = nullptr;
 	pid = fork();
 	if(pid == -1)
 	{

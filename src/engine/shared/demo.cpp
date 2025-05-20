@@ -35,10 +35,10 @@ static const ColorRGBA gs_DemoPrintColor{0.75f, 0.7f, 0.7f, 1.0f};
 
 CDemoRecorder::CDemoRecorder(class CSnapshotDelta *pSnapshotDelta, bool NoMapData)
 {
-	m_File = 0;
+	m_File = nullptr;
 	m_aCurrentFilename[0] = '\0';
-	m_pfnFilter = 0;
-	m_pUser = 0;
+	m_pfnFilter = nullptr;
+	m_pUser = nullptr;
 	m_LastTickMarker = -1;
 	m_pSnapshotDelta = pSnapshotDelta;
 	m_NoMapData = NoMapData;
@@ -364,7 +364,7 @@ int CDemoRecorder::Stop()
 	}
 
 	io_close(m_File);
-	m_File = 0;
+	m_File = nullptr;
 	if(m_pConsole)
 		m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "demo_recorder", "Stopped recording", gs_DemoPrintColor);
 
@@ -412,8 +412,8 @@ CDemoPlayer::CDemoPlayer(class CSnapshotDelta *pSnapshotDelta)
 
 void CDemoPlayer::Construct(class CSnapshotDelta *pSnapshotDelta)
 {
-	m_File = 0;
-	m_pKeyFrames = 0;
+	m_File = nullptr;
+	m_pKeyFrames = nullptr;
 	m_SpeedIndex = 4;
 
 	m_pSnapshotDelta = pSnapshotDelta;
@@ -430,7 +430,7 @@ int CDemoPlayer::ReadChunkHeader(int *pType, int *pSize, int *pTick)
 	*pSize = 0;
 	*pType = 0;
 
-	if(m_File == NULL)
+	if(m_File == nullptr)
 		return -1;
 
 	unsigned char Chunk = 0;
@@ -488,8 +488,8 @@ int CDemoPlayer::ReadChunkHeader(int *pType, int *pSize, int *pTick)
 void CDemoPlayer::ScanFile()
 {
 	CHeap Heap;
-	CKeyFrameSearch *pFirstKey = 0;
-	CKeyFrameSearch *pCurrentKey = 0;
+	CKeyFrameSearch *pFirstKey = nullptr;
+	CKeyFrameSearch *pCurrentKey = nullptr;
 	int ChunkTick = 0;
 
 	long StartPos = io_tell(m_File);
@@ -514,7 +514,7 @@ void CDemoPlayer::ScanFile()
 				pKey = (CKeyFrameSearch *)Heap.Allocate(sizeof(CKeyFrameSearch));
 				pKey->m_Frame.m_Filepos = CurrentPos;
 				pKey->m_Frame.m_Tick = ChunkTick;
-				pKey->m_pNext = 0;
+				pKey->m_pNext = nullptr;
 				if(pCurrentKey)
 					pCurrentKey->m_pNext = pKey;
 				if(!pFirstKey)
@@ -759,7 +759,7 @@ int CDemoPlayer::Load(class IStorage *pStorage, class IConsole *pConsole, const 
 			m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "demo_player", aBuf);
 		}
 		io_close(m_File);
-		m_File = 0;
+		m_File = nullptr;
 		return -1;
 	}
 
@@ -772,7 +772,7 @@ int CDemoPlayer::Load(class IStorage *pStorage, class IConsole *pConsole, const 
 			m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "demo_player", aBuf);
 		}
 		io_close(m_File);
-		m_File = 0;
+		m_File = nullptr;
 		return -1;
 	}
 	else if(m_Info.m_Header.m_Version > gs_OldVersion)
@@ -847,7 +847,7 @@ int CDemoPlayer::Load(class IStorage *pStorage, class IConsole *pConsole, const 
 unsigned char *CDemoPlayer::GetMapData(class IStorage *pStorage)
 {
 	if(!m_MapInfo.m_Size)
-		return 0;
+		return nullptr;
 
 	long CurSeek = io_tell(m_File);
 
@@ -1078,9 +1078,9 @@ int CDemoPlayer::Stop()
 	if(m_pConsole)
 		m_pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "demo_player", "Stopped playback");
 	io_close(m_File);
-	m_File = 0;
+	m_File = nullptr;
 	free(m_pKeyFrames);
-	m_pKeyFrames = 0;
+	m_pKeyFrames = nullptr;
 	str_copy(m_aFilename, "");
 	return 0;
 }
@@ -1089,7 +1089,7 @@ void CDemoPlayer::GetDemoName(char *pBuffer, int BufferSize) const
 {
 	const char *pFileName = m_aFilename;
 	const char *pExtractedName = pFileName;
-	const char *pEnd = 0;
+	const char *pEnd = nullptr;
 	for(; *pFileName; ++pFileName)
 	{
 		if(*pFileName == '/' || *pFileName == '\\')
@@ -1188,7 +1188,7 @@ void CDemoEditor::Slice(const char *pDemo, const char *pDst, int StartTick, int 
 	}
 
 	unsigned char *pMapData = m_pDemoPlayer->GetMapData(m_pStorage);
-	const int Result = m_pDemoRecorder->Start(m_pStorage, m_pConsole, pDst, m_pNetVersion, pMapInfo->m_aName, &Sha256, pMapInfo->m_Crc, "client", pMapInfo->m_Size, pMapData, NULL, pfnFilter, pUser) == -1;
+	const int Result = m_pDemoRecorder->Start(m_pStorage, m_pConsole, pDst, m_pNetVersion, pMapInfo->m_aName, &Sha256, pMapInfo->m_Crc, "client", pMapInfo->m_Size, pMapData, nullptr, pfnFilter, pUser) == -1;
 	free(pMapData);
 	if(Result != 0)
 		return;

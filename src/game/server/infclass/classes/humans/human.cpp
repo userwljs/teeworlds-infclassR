@@ -1867,8 +1867,8 @@ void CInfClassHuman::PlaceScientistMine(WeaponFireContext *pFireContext)
 	int NbMine = 0;
 
 	int OlderMineTick = Server()->Tick() + 1;
-	CScientistMine *pOlderMine = 0;
-	CScientistMine *pIntersectMine = 0;
+	CScientistMine *pOlderMine = nullptr;
+	CScientistMine *pIntersectMine = nullptr;
 
 	for(TEntityPtr<CScientistMine> p = GameWorld()->FindFirst<CScientistMine>(); p; ++p)
 	while(p)

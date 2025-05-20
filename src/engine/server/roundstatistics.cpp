@@ -97,7 +97,7 @@ CRoundStatistics::CPlayerStats *CRoundStatistics::PlayerStatistics(int ClientId)
 {
 	if(ClientId >= 0 && ClientId < MAX_CLIENTS)
 		return &m_aPlayers[ClientId];
-	else return 0;
+	else return nullptr;
 }
 
 

@@ -798,7 +798,7 @@ CSlugSlime *CInfClassInfected::PlaceSlime(vec2 PlaceToPos, float MinDistance)
 	if(m_pCharacter->IsInLove())
 		return nullptr;
 
-	if(!GameServer()->Collision()->IntersectLineWeapon(GetPos(), PlaceToPos, 0x0, &PlaceToPos))
+	if(!GameServer()->Collision()->IntersectLineWeapon(GetPos(), PlaceToPos, nullptr, &PlaceToPos))
 	{
 		return nullptr;
 	}

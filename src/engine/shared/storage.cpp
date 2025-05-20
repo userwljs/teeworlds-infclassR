@@ -473,7 +473,7 @@ public:
 			Type = fs_is_relative_path(pPath) ? TYPE_ALL : TYPE_ABSOLUTE;
 	}
 
-	IOHANDLE OpenFile(const char *pFilename, int Flags, int Type, char *pBuffer = 0, int BufferSize = 0) override
+	IOHANDLE OpenFile(const char *pFilename, int Flags, int Type, char *pBuffer = nullptr, int BufferSize = 0) override
 	{
 		TranslateType(Type, pFilename);
 
@@ -492,7 +492,7 @@ public:
 		{
 			pFilename = pFilename + 10; // just start from skins/
 		}
-		if(pFilename[0] == '/' || pFilename[0] == '\\' || str_find(pFilename, "../") != NULL || str_find(pFilename, "..\\") != NULL
+		if(pFilename[0] == '/' || pFilename[0] == '\\' || str_find(pFilename, "../") != nullptr || str_find(pFilename, "..\\") != nullptr
 #ifdef CONF_FAMILY_WINDOWS
 			|| (pFilename[0] && pFilename[1] == ':')
 #endif
@@ -530,7 +530,7 @@ public:
 		}
 
 		pBuffer[0] = 0;
-		return 0;
+		return nullptr;
 	}
 
 	template<typename F>
@@ -936,7 +936,7 @@ IStorage *CreateLocalStorage()
 		if(!fs_getcwd(pStorage->m_aCurrentdir, sizeof(pStorage->m_aCurrentdir)))
 		{
 			delete pStorage;
-			return NULL;
+			return nullptr;
 		}
 		pStorage->AddPath("$CURRENTDIR");
 	}

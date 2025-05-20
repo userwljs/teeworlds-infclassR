@@ -141,7 +141,7 @@ const IConsole::CCommandInfo *CConsole::FirstCommandInfo(EAccessLevel AccessLeve
 			return pCommand;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 // the maximum number of tokens occurs in a string of length CONSOLE_MAX_STR_LENGTH with tokens size 1 separated by single spaces
@@ -247,7 +247,7 @@ int CConsole::ParseArgs(CResult *pResult, const char *pFormat)
 			}
 			else
 			{
-				char *pVictim = 0;
+				char *pVictim = nullptr;
 
 				pResult->AddArgument(pStr);
 				if(Command == 'v')
@@ -404,7 +404,7 @@ bool CConsole::LineIsValid(const char *pStr)
 	{
 		CResult Result;
 		const char *pEnd = pStr;
-		const char *pNextPart = 0;
+		const char *pNextPart = nullptr;
 		int InString = 0;
 
 		while(*pEnd)
@@ -456,7 +456,7 @@ void CConsole::ExecuteLineStroked(int Stroke, const char *pStr, int ClientId, bo
 		CResult Result;
 		Result.m_ClientId = ClientId;
 		const char *pEnd = pStr;
-		const char *pNextPart = 0;
+		const char *pNextPart = nullptr;
 		int InString = 0;
 
 		while(*pEnd)
@@ -614,7 +614,7 @@ CConsole::CCommand *CConsole::FindCommand(const char *pName, int FlagMask)
 		}
 	}
 
-	return 0x0;
+	return nullptr;
 }
 
 void CConsole::ExecuteLine(const char *pStr, int ClientId, bool InterpretSemicolons)
@@ -1067,20 +1067,20 @@ CConsole::CConsole(int FlagMask)
 {
 	m_FlagMask = FlagMask;
 	m_AccessLevel = EAccessLevel::ADMIN;
-	m_pRecycleList = 0;
+	m_pRecycleList = nullptr;
 	m_TempCommands.Reset();
 	m_StoreCommands = true;
 	m_apStrokeStr[0] = "0";
 	m_apStrokeStr[1] = "1";
 	m_ExecutionQueue.Reset();
-	m_pFirstCommand = 0;
-	m_pFirstExec = 0;
+	m_pFirstCommand = nullptr;
+	m_pFirstExec = nullptr;
 	mem_zero(m_aPrintCB, sizeof(m_aPrintCB));
 	m_NumPrintCB = 0;
-	m_pfnTeeHistorianCommandCallback = 0;
-	m_pTeeHistorianCommandUserdata = 0;
+	m_pfnTeeHistorianCommandCallback = nullptr;
+	m_pTeeHistorianCommandUserdata = nullptr;
 
-	m_pStorage = 0;
+	m_pStorage = nullptr;
 
 	// register some basic commands
 	Register("echo", "r[text]", CFGFLAG_SERVER, Con_Echo, this, "Echo the text");
@@ -1197,7 +1197,7 @@ void CConsole::AddCommandSorted(CCommand *pCommand)
 		if(m_pFirstCommand && m_pFirstCommand->m_pNext)
 			pCommand->m_pNext = m_pFirstCommand;
 		else
-			pCommand->m_pNext = 0;
+			pCommand->m_pNext = nullptr;
 		m_pFirstCommand = pCommand;
 	}
 	else
@@ -1219,7 +1219,7 @@ void CConsole::Register(const char *pName, const char *pParams,
 {
 	CCommand *pCommand = FindCommand(pName, Flags);
 	bool DoAdd = false;
-	if(pCommand == 0)
+	if(pCommand == nullptr)
 	{
 		pCommand = new CCommand();
 		DoAdd = true;
@@ -1267,8 +1267,8 @@ void CConsole::RegisterTemp(const char *pName, const char *pParams, int Flags, c
 		pCommand->m_pParams = pMem;
 	}
 
-	pCommand->m_pfnCallback = 0;
-	pCommand->m_pUserData = 0;
+	pCommand->m_pfnCallback = nullptr;
+	pCommand->m_pUserData = nullptr;
 	pCommand->m_Flags = Flags;
 	pCommand->m_Temp = true;
 
@@ -1280,7 +1280,7 @@ void CConsole::DeregisterTemp(const char *pName)
 	if(!m_pFirstCommand)
 		return;
 
-	CCommand *pRemoved = 0;
+	CCommand *pRemoved = nullptr;
 
 	// remove temp entry from command list
 	if(m_pFirstCommand->m_Temp && str_comp(m_pFirstCommand->m_pName, pName) == 0)
@@ -1326,7 +1326,7 @@ void CConsole::DeregisterTempAll()
 	}
 
 	m_TempCommands.Reset();
-	m_pRecycleList = 0;
+	m_pRecycleList = nullptr;
 }
 
 void CConsole::Con_Chain(IResult *pResult, void *pUserData)
@@ -1382,7 +1382,7 @@ const IConsole::CCommandInfo *CConsole::GetCommandInfo(const char *pName, int Fl
 		}
 	}
 
-	return 0;
+	return nullptr;
 }
 
 std::unique_ptr<IConsole> CreateConsole(int FlagMask) { return std::make_unique<CConsole>(FlagMask); }

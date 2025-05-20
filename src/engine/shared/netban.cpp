@@ -47,7 +47,7 @@ template<class T, int HashCount>
 typename CNetBan::CBan<T> *CNetBan::CBanPool<T, HashCount>::Add(const T *pData, const CBanInfo *pInfo, const CNetHash *pNetHash)
 {
 	if(!m_pFirstFree)
-		return 0;
+		return nullptr;
 
 	// create new ban
 	CBan<T> *pBan = m_pFirstFree;
@@ -64,7 +64,7 @@ typename CNetBan::CBan<T> *CNetBan::CBanPool<T, HashCount>::Add(const T *pData, 
 	// add it to the hash list
 	if(m_aapHashList[pNetHash->m_HashIndex][pNetHash->m_Hash])
 		m_aapHashList[pNetHash->m_HashIndex][pNetHash->m_Hash]->m_pHashPrev = pBan;
-	pBan->m_pHashPrev = 0;
+	pBan->m_pHashPrev = nullptr;
 	pBan->m_pHashNext = m_aapHashList[pNetHash->m_HashIndex][pNetHash->m_Hash];
 	m_aapHashList[pNetHash->m_HashIndex][pNetHash->m_Hash] = pBan;
 
@@ -91,7 +91,7 @@ typename CNetBan::CBan<T> *CNetBan::CBanPool<T, HashCount>::Add(const T *pData, 
 				// last entry
 				p->m_pNext = pBan;
 				pBan->m_pPrev = p;
-				pBan->m_pNext = 0;
+				pBan->m_pNext = nullptr;
 				break;
 			}
 		}
@@ -99,7 +99,7 @@ typename CNetBan::CBan<T> *CNetBan::CBanPool<T, HashCount>::Add(const T *pData, 
 	else
 	{
 		m_pFirstUsed = pBan;
-		pBan->m_pNext = pBan->m_pPrev = 0;
+		pBan->m_pNext = pBan->m_pPrev = nullptr;
 	}
 
 	// update ban count
@@ -111,7 +111,7 @@ typename CNetBan::CBan<T> *CNetBan::CBanPool<T, HashCount>::Add(const T *pData, 
 template<class T, int HashCount>
 int CNetBan::CBanPool<T, HashCount>::Remove(CBan<T> *pBan)
 {
-	if(pBan == 0)
+	if(pBan == nullptr)
 		return -1;
 
 	// remove from hash list
@@ -121,7 +121,7 @@ int CNetBan::CBanPool<T, HashCount>::Remove(CBan<T> *pBan)
 		pBan->m_pHashPrev->m_pHashNext = pBan->m_pHashNext;
 	else
 		m_aapHashList[pBan->m_NetHash.m_HashIndex][pBan->m_NetHash.m_Hash] = pBan->m_pHashNext;
-	pBan->m_pHashNext = pBan->m_pHashPrev = 0;
+	pBan->m_pHashNext = pBan->m_pHashPrev = nullptr;
 
 	// remove from used list
 	if(pBan->m_pNext)
@@ -134,7 +134,7 @@ int CNetBan::CBanPool<T, HashCount>::Remove(CBan<T> *pBan)
 	// add to recycle list
 	if(m_pFirstFree)
 		m_pFirstFree->m_pPrev = pBan;
-	pBan->m_pPrev = 0;
+	pBan->m_pPrev = nullptr;
 	pBan->m_pNext = m_pFirstFree;
 	m_pFirstFree = pBan;
 
@@ -180,7 +180,7 @@ void CNetBan::CBanPool<T, HashCount>::Update(CBan<CDataType> *pBan, const CBanIn
 				// last entry
 				p->m_pNext = pBan;
 				pBan->m_pPrev = p;
-				pBan->m_pNext = 0;
+				pBan->m_pNext = nullptr;
 				break;
 			}
 		}
@@ -188,7 +188,7 @@ void CNetBan::CBanPool<T, HashCount>::Update(CBan<CDataType> *pBan, const CBanIn
 	else
 	{
 		m_pFirstUsed = pBan;
-		pBan->m_pNext = pBan->m_pPrev = 0;
+		pBan->m_pNext = pBan->m_pPrev = nullptr;
 	}
 }
 
@@ -203,7 +203,7 @@ void CNetBan::CBanPool<T, HashCount>::Reset()
 {
 	mem_zero(m_aapHashList, sizeof(m_aapHashList));
 	mem_zero(m_aBans, sizeof(m_aBans));
-	m_pFirstUsed = 0;
+	m_pFirstUsed = nullptr;
 	m_CountUsed = 0;
 
 	for(int i = 1; i < MAX_BANS - 1; ++i)
@@ -221,7 +221,7 @@ template<class T, int HashCount>
 typename CNetBan::CBan<T> *CNetBan::CBanPool<T, HashCount>::Get(int Index) const
 {
 	if(Index < 0 || Index >= Num())
-		return 0;
+		return nullptr;
 
 	for(CNetBan::CBan<T> *pBan = m_pFirstUsed; pBan; pBan = pBan->m_pNext, --Index)
 	{
@@ -229,7 +229,7 @@ typename CNetBan::CBan<T> *CNetBan::CBanPool<T, HashCount>::Get(int Index) const
 			return pBan;
 	}
 
-	return 0;
+	return nullptr;
 }
 
 template<class T>

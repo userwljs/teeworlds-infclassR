@@ -454,7 +454,7 @@ void CIcCharacter::Snap(int SnappingClient)
 	// Send freeze info only to the version that can handle it correctly
 	if(IsFrozen())
 	{
-		IServer::CClientInfo ClientInfo = {0};
+		IServer::CClientInfo ClientInfo = {nullptr};
 		if(SnappingClient != SERVER_DEMO_CLIENT)
 		{
 			Server()->GetClientInfo(SnappingClient, &ClientInfo);
@@ -2065,7 +2065,7 @@ void CIcCharacter::Die(DeathContext *pContext)
 	{
 		m_Alive = false;
 		GameWorld()->RemoveEntity(this);
-		GameWorld()->m_Core.m_apCharacters[GetCid()] = 0;
+		GameWorld()->m_Core.m_apCharacters[GetCid()] = nullptr;
 	}
 }
 

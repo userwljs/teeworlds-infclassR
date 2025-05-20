@@ -101,7 +101,7 @@ int LoadPNG(CImageInfo *pImg, const char *pFilename)
 
 		io_close(File);
 
-		uint8_t *pImgBuffer = NULL;
+		uint8_t *pImgBuffer = nullptr;
 		EImageFormat ImageFormat;
 		int PngliteIncompatible;
 		if(::LoadPNG(ImageByteBuffer, pFilename, PngliteIncompatible, pImg->m_Width, pImg->m_Height, pImgBuffer, ImageFormat))
@@ -223,7 +223,7 @@ CMapConverter::CMapConverter(IStorage *pStorage, IEngineMap *pMap, IConsole *pCo
 	m_pStorage(pStorage),
 	m_pMap(pMap),
 	m_pConsole(pConsole),
-	m_pTiles(0)
+	m_pTiles(nullptr)
 {
 }
 
@@ -264,15 +264,15 @@ bool CMapConverter::Load()
 	Map()->GetType(MAPITEMTYPE_GROUP, &GroupsStart, &GroupsNum);
 	Map()->GetType(MAPITEMTYPE_LAYER, &LayersStart, &LayersNum);
 
-	CMapItemLayerTilemap *pPhysicsLayer = 0;
+	CMapItemLayerTilemap *pPhysicsLayer = nullptr;
 
 	// Find the gamelayer
 	for(int g = 0; g < GroupsNum; g++)
 	{
-		CMapItemGroup *pGroup = (CMapItemGroup *)Map()->GetItem(GroupsStart + g, 0, 0);
+		CMapItemGroup *pGroup = (CMapItemGroup *)Map()->GetItem(GroupsStart + g, nullptr, nullptr);
 		for(int l = 0; l < pGroup->m_NumLayers; l++)
 		{
-			CMapItemLayer *pLayer = (CMapItemLayer *)Map()->GetItem(LayersStart + pGroup->m_StartLayer + l, 0, 0);
+			CMapItemLayer *pLayer = (CMapItemLayer *)Map()->GetItem(LayersStart + pGroup->m_StartLayer + l, nullptr, nullptr);
 
 			if(pLayer->m_Type == LAYERTYPE_TILES)
 			{
@@ -318,11 +318,11 @@ bool CMapConverter::Load()
 	}
 
 	// Get the animation cycle
-	CEnvPoint *pEnvPoints = NULL;
+	CEnvPoint *pEnvPoints = nullptr;
 	{
 		int Start, Num;
 		Map()->GetType(MAPITEMTYPE_ENVPOINTS, &Start, &Num);
-		pEnvPoints = (CEnvPoint *)Map()->GetItem(Start, 0, 0);
+		pEnvPoints = (CEnvPoint *)Map()->GetItem(Start, nullptr, nullptr);
 	}
 
 	const int MenuItemSyncMagic = TIMESHIFT_MENUCLASS * 1000;
@@ -337,7 +337,7 @@ bool CMapConverter::Load()
 		Map()->GetType(MAPITEMTYPE_ENVELOPE, &Start, &Num);
 		for(int i = 0; i < Num; i++)
 		{
-			CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, 0, 0);
+			CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, nullptr, nullptr);
 			if(pItem->m_NumPoints > 0)
 			{
 				int Duration = pEnvPoints[pItem->m_StartPoint + pItem->m_NumPoints - 1].m_Time - pEnvPoints[pItem->m_StartPoint].m_Time;
@@ -612,11 +612,11 @@ void CMapConverter::InitState()
 void CMapConverter::QuantizeAnimation(int Quant)
 {
 	// Get the animation cycle
-	CEnvPoint *pEnvPoints = NULL;
+	CEnvPoint *pEnvPoints = nullptr;
 	{
 		int Start, Num;
 		Map()->GetType(MAPITEMTYPE_ENVPOINTS, &Start, &Num);
-		pEnvPoints = (CEnvPoint *)Map()->GetItem(Start, 0, 0);
+		pEnvPoints = (CEnvPoint *)Map()->GetItem(Start, nullptr, nullptr);
 	}
 
 	if(!pEnvPoints)
@@ -626,7 +626,7 @@ void CMapConverter::QuantizeAnimation(int Quant)
 	Map()->GetType(MAPITEMTYPE_ENVELOPE, &Start, &Num);
 	for(int i = 0; i < Num; i++)
 	{
-		CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, 0, 0);
+		CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, nullptr, nullptr);
 		if(pItem->m_NumPoints > 0)
 		{
 			// Quant the points:
@@ -683,7 +683,7 @@ void CMapConverter::CopyImages()
 	Map()->GetType(MAPITEMTYPE_IMAGE, &Start, &Num);
 	for(int i = 0; i < Num; i++)
 	{
-		CMapItemImage *pItem = (CMapItemImage *)Map()->GetItem(Start + i, 0, 0);
+		CMapItemImage *pItem = (CMapItemImage *)Map()->GetItem(Start + i, nullptr, nullptr);
 		char *pName = (char *)Map()->GetData(pItem->m_ImageName);
 
 		CMapItemImage ImageItem;
@@ -713,7 +713,7 @@ void CMapConverter::CopySounds()
 	Map()->GetType(MAPITEMTYPE_SOUND, &Start, &Num);
 	for(int i = 0; i < Num; i++)
 	{
-		CMapItemSound *pItem = (CMapItemSound *)Map()->GetItem(Start + i, 0, 0);
+		CMapItemSound *pItem = (CMapItemSound *)Map()->GetItem(Start + i, nullptr, nullptr);
 		char *pName = (char *)Map()->GetData(pItem->m_SoundName);
 
 		CMapItemSound SoundItem;
@@ -740,11 +740,11 @@ void CMapConverter::CopySounds()
 void CMapConverter::CopyAnimations()
 {
 	int NumEnvPoints = 0;
-	CEnvPoint *pEnvPoints = NULL;
+	CEnvPoint *pEnvPoints = nullptr;
 	{
 		int Start, Num;
 		Map()->GetType(MAPITEMTYPE_ENVPOINTS, &Start, &Num);
-		pEnvPoints = (CEnvPoint *)Map()->GetItem(Start, 0, 0);
+		pEnvPoints = (CEnvPoint *)Map()->GetItem(Start, nullptr, nullptr);
 	}
 
 	if(pEnvPoints)
@@ -753,7 +753,7 @@ void CMapConverter::CopyAnimations()
 		Map()->GetType(MAPITEMTYPE_ENVELOPE, &Start, &Num);
 		for(int i = 0; i < Num; i++)
 		{
-			CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, 0, 0);
+			CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, nullptr, nullptr);
 			CMapItemEnvelope Item = *pItem;
 			m_DataFile.AddItem(MAPITEMTYPE_ENVELOPE, m_NumEnvs++, sizeof(Item), &Item);
 
@@ -819,7 +819,7 @@ void CMapConverter::CopyLayers()
 	// Groups
 	for(int g = 0; g < Num; g++)
 	{
-		CMapItemGroup *pGItem = (CMapItemGroup *)Map()->GetItem(Start + g, 0, 0);
+		CMapItemGroup *pGItem = (CMapItemGroup *)Map()->GetItem(Start + g, nullptr, nullptr);
 
 		if(pGItem->m_Version != CMapItemGroup::CURRENT_VERSION)
 			continue;
@@ -832,7 +832,7 @@ void CMapConverter::CopyLayers()
 		// Layers
 		for(int l = 0; l < pGItem->m_NumLayers; l++)
 		{
-			const CMapItemLayer *pLayerItem = (const CMapItemLayer *)Map()->GetItem(LayersStart + pGItem->m_StartLayer + l, 0, 0);
+			const CMapItemLayer *pLayerItem = (const CMapItemLayer *)Map()->GetItem(LayersStart + pGItem->m_StartLayer + l, nullptr, nullptr);
 			if(!pLayerItem)
 				continue;
 

@@ -8,7 +8,7 @@
 
 void GetAnimationTransform(float GlobalTime, int Env, CLayers* pLayers, vec2& Position, float& Angle)
 {
-	CEnvPoint *pPoints = 0;
+	CEnvPoint *pPoints = nullptr;
 	
 	Position.x = 0.0f;
 	Position.y = 0.0f;
@@ -18,7 +18,7 @@ void GetAnimationTransform(float GlobalTime, int Env, CLayers* pLayers, vec2& Po
 		int Start, Num;
 		pLayers->Map()->GetType(MAPITEMTYPE_ENVPOINTS, &Start, &Num);
 		if(Num)
-			pPoints = (CEnvPoint *)pLayers->Map()->GetItem(Start, 0, 0);
+			pPoints = (CEnvPoint *)pLayers->Map()->GetItem(Start, nullptr, nullptr);
 	}
 	
 	int Start, Num;
@@ -27,7 +27,7 @@ void GetAnimationTransform(float GlobalTime, int Env, CLayers* pLayers, vec2& Po
 	if(Env >= Num)
 		return;
 
-	CMapItemEnvelope *pItem = (CMapItemEnvelope *)pLayers->Map()->GetItem(Start+Env, 0, 0);
+	CMapItemEnvelope *pItem = (CMapItemEnvelope *)pLayers->Map()->GetItem(Start+Env, nullptr, nullptr);
 
 	pPoints += pItem->m_StartPoint;
 

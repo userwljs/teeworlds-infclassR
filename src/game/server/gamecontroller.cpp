@@ -1045,7 +1045,7 @@ void IGameController::DoTeamBalance()
 
 		do
 		{
-			CPlayer *pPlayer = 0;
+			CPlayer *pPlayer = nullptr;
 			float ScoreDiff = aTeamScore[BiggerTeam];
 			for(int i = 0; i < MAX_CLIENTS; i++)
 			{

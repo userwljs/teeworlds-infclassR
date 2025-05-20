@@ -83,7 +83,7 @@ void CIcProjectile::Tick()
 	float Ct = (Server()->Tick()-m_StartTick)/(float)Server()->TickSpeed();
 	vec2 PrevPos = GetPos(Pt);
 	vec2 CurPos = GetPos(Ct);
-	int Collide = GameServer()->Collision()->IntersectLine(PrevPos, CurPos, &CurPos, 0);
+	int Collide = GameServer()->Collision()->IntersectLine(PrevPos, CurPos, &CurPos, nullptr);
 	const float ProjectileRadius = 6.0f;
 	const CIcCharacter *pOwnerChar = GetOwnerCharacter();
 	const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();

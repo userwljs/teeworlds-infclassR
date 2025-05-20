@@ -24,7 +24,7 @@ int DilateFile(const char *pFilename)
 
 		CImageInfo Img;
 
-		uint8_t *pImgBuffer = NULL;
+		uint8_t *pImgBuffer = nullptr;
 		EImageFormat ImageFormat;
 		int PngliteIncompatible;
 		if(LoadPNG(ImageByteBuffer, pFilename, PngliteIncompatible, Img.m_Width, Img.m_Height, pImgBuffer, ImageFormat))

@@ -13,14 +13,14 @@ CLayers::CLayers()
 	m_GroupsStart = 0;
 	m_LayersNum = 0;
 	m_LayersStart = 0;
-	m_pGameGroup = 0;
-	m_pGameLayer = 0;
-	m_pZoneGroup = 0;
-	m_pEntityGroup = 0;
-	m_pMap = 0;
+	m_pGameGroup = nullptr;
+	m_pGameLayer = nullptr;
+	m_pZoneGroup = nullptr;
+	m_pEntityGroup = nullptr;
+	m_pMap = nullptr;
 
-	m_pTeleLayer = 0;
-	m_pSpeedupLayer = 0;
+	m_pTeleLayer = nullptr;
+	m_pSpeedupLayer = nullptr;
 }
 
 void CLayers::Init(class IKernel *pKernel)
@@ -35,8 +35,8 @@ void CLayers::Init(IMap *pMap)
 	m_pMap->GetType(MAPITEMTYPE_GROUP, &m_GroupsStart, &m_GroupsNum);
 	m_pMap->GetType(MAPITEMTYPE_LAYER, &m_LayersStart, &m_LayersNum);
 
-	m_pTeleLayer = 0;
-	m_pSpeedupLayer = 0;
+	m_pTeleLayer = nullptr;
+	m_pSpeedupLayer = nullptr;
 
 	for(int g = 0; g < NumGroups(); g++)
 	{

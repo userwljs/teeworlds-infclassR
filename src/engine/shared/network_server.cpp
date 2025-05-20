@@ -351,7 +351,7 @@ void CNetServer::OnPreConnMsg(NETADDR &Addr, CNetPacketConstruct &Packet)
 			}
 
 			// simulate accept
-			SendControl(Addr, NET_CTRLMSG_CONNECTACCEPT, NULL, 0, NET_SECURITY_TOKEN_UNSUPPORTED);
+			SendControl(Addr, NET_CTRLMSG_CONNECTACCEPT, nullptr, 0, NET_SECURITY_TOKEN_UNSUPPORTED);
 
 			// Begin vanilla compatible token handshake
 			// The idea is to pack a security token in the gametick
@@ -396,7 +396,7 @@ void CNetServer::OnPreConnMsg(NETADDR &Addr, CNetPacketConstruct &Packet)
 				MapDataMsg.AddInt(0); // crc
 				MapDataMsg.AddInt(0); // chunk index
 				MapDataMsg.AddInt(0); // map size
-				MapDataMsg.AddRaw(NULL, 0); // map data
+				MapDataMsg.AddRaw(nullptr, 0); // map data
 			}
 			else
 			{
@@ -427,7 +427,7 @@ void CNetServer::OnPreConnMsg(NETADDR &Addr, CNetPacketConstruct &Packet)
 		else
 		{
 			// accept client directly
-			SendControl(Addr, NET_CTRLMSG_CONNECTACCEPT, NULL, 0, NET_SECURITY_TOKEN_UNSUPPORTED);
+			SendControl(Addr, NET_CTRLMSG_CONNECTACCEPT, nullptr, 0, NET_SECURITY_TOKEN_UNSUPPORTED);
 
 			TryAcceptClient(Addr, NET_SECURITY_TOKEN_UNSUPPORTED);
 		}

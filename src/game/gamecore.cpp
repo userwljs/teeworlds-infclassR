@@ -253,7 +253,7 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 		bool GoingToHitGround = false;
 		bool GoingToRetract = false;
 		[[maybe_unused]] bool GoingThroughTele = false;
-		int Hit = m_pCollision->IntersectLineHook(m_HookPos, NewPos, &NewPos, 0);
+		int Hit = m_pCollision->IntersectLineHook(m_HookPos, NewPos, &NewPos, nullptr);
 		if(Hit)
 		{
 			if(Hit == TILE_NOHOOK)

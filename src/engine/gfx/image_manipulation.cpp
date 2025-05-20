@@ -78,7 +78,7 @@ void DilateImage(unsigned char *pImageBuff, int w, int h, int BPP)
 
 void DilateImageSub(unsigned char *pImageBuff, int w, int h, int BPP, int x, int y, int sw, int sh)
 {
-	unsigned char *apBuffer[2] = {NULL, NULL};
+	unsigned char *apBuffer[2] = {nullptr, nullptr};
 
 	apBuffer[0] = (unsigned char *)malloc((size_t)sw * sh * sizeof(unsigned char) * BPP);
 	apBuffer[1] = (unsigned char *)malloc((size_t)sw * sh * sizeof(unsigned char) * BPP);

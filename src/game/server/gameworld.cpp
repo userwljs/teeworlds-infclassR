@@ -64,7 +64,7 @@ CEntity *CGameWorld::ClosestEntity(vec2 Pos, float Radius, int Type, const CEnti
 {
 	// Find other players
 	float ClosestRange = Radius * 2;
-	CEntity *pClosest = 0;
+	CEntity *pClosest = nullptr;
 
 	CEntity *p = FindFirst(Type);
 	for(; p; p = p->TypeNext())
@@ -97,7 +97,7 @@ void CGameWorld::InsertEntity(CEntity *pEnt)
 	if(m_apFirstEntityTypes[pEnt->m_ObjType])
 		m_apFirstEntityTypes[pEnt->m_ObjType]->m_pPrevTypeEntity = pEnt;
 	pEnt->m_pNextTypeEntity = m_apFirstEntityTypes[pEnt->m_ObjType];
-	pEnt->m_pPrevTypeEntity = 0x0;
+	pEnt->m_pPrevTypeEntity = nullptr;
 	m_apFirstEntityTypes[pEnt->m_ObjType] = pEnt;
 }
 
@@ -124,8 +124,8 @@ void CGameWorld::RemoveEntity(CEntity *pEnt)
 	if(m_pNextTraverseEntity == pEnt)
 		m_pNextTraverseEntity = pEnt->m_pNextTypeEntity;
 
-	pEnt->m_pNextTypeEntity = 0;
-	pEnt->m_pPrevTypeEntity = 0;
+	pEnt->m_pNextTypeEntity = nullptr;
+	pEnt->m_pPrevTypeEntity = nullptr;
 }
 
 //
@@ -264,7 +264,7 @@ CCharacter *CGameWorld::IntersectCharacter(vec2 Pos0, vec2 Pos1, float Radius, v
 {
 	// Find other players
 	float ClosestLen2 = distance_squared(Pos0, Pos1) * 100.0f;
-	CCharacter *pClosest = 0;
+	CCharacter *pClosest = nullptr;
 
 	CCharacter *p = (CCharacter *)FindFirst(ENTTYPE_CHARACTER);
 	for(; p; p = (CCharacter *)p->TypeNext())
@@ -348,7 +348,7 @@ CCharacter *CGameWorld::ClosestCharacter(vec2 Pos, float Radius, CEntity *pNotTh
 {
 	// Find other players
 	float ClosestRange = Radius*2;
-	CCharacter *pClosest = 0;
+	CCharacter *pClosest = nullptr;
 
 	CCharacter *p = (CCharacter *)GameServer()->m_World.FindFirst(ENTTYPE_CHARACTER);
 	for(; p; p = (CCharacter *)p->TypeNext())

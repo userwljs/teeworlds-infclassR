@@ -22,7 +22,7 @@ void CBiologistMine::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireC
 	const float BioLaserMaxLength = 400.0f;
 	const vec2 From = pCharacter->GetPos();
 	vec2 To = From + pCharacter->GetDirection() * BioLaserMaxLength;
-	bool CanFire = pCharacter->GameServer()->Collision()->IntersectLine(From, To, 0x0, &To);
+	bool CanFire = pCharacter->GameServer()->Collision()->IntersectLine(From, To, nullptr, &To);
 
 	if(!CanFire)
 	{

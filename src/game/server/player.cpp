@@ -26,7 +26,7 @@ CPlayer::CPlayer(CGameContext *pGameServer, uint32_t UniqueClientId, int ClientI
 CPlayer::~CPlayer()
 {
 	delete m_pCharacter;
-	m_pCharacter = 0;
+	m_pCharacter = nullptr;
 }
 
 void CPlayer::Reset()
@@ -34,7 +34,7 @@ void CPlayer::Reset()
 	m_RespawnTick = Server()->Tick();
 	m_DieTick = Server()->Tick();
 	m_ScoreStartTick = Server()->Tick();
-	m_pCharacter = 0;
+	m_pCharacter = nullptr;
 	m_SpectatorId = SPEC_FREEVIEW;
 	m_LastActionTick = Server()->Tick();
 	m_LastActionMoveTick = Server()->Tick();
@@ -144,7 +144,7 @@ void CPlayer::Tick()
 	if(m_pCharacter && !m_pCharacter->IsAlive())
 	{
 		delete m_pCharacter;
-		m_pCharacter = 0;
+		m_pCharacter = nullptr;
 	}
 
 	if(!GameServer()->m_World.m_Paused)

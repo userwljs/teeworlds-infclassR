@@ -177,7 +177,7 @@ CIcGameController::CIcGameController(class CGameContext *pGameServer)
 		vTeamSpawnPoints.reserve(32);
 	}
 
-	m_GrowingMap = 0;
+	m_GrowingMap = nullptr;
 
 	//Get zones
 	m_ZoneHandle_icDamage = GameServer()->Collision()->GetZoneHandle("icDamage");

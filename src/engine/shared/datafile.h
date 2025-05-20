@@ -127,7 +127,7 @@ public:
 	CDataFileWriter(CDataFileWriter &&Other)
 	{
 		m_File = Other.m_File;
-		Other.m_File = 0;
+		Other.m_File = nullptr;
 		m_aItemTypes = std::move(Other.m_aItemTypes);
 		m_vItems = std::move(Other.m_vItems);
 		m_vDatas = std::move(Other.m_vDatas);
