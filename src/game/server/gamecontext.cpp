@@ -4499,7 +4499,7 @@ void CGameContext::RegisterChatCommands()
 	Console()->Register("timeout", "?s[code]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConTimeout, this, "Set timeout protection code s");
 
 	static char aLangs[256] = {};
-	if(!aLangs[0])
+	if(!aLangs[0] && Server()->Localization())
 	{
 		dynamic_string BufferList;
 		int BufferIter = 0;

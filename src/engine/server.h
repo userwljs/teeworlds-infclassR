@@ -17,6 +17,8 @@
 #include <game/generated/protocol7.h>
 #include <game/generated/protocolglue.h>
 
+class CLocalization;
+
 struct CAntibotRoundData;
 
 enum class EClientDropType;
@@ -71,7 +73,7 @@ protected:
 	int m_TickSpeed;
 
 public:
-	class CLocalization* m_pLocalization;
+	CLocalization* m_pLocalization{};
 
 public:
 	/*
