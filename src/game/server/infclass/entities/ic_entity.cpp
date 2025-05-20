@@ -123,7 +123,7 @@ float CIcEntity::GetLifespan() const
 
 void CIcEntity::SetLifespan(float Lifespan)
 {
-	m_EndTick = Server()->Tick() + Server()->TickSpeed() * Lifespan;
+	m_EndTick = static_cast<int>(Server()->Tick() + Server()->TickSpeed() * Lifespan);
 }
 
 void CIcEntity::ResetLifespan()

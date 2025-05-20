@@ -2376,7 +2376,7 @@ void CIcCharacter::GrantInvisibility(float Duration)
 void CIcCharacter::SetSoloForDuration(float Duration)
 {
 	if(Duration > 0)
-		m_SoloUntilTick = Server()->Tick() + Server()->TickSpeed() * Duration;
+		m_SoloUntilTick = static_cast<int>(Server()->Tick() + Server()->TickSpeed() * Duration);
 	else
 		m_SoloUntilTick.reset();
 

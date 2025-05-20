@@ -546,7 +546,7 @@ void CIcPlayer::SetSpecialCameraTargetCid(int ClientId, float Duration)
 	}
 
 	m_FollowTargetId = ClientId;
-	m_SpecialCameraTicks = Duration * Server()->TickSpeed();
+	m_SpecialCameraTicks = static_cast<int>(Duration * Server()->TickSpeed());
 
 	UpdateSpecialCamera();
 }
