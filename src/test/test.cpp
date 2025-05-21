@@ -36,6 +36,11 @@ void CTestInfo::Filename(char *pBuffer, size_t BufferLength, const char *pSuffix
 	str_format(pBuffer, BufferLength, "%s%s", m_aFilenamePrefix, pSuffix);
 }
 
+std::chrono::milliseconds CTestInfo::GetHttpShutdownDelay()
+{
+	return std::chrono::milliseconds{10};
+}
+
 std::unique_ptr<IStorage> CTestInfo::CreateTestStorage()
 {
 	bool Error = fs_makedir(m_aFilename);

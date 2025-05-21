@@ -90,7 +90,7 @@ public:
 		m_pServer->InitPersistentData();
 		EXPECT_NE(m_pServer->LoadMap("coverage"), 0);
 
-		if(!pServer->m_Http.Init(std::chrono::seconds{2}))
+		if(!pServer->m_Http.Init(CTestInfo::GetHttpShutdownDelay()))
 		{
 			log_error("server", "Failed to initialize the HTTP client.");
 		}
