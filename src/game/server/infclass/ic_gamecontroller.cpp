@@ -2116,7 +2116,6 @@ void CIcGameController::ConLoadPosition(IConsole::IResult *pResult)
 
 	pPlayer->LoadSavedPosition(&Position);
 
-	pCharacter->m_Pos = Position;
 	pCharacter->SetPosition(Position);
 	pCharacter->ResetVelocity();
 	GameWorld()->ReleaseHooked(ClientId);

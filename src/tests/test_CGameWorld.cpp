@@ -197,7 +197,6 @@ TEST_F(CTestGameWorld, IntersectEntity)
 
 	vec2 CloserToFromButTooFarFromLine = vec2(11, 11 + Radius + pChrLeft->GetProximityRadius());
 	pChrLeft->SetPosition(CloserToFromButTooFarFromLine);
-	pChrLeft->m_Pos = CloserToFromButTooFarFromLine;
 
 	pIntersectedChar = (CCharacter *)GameServer()->m_World.IntersectEntity(
 		vec2(10, 10), // intersect from
