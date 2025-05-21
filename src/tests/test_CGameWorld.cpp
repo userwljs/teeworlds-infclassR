@@ -6,6 +6,7 @@
 #include <base/types.h>
 #include <engine/engine.h>
 #include <engine/kernel.h>
+#include <engine/lua.h>
 #include <engine/server/databases/connection.h>
 #include <engine/server/databases/connection_pool.h>
 #include <engine/server/register.h>
@@ -74,12 +75,16 @@ public:
 		m_pKernel->RegisterInterface(pEngineMap);
 		m_pKernel->RegisterInterface(static_cast<IMap *>(pEngineMap), false);
 
+		ILua *pLua = CreateLua();
+		m_pKernel->RegisterInterface(pLua);
+
 		m_pGameServer = CreateGameServer();
 		m_pKernel->RegisterInterface(m_pGameServer);
 
 		pEngine->Init();
-		pConsole->Init();
 		pConfigManager->Init();
+		pConsole->Init();
+		pLua->Init();
 
 		m_pServer->RegisterCommands();
 
