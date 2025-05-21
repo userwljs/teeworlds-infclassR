@@ -20,6 +20,7 @@
 #include <game/server/gamecontroller.h>
 #include <game/server/gameworld.h>
 #include <game/server/infclass/entities/ic_entity.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/player.h>
 #include <game/version.h>
 
@@ -128,4 +129,13 @@ TEST_F(CTestLuaServer, CharacterPosition)
 	Lua()->ExecScript("ch.Position = vec2(100, 200)");
 
 	EXPECT_EQ(pChr0->GetPos(), vec2(100, 200));
+}
+
+TEST_F(CTestLuaServer, CallbackWithResult)
+{
+	CIcGameController *pIcGameController = static_cast<CIcGameController*>(GameServer()->m_pController);
+	Lua()->ExecScript("function Get_hero_flag_position(player) return vec2(100, 200) end");
+	std::optional<vec2> flagPosition = pIcGameController->GetHeroFlagPosition();
+	ASSERT_TRUE(flagPosition.has_value());
+	EXPECT_EQ(flagPosition.value(), vec2(100, 200));
 }
