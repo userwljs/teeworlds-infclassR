@@ -37,6 +37,11 @@ jobs:
     - name: Install the dependencies
       run: ./scripts/scripts/prepare-system.sh
 
+    - name: Add lua
+      if: contains(matrix.config.os, 'ubuntu')
+      run: |
+        sudo apt-get install libluajit-5.1-dev -y
+
     - name: Add the CI build configuration
       run: |
         cp scripts/ci/sources/.github/workflows/ci.conf scripts/conf
