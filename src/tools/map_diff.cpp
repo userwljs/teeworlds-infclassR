@@ -5,6 +5,24 @@
 #include <game/gamecore.h>
 #include <game/mapitems.h>
 
+size_t GetTilesN(CMapItemLayerTilemap *pTilemap, CTile *pTile)
+{
+	size_t Count = 0;
+	for(int y = 0; y < pTilemap->m_Height; y++)
+	{
+		for(int x = 0; x < pTilemap->m_Width; x++)
+		{
+			int Pos = y * pTilemap->m_Width + x;
+			if(pTile[Pos].m_Index != 0)
+			{
+				Count++;
+			}
+		}
+	}
+
+	return Count;
+}
+
 bool Process(IStorage *pStorage, const char **pMapNames)
 {
 	CDataFileReader aMaps[2];
@@ -33,8 +51,59 @@ bool Process(IStorage *pStorage, const char **pMapNames)
 	if(aLayersNum[0] != aLayersNum[1])
 	{
 		dbg_msg("map_diff", "different layer numbers:");
-		for(int i = 0; i < 2; ++i)
-			dbg_msg("map_diff", "  \"%s\": %d layers", pMapNames[i], aLayersNum[i]);
+		std::vector<std::string> aLayerNames[2];
+
+		for(size_t MapIndex : {0, 1})
+		{
+			dbg_msg("map_diff", "  \"%s\": %d layers", pMapNames[MapIndex], aLayersNum[MapIndex]);
+
+			for(int j = 0; j < aLayersNum[MapIndex]; ++j)
+			{
+				CMapItemLayer *pItem = (CMapItemLayer *)aMaps[MapIndex].GetItem(aStart[MapIndex] + j);
+				if(pItem->m_Type != LAYERTYPE_TILES)
+					continue;
+
+				CMapItemLayerTilemap *pTilemap = (CMapItemLayerTilemap *)pItem;
+				char aName[12];
+				IntsToStr(pTilemap->m_aName, std::size(pTilemap->m_aName), aName, std::size(aName));
+				aLayerNames[MapIndex].emplace_back(aName);
+			}
+		}
+
+		std::vector<size_t> aUniqueLayers[2];
+		for(size_t MapIndex : {0, 1})
+		{
+			int AnotherIndex = 1 - MapIndex;
+			const auto &Names = aLayerNames[MapIndex];
+			const auto &AnotherNames = aLayerNames[AnotherIndex];
+			for(size_t NameIndex = 0; NameIndex < Names.size(); ++NameIndex)
+			{
+				auto it = std::find(AnotherNames.cbegin(), AnotherNames.cend(), Names.at(NameIndex));
+				if(it == AnotherNames.cend())
+				{
+					aUniqueLayers[MapIndex].push_back(NameIndex);
+				}
+			}
+		}
+
+		for(size_t MapIndex : {0, 1})
+		{
+			if(aUniqueLayers[MapIndex].empty())
+				continue;
+
+			dbg_msg("map_diff", "tile layers only in \"%s\"", pMapNames[MapIndex]);
+			for(size_t LayerIndex : aUniqueLayers[MapIndex])
+			{
+				CMapItemLayer *pItem = (CMapItemLayer *)aMaps[MapIndex].GetItem(aStart[MapIndex] + LayerIndex);
+				CMapItemLayerTilemap *pTilemap = (CMapItemLayerTilemap *)pItem;
+				CTile *pTile = (CTile *)aMaps[MapIndex].GetData(pTilemap->m_Data);
+
+				size_t TilesInLayer = GetTilesN(pTilemap, pTile);
+
+				dbg_msg("map_diff", "  \"%s\" (index %" PRIzu ", %" PRIzu " tiles)", aLayerNames[MapIndex].at(LayerIndex).data(), LayerIndex, TilesInLayer);
+			}
+		}
+
 		return false;
 	}
 
