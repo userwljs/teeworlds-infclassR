@@ -43,7 +43,7 @@ void CLayers::Init(IMap *pMap)
 		CMapItemGroup *pGroup = GetGroup(g);
 		
 		char aGroupName[12];
-		IntsToStr(pGroup->m_aName, sizeof(aGroupName)/sizeof(int), aGroupName);
+		IntsToStr(pGroup->m_aName, std::size(pGroup->m_aName), aGroupName, std::size(aGroupName));
 		
 		if(str_comp(aGroupName, "#Zones") == 0)
 		{

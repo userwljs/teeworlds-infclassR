@@ -4630,12 +4630,11 @@ void CGameContext::CreateAllEntities(bool Initial)
 		const CMapItemGroup* pGroup = m_Layers.EntityGroup();
 		for(int l = 0; l < pGroup->m_NumLayers; l++)
 		{
-			CMapItemLayer *pLayer = m_Layers.GetLayer(pGroup->m_StartLayer+l);
+			const CMapItemLayer *pLayer = m_Layers.GetLayer(pGroup->m_StartLayer+l);
 			if(pLayer->m_Type == LAYERTYPE_QUADS)
 			{
-				CMapItemLayerQuads *pQLayer = (CMapItemLayerQuads *)pLayer;
-
-				IntsToStr(pQLayer->m_aName, sizeof(aLayerName)/sizeof(int), aLayerName);
+				const CMapItemLayerQuads *pQLayer = (const CMapItemLayerQuads *)pLayer;
+				IntsToStr(pQLayer->m_aName, std::size(pQLayer->m_aName), aLayerName, std::size(aLayerName));
 
 				const CQuad *pQuads = (const CQuad *) Kernel()->RequestInterface<IMap>()->GetDataSwapped(pQLayer->m_Data);
 

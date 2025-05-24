@@ -678,14 +678,14 @@ int CCollision::GetZoneHandle(const char *pName)
 		if(pLayer->m_Type == LAYERTYPE_TILES)
 		{
 			CMapItemLayerTilemap *pTLayer = (CMapItemLayerTilemap *)pLayer;
-			IntsToStr(pTLayer->m_aName, sizeof(aLayerName) / sizeof(int), aLayerName);
+			IntsToStr(pTLayer->m_aName, std::size(pTLayer->m_aName), aLayerName, std::size(aLayerName));
 			if(str_comp(pName, aLayerName) == 0)
 				LayerList.add(pLayer);
 		}
 		else if(pLayer->m_Type == LAYERTYPE_QUADS)
 		{
 			CMapItemLayerQuads *pQLayer = (CMapItemLayerQuads *)pLayer;
-			IntsToStr(pQLayer->m_aName, sizeof(aLayerName) / sizeof(int), aLayerName);
+			IntsToStr(pQLayer->m_aName, std::size(pQLayer->m_aName), aLayerName, std::size(aLayerName));
 			if(str_comp(pName, aLayerName) == 0)
 				LayerList.add(pLayer);
 		}
