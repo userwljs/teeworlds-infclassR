@@ -83,6 +83,9 @@ public:
 
 		m_pServer->RegisterCommands();
 
+		pServer->Config()->m_SvResetFile[0] = '\0';
+		str_copy(pServer->Config()->m_SvGametype, "unmod");
+
 		EXPECT_NE(m_pServer->LoadMap("coverage"), 0);
 
 		m_pServer->m_RunServer = CServer::RUNNING;
