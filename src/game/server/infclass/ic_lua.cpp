@@ -96,6 +96,33 @@ void CancelRound_Lua(CIcGameController *pController)
 	pController->EndRound(ERoundEndReason::CANCELED);
 }
 
+bool GetPlayerClassEnabled_Lua(const CIcGameController *pController, const char *pClassName)
+{
+	EPlayerClass PlayerClass = fromString<EPlayerClass>(pClassName);
+	if(PlayerClass == EPlayerClass::Invalid)
+		return false;
+
+	return pController->GetPlayerClassEnabled(PlayerClass);
+}
+
+bool SetPlayerClassEnabled_Lua(CIcGameController *pController, const char *pClassName, bool Enabled)
+{
+	EPlayerClass PlayerClass = fromString<EPlayerClass>(pClassName);
+	if(PlayerClass == EPlayerClass::Invalid)
+		return false;
+
+	return pController->SetPlayerClassEnabled(PlayerClass, Enabled);
+}
+
+bool ResetPlayerClassEnabled_Lua(CIcGameController *pController, const char *pClassName)
+{
+	EPlayerClass PlayerClass = fromString<EPlayerClass>(pClassName);
+	if(PlayerClass == EPlayerClass::Invalid)
+		return false;
+
+	return pController->ResetPlayerClassEnabled(PlayerClass);
+}
+
 CScientistMine *AddSciMine(const CIcGameController *pController)
 {
 	return new CScientistMine(pController->GameServer(), {}, -1);
@@ -380,6 +407,11 @@ void CIcGameController::RegisterLuaBindings()
 			.addFunction("CancelRound", &CancelRound_Lua)
 			.addFunction("QueueRound", &CIcGameController::ConQueueRound)
 			.addFunction("DoWarmup", &CIcGameController::DoWarmup)
+
+			.addFunction("GetPlayerClassEnabled", &GetPlayerClassEnabled_Lua)
+			.addFunction("SetPlayerClassEnabled", &SetPlayerClassEnabled_Lua)
+			.addFunction("ResetPlayerClassEnabled", &ResetPlayerClassEnabled_Lua)
+			.addFunction("ResetPlayerClassesEnablement", &CIcGameController::ResetPlayerClassesEnablement)
 
 			.addFunction("AddDoor", &CIcGameController::AddDoor)
 			.addFunction("AddSciMine", &AddSciMine)
