@@ -28,6 +28,9 @@ struct CLuaPlayersNumber
 	int Spectators{};
 };
 
+namespace
+{
+
 void SetPlayerClass_Lua(CIcPlayer *pPlayer, const char *pClass)
 {
 	if (!pClass)
@@ -111,6 +114,8 @@ CPlacedObject *AddLooperWall(const CIcGameController *pController)
 CTurret *AddTurret(const CIcGameController *pController)
 {
 	return new CTurret(pController->GameServer(), {}, -1, CTurret::LASER);
+}
+
 }
 
 void CIcGameController::ConExecLua(IConsole::IResult *pResult, void *pUserData)
