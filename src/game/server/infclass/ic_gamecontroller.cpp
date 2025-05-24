@@ -215,6 +215,8 @@ CIcGameController::CIcGameController(class CGameContext *pGameServer)
 	RegisterEntityTypes();
 	InitWeapons();
 	ReservePlayerOwnSnapItems();
+
+	ResetPlayerClassesEnablement();
 }
 
 CIcGameController::~CIcGameController()
@@ -5633,6 +5635,13 @@ void CIcGameController::InitWeapons()
 
 bool CIcGameController::GetPlayerClassEnabled(EPlayerClass PlayerClass) const
 {
+	int Index = static_cast<int>(PlayerClass);
+	if(Index < 0)
+		return false;
+
+	if(m_aClassEnabled[Index].has_value())
+		return m_aClassEnabled[Index].value();
+
 	if(GetRoundType() == ERoundType::Fun)
 	{
 		return PlayerClass == m_FunRoundConfiguration.HumanClass;
@@ -5680,45 +5689,28 @@ bool CIcGameController::GetPlayerClassEnabled(EPlayerClass PlayerClass) const
 
 bool CIcGameController::SetPlayerClassEnabled(EPlayerClass PlayerClass, bool Enabled)
 {
-	const int Value = Enabled ? 1 : 0;
-	switch(PlayerClass)
-	{
-	case EPlayerClass::Mercenary:
-		Config()->m_InfEnableMercenary = Value;
-		break;
-	case EPlayerClass::Medic:
-		Config()->m_InfEnableMedic = Value;
-		break;
-	case EPlayerClass::Hero:
-		Config()->m_InfEnableHero = Value;
-		break;
-	case EPlayerClass::Engineer:
-		Config()->m_InfEnableEngineer = Value;
-		break;
-	case EPlayerClass::Soldier:
-		Config()->m_InfEnableSoldier = Value;
-		break;
-	case EPlayerClass::Ninja:
-		Config()->m_InfEnableNinja = Value;
-		break;
-	case EPlayerClass::Sniper:
-		Config()->m_InfEnableSniper = Value;
-		break;
-	case EPlayerClass::Scientist:
-		Config()->m_InfEnableScientist = Value;
-		break;
-	case EPlayerClass::Biologist:
-		Config()->m_InfEnableBiologist = Value;
-		break;
-	case EPlayerClass::Looper:
-		Config()->m_InfEnableLooper = Value;
-		break;
-	default:
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "controller", "WARNING: Invalid SetPlayerClassEnabled() call");
+	int Index = static_cast<int>(PlayerClass);
+	if(Index < 0)
 		return false;
-	}
 
+	m_aClassEnabled[Index] = Enabled;
 	return true;
+}
+
+bool CIcGameController::ResetPlayerClassEnabled(EPlayerClass PlayerClass)
+{
+	int Index = static_cast<int>(PlayerClass);
+	if(Index < 0)
+		return false;
+
+	m_aClassEnabled[Index].reset();
+	return true;
+}
+
+void CIcGameController::ResetPlayerClassesEnablement()
+{
+	for(std::optional<bool> &Enabled : m_aClassEnabled)
+		Enabled.reset();
 }
 
 bool CIcGameController::SetPlayerClassProbability(EPlayerClass PlayerClass, int Probability)

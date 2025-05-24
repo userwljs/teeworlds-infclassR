@@ -156,6 +156,8 @@ public:
 	void DestroyChildEntities(int OwnerId);
 	bool GetPlayerClassEnabled(EPlayerClass PlayerClass) const;
 	bool SetPlayerClassEnabled(EPlayerClass PlayerClass, bool Enabled);
+	bool ResetPlayerClassEnabled(EPlayerClass PlayerClass);
+	void ResetPlayerClassesEnablement();
 	bool SetPlayerClassProbability(EPlayerClass PlayerClass, int Probability);
 
 	uint32_t GetMinPlayersForClass(EPlayerClass PlayerClass) const;
@@ -432,6 +434,7 @@ private:
 	ERoundType m_RoundType = ERoundType::Normal;
 	ERoundType m_QueuedRoundType = ERoundType::Normal;
 
+	std::optional<bool> m_aClassEnabled[NB_PLAYERCLASS];
 	FunRoundConfiguration m_FunRoundConfiguration;
 	std::vector<FunRoundConfiguration> m_FunRoundConfigurations;
 	int m_FunRoundsPassed = 0;
