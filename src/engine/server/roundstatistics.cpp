@@ -4,6 +4,9 @@
 
 int CRoundStatistics::CPlayerStats::OnScoreEvent(EScoreEvent EventType, EPlayerClass Class)
 {
+	if(Class == EPlayerClass::Invalid)
+		return 0;
+
 	int Points = 0;
 	switch(EventType)
 	{
@@ -56,7 +59,7 @@ int CRoundStatistics::CPlayerStats::OnScoreEvent(EScoreEvent EventType, EPlayerC
 
 	m_Score += Points;
 
-	int ClassIndex = static_cast<int>(Class);
+	std::size_t ClassIndex = static_cast<std::size_t>(Class);
 	if(ClassIndex > 0 && ClassIndex < NB_PLAYERCLASS)
 	{
 		m_ClassScore[ClassIndex] += Points;

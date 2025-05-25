@@ -35,7 +35,7 @@ enum class EPlayerClass
 	Count
 };
 
-constexpr int NB_PLAYERCLASS = static_cast<int>(EPlayerClass::Count);
+constexpr std::size_t NB_PLAYERCLASS = static_cast<std::size_t>(EPlayerClass::Count);
 
 static constexpr EPlayerClass AllHumanClasses[]{
 	EPlayerClass::None,
