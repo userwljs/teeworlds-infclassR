@@ -608,13 +608,17 @@ function survival_on_shutdown()
     survival_remove_votes()
 end
 
-if runtime_context.game_initialized == nil then
-    runtime_context.game_initialized = true
+function Survival_init()
+    Survival_initialized = true
     survival_init()
     -- on_event("on_character_death", on_game_character_death)
 
     on_event("on_tick", survival_on_tick)
     on_event("on_shutdown", survival_on_shutdown)
+end
+
+if Survival_initialized == nil then
+    Survival_init()
 end
 
 function survival_remove_votes()
