@@ -2,8 +2,6 @@
 
 #include <base/system.h>
 
-#include <game/infclass/classes.h>
-
 int CRoundStatistics::CPlayerStats::OnScoreEvent(EScoreEvent EventType, EPlayerClass Class)
 {
 	int Points = 0;

@@ -4,7 +4,7 @@
 #define GAME_SERVER_PLAYER_H
 
 #include <game/gamecore.h>
-#include <game/infclass/classes.h>
+#include <game/infclass/ic_classes.h>
 #include <game/server/alloc.h>
 #include <game/server/teeinfo.h>
 

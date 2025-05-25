@@ -3,7 +3,7 @@
 
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
-#include <game/infclass/classes.h>
+#include <game/infclass/ic_classes.h>
 #include <game/server/gamecontext.h>
 
 #include <game/generated/server_data.h>

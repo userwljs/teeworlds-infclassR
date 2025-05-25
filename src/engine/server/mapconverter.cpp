@@ -10,7 +10,7 @@
 #include <game/server/entities/character.h>
 
 #include <game/collision.h>
-#include <game/infclass/classes.h>
+#include <game/infclass/ic_classes.h>
 #include <game/layers.h>
 #include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/ic_gamecontroller.h>

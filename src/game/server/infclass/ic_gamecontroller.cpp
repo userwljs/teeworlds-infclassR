@@ -2,7 +2,7 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.				*/
 #include "ic_gamecontroller.h"
 
-#include <game/infclass/classes.h>
+#include <game/infclass/ic_classes.h>
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/classes/ic_playerclass.h>

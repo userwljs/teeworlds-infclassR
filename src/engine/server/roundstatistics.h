@@ -4,7 +4,7 @@
 #include <engine/console.h>
 #include <engine/shared/protocol.h>
 
-#include <game/infclass/classes.h>
+#include <game/infclass/ic_classes.h>
 
 enum class EScoreEvent
 {

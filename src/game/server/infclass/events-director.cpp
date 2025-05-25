@@ -4,7 +4,7 @@
 
 #include <engine/shared/config.h>
 
-#include <game/infclass/classes.h>
+#include <game/infclass/ic_classes.h>
 #include <game/server/skininfo.h>
 
 #include <vector>

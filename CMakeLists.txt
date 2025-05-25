@@ -753,8 +753,8 @@ set_glob(GAME_SHARED GLOB src/game
   collision.h
   gamecore.cpp
   gamecore.h
-  infclass/classes.cpp
-  infclass/classes.h
+  infclass/ic_classes.cpp
+  infclass/ic_classes.h
   infclass/damage_type.cpp
   infclass/damage_type.h
   infclass/weapons.cpp

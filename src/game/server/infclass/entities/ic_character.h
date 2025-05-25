@@ -1,7 +1,7 @@
 #ifndef GAME_SERVER_INFCLASS_ENTITIES_CHARACTER_H
 #define GAME_SERVER_INFCLASS_ENTITIES_CHARACTER_H
 
-#include <game/infclass/classes.h>
+#include <game/infclass/ic_classes.h>
 #include <game/server/entities/character.h>
 #include <game/server/entities_filter.h>
 
