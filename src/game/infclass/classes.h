@@ -1,6 +1,7 @@
 #pragma once
 
-#include "base/tl/ic_array.h"
+#include <algorithm>
+#include <array>
 
 enum class EPlayerClass
 {
@@ -36,7 +37,7 @@ enum class EPlayerClass
 
 constexpr int NB_PLAYERCLASS = static_cast<int>(EPlayerClass::Count);
 
-static constexpr icArray<EPlayerClass, NB_PLAYERCLASS> AllHumanClasses{
+static constexpr EPlayerClass AllHumanClasses[]{
 	EPlayerClass::None,
 
 	EPlayerClass::Mercenary,
@@ -51,7 +52,7 @@ static constexpr icArray<EPlayerClass, NB_PLAYERCLASS> AllHumanClasses{
 	EPlayerClass::Looper,
 };
 
-static constexpr icArray<EPlayerClass, NB_PLAYERCLASS> AllInfectedClasses{
+static constexpr EPlayerClass AllInfectedClasses[]{
 	EPlayerClass::Smoker,
 	EPlayerClass::Boomer,
 	EPlayerClass::Hunter,
@@ -65,7 +66,7 @@ static constexpr icArray<EPlayerClass, NB_PLAYERCLASS> AllInfectedClasses{
 	EPlayerClass::Undead,
 };
 
-static constexpr icArray<EPlayerClass, NB_PLAYERCLASS> AllPlayerClasses{
+static constexpr EPlayerClass AllPlayerClasses[]{
 	EPlayerClass::None,
 
 	EPlayerClass::Mercenary,
@@ -92,18 +93,19 @@ static constexpr icArray<EPlayerClass, NB_PLAYERCLASS> AllPlayerClasses{
 	EPlayerClass::Undead,
 };
 
-constexpr int NB_HUMANCLASS = AllHumanClasses.Size();
-constexpr int NB_INFECTEDCLASS = AllInfectedClasses.Size();
+constexpr int NB_HUMANCLASS = std::size(AllHumanClasses);
+constexpr int NB_INFECTEDCLASS = std::size(AllInfectedClasses);
 static_assert(NB_HUMANCLASS + NB_INFECTEDCLASS == NB_PLAYERCLASS);
-static_assert(AllPlayerClasses.Size() == NB_PLAYERCLASS);
+static_assert(std::size(AllPlayerClasses) == NB_PLAYERCLASS);
 
-inline bool IsHumanClass(EPlayerClass C)
+inline constexpr bool IsHumanClass(EPlayerClass C)
 {
-	return AllHumanClasses.Contains(C);
+	return std::find(std::begin(AllHumanClasses), std::end(AllHumanClasses), C) != std::end(AllHumanClasses);
 }
-inline bool IsInfectedClass(EPlayerClass C)
+
+inline constexpr bool IsInfectedClass(EPlayerClass C)
 {
-	return AllInfectedClasses.Contains(C);
+	return std::find(std::begin(AllInfectedClasses), std::end(AllInfectedClasses), C) != std::end(AllInfectedClasses);
 }
 
 int toNetValue(EPlayerClass C);

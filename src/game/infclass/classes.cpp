@@ -37,14 +37,17 @@ enum PLAYERCLASS
 	END_INFECTEDCLASS,
 };
 
-}
+} // namespace
 
-static_assert(static_cast<int>(AllHumanClasses.Last()) < END_HUMANCLASS);
+static_assert(static_cast<int>(*(std::end(AllHumanClasses) - 1)) < END_HUMANCLASS);
+static_assert(IsHumanClass(EPlayerClass::None));
+static_assert(IsHumanClass(EPlayerClass::Looper));
+static_assert(IsInfectedClass(EPlayerClass::Smoker));
 
 int toNetValue(EPlayerClass C)
 {
 	constexpr int HumanClassOffset = PLAYERCLASS_MERCENARY - static_cast<int>(EPlayerClass::Mercenary);
-	static_assert(static_cast<int>(AllHumanClasses.Last()) + HumanClassOffset < END_HUMANCLASS,
+	static_assert(static_cast<int>(*(std::end(AllHumanClasses) - 1)) + HumanClassOffset < END_HUMANCLASS,
 		"Added human class requires extra code to preserve network compatibilty");
 
 	if (C == EPlayerClass::None)
