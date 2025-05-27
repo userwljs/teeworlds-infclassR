@@ -11,9 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(ORIGINAL_CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH})
-set(ORIGINAL_CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES})
-set(ORIGINAL_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES})
-set(OWN_CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
+set(OWN_CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(CMAKE_MODULE_PATH ${OWN_CMAKE_MODULE_PATH})
 
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
@@ -151,17 +149,6 @@ if(CMAKE_GENERATOR STREQUAL "Ninja")
 endif()
 
 if(NOT MSVC)
-  if(CMAKE_VERSION VERSION_LESS 3.1 OR TARGET_OS STREQUAL "mac")
-    check_cxx_compiler_flag(-std=gnu++11 FLAG_SUPPORTED_std_gnu__11)
-    if(FLAG_SUPPORTED_std_gnu__11)
-      if(CMAKE_CXX_FLAGS)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
-      else()
-        set(CMAKE_CXX_FLAGS -std=gnu++11)
-      endif()
-    endif()
-  endif()
-
   # Protect the stack pointer.
   # -fstack-protector-all doesn't work on MinGW.
   add_c_compiler_flag_if_supported(OUR_FLAGS -fstack-protector-all)
@@ -180,12 +167,10 @@ if(NOT MSVC)
   endif()
 
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wall)
-  if(CMAKE_VERSION VERSION_GREATER 3.3 OR CMAKE_VERSION VERSION_EQUAL 3.3)
-    add_c_compiler_flag_if_supported(OUR_FLAGS_OWN
-      $<$<COMPILE_LANGUAGE:C>:-Wdeclaration-after-statement>
-      -Wdeclaration-after-statement
-    )
-  endif()
+  add_c_compiler_flag_if_supported(OUR_FLAGS_OWN
+    $<$<COMPILE_LANGUAGE:C>:-Wdeclaration-after-statement>
+    -Wdeclaration-after-statement
+  )
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wextra)
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-unused-parameter)
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-missing-field-initializers)
