@@ -44,7 +44,7 @@ jobs:
       if: matrix.tests
       run: |
         cd release
-        ctest -C Release
+        ctest -C Release --output-on-failure
 
     - name: Package
       run: |
