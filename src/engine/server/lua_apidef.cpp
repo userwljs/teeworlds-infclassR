@@ -310,6 +310,7 @@ void CLua::RegisterLuaBindings()
 			.addFunction("SendBroadcast", &GameContext_SendBroadcast_Lua)
 		.endClass()
 		.beginClass<IGameController>("IGameController")
+			.addProperty("RaceEnabled", &IGameController::IsRaceEnabled, &IGameController::SetRaceEnabled)
 			.addProperty("HealthArmorHudEnabled", &IGameController::IsHealthArmorHudEnabled, &IGameController::SetHealthArmorHudEnabled)
 			.addProperty("AmmoHudEnabled", &IGameController::IsAmmoHudEnabled, &IGameController::SetAmmoHudEnabled)
 

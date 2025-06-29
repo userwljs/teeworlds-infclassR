@@ -1291,6 +1291,7 @@ install(
     "normalize.cfg"
     "hide.cfg"
     "reset.cfg"
+    "zowling.cfg"
   DESTINATION
     "."
 )

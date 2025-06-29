@@ -5,6 +5,8 @@ Votes = {}
 Votes.fun_round_allowed = true
 Votes.survival_game_allowed = true
 Votes.survival_game_max_active_players = 8
+Votes.zowling_max_players = 4
+Votes.zowling_allowed = true
 
 function Votes_not_the_same_map(vote_descriptor)
     local map = Config.sv_map
@@ -47,6 +49,16 @@ function Votes_survival_game_condition()
     return Votes.survival_game_allowed
 end
 
+function Votes_zowling_condition()
+    local players_number = Game.Controller:GetPlayersNumber()
+    local total = players_number.Humans + players_number.Infected
+    if total > Votes.zowling_max_players then
+        return false
+    end
+
+    return Votes.zowling_allowed
+end
+
 ---@param description string The vote description text
 ---@param command string The vote command to execute on voted yes
 function Votes_add_vote(description, command, conditions)
@@ -77,9 +89,21 @@ function setup_default_votes()
     Votes_add_vote("Queue fun round", "queue_fun_round", {Votes_fun_round_condition})
 end
 
+function setup_zowling_votes()
+    ---@param map_name string
+    ---@param map string
+    local add_zowling_map_vote = function(map_name, map)
+        Votes_add_vote("Play 'Zowling' on a " .. map_name .. " map", "sv_map ".. map, {Votes_not_the_same_map, Votes_zowling_condition})
+    end
+
+    add_zowling_map_vote("plain", "zowling_plain")
+    add_zowling_map_vote("curve", "zowling_curve")
+end
+
 function setup_submods_votes()
     Votes_add_vote("Go back to normal game", "exec normalize.cfg", {Votes_submod_is_custom})
     Votes_add_vote(string.format("Play survival game (max %d players)", Votes.survival_game_max_active_players), "exec survivals/survival_game.cfg", {Votes_survival_game_condition})
+    setup_zowling_votes()
 end
 
 function Votes_on_round_started(round_type_str)
