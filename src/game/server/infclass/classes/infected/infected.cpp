@@ -1,8 +1,9 @@
 #include "infected.h"
-#include "game/generated/protocol.h"
+
 #include "game/server/entity.h"
 #include "game/server/gameworld.h"
 #include "game/server/infclass/classes/ic_playerclass.h"
+#include "game/server/infclass/entities/ic_projectile.h"
 #include "game/server/infclass/entities/slug-slime.h"
 #include "game/server/infclass/entities/turret.h"
 
@@ -66,12 +67,15 @@ void CInfClassInfected::SetupSkinContext(CSkinContext *pOutput, bool ForSameTeam
 	case EPlayerClass::Voodoo:
 		pOutput->ExtraData1 = m_VoodooAboutToDie;
 		break;
+	case EPlayerClass::Tank:
+		pOutput->ExtraData1 = (m_pCharacter && m_pCharacter->IsInDeepDefence()) ? 1 : 0;
+		break;
 	default:
 		pOutput->ExtraData1 = 0;
 		break;
 	}
 
-	if(m_pPlayer && (m_pPlayer->GetMaxHP() > 20))
+	if(m_pPlayer && (m_pPlayer->GetMaxHP() > 30))
 	{
 		pOutput->Highlight = true;
 	}
@@ -109,6 +113,13 @@ bool CInfClassInfected::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pO
 		{
 			pOutput->ColorFeet = 16776744;
 		}
+		break;
+	case EPlayerClass::Spitter:
+		pOutput->pSkinName = "limekitty";
+		pOutput->UseCustomColor = 1;
+		pOutput->ColorBody = 3866368;
+		pOutput->ColorFeet = 2866368;
+		pOutput->ColorFeet = 6183936;
 		break;
 	case EPlayerClass::Ghost:
 		pOutput->pSkinName = "twintri";
@@ -162,6 +173,19 @@ bool CInfClassInfected::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pO
 		}
 		pOutput->ColorFeet = 65414;
 		break;
+	case EPlayerClass::Tank:
+		pOutput->pSkinName = "redstripe";
+		pOutput->UseCustomColor = 1;
+		if(Context.ExtraData1 == 0)
+		{
+			pOutput->ColorBody = 3014400;
+		}
+		else
+		{
+			pOutput->ColorBody = 3293440; // grey-green
+		}
+		pOutput->ColorFeet = 13168;
+		break;
 	case EPlayerClass::Undead:
 		pOutput->pSkinName = "redstripe";
 		pOutput->UseCustomColor = 1;
@@ -192,6 +216,8 @@ int CInfClassInfected::GetJumps() const
 	{
 	case EPlayerClass::Hunter:
 		return 3;
+	case EPlayerClass::Spitter:
+		return 4;
 	case EPlayerClass::Bat:
 		return Config()->m_InfBatAirjumpLimit;
 	default:
@@ -466,7 +492,14 @@ void CInfClassInfected::OnCharacterDamage(SDamageContext *pContext)
 	switch(GetPlayerClass())
 	{
 	case EPlayerClass::Hunter:
-		if(pContext->DamageType == EDamageType::MEDIC_SHOTGUN)
+		if(GameController()->GetRoundType() == ERoundType::Survival)
+		{
+			if(pContext->DamageType != EDamageType::BOOMER_EXPLOSION)
+			{
+				pContext->Force *= 0.33f;
+			}
+		}
+		else if(pContext->DamageType == EDamageType::MEDIC_SHOTGUN)
 		{
 			pContext->Force = vec2(0, 0);
 		}
@@ -487,6 +520,36 @@ void CInfClassInfected::OnCharacterDamage(SDamageContext *pContext)
 		pContext->Damage = DamageAccepted;
 		break;
 	}
+	case EPlayerClass::Tank:
+		if(pContext->DamageType == EDamageType::BIOLOGIST_MINE)
+		{
+			pContext->Damage = 3;
+		}
+		else if(pContext->DamageType == EDamageType::SOLDIER_BOMB)
+		{
+			pContext->Damage *= 0.4f;
+		}
+		else if(pContext->Damage > 1)
+		{
+			pContext->Damage -= 1;
+		}
+		else if(pContext->Damage == 1)
+		{
+			if(pContext->DamageType == EDamageType::GUN)
+			{
+				pContext->Damage = 0;
+			}
+			else
+			{
+				float ReflectionProbability = 0.5f;
+				if(random_prob(ReflectionProbability))
+				{
+					pContext->Damage = 0;
+				}
+			}
+		}
+		pContext->Force *= 0.3f;
+		break;
 	default:
 		break;
 	}
@@ -523,6 +586,8 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 	int Hits = 0;
 	bool ShowAttackAnimation = false;
 
+	float ReloadDuration = 0.33f;
+
 	if(!AutoFire)
 	{
 		const vec2 Direction = GetDirection();
@@ -549,7 +614,8 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 				continue;
 
 			vec2 Dir;
-			if(length(pTarget->GetPos() - GetPos()) > 0.0f)
+			float DistanceToTarget = length(pTarget->GetPos() - GetPos());
+			if(DistanceToTarget > 0.0f)
 				Dir = normalize(pTarget->GetPos() - GetPos());
 			else
 				Dir = vec2(0.f, -1.f);
@@ -596,6 +662,27 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 				int Damage = g_pData->m_Weapons.m_Hammer.m_pBase->m_Damage;
 				EDamageType DamageType = EDamageType::INFECTED_HAMMER;
 
+				if(pFireContext->InfClassWeapon == EInfclassWeapon::STUNNING_HAMMER)
+				{
+					const float hForce = Config()->m_InfStunningHammerForce;
+					if(pTarget->GetPos().x > GetPos().x)
+					{
+						Force.x += hForce;
+					}
+					else if(pTarget->GetPos().x < GetPos().x)
+					{
+						Force.x -= hForce;
+					}
+
+					const float StunDuration = Config()->m_InfStunningHammerDuration;
+					pTarget->SetEmote(EMOTE_SURPRISE, Server()->Tick() + Server()->TickSpeed() * (StunDuration + 0.5));
+					pTarget->Freeze(StunDuration, GetCid(), FREEZEREASON_FLASH);
+
+					Damage = 3;
+					DamageType = EDamageType::HAMMER;
+					ReloadDuration = 0.7f;
+				}
+
 				if(pFireContext->InfClassWeapon == EInfclassWeapon::JAWS)
 				{
 					Damage = Config()->m_InfBatDamage;
@@ -623,7 +710,7 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 	// if we Hit anything, we have to wait for the reload
 	if(Hits)
 	{
-		pFireContext->ReloadInterval = 0.33f;
+		pFireContext->ReloadInterval = ReloadDuration;
 	}
 	else if(pFireContext->InfClassWeapon == EInfclassWeapon::SLIME)
 	{
@@ -634,6 +721,17 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 	{
 		GameServer()->CreateSound(GetPos(), SOUND_HAMMER_FIRE);
 	}
+}
+
+void CInfClassInfected::OnGrenadeFired(WeaponFireContext *pFireContext)
+{
+	if(pFireContext->NoAmmo)
+		return;
+
+	vec2 Direction = GetDirection();
+	vec2 ProjStartPos = GetPos() + Direction * GetProximityRadius() * 0.75f;
+	CIcProjectile::MakeGrenade(GameContext(), ProjStartPos, Direction, GetCid(), EDamageType::INFECTED_GRENADE);
+	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
 }
 
 void CInfClassInfected::GiveClassAttributes()
@@ -647,6 +745,11 @@ void CInfClassInfected::GiveClassAttributes()
 
 	switch(GetPlayerClass())
 	{
+	case EPlayerClass::Spitter:
+		m_pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
+		m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
+		m_pCharacter->SetActiveWeapon(WEAPON_GRENADE);
+		break;
 	default:
 		m_pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
 		m_pCharacter->SetActiveWeapon(WEAPON_HAMMER);
@@ -770,7 +873,35 @@ void CInfClassInfected::DoBoomerExplosion()
 	}
 
 	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_EXPLODE);
-	GameController()->CreateExplosionDiskGfx(GetPos(), InnerRadius, DamageRadius, m_pPlayer->GetCid());
+
+	if(SlimeExplosion)
+	{
+		static constexpr float MinDistance = 32.0f;
+		GameController()->CreateDeathEffectDiskGfx(GetPos(), InnerRadius, DamageRadius, m_pPlayer->GetCid());
+
+		int Rays = 12;
+		int CurrentTick = Server()->Tick();
+		float AngleStep = 2.0f * pi / Rays;
+		float RandomShift = random_float() * 2.0f * pi;
+		const vec2 From = GetPos();
+		for(int i = 0; i < Rays; i++)
+		{
+			vec2 Dir = direction(AngleStep * i + RandomShift);
+			vec2 To = From + Dir * DamageRadius;
+			CSlugSlime *pSlime = PlaceSlime(To, MinDistance);
+			if(!pSlime)
+				continue;
+
+			const float Distance = distance(From, pSlime->GetPos());
+			int LifeSpan = Server()->TickSpeed() * (2 + 3.0f * Distance / DamageRadius + 3.0f * std::clamp(Dir.y, 0.0f, 1.0f));
+			pSlime->Replenish(GetCid(), CurrentTick + LifeSpan);
+			pSlime->SetDamage(SlimeDamage, SlimeDamageInterval);
+		}
+	}
+	else
+	{
+		GameController()->CreateExplosionDiskGfx(GetPos(), InnerRadius, DamageRadius, m_pPlayer->GetCid());
+	}
 
 	if(pBestBFTarget)
 	{

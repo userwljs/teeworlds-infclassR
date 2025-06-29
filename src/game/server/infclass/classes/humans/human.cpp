@@ -16,6 +16,7 @@
 #include <game/server/infclass/entities/bouncing-bullet.h>
 #include <game/server/infclass/entities/engineer-wall.h>
 #include <game/server/infclass/entities/growingexplosion.h>
+#include <game/server/infclass/entities/healing_particle.h>
 #include <game/server/infclass/entities/hero-flag.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/entities/ic_projectile.h>
@@ -24,6 +25,7 @@
 #include <game/server/infclass/entities/medic-laser.h>
 #include <game/server/infclass/entities/merc-bomb.h>
 #include <game/server/infclass/entities/merc-laser.h>
+#include <game/server/infclass/entities/portal.h>
 #include <game/server/infclass/entities/scatter-grenade.h>
 #include <game/server/infclass/entities/scientist-laser.h>
 #include <game/server/infclass/entities/scientist-mine.h>
@@ -32,6 +34,7 @@
 #include <game/server/infclass/entities/white-hole.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
+#include <game/server/infclass/player_upgrades.h>
 #include <game/server/teeinfo.h>
 
 static const int s_SniperPositionLockTimeLimit = 15;
@@ -149,13 +152,27 @@ CAmmoParams CInfClassHuman::GetAmmoParams(int Weapon) const
 
 	switch(InfWID)
 	{
+	case EInfclassWeapon::LOOPER_LASER:
+		if(GameController()->GetRoundType() == ERoundType::Survival)
+		{
+			// Normal MaxAmmo is 20
+			Params.MaxAmmo = 15;
+		}
+		break;
 	case EInfclassWeapon::NINJA_GRENADE:
 		Params.MaxAmmo = minimum(Params.MaxAmmo + m_NinjaAmmoBuff, 10);
 		break;
 	case EInfclassWeapon::MERCENARY_GUN:
-		if(m_pCharacter->GetInAirTick() > Server()->TickSpeed() * 4)
+		if(m_pCharacter->GetInAirTick() > Server()->TickSpeed() * m_MercInAirAmmoRegenMaxTime)
 		{
 			Params.RegenInterval = 0;
+		}
+		break;
+	case EInfclassWeapon::HEALING_GRENADE:
+		if(HasUpgrade(EUpgradeType::MedicHealingHose))
+		{
+			Params.MaxAmmo = 16;
+			Params.RegenInterval = 1000;
 		}
 		break;
 	default:
@@ -182,13 +199,24 @@ int CInfClassHuman::GetJumps() const
 	}
 }
 
-void CInfClassHuman::GiveGift(EGiftType GiftType)
+void CInfClassHuman::GiveGift(EGiftType GiftType, int Level)
 {
 	if(!m_pCharacter)
 		return;
 
-	m_pCharacter->IncreaseHealth(1);
-	m_pCharacter->GiveArmor(4);
+	switch(Level)
+	{
+	case 0:
+		m_pCharacter->IncreaseHealth(1);
+		m_pCharacter->GiveArmor(4);
+		break;
+	case 1:
+	default:
+		m_pCharacter->IncreaseHealth(2);
+		m_pCharacter->GiveArmor(5);
+		break;
+	}
+
 
 	const EWeapon AllWeaponsWithAmmo[] =
 		{
@@ -221,9 +249,135 @@ bool CInfClassHuman::CanBeHit() const
 	return true;
 }
 
-SClassUpgrade CInfClassHuman::GetNextUpgrade() const
+PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 {
-	return SClassUpgrade::Invalid();
+	switch(PlayerClass)
+	{
+	case EPlayerClass::Mercenary:
+		switch(UpgradeLevel)
+		{
+		case 1:
+			return { EUpgradeType::MercBombTools };
+		case 2:
+			return { EUpgradeType::MercGunAirRegen, EUpgradeType::MercGrenades };
+		case 3:
+			return { EUpgradeType::MercGunRegen, EUpgradeType::MercBombSupercharge };
+		default:
+			break;
+		}
+		break;
+
+	case EPlayerClass::Medic:
+		switch(UpgradeLevel)
+		{
+		case 1:
+			return { EUpgradeType::MedicShotgunSpread, EUpgradeType::MedicPistolRegen };
+		case 2:
+			return { EUpgradeType::MedicShotgunRegen };
+		case 3:
+			return { EUpgradeType::MedicHealingHose };
+		default:
+			break;
+		}
+		break;
+
+	case EPlayerClass::Hero:
+		switch(UpgradeLevel)
+		{
+		case 1:
+			return { EUpgradeType::HeroFlagGift };
+		case 2:
+			return { EUpgradeType::HeroWeapons };
+		case 3:
+			return { EUpgradeType::HeroArmor };
+		default:
+			break;
+		}
+		break;
+
+	case EPlayerClass::Ninja:
+		switch(UpgradeLevel)
+		{
+		case 1:
+			return { EUpgradeType::NinjaSlashBreaksHooks };
+		case 2:
+			return { EUpgradeType::NinjaFlashGrenadeArea };
+		case 3:
+			return { EUpgradeType::NinjaSlashCombo };
+		default:
+			break;
+		}
+		break;
+
+	case EPlayerClass::Sniper:
+		switch(UpgradeLevel)
+		{
+		case 1:
+			return { EUpgradeType::SniperLaserRegenReload };
+		case 2:
+			return { EUpgradeType::SniperLaserRange };
+		case 3:
+			return { EUpgradeType::SniperLaserPiercing };
+		default:
+			break;
+		}
+		break;
+
+	case EPlayerClass::Scientist:
+		switch(UpgradeLevel)
+		{
+		case 1:
+			return { EUpgradeType::ScientistLaserRegenReload };
+		case 2:
+			return { EUpgradeType::ScientistTeleportGun };
+		case 3:
+			return { EUpgradeType::ScientistPortalGun };
+		case 4:
+			return { EUpgradeType::ScientistExtraMine };
+		default:
+			break;
+		}
+		break;
+
+	case EPlayerClass::Biologist:
+		switch(UpgradeLevel)
+		{
+		case 1:
+			return { EUpgradeType::BiologistShotgunSpread };
+		case 2:
+			return { EUpgradeType::BiologistMineCharges };
+		case 3:
+			return { EUpgradeType::BiologistGrenade };
+		case 4:
+			return { EUpgradeType::BiologistInvisibilityHammer };
+		default:
+			break;
+		}
+		break;
+
+	case EPlayerClass::Looper:
+		switch(UpgradeLevel)
+		{
+		case 1:
+			return { EUpgradeType::LooperLaserRegen };
+		case 2:
+			return { EUpgradeType::LooperGrenadesRegen };
+		case 3:
+			return { EUpgradeType::LooperLaserWeapon };
+		default:
+			break;
+		}
+		break;
+	default:
+		break;
+	}
+
+	return {};
+}
+
+PlayerUpgradesArray CInfClassHuman::GetUpgrade(int Level) const
+{
+	return GetUpgrades(GetPlayerClass(), Level);
 }
 
 void CInfClassHuman::OnPlayerClassChanged()
@@ -368,11 +522,6 @@ void CInfClassHuman::OnCharacterPreCoreTick()
 				{
 					m_pCharacter->UnlockPosition();
 				}
-				else
-				{
-					m_pCharacter->ResetMovementsInput();
-					m_PositionLockPosition = m_pCharacter->GetPos();
-				}
 			}
 		}
 			break;
@@ -386,6 +535,33 @@ void CInfClassHuman::OnCharacterPreCoreTick()
 			break;
 		default:
 			break;
+	}
+
+	if(m_pCharacter->IsInvisible())
+	{
+		float MinDistanceSquared = 48 * 48;
+		for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
+		{
+			if(p->IsHuman())
+				continue;
+			if(!p->IsAlive() || p->IsFrozen() || p->IsBlind())
+				continue;
+
+			if(distance_squared(p->GetPos(), GetPos()) < MinDistanceSquared)
+			{
+				ResetInvisibility();
+				break;
+			}
+		}
+	}
+
+	if((Server()->Tick() < m_InvisibilityEndTick) && (Server()->Tick() >= m_InvisibilityStartTick))
+	{
+		m_pCharacter->MakeInvisible();
+	}
+	else
+	{
+		m_pCharacter->MakeVisible();
 	}
 }
 
@@ -459,6 +635,16 @@ void CInfClassHuman::OnCharacterTick()
 			m_ResetKillsTick = -1;
 		}
 	}
+
+	if(m_InvisibilityStartTick && !m_pCharacter->IsInvisible())
+	{
+		int StartTicks = m_InvisibilityStartTick - Server()->Tick();
+		if(StartTicks >= 0 && StartTicks % Server()->TickSpeed() == Server()->TickSpeed() - 1)
+		{
+			int FreezeSec = 1 + (StartTicks / Server()->TickSpeed());
+			GameServer()->CreateDamageInd(GetPos(), 0, FreezeSec);
+		}
+	}
 }
 
 void CInfClassHuman::OnCharacterTickPaused()
@@ -472,19 +658,6 @@ void CInfClassHuman::OnCharacterTickPaused()
 void CInfClassHuman::OnCharacterPostCoreTick()
 {
 	CIcPlayerClass::OnCharacterPostCoreTick();
-
-	switch(GetPlayerClass())
-	{
-	case EPlayerClass::Sniper:
-		if(m_pCharacter->PositionIsLocked())
-		{
-			m_pCharacter->ResetVelocity();
-			m_pCharacter->SetPosition(m_PositionLockPosition);
-		}
-		break;
-	default:
-		break;
-	}
 }
 
 void CInfClassHuman::OnCharacterSnap(int SnappingClient)
@@ -574,6 +747,16 @@ void CInfClassHuman::OnCharacterDamage(SDamageContext *pContext)
 			pContext->Damage = 12;
 		}
 		break;
+	case EPlayerClass::Mercenary:
+		if(pContext->Mode == TAKEDAMAGEMODE::ALLOW_SELFHARM)
+		{
+			if(HasUpgrade(EUpgradeType::MercBombTools))
+			{
+				pContext->Damage /= 3;
+				pContext->Force *= 0.5f;
+			}
+		}
+		break;
 	default:
 		break;
 	}
@@ -583,6 +766,13 @@ void CInfClassHuman::OnCharacterDamage(SDamageContext *pContext)
 		// Humans are immune to Ninja's force
 		pContext->Force = vec2(0, 0);
 	}
+
+	ResetInvisibility();
+}
+
+void CInfClassHuman::OnCharacterBackFromDead()
+{
+	SpawnChildEntities();
 }
 
 void CInfClassHuman::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context)
@@ -661,6 +851,12 @@ void CInfClassHuman::OnHumanHammerHitHuman(CIcCharacter *pTarget)
 		{
 			pTarget->ResetPoisonEffect();
 		}
+		if(HasUpgrade(EUpgradeType::BiologistInvisibilityHammer))
+		{
+			CInfClassHuman *pTargetHuman = CInfClassHuman::GetInstance(pTarget);
+			float Duration  = Config()->m_InfHumanInvisibilityTime;
+			pTargetHuman->GiveInvisibility(Duration, GetCid());
+		}
 	}
 }
 
@@ -672,11 +868,17 @@ void CInfClassHuman::OnHookAttachedPlayer()
 	if(m_pCharacter->IsPassenger())
 		return;
 
-	if(!GameController()->GetTaxiMode())
+	CIcCharacter *pHookedCharacter = GameController()->GetCharacter(m_pCharacter->GetHookedPlayer());
+	if(!pHookedCharacter)
 		return;
 
-	CIcCharacter *pHookedCharacter = GameController()->GetCharacter(m_pCharacter->GetHookedPlayer());
-	if(!pHookedCharacter || !pHookedCharacter->IsHuman())
+	if(!pHookedCharacter->IsHuman())
+	{
+		ResetInvisibility();
+		return;
+	}
+
+	if(!GameController()->GetTaxiMode())
 		return;
 
 	m_pCharacter->TryBecomePassenger(pHookedCharacter);
@@ -762,6 +964,8 @@ void CInfClassHuman::OnWeaponFired(WeaponFireContext *pFireContext)
 	pFireContext->ReloadInterval *= ReloadIntervalModifier;
 
 	CIcPlayerClass::OnWeaponFired(pFireContext);
+
+	ResetInvisibility();
 }
 
 void CInfClassHuman::OnHammerFired(WeaponFireContext *pFireContext)
@@ -922,9 +1126,19 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 	{
 	case EInfclassWeapon::RICOCHET_SHOTGUN:
 		ShotSpread = 1;
+		if(HasUpgrade(EUpgradeType::BiologistShotgunSpread))
+		{
+			ShotSpread = 2;
+			SpreadingValue *= 0.5f;
+		}
 		break;
 	case EInfclassWeapon::MEDIC_SHOTGUN:
 		DamageType = EDamageType::MEDIC_SHOTGUN;
+		if(HasUpgrade(EUpgradeType::MedicShotgunSpread))
+		{
+			ShotSpread = 5;
+			SpreadingValue *= 0.8f;
+		}
 		break;
 	default:
 		break;
@@ -972,7 +1186,22 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 		OnPoisonGrenadeFired(pFireContext);
 		return;
 	case EInfclassWeapon::TELEPORT_GUN:
-		CLaserTeleport::OnFired(m_pCharacter, pFireContext, Config()->m_InfScientistTpSelfharm);
+	{
+		if (HasUpgrade(EUpgradeType::ScientistPortalGun))
+		{
+			CPortal::OnPortalGunFired(m_pCharacter, pFireContext);
+		}
+		else
+		{
+			int SelfDamage = Config()->m_InfScientistTpSelfharm;
+			if(HasUpgrade(EUpgradeType::ScientistTeleportGun))
+			{
+				SelfDamage = 0;
+			}
+			bool ReleaseHooks = GameController()->GetRoundType() == ERoundType::Survival;
+			CLaserTeleport::OnFired(m_pCharacter, pFireContext, SelfDamage, ReleaseHooks);
+		}
+	}
 		return;
 	case EInfclassWeapon::HEALING_GRENADE:
 		OnMedicGrenadeFired(pFireContext);
@@ -990,7 +1219,17 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 	if(pFireContext->InfClassWeapon == EInfclassWeapon::NINJA_GRENADE)
 	{
 		CIcProjectile *pProj = CIcProjectile::MakeGrenade(GameContext(), ProjStartPos, Direction, GetCid(), EDamageType::STUNNING_GRENADE);
-		pProj->SetFlashRadius(8);
+		int FlashRadius = 8;
+		if(HasUpgrade(EUpgradeType::NinjaFlashGrenadeArea))
+		{
+			FlashRadius = 10;
+		}
+		pProj->SetFlashRadius(FlashRadius);
+	}
+	else if (pFireContext->InfClassWeapon == EInfclassWeapon::BIOLOGIST_GRENADE)
+	{
+		CIcProjectile *pProj = CIcProjectile::MakeGrenade(GameContext(), ProjStartPos, Direction, GetCid(), EDamageType::BIOLOGIST_MINE);
+		pProj->SetSoundImpact(SOUND_LASER_BOUNCE);
 	}
 	else
 	{
@@ -1017,7 +1256,14 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		CBlindingLaser::OnFired(m_pCharacter, pFireContext);
 		return;
 	case EInfclassWeapon::BIOLOGIST_MINE_LASER:
-		CBiologistMine::OnFired(m_pCharacter, pFireContext, Config()->m_InfBioMineLasers);
+	{
+		int Lasers = Config()->m_InfBioMineLasers;
+		if(GameController()->GetRoundType() == ERoundType::Survival)
+		{
+			Lasers = HasUpgrade(EUpgradeType::BiologistMineCharges) ? 12 : 8;
+		}
+		CBiologistMine::OnFired(m_pCharacter, pFireContext, Lasers);
+	}
 		return;
 	case EInfclassWeapon::EXPLOSIVE_LASER:
 		StartEnergy *= 0.6f;
@@ -1031,14 +1277,27 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		CMedicLaser::OnFired(m_pCharacter, pFireContext, StartEnergy);
 		return;
 	case EInfclassWeapon::LOOPER_LASER:
+	{
 		StartEnergy *= 0.7f;
 		Damage = 5;
-		CIcLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		CIcLaser *pLaser = new CIcLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		if(HasUpgrade(EUpgradeType::LooperLaserWeapon))
+		{
+			pLaser->SetExplosive(true);
+		}
+		pLaser->DoBounce();
+	}
 		break;
 	case EInfclassWeapon::SNIPER_RIFLE:
-		Damage = m_pCharacter->PositionIsLocked() ? 30 : random_int(10, 13);
-		CIcLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+	{
+		const bool HasPiercing = HasUpgrade(EUpgradeType::SniperLaserPiercing);
+		int LockedPosDamage = HasPiercing ? 40 : 30;
+		Damage = m_pCharacter->PositionIsLocked() ? LockedPosDamage : random_int(10, 13);
+		CIcLaser *pLaser = new CIcLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
+		pLaser->SetPiercing(HasPiercing);
+		pLaser->DoBounce();
 		break;
+	}
 	case EInfclassWeapon::ENGINEER_LASER:
 	case EInfclassWeapon::HERO_LASER:
 		CIcLaser::MakeLaser(GameServer(), GetPos(), Direction, StartEnergy, GetCid(), Damage, pFireContext->InfClassWeapon);
@@ -1056,12 +1315,14 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 void CInfClassHuman::GiveClassAttributes()
 {
 	m_ResetKillsTick = -1;
+	m_MercBombs = 0;
 	m_TurretCount = 0;
 	m_NinjaTargetTick = 0;
 	m_NinjaTargetCid = -1;
 	m_NinjaVelocityBuff = 0;
 	m_NinjaExtraDamage = 0;
 	m_NinjaAmmoBuff = 0;
+	m_NinjaComboFirstTick = 0;
 
 	RemoveWhiteHole();
 
@@ -1091,7 +1352,10 @@ void CInfClassHuman::GiveClassAttributes()
 		m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
 		m_pCharacter->GiveWeapon(WEAPON_GUN, -1);
 		if(GameController()->MercBombsEnabled())
+		{
 			m_pCharacter->GiveWeapon(WEAPON_LASER, -1);
+			m_MercBombs = Config()->m_InfMercBombs;
+		}
 		m_pCharacter->SetActiveWeapon(WEAPON_GUN);
 		break;
 	case EPlayerClass::Sniper:
@@ -1255,9 +1519,11 @@ void CInfClassHuman::BroadcastWeaponState() const
 
 		if(pCurrentBomb)
 		{
-			float BombLevel = pCurrentBomb->GetLoad() / static_cast<float>(Config()->m_InfMercBombs);
+			const float Load = pCurrentBomb->GetLoad();
+			const float NormalBombs = Config()->m_InfMercBombs;
+			const float BombLevel = Load / NormalBombs;
 
-			if(BombLevel < 1.0)
+			if(Load < m_MercBombs)
 			{
 				dynamic_string Line1;
 				Server()->Localization()->Format_L(Line1, GetPlayer()->GetLanguage(),
@@ -1306,7 +1572,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 		}
 		else if(Turrets > 0)
 		{
-			int MaxTurrets = Config()->m_InfTurretMaxPerPlayer;
+			int MaxTurrets = GetMaxTurrets();
 			if(MaxTurrets == 1)
 			{
 				GameServer()->SendBroadcast_Localization(GetCid(),
@@ -1338,6 +1604,29 @@ void CInfClassHuman::BroadcastWeaponState() const
 	}
 	default:
 		break;
+	}
+
+	if(m_pCharacter)
+	{
+		if(m_InvisibilityStartTick && CurrentTick < m_InvisibilityStartTick)
+		{
+			int Seconds = 1 + (m_InvisibilityStartTick - CurrentTick) / Server()->TickSpeed();
+			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
+				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
+				_("Becoming invisible in {sec:RemainingTime}"),
+				"RemainingTime", &Seconds,
+				nullptr);
+		}
+		else if(m_pCharacter->IsInvisible())
+		{
+			float Time = GetInvisibilityRemainingDuration();
+			int Seconds = 1 + Time;
+			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
+				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
+				_("Invisible for {sec:RemainingTime}"),
+				"RemainingTime", &Seconds,
+				nullptr);
+		}
 	}
 
 	if(GetPlayerClass() == EPlayerClass::Engineer)
@@ -1547,7 +1836,9 @@ void CInfClassHuman::BroadcastWeaponState() const
 
 		if(pOwnBomb)
 		{
-			float BombLevel = pOwnBomb->GetLoad() / static_cast<float>(Config()->m_InfMercBombs);
+			const float Load = pOwnBomb->GetLoad();
+			const float NormalBombs = Config()->m_InfMercBombs;
+			const float BombLevel = Load / NormalBombs;
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Mercenary", "Explosive yield: {percent:BombLevel}"),
@@ -1586,6 +1877,7 @@ void CInfClassHuman::ResetUpgrades()
 	}
 
 	m_LaserReachModifier = 1.0f;
+	m_MercInAirAmmoRegenMaxTime = 4.0f;
 }
 
 void CInfClassHuman::OnNinjaTargetKiller(bool Assisted)
@@ -1714,6 +2006,21 @@ void CInfClassHuman::ActivateNinja(WeaponFireContext *pFireContext)
 		m_pCharacter->m_DartOldVelAmount = length(m_pCharacter->Velocity());
 
 		GameServer()->CreateSound(GetPos(), SOUND_NINJA_HIT);
+
+		if(HasUpgrade(EUpgradeType::NinjaSlashBreaksHooks))
+		{
+			GameWorld()->ReleaseHooked(GetCid());
+		}
+
+		if(HasUpgrade(EUpgradeType::NinjaSlashCombo))
+		{
+			const float Reload = pFireContext->ReloadInterval;
+			if(Server()->Tick() > m_NinjaComboFirstTick + Reload * 2 * Server()->TickSpeed())
+			{
+				m_NinjaComboFirstTick = Server()->Tick();
+				pFireContext->ReloadInterval = 0.1f;
+			}
+		}
 	}
 }
 
@@ -1836,7 +2143,8 @@ void CInfClassHuman::FireMercenaryBomb(WeaponFireContext *pFireContext)
 	{
 		float Distance = distance(pOwnBomb->GetPos(), GetPos());
 		const float SafeDistance = 16;
-		if(pOwnBomb->IsReadyToExplode() || Distance > pOwnBomb->GetProximityRadius() + SafeDistance)
+		bool BombIsLoaded = pOwnBomb->GetLoad() >= m_MercBombs;
+		if((BombIsLoaded && pOwnBomb->IsReadyToExplode()) || Distance > pOwnBomb->GetProximityRadius() + SafeDistance)
 		{
 			pOwnBomb->Explode(GetCid());
 		}
@@ -1899,7 +2207,7 @@ void CInfClassHuman::PlaceScientistMine(WeaponFireContext *pFireContext)
 
 	if(pIntersectMine) // Move the mine
 		GameWorld()->DestroyEntity(pIntersectMine);
-	else if(NbMine >= g_Config.m_InfMineLimit && pOlderMine)
+	else if(NbMine >= GetMaxSciMines() && pOlderMine)
 		GameWorld()->DestroyEntity(pOlderMine);
 
 	new CScientistMine(GameServer(), ProjStartPos, GetCid());
@@ -1972,6 +2280,10 @@ void CInfClassHuman::OnPoisonGrenadeFired(WeaponFireContext *pFireContext)
 		float a = BaseAngle + random_float() / 3.0f;
 
 		[[maybe_unused]] CScatterGrenade *pProj = new CScatterGrenade(GameServer(), GetCid(), GetPos(), vec2(cosf(a), sinf(a)));
+		if(HasUpgrade(EUpgradeType::MercGrenades))
+		{
+			pProj->ExplodeOnContact();
+		}
 	}
 
 	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
@@ -1984,8 +2296,15 @@ void CInfClassHuman::OnMedicGrenadeFired(WeaponFireContext *pFireContext)
 	if(pFireContext->NoAmmo)
 		return;
 
-	int HealingExplosionRadius = 4;
-	new CGrowingExplosion(GameServer(), GetPos(), GetDirection(), GetCid(), HealingExplosionRadius, EGrowingExplosionEffect::HEAL_HUMANS);
+	if(HasUpgrade(EUpgradeType::MedicHealingHose))
+	{
+		new CHealingParticle(GameServer(), GetPos(), GetCid(), GetDirection());
+	}
+	else
+	{
+		int HealingExplosionRadius = 4;
+		new CGrowingExplosion(GameServer(), GetPos(), GetDirection(), GetCid(), HealingExplosionRadius, EGrowingExplosionEffect::HEAL_HUMANS);
+	}
 
 	GameServer()->CreateSound(GetPos(), SOUND_GRENADE_FIRE);
 }
@@ -2034,6 +2353,40 @@ bool CInfClassHuman::PositionLockAvailable() const
 	return true;
 }
 
+int CInfClassHuman::GetTurretGive() const
+{
+	int TurretGive = Config()->m_InfTurretGive;
+
+	if(HasUpgrade(EUpgradeType::HeroFlagGift))
+	{
+		TurretGive += 1;
+	}
+
+	return TurretGive;
+}
+
+int CInfClassHuman::GetMaxTurrets() const
+{
+	int TurretMax = Config()->m_InfTurretMaxPerPlayer;
+
+	if(HasUpgrade(EUpgradeType::HeroFlagGift))
+	{
+		TurretMax += 2;
+	}
+
+	return TurretMax;
+}
+
+int CInfClassHuman::GetMaxSciMines() const
+{
+	int MaxMines = Config()->m_InfMineLimit;
+	if(HasUpgrade(EUpgradeType::ScientistExtraMine))
+	{
+		MaxMines += 1;
+	}
+	return MaxMines;
+}
+
 void CInfClassHuman::OnSlimeEffect(int Owner, int Damage, float DamageInterval)
 {
 	if(GetPlayerClass() == EPlayerClass::Biologist)
@@ -2067,10 +2420,43 @@ void CInfClassHuman::RemoveWhiteHole()
 	}
 }
 
+void CInfClassHuman::GiveInvisibility(float Duration, int FromCID)
+{
+	m_InvisibilityStartTick = Server()->Tick() + Server()->TickSpeed() * 3.0f;
+	m_InvisibilityEndTick = m_InvisibilityStartTick + Server()->TickSpeed() * Duration;
+
+	m_pCharacter->AddHelper(FromCID, Duration + 10);
+}
+
+void CInfClassHuman::ResetInvisibility()
+{
+	m_pCharacter->MakeVisible();
+
+	m_InvisibilityStartTick = 0;
+	m_InvisibilityEndTick = 0;
+}
+
+float CInfClassHuman::GetInvisibilityRemainingDuration() const
+{
+	if(m_InvisibilityEndTick == 0.0f)
+		return 0;
+
+	if (Server()->Tick() < m_InvisibilityStartTick)
+		return 0;
+
+	int RemainingTicks = m_InvisibilityEndTick - Server()->Tick();
+	return RemainingTicks * 1.0f / Server()->TickSpeed();
+}
+
 void CInfClassHuman::UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints)
 {
+	if(HasUpgrade(EUpgradeType::MercBombTools))
+	{
+		UpgradePoints *= 1.5;
+	}
+
 	float Load = pBomb->GetLoad();
-	float NewLoad = minimum<float>(Config()->m_InfMercBombs, Load + UpgradePoints);
+	float NewLoad = minimum<float>(m_MercBombs, Load + UpgradePoints);
 	pBomb->SetLoad(NewLoad);
 }
 
@@ -2084,13 +2470,14 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 
 	if(pHero != m_pCharacter)
 	{
-		GiveGift(EGiftType::HeroFlag);
+		int Level = HasUpgrade(EUpgradeType::HeroFlagGift) ? 1 : 0;
+		GiveGift(EGiftType::HeroFlag, Level);
 		return;
 	}
 
 	{
 		// Gift to self
-		m_pCharacter->SetHealthArmor(10, 10);
+		m_pCharacter->SetHealthArmor(10, m_pCharacter->GetMaxArmor());
 		m_pCharacter->GiveWeapon(WEAPON_GUN, -1);
 		m_pCharacter->GiveWeapon(WEAPON_SHOTGUN, -1);
 		m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
@@ -2098,7 +2485,10 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 
 		if(GameController()->AreTurretsEnabled())
 		{
-			int NewNumberOfTurrets = clamp<int>(m_TurretCount + Config()->m_InfTurretGive, 0, Config()->m_InfTurretMaxPerPlayer);
+			int TurretGive = GetTurretGive();
+			int MaxTurrets = GetMaxTurrets();
+
+			int NewNumberOfTurrets = clamp<int>(m_TurretCount + TurretGive, 0, MaxTurrets);
 			if(m_TurretCount != NewNumberOfTurrets)
 			{
 				if(m_TurretCount == 0)
@@ -2124,7 +2514,7 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 	// Find other players
 	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
-		if(p->IsInfected() || p == m_pCharacter)
+		if(p->IsInfected() || p == m_pCharacter || p->IsSolo())
 			continue;
 
 		CInfClassHuman *pHumanClass = CInfClassHuman::GetInstance(p);
@@ -2140,7 +2530,200 @@ void CInfClassHuman::OnWhiteHoleSpawned(CWhiteHole *pWhiteHole)
 	m_ResetKillsTick = pWhiteHole->GetEndTick().value() + Server()->TickSpeed() * 3;
 }
 
-void CInfClassHuman::GiveUpgrade()
+void CInfClassHuman::GiveUpgrades(const PlayerUpgradesArray &NewUpgrades)
 {
+	if (NewUpgrades.IsEmpty())
+	{
+		return;
+	}
 	m_UpgradeLevel++;
+
+	const char *pWeaponUpgradeMsg = _("You have found a weapon upgrade!");
+	icArray<const char *, 4> aMessages;
+
+	auto AddMessage = [&aMessages](const char *pMessage)
+	{
+		aMessages.Add(pMessage);
+	};
+
+	auto AddWeaponMessageIfNothingYet = [&aMessages, pWeaponUpgradeMsg]()
+	{
+		if (aMessages.IsEmpty())
+		{
+			aMessages.Add(pWeaponUpgradeMsg);
+		}
+	};
+
+	for(EUpgradeType Upgrade : NewUpgrades)
+	{
+		if(!m_Upgrades.Contains(Upgrade))
+		{
+			m_Upgrades.Add(Upgrade);
+		}
+	}
+
+	for(EUpgradeType Upgrade : NewUpgrades)
+	{
+		switch(Upgrade)
+		{
+		case EUpgradeType::MercBombTools:
+			AddMessage(_("You have found bomb tools upgrade!"));
+			AddMessage(_("The bombs are now much safer for you"));
+			AddMessage(_("And you can charge them much faster"));
+			break;
+		case EUpgradeType::MercGunAirRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("In air gun ammo regeneration now works for 12 seconds (3x longer)"));
+			m_MercInAirAmmoRegenMaxTime = 12.0f;
+			break;
+		case EUpgradeType::MercGrenades:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The grenades now explode automatically"));
+			break;
+		case EUpgradeType::MercBombSupercharge:
+			AddMessage(_("You have found a bomb supercharger!"));
+			AddMessage(_("The bombs maximum charge increased to 150%"));
+			m_MercBombs *= 1.5f;
+			break;
+		case EUpgradeType::MercGunRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("And also the gun ammo regeneration speed increased by 25%"));
+			m_WeaponRegenIntervalModifier[WEAPON_GUN] = 0.75f;
+			break;
+		case EUpgradeType::MedicShotgunSpread:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The shotgun bullets number increased"));
+			break;
+		case EUpgradeType::MedicPistolRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The pistol ammo regeneration speed increased by 50%"));
+			m_WeaponRegenIntervalModifier[WEAPON_GUN] = 0.5f;
+			break;
+		case EUpgradeType::MedicShotgunRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The shotgun ammo regeneration speed increased by 33%"));
+			m_WeaponRegenIntervalModifier[WEAPON_SHOTGUN] = 0.67f;
+			break;
+		case EUpgradeType::MedicHealingHose:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The healing grenade launcher replaced with new Medi Hose"));
+			m_WeaponReloadIntervalModifier[WEAPON_GRENADE] = 0.4f;
+			break;
+
+		case EUpgradeType::HeroFlagGift:
+			AddMessage(_("From now on, each flag will give you an extra turret and extra HP for the teammates"));
+			AddMessage(_("Plus, you can carry an extra pair of turrets, just for a case"));
+			break;
+		case EUpgradeType::HeroWeapons:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("Fire rate and ammo regeneration speed of all weapons increased by 20%"));
+
+			for(float &Modifier : m_WeaponRegenIntervalModifier)
+			{
+				Modifier = 0.80f;
+			}
+			for(float &Modifier : m_WeaponReloadIntervalModifier)
+			{
+				Modifier = 0.80f;
+			}
+			break;
+
+		case EUpgradeType::HeroArmor:
+			AddMessage(_("You have found an armor upgrade"));
+			AddMessage(_("('full armor' now means 20 hit points)"));
+			if(m_pCharacter)
+			{
+				int NewArmor = 20;
+				m_pCharacter->SetMaxArmor(NewArmor);
+				m_pCharacter->SetHealthArmor(m_pCharacter->GetHealth(), NewArmor);
+			}
+			break;
+
+		case EUpgradeType::NinjaSlashBreaksHooks:
+			AddMessage(_("Ninja slash now releases hooks"));
+			break;
+		case EUpgradeType::NinjaFlashGrenadeArea:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("Flash grenade area increased to 150%"));
+			break;
+		case EUpgradeType::NinjaSlashCombo:
+			AddMessage(_("Now you can do two slashes in a combo!"));
+			break;
+		case EUpgradeType::SniperLaserRegenReload:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle reload and ammo regeneration speed increased by 20%"));
+			m_WeaponReloadIntervalModifier[WEAPON_LASER] = 0.8f;
+			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.8f;
+			break;
+		case EUpgradeType::SniperLaserRange:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle range increased by 40%"));
+			m_LaserReachModifier = 1.4f;
+			break;
+		case EUpgradeType::SniperLaserPiercing:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser now pierces the targets"));
+			AddMessage(_("The damage in locked position increased to 40 hit points"));
+			break;
+		case EUpgradeType::ScientistLaserRegenReload:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle reload and ammo regeneration speed increased by 30%"));
+			m_WeaponReloadIntervalModifier[WEAPON_LASER] = 0.7f;
+			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.7f;
+			break;
+		case EUpgradeType::ScientistTeleportGun:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The teleport gun does not hurt you anymore"));
+			break;
+		case EUpgradeType::ScientistPortalGun:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("From now on, the teleport gun places portals"));
+			break;
+		case EUpgradeType::ScientistExtraMine:
+			AddMessage(_("From now on, you can place an extra mine"));
+			break;
+		case EUpgradeType::BiologistShotgunSpread:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The shotgun now fires more bullets per shot"));
+			break;
+		case EUpgradeType::BiologistMineCharges:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The mines now have more charges"));
+			break;
+		case EUpgradeType::BiologistGrenade:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("You've got a bio grenade launcher"));
+			if(m_pCharacter)
+			{
+				m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
+			}
+			break;
+		case EUpgradeType::BiologistInvisibilityHammer:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The hammer now covers teammates and makes them hidden from the infected"));
+			break;
+		case EUpgradeType::LooperLaserRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle ammo regeneration speed increased by 25%"));
+			m_WeaponRegenIntervalModifier[WEAPON_LASER] = 0.75f;
+			break;
+		case EUpgradeType::LooperGrenadesRegen:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The grenades regeneration speed increased by 50%"));
+			m_WeaponRegenIntervalModifier[WEAPON_GRENADE] = 0.5f;
+			break;
+		case EUpgradeType::LooperLaserWeapon:
+			AddWeaponMessageIfNothingYet();
+			AddMessage(_("The laser rifle now has shock-explosive ammo"));
+			break;
+		}
+	}
+
+	for (const char *pMessage : aMessages)
+	{
+		if (pMessage)
+		{
+			GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage, nullptr);
+		}
+	}
 }

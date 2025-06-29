@@ -87,6 +87,8 @@ InfclassR v1.5.0_alpha6
 - Fixed a few bugs in votes
 
 InfclassR v1.5.0_alpha5
+- Added upgrades for Medic
+- Added upgrades for Sniper, Looper, Scientist
 - Medic now gets a grenade on enemy killed
 - Dynamically toggle the turrets enablement during
   the round

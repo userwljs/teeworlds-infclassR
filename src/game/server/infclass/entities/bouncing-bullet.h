@@ -20,6 +20,8 @@ public:
 	void Snap(int SnappingClient) override;
 
 private:
+	void OnCollided(const vec2 &At);
+
 	vec2 m_ActualPos;
 	vec2 m_ActualDir;
 	vec2 m_Direction;

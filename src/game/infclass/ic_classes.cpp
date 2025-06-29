@@ -34,6 +34,7 @@ enum PLAYERCLASS
 	PLAYERCLASS_WITCH,
 	PLAYERCLASS_UNDEAD,
 	PLAYERCLASS_TANK,
+	PLAYERCLASS_SPITTER,
 	END_INFECTEDCLASS,
 };
 
@@ -115,6 +116,10 @@ const char *toString(EPlayerClass PlayerClass)
 		return "witch";
 	case EPlayerClass::Undead:
 		return "undead";
+	case EPlayerClass::Tank:
+		return "tank";
+	case EPlayerClass::Spitter:
+		return "spitter";
 
 	case EPlayerClass::Invalid:
 	case EPlayerClass::Count:

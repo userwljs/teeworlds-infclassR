@@ -249,6 +249,7 @@ private:
 
 	// InfClass
 public:
+	bool m_ReflectingProjectiles{};
 	bool IsRecursePassenger(CCharacterCore *pMaybePassenger) const;
 	void TryBecomePassenger(CCharacterCore *pTaxi);
 	void SetPassenger(CCharacterCore *pPassenger);

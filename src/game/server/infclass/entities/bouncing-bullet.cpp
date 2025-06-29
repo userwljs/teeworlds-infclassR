@@ -76,30 +76,39 @@ void CBouncingBullet::Tick()
 
 	if(pTargetChr)
 	{
-		const float Damage = 1.33f;
-		const float Force = GameController()->GetWeaponForce(EInfclassWeapon::RICOCHET_SHOTGUN);
-		if(pTargetChr)
+		if(pTargetChr->IsReflectingProjectiles())
 		{
-			pTargetChr->TakeDamage(m_Direction * Force, Damage, GetOwner(), EDamageType::BIOLOGIST_SHOTGUN);
-		}
+			vec2 vel;
+			vel.x = m_Direction.x;
+			vel.y = m_Direction.y + 2 * GameServer()->Tuning()->m_ShotgunCurvature / 10000 * Ct * GameServer()->Tuning()->m_ShotgunSpeed;
+			float Speed = length(vel);
+			vec2 NormalizedVelocity = vel / Speed;
 
-		GameWorld()->DestroyEntity(this);
+			const vec2 RadiusVector = normalize(NewPos - pTargetChr->GetPos());
+			m_Direction = (NormalizedVelocity + RadiusVector * 2) * Speed * 0.67f;
+
+			OnCollided(NewPos);
+		}
+		else
+		{
+			const float Damage = 1.33f;
+			const float Force = GameController()->GetWeaponForce(EInfclassWeapon::RICOCHET_SHOTGUN);
+			if(pTargetChr)
+			{
+				pTargetChr->TakeDamage(m_Direction * Force, Damage, GetOwner(), EDamageType::BIOLOGIST_SHOTGUN);
+			}
+
+			GameWorld()->DestroyEntity(this);
+		}
 		return;
 	}
 
 	if(Collide)
 	{
 		// Thanks to TeeBall 0.6
-		vec2 CollisionPos;
-		CollisionPos.x = NewPos.x;
-		CollisionPos.y = CurPos.y;
-		int CollideY = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CollisionPos, nullptr, nullptr);
-		CollisionPos.x = CurPos.x;
-		CollisionPos.y = NewPos.y;
-		int CollideX = GameServer()->Collision()->IntersectLineWeapon(PrevPos, CollisionPos, nullptr, nullptr);
+		bool CollideX = GameServer()->Collision()->IntersectLineWeapon(PrevPos, vec2{CurPos.x, NewPos.y});
+		bool CollideY = GameServer()->Collision()->IntersectLineWeapon(PrevPos, vec2{NewPos.x, CurPos.y});
 
-		m_Pos = NewPos;
-		m_ActualPos = m_Pos;
 		vec2 vel;
 		vel.x = m_Direction.x;
 		vel.y = m_Direction.y + 2 * GameServer()->Tuning()->m_ShotgunCurvature / 10000 * Ct * GameServer()->Tuning()->m_ShotgunSpeed;
@@ -120,12 +129,7 @@ void CBouncingBullet::Tick()
 			m_Direction.y = -vel.y;
 		}
 
-		m_Direction.x *= (100 - 50) / 100.0;
-		m_Direction.y *= (100 - 50) / 100.0;
-		m_StartTick = Server()->Tick();
-
-		m_ActualDir = normalize(m_Direction);
-		m_BounceLeft--;
+		OnCollided(NewPos);
 	}
 }
 
@@ -149,4 +153,16 @@ void CBouncingBullet::Snap(int SnappingClient)
 	CNetObj_Projectile *pProj = Server()->SnapNewItem<CNetObj_Projectile>(GetId());
 	if(pProj)
 		FillInfo(pProj);
+}
+
+void CBouncingBullet::OnCollided(const vec2 &At)
+{
+	m_Pos = At;
+	m_Direction.x *= (100 - 50) / 100.0;
+	m_Direction.y *= (100 - 50) / 100.0;
+	m_StartTick = Server()->Tick();
+
+	m_ActualPos = m_Pos;
+	m_ActualDir = normalize(m_Direction);
+	m_BounceLeft--;
 }

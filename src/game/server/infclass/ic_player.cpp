@@ -64,7 +64,7 @@ int CIcPlayer::GetScore(int SnappingClient) const
 	{
 		if(GameController()->GetRoundType() == ERoundType::Survival)
 		{
-			return m_Kills;
+			return m_Kills + m_Assists / 3;
 		}
 
 		return Server()->RoundStatistics()->PlayerScore(m_ClientId);
@@ -378,10 +378,6 @@ void CIcPlayer::SetClass(EPlayerClass NewClass)
 
 	if(m_class != EPlayerClass::Invalid)
 	{
-		if(IsHumanClass(NewClass) && (NewClass != EPlayerClass::None))
-		{
-			SetPreviouslyPickedClass(NewClass);
-		}
 		if(m_PreviousClasses.Size() == m_PreviousClasses.Capacity())
 		{
 			m_PreviousClasses.RemoveAt(0);

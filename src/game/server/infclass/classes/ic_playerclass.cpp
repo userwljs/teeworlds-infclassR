@@ -129,6 +129,7 @@ int CIcPlayerClass::GetUpgradeLevel() const
 void CIcPlayerClass::ResetUpgradeLevel()
 {
 	m_UpgradeLevel = 0;
+	m_Upgrades.Clear();
 }
 
 void CIcPlayerClass::SetCharacter(CIcCharacter *character)
@@ -182,6 +183,9 @@ int CIcPlayerClass::GetDefaultEmote() const
 		EmoteNormal = EMOTE_BLINK;
 
 	if(m_pCharacter->IsInvisible())
+		EmoteNormal = EMOTE_BLINK;
+
+	if(m_pCharacter->IsInDeepDefence())
 		EmoteNormal = EMOTE_BLINK;
 
 	if(m_pCharacter->IsInLove())
@@ -242,9 +246,14 @@ bool CIcPlayerClass::CanBeUnfreezed() const
 	return true;
 }
 
-SClassUpgrade CIcPlayerClass::GetNextUpgrade() const
+PlayerUpgradesArray CIcPlayerClass::GetUpgrade(int Level) const
 {
-	return SClassUpgrade::Invalid();
+	return {};
+}
+
+PlayerUpgradesArray CIcPlayerClass::GetNextUpgrade() const
+{
+	return GetUpgrade(GetUpgradeLevel() + 1);
 }
 
 float CIcPlayerClass::GetHammerProjOffset() const
@@ -254,7 +263,16 @@ float CIcPlayerClass::GetHammerProjOffset() const
 
 float CIcPlayerClass::GetHammerRange() const
 {
-	return m_pCharacter ? m_pCharacter->GetProximityRadius() * 0.5f : 0;
+	if (!m_pCharacter)
+		return 0;
+
+	const EInfclassWeapon Weapon = m_pCharacter->GetInfWeaponId(WEAPON_HAMMER);
+	float Range = m_pCharacter->GetProximityRadius() * 0.5f;
+	if (Weapon == EInfclassWeapon::STUNNING_HAMMER)
+	{
+		Range += 1.5f * 32;
+	}
+	return Range;
 }
 
 float CIcPlayerClass::GetGhoulPercent() const
@@ -346,6 +364,7 @@ void CIcPlayerClass::OnCharacterSnap(int SnappingClient)
 
 void CIcPlayerClass::OnCharacterSpawned(const SpawnContext &Context)
 {
+	m_ControlPointEffectAppliedTick = 0;
 	m_HealingDisabledTicks = 0;
 
 	UpdateSkin();
@@ -363,6 +382,10 @@ void CIcPlayerClass::OnCharacterDeath(EDamageType DamageType)
 }
 
 void CIcPlayerClass::OnCharacterDamage(SDamageContext *pContext)
+{
+}
+
+void CIcPlayerClass::OnCharacterBackFromDead()
 {
 }
 

@@ -19,7 +19,6 @@ CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner)
 	: CIcEntity(pGameContext, EntityId, CenterPos, Owner)
 {
 	GameWorld()->InsertEntity(this);
-	m_PlayerPullStrength = Config()->m_InfWhiteHolePullStrength/10.0f;
 
 	m_NumParticles = Config()->m_InfWhiteHoleNumParticles;
 	m_Ids = new int[m_NumParticles];
@@ -170,7 +169,13 @@ void CWhiteHole::MoveCharacters()
 		Distance = length(Dir);
 		if(Distance < m_Radius)
 		{
-			Intensity = clamp(1.0f-Distance/m_Radius+0.5f, 0.0f, 1.0f)*m_PlayerPullStrength;
+			float PlayerPullStrength = Config()->m_InfWhiteHolePullStrength / 10.0f;
+			if(pCharacter->GetPlayerClass() == EPlayerClass::Tank)
+			{
+				PlayerPullStrength = 1.2f;
+			}
+
+			Intensity = clamp(1.0f - Distance / m_Radius + 0.5f, 0.0f, 1.0f) * PlayerPullStrength;
 			pCharacter->AddVelocity(normalize(Dir) * Intensity);
 			pCharacter->SetVelocity(pCharacter->Velocity() * m_PlayerDrag);
 			pCharacter->UpdateLastEnforcer(GetOwner(), Intensity, EDamageType::WHITE_HOLE, Server()->Tick());

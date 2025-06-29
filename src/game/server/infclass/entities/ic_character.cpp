@@ -246,9 +246,17 @@ void CIcCharacter::TickBeforeWorld()
 	m_Core.m_InLove = IsInLove();
 	m_Core.m_HookProtected = GetPlayer()->HookProtectionEnabled();
 	m_SleepThisTick = std::max(m_SleepTicks, m_DeepSleepTicks) > 0;
+	if(m_InDeepDefenceForThisTick != m_WantDeepDefence)
+	{
+		m_InDeepDefenceForThisTick = m_WantDeepDefence;
+		GetClass()->UpdateSkin();
+	}
 
+	m_Core.m_ReflectingProjectiles = IsInDeepDefence();
+	const bool WasDead = IsDead();
 	for(std::optional<int> *pTick : {
 			&m_SoloUntilTick,
+			&m_DeadUntilTick,
 		})
 	{
 		if(pTick->has_value() && pTick->value() >= 0 && pTick->value() < CurrentTick)
@@ -258,6 +266,10 @@ void CIcCharacter::TickBeforeWorld()
 	}
 
 	UpdateCoreSolo();
+	if(WasDead && !IsDead())
+	{
+		GameController()->OnCharacterBackFromDead(this);
+	}
 }
 
 void CIcCharacter::Tick()
@@ -334,6 +346,11 @@ void CIcCharacter::Tick()
 	}
 
 	m_pClass->OnCharacterTick();
+
+	if(m_Core.m_Input.m_Direction)
+	{
+		SetDeepDefence(false);
+	}
 }
 
 void CIcCharacter::TickDeferred()
@@ -392,6 +409,7 @@ void CIcCharacter::TickPaused()
 
 	for(std::optional<int> *pTick : {
 			&m_SoloUntilTick,
+			&m_DeadUntilTick,
 		})
 	{
 		if(pTick->has_value() && pTick->value() > 0)
@@ -437,32 +455,46 @@ void CIcCharacter::Snap(int SnappingClient)
 	if(m_Core.m_Solo)
 		pDDNetCharacter->m_Flags |= CHARACTERFLAG_SOLO;
 
-	if(GetPlayerClass() == EPlayerClass::Mercenary)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_JETPACK;
-
-	if(GetPlayerClass() == EPlayerClass::Scientist)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_TELEGUN_GRENADE;
-
-	if(GetPlayerClass() != EPlayerClass::Boomer)
+	if(IsDead())
 	{
-		if(m_aWeapons[WEAPON_HAMMER].m_Got)
-			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_HAMMER;
-	}
-	if(m_aWeapons[WEAPON_GUN].m_Got)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_GUN;
-	if(m_aWeapons[WEAPON_SHOTGUN].m_Got)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_SHOTGUN;
-	if(m_aWeapons[WEAPON_GRENADE].m_Got)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_GRENADE;
-	if(m_aWeapons[WEAPON_LASER].m_Got)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_LASER;
-	if(m_ActiveWeapon == WEAPON_NINJA)
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_NINJA;
-	if(IsFrozen())
-		pDDNetCharacter->m_Flags |= CHARACTERFLAG_MOVEMENTS_DISABLED;
-
-	if(IsInLove())
 		pDDNetCharacter->m_Flags |= CHARACTERFLAG_HAMMER_HIT_DISABLED;
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_SHOTGUN_HIT_DISABLED;
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_GRENADE_HIT_DISABLED;
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_LASER_HIT_DISABLED;
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_HOOK_HIT_DISABLED;
+	}
+	else
+	{
+		if(GetPlayerClass() == EPlayerClass::Mercenary)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_JETPACK;
+
+		if(GetPlayerClass() == EPlayerClass::Scientist)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_TELEGUN_GRENADE;
+
+		if(GetPlayerClass() != EPlayerClass::Boomer)
+		{
+			if(m_aWeapons[WEAPON_HAMMER].m_Got)
+				pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_HAMMER;
+		}
+		if(m_aWeapons[WEAPON_GUN].m_Got)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_GUN;
+		if(m_aWeapons[WEAPON_SHOTGUN].m_Got)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_SHOTGUN;
+		if(m_aWeapons[WEAPON_GRENADE].m_Got)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_GRENADE;
+		if(m_aWeapons[WEAPON_LASER].m_Got)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_LASER;
+		if(m_ActiveWeapon == WEAPON_NINJA)
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_WEAPON_NINJA;
+		if(IsFrozen())
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_MOVEMENTS_DISABLED;
+
+		if(IsInLove())
+			pDDNetCharacter->m_Flags |= CHARACTERFLAG_HAMMER_HIT_DISABLED;
+	}
+
+	if(GetDropLevel() > 0)
+		pDDNetCharacter->m_Flags |= CHARACTERFLAG_INVINCIBLE; // Gives TEE_EFFECT_SPARKLE and does not affect prediction
 
 	pDDNetCharacter->m_Jumps = m_Core.m_Jumps;
 	pDDNetCharacter->m_JumpedTotal = m_Core.m_JumpedTotal;
@@ -492,8 +524,17 @@ void CIcCharacter::Snap(int SnappingClient)
 	{
 		pDDNetCharacter->m_Flags |= CHARACTERFLAG_PRACTICE_MODE;
 	}
-	pDDNetCharacter->m_TargetX = m_Core.m_Input.m_TargetX;
-	pDDNetCharacter->m_TargetY = m_Core.m_Input.m_TargetY;
+
+	if(IsInDeepDefence())
+	{
+		pDDNetCharacter->m_TargetX = m_Input.m_TargetX = 0;
+		pDDNetCharacter->m_TargetY = m_Input.m_TargetY = 1;
+	}
+	else
+	{
+		pDDNetCharacter->m_TargetX = m_Core.m_Input.m_TargetX;
+		pDDNetCharacter->m_TargetY = m_Core.m_Input.m_TargetY;
+	}
 }
 
 void CIcCharacter::SpecialSnapForClient(int SnappingClient, bool *pDoSnap)
@@ -586,7 +627,7 @@ void CIcCharacter::FireWeapon()
 	if((GetPlayerClass() == EPlayerClass::None) || !GetClass())
 		return;
 
-	if(IsSleeping())
+	if(IsSleeping() || IsDead())
 		return;
 
 	DoWeaponSwitch();
@@ -716,7 +757,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		DamageContext.Weapon = DamageTypeToWeapon(DamageType, &DamageContext.Mode);
 	}
 
-	const int &Weapon = DamageContext.Weapon;
+	const int Weapon = DamageContext.Weapon;
 	TAKEDAMAGEMODE &Mode = DamageContext.Mode;
 	int &Dmg = DamageContext.Damage;
 
@@ -757,8 +798,22 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		Mode = TAKEDAMAGEMODE::NOINFECTION;
 	}
 
+	if(Weapon >= 0)
+	{
+		if(IsInDeepDefence())
+		{
+			DamageContext.Damage = 0;
+			DamageContext.Force = vec2{};
+		}
+	}
+
 	GetClass()->OnCharacterDamage(&DamageContext);
 	GetPlayer()->OnCharacterDamage(DamageContext);
+
+	if(IsInDeepDefence())
+	{
+		return false;
+	}
 
 	const bool DmgFromHuman = pKillerPlayer && pKillerPlayer->IsHuman();
 	if(DmgFromHuman && (GetPlayerClass() == EPlayerClass::Soldier) && (Weapon == WEAPON_HAMMER))
@@ -1101,6 +1156,7 @@ bool CIcCharacter::PositionIsLocked() const
 void CIcCharacter::LockPosition()
 {
 	m_PositionLocked = true;
+	m_PositionLockedAt = GetPos();
 }
 
 void CIcCharacter::UnlockPosition()
@@ -1741,9 +1797,12 @@ EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 		case EPlayerClass::Boomer:
 			return EInfclassWeapon::BOOMER_EXPLOSION;
 		case EPlayerClass::Bat:
+		case EPlayerClass::Spitter:
 			return EInfclassWeapon::JAWS;
 		case EPlayerClass::Slug:
 			return EInfclassWeapon::SLIME;
+		case EPlayerClass::Tank:
+			return EInfclassWeapon::STUNNING_HAMMER;
 		default:
 			return IsInfectedClass(GetPlayerClass()) ? EInfclassWeapon::INFECTED_HAMMER : EInfclassWeapon::HAMMER;
 		}
@@ -1789,8 +1848,12 @@ EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 			return EInfclassWeapon::TELEPORT_GUN;
 		case EPlayerClass::Hero:
 			return EInfclassWeapon::HERO_GRENADE;
+		case EPlayerClass::Biologist:
+			return EInfclassWeapon::BIOLOGIST_GRENADE;
 		case EPlayerClass::Looper:
 			return EInfclassWeapon::LOOPER_GRENADE;
+		case EPlayerClass::Spitter:
+			return EInfclassWeapon::INFECTED_GRENADE;
 		default:
 			return EInfclassWeapon::GRENADE;
 		}
@@ -1889,6 +1952,13 @@ void CIcCharacter::HandleMapMenu()
 			GameServer()->SendBroadcast_Localization(GetCid(),
 				EBroadcastPriority::INTERFACE, BROADCAST_DURATION_REALTIME,
 				pClassName, nullptr);
+		}
+		break;
+		case CLASS_AVAILABILITY::PICKED_PREVIOUSLY:
+		{
+			GameServer()->SendBroadcast_Localization(GetCid(),
+				EBroadcastPriority::INTERFACE, BROADCAST_DURATION_REALTIME,
+				_("You can't pick the same class again"), nullptr);
 		}
 		break;
 		case CLASS_AVAILABILITY::DISABLED:
@@ -2307,6 +2377,21 @@ bool CIcCharacter::IsSolo() const
 	return m_Core.m_Solo;
 }
 
+bool CIcCharacter::IsReflectingProjectiles() const
+{
+	return m_Core.m_ReflectingProjectiles;
+}
+
+bool CIcCharacter::IsDeepDefenceRequested() const
+{
+	return m_WantDeepDefence;
+}
+
+bool CIcCharacter::IsInDeepDefence() const
+{
+	return m_InDeepDefenceForThisTick;
+}
+
 bool CIcCharacter::IsInvincible() const
 {
 	return m_Invincible || (m_ProtectionTick > 0);
@@ -2315,6 +2400,14 @@ bool CIcCharacter::IsInvincible() const
 void CIcCharacter::SetInvincible(int Invincible)
 {
 	m_Invincible = Invincible;
+}
+
+void CIcCharacter::SetDeepDefence(bool Active)
+{
+	if (m_WantDeepDefence == Active)
+		return;
+
+	m_WantDeepDefence = Active;
 }
 
 bool CIcCharacter::HasHallucination() const
@@ -2460,6 +2553,21 @@ void CIcCharacter::SetSoloForDuration(float Duration)
 	UpdateCoreSolo();
 }
 
+bool CIcCharacter::IsDead() const
+{
+	return m_DeadUntilTick.has_value();
+}
+
+void CIcCharacter::SetDeadForDuration(float Duration)
+{
+	if(Duration)
+		m_DeadUntilTick = Server()->Tick() + Server()->TickSpeed() * Duration;
+	else
+		m_DeadUntilTick.reset();
+
+	UpdateCoreSolo();
+}
+
 void CIcCharacter::GrantSpawnProtection(float Duration)
 {
 	// Indicate time left being protected via eyes
@@ -2500,7 +2608,23 @@ void CIcCharacter::PreCoreTick()
 		}
 	}
 
-	if(m_SoloUntilTick.has_value())
+	if(m_DeadUntilTick.has_value())
+	{
+		int EffectUntilTick = m_DeadUntilTick.value();
+		if(EffectUntilTick < 0)
+		{
+			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE,
+				BROADCAST_DURATION_REALTIME, _("You are Dead"), nullptr);
+		}
+		else
+		{
+			const int RemainingTicks = EffectUntilTick - CurrentTick;
+			int EffectDuration = 1 + (RemainingTicks / Server()->TickSpeed());
+			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE,
+				BROADCAST_DURATION_REALTIME, _("You are Dead for {sec:EffectDuration}"), "EffectDuration", &EffectDuration, nullptr);
+		}
+	}
+	else if(m_SoloUntilTick.has_value())
 	{
 		int EffectUntilTick = m_SoloUntilTick.value();
 		if(EffectUntilTick < 0)
@@ -2586,6 +2710,11 @@ void CIcCharacter::PostCoreTick()
 			m_pClass->OnHookAttachedPlayer();
 		}
 
+		if(PositionIsLocked())
+		{
+			ResetVelocity();
+			SetPosition(m_PositionLockedAt);
+		}
 		m_pClass->OnCharacterPostCoreTick();
 	}
 
@@ -2654,7 +2783,8 @@ void CIcCharacter::PrepareSnapContext(CCharacterSnapContext &SnapContext) const
 	}
 
 	int DDNetVersion = Server()->GetClientVersion(SnappingClient);
-	if(GetPlayerClass() == EPlayerClass::Boomer)
+	bool NoWeapon = IsDead() || IsInDeepDefence() || (GetPlayerClass() == EPlayerClass::Boomer);
+	if(NoWeapon)
 	{
 		if(DDNetVersion >= 18080)
 		{
@@ -2725,7 +2855,7 @@ void CIcCharacter::FreeChildSnapIds()
 
 void CIcCharacter::UpdateCoreSolo()
 {
-	SetSolo(m_SoloUntilTick.has_value());
+	SetSolo(m_DeadUntilTick.has_value() || m_SoloUntilTick.has_value());
 }
 
 void CIcCharacter::UpdateTuningParam()
@@ -2768,7 +2898,15 @@ void CIcCharacter::UpdateTuningParam()
 		pTuningParams->m_AirControlSpeed = pTuningParams->m_AirControlSpeed * Factor;
 		pTuningParams->m_HookDragAccel = pTuningParams->m_HookDragAccel * FactorAccel;
 		pTuningParams->m_HookDragSpeed = pTuningParams->m_HookDragSpeed * FactorSpeed;
-		pTuningParams->m_Gravity = g_Config.m_InfSlowMotionGravity * 0.01f;
+
+		if(GetPlayerClass() == EPlayerClass::Tank)
+		{
+			pTuningParams->m_Gravity = g_Config.m_InfSlowMotionGravity * 0.05f;
+		}
+		else
+		{
+			pTuningParams->m_Gravity = g_Config.m_InfSlowMotionGravity * 0.01f;
+		}
 
 		if(g_Config.m_InfSlowMotionMaxSpeed > 0)
 		{
@@ -2829,7 +2967,7 @@ void CIcCharacter::UpdateTuningParam()
 	
 	if(GetPlayerClass() == EPlayerClass::Ghoul)
 	{
-		float Factor = GetClass()->GetGhoulPercent() * 0.7;
+		float Factor = GetClass()->GetGhoulPercent() * 0.7f;
 		pTuningParams->m_GroundControlSpeed = pTuningParams->m_GroundControlSpeed * (1.0f + 0.35f * Factor);
 		pTuningParams->m_GroundControlAccel = pTuningParams->m_GroundControlAccel * (1.0f + 0.35f * Factor);
 		pTuningParams->m_GroundJumpImpulse = pTuningParams->m_GroundJumpImpulse * (1.0f + 0.35f * Factor);
@@ -2839,4 +2977,20 @@ void CIcCharacter::UpdateTuningParam()
 		pTuningParams->m_HookDragAccel = pTuningParams->m_HookDragAccel * (1.0f + 0.35f * Factor);
 		pTuningParams->m_HookDragSpeed = pTuningParams->m_HookDragSpeed * (1.0f + 0.35f * Factor);
 	}
+
+	if(GetPlayerClass() == EPlayerClass::Tank)
+	{
+		float Factor = 0.8f;
+		pTuningParams->m_GroundControlSpeed = pTuningParams->m_GroundControlSpeed * Factor;
+		pTuningParams->m_GroundControlAccel = pTuningParams->m_GroundControlAccel * Factor;
+		pTuningParams->m_AirControlSpeed = pTuningParams->m_AirControlSpeed * Factor;
+		pTuningParams->m_AirControlAccel = pTuningParams->m_AirControlAccel * Factor;
+		pTuningParams->m_HookDragAccel = pTuningParams->m_HookDragAccel * Factor;
+		pTuningParams->m_HookDragSpeed = pTuningParams->m_HookDragSpeed * Factor;
+		pTuningParams->m_HookLength = pTuningParams->m_HookLength * Factor;
+		pTuningParams->m_VelrampStart = pTuningParams->m_VelrampStart * Factor * Factor;
+		pTuningParams->m_VelrampRange = pTuningParams->m_VelrampRange * Factor;
+	}
+
+	m_pPlayer->OnTuningChanged();
 }

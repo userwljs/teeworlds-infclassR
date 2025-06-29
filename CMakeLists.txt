@@ -52,6 +52,7 @@ if(TARGET_OS STREQUAL "windows")
 endif()
 
 option(USE_CONAN "Use Conan for dependencies" ${USE_CONAN_DEFAULT})
+option(USE_LUA "Use Lua scripting engine" ON)
 option(GEOLOCATION "Enable geolocation support" ${GEOLOCATION_DEFAULT})
 option(MYSQL "Enable mysql support" OFF)
 option(TOOLS "Compile tools" ON)
@@ -301,6 +302,8 @@ function(is_bundled VARIABLE PATH)
   endif()
 endfunction()
 
+include(FetchContent)
+
 if(NOT CMAKE_CROSSCOMPILING)
   # Check for PkgConfig once so all the other `find_package` calls can do it
   # quietly.
@@ -322,6 +325,17 @@ find_package(PNG)
 find_package(Python3)
 find_package(SQLite3)
 find_package(Threads)
+
+if(USE_LUA)
+  find_package(LuaJIT REQUIRED)
+
+  FetchContent_Declare(
+    LuaBridge
+    GIT_REPOSITORY https://github.com/kunitoki/LuaBridge3
+    GIT_TAG a8f60e53e4e49d83fa7249f8111dadbbda3c76b1
+  )
+  FetchContent_MakeAvailable(LuaBridge)
+endif()
 
 if(GEOLOCATION)
   find_package(MaxMindDB REQUIRED)
@@ -378,6 +392,10 @@ show_dependency_status("PNG" PNG)
 show_dependency_status("Python3" Python3)
 show_dependency_status("SQLite3" SQLite3)
 show_dependency_status("Zlib" ZLIB)
+
+if(USE_LUA)
+  show_dependency_status("LuaJIT" LuaJIT)
+endif()
 
 if(NOT(CURL_FOUND))
   message(SEND_ERROR "You must install Curl to compile ${CMAKE_PROJECT_NAME}")
@@ -651,6 +669,7 @@ set_glob(ENGINE_INTERFACE GLOB src/engine
   graphics.h
   http.h
   kernel.h
+  lua.h
   map.h
   masterserver.h
   message.h
@@ -842,6 +861,12 @@ set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
   databases/connection_pool.h
   databases/mysql.cpp
   databases/sqlite.cpp
+  lua.cpp
+  lua.h
+  lua_apidef.cpp
+  lua_callback.h
+  luabinding.cpp
+  luabinding.h
   mapconverter.cpp
   mapconverter.h
   #measure_ticks.cpp
@@ -867,6 +892,14 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   entities/character.cpp
   entities/character.h
   entities_filter.h
+  infclass/bot-player.cpp
+  infclass/bot-player.h
+  infclass/bot_config_parser.cpp
+  infclass/bot_config_parser.cpp
+  infclass/bot_config_parser.h
+  infclass/bot_config_parser.h
+  infclass/bot_utils.cpp
+  infclass/bot_utils.h
   infclass/classes/humans/human.cpp
   infclass/classes/humans/human.h
   infclass/classes/ic_playerclass.cpp
@@ -875,6 +908,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/classes/infected/infected.h
   infclass/damage_context.h
   infclass/death_context.h
+  infclass/debug-bot-player.cpp
+  infclass/debug-bot-player.h
   infclass/entities/biologist-laser.cpp
   infclass/entities/biologist-laser.h
   infclass/entities/biologist-mine.cpp
@@ -883,12 +918,16 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/blinding-laser.h
   infclass/entities/bouncing-bullet.cpp
   infclass/entities/bouncing-bullet.h
+  infclass/entities/control-point.cpp
+  infclass/entities/control-point.h
   infclass/entities/engineer-wall.cpp
   infclass/entities/engineer-wall.h
   infclass/entities/flyingpoint.cpp
   infclass/entities/flyingpoint.h
   infclass/entities/growingexplosion.cpp
   infclass/entities/growingexplosion.h
+  infclass/entities/healing_particle.cpp
+  infclass/entities/healing_particle.h
   infclass/entities/hero-flag.cpp
   infclass/entities/hero-flag.h
   infclass/entities/ic_character.cpp
@@ -917,6 +956,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/merc-laser.h
   infclass/entities/plasma.cpp
   infclass/entities/plasma.h
+  infclass/entities/portal.cpp
+  infclass/entities/portal.h
   infclass/entities/scatter-grenade.cpp
   infclass/entities/scatter-grenade.h
   infclass/entities/scientist-laser.cpp
@@ -935,14 +976,18 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/entities/white-hole.h
   infclass/events-director.cpp
   infclass/events-director.h
+  infclass/hive_mind.cpp
+  infclass/hive_mind.h
   infclass/ic_config_variables.h
   infclass/ic_entities.cpp
   infclass/ic_gamecontroller.cpp
   infclass/ic_gamecontroller.h
+  infclass/ic_lua.cpp
   infclass/ic_player.cpp
   infclass/ic_player.h
   infclass/snap_filter.cpp
   infclass/snap_filter.h
+  infclass/survival.h
   entity.cpp
   entity.h
   eventhandler.cpp
@@ -981,6 +1026,10 @@ set(LIBS_SERVER
   ${CMAKE_THREAD_LIBS_INIT}
 )
 
+if(USE_LUA)
+  list(APPEND LIBS_SERVER LuaJIT::LuaJIT LuaBridge)
+endif()
+
 ########################################################################
 # VARIOUS TARGETS
 ########################################################################
@@ -990,6 +1039,7 @@ if(TOOLS)
   set_src(TOOLS_SRC GLOB src/tools
     dilate.cpp
     dummy_map.cpp
+    generate_lua_config.cpp
     map_convert_for_client.cpp
     map_diff.cpp
     map_extract.cpp
@@ -1139,6 +1189,12 @@ if(GEOLOCATION)
   )
 endif()
 
+if(USE_LUA)
+  target_compile_definitions(game-server PRIVATE CONF_LUA=1)
+else()
+  target_compile_definitions(game-server PRIVATE CONF_LUA=0)
+endif()
+
 target_link_libraries(game-server ${LIBS_SERVER})
 list(APPEND TARGETS_OWN game-server)
 list(APPEND TARGETS_LINK game-server)
@@ -1186,9 +1242,17 @@ if(BUILD_TESTS)
   enable_testing()
   set(TESTS
     "test_CGameWorld"
+    "test_bot_config_parser"
+    "test_bot_utils"
     "test_icArray"
     "test_icFifoArray"
   )
+  if(USE_LUA)
+    target_compile_definitions(game-test PRIVATE CONF_LUA=1)
+    list(APPEND TESTS "test_Lua")
+  else()
+    target_compile_definitions(game-test PRIVATE CONF_LUA=0)
+  endif()
   foreach(TEST_NAME ${TESTS})
     add_executable(${TEST_NAME} "src/tests/${TEST_NAME}.cpp")
     target_include_directories(${TEST_NAME} SYSTEM PRIVATE ${TOOL_INCLUDE_DIRS})
@@ -1223,9 +1287,17 @@ install(
   FILES
     "ChangeLog.txt"
     "autoexec.cfg"
+    "normal.cfg"
+    "normalize.cfg"
     "reset.cfg"
   DESTINATION
     "."
+)
+install(
+  DIRECTORY
+    "survivals/"
+  DESTINATION
+    "survivals"
 )
 install(
   FILES
@@ -1234,6 +1306,12 @@ install(
     "storage.cfg.example"
   DESTINATION
     "."
+)
+install(
+  DIRECTORY
+    "lua/"
+  DESTINATION
+    "lua"
 )
 
 set(CPACK_GENERATOR ZIP)

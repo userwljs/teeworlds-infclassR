@@ -8,18 +8,28 @@
 #include <game/server/gamecontroller.h>
 
 #include <engine/console.h>
+#include <engine/shared/protocol.h>
 
 #include <base/tl/ic_array.h>
 
+class CBaseBotPlayer;
+class CBotUtils;
+class CBotUtilsSharedData;
+class CControlPoint;
 class CDoor;
 class CGameWorld;
 class CHintMessage;
 class CIcCharacter;
 class CIcPlayer;
+class IDebugSink;
 struct CNetObj_GameInfo;
-struct SpawnContext;
 struct DeathContext;
+struct SpawnContext;
 struct ZoneData;
+
+#if CONF_LUA
+struct CLuaPlayersNumber;
+#endif // CONF_LUA
 
 enum class TAKEDAMAGEMODE;
 enum class EDamageType;
@@ -36,7 +46,7 @@ enum class ERoundEndReason
 };
 const char *toString(ERoundEndReason Reason);
 
-static const int MaxWaves = 20;
+static const int MaxBots = MAX_CLIENTS - 8;
 
 using ClientsArray = icArray<int, MAX_CLIENTS>;
 
@@ -54,6 +64,7 @@ const char *toString(ERoundType RoundType);
 enum class CLASS_AVAILABILITY
 {
 	AVAILABLE,
+	PICKED_PREVIOUSLY,
 	DISABLED,
 	NEED_MORE_PLAYERS,
 	LIMIT_EXCEEDED,
@@ -79,6 +90,23 @@ struct FunRoundConfiguration
 	EPlayerClass HumanClass = EPlayerClass::Invalid;
 };
 
+class SurvivalBotConfiguration;
+class SurvivalWaveConfiguration;
+class SurvivalGameConfiguration;
+
+enum SURVIVAL_MODE
+{
+	SURVIVAL_MODE_OFF,
+	SURVIVAL_MODE_KILL_BASED,
+	SURVIVAL_MODE_TIME_BASED,
+};
+
+enum class ETextArticle
+{
+	Indefinite,
+	Definite,
+};
+
 class CIcGameController : public IGameController
 {
 public:
@@ -86,7 +114,9 @@ public:
 	~CIcGameController() override;
 
 	const char *GameType() const override;
+	void SetGameType(const char *pGameType);
 
+	void RegisterLuaBindings();
 	void IncreaseCurrentRoundCounter() override;
 
 	void DoTeamBalance() override;
@@ -106,6 +136,9 @@ public:
 	void HandleCharacterTiles(CIcCharacter *pCharacter);
 	void HandleLastHookers();
 
+	float GetSecondsElapsed() const;
+	float GetSecondsRemaining() const;
+
 	bool CanSeeDetails(int Who, int Whom) const;
 	CClientMask GetBlindCharactersMask(int ExcludeCid) const;
 	CClientMask GetMaskForPlayerWorldEvent(int Asker, int ExceptId = -1);
@@ -121,6 +154,7 @@ public:
 	void CreateExplosion(const vec2 &Pos, int Owner, EDamageType DamageType, float DamageFactor = 1.0f);
 	void CreateExplosionDisk(vec2 Pos, float InnerRadius, float DamageRadius, int Damage, float Force, int Owner, EDamageType DamageType);
 	void CreateExplosionDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner);
+	void CreateDeathEffectDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner);
 
 	void SendHammerDot(const vec2 &Pos, int SnapId);
 	void SendServerParams(int ClientId) const;
@@ -128,7 +162,9 @@ public:
 	int OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;
 	void OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext);
 	void OnIcCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context);
+	void OnCharacterBackFromDead(CIcCharacter *pCharacter);
 	void OnClassChooserRequested(CIcCharacter *pCharacter);
+
 	void CheckRoundFailed();
 	float GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const override;
 	void DoWincheck() override;
@@ -196,12 +232,16 @@ public:
 	void OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType Type, const char *pReason) override;
 
 	void OnReset() override;
+	void OnShutdown() override;
 
 	void DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfectiousPlayer, EPlayerClass PreviousClass);
 	void MaybeDropPickup(CIcCharacter *pVictim);
 
 	void OnHeroFlagCollected(int ClientId);
 	float GetHeroFlagCooldown() const;
+
+	void ApplyControlPointEffect(CControlPoint *pControlPoint);
+	void OnControlPointCaptured(CControlPoint *pControlPoint);
 
 	bool IsInfectionStarted() const;
 	bool MapRotationEnabled() const override;
@@ -214,6 +254,8 @@ public:
 	float GetWhiteHoleLifeSpan() const;
 	int MinimumInfectedForRevival() const;
 	bool IsClassChooserEnabled() const;
+	int HardMode() const;
+	bool HumanCanPickSameClass() const;
 	int GetTaxiMode() const;
 	int GetGhoulStomackSize() const;
 	EPlayerScoreMode GetPlayerScoreMode(int SnappingClient) const;
@@ -238,14 +280,15 @@ public:
 	void EndFunRound();
 
 	void StartSurvivalRound();
-	void EndSurvivalRound();
+	void EndSurvivalRound(ERoundEndReason Reason);
+	bool StartSurvivalWave();
+	void EndSurvivalWave();
 
 	void EnsureFinalExplosionIsStarted();
 	void StartFinalExplosion();
 	void ProgressFinalExplosion();
 	void ResetFinalExplosion();
 	void SaveRoundRules();
-	void StartSurvivalGame();
 	void EndSurvivalGame();
 
 	int GetRoundStartTick() const { return m_RoundStartTick; }
@@ -259,7 +302,7 @@ public:
 	static const char *GetClassName(EPlayerClass PlayerClass);
 	static const char *GetClassPluralName(EPlayerClass PlayerClass);
 	static const char *GetClassDisplayName(EPlayerClass PlayerClass, const char *pDefaultText = nullptr);
-	static const char *GetClassDisplayNameForKilledBy(EPlayerClass PlayerClass, const char *pDefaultText = nullptr);
+	static const char *GetClassDisplayNameForKilledBy(EPlayerClass PlayerClass, ETextArticle Article = ETextArticle::Indefinite);
 	static const char *GetClanForClass(EPlayerClass PlayerClass, const char *pDefaultText = nullptr);
 	static const char *GetClassPluralDisplayName(EPlayerClass PlayerClass);
 	static EPlayerClass MenuClassToPlayerClass(int MenuClass);
@@ -276,6 +319,11 @@ public:
 	static void ConWeaponForce(IConsole::IResult *pResult, void *pUserData);
 	static void ConListWeapons(IConsole::IResult *pResult, void *pUserData);
 
+	static void ConGetActivePlayersNumber(IConsole::IResult *pResult, void *pUserData);
+
+	static void ConStartSurvivalScenario(IConsole::IResult *pResult, void *pUserData);
+	void ConStartSurvivalScenario(IConsole::IResult *pResult);
+
 	static void ConSetClientName(IConsole::IResult *pResult, void *pUserData);
 	static void ConRestoreClientName(IConsole::IResult *pResult, void *pUserData);
 	static void ConLockClientName(IConsole::IResult *pResult, void *pUserData);
@@ -285,10 +333,26 @@ public:
 	void SetPreferredClass(int ClientId, EPlayerClass Class);
 	static void ConAntiPing(IConsole::IResult *pResult, void *pUserData);
 
+	static void ConAddControlPoint(IConsole::IResult *pResult, void *pUserData);
+
 	static void ConUserSetClass(IConsole::IResult *pResult, void *pUserData);
 	void ConUserSetClass(IConsole::IResult *pResult);
 	static void ConSetClass(IConsole::IResult *pResult, void *pUserData);
 	void ConSetClass(IConsole::IResult *pResult);
+
+#if CONF_LUA
+	static void ConExecLua(IConsole::IResult *pResult, void *pUserData);
+	static void ConLua(IConsole::IResult *pResult, void *pUserData);
+
+	const array<vec2> *GetHeroFlagPositions() const;
+	const std::vector<vec2> *GetHumanSpawns() const;
+	const std::vector<vec2> *GetInfectedSpawns() const;
+	void SetSpawnEnabled(int Index, bool Enabled, int Type);
+	void SetHumanSpawnEnabled(int Index, bool Enabled);
+	void SetInfectedSpawnEnabled(int Index, bool Enabled);
+	CLuaPlayersNumber GetPlayersNumber_Lua(bool IncludeBots = false);
+	void UpdateHeroFlags_Lua();
+#endif
 
 	static FunRoundConfiguration ParseFunRoundConfigArguments(IConsole::IResult *pResult);
 
@@ -303,8 +367,30 @@ public:
 
 	static void ConStartFastRound(IConsole::IResult *pResult, void *pUserData);
 	static void ConQueueFastRound(IConsole::IResult *pResult, void *pUserData);
+
 	static void ConPrintPlayerPickingTimestamp(IConsole::IResult *pResult, void *pUserData);
 	void ConPrintPlayerPickingTimestamp(IConsole::IResult *pResult);
+
+	static void ConSurvivalClearConf(IConsole::IResult *pResult, void *pUserData);
+	void SurvivalClearConf();
+	static void ConSurvivalConf(IConsole::IResult *pResult, void *pUserData);
+	void ConSurvivalConf(IConsole::IResult *pResult);
+
+	static void ConSurvivalAddWave(IConsole::IResult *pResult, void *pUserData);
+	void SurvivalAddWave(int Wave, const char *pWaveName);
+
+	static void ConSurvivalConfWave(IConsole::IResult *pResult, void *pUserData);
+	void ConSurvivalConfWave(IConsole::IResult *pResult);
+	SurvivalBotConfiguration *SurvivalAddBot(int Wave, const char *pClassName);
+	void ConSurvivalConfWaveAddBots(IConsole::IResult *pResult, SurvivalBotConfiguration *pBotConfiguration) const;
+	void ConSurvivalConfWaveCommand(IConsole::IResult *pResult, SurvivalWaveConfiguration *pConfiguration) const;
+
+	static void ConStartSurvival(IConsole::IResult *pResult, void *pUserData);
+	void ConStartSurvival(IConsole::IResult *pResult);
+	void PrepareSurvival(int Wave = 0);
+	bool SurvivalHumansWinConditionsMet() const;
+	bool SurvivalInfectedWinConditionsMet() const;
+
 	static void ConMapRotationStatus(IConsole::IResult *pResult, void *pUserData);
 	static void ConSaveMapsData(IConsole::IResult *pResult, void *pUserData);
 	static void ConPrintMapsData(IConsole::IResult *pResult, void *pUserData);
@@ -331,11 +417,34 @@ public:
 	static void ChatWitch(IConsole::IResult *pResult, void *pUserData);
 	void ChatWitch(IConsole::IResult *pResult);
 
+	static void ConSayBot(IConsole::IResult *pResult, void *pUserData);
+	void ConSayBot(IConsole::IResult *pResult);
+
+	static void ConAddBot(IConsole::IResult *pResult, void *pUserData);
+	void ConAddBot(IConsole::IResult *pResult);
+
+	static void ConRemoveBot(IConsole::IResult *pResult, void *pUserData);
+	void ConRemoveBot(IConsole::IResult *pResult);
+
+	static void ConDumpBot(IConsole::IResult *pResult, void *pUserData);
+	void ChatDumpBot(IConsole::IResult *pResult);
+
+	static void ConCheckAI(IConsole::IResult *pResult, void *pUserData);
+	void ConCheckAI(IConsole::IResult *pResult);
+
+	static void ConAiTracePath(IConsole::IResult *pResult, void *pUserData);
+	void ConAiTracePath(IConsole::IResult *pResult);
+
+	static void ConAiObjection(IConsole::IResult *pResult, void *pUserData);
+	void ConAiObjection(IConsole::IResult *pResult);
+
+	CControlPoint *AddControlPoint(const vec2 &At);
 	CDoor *AddDoor(const vec2 &From, const vec2 &To);
 
 	using IGameController::GameServer;
 	CGameWorld *GameWorld();
 	IConsole *Console() const;
+	IDebugSink *GetDebugSink() const;
 	CIcPlayer *GetPlayer(int ClientId) const;
 	CIcCharacter *GetCharacter(int ClientId) const;
 	int GetPlayerOwnCursorId(int ClientId) const;
@@ -389,11 +498,35 @@ private:
 	bool IsSafeWitchCandidate(int ClientId) const;
 	ClientsArray m_WitchCallers;
 
+	void RemoveBots();
+	void ResetSpawnedBotsTracking();
+
+	int RequestBotID();
+	CBaseBotPlayer *AddBot(int Team = 0);
+	CBaseBotPlayer *AddBot(const SurvivalBotConfiguration &Configuration);
+	CBaseBotPlayer *AddBot_Lua(const char *pClass);
+	CBaseBotPlayer *GetBot(int ClientId);
+	bool RemoveBot(CBaseBotPlayer *pBot, const char *pReason = nullptr);
+	bool RemoveBot(int ClientId, const char *pReason = nullptr);
+	bool RemoveBot_Lua(int ClientId);
+	void RegisterBotsContext();
+
+	void AddMoreBotsAccordingToConfiguration();
+
+	icArray<CBaseBotPlayer *, MaxBots> m_Bots;
+	CBotUtilsSharedData *m_pBotUtilsData{};
+
 	struct PlayerScore
 	{
-		char aPlayerName[MAX_NAME_LENGTH];
-		int Kills;
-		int ClientId;
+		char aPlayerName[MAX_NAME_LENGTH]{};
+		uint32_t Kills{};
+		uint32_t Assists{};
+		int ClientId{};
+
+		uint32_t GetScore() const
+		{
+			return Kills + Assists / 2;
+		}
 	};
 
 	struct
@@ -407,10 +540,16 @@ private:
 	int m_BestSurvivalScore = 0;
 	const char *m_LastUsedKillMessage = nullptr;
 
-	bool m_AllowSurvivalAutostart = false;
+	int m_WaveStartTick = 0;
+	bool m_TriggerSurvivalAutostart = false;
 
 	PlayerScore *GetSurvivalPlayerScore(int ClientId);
 	PlayerScore *EnsureSurvivalPlayerScore(int ClientId);
+
+	const SurvivalGameConfiguration *SurvivalGetGameConfiguration() const;
+	SurvivalWaveConfiguration *SurvivalGetWaveConfiguration(int WaveIndex);
+	const SurvivalWaveConfiguration *GetCurrentSurvivalWaveConfiguration() const;
+	SurvivalGameConfiguration *SurvivalGetMutableGameConfiguration();
 
 private:
 	int m_ZoneHandle_icDamage;
@@ -422,12 +561,14 @@ private:
 	int* m_GrowingMap;
 	EFinalExplosionState m_FinalExplosionState{};
 
+	std::optional<std::string> m_GameType;
 	std::optional<bool> m_WinCheckEnabled;
 	std::optional<bool> m_VotesEnabled;
 	std::optional<int> m_RoundMinimumPlayers;
 	std::optional<int> m_RoundMinimumInfected;
 	std::optional<float> m_RoundTimeLimitSeconds;
 	std::optional<int> m_RoundInfectionDelaySeconds;
+	std::vector<int> m_EnabledSpawnPoints[2];
 	int m_InfUnbalancedTick;
 	float m_InfBalanceBoostFactor = 0;
 	array<vec2> m_HeroFlagPositions;
@@ -448,6 +589,7 @@ private:
 	bool m_RoundStarted = false;
 	bool m_SuggestMoreRounds = false;
 	bool m_MoreRoundsSuggested = false;
+	bool m_ControlPointHintSent[2] = {};
 	bool m_VanillaMapLoaded = false;
 
 	int m_InfAmmoRegenTime[NB_INFWEAPON]{};

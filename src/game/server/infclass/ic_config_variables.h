@@ -18,6 +18,9 @@ MACRO_CONFIG_STR(AboutContactsDiscord, about_contacts_discord, 128, "https://inf
 MACRO_CONFIG_STR(AboutContactsTelegram, about_contacts_telegram, 128, "", CFGFLAG_SERVER, "Telegram URL or ID")
 MACRO_CONFIG_STR(AboutContactsMatrix, about_contacts_matrix, 128, "https://infclass.github.io/matrix", CFGFLAG_SERVER, "Matrix room URL")
 
+MACRO_CONFIG_INT(SvLua, sv_lua, 3, 0, 3, CFGFLAG_SERVER, "Enable LUA scripts (0 = disabled, 1 = enabled, 2 = map scripts autoload)")
+MACRO_CONFIG_STR(SvLuaRuntime, sv_lua_runtime, 64, "base.lua", CFGFLAG_SERVER, "Lua runtime file")
+
 MACRO_CONFIG_STR(InfConverterId, inf_converter_id, 16, "v2.1", CFGFLAG_SERVER, "Map converter version id")
 MACRO_CONFIG_INT(InfConverterForceRegeneration, inf_converter_force_regeneration, 0, 0, 1, CFGFLAG_SERVER, "Always (re)generate client map (regardless of cache)")
 
@@ -54,6 +57,7 @@ MACRO_CONFIG_INT(InfShockwaveAffectHumans, inf_shock_wave_affect_humans, 0, 0, 1
 MACRO_CONFIG_INT(InfSpawnProtectionTime, inf_spawn_protection_time, 2000, 0, 60000, CFGFLAG_SERVER, "Time zombies stay invincible while spawning")
 MACRO_CONFIG_INT(InfAntiFireTime, inf_anti_fire_time, 700, 0, 10000, CFGFLAG_SERVER, "Time players can't attack after spawning (in ms)")
 MACRO_CONFIG_INT(InfClassChooser, inf_class_chooser, 1, 0, 1, CFGFLAG_SERVER, "Enable the class chooser")
+MACRO_CONFIG_INT(InfAllowPickingSameClass, inf_allow_picking_same_class, 1, 0, 1, CFGFLAG_SERVER, "Allow a player to pick the same class again")
 MACRO_CONFIG_INT(InfTaxi, inf_taxi, 1, 0, 2, CFGFLAG_SERVER, "Toggle taxi mode (disabled, enabled (without passengers ammo regen), enabled")
 MACRO_CONFIG_INT(InfTaxiCollisions, inf_taxi_collisions, 0, 0, 3, CFGFLAG_SERVER, "Set taxi collision flags (1 for attach collisions, 2 for move collisions")
 
@@ -70,6 +74,7 @@ MACRO_CONFIG_INT(InfBarrierLifeSpan, inf_barrier_lifespan, 30, 0, 100, CFGFLAG_S
 MACRO_CONFIG_INT(InfVoodooAliveTime, inf_voodoo_alive_time, 550, 0, 10000, CFGFLAG_SERVER, "How long a voodoo keeps staying alive after being killed (in ms)")
 MACRO_CONFIG_INT(InfBarrierTimeReduce, inf_barrier_timereduce, 150, 0, 10000, CFGFLAG_SERVER, "Time to remove from a barrier lifespan when an infected dies (centisec)")
 MACRO_CONFIG_INT(InfBioMineLasers, inf_bio_mine_lasers, 12, 1, 100, CFGFLAG_SERVER, "Radius of mines")
+MACRO_CONFIG_INT(InfHumanInvisibilityTime, inf_human_invisibility_time, 10, 1, 100, CFGFLAG_SERVER, "Humans invisibility effect duration in seconds")
 MACRO_CONFIG_INT(InfMineRadius, inf_mine_radius, 46, 0, 1024, CFGFLAG_SERVER, "Radius of mines")
 MACRO_CONFIG_INT(InfMineLimit, inf_mine_limit, 2, 0, 1024, CFGFLAG_SERVER, "Maximum number of mines per player")
 MACRO_CONFIG_INT(InfNinjaJump, inf_ninja_jump, 2, 0, 1024, CFGFLAG_SERVER, "Maximum number of katana attacks")
@@ -88,6 +93,7 @@ MACRO_CONFIG_INT(InfSlimeMaxHeal, inf_slime_max_heal, 12, 0, 100, CFGFLAG_SERVER
 MACRO_CONFIG_INT(InfInfzoneHealRate, inf_infzone_heal_rate, 3, 0, 10000, CFGFLAG_SERVER, "Infection zone heals infected for X hearts every second")
 MACRO_CONFIG_FLOAT(InfSleeperTakeDamageRatio, inf_sleeper_take_damage_ratio, 1.0, 1, 4, CFGFLAG_SERVER, "The ratio of damage taken by a sleeping tee (1.0 to 4.0)")
 MACRO_CONFIG_INT(InfScientistTpSelfharm, inf_scientist_tp_selfharm, 0, 0, 10000, CFGFLAG_SERVER, "Self damage on each teleportation")
+MACRO_CONFIG_INT(InfSciPortalLifespan, inf_sci_portal_lifespan, 40, 0, 10000, CFGFLAG_SERVER, "aaa")
 MACRO_CONFIG_INT(InfBatAirjumpLimit, inf_bat_airjump_limit, 10000, 0, 10000, CFGFLAG_SERVER, "Max number of extra airjumps")
 MACRO_CONFIG_INT(InfBatDamage, inf_bat_damage, 3, 0, 10000, CFGFLAG_SERVER, "Damage taken by bat")
 MACRO_CONFIG_INT(InfBatLifeSteal, inf_bat_life_steal, 2, 0, 10000, CFGFLAG_SERVER, "Amount of HP given to a bat per hammer hit")
@@ -97,6 +103,8 @@ MACRO_CONFIG_INT(InfSpiderWebHookLength, inf_spider_web_hook_length, 600, 0, 100
 MACRO_CONFIG_INT(InfSmokerHookDamage, inf_smoker_hook_damage, 2, 1, 10000, CFGFLAG_SERVER, "Damage taken by smoker (hook)")
 MACRO_CONFIG_INT(InfSpiderCatchHumans, inf_spider_catch_humans, 1, 0, 1, CFGFLAG_SERVER, "Always catch humans with hook")
 MACRO_CONFIG_FLOAT(InfUndeadFreezeDuration, inf_undead_freeze_duration, 10, 0, 100, CFGFLAG_SERVER, "For how long Undead death will freeze the character (in seconds) (0 = disable)")
+MACRO_CONFIG_FLOAT(InfStunningHammerDuration, inf_stunning_hammer_duration, 0.5, 0, 100, CFGFLAG_SERVER, "(Infected) stunning hammer effect duration")
+MACRO_CONFIG_INT(InfStunningHammerForce, inf_stunning_hammer_force, 36, 0, 500, CFGFLAG_SERVER, "(Infected) stunning hammer force")
 MACRO_CONFIG_INT(InfInfzoneFreezeDuration, inf_infzone_freeze_duration, 2, 0, 10000, CFGFLAG_SERVER, "For how long infection zone will freeze humans (in seconds) (0 = disable)")
 MACRO_CONFIG_INT(InfLastEnforcerTimeMs, inf_last_enforcer_time_ms, 400, 0, 10000, CFGFLAG_SERVER, "For how long the last hooker will be forced as the char indirect killer (in ms)")
 MACRO_CONFIG_INT(InfDoubleClickFilterMs, inf_double_click_filter_ms, 140, 0, 10000, CFGFLAG_SERVER, "Filter out probably undesired 2nd clicks during given ms (affects soldier bomb)")
@@ -134,6 +142,8 @@ MACRO_CONFIG_FLOAT(InfTranquilizerDose, inf_tranquilizer_dose, 4.0, 1.0, 30.0, C
 MACRO_CONFIG_INT(InfRevivalDamage, inf_revival_damage, 17, 0, 100, CFGFLAG_SERVER, "The number of total HP taken from the medic")
 MACRO_CONFIG_INT(InfRevivalMinInfected, inf_revival_min_infected, 5, 1, 100, CFGFLAG_SERVER, "The minimum number of infected to allow revival")
 
+MACRO_CONFIG_INT(InfTileDamage, inf_tile_damage, 5, 1, 100, CFGFLAG_SERVER, "The damage points of a 'damage' tile")
+
 MACRO_CONFIG_INT(InfHeroFlagIndicator, inf_hero_flag_indicator, 1, 0, 1, CFGFLAG_SERVER, "Shows the heros in which direction the next flag is")
 MACRO_CONFIG_INT(InfHeroFlagIndicatorTime, inf_hero_flag_indicator_time, 3, 0, 1000, CFGFLAG_SERVER, "How many seconds the hero has to stand still until the indicator is shown")
 
@@ -154,6 +164,10 @@ MACRO_CONFIG_INT(InfSlowMotionHookSpeed, inf_slow_motion_hook_speed, 30, 0, 100,
 MACRO_CONFIG_INT(InfSlowMotionHookAccel, inf_slow_motion_hook_accel, 15, 0, 100, CFGFLAG_SERVER, "Factor that manipulates the slowmotion hook acceleration")
 MACRO_CONFIG_INT(InfSlowMotionMaxSpeed, inf_slow_motion_max_speed, 50, 0, 500, CFGFLAG_SERVER, "Create a speed limit while in slowmotion, make it 0 to disable it")
 MACRO_CONFIG_INT(InfSlowMotionGravity, inf_slow_motion_gravity, 5, -100, 100, CFGFLAG_SERVER, "Modify gravity while in slowmotion")
+
+MACRO_CONFIG_INT(InfControlPointCaptionRadius, inf_cp_caption_radius, 48, 32, 10000, CFGFLAG_SERVER, "Control Point inner (proximity) radius")
+MACRO_CONFIG_INT(InfControlPointVisualRadius, inf_cp_visual_radius, 48 + 64, 32, 10000, CFGFLAG_SERVER, "Control Point outer (effect) radius")
+MACRO_CONFIG_INT(InfControlPointGlobalInterval, inf_cp_global_effect_interval, 20, 1, 100, CFGFLAG_SERVER, "Control Point global effect rate (1HP every N seconds)")
 
 //Turret
 MACRO_CONFIG_INT(InfMinPlayersForTurrets, inf_min_players_for_turrets, 3, 0, 100, CFGFLAG_SERVER, "Minimum number of players that are needed to enable turrets")
@@ -186,7 +200,19 @@ MACRO_CONFIG_INT(InfWhiteHoleAffectsHumans, inf_white_hole_affects_humans, 0, 0,
 MACRO_CONFIG_INT(InfWhiteHoleNumParticles, inf_white_hole_num_particles, 100, 20, 500, CFGFLAG_SERVER, "Number of particles that will be used for a white hole animation")
 MACRO_CONFIG_INT(InfWhiteHolePullStrength, inf_white_hole_pull_strength, 30, 0, 1000, CFGFLAG_SERVER, "How strong a white hole sucks players in")
 
+MACRO_CONFIG_INT(InfBotLives, inf_bot_lives, 0, 0, 30, CFGFLAG_SERVER, "The number of bot lives (for survive rounds)")
+MACRO_CONFIG_INT(InfDebugBot, inf_debug_bot, -1, -1, MAX_CLIENTS, CFGFLAG_SERVER, "Filter the bot debug by one bot Id (-1 to unset)")
+MACRO_CONFIG_INT(InfBotDebugLevel, inf_bot_debug_level, 0, 0, 4, CFGFLAG_SERVER, "Set the bots debug level (0 = off, 4 = max)")
+MACRO_CONFIG_INT(InfBotRemoveDelay, inf_bot_remove_delay, 7, 0, 30, CFGFLAG_SERVER, "Delay the bots removal (on lives==0) for X seconds")
+MACRO_CONFIG_INT(InfBotBackjump, inf_bot_backjump, 1, 0, 1, CFGFLAG_SERVER, "Enable backjumps")
+MACRO_CONFIG_INT(InfBotCheckPos, inf_bot_check_pos, 0, 0, 1, CFGFLAG_SERVER, "Enable 'checked pos' logic for bots")
 MACRO_CONFIG_INT(InfSurvivalInfectedSpawningDelay, inf_survival_infected_spawning_delay, 7, 0, 30, CFGFLAG_SERVER, "The number of seconds for humans to pull themselves together")
+
+MACRO_CONFIG_INT(InfMaxHiveHooks, inf_hive_hooks, 3, 0, 64, CFGFLAG_SERVER, "Max concurrent hooks per player for Survival rounds")
+MACRO_CONFIG_INT(InfSurvivalMode, inf_survival_mode, 0, 0, 2, CFGFLAG_SERVER, "Survival mode (0 = off, 1 = kill-based, 2 = time-based)")
+MACRO_CONFIG_INT(InfSurvivalHardMode, inf_survival_hardmode, 0, 0, 1, CFGFLAG_SERVER, "Survival hard mode (another way of difficulty leveling)")
+MACRO_CONFIG_INT(InfSurvivalAutostart, inf_survival_autostart, 0, 0, 1, CFGFLAG_SERVER, "Automatically start the last choosen survival scenario")
+MACRO_CONFIG_INT(InfSurvivalDeadSeconds, inf_survival_dead_seconds, 0, 0, 30, CFGFLAG_SERVER, "The duration of 'Dead' effect")
 
 // Deprecated variables
 MACRO_CONFIG_INT(InfStunGrenadeMinimalKills, inf_stun_grenade_minimal_kills, 2, 0, 30, CFGFLAG_SERVER, "Deprecated (has no effect now)")

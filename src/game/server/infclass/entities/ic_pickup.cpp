@@ -10,7 +10,128 @@
 #include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/ic_gamecontroller.h>
+#include <game/server/infclass/player_upgrades.h>
 #include <game/server/infclass/snap_filter.h>
+
+struct SUpgradeNetInfo {
+	int Type;
+	int SubType;
+};
+
+struct SClassUpgrade
+{
+	SClassUpgrade() = default;
+
+	void AddPickup(int Type, int SubType = 0)
+	{
+		m_aPickups.Add({Type, SubType});
+	}
+
+	bool IsValid() const { return !m_aPickups.IsEmpty(); }
+
+	static int GetFlagPickupId()
+	{
+		return NUM_POWERUPS + 1;
+	}
+
+	icArray<SUpgradeNetInfo, 6> m_aPickups;
+};
+
+SClassUpgrade GetUpgradeInfo(const PlayerUpgradesArray &Upgrades)
+{
+	SClassUpgrade UpgradeInfo;
+	for(EUpgradeType Upgrade : Upgrades)
+	{
+		switch(Upgrade)
+		{
+		case EUpgradeType::MercBombTools:
+			UpgradeInfo.AddPickup(POWERUP_ARMOR);
+			break;
+		case EUpgradeType::MercGunAirRegen:
+		case EUpgradeType::MercGunRegen:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GUN);
+			break;
+		case EUpgradeType::MercGrenades:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GRENADE);
+			break;
+		case EUpgradeType::MercBombSupercharge:
+			UpgradeInfo.AddPickup(POWERUP_HEALTH);
+			break;
+
+		case EUpgradeType::MedicPistolRegen:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GUN);
+			break;
+		case EUpgradeType::MedicShotgunSpread:
+		case EUpgradeType::MedicShotgunRegen:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_SHOTGUN);
+			break;
+		case EUpgradeType::MedicHealingHose:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GRENADE);
+			break;
+
+		case EUpgradeType::HeroFlagGift:
+			UpgradeInfo.AddPickup(SClassUpgrade::GetFlagPickupId());
+			break;
+		case EUpgradeType::HeroWeapons:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GUN);
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_SHOTGUN);
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GRENADE);
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_LASER);
+			break;
+		case EUpgradeType::HeroArmor:
+			UpgradeInfo.AddPickup(POWERUP_ARMOR);
+			break;
+
+		case EUpgradeType::NinjaSlashBreaksHooks:
+		case EUpgradeType::NinjaSlashCombo:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_NINJA);
+			break;
+		case EUpgradeType::NinjaFlashGrenadeArea:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GRENADE);
+			break;
+
+		case EUpgradeType::SniperLaserRegenReload:
+		case EUpgradeType::SniperLaserRange:
+		case EUpgradeType::SniperLaserPiercing:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_LASER);
+			break;
+
+		case EUpgradeType::ScientistLaserRegenReload:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_LASER);
+			break;
+		case EUpgradeType::ScientistTeleportGun:
+		case EUpgradeType::ScientistPortalGun:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GRENADE);
+			break;
+		case EUpgradeType::ScientistExtraMine:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_HAMMER);
+			break;
+
+		case EUpgradeType::BiologistShotgunSpread:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_SHOTGUN);
+			break;
+		case EUpgradeType::BiologistMineCharges:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_LASER);
+			break;
+		case EUpgradeType::BiologistGrenade:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GRENADE);
+			break;
+		case EUpgradeType::BiologistInvisibilityHammer:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_HAMMER);
+			break;
+
+		case EUpgradeType::LooperLaserRegen:
+		case EUpgradeType::LooperLaserWeapon:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_LASER);
+			break;
+		case EUpgradeType::LooperGrenadesRegen:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GRENADE);
+			break;
+		}
+	}
+
+	return UpgradeInfo;
+}
 
 int CIcPickup::EntityId = CGameWorld::ENTTYPE_PICKUP;
 
@@ -61,6 +182,15 @@ void CIcPickup::Tick()
 
 	CIcEntity::Tick();
 
+	if(m_Type == EICPickupType::ClassUpgrade)
+	{
+		if(!GameController()->IsPositionAvailableForHumans(GetPos()))
+		{
+			MarkForDestroy();
+			return;
+		}
+	}
+
 	// Check if a player intersected us
 	CIcCharacter *pChr = nullptr;
 	if(GetOwner() >= 0)
@@ -97,7 +227,7 @@ void CIcPickup::Tick()
 			}
 			break;
 		case EICPickupType::ClassUpgrade:
-			pChr->GetClass()->GiveUpgrade();
+			pChr->GetClass()->GiveUpgrades(m_Upgrades);
 
 			if(m_NetworkType == POWERUP_ARMOR)
 			{
@@ -133,6 +263,8 @@ void CIcPickup::Tick()
 			}
 		}
 	}
+
+	UpdateNetworkTypes();
 }
 
 void CIcPickup::TickPaused()
@@ -159,8 +291,15 @@ void CIcPickup::Snap(int SnappingClient)
 	case EICPickupType::Health:
 	case EICPickupType::Armor:
 	case EICPickupType::ClassUpgrade:
-		NetworkType = m_NetworkType;
-		Subtype = m_NetworkSubtype;
+		if (m_NetworkType == SClassUpgrade::GetFlagPickupId())
+		{
+			SnapAsFlag();
+		}
+		else
+		{
+			NetworkType = m_NetworkType;
+			Subtype = m_NetworkSubtype;
+		}
 		break;
 	case EICPickupType::Invalid:
 		break;
@@ -173,9 +312,22 @@ void CIcPickup::Snap(int SnappingClient)
 	GameServer()->SnapPickup(CSnapContext(SnappingClientVersion), GetId(), m_Pos, NetworkType, Subtype);
 }
 
+void CIcPickup::SnapAsFlag()
+{
+	CNetObj_Flag *pFlag = Server()->SnapNewItem<CNetObj_Flag>(GetId());
+	if(!pFlag)
+		return;
+
+	pFlag->m_X = round_to_int(m_Pos.x);
+	pFlag->m_Y = round_to_int(m_Pos.y) + 16;
+	pFlag->m_Team = TEAM_RED;
+}
+
 void CIcPickup::Spawn(float Delay)
 {
 	m_SpawnTick = Server()->Tick() + Server()->TickSpeed() * Delay;
+
+	UpdateNetworkTypes();
 }
 
 void CIcPickup::SetRespawnInterval(float Seconds)
@@ -183,8 +335,25 @@ void CIcPickup::SetRespawnInterval(float Seconds)
 	m_SpawnInterval = Seconds;
 }
 
-void CIcPickup::SetUpgrade(const SClassUpgrade &Upgrade)
+void CIcPickup::SetUpgrades(const PlayerUpgradesArray &Upgrades)
 {
-	m_NetworkType = Upgrade.Type;
-	m_NetworkSubtype = Upgrade.Subtype;
+	m_Upgrades = Upgrades;
+}
+
+void CIcPickup::UpdateNetworkTypes()
+{
+	if(m_Upgrades.IsEmpty())
+		return;
+
+	SClassUpgrade Info = GetUpgradeInfo(m_Upgrades);
+
+	SUpgradeNetInfo UpgradeInfo = Info.m_aPickups.First();
+	if(m_Upgrades.Size() > 1)
+	{
+		int Index = (Server()->Tick() - m_SpawnTick) / (Server()->TickSpeed() * 1.5f);
+		UpgradeInfo = Info.m_aPickups.At(Index % Info.m_aPickups.Size());
+	}
+
+	m_NetworkType = UpgradeInfo.Type;
+	m_NetworkSubtype = UpgradeInfo.SubType;
 }

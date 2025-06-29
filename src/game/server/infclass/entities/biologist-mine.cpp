@@ -37,8 +37,9 @@ void CBiologistMine::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireC
 		pCharacter->GameWorld()->DestroyEntity(pMine);
 	}
 
-	int PerLaserDamage = 10;
-	new CBiologistMine(pCharacter->GameServer(), From, To, OwnerCid, Lasers, PerLaserDamage);
+	const int PerLaserDamage = 10;
+	const int Vertices = Lasers - 2;
+	new CBiologistMine(pCharacter->GameServer(), From, To, OwnerCid, Lasers, PerLaserDamage, Vertices);
 	pFireContext->AmmoConsumed = pFireContext->AmmoAvailable;
 
 	pCharacter->GameServer()->CreateSound(From, SOUND_LASER_FIRE);

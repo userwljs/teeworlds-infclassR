@@ -25,6 +25,7 @@ static const char *gs_aInfclassWeaponNames[] = {
 	"hero_shotgun",
 	"ricochet_shotgun",
 	"biologist_mine_las",
+	"biologist_grenade",
 	"looper_laser",
 	"looper_grenade",
 	"ninja_katana",
@@ -38,7 +39,9 @@ static const char *gs_aInfclassWeaponNames[] = {
 	"jaws",
 	"slime",
 	"infected_hammer",
+	"stunning_hammer",
 	"boomer_explosion",
+	"infected_grenade",
 
 	"invalid",
 };
@@ -56,12 +59,15 @@ EWeaponClass GetWeaponClassById(EInfclassWeapon Weapon)
 	case EInfclassWeapon::JAWS:
 	case EInfclassWeapon::SLIME:
 	case EInfclassWeapon::INFECTED_HAMMER:
+	case EInfclassWeapon::STUNNING_HAMMER:
 		return EWeaponClass::HAMMER;
 	case EInfclassWeapon::BOOMER_EXPLOSION:
 		return EWeaponClass::SELF_EXPLOSION;
 	case EInfclassWeapon::SOLDIER_GRENADE:
 	case EInfclassWeapon::HERO_GRENADE:
+	case EInfclassWeapon::BIOLOGIST_GRENADE:
 	case EInfclassWeapon::LOOPER_GRENADE:
+	case EInfclassWeapon::INFECTED_GRENADE:
 		return EWeaponClass::GRENADE;
 	case EInfclassWeapon::LASER:
 	case EInfclassWeapon::SNIPER_RIFLE:

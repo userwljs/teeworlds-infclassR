@@ -61,6 +61,7 @@ class CConfig;
 class CPlayer;
 class IEngine;
 class IGameController;
+class ILua;
 
 struct CViewParams
 {
@@ -71,6 +72,7 @@ struct CViewParams
 class CGameContext : public IGameServer
 {
 	IServer *m_pServer;
+	ILua *m_pLua;
 	CConfig *m_pConfig;
 	IConsole *m_pConsole;
 	IEngine *m_pEngine;
@@ -127,11 +129,13 @@ public:
 
 public:
 	IServer *Server() const { return m_pServer; }
+	ILua *Lua() const { return m_pLua; }
 	CConfig *Config() { return m_pConfig; }
 	IStorage *Storage() const { return m_pStorage; }
 	class IConsole *Console() { return m_pConsole; }
 	CGameWorld *GameWorld() { return &m_World; }
 	CCollision *Collision() { return &m_Collision; }
+	const CCollision *Collision() const { return &m_Collision; }
 	CTuningParams *Tuning() { return &m_Tuning; }
 	const CTuningParams *Tuning() const { return &m_Tuning; }
 	virtual class CLayers *Layers() { return &m_Layers; }

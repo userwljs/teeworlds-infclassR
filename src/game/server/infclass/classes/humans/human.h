@@ -16,6 +16,8 @@ enum class EGiftType
 	HeroFlag,
 };
 
+enum class EUpgradeType;
+
 class CInfClassHuman : public CIcPlayerClass
 {
 	MACRO_ALLOC_POOL_ID()
@@ -36,10 +38,10 @@ public:
 	CAmmoParams GetAmmoParams(int Weapon) const override;
 	int GetJumps() const override;
 
-	void GiveGift(EGiftType GiftType);
+	void GiveGift(EGiftType GiftType, int Level = 0);
 
 	bool CanBeHit() const override;
-	SClassUpgrade GetNextUpgrade() const override;
+	PlayerUpgradesArray GetUpgrade(int Level) const override;
 	void OnPlayerClassChanged() override;
 
 	void OnPlayerSnap(int SnappingClient, int InfClassVersion) override;
@@ -51,6 +53,7 @@ public:
 	void OnCharacterSnap(int SnappingClient) override;
 	void OnCharacterSpawned(const SpawnContext &Context) override;
 	void OnCharacterDamage(SDamageContext *pContext) override;
+	void OnCharacterBackFromDead() override;
 
 	void OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context) override;
 	void OnHumanHammerHitHuman(CIcCharacter *pTarget);
@@ -71,10 +74,15 @@ public:
 	void GiveWhiteHole();
 	void RemoveWhiteHole();
 
+	void GiveInvisibility(float Duration, int FromCID);
+	void ResetInvisibility();
+	float GetInvisibilityRemainingDuration() const;
+
 	void UpgradeMercBomb(CMercenaryBomb *pBomb, float UpgradePoints);
 	void OnHeroFlagTaken(CIcCharacter *pHero);
 	void OnWhiteHoleSpawned(CWhiteHole *pWhiteHole);
-	void GiveUpgrade() override;
+
+	void GiveUpgrades(const PlayerUpgradesArray &NewUpgrades) override;
 
 protected:
 	void GiveClassAttributes() override;
@@ -104,6 +112,10 @@ protected:
 	void OnMercLaserFired(WeaponFireContext *pFireContext);
 
 	bool PositionLockAvailable() const;
+	int GetTurretGive() const;
+	int GetMaxTurrets() const;
+
+	int GetMaxSciMines() const;
 
 private:
 	icArray<int, 2> m_BarrierHintIds;
@@ -114,17 +126,22 @@ private:
 	float m_WeaponRegenIntervalModifier[NUM_WEAPONS];
 	float m_WeaponReloadIntervalModifier[NUM_WEAPONS];
 	float m_LaserReachModifier = 1.0f;
+
+	float m_MercBombs = 0;
+	float m_MercInAirAmmoRegenMaxTime{};
 	int m_TurretCount = 0;
 	int m_BroadcastWhiteHoleReady; // used to broadcast "WhiteHole ready" for a short period of time
 	int m_PositionLockTicksRemaining = 0;
-	vec2 m_PositionLockPosition{};
 	int m_NinjaTargetTick = 0;
 	int m_NinjaTargetCid = -1;
 	int m_NinjaVelocityBuff = 0;
 	int m_NinjaExtraDamage = 0;
 	int m_NinjaAmmoBuff = 0;
+	int m_NinjaComboFirstTick = 0;
 	icArray<CEntity *, 24> m_apHitObjects;
 	bool m_HasWhiteHole = false;
+	int m_InvisibilityStartTick{};
+	int m_InvisibilityEndTick{};
 
 	CHeroFlag *m_pHeroFlag = nullptr;
 };

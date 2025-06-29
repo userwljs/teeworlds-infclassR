@@ -734,6 +734,11 @@ void IGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const c
 {
 }
 
+ILua *IGameController::Lua() const
+{
+	return GameServer()->Lua();
+}
+
 CMapInfoEx *IGameController::AddMapInfo(const char *pMapName)
 {
 	if(!GameServer()->MapExists(pMapName))

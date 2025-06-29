@@ -94,6 +94,51 @@ TEST(ICArray, EraseIf)
 	EXPECT_EQ(Array1.At(2), 4);
 }
 
+TEST(ICArray, InsertAt)
+{
+	icArray<int, 10> Array1;
+
+	for (int i = 0; i < 5; ++i)
+	{
+		Array1.Add(i);
+		EXPECT_EQ(Array1.Size(), static_cast<std::size_t>(i + 1));
+	}
+
+	Array1.InsertAt(5, 5);
+	EXPECT_EQ(Array1.At(5), 5);
+	EXPECT_EQ(Array1.Size(), 6);
+
+	for (int i = 0; i < 6; ++i)
+	{
+		EXPECT_EQ(Array1.At(static_cast<std::size_t>(i)), i);
+	}
+
+	Array1.InsertAt(0, -1);
+	EXPECT_EQ(Array1.At(0), -1);
+	EXPECT_EQ(Array1.Size(), 7);
+
+	for (int i = 0; i < 7; ++i)
+	{
+		EXPECT_EQ(Array1.At(static_cast<std::size_t>(i)), i - 1);
+	}
+
+	Array1.InsertAt(4, -4);
+	EXPECT_EQ(Array1.At(4), -4);
+	EXPECT_EQ(Array1.Size(), 8);
+
+	for (int i = 0; i < 4; ++i)
+	{
+		int ExpectedValue{};
+		if (i < 4)
+			ExpectedValue = i - 1;
+		else if (i == 4)
+			ExpectedValue = -4;
+		else if (i > 4)
+			ExpectedValue = i - 2;
+		EXPECT_EQ(Array1.At(static_cast<std::size_t>(i)), ExpectedValue);
+	}
+}
+
 int main(int argc, char *argv[])
 {
 	::testing::InitGoogleTest(&argc, const_cast<char **>(argv));

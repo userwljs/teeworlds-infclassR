@@ -89,6 +89,8 @@ public:
 	void StartInfection(int InfectiousPlayerCid = -1, INFECTION_TYPE InfectionType = INFECTION_TYPE::REGULAR);
 	bool IsInfectionStarted() const;
 
+	virtual const char *GetTag() const { return nullptr; }
+
 	int MapMenu() const { return (m_Team != TEAM_SPECTATORS) ? m_MapMenu : 0; }
 	void OpenMapMenu(int Menu);
 	void CloseMapMenu();
@@ -138,6 +140,7 @@ public:
 	void ApplyMaxHP();
 
 	int GetKills() const { return m_Kills; }
+	int GetAssists() const { return m_Assists; }
 	int GetDeaths() const { return m_Deaths; }
 
 	virtual void OnCharacterHPChanged(){};

@@ -1,6 +1,7 @@
 #ifndef GAME_SERVER_INFCLASS_CLASSES_PLAYER_CLASS_H
 #define GAME_SERVER_INFCLASS_CLASSES_PLAYER_CLASS_H
 
+#include <base/tl/ic_array.h>
 #include <base/vmath.h>
 #include <game/server/entity.h>
 #include <game/server/skininfo.h>
@@ -19,32 +20,11 @@ struct DeathContext;
 struct WeaponFireContext;
 struct CAmmoParams;
 
+enum class EUpgradeType;
+using PlayerUpgradesArray = icArray<EUpgradeType, 5>;
+
 enum class EDamageType;
-
-struct SClassUpgrade
-{
-	SClassUpgrade() = default;
-	explicit SClassUpgrade(int T) :
-		Type(T)
-	{
-	}
-
-	explicit SClassUpgrade(int T, int S) :
-		Type(T)
-	{
-		Subtype = S;
-	}
-
-	int Type = 0;
-	int Subtype = 0;
-
-	bool IsValid() const { return Type >= 0; }
-
-	static SClassUpgrade Invalid()
-	{
-		return SClassUpgrade(-1);
-	}
-};
+enum class IC_PICKUP_TYPE;
 
 class CIcPlayerClass
 {
@@ -69,10 +49,11 @@ public:
 	virtual bool CanDie() const;
 	virtual bool CanBeHit() const;
 	virtual bool CanBeUnfreezed() const;
-	virtual SClassUpgrade GetNextUpgrade() const;
+	virtual PlayerUpgradesArray GetUpgrade(int Level) const;
+	PlayerUpgradesArray GetNextUpgrade() const;
 
 	float GetHammerProjOffset() const;
-	virtual float GetHammerRange() const;
+	float GetHammerRange() const;
 	virtual float GetGhoulPercent() const;
 
 	// Temp stuff
@@ -97,6 +78,7 @@ public:
 	virtual void OnCharacterSpawned(const SpawnContext &Context);
 	virtual void OnCharacterDeath(EDamageType DamageType);
 	virtual void OnCharacterDamage(SDamageContext *pContext);
+	virtual void OnCharacterBackFromDead();
 
 	virtual void OnKilledCharacter(CIcCharacter *pVictim, const DeathContext &Context);
 
@@ -116,7 +98,7 @@ public:
 	virtual void OnSlimeEffect(int Owner, int Damage, float DamageInterval) = 0;
 	virtual void OnFloatingPointCollected(int Points);
 
-	virtual void GiveUpgrade() {}
+	virtual void GiveUpgrades(const PlayerUpgradesArray &NewUpgrades){};
 
 	CGameContext *GameContext() const;
 	CGameContext *GameServer() const;
@@ -136,6 +118,8 @@ public:
 	int GetUpgradeLevel() const;
 	void ResetUpgradeLevel();
 
+	bool HasUpgrade(EUpgradeType Upgrade) const { return m_Upgrades.Contains(Upgrade); }
+
 protected:
 	virtual void GiveClassAttributes();
 	virtual void DestroyChildEntities();
@@ -148,6 +132,8 @@ protected:
 	int m_NormalEmote;
 
 	int m_UpgradeLevel = 0;
+	PlayerUpgradesArray m_Upgrades;
+	int m_ControlPointEffectAppliedTick = 0;
 	int m_HealingDisabledTicks = 0;
 };
 

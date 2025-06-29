@@ -31,6 +31,7 @@ enum class EInfclassWeapon
 
 	RICOCHET_SHOTGUN,
 	BIOLOGIST_MINE_LASER,
+	BIOLOGIST_GRENADE,
 
 	LOOPER_LASER,
 	LOOPER_GRENADE,
@@ -48,7 +49,9 @@ enum class EInfclassWeapon
 	JAWS, // Bat
 	SLIME,
 	INFECTED_HAMMER,
+	STUNNING_HAMMER,
 	BOOMER_EXPLOSION,
+	INFECTED_GRENADE,
 
 	Count,
 	Invalid = Count,

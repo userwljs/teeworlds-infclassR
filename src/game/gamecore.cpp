@@ -143,6 +143,7 @@ void CCharacterCore::Reset()
 	m_FreezeStart = 0;
 
 	// Infclass Character
+	m_ReflectingProjectiles = false;
 	m_Passenger = nullptr;
 	m_IsPassenger = false;
 	m_ProbablyStucked = false;
@@ -341,10 +342,18 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 				{
 					if(m_HookedPlayer == -1 || distance(m_HookPos, pCharCore->m_Pos) < Distance)
 					{
-						m_TriggeredEvents |= COREEVENT_HOOK_ATTACH_PLAYER;
-						m_HookState = HOOK_GRABBED;
-						SetHookedPlayer(i);
-						Distance = distance(m_HookPos, pCharCore->m_Pos);
+						if(pCharCore->m_ReflectingProjectiles)
+						{
+							GoingToRetract = true;
+							GoingToHitGround = false;
+						}
+						else
+						{
+							m_TriggeredEvents |= COREEVENT_HOOK_ATTACH_PLAYER;
+							m_HookState = HOOK_GRABBED;
+							SetHookedPlayer(i);
+							Distance = distance(m_HookPos, pCharCore->m_Pos);
+						}
 					}
 				}
 			}

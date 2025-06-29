@@ -46,6 +46,7 @@ public:
 
 	void OnWeaponFired(WeaponFireContext *pFireContext) override;
 	void OnHammerFired(WeaponFireContext *pFireContext) override;
+	void OnGrenadeFired(WeaponFireContext *pFireContext) override;
 
 	void OnSlimeEffect(int Owner, int Damage, float DamageInterval) override;
 	void OnFloatingPointCollected(int Points) override;

@@ -12,6 +12,8 @@
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 
+#include "growingexplosion.h"
+
 CIcLaser::CIcLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg, EInfclassWeapon InfClassWeapon) :
 	CIcEntity(pGameContext, CGameWorld::ENTTYPE_LASER, Pos, Owner), m_Weapon(InfClassWeapon)
 {
@@ -27,17 +29,38 @@ bool CIcLaser::HitTarget(vec2 From, vec2 To)
 {
 	vec2 At;
 	CIcCharacter *pOwnerChar = GameController()->GetCharacter(GetOwner());
-	icArray<const CIcCharacter*, 10> IgnoreHits;
+	icArray<const CIcCharacter *, 10> IgnoreHits;
+	if(m_IgnoreTarget.has_value())
+	{
+		CIcCharacter *pIgnoreChar = GameController()->GetCharacter(m_IgnoreTarget.value());
+		if(pIgnoreChar)
+		{
+			IgnoreHits.Add(pIgnoreChar);
+		}
+		m_IgnoreTarget.reset();
+	}
 	CharacterFilter HitsFilter = CIcCharacter::GetExceptCharactersFilter(IgnoreHits);
 	const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
 	CharacterFilter OnlyOtherTeamFilter = IsInfected ? CIcCharacter::GetHumansFilter() : CIcCharacter::GetInfectedFilter();
 	CharacterFilter CombinedFilter = CIcCharacter::GetFilterAllOff(HitsFilter, OnlyOtherTeamFilter);
 
-	CCharacter *pIntersect = GameWorld()->IntersectCharacter(m_Pos, To, 0.f, At, CombinedFilter);
+	CCharacter *pIntersect = GameWorld()->IntersectCharacter(From, To, 0.f, At, CombinedFilter);
 	CIcCharacter *pHit = CIcCharacter::GetInstance(pIntersect);
 
 	while(pHit)
 	{
+		if(pHit->IsReflectingProjectiles())
+		{
+			const vec2 RadiusVector = normalize(At - pHit->GetPos());
+			m_Dir = m_Dir + RadiusVector * 2;
+
+			// Ignore the target to ensure that the reflected laser
+			// won't hit it at the `At` position on the next Bounce()
+			m_IgnoreTarget = pHit->GetCid();
+			DoReflect(At);
+			return true;
+		}
+
 		IgnoreHits.Add(pHit);
 		bool Confirmed = OnCharacterHit(pHit, At);
 		if(Confirmed)
@@ -71,12 +94,31 @@ bool CIcLaser::OnCharacterHit(CIcCharacter *pHit, const vec2 &At)
 	return !m_Piercing || (m_Dmg < 1);
 }
 
+void CIcLaser::DoReflect(const vec2 &To)
+{
+	m_From = m_Pos;
+	m_Pos = To;
+
+	m_Energy -= distance(m_From, m_Pos) + m_BounceCost;
+	m_Bounces++;
+
+	if(m_Bounces > m_MaxBounces)
+		m_Energy = -1;
+
+	GameServer()->CreateSound(m_Pos, SOUND_LASER_BOUNCE);
+}
+
 void CIcLaser::DoBounce()
 {
 	m_EvalTick = Server()->Tick();
 
 	if(m_Energy < 0)
 	{
+		if(m_Explosive)
+		{
+			new CGrowingExplosion(GameServer(), m_Pos, vec2(0.0, -1.0), GetOwner(), 1, GetDamageType());
+		}
+
 		GameWorld()->DestroyEntity(this);
 		return;
 	}
@@ -87,24 +129,11 @@ void CIcLaser::DoBounce()
 	{
 		if(!HitTarget(m_Pos, To))
 		{
-			// intersected
-			m_From = m_Pos;
-			m_Pos = To;
-
-			vec2 TempPos = m_Pos;
 			vec2 TempDir = m_Dir * 4.0f;
-
-			GameServer()->Collision()->MovePoint(&TempPos, &TempDir, 1.0f, nullptr);
-			m_Pos = TempPos;
+			GameServer()->Collision()->MovePoint(&To, &TempDir, 1.0f, nullptr);
 			m_Dir = normalize(TempDir);
 
-			m_Energy -= distance(m_From, m_Pos) + m_BounceCost;
-			m_Bounces++;
-
-			if(m_Bounces > m_MaxBounces)
-				m_Energy = -1;
-
-			GameServer()->CreateSound(m_Pos, SOUND_LASER_BOUNCE);
+			DoReflect(To);
 		}
 	}
 	else

@@ -66,6 +66,8 @@ struct SpawnContext
 	{
 		MapSpawn,
 		WitchSpawn,
+		ControlPoint,
+		Scripted,
 		Count,
 		Invalid = Count
 	};
@@ -181,8 +183,12 @@ public:
 	bool IsInvisible() const;
 	bool HasGrantedInvisibility() const;
 	bool IsSolo() const;
+	bool IsReflectingProjectiles() const;
+	bool IsDeepDefenceRequested() const;
+	bool IsInDeepDefence() const;
 	bool IsInvincible() const; // Invincible here means "ignores all damage"
 	void SetInvincible(int Invincible);
+	void SetDeepDefence(bool Active);
 	bool HasHallucination() const;
 	void Freeze(float Time, int Player, FREEZEREASON Reason);
 	bool IsFrozen() const;
@@ -204,6 +210,10 @@ public:
 	void MakeInvisible();
 	void GrantInvisibility(float Duration);
 	void SetSoloForDuration(float Duration);
+
+	bool IsDead() const;
+	void SetDeadForDuration(float Duration);
+
 	void GrantSpawnProtection(float Duration);
 
 	bool PositionIsLocked() const;
@@ -326,6 +336,7 @@ protected:
 	int m_DamageTaken = 0;
 	icArray<CDamagePoint, 4> m_TakenDamageDetails;
 	bool m_PositionLocked = false;
+	vec2 m_PositionLockedAt{};
 
 	bool m_SleepThisTick{};
 	int m_SleepTicks = 0;
@@ -350,10 +361,13 @@ protected:
 	int m_PoisonFrom = 0;
 	EDamageType m_PoisonDamageType;
 
+	bool m_InDeepDefenceForThisTick{};
+	bool m_WantDeepDefence{};
 	bool m_IsInvisible = false;
 	int m_AntiFireTime = 0;
 	int m_GrantedInvisibilityUntilTick = 0;
 	std::optional<int> m_SoloUntilTick;
+	std::optional<int> m_DeadUntilTick;
 	int m_Invincible = 0;
 
 	int m_HealTick = 0;
