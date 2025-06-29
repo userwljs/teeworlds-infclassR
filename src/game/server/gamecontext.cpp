@@ -980,6 +980,7 @@ void CGameContext::SendKillMessage(int Killer, int Victim, int Weapon, int ModeS
 //
 void CGameContext::StartVote(const char *pDesc, const char *pCommand, const char *pReason)
 {
+	const char *pSixupDesc = pDesc;
 	// check if a vote is already running
 	if(m_VoteCloseTime)
 		return;
@@ -1002,6 +1003,7 @@ void CGameContext::StartVote(const char *pDesc, const char *pCommand, const char
 	// start vote
 	m_VoteCloseTime = time_get() + time_freq() * g_Config.m_SvVoteTime;
 	str_copy(m_aVoteDescription, pDesc);
+	str_copy(m_aSixupVoteDescription, pSixupDesc, sizeof(m_aSixupVoteDescription));
 	str_copy(m_aVoteCommand, pCommand);
 	str_copy(m_aVoteReason, pReason);
 	SendVoteSet(-1);
@@ -1050,20 +1052,62 @@ void CGameContext::EndVote()
 
 void CGameContext::SendVoteSet(int ClientId)
 {
-	CNetMsg_Sv_VoteSet Msg;
+	::CNetMsg_Sv_VoteSet Msg6;
+	protocol7::CNetMsg_Sv_VoteSet Msg7;
+
+	Msg7.m_ClientId = m_VoteCreator;
 	if(m_VoteCloseTime)
 	{
-		Msg.m_Timeout = (m_VoteCloseTime-time_get())/time_freq();
-		Msg.m_pDescription = m_aVoteDescription;
-		Msg.m_pReason = m_aVoteReason;
+		Msg6.m_Timeout = Msg7.m_Timeout = (m_VoteCloseTime - time_get()) / time_freq();
+		Msg6.m_pDescription = m_aVoteDescription;
+		Msg7.m_pDescription = m_aSixupVoteDescription;
+		Msg6.m_pReason = Msg7.m_pReason = m_aVoteReason;
+
+		int &Type = (Msg7.m_Type = protocol7::VOTE_UNKNOWN);
+		if(IsKickVote())
+			Type = protocol7::VOTE_START_KICK;
+		else if(IsSpecVote())
+			Type = protocol7::VOTE_START_SPEC;
+		else if(IsOptionVote())
+			Type = protocol7::VOTE_START_OP;
 	}
 	else
 	{
-		Msg.m_Timeout = 0;
-		Msg.m_pDescription = "";
-		Msg.m_pReason = "";
+		Msg6.m_Timeout = Msg7.m_Timeout = 0;
+		Msg6.m_pDescription = Msg7.m_pDescription = "";
+		Msg6.m_pReason = Msg7.m_pReason = "";
+
+		int &Type = (Msg7.m_Type = protocol7::VOTE_UNKNOWN);
+		if(m_VoteEnforce == VOTE_ENFORCE_NO || m_VoteEnforce == VOTE_ENFORCE_NO_ADMIN)
+			Type = protocol7::VOTE_END_FAIL;
+		else if(m_VoteEnforce == VOTE_ENFORCE_YES || m_VoteEnforce == VOTE_ENFORCE_YES_ADMIN)
+			Type = protocol7::VOTE_END_PASS;
+		else if(m_VoteEnforce == VOTE_ENFORCE_ABORT || m_VoteEnforce == VOTE_ENFORCE_CANCEL)
+			Type = protocol7::VOTE_END_ABORT;
+
+		if(m_VoteEnforce == VOTE_ENFORCE_NO_ADMIN || m_VoteEnforce == VOTE_ENFORCE_YES_ADMIN)
+			Msg7.m_ClientId = -1;
 	}
-	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, ClientId);
+
+	if(ClientId == -1)
+	{
+		for(int i = 0; i < Server()->MaxClients(); i++)
+		{
+			if(!m_apPlayers[i])
+				continue;
+			if(!Server()->IsSixup(i))
+				Server()->SendPackMsg(&Msg6, MSGFLAG_VITAL, i);
+			else
+				Server()->SendPackMsg(&Msg7, MSGFLAG_VITAL, i);
+		}
+	}
+	else
+	{
+		if(!Server()->IsSixup(ClientId))
+			Server()->SendPackMsg(&Msg6, MSGFLAG_VITAL, ClientId);
+		else
+			Server()->SendPackMsg(&Msg7, MSGFLAG_VITAL, ClientId);
+	}
 }
 
 void CGameContext::SendVoteStatus(int ClientId, int Total, int Yes, int No)
@@ -1278,6 +1322,7 @@ void CGameContext::OnTick()
 				str_format(aCmd, sizeof(aCmd), "ban %d %d Banned by vote", i, g_Config.m_SvVoteKickBantime*3);
 				str_format(aDesc, sizeof(aDesc), "Ban \"%s\"", Server()->ClientName(i));
 				m_VoteBanClientId = i;
+				m_VoteType = VOTE_TYPE_KICK;
 				StartVote(aDesc, aCmd, "");
 				continue;
 			}
@@ -2049,20 +2094,154 @@ bool CheckClientId2(int ClientId)
 
 void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientId)
 {
-	void *pRawMsg = m_NetObjHandler.SecureUnpackMsg(*pMsgId, pUnpacker);
-
-	if(!pRawMsg)
+	if(Server()->IsSixup(ClientId) && *pMsgId < OFFSET_UUID)
 	{
-		if(g_Config.m_Debug)
-		{
-			int MsgId = *pMsgId;
-			char aBuf[256];
-			str_format(aBuf, sizeof(aBuf), "dropped weird message '%s' (%d), failed on '%s'", m_NetObjHandler.GetMsgName(MsgId), MsgId, m_NetObjHandler.FailedMsgOn());
-			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "server", aBuf);
-		}
-	}
+		void *pRawMsg = m_NetObjHandler7.SecureUnpackMsg(*pMsgId, pUnpacker);
+		if(!pRawMsg)
+			return nullptr;
 
-	return pRawMsg;
+		CPlayer *pPlayer = m_apPlayers[ClientId];
+		static char s_aRawMsg[1024];
+
+		if(*pMsgId == protocol7::NETMSGTYPE_CL_SAY)
+		{
+			protocol7::CNetMsg_Cl_Say *pMsg7 = (protocol7::CNetMsg_Cl_Say *)pRawMsg;
+			// Should probably use a placement new to start the lifetime of the object to avoid future weirdness
+			::CNetMsg_Cl_Say *pMsg = (::CNetMsg_Cl_Say *)s_aRawMsg;
+
+			if(pMsg7->m_Mode == protocol7::CHAT_WHISPER)
+			{
+				if(!CheckClientId2(pMsg7->m_Target) || !Server()->ClientIngame(pMsg7->m_Target))
+					return nullptr;
+				if(ProcessSpamProtection(ClientId))
+					return nullptr;
+
+				WhisperId(ClientId, pMsg7->m_Target, pMsg7->m_pMessage);
+				return nullptr;
+			}
+			else
+			{
+				pMsg->m_Team = pMsg7->m_Mode == protocol7::CHAT_TEAM;
+				pMsg->m_pMessage = pMsg7->m_pMessage;
+			}
+		}
+		else if(*pMsgId == protocol7::NETMSGTYPE_CL_STARTINFO)
+		{
+			protocol7::CNetMsg_Cl_StartInfo *pMsg7 = (protocol7::CNetMsg_Cl_StartInfo *)pRawMsg;
+			::CNetMsg_Cl_StartInfo *pMsg = (::CNetMsg_Cl_StartInfo *)s_aRawMsg;
+
+			pMsg->m_pName = pMsg7->m_pName;
+			pMsg->m_pClan = pMsg7->m_pClan;
+			pMsg->m_Country = pMsg7->m_Country;
+
+			CTeeInfo Info(pMsg7->m_apSkinPartNames, pMsg7->m_aUseCustomColors, pMsg7->m_aSkinPartColors);
+			Info.FromSixup();
+			pPlayer->m_TeeInfos = Info;
+
+			str_copy(s_aRawMsg + sizeof(*pMsg), Info.m_aSkinName, sizeof(s_aRawMsg) - sizeof(*pMsg));
+
+			pMsg->m_pSkin = s_aRawMsg + sizeof(*pMsg);
+			pMsg->m_UseCustomColor = pPlayer->m_TeeInfos.m_UseCustomColor;
+			pMsg->m_ColorBody = pPlayer->m_TeeInfos.m_ColorBody;
+			pMsg->m_ColorFeet = pPlayer->m_TeeInfos.m_ColorFeet;
+		}
+		else if(*pMsgId == protocol7::NETMSGTYPE_CL_SKINCHANGE)
+		{
+			protocol7::CNetMsg_Cl_SkinChange *pMsg = (protocol7::CNetMsg_Cl_SkinChange *)pRawMsg;
+			if(g_Config.m_SvSpamprotection && pPlayer->m_LastChangeInfo &&
+				pPlayer->m_LastChangeInfo + Server()->TickSpeed() * g_Config.m_SvInfoChangeDelay > Server()->Tick())
+				return nullptr;
+
+			pPlayer->m_LastChangeInfo = Server()->Tick();
+
+			CTeeInfo Info(pMsg->m_apSkinPartNames, pMsg->m_aUseCustomColors, pMsg->m_aSkinPartColors);
+			Info.FromSixup();
+			pPlayer->m_TeeInfos = Info;
+
+			protocol7::CNetMsg_Sv_SkinChange Msg;
+			Msg.m_ClientId = ClientId;
+			for(int p = 0; p < protocol7::NUM_SKINPARTS; p++)
+			{
+				Msg.m_apSkinPartNames[p] = pMsg->m_apSkinPartNames[p];
+				Msg.m_aSkinPartColors[p] = pMsg->m_aSkinPartColors[p];
+				Msg.m_aUseCustomColors[p] = pMsg->m_aUseCustomColors[p];
+			}
+
+			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, -1);
+
+			return nullptr;
+		}
+		else if(*pMsgId == protocol7::NETMSGTYPE_CL_SETSPECTATORMODE)
+		{
+			protocol7::CNetMsg_Cl_SetSpectatorMode *pMsg7 = (protocol7::CNetMsg_Cl_SetSpectatorMode *)pRawMsg;
+			::CNetMsg_Cl_SetSpectatorMode *pMsg = (::CNetMsg_Cl_SetSpectatorMode *)s_aRawMsg;
+
+			if(pMsg7->m_SpecMode == protocol7::SPEC_FREEVIEW)
+				pMsg->m_SpectatorId = SPEC_FREEVIEW;
+			else if(pMsg7->m_SpecMode == protocol7::SPEC_PLAYER)
+				pMsg->m_SpectatorId = pMsg7->m_SpectatorId;
+			else
+				pMsg->m_SpectatorId = SPEC_FREEVIEW; // Probably not needed
+		}
+		else if(*pMsgId == protocol7::NETMSGTYPE_CL_SETTEAM)
+		{
+			protocol7::CNetMsg_Cl_SetTeam *pMsg7 = (protocol7::CNetMsg_Cl_SetTeam *)pRawMsg;
+			::CNetMsg_Cl_SetTeam *pMsg = (::CNetMsg_Cl_SetTeam *)s_aRawMsg;
+
+			pMsg->m_Team = pMsg7->m_Team;
+		}
+		else if(*pMsgId == protocol7::NETMSGTYPE_CL_COMMAND)
+		{
+			protocol7::CNetMsg_Cl_Command *pMsg7 = (protocol7::CNetMsg_Cl_Command *)pRawMsg;
+			::CNetMsg_Cl_Say *pMsg = (::CNetMsg_Cl_Say *)s_aRawMsg;
+
+			str_format(s_aRawMsg + sizeof(*pMsg), sizeof(s_aRawMsg) - sizeof(*pMsg), "/%s %s", pMsg7->m_pName, pMsg7->m_pArguments);
+			pMsg->m_pMessage = s_aRawMsg + sizeof(*pMsg);
+			pMsg->m_Team = 0;
+
+			*pMsgId = NETMSGTYPE_CL_SAY;
+			return s_aRawMsg;
+		}
+		else if(*pMsgId == protocol7::NETMSGTYPE_CL_CALLVOTE)
+		{
+			protocol7::CNetMsg_Cl_CallVote *pMsg7 = (protocol7::CNetMsg_Cl_CallVote *)pRawMsg;
+			::CNetMsg_Cl_CallVote *pMsg = (::CNetMsg_Cl_CallVote *)s_aRawMsg;
+
+			int Authed = Server()->GetAuthedState(ClientId);
+			if(pMsg7->m_Force)
+			{
+				str_format(s_aRawMsg, sizeof(s_aRawMsg), "force_vote \"%s\" \"%s\" \"%s\"", pMsg7->m_pType, pMsg7->m_pValue, pMsg7->m_pReason);
+				Console()->SetAccessLevel(Authed == AUTHED_ADMIN ? EAccessLevel::ADMIN : Authed == AUTHED_MOD ? EAccessLevel::MOD : EAccessLevel::HELPER);
+				Console()->ExecuteLine(s_aRawMsg, ClientId, false);
+				Console()->SetAccessLevel(EAccessLevel::ADMIN);
+				return nullptr;
+			}
+
+			pMsg->m_pValue = pMsg7->m_pValue;
+			pMsg->m_pReason = pMsg7->m_pReason;
+			pMsg->m_pType = pMsg7->m_pType;
+		}
+		else if(*pMsgId == protocol7::NETMSGTYPE_CL_EMOTICON)
+		{
+			protocol7::CNetMsg_Cl_Emoticon *pMsg7 = (protocol7::CNetMsg_Cl_Emoticon *)pRawMsg;
+			::CNetMsg_Cl_Emoticon *pMsg = (::CNetMsg_Cl_Emoticon *)s_aRawMsg;
+
+			pMsg->m_Emoticon = pMsg7->m_Emoticon;
+		}
+		else if(*pMsgId == protocol7::NETMSGTYPE_CL_VOTE)
+		{
+			protocol7::CNetMsg_Cl_Vote *pMsg7 = (protocol7::CNetMsg_Cl_Vote *)pRawMsg;
+			::CNetMsg_Cl_Vote *pMsg = (::CNetMsg_Cl_Vote *)s_aRawMsg;
+
+			pMsg->m_Vote = pMsg7->m_Vote;
+		}
+
+		*pMsgId = Msg_SevenToSix(*pMsgId);
+
+		return s_aRawMsg;
+	}
+	else
+		return m_NetObjHandler.SecureUnpackMsg(*pMsgId, pUnpacker);
 }
 
 void CGameContext::CensorMessage(char *pCensoredMessage, const char *pMessage, int Size)
@@ -2295,6 +2474,7 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 	if(RateLimitPlayerVote(ClientId))
 		return;
 
+	m_VoteType = VOTE_TYPE_UNKNOWN;
 	char aChatmsg[512] = {0};
 	char aDesc[VOTE_DESC_LENGTH] = {0};
 	char aCmd[VOTE_CMD_LENGTH] = {0};
@@ -2441,6 +2621,8 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 					str_format(aCmd, sizeof(aCmd), "%s", pMsg->m_pValue);
 				}
 			}
+
+			m_VoteType = VOTE_TYPE_OPTION;
 		}
 		else if(str_comp_nocase(pMsg->m_pType, "spectate") == 0)
 		{
@@ -2474,6 +2656,7 @@ void CGameContext::OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int Cli
 			str_format(aChatmsg, sizeof(aChatmsg), "'%s' called for vote to move '%s' to spectators (%s)", Server()->ClientName(ClientId), Server()->ClientName(SpectateId), aReason);
 			str_format(aDesc, sizeof(aDesc), "move '%s' to spectators", Server()->ClientName(SpectateId));
 			str_format(aCmd, sizeof(aCmd), "set_team %d -1 %d", SpectateId, g_Config.m_SvVoteSpectateRejoindelay);
+			m_VoteType = VOTE_TYPE_SPECTATE;
 		}
 
 		// Start a vote
@@ -5156,7 +5339,17 @@ void CGameContext::WhisperId(int ClientId, int VictimId, const char *pMessage)
 
 	char aBuf[256];
 
-	if(GetClientVersion(ClientId) >= VERSION_DDNET_WHISPER)
+	if(Server()->IsSixup(ClientId))
+	{
+		protocol7::CNetMsg_Sv_Chat Msg;
+		Msg.m_ClientId = ClientId;
+		Msg.m_Mode = protocol7::CHAT_WHISPER;
+		Msg.m_pMessage = aCensoredMessage;
+		Msg.m_TargetId = VictimId;
+
+		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, ClientId);
+	}
+	else if(GetClientVersion(ClientId) >= VERSION_DDNET_WHISPER)
 	{
 		CNetMsg_Sv_Chat Msg;
 		Msg.m_Team = CHAT_WHISPER_SEND;
@@ -5184,7 +5377,17 @@ void CGameContext::WhisperId(int ClientId, int VictimId, const char *pMessage)
 	if(MessageTriggersBanOrKick(ClientId, pMessage))
 		return;
 
-	if(GetClientVersion(VictimId) >= VERSION_DDNET_WHISPER)
+	if(Server()->IsSixup(VictimId))
+	{
+		protocol7::CNetMsg_Sv_Chat Msg;
+		Msg.m_ClientId = ClientId;
+		Msg.m_Mode = protocol7::CHAT_WHISPER;
+		Msg.m_pMessage = aCensoredMessage;
+		Msg.m_TargetId = VictimId;
+
+		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, VictimId);
+	}
+	else if(GetClientVersion(VictimId) >= VERSION_DDNET_WHISPER)
 	{
 		CNetMsg_Sv_Chat Msg2;
 		Msg2.m_Team = CHAT_WHISPER_RECV;
