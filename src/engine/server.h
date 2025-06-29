@@ -362,8 +362,8 @@ public:
 	virtual void ShowStats(int ClientId, int UserId) = 0;
 	virtual int GetUserLevel(int ClientId) = 0;
 #else
-	virtual void Register(int ClientId, const char* pUsername, const char* pPassword, const char* pEmail) = 0;
-	virtual void Login(int ClientId, const char* pUsername, const char* pPassword) = 0;
+	virtual void Register(int ClientId, const char *pUsername = nullptr, const char *pPassword = nullptr) = 0;
+	virtual void Login(int ClientId, const char *pUsername, const char *pPassword) = 0;
 	virtual void Logout(int ClientId) = 0;
 #endif
 

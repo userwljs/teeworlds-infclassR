@@ -5,6 +5,20 @@ IDbConnection::IDbConnection(const char *pPrefix)
 	str_copy(m_aPrefix, pPrefix);
 }
 
+void IDbConnection::FormatCreatePasswords(char *aBuf, unsigned int BufferSize, bool Backup) const
+{
+	str_format(aBuf, BufferSize,
+		"CREATE TABLE IF NOT EXISTS %s_passwords%s ("
+		"  UserId INTEGER PRIMARY KEY AUTOINCREMENT, "
+		"  Username VARCHAR(%d) COLLATE %s UNIQUE NOT NULL, "
+		"  PasswordHash VARCHAR(64) COLLATE %s NOT NULL,"
+		"  RegisterDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
+		"  RegisterIp VARCHAR(64) NOT NULL" //The IP is kept in order to prevent registration flooding
+		")",
+		GetPrefix(), Backup ? "_backup" : "",
+		MAX_NAME_LENGTH_SQL, BinaryCollate(), BinaryCollate());
+}
+
 void IDbConnection::FormatCreateRace(char *aBuf, unsigned int BufferSize, bool Backup) const
 {
 	str_format(aBuf, BufferSize,

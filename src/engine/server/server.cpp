@@ -44,7 +44,6 @@
 
 /* INFECTION MODIFICATION START ***************************************/
 #include <engine/server/mapconverter.h>
-#include <engine/server/crypt.h>
 #include <game/server/infclass/events-director.h>
 
 #include <teeuniverses/components/localization.h>
@@ -340,6 +339,162 @@ void CRconClientLogger::Log(const CLogMessage *pMessage)
 	m_pServer->SendRconLogLine(m_ClientId, pMessage);
 }
 
+void CServer::AuthTick()
+{
+	for(int ClientId = 0; ClientId < MAX_CLIENTS; ++ClientId)
+	{
+		CClientAccountRequests &Requests = m_AccountsRequests[ClientId];
+		CClient &Client = m_aClients[ClientId];
+		if(Client.m_State == CClient::STATE_EMPTY)
+		{
+			Requests.Reset();
+		}
+		else
+		{
+			if(Requests.m_LoginResult && Requests.m_LoginResult->m_Completed)
+			{
+				if(Requests.m_LoginResult->m_Success)
+				{
+					if(Requests.m_LoginResult->m_UserId)
+					{
+						const char *pUsername = Requests.m_LoginResult->m_aUsername;
+						int UserId = Requests.m_LoginResult->m_UserId;
+						std::optional<int> ClientWithUserId = GetClientIdByUserId(UserId);
+						if(ClientWithUserId.has_value())
+						{
+							if(Requests.m_UsingRcon)
+							{
+								char aBuf[256];
+								str_format(aBuf, sizeof(aBuf), "The account is already logged in by ClientId %d", UserId);
+								SendRconLine(ClientId, aBuf);
+							}
+
+							GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+								_("Account {str:Username} is already used by ClientId {int:ClientId})"),
+								"Username", pUsername,
+								"ClientId", &ClientWithUserId.value(),
+								nullptr);
+						}
+						else
+						{
+							str_copy(Client.m_aUsername, Requests.m_LoginResult->m_aUsername);
+							Client.m_UserId = UserId;
+
+							if(str_comp(Client.m_aName, pUsername) == 0)
+							{
+								// Username is the same as in client info
+							}
+							else
+							{
+								TakeUserName(ClientId);
+
+								char aBuf[256];
+								str_format(aBuf, sizeof(aBuf), "change_name previous='%s' now='%s'", Client.m_aName, pUsername);
+								Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", aBuf);
+							}
+
+							if(Requests.m_UsingRcon)
+							{
+								char aBuf[256];
+								str_format(aBuf, sizeof(aBuf), "You've logged in as '%s' with id %d", pUsername, UserId);
+								SendRconLine(ClientId, aBuf);
+							}
+
+							GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER,
+								_("{str:PlayerName} logged in (id: {int:UserId})"),
+								"PlayerName", Client.m_aUsername,
+								"UserId", &UserId,
+								nullptr);
+
+							{
+								EAccessLevel AccessLevel{EAccessLevel::USER};
+								for(const SAccountAccessInfo &AccessInfo : m_vAccountsAccessInfo)
+								{
+									if(AccessInfo.UserId == UserId)
+									{
+										AccessLevel = AccessInfo.AccessLevel;
+										SetClientAccessLevel(ClientId, AccessInfo.AccessLevel, true);
+									}
+								}
+
+								char aBuf[256];
+								str_format(aBuf, sizeof(aBuf), "ClientId=%d authed as %s (UserId %d, %s)",
+									ClientId, pUsername, UserId, toString(AccessLevel));
+								Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "accounts", aBuf);
+							}
+						}
+					}
+					else
+					{
+						if(Requests.m_UsingRcon)
+						{
+							SendRconLine(ClientId, "Wrong username or password.");
+						}
+						else
+						{
+							GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT,
+								_("Wrong username or password."), nullptr);
+						}
+					}
+				}
+				else
+				{
+					const char *pText = _("An error occurred during the logging in.");
+					if(Requests.m_UsingRcon)
+					{
+						SendRconLine(ClientId, pText);
+					}
+					else
+					{
+						GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, pText, nullptr);
+					}
+				}
+
+				Requests.m_LoginResult.reset();
+				Requests.m_UsingRcon = false;
+			}
+
+			if(Requests.m_RegisterAccountResult && Requests.m_RegisterAccountResult->m_Completed)
+			{
+				Requests.m_RegistrationRequested = false;
+
+				const char *pText = _("Unable to register an account");
+				if(Requests.m_RegisterAccountResult->m_Success)
+				{
+					switch(Requests.m_RegisterAccountResult->m_Result)
+					{
+					case CAccountCreationResult::Result::Unknown:
+						break;
+					case CAccountCreationResult::Result::Success:
+						pText = _("The account successfully registered. Time to log in.");
+						break;
+					case CAccountCreationResult::Result::UsernameAlreadyRegistered:
+						pText = _("The username is already taken.");
+						break;
+					case CAccountCreationResult::Result::FloodProtectedTriggered:
+						// RegistrationIntervalSeconds==300
+						pText = _("Please wait 5 minutes before creating another account");
+						break;
+					}
+				}
+				else
+				{
+					pText = _("An error occurred during the creation of your account.");
+				}
+
+				GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER, pText, nullptr);
+				if(Requests.m_UsingRcon)
+				{
+					SendRconLine(ClientId, pText);
+				}
+
+				Requests.m_RegisterAccountResult.reset();
+				Requests.m_UsingRcon = false;
+			}
+		}
+	}
+}
+
 void CServer::CClient::Reset(bool ResetScore)
 {
 	// reset input
@@ -363,7 +518,7 @@ void CServer::CClient::Reset(bool ResetScore)
 		m_NbRound = 0;
 		m_WaitingTime = 0;
 
-		m_UserId = -1;
+		m_UserId.reset();
 #ifdef CONF_SQL
 		m_UserLevel = SQL_USERLEVEL_NORMAL;
 #endif
@@ -485,9 +640,11 @@ bool CServer::IsClientNameAvailable(int ClientId, const char *pNameRequest)
 	// make sure that two clients don't have the same name
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
-		if(i != ClientId && m_aClients[i].m_State >= CClient::STATE_READY)
+		const CClient & Client = m_aClients[i];
+		if(i != ClientId && Client.m_State >= CClient::STATE_READY)
 		{
-			if(str_utf8_comp_confusable(pNameRequest, m_aClients[i].m_aName) == 0)
+			const char *pClientName = Client.m_UserId.has_value() ? Client.m_aUsername : Client.m_aName;
+			if(str_utf8_comp_confusable(pNameRequest, pClientName) == 0)
 				return false;
 		}
 	}
@@ -699,6 +856,7 @@ int CServer::Init()
 		Client.m_TrafficSince = 0;
 		Client.m_IsBot = false;
 		Client.m_WaitingTime = 0;
+		Client.m_UserId.reset();
 		Client.m_Accusation.m_Num = 0;
 		Client.m_ShowIps = false;
 		Client.m_Latency = 0;
@@ -799,7 +957,7 @@ const char *CServer::ClientName(int ClientId) const
 		
 	if(m_aClients[ClientId].m_State == CServer::CClient::STATE_INGAME)
 	{
-		if(m_aClients[ClientId].m_UserId >= 0)
+		if(m_aClients[ClientId].m_UserId.has_value())
 			return m_aClients[ClientId].m_aUsername;
 		else
 			return m_aClients[ClientId].m_aName;
@@ -1223,7 +1381,7 @@ int CServer::NewBot(int ClientId)
 		return 1;
 	m_aClients[ClientId].m_State = CClient::STATE_INGAME;
 	m_aClients[ClientId].m_Country = -1;
-	m_aClients[ClientId].m_UserId = -1;
+	m_aClients[ClientId].m_UserId.reset();
 	m_aClients[ClientId].m_IsBot = true;
 
 	return 0;
@@ -1237,7 +1395,7 @@ int CServer::DelBot(int ClientId)
 	m_aClients[ClientId].m_aName[0] = 0;
 	m_aClients[ClientId].m_aClan[0] = 0;
 	m_aClients[ClientId].m_Country = -1;
-	m_aClients[ClientId].m_UserId = -1;
+	m_aClients[ClientId].m_UserId.reset();
 	m_aClients[ClientId].m_Authed = AUTHED_NO;
 	m_aClients[ClientId].m_AuthTries = 0;
 	m_aClients[ClientId].m_pRconCmdToSend = nullptr;
@@ -1283,7 +1441,11 @@ int CServer::NewClientCallback(int ClientId, void *pUser, bool Sixup)
 	pThis->m_aClients[ClientId].m_InfClassVersion = 0;
 	pThis->m_aClients[ClientId].m_Quitting = false;
 	pThis->m_aClients[ClientId].Reset();
-	
+
+	CClientAccountRequests &Requests = pThis->m_AccountsRequests[ClientId];
+	Requests.Reset();
+	net_addr_str(pThis->m_NetServer.ClientAddr(ClientId), Requests.m_aIpStr, sizeof(Requests.m_aIpStr), false);
+
 	//Getback session about the client
 	IServer::CClientSession* pSession = pThis->m_NetSession.GetData(pThis->m_NetServer.ClientAddr(ClientId));
 	if(pSession)
@@ -1344,7 +1506,7 @@ int CServer::DelClientCallback(int ClientId, EClientDropType Type, const char *p
 	pThis->m_aClients[ClientId].m_Sixup = false;
 	pThis->m_aClients[ClientId].m_RedirectDropTime = 0;
 	pThis->m_aClients[ClientId].m_WaitingTime = 0;
-	pThis->m_aClients[ClientId].m_UserId = -1;
+	pThis->m_aClients[ClientId].m_UserId.reset();
 #ifdef CONF_SQL
 	pThis->m_aClients[ClientId].m_UserLevel = SQL_USERLEVEL_NORMAL;
 #endif
@@ -1353,6 +1515,9 @@ int CServer::DelClientCallback(int ClientId, EClientDropType Type, const char *p
 
 	if(isBot)
 		return 0;
+
+	CClientAccountRequests &Requests = pThis->m_AccountsRequests[ClientId];
+	Requests.Reset();
 
 	//Keep information about client for 10 minutes
 	pThis->m_NetSession.AddSession(pThis->m_NetServer.ClientAddr(ClientId), 10*60, &pThis->m_aClients[ClientId].m_Session);
@@ -1750,6 +1915,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				}
 
 				m_aClients[ClientId].m_State = CClient::STATE_CONNECTING;
+				SendRconType(ClientId, true);
 				SendCapabilities(ClientId);
 				SendMap(ClientId);
 			}
@@ -1912,9 +2078,10 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 			{
 				return;
 			}
+			const char *pName = "";
 			if(!IsSixup(ClientId))
 			{
-				Unpacker.GetString(); // login name, not used
+				pName = Unpacker.GetString(CUnpacker::SANITIZE_CC); // login name, now used
 			}
 			const char *pPw = Unpacker.GetString(CUnpacker::SANITIZE_CC);
 			if(Unpacker.Error())
@@ -1922,105 +2089,53 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				return;
 			}
 
-			std::optional<int> LoggedInAuthLevel;
-			if(g_Config.m_SvRconPassword[0] == 0 && g_Config.m_SvRconModPassword[0] == 0)
+			if(pName[0])
 			{
-				SendRconLine(ClientId, "No rcon password set on server. Set sv_rcon_password and/or sv_rcon_mod_password to enable the remote console.");
-				return;
-			}
-			else if(g_Config.m_SvRconTokenCheck && !m_NetServer.HasSecurityToken(ClientId))
-			{
-				SendRconLine(ClientId, "You must use a client that support anti-spoof protection (DDNet-like)");
+				char aTrimmedName[MAX_NAME_LENGTH];
+				str_copy(aTrimmedName, str_utf8_skip_whitespaces(pName));
+				str_utf8_trim_right(aTrimmedName);
+
+				CNameBan *pBanned = IsNameBanned(aTrimmedName, m_vNameBans);
+				if(pBanned)
+				{
+					OnAuthFailed(ClientId);
+				}
+
+				CClientAccountRequests &Requests = m_AccountsRequests[ClientId];
+				Requests.m_UsingRcon = true;
+				if(Requests.m_RegisterAccountResult || Requests.m_LoginResult)
+				{
+					SendRconLine(ClientId, "Please wait until the previous request is completed");
+				}
+				if(Requests.m_RegistrationRequested)
+				{
+					Register(ClientId, aTrimmedName, pPw);
+				}
+				else
+				{
+					Login(ClientId, aTrimmedName, pPw);
+				}
 				return;
 			}
 
+			std::optional<EAccessLevel> LoggedInAccessLevel;
 			if(g_Config.m_SvRconPassword[0] && str_comp(pPw, g_Config.m_SvRconPassword) == 0)
 			{
-				LoggedInAuthLevel = AUTHED_ADMIN;
+				LoggedInAccessLevel = EAccessLevel::ADMIN;
 			}
 			else if(g_Config.m_SvRconModPassword[0] && str_comp(pPw, g_Config.m_SvRconModPassword) == 0)
 			{
-				LoggedInAuthLevel = AUTHED_MOD;
+				LoggedInAccessLevel = EAccessLevel::MOD;
 			}
 
-			if(LoggedInAuthLevel.has_value())
+			if(LoggedInAccessLevel.has_value())
 			{
-				if(m_aClients[ClientId].m_Authed != LoggedInAuthLevel.value())
-				{
-					if(!IsSixup(ClientId))
-					{
-						CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
-						Msgp.AddInt(1); // authed
-						Msgp.AddInt(1); // cmdlist
-						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
-					}
-					else
-					{
-						CMsgPacker Msgp(protocol7::NETMSG_RCON_AUTH_ON, true, true);
-						SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
-					}
-
-					m_aClients[ClientId].m_Authed = LoggedInAuthLevel.value();
-					bool SendRconCmds = IsSixup(ClientId) ? true : (Unpacker.GetInt() > 0);
-					if(!Unpacker.Error() && SendRconCmds)
-					{
-						EAccessLevel ConsoleAccessLevel{};
-						switch(LoggedInAuthLevel.value())
-						{
-						case AUTHED_ADMIN:
-							ConsoleAccessLevel = EAccessLevel::ADMIN;
-							break;
-						case AUTHED_MOD:
-							ConsoleAccessLevel = EAccessLevel::MOD;
-							break;
-						default:
-							ConsoleAccessLevel = EAccessLevel::USER;
-							break;
-						}
-
-						m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(ConsoleAccessLevel, CFGFLAG_SERVER);
-					}
-
-					char aBuf[256];
-					switch(LoggedInAuthLevel.value())
-					{
-					case AUTHED_ADMIN:
-					{
-						SendRconLine(ClientId, "Admin authentication successful. Full remote console access granted.");
-						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (admin)", ClientId);
-						break;
-					}
-					case AUTHED_MOD:
-					{
-						SendRconLine(ClientId, "Moderator authentication successful. Limited remote console access granted.");
-						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (moderator)", ClientId);
-						break;
-					}
-					case AUTHED_HELPER:
-					{
-						SendRconLine(ClientId, "Helper authentication successful. Limited remote console access granted.");
-						str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (helper)", ClientId);
-						break;
-					}
-					}
-					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-
-					GameServer()->OnSetAuthed(ClientId, m_aClients[ClientId].m_Authed);
-				}
+				bool SendRconCmds = IsSixup(ClientId) ? true : (Unpacker.GetInt() > 0);
+				SetClientAccessLevel(ClientId, LoggedInAccessLevel.value(), !Unpacker.Error() && SendRconCmds);
 			}
 			else if(Config()->m_SvRconMaxTries)
 			{
-				m_aClients[ClientId].m_AuthTries++;
-				char aBuf[128];
-				str_format(aBuf, sizeof(aBuf), "Wrong password %d/%d.", m_aClients[ClientId].m_AuthTries, g_Config.m_SvRconMaxTries);
-				SendRconLine(ClientId, aBuf);
-				if(m_aClients[ClientId].m_AuthTries >= g_Config.m_SvRconMaxTries)
-				{
-					if(!g_Config.m_SvRconBantime)
-						m_NetServer.Drop(ClientId, EClientDropType::Kick, "Too many remote console authentication tries");
-					else
-						m_ServerBan.BanAddr(m_NetServer.ClientAddr(ClientId), g_Config.m_SvRconBantime * 60, "Too many remote console authentication tries");
-				}
+				OnAuthFailed(ClientId);
 			}
 			else
 			{
@@ -3072,6 +3187,7 @@ int CServer::Run()
 				PumpNetwork(PacketWaiting);
 
 			set_new_tick();
+			AuthTick();
 
 			int64_t t = time_get();
 			int NewTicks = 0;
@@ -3695,6 +3811,170 @@ void CServer::ConShowIps(IConsole::IResult *pResult, void *pUser)
 	}
 }
 
+void CServer::ConAccounts(IConsole::IResult *pResult, void *pUser)
+{
+	CServer *pServer = (CServer *)pUser;
+	pServer->ConAccounts(pResult);
+}
+
+void CServer::ConAccounts(IConsole::IResult *pResult)
+{
+	auto PrintStatus = [this]() {
+		char aBuf[64];
+		const bool AccountsAreMandatory = str_comp(Config()->m_SvAccounts, "mandatory") == 0;
+		const bool AccountsAreEnabled = AccountsAreMandatory || (str_comp(Config()->m_SvAccounts, "enabled") == 0);
+		const char *pAccountsState = AccountsAreEnabled ? Config()->m_SvAccounts : "disabled";
+
+		str_format(aBuf, sizeof(aBuf), "Accounts are %s", pAccountsState);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", aBuf);
+
+		int LoggedInUsers{};
+		for(const CClient &Client : m_aClients)
+		{
+			if(Client.m_UserId.has_value())
+			{
+				++LoggedInUsers;
+			}
+		}
+
+		str_format(aBuf, sizeof(aBuf), "%d users logged in", LoggedInUsers);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", aBuf);
+
+		// int RegisteredUsers{};
+		// str_format(aBuf, sizeof(aBuf), "%d users registered", RegisteredUsers);
+		// Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", aBuf);
+	};
+	auto PrintHelp = [this]() {
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Available commands:");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    help");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    status");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    set_salt [string, at least 3 characters]");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    set_access_level [user_id number] [0: admin, 1: moderator]");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "    reset_access_level [user_id number]");
+	};
+	auto InsufficientArguments = [this]() {
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Insufficient arguments.");
+	};
+
+	const char *pOptionStr = pResult->GetString(0);
+	if (!pOptionStr || !pOptionStr[0] || (str_comp(pOptionStr, "status") == 0))
+	{
+		PrintStatus();
+		PrintHelp();
+	}
+	else if(str_comp(pOptionStr, "help") == 0)
+	{
+		PrintHelp();
+	}
+	else if(str_comp(pOptionStr, "set_salt") == 0)
+	{
+		if(pResult->NumArguments() > 1)
+		{
+			const char *pValueStr = pResult->GetString(1);
+			const int saltLength = str_length(pValueStr);
+			if(saltLength > 2)
+			{
+				str_copy(m_aServerSalt, pValueStr);
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Server salt changed");
+			}
+			else
+			{
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Error: the salt should be at least 3 characters in length");
+			}
+		}
+		else
+		{
+			InsufficientArguments();
+			PrintHelp();
+		}
+	}
+	else if(str_comp(pOptionStr, "set_access_level") == 0)
+	{
+		if(pResult->NumArguments() > 2)
+		{
+			const int UserId = pResult->GetInteger(1);
+			const int RawLevel = pResult->GetInteger(2);
+			EAccessLevel AccessLevel = static_cast<EAccessLevel>(RawLevel);
+			if(RawLevel < 0 || RawLevel > 1)
+			{
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Error: the access level must be a positive number [0: admin, 1: moderator]");
+			}
+			else if(UserId <= 0)
+			{
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Error: the user id must be a positive number");
+			}
+			else
+			{
+				bool Set{};
+				for(SAccountAccessInfo &AccountAccessLevel : m_vAccountsAccessInfo)
+				{
+					if(AccountAccessLevel.UserId == UserId)
+					{
+						AccountAccessLevel.AccessLevel = AccessLevel;
+						Set = true;
+					}
+				}
+
+				if(!Set)
+				{
+					m_vAccountsAccessInfo.push_back({
+						.UserId = UserId,
+						.AccessLevel = AccessLevel,
+					});
+				}
+
+				char aBuf[128];
+				str_format(aBuf, sizeof(aBuf), "User %d access level is now set to %s", UserId, toString(AccessLevel));
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", aBuf);
+			}
+		}
+		else
+		{
+			InsufficientArguments();
+			PrintHelp();
+		}
+	}
+	else if(str_comp(pOptionStr, "reset_access_level") == 0)
+	{
+		if(pResult->NumArguments() > 1)
+		{
+			const int UserId = pResult->GetInteger(1);
+			if(UserId <= 0)
+			{
+				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Error: the user id must be a positive number");
+			}
+			else
+			{
+				auto InfoIt = std::find_if(std::begin(m_vAccountsAccessInfo), std::end(m_vAccountsAccessInfo), [UserId](const SAccountAccessInfo &Info) {
+					return Info.UserId == UserId;
+				});
+				if(InfoIt == m_vAccountsAccessInfo.end())
+				{
+					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "The given user didn't have a custom access level");
+				}
+				else
+				{
+					EAccessLevel AccessLevel = InfoIt->AccessLevel;
+					m_vAccountsAccessInfo.erase(InfoIt);
+
+					char aBuf[128];
+					str_format(aBuf, sizeof(aBuf), "'%s' access revoked from user %d", toString(AccessLevel), UserId);
+					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", aBuf);
+				}
+			}
+		}
+		else
+		{
+			InsufficientArguments();
+			PrintHelp();
+		}
+	}
+	else
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "accounts", "Invalid argument");
+	}
+}
+
 void CServer::ConchainSpecialInfoupdate(IConsole::IResult *pResult, void *pUserData, IConsole::FCommandCallback pfnCallback, void *pCallbackUserData)
 {
 	pfnCallback(pResult, pCallbackUserData);
@@ -3946,6 +4226,8 @@ void CServer::RegisterCommands()
 	Console()->Register("logout", "", CFGFLAG_SERVER, ConLogout, this, "Logout of rcon");
 	Console()->Register("show_ips", "?i[show]", CFGFLAG_SERVER, ConShowIps, this, "Show IP addresses in rcon commands (1 = on, 0 = off)");
 
+	Console()->Register("accounts", "?s[command] ?s[arg1] ?s[arg2]", CFGFLAG_SERVER, ConAccounts, this, "Manage accounts");
+
 	Console()->Register("record", "?s[file]", CFGFLAG_SERVER | CFGFLAG_STORE, ConRecord, this, "Record to a file");
 	Console()->Register("stoprecord", "", CFGFLAG_SERVER, ConStopRecord, this, "Stop recording");
 
@@ -4105,7 +4387,7 @@ int CServer::GetClientNbRound(int ClientId)
 
 bool CServer::IsClientLogged(int ClientId)
 {
-	return m_aClients[ClientId].m_UserId >= 0;
+	return m_aClients[ClientId].m_UserId.has_value();
 }
 
 #ifdef CONF_SQL
@@ -5229,27 +5511,202 @@ void CServer::ShowStats(int ClientId, int UserId)
 
 #endif
 
-void CServer::Register(int ClientId, const char* pUsername, const char* pPassword, const char* pEmail)
+void CServer::Register(int ClientId, const char *pUsername, const char *pPassword)
 {
+	if (Config()->m_SvAccountsRegistration == 0)
+	{
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("The registration is currently disabled on the server"), nullptr);
+		return;
+	}
+
+	CClientAccountRequests &Requests = m_AccountsRequests[ClientId];
+	if(m_aClients[ClientId].m_UserId.has_value())
+	{
+		if(Requests.m_UsingRcon)
+		{
+			SendRconLine(ClientId, "You are already logged in.");
+		}
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("You are already logged in."), nullptr);
+		return;
+	}
+
+	if(Requests.m_RegisterAccountResult)
+	{
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("The registration is already in process"), nullptr);
+		return;
+	}
+
 	char aBuf[512];
-	str_format(aBuf, sizeof(aBuf), "register request=%d login='%s' password='%s'", m_LastRegistrationRequestId, pUsername, pPassword);
+	str_format(aBuf, sizeof(aBuf), "register request=%d from=%d", m_LastRegistrationRequestId, ClientId);
+	Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "registration", aBuf);
+
 	++m_LastRegistrationRequestId;
 
-	Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "registration", aBuf);
+	if(pUsername && pUsername[0] && pPassword && pPassword[0])
+	{
+		Requests.m_RegistrationRequested = false;
+
+		const AccountCredentialsHelper Helper(pUsername, pPassword, m_aServerSalt);
+		if(!Helper.HashGenerated())
+		{
+			const char *pText = _("The submitted credentials are not valid");
+			GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER, pText, nullptr);
+			if(Requests.m_UsingRcon)
+			{
+				SendRconLine(ClientId, pText);
+			}
+			return;
+		}
+
+		Requests.m_RegisterAccountResult = std::make_shared<CAccountCreationResult>();
+
+		auto Tmp = std::make_unique<CSqlRegisterDataRequest>(Requests.m_RegisterAccountResult);
+		str_copy(Tmp->m_aUsername, Helper.aTrimmedName);
+		str_copy(Tmp->m_aPasswordHash, Helper.aPasswordHash);
+		str_copy(Tmp->m_aIpStr, Requests.m_aIpStr);
+		m_pConnectionPool->ExecuteWrite(CAccountsAuthWorker::RegisterAccount, std::move(Tmp), "register an account");
+	}
+	else
+	{
+		Requests.m_RegistrationRequested = true;
+
+		SendRconLine(ClientId, "Submit the wanted username and then the wanted password here");
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("Use RCON (F2) to submit the username and password"), nullptr);
+	}
 }
 
 void CServer::Login(int ClientId, const char *pUsername, const char *pPassword)
 {
-	char aBuf[512];
-	str_format(aBuf, sizeof(aBuf), "login request=%d login='%s' password='%s'", m_LastRegistrationRequestId, pUsername, pPassword);
-	++m_LastRegistrationRequestId;
+	const std::chrono::time_point<std::chrono::steady_clock> Now = std::chrono::steady_clock::now();
+	CClientAccountRequests &Requests = m_AccountsRequests[ClientId];
+	if(m_aClients[ClientId].m_UserId.has_value())
+	{
+		if(Requests.m_UsingRcon)
+		{
+			SendRconLine(ClientId, "You are already logged in.");
+		}
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("You are already logged in."), nullptr);
+		return;
+	}
 
-	Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "registration", aBuf);
+	if(Requests.m_LoginResult)
+	{
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("The logging in is already in process"), nullptr);
+		return;
+	}
+
+	if(Requests.mAuthAttempts.Capacity() == Requests.mAuthAttempts.Size())
+	{
+		const auto SinceFirstTrackedAttempt = Now - Requests.mAuthAttempts.First();
+		if(SinceFirstTrackedAttempt < MaxAuthAttemptsTimespan)
+		{
+			if(Requests.m_UsingRcon)
+			{
+				SendRconLine(ClientId, "Too many failed auth attempts. Please wait for a minute.");
+			}
+			GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+				_("Too many failed auth attempts. Please wait for a minute."), nullptr);
+			return;
+		}
+		else
+		{
+			Requests.mAuthAttempts.RemoveAt(0);
+		}
+	}
+
+	Requests.m_RegistrationRequested = false;
+
+	if(pUsername && pUsername[0] && pPassword && pPassword[0])
+	{
+		const AccountCredentialsHelper Helper(pUsername, pPassword, m_aServerSalt);
+		if(!Helper.HashGenerated())
+		{
+			const char *pText = _("The submitted credentials are not valid");
+			GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER, pText, nullptr);
+			if(Requests.m_UsingRcon)
+			{
+				SendRconLine(ClientId, pText);
+			}
+			return;
+		}
+
+		Requests.mAuthAttempts.Add(Now);
+
+		Requests.m_LoginResult = std::make_shared<CAccountLoadAuthDataResult>();
+
+		auto Tmp = std::make_unique<CSqlLoginDataRequest>(Requests.m_LoginResult);
+		str_copy(Tmp->m_aUsername, Helper.aTrimmedName);
+		str_copy(Tmp->m_aPasswordHash, Helper.aPasswordHash);
+		m_pConnectionPool->Execute(CAccountsAuthWorker::LoadAccountAuthData, std::move(Tmp), "load account auth");
+	}
+	else
+	{
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("Use RCON (F2) to submit the username and password"), nullptr);
+	}
 }
 
 void CServer::Logout(int ClientId)
 {
-	Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "registration", "logout");
+	CClient &Client = m_aClients[ClientId];
+
+	if(Client.m_UserId.has_value())
+	{
+		Client.m_UserId.reset();
+
+		char aBuf[256];
+
+		if(str_comp(Client.m_aName, Client.m_aUsername) == 0)
+		{
+			str_format(aBuf, sizeof(aBuf), "client cid=%d logged out from account '%s'", ClientId, Client.m_aUsername);
+		}
+		else
+		{
+			str_format(aBuf, sizeof(aBuf), "client cid=%d logged out from account '%s' and now known as '%s'", ClientId, Client.m_aUsername, ClientName(ClientId));
+			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "accounts", aBuf);
+
+			SetClientName(ClientId, m_aClients[ClientId].m_aName);
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} changed their name to {str:NewName}"),
+				"PlayerName", Client.m_aUsername,
+				"NewName", ClientName(ClientId),
+				nullptr);
+			str_format(aBuf, sizeof(aBuf), "change_name previous='%s' now='%s'", Client.m_aUsername, ClientName(ClientId));
+			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", aBuf);
+		}
+
+		Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "accounts", aBuf);
+
+		Client.m_aUsername[0] = '\0';
+
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("You've logged out."), nullptr);
+	}
+	else
+	{
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
+			_("You are not logged in."), nullptr);
+	}
+}
+
+void CServer::OnAuthFailed(int ClientId)
+{
+	m_aClients[ClientId].m_AuthTries++;
+	char aBuf[128];
+	str_format(aBuf, sizeof(aBuf), "Wrong username or password %d/%d.", m_aClients[ClientId].m_AuthTries, g_Config.m_SvRconMaxTries);
+	SendRconLine(ClientId, aBuf);
+	if(m_aClients[ClientId].m_AuthTries >= g_Config.m_SvRconMaxTries)
+	{
+		if(!g_Config.m_SvRconBantime)
+			m_NetServer.Drop(ClientId, EClientDropType::Kick, "Too many remote console authentication tries");
+		else
+			m_ServerBan.BanAddr(m_NetServer.ClientAddr(ClientId), g_Config.m_SvRconBantime * 60, "Too many remote console authentication tries");
+	}
 }
 
 void CServer::Ban(int ClientId, int Seconds, const char* pReason)
@@ -5774,6 +6231,117 @@ bool CServer::SetTimedOut(int ClientId, int OrigId)
 	m_aClients[ClientId].m_GotDDNetVersionPacket = m_aClients[OrigId].m_GotDDNetVersionPacket;
 	m_aClients[ClientId].m_DDNetVersionSettled = m_aClients[OrigId].m_DDNetVersionSettled;
 	return true;
+}
+
+std::optional<int> CServer::GetClientIdByUserId(int UserId) const
+{
+	for(int ClientId = 0; ClientId < MAX_CLIENTS; ++ClientId)
+	{
+		if(m_aClients[ClientId].m_UserId == UserId)
+			return ClientId;
+	}
+
+	return {};
+}
+
+void CServer::TakeUserName(int ClientId)
+{
+	const CClient &Client = m_aClients[ClientId];
+	dbg_assert(Client.m_UserId.has_value(), "");
+	if(str_comp(Client.m_aName, Client.m_aUsername) == 0)
+		return;
+
+	for(int i = 0; i < MAX_CLIENTS; ++i)
+	{
+		if (i == ClientId)
+			continue;
+
+		if(str_comp(Client.m_aUsername, m_aClients[i].m_aName) == 0)
+		{
+			// The Username is taken by another (unauthed) player
+			const bool Changed = SetClientNameImpl(i, m_aClients[i].m_aName, true);
+			dbg_assert(Changed, "");
+
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("Name of player {str:PlayerName} changed to {str:NewName}"),
+				"PlayerName", Client.m_aUsername,
+				"NewName", ClientName(i),
+				nullptr);
+			char aBuf[256];
+			str_format(aBuf, sizeof(aBuf), "change_name previous='%s' now='%s' cid=%d", Client.m_aUsername, ClientName(i), i);
+			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", aBuf);
+
+			break;
+		}
+	}
+}
+
+int toAuthed(EAccessLevel AccessLevel)
+{
+	switch(AccessLevel)
+	{
+	case EAccessLevel::ADMIN:
+		return AUTHED_ADMIN;
+	case EAccessLevel::MOD:
+		return AUTHED_MOD;
+	case EAccessLevel::HELPER:
+		return AUTHED_HELPER;
+	case EAccessLevel::USER:
+		break;
+	}
+
+	return AUTHED_NO;
+}
+
+void CServer::SetClientAccessLevel(int ClientId, EAccessLevel AccessLevel, bool SendRconCmds)
+{
+	int Authed = toAuthed(AccessLevel);
+	if(m_aClients[ClientId].m_Authed == Authed)
+		return;
+
+	if(AccessLevel > EAccessLevel::MOD)
+	{
+		return;
+	}
+
+	if(!IsSixup(ClientId))
+	{
+		CMsgPacker Msgp(NETMSG_RCON_AUTH_STATUS, true);
+		Msgp.AddInt(1); // authed
+		Msgp.AddInt(1); // cmdlist
+		SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
+	}
+	else
+	{
+		CMsgPacker Msgp(protocol7::NETMSG_RCON_AUTH_ON, true, true);
+		SendMsg(&Msgp, MSGFLAG_VITAL, ClientId);
+	}
+
+	m_aClients[ClientId].m_Authed = Authed;
+	if(SendRconCmds)
+	{
+		m_aClients[ClientId].m_pRconCmdToSend = Console()->FirstCommandInfo(AccessLevel, CFGFLAG_SERVER);
+	}
+
+	char aBuf[256];
+	switch(AccessLevel)
+	{
+	case EAccessLevel::ADMIN:
+		SendRconLine(ClientId, "Admin authentication successful. Full remote console access granted.");
+		break;
+	case EAccessLevel::MOD:
+		SendRconLine(ClientId, "Moderator authentication successful. Limited remote console access granted.");
+		break;
+	case EAccessLevel::HELPER:
+		SendRconLine(ClientId, "Helper authentication successful. Limited remote console access granted.");
+		break;
+	case EAccessLevel::USER:
+		break;
+	}
+
+	str_format(aBuf, sizeof(aBuf), "ClientId=%d authed (%s)", ClientId, toString(AccessLevel));
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+
+	GameServer()->OnSetAuthed(ClientId, m_aClients[ClientId].m_Authed);
 }
 
 void CServer::SetErrorShutdown(const char *pReason)

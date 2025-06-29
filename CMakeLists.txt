@@ -855,6 +855,10 @@ target_link_libraries(engine-gfx PUBLIC
 
 # Sources
 set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
+  accounts.cpp
+  accounts.h
+  crypt.cpp
+  crypt.h
   databases/connection.cpp
   databases/connection.h
   databases/connection_pool.cpp
