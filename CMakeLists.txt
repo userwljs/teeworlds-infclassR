@@ -1289,6 +1289,7 @@ install(
     "autoexec.cfg"
     "normal.cfg"
     "normalize.cfg"
+    "hide.cfg"
     "reset.cfg"
   DESTINATION
     "."

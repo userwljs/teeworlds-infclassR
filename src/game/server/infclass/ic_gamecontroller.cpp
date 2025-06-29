@@ -71,6 +71,7 @@ static const char *gs_aRoundNames[] = {
 	"fun",
 	"fast",
 	"survival",
+	"hide-and-seek",
 	"invalid",
 };
 
@@ -420,7 +421,15 @@ void CIcGameController::DoTeamBalance()
 
 	const int NumPlayers = NumHumans + NumInfected;
 	const int NumFirstPickedPlayers = GetMinimumInfectedForPlayers(NumPlayers);
-	const int PlayersToBalance = maximum<int>(0, NumFirstPickedPlayers - NumInfected);
+	int PlayersToBalance = 0;
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		PlayersToBalance = maximum<int>(0, NumFirstPickedPlayers - NumHumans);
+	}
+	else
+	{
+		PlayersToBalance = maximum<int>(0, NumFirstPickedPlayers - NumInfected);
+	}
 
 	if(PlayersToBalance == 0)
 	{
@@ -3421,6 +3430,10 @@ void CIcGameController::ChatWitch(IConsole::IResult *pResult)
 		{
 			CanCallWitch = false;
 		}
+		if(GetRoundType() == ERoundType::HideAndSeek)
+		{
+			CanCallWitch = false;
+		}
 
 		if(!CanCallWitch)
 		{
@@ -3748,6 +3761,12 @@ void CIcGameController::FreePlayerOwnSnapItems()
 
 void CIcGameController::SendHintMessage()
 {
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		// We don't have hints for this round type
+		return;
+	}
+
 	if((g_Config.m_TipsInterval == 0) || (time_get() - m_LastTipTime < time_freq() * g_Config.m_TipsInterval * 60))
 		return;
 
@@ -3817,8 +3836,16 @@ void CIcGameController::OnInfectionTriggered()
 	const int NumPlayers = NumHumans + NumInfected;
 	const int NumFirstPickedPlayers = GetMinimumInfectedForPlayers(NumPlayers);
 
-	const int PlayersToInfect = maximum<int>(0, NumFirstPickedPlayers - NumInfected);
-	StartInfectionGameplay(PlayersToInfect);
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		const int SeekingPlayers = NumFirstPickedPlayers;
+		StartHideAndSeekGameplay(SeekingPlayers);
+	}
+	else
+	{
+		const int PlayersToInfect = maximum<int>(0, NumFirstPickedPlayers - NumInfected);
+		StartInfectionGameplay(PlayersToInfect);
+	}
 
 	m_InfUnbalancedTick = -1;
 	MaybeSuggestMoreRounds();
@@ -3900,6 +3927,59 @@ void CIcGameController::StartInfectionGameplay(int PlayersToInfect)
 	}
 }
 
+void CIcGameController::StartHideAndSeekGameplay(int SeekingPlayers)
+{
+	icArray<CIcPlayer *, MAX_CLIENTS> AllPlayers;
+
+	CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+	while(Iter.Next())
+		AllPlayers.Add(Iter.Player());
+
+	const auto Sorter = [](const CIcPlayer *p1, const CIcPlayer *p2) -> bool {
+		return p1->GetInfectionTimestamp() < p2->GetInfectionTimestamp();
+	};
+	std::stable_sort(AllPlayers.begin(), AllPlayers.end(), Sorter);
+
+	int Timestamp = time_timestamp();
+	for(CIcPlayer *pPlayer : AllPlayers)
+	{
+		if(SeekingPlayers > 0)
+		{
+			SetPlayerPickedTimestamp(pPlayer, Timestamp);
+
+			const EPlayerClass NewClass = ChooseHumanClass(pPlayer);
+			pPlayer->SetClass(NewClass);
+			pPlayer->m_DieTick = m_RoundStartTick;
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTION,
+				_("{str:VictimName} has been revived by the game"),
+				"VictimName", Server()->ClientName(pPlayer->GetCid()),
+				nullptr);
+
+			--SeekingPlayers;
+		}
+		else
+		{
+			pPlayer->KillCharacter(); // Infect the player
+			pPlayer->StartInfection();
+			pPlayer->m_DieTick = m_RoundStartTick;
+		}
+	}
+
+	m_HsFastRound = static_cast<int>(AllPlayers.Size()) > Config()->m_HsFastRoundMinPlayers;
+	if(m_HsFastRound)
+	{
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
+			_("The humans should kill each Ghost at least once to win the round"),
+			nullptr);
+	}
+	else
+	{
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
+			_("The humans should kill as many Ghosts as they can"),
+			nullptr);
+	}
+}
+
 void CIcGameController::MaybeSuggestMoreRounds()
 {
 	if(m_MoreRoundsSuggested)
@@ -3973,6 +4053,9 @@ void CIcGameController::StartRound()
 		}
 		break;
 	}
+	case ERoundType::HideAndSeek:
+		StartHideAndSeekRound();
+		break;
 	case ERoundType::Invalid:
 		break;
 	}
@@ -4132,6 +4215,9 @@ void CIcGameController::EndRound(ERoundEndReason Reason)
 	case ERoundType::Survival:
 		EndSurvivalRound(Reason);
 		break;
+	case ERoundType::HideAndSeek:
+		EndHideAndSeekRound();
+		break;
 	case ERoundType::Invalid:
 		break;
 	}
@@ -4201,6 +4287,9 @@ int CIcGameController::GetMinimumInfectedForPlayers(int PlayersNumber) const
 	}
 
 	int InitialPlayersLimit = Config()->m_InfFirstInfectedLimit;
+	if(GetRoundType() == ERoundType::HideAndSeek)
+		InitialPlayersLimit = Config()->m_HsMedicsLimit;
+
 	int NumFirstInfected = 0;
 
 	if(PlayersNumber > 20)
@@ -5155,10 +5244,49 @@ void CIcGameController::RoundTickAfterInitialInfection()
 		DoTeamBalance();
 
 	UpdateBalanceFactors();
+
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		OnHideAndSeekTick();
+	}
 }
 
 void CIcGameController::PreparePlayerToJoin(CIcPlayer *pPlayer)
 {
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		// Make the player Medic initially
+		bool MakeHuman = true;
+
+		if(IsInfectionStarted())
+		{
+			int NumHumans = 0;
+			int NumInfected = 0;
+			GetPlayerCounter(pPlayer->GetCid(), NumHumans, NumInfected);
+
+			const int NumPlayers = NumHumans + NumInfected + 1;
+			const int NumFirstPickedPlayers = GetMinimumInfectedForPlayers(NumPlayers);
+			const int NeededMedics = maximum<int>(0, NumFirstPickedPlayers - NumHumans);
+
+			// If the gameplay already started then make the player Medic if medics needed
+			// and make it a ghost otherwise.
+			MakeHuman = NeededMedics > 0;
+		}
+
+		if(MakeHuman)
+		{
+			const EPlayerClass NewClass = ChooseHumanClass(pPlayer);
+			pPlayer->SetClass(NewClass);
+		}
+		else
+		{
+			EPlayerClass c = ChooseInfectedClass(pPlayer);
+			pPlayer->SetClass(c);
+		}
+
+		return;
+	}
+
 	if(IsInfectionStarted())
 	{
 		if (!pPlayer->IsInfected())
@@ -5244,6 +5372,39 @@ uint32_t CIcGameController::InfectHumans(uint32_t NumHumansToInfect)
 
 void CIcGameController::ForcePlayersBalance(uint32_t PlayersToBalance)
 {
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		icArray<CIcPlayer *, MAX_CLIENTS> Infected;
+		CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+		while(Iter.Next())
+			Infected.Add(Iter.Player());
+
+		const auto Sorter = [](const CIcPlayer *p1, const CIcPlayer *p2) -> bool {
+			return p1->GetInfectionTimestamp() < p2->GetInfectionTimestamp();
+		};
+		std::stable_sort(Infected.begin(), Infected.end(), Sorter);
+
+		int Timestamp = time_timestamp();
+		for(CIcPlayer *pPlayer : Infected)
+		{
+			SetPlayerPickedTimestamp(pPlayer, Timestamp);
+
+			const EPlayerClass NewClass = ChooseHumanClass(pPlayer);
+			pPlayer->SetClass(NewClass);
+			pPlayer->m_DieTick = m_RoundStartTick;
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTION,
+				_("{str:VictimName} has been revived to balance the game"),
+				"VictimName", Server()->ClientName(pPlayer->GetCid()),
+				nullptr);
+
+			--PlayersToBalance;
+			if(PlayersToBalance == 0)
+			{
+				return;
+			}
+		}
+	}
+
 	// Force balance
 	InfectHumans(PlayersToBalance);
 	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTION,
@@ -5337,7 +5498,11 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 		}
 	}
 
-	if(HumansWon)
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		AnnounceHideAndSeekWinner();
+	}
+	else if(NumHumans)
 	{
 		GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_HUMANS, NumHumans,
 			_P("One human won the round",
@@ -5369,6 +5534,140 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 	}
 
 	EndRound(ERoundEndReason::FINISHED);
+}
+
+void CIcGameController::AnnounceHideAndSeekWinner()
+{
+	struct CPlayerScore
+	{
+		char aPlayerName[MAX_NAME_LENGTH];
+		int Kills;
+		int Deaths;
+		bool Human;
+		bool FirstInfected;
+	};
+
+	icArray<CPlayerScore, MAX_CLIENTS> Scores;
+	int HumansScore = 0;
+	int NumSurvivedGhosts = 0;
+
+	CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+	while(Iter.Next())
+	{
+		const CIcPlayer *pPlayer = Iter.Player();
+		CPlayerScore Score;
+
+		str_copy(Score.aPlayerName, Server()->ClientName(pPlayer->GetCid()));
+		Score.Kills = pPlayer->GetKills();
+		Score.Deaths = pPlayer->GetDeaths();
+		Score.Human = pPlayer->IsHuman();
+		Score.FirstInfected = pPlayer->IsInfected() && (pPlayer->m_TeamChangeTick < GetInfectionStartTick() + 5);
+
+		if(Score.Human)
+		{
+			HumansScore += Score.Kills;
+		}
+		else if (Score.FirstInfected)
+		{
+			if(Score.Deaths == 0)
+			{
+				++NumSurvivedGhosts;
+			}
+		}
+		Scores.Add(Score);
+	}
+
+	const auto Sorter = [NumSurvivedGhosts](const CPlayerScore &s1, const CPlayerScore &s2) -> bool {
+		if(s1.Human != s2.Human)
+		{
+			if(NumSurvivedGhosts > 0)
+			{
+				// Infected won, show them first
+				return !s1.Human;
+			}
+			else
+			{
+				// Humans won, show them first
+				return s1.Human;
+			}
+		}
+
+		if(s1.Human)
+		{
+			return s1.Kills > s2.Kills;
+		}
+		else
+		{
+			if(s1.FirstInfected != s2.FirstInfected)
+			{
+				// Show first infected before joined
+				return s1.FirstInfected;
+			}
+
+			return s1.Deaths < s2.Deaths;
+		}
+	};
+
+	std::stable_sort(Scores.begin(), Scores.end(), Sorter);
+
+	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Score", nullptr);
+	for(const CPlayerScore &Score : Scores)
+	{
+		if(Score.Human)
+		{
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "- {str:PlayerName}: {int:Score} kills",
+				"PlayerName", Score.aPlayerName,
+				"Score", &Score.Kills,
+				nullptr);
+		}
+		else
+		{
+			if(Score.FirstInfected)
+			{
+				GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "- {str:PlayerName}: {int:Score} deaths",
+					"PlayerName", Score.aPlayerName,
+					"Score", &Score.Deaths,
+					nullptr);
+			}
+			else
+			{
+				GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "- {str:PlayerName}: {int:Score} deaths (joined later)",
+					"PlayerName", Score.aPlayerName,
+					"Score", &Score.Deaths,
+					nullptr);
+			}
+		}
+	}
+
+	const char *pWinMessage{};
+	if(NumSurvivedGhosts)
+	{
+		GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_INFECTED, NumSurvivedGhosts,
+			_P("{int:NumInfected} ghost survived",
+				"{int:NumInfected} ghosts survived", NumSurvivedGhosts),
+			"NumInfected", &NumSurvivedGhosts,
+			nullptr);
+		pWinMessage = _("The Infected won the round");
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTED, pWinMessage, nullptr);
+	}
+	else
+	{
+		if(m_HsFastRound)
+		{
+			const int Seconds = GetRoundTick() / ((float)Server()->TickSpeed());
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTED, _("Humans won the round in {sec:RoundDuration}"), "RoundDuration", &Seconds, nullptr);
+		}
+		else
+		{
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE, "Total humans team score: {int:Score}",
+				"Score", &HumansScore,
+				nullptr);
+		}
+		pWinMessage = _("Humans won the round");
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_HUMANS, pWinMessage, nullptr);
+	}
+
+	GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, 3 * Server()->TickSpeed(), pWinMessage, nullptr);
 }
 
 void CIcGameController::BroadcastInfectionComing(int InfectionTick)
@@ -5630,6 +5929,9 @@ int CIcGameController::MinimumInfectedForRevival() const
 
 bool CIcGameController::IsClassChooserEnabled() const
 {
+	if(GetRoundType() == ERoundType::HideAndSeek)
+		return false;
+
 	return Config()->m_InfClassChooser && Server()->GetTimeShiftUnit();
 }
 
@@ -5773,6 +6075,116 @@ bool CIcGameController::IsPositionAvailableForHumans(const vec2 &Position) const
 		return false;
 	default:
 		return true;
+	}
+}
+
+void CIcGameController::StartHideAndSeekRound()
+{
+	GameServer()->CreateSoundGlobal(SOUND_CTF_CAPTURE);
+	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("Hide and Seek round!"));
+	GameServer()->SendBroadcast_Localization(-1,
+		EBroadcastPriority::GAMEANNOUNCE, Server()->TickSpeed() * (GetInfectionDelay() + 2),
+		_("Hide and Seek round!"), nullptr);
+
+	for(int i = 0; i < MAX_CLIENTS; ++i)
+	{
+		CIcPlayer *pPlayer = GetPlayer(i);
+		if(!pPlayer)
+			continue;
+
+		const EPlayerClass HumanClass = ChooseHumanClass(pPlayer);
+		pPlayer->SetClass(HumanClass);
+	}
+}
+
+void CIcGameController::EndHideAndSeekRound()
+{
+}
+
+void CIcGameController::ApplyHideAndSeekAttributes(CIcPlayer *pPlayer)
+{
+	CIcCharacter *pCharacter = pPlayer->GetCharacter();
+	if(pCharacter)
+	{
+		pCharacter->TakeAllWeapons();
+		pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
+		pCharacter->SetActiveWeapon(WEAPON_HAMMER);
+
+		pCharacter->CancelLoveEffect();
+		if(pPlayer->IsInfected())
+		{
+			pCharacter->LoveEffect(GetTimeLimitSeconds() + 5);
+			float SpawnProtectionDuration = Config()->m_HsGhostsProtection;
+			float SpawnDeathPenalty = m_HsFastRound ? pPlayer->GetDeaths() * Config()->m_HsDeathPenaltyTime : 0;
+			pCharacter->SetSoloForDuration(SpawnProtectionDuration + SpawnDeathPenalty);
+		}
+		else
+		{
+			pCharacter->GiveWeapon(WEAPON_GUN, -1);
+			const int InfectionTick = GetInfectionStartTick();
+			const float DisabledAttackBeforeInfection = (InfectionTick - Server()->Tick()) * 1.0f / Server()->TickSpeed();
+			const float DisabledAttackOnSpawn = 2.0f;
+			pCharacter->LoveEffect(IsInfectionStarted() ? DisabledAttackOnSpawn : DisabledAttackBeforeInfection);
+			pCharacter->SetInvincible(2);
+		}
+	}
+
+	CIcPlayerClass *pClass = pPlayer->GetCharacterClass();
+	if(pClass)
+	{
+		if(pPlayer->IsHuman())
+		{
+			pClass->SetNormalEmote(EMOTE_ANGRY);
+		}
+	}
+}
+
+void CIcGameController::OnHideAndSeekTick()
+{
+	if(!m_HsFastRound)
+		return;
+
+	std::size_t NumSurvivedGhosts{};
+	std::optional<int> SurvivorCid{};
+
+	{
+		CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
+		while(Iter.Next())
+		{
+			const CIcPlayer *pPlayer = Iter.Player();
+			if(pPlayer->IsInfected() || pPlayer->IsInfectionStarted())
+			{
+				bool FirstInfected = pPlayer->m_TeamChangeTick < GetInfectionStartTick() + 5;
+				if(FirstInfected && (pPlayer->GetDeaths() == 0))
+				{
+					NumSurvivedGhosts++;
+					SurvivorCid = pPlayer->GetCid();
+				}
+			}
+		}
+		if(NumSurvivedGhosts > 1)
+		{
+			SurvivorCid.reset();
+		}
+	}
+
+	if(SurvivorCid.has_value())
+	{
+		const char *pSurvivorName = Server()->ClientName(SurvivorCid.value());
+		GameServer()->SendBroadcast_Localization(-1,
+			EBroadcastPriority::GAMEANNOUNCE, 5 * Server()->TickSpeed(),
+			_("The last survivor is '{str:PlayerName}'"),
+			"PlayerName", pSurvivorName,
+			nullptr);
+	}
+	else if(NumSurvivedGhosts == 0)
+	{
+		GameServer()->SendBroadcast_Localization(-1,
+			EBroadcastPriority::GAMEANNOUNCE, 5 * Server()->TickSpeed(),
+			_("Humans won"),
+			nullptr);
+
+		EnsureFinalExplosionIsStarted();
 	}
 }
 
@@ -6874,6 +7286,10 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 		}
 	}
 
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		Infect = false;
+	}
 	if(Infect)
 	{
 		pVictim->GetPlayer()->StartInfection(pContext->Killer, InfectionType);
@@ -6904,6 +7320,11 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 	}
 
 	if(GetRoundType() == ERoundType::Fast)
+	{
+		RespawnDelay *= 0.5;
+	}
+
+	if(GetRoundType() == ERoundType::HideAndSeek)
 	{
 		RespawnDelay *= 0.5;
 	}
@@ -6957,11 +7378,10 @@ void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const Spa
 		pCharacter->GiveRandomClassSelectionBonus();
 	}
 
-	if(pCharacter->IsInfected())
+	if(pCharacter->IsInfected() && (GetRoundType() != ERoundType::HideAndSeek))
 	{
 		FallInLoveIfInfectedEarly(pCharacter);
 		pCharacter->SetHealthArmor(10, InfectedBonusArmor());
-
 		if(Context.SpawnType == SpawnContext::MapSpawn)
 		{
 			float Duration = g_Config.m_InfSpawnProtectionTime / 1000.0f;
@@ -6969,9 +7389,22 @@ void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const Spa
 		}
 	}
 
-	if((GetRoundType() == ERoundType::Fun) && !IsInfectionStarted() && pCharacter->GetPlayerClass() == EPlayerClass::None)
+	if(GetRoundType() == ERoundType::Fun)
 	{
-		pPlayer->SetClass(ChooseHumanClass(pPlayer));
+		int InfectionTick = GetInfectionStartTick();
+		if((Server()->Tick() < InfectionTick) && pCharacter->GetPlayerClass() == EPlayerClass::None)
+		{
+			pPlayer->SetClass(ChooseHumanClass(pPlayer));
+		}
+	}
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		if(!IsInfectionStarted() && pCharacter->GetPlayerClass() == EPlayerClass::None)
+		{
+			pPlayer->SetClass(ChooseHumanClass(pPlayer));
+		}
+
+		ApplyHideAndSeekAttributes(pPlayer);
 	}
 }
 
@@ -7136,6 +7569,12 @@ void CIcGameController::DoWincheck()
 			VictoryConditionsMet = true;
 		}
 		break;
+	case ERoundType::HideAndSeek:
+		if(TimeIsOut || (m_FinalExplosionState == EFinalExplosionState::Finished))
+		{
+			VictoryConditionsMet = true;
+		}
+		break;
 	default:
 		// One infected can win in some rounds; we have a check if this is a valid situation in CheckRoundFailed()
 		if(NumHumans == 0 && NumInfected >= 1)
@@ -7216,7 +7655,7 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 		return false;
 	}
 
-	bool Infect = m_InfectedStarted;
+	bool Infect = m_InfectedStarted && (GetRoundType() != ERoundType::HideAndSeek);
 	if(Infect)
 		pPlayer->StartInfection();
 
@@ -8210,6 +8649,13 @@ void CIcGameController::OnPlayerVoteCommand(int ClientId, int Vote)
 	}
 	else
 	{
+		if(GetRoundType() == ERoundType::HideAndSeek)
+		{
+			GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT,
+				_("Hook protection is always disabled in this round type"), nullptr);
+			return;
+		}
+
 		pPlayer->SetHookProtection(!pPlayer->HookProtectionEnabled(), false);
 	}
 }
@@ -8217,5 +8663,11 @@ void CIcGameController::OnPlayerVoteCommand(int ClientId, int Vote)
 void CIcGameController::OnPlayerClassChanged(CIcPlayer *pPlayer)
 {
 	SetPlayerInfected(pPlayer->GetCid(), pPlayer->IsInfected());
+
+	if(GetRoundType() == ERoundType::HideAndSeek)
+	{
+		ApplyHideAndSeekAttributes(pPlayer);
+	}
+
 	Server()->ExpireServerInfo();
 }

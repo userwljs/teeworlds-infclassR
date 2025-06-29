@@ -56,6 +56,7 @@ enum class ERoundType
 	Fun,
 	Fast,
 	Survival,
+	HideAndSeek,
 	Count,
 	Invalid = Count,
 };
@@ -276,6 +277,11 @@ public:
 	std::optional<vec2> GetHeroFlagPosition() const;
 	bool IsPositionAvailableForHumans(const vec2 &FlagPosition) const;
 
+	void StartHideAndSeekRound();
+	void EndHideAndSeekRound();
+	void ApplyHideAndSeekAttributes(CIcPlayer *pPlayer);
+	void OnHideAndSeekTick();
+
 	void StartFunRound();
 	void EndFunRound();
 
@@ -472,6 +478,7 @@ protected:
 	void MaybeSendStatistics();
 	void CancelTheRound(ROUND_CANCELATION_REASON Reason);
 	void AnnounceTheWinner(int NumHumans);
+	void AnnounceHideAndSeekWinner();
 	void BroadcastInfectionComing(int InfectionTick);
 
 private:
@@ -486,6 +493,7 @@ private:
 	void OnInfectionTriggered();
 
 	void StartInfectionGameplay(int PlayersToInfect);
+	void StartHideAndSeekGameplay(int SeekingPlayers);
 
 	void MaybeSuggestMoreRounds();
 	void SnapMapMenu(int SnappingClient, CNetObj_GameInfo *pGameInfoObj);
@@ -584,6 +592,8 @@ private:
 	FunRoundConfiguration m_FunRoundConfiguration;
 	std::vector<FunRoundConfiguration> m_FunRoundConfigurations;
 	int m_FunRoundsPassed = 0;
+
+	bool m_HsFastRound = false;
 
 	bool m_InfectedStarted;
 	bool m_RoundStarted = false;

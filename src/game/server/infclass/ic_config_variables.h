@@ -40,6 +40,11 @@ MACRO_CONFIG_INT(InfTrainingMode, inf_training_mode, 0, 0, 1, CFGFLAG_SERVER, "E
 MACRO_CONFIG_STR(InfEvent, inf_event, 64, "", CFGFLAG_SERVER, "Special event")
 MACRO_CONFIG_STR(InfDefaultRoundType, inf_default_round_type, 64, "", CFGFLAG_SERVER, "Default round type")
 
+MACRO_CONFIG_FLOAT(HsGhostsProtection, hs_ghosts_protection, 3.5, 0, 10, CFGFLAG_SERVER, "The number of seconds of ghosts spawn protection")
+MACRO_CONFIG_FLOAT(HsDeathPenaltyTime, hs_death_penalty_time, 5.0, 0, 30, CFGFLAG_SERVER, "The number of extra 'out-of-game' seconds per ghost death")
+MACRO_CONFIG_INT(HsFastRoundMinPlayers, hs_fast_round_min_players, 7, 0, 64, CFGFLAG_SERVER, "The minimum number of players for enabling humans win condition")
+MACRO_CONFIG_INT(HsMedicsLimit, hs_medics_limit, 2, 0, 64, CFGFLAG_SERVER, "The max number of medic players in Hide and Seek round")
+
 MACRO_CONFIG_INT(InfMinPlayers, inf_min_players, 2, 0, 64, CFGFLAG_SERVER, "Minimum number of players to start the round")
 MACRO_CONFIG_INT(InfTeamBalanceSeconds, inf_teambalance_seconds, 10, 0, 1000, CFGFLAG_SERVER, "How many seconds to wait before autobalancing teams")
 MACRO_CONFIG_INT(InfChallenge, inf_challenge, 0, 0, 1, CFGFLAG_SERVER, "Enable challenges")
