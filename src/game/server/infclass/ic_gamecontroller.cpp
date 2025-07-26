@@ -1478,6 +1478,8 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("add_map_data", "s[mapname] i[timestamp]", CFGFLAG_SERVER, ConAddMapData, this, "Add map rotation data");
 	pConsole->Register("set_map_min_max_players", "s[mapname] i[min] ?i[max]", CFGFLAG_SERVER, ConSetMapMinMaxPlayers, this, "Set min/max players for a map");
 
+	Console()->Register("rflag", "", CFGFLAG_CHAT, ConRefreshHeroFlag, this, "Refresh the position of hero flag");
+
 	Console()->Register("prefer_class", "s[classname]", CFGFLAG_CHAT, ConPreferClass, this, "Set the preferred human class to <classname>");
 	Console()->Register("alwaysrandom", "i['0'|'1']", CFGFLAG_CHAT, ConAlwaysRandom, this, "Set the preferred class to Random");
 	Console()->Register("antiping", "i['0'|'1']", CFGFLAG_CHAT, ConAntiPing, this, "Try to improve your ping (reduce the traffic)");
@@ -1822,6 +1824,20 @@ void CIcGameController::ConUserSetClass(IConsole::IResult *pResult)
 	}
 
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "inf_set_class", "Unknown class");
+}
+
+void CIcGameController::ConRefreshHeroFlag(IConsole::IResult *pResult, void *pUserData)
+{
+	const auto *pSelf = static_cast<CIcGameController *>(pUserData);
+	const int ClientId = pResult->GetClientId();
+	auto *pPlayer = pSelf->GetPlayer(ClientId);
+	if (pPlayer->GetClass() != EPlayerClass::Hero)
+	{
+		pSelf->GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, "Only heroes can use this command.");
+		return;
+	}
+	auto *HumanClass = dynamic_cast<CInfClassHuman*>(pPlayer->GetCharacterClass());
+	HumanClass->RefreshHeroFlagPosition();
 }
 
 void CIcGameController::ConSetClass(IConsole::IResult *pResult, void *pUserData)
@@ -4637,6 +4653,7 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 		ConLine(_C("Hero", "It fully heals the Hero and it can grant a turret which you can place down with the hammer."));
 		ConLine(_C("Hero", "The gift to all humans is only applied when the flag is surrounded by hearts and armor."));
 		ConLine(_C("Hero", "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected."));
+		AddLine(_C("Hero", "The Hero can refresh the position of the flag by /rflag."));
 		break;
 	case EPlayerClass::Engineer:
 		AddLine(_C("Engineer", "The Engineer can build walls with the hammer to block the infected."));

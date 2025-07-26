@@ -2144,3 +2144,23 @@ void CInfClassHuman::GiveUpgrade()
 {
 	m_UpgradeLevel++;
 }
+
+void CInfClassHuman::RefreshHeroFlagPosition()
+{
+	if (!m_pHeroFlag || Server()->Tick() < m_pHeroFlag->GetSpawnTick())
+	{
+		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, "You can't use this command now.");
+		return;
+	}
+	if (Server()->Tick() < m_HeroFlagRefreshTick)
+	{
+		int Seconds = 1 + (m_HeroFlagRefreshTick - Server()->Tick()) / Server()->TickSpeed();
+		GameServer()->SendChatTarget_Localization_P(GetCid(), CHATCATEGORY_DEFAULT, Seconds,
+			_P("You must wait for {int:Num} second to refresh your flag.", "You must wait for {int:Num} seconds to refresh your flag.", Seconds),
+			"Num", &Seconds);
+		return;
+	}
+	m_pHeroFlag->FindPosition();
+	m_HeroFlagRefreshTick = Server()->Tick() + Server()->TickSpeed() * g_Config.m_InfHeroFlagRefreshCD;
+	GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, "Your flag position has been refreshed.");
+}
