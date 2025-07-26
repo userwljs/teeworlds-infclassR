@@ -33,6 +33,7 @@ void CPortal::OnPortalGunFired(CIcCharacter *pCharacter, WeaponFireContext *pFir
 	vec2 OldPos = pCharacter->GetPos();
 	pCharacter->SetPosition(PortalPos.value());
 	pCharacter->ResetHook();
+	pCharacter->GameWorld()->ReleaseHooked(OwnerCid);
 
 	CPortal *pIn = new CPortal(pCharacter->GameServer(), OldPos, OwnerCid, CPortal::In);
 	CPortal *pOut = new CPortal(pCharacter->GameServer(), PortalPos.value(), OwnerCid, CPortal::Out);
