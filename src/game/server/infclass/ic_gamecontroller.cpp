@@ -4194,9 +4194,11 @@ void CIcGameController::GetPlayerCounter(int ClientException, int& NumHumans, in
 	while(Iter.Next())
 	{
 		if(Iter.ClientId() == ClientException) continue;
-		
-		if(Iter.Player()->IsInfected()) NumInfected++;
-		else NumHumans++;
+
+		if(Iter.Player()->IsInfected())
+			NumInfected++;
+		else if(!Iter.Player()->IsBot())
+			NumHumans++;
 	}
 }
 
