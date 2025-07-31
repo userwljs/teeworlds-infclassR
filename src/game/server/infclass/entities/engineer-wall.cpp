@@ -15,6 +15,7 @@
 #include "engineer-wall.h"
 #include "game/server/infclass/entities/ic_entity.h"
 #include "ic_character.h"
+#include "game/server/infclass/player_upgrades.h"
 
 static const float g_BarrierMaxLength = 300.0;
 static const float g_BarrierRadius = 0.0;
@@ -66,7 +67,13 @@ void CEngineerWall::Tick()
 		float Len = distance(p->m_Pos, IntersectPos);
 		if(Len < p->m_ProximityRadius + g_BarrierRadius)
 		{
-			OnHitInfected(p);
+			if(GameController()->GetRoundType() == ERoundType::Survival)
+			{
+				if(Server()->Tick() >= m_PlayerNextDamageTick[p->GetCid()] && !p->IsInDeepDefence())
+					OnSurvivalHitInfected(p);
+			}
+			else
+				OnHitInfected(p);
 		}
 	}
 
@@ -78,6 +85,9 @@ void CEngineerWall::TickPaused()
 	CPlacedObject::TickPaused();
 
 	++m_SnapStartTick;
+
+	for (int & PlayerNextDamageTick : m_PlayerNextDamageTick)
+		PlayerNextDamageTick++;
 }
 
 void CEngineerWall::Snap(int SnappingClient)
@@ -149,6 +159,40 @@ void CEngineerWall::OnHitInfected(CIcCharacter *pCharacter)
 	}
 
 	pCharacter->Die(GetOwner(), EDamageType::LASER_WALL);
+}
+
+void CEngineerWall::OnSurvivalHitInfected(CIcCharacter *pCharacter)
+{
+	const CInfClassInfected *pInfected = CInfClassInfected::GetInstance(pCharacter);
+	if(!pCharacter->GetPlayer() || !pInfected)
+		return;
+	m_WallFlashTicks = 10;
+	int LifeSpanReducer = (Server()->TickSpeed() * 150) / 100;
+
+	auto *pOwnerPlayer = GameController()->GetPlayer(GetOwner());
+	const CIcPlayerClass *pOwnerCharacterClass = nullptr;
+	if(pOwnerPlayer)
+		pOwnerCharacterClass = pOwnerPlayer->GetCharacterClass();
+
+	if(pCharacter->GetPlayerClass() == EPlayerClass::Ghoul)
+	{
+		const float Factor = pInfected->GetGhoulPercent();
+		LifeSpanReducer += Server()->TickSpeed() * 5.0f * Factor;
+	}
+
+	if(m_EndTick.has_value())
+	{
+		if(pOwnerCharacterClass && pOwnerCharacterClass->HasUpgrade(EUpgradeType::EngineerWallTimeReductionDecrease))
+			m_EndTick.value() -= LifeSpanReducer / 4;
+		else
+			m_EndTick.value() -= LifeSpanReducer;
+	}
+
+	if(pOwnerCharacterClass && pOwnerCharacterClass->HasUpgrade(EUpgradeType::EngineerWallDamage))
+		pCharacter->TakeDamage(vec2(0.0f, 0.0f), 9.0f, GetOwner(), EDamageType::LASER_WALL);
+	else
+		pCharacter->TakeDamage(vec2(0.0f, 0.0f), 5.0f, GetOwner(), EDamageType::LASER_WALL);
+	m_PlayerNextDamageTick[pCharacter->GetCid()] = Server()->Tick() + Server()->TickSpeed() * 1;
 }
 
 void CEngineerWall::PrepareSnapData()

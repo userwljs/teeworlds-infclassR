@@ -127,6 +127,11 @@ SClassUpgrade GetUpgradeInfo(const PlayerUpgradesArray &Upgrades)
 		case EUpgradeType::LooperGrenadesRegen:
 			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_GRENADE);
 			break;
+		case EUpgradeType::EngineerWallDamage:
+		case EUpgradeType::EngineerWallTime:
+		case EUpgradeType::EngineerWallTimeReductionDecrease:
+			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_HAMMER);
+			break;
 		}
 	}
 

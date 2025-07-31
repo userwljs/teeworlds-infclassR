@@ -7836,7 +7836,6 @@ bool CIcGameController::GetPlayerClassEnabled(EPlayerClass PlayerClass) const
 	{
 		switch(PlayerClass)
 		{
-		case EPlayerClass::Engineer:
 		case EPlayerClass::Soldier:
 			return false;
 		default:
@@ -7951,7 +7950,8 @@ uint32_t CIcGameController::GetMinPlayersForClass(EPlayerClass PlayerClass) cons
 {
 	switch(PlayerClass)
 	{
-	case EPlayerClass::Engineer:
+	case EPlayerClass::Engineer: if(GetRoundType() == ERoundType::Survival)
+			return 0;
 		return Config()->m_InfMinPlayersForEngineer;
 	default:
 		return 0;
