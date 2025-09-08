@@ -4741,7 +4741,7 @@ int *CServer::GetIdMap(int ClientId)
 
 bool CServer::SetTimedOut(int ClientId, int OrigId)
 {
-	if(!m_NetServer.CanSetTimedOut(ClientId, OrigId))
+	if(!m_NetServer.HasErrored(ClientId))
 	{
 		return false;
 	}
@@ -4752,7 +4752,7 @@ bool CServer::SetTimedOut(int ClientId, int OrigId)
 		LogoutClient(OrigId, "Timeout Protection");
 	}
 
-	m_NetServer.SetTimedOut(ClientId, OrigId);
+	m_NetServer.ResumeOldConnection(ClientId, OrigId);
 
 	m_aClients[ClientId].m_Sixup = m_aClients[OrigId].m_Sixup;
 
