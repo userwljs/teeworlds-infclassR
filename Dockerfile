@@ -14,7 +14,8 @@ RUN apt update && apt install -y \
     libsqlite3-dev \
     zlib1g-dev \
     ninja-build \
-    libmaxminddb-dev
+    libmaxminddb-dev \
+    libluajit-5.1-dev
 
 WORKDIR /code
 
@@ -42,7 +43,8 @@ RUN apt update && apt install -y \
     libcurl4t64 \
     libsqlite3-0 \
     zlib1g \
-    libmaxminddb0
+    libmaxminddb0 \
+    libluajit-5.1-2
 
 COPY --from=build-stage /code/dist /dist
 
