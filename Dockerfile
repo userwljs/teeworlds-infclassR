@@ -16,7 +16,8 @@ RUN apt update && apt install -y \
     ninja-build \
     libmaxminddb-dev \
     libluajit-5.1-dev \
-    git
+    git \
+    ca-certificates
 
 WORKDIR /code
 
@@ -45,7 +46,8 @@ RUN apt update && apt install -y \
     libsqlite3-0 \
     zlib1g \
     libmaxminddb0 \
-    libluajit-5.1-2
+    libluajit-5.1-2 \
+    ca-certificates
 
 COPY --from=build-stage /code/dist /dist
 
