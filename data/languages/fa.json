@@ -1,884 +1,886 @@
-{"translation":[
-	{
-		"key": "10 seconds later, a few players become infected.",
-		"value": "\u067e\u0633 \u0627\u0632 10 \u062b\u0627\u0646\u06cc\u0647 \u062f\u0648 \u0627\u0646\u0633\u0627\u0646 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0645\u06cc \u0634\u0648\u0646\u062f"
-	},
-	{
-		"key": "A random class will be automatically attributed to you when round starts",
-		"value": "\u0627\u0646\u062a\u062e\u0627\u0628 \u062e\u0648\u062f\u06a9\u0627\u0631 \u0646\u0642\u0634 \u062f\u0631 \u0627\u0628\u062a\u062f\u0627\u06cc \u0628\u0627\u0632\u06cc \u0628\u0637\u0648\u0631 \u062e\u0648\u062f\u06a9\u0627\u0631 \u06cc\u06a9 \u0646\u0642\u0634 \u0628\u0631\u0627\u06cc \u0634\u0645\u0627 \u0627\u0646\u062a\u062e\u0627\u0628 \u0645\u06cc \u06a9\u0646\u062f"
-	},
-	{
-		"key": "All humans affected by the explosion become infected.",
-		"value": "\u062a\u0645\u0627\u0645\u06cc \u0627\u0646\u0633\u0627\u0646 \u0647\u0627\u06cc \u0646\u0632\u062f\u06cc\u06a9 \u0628\u0647 \u0627\u0648 \u062a\u062d\u062a \u062a\u0623\u062b\u06cc\u0631 \u0627\u0646\u0641\u062c\u0627\u0631 \u0642\u0631\u0627\u0631 \u0645\u06cc \u06af\u06cc\u0631\u0646\u062f."
-	},
-	{
-		"key": "All players start as a human.",
-		"value": "\u0647\u0645\u0647 \u06cc \u0628\u0627\u0632\u06cc\u06a9\u0646 \u0647\u0627 \u062f\u0631 \u0646\u0642\u0634 \u0627\u0646\u0633\u0627\u0646 \u0628\u0627\u0632\u06cc \u0631\u0627 \u0622\u063a\u0627\u0632 \u0645\u06cc \u06a9\u0646\u0646\u062f."
-	},
-	{
-		"key": "An error occured during the creation of your account.",
-		"value": "\u0645\u0634\u06a9\u0644\u06cc \u062f\u0631 \u0633\u0627\u062e\u062a \u062d\u0633\u0627\u0628 \u0634\u0645\u0627 \u0631\u062e \u062f\u0627\u062f"
-	},
-	{
-		"key": "An error occured during the operation.",
-		"value": "\u062e\u0637\u0627\u06cc\u06cc \u062f\u0631 \u0639\u0645\u0644\u06cc\u0627\u062a \u0631\u062e \u062f\u0627\u062f\u0647."
-	},
-	{
-		"key": "Available help pages: {str:PageList}",
-		"value": "\u062a\u0639\u062f\u0627\u062f \u0635\u0641\u062d\u0647 \u0647\u0627\u06cc \u0631\u0627\u0647\u0646\u0645\u0627\u06cc \u062f\u0631 \u062f\u0633\u062a\u0631\u0633: {str:PageList}"
-	},
-	{
-		"key": "Available languages: {str:ListOfLanguage}",
-		"value": "\u0632\u0628\u0627\u0646 \u0647\u0627\u06cc \u062f\u0631 \u062f\u0633\u062a\u0631\u0633: {str:ListOfLanguage}"
-	},
-	{
-		"key": "Based on the concept of Infection mod by Gravity",
-		"value": "\u067e\u0627\u06cc\u0647 \u0631\u06cc\u0632\u06cc \u0634\u062f\u0647 \u0628\u0631 \u0631\u0648\u06cc \u0645\u062f \u0648\u06cc\u0631\u0648\u0633 \u0627\u0648\u0644\u06cc\u0647 \u062a\u0648\u0633\u0637 Gravity"
-	},
-	{
-		"key": "Bat can jump endlessly in the air but it cannot infect humans.",
-		"value": "\u0627\u0641\u0631\u0627\u062f \u0648\u06cc\u0631\u0648\u0633\u06cc \u0628\u0627\u06cc\u062f \u0647\u0645\u0647 \u06cc \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u0646\u062f"
-	},
-	{
-		"key": "Biologist",
-		"value": "\u0632\u06cc\u0633\u062a \u0634\u0646\u0627\u0633"
-	},
-	{
-		"key": "Biologists",
-		"value": "\u0632\u06cc\u0633\u062a \u0634\u0646\u0627\u0633"
-	},
-	{
-		"key": "Boomer",
-		"value": "\u0639\u0627\u0645\u0644 \u0627\u0646\u062a\u062d\u0627\u0631\u06cc"
-	},
-	{
-		"key": "Boomers",
-		"value": "\u0639\u0627\u0645\u0644 \u0627\u0646\u062a\u062d\u0627\u0631\u06cc"
-	},
-	{
-		"key": "Choose a help page with /help <page>",
-		"value": "\u0628\u0631\u0627\u06cc \u0627\u0646\u062a\u062e\u0627\u0628 \u0635\u0641\u062d\u0647 \u06cc \u0631\u0627\u0647\u0646\u0645\u0627 \u0627\u0632 /help <\u0634\u0645\u0627\u0631\u0647 \u06cc \u0635\u0641\u062d\u0647> \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f"
-	},
-	{
-		"key": "Choose your class",
-		"value": "\u06a9\u0644\u0627\u0633 \u062e\u0648\u062f \u0631\u0627 \u0627\u0646\u062a\u062e\u0627\u0628 \u06a9\u0646"
-	},
-	{
-		"key": "Class {str:ClassName} will be automatically attributed to you when round starts",
-		"value": "\u0627\u0646\u062a\u062e\u0627\u0628 \u062e\u0648\u062f\u06a9\u0627\u0631 \u0646\u0642\u0634 \u062f\u0631 \u0627\u0628\u062a\u062f\u0627\u06cc \u0628\u0627\u0632\u06cc \u0628\u0637\u0648\u0631 \u062e\u0648\u062f\u06a9\u0627\u0631 \u06cc\u06a9 \u0646\u0642\u0634 \u0628\u0631\u0627\u06cc \u0634\u0645\u0627 \u0627\u0646\u062a\u062e\u0627\u0628 \u0645\u06cc \u06a9\u0646\u062f"
-	},
-	{
-		"key": "Create an account on Crowdin and join the translation team:",
-		"value": "\u06cc\u06a9 \u0627\u06a9\u0627\u0646\u062a \u062f\u0631 Crowdin \u0628\u0633\u0627\u0632\u06cc\u062f \u0648 \u062f\u0631 \u062a\u06cc\u0645 \u062a\u0631\u062c\u0645\u0647 \u0639\u0636\u0648 \u0634\u0648\u06cc\u062f:"
-	},
-	{
-		"key": "Each bomb can explode {int:NumBombs} times.",
-		"one": "\u0647\u0631 \u0628\u0645\u0628 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u06cc\u06a9 \u0628\u0627\u0631 \u0645\u0646\u0641\u062c\u0631 \u0634\u0648\u062f.",
-		"other": "\u0647\u0631 \u0628\u0645\u0628 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f {int:NumBombs} \u0628\u0627\u0631 \u0645\u0646\u0641\u062c\u0631 \u0634\u0648\u062f.",
-	},
-	{
-		"key": "Engineer",
-		"value": "\u0645\u0647\u0646\u062f\u0633"
-	},
-	{
-		"key": "Engineers",
-		"value": "\u0645\u0647\u0646\u062f\u0633"
-	},
-	{
-		"key": "Example: \u201c/msg !medic I'm wounded!\u201d",
-		"value": "\u0646\u0645\u0648\u0646\u0647: \u00ab\u0645\u0646 \u0632\u062e\u0645\u06cc \u0634\u062f\u0645! msg !medic\u00bb"
-	},
-	{
-		"key": "Example: \u201c/mute nameless tee\u201d",
-		"value": "\u0646\u0645\u0648\u0646\u0647: \u00ab\u0645\u0646 \u0632\u062e\u0645\u06cc \u0634\u062f\u0645! msg !medic\u00bb"
-	},
-	{
-		"key": "Explosive yield: {percent:BombLevel}",
-		"value": "\u0645\u06cc\u0632\u0627\u0646 \u0639\u0645\u0644\u06a9\u0631\u062f \u0645\u0648\u0627\u062f \u0645\u0646\u0641\u062c\u0631\u0647: {percent:BombLevel}"
-	},
-	{
-		"key": "Ghost",
-		"value": "\u0631\u0648\u062d"
-	},
-	{
-		"key": "Ghosts",
-		"value": "\u0631\u0648\u062d"
-	},
-	{
-		"key": "Ghoul",
-		"value": "\u063a\u0648\u0644"
-	},
-	{
-		"key": "Ghoul can infect humans and heal the infected with the hammer.",
-		"value": "\u063a\u0648\u0644 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "Ghouls",
-		"value": "\u063a\u0648\u0644"
-	},
-	{
-		"key": "Grenade limit increased",
-		"value": "\u0645\u062d\u062f\u0648\u062f\u0647 \u06cc \u0627\u0646\u0641\u062c\u0627\u0631 \u0646\u0627\u0631\u0646\u062c\u06a9 \u0627\u0641\u0632\u0627\u06cc\u0634 \u06cc\u0627\u0641\u062a"
-	},
-	{
-		"key": "Hero",
-		"value": "\u0642\u0647\u0631\u0645\u0627\u0646"
-	},
-	{
-		"key": "Heroes",
-		"value": "\u0642\u0647\u0631\u0645\u0627\u0646"
-	},
-	{
-		"key": "Hook protection disabled",
-		"value": "\u0645\u062d\u0627\u0641\u0638\u062a \u0632\u0646\u062c\u06cc\u0631 \u063a\u06cc\u0631 \u0641\u0639\u0627\u0644 \u0634\u062f"
-	},
-	{
-		"key": "Hook protection enabled",
-		"value": "\u0645\u062d\u0627\u0641\u0638\u062a \u0632\u0646\u062c\u06cc\u0631 \u0641\u0639\u0627\u0644 \u0634\u062f"
-	},
-	{
-		"key": "How to translate the mod",
-		"value": "\u0646\u062d\u0648\u0647 \u06cc \u062a\u0631\u062c\u0645\u0647 \u06cc \u0645\u0648\u062f"
-	},
-	{
-		"key": "How to use taxi mode",
-		"value": "\u0646\u062d\u0648\u0647 \u06cc \u062a\u0631\u062c\u0645\u0647 \u06cc \u0645\u0648\u062f"
-	},
-	{
-		"key": "Hunter",
-		"value": "\u0634\u06a9\u0627\u0631\u0686\u06cc"
-	},
-	{
-		"key": "Hunters",
-		"value": "\u0634\u06a9\u0627\u0631\u0686\u06cc"
-	},
-	{
-		"key": "If an infected heals it, the freeze effect disappears.",
-		"value": "\u0627\u06af\u0631 \u06cc\u06a9 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0628\u0647 \u0627\u0648 \u062c\u0627\u0646 \u0628\u062f\u0647\u062f \u062d\u0627\u0644\u062a \u06cc\u062e \u0632\u062f\u0647 \u06cc \u0627\u0648 \u0627\u0632 \u0628\u06cc\u0646 \u0645\u06cc \u0631\u0648\u062f."
-	},
-	{
-		"key": "If the Witch dies, it disappears and is replaced by another class.",
-		"value": "\u0627\u06af\u0631 \u062c\u0627\u062f\u0648\u06af\u0631 \u0628\u0645\u06cc\u0631\u062f \u0627\u0648 \u062f\u0631 \u06cc\u06a9\u06cc \u062f\u06cc\u06af\u0631 \u0627\u0632 \u0646\u0642\u0634 \u0647\u0627\u06cc \u0622\u0644\u0648\u062f\u0647 \u0638\u0627\u0647\u0631 \u0645\u06cc \u0634\u0648\u062f."
-	},
-	{
-		"key": "If your language is not available, you can help with translation (/help translate).",
-		"value": "\u0627\u06af\u0631 \u0632\u0628\u0627\u0646 \u0645\u0648\u0631\u062f \u0646\u0638\u0631 \u0634\u0645\u0627 \u062f\u0631 \u062f\u0633\u062a\u0631\u0633 \u0646\u0628\u0648\u062f \u0634\u0645\u0627 \u0645\u06cc \u062a\u0648\u0627\u0646\u06cc\u062f \u0628\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u0627\u0632 (/help translate) \u062f\u0631 \u062a\u0631\u062c\u0645\u0647 \u06a9\u0631\u062f\u0646 \u0627\u06cc\u0646 \u0645\u0648\u062f \u0645\u0627 \u0631\u0627 \u06cc\u0627\u0631\u06cc \u06a9\u0646\u06cc\u062f."
-	},
-	{
-		"key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-		"value": "\u0632\u0646\u062c\u06cc\u0631 \u0639\u0646\u06a9\u0628\u0648\u062a (\u062f\u0631 \u062d\u0627\u0644\u062a \u0639\u0627\u062f\u06cc) 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc \u0648 \u0647\u0646\u06af\u0627\u0645\u06cc \u06a9\u0647 \u06a9\u0633\u06cc \u0631\u0627 \u06af\u06cc\u0631 \u0627\u0646\u062f\u0627\u062e\u062a\u0647 \u0628\u0627\u0634\u062f 2 \u0648\u0627\u062d\u062f \u0631\u0627 \u06a9\u0645 \u0645\u06cc \u06a9\u0646\u062f."
-	},
-	{
-		"key": "Infected won the round in {sec:RoundDuration}",
-		"value": "\u0632\u0627\u0645\u0628\u06cc \u0647\u0627 \u0628\u0631\u0646\u062f\u0647 \u0627\u06cc\u0646 \u0631\u0627\u0646\u062f \u0634\u062f\u0646\u062f \u062f\u0631 {sec:RoundDuration}"
-	},
-	{
-		"key": "Infection is coming in {sec:RemainingTime}",
-		"value": "{sec:RemainingTime} \u062a\u0627 \u0638\u0627\u0647\u0631 \u0634\u062f\u0646 \u067e\u0631\u062c\u0645 \u0628\u0639\u062f\u06cc"
-	},
-	{
-		"key": "InfectionClass is a team game between humans and the infected.",
-		"value": "InfectionClass \u06cc\u06a9 \u0645\u0648\u062f \u062a\u06cc\u0645\u06cc \u0628\u06cc\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0648 \u0627\u0641\u0631\u0627\u062f \u0648\u06cc\u0631\u0648\u0633\u06cc \u0648 \u0622\u0644\u0648\u062f\u0647 \u0627\u0633\u062a."
-	},
-	{
-		"key": "InfectionClass, by necropotame (version {str:VersionCode})",
-		"value": "InfectionClass, by necropotame (version {str:VersionCode})"
-	},
-	{
-		"key": "It can also infect humans and heal the infected with the hammer.",
-		"value": "\u0631\u0648\u062d \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "It can infect humans and heal the infected with the hammer.",
-		"value": "\u0631\u0648\u062d \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "It can infect humans and heal the infected with the hammer.",
-		"value": "\u0631\u0648\u062d \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "Laser wall: {sec:RemainingTime}",
-		"value": "\u062f\u06cc\u0648\u0627\u0631 \u0644\u06cc\u0632\u0631\u06cc: {sec:RemainingTime}"
-	},
-	{
-		"key": "List of commands",
-		"value": "\u0644\u06cc\u0633\u062a \u062f\u0633\u062a\u0648\u0631\u0627\u062a"
-	},
-	{
-		"key": "Looper laser wall: {sec:RemainingTime}",
-		"value": "\u062f\u06cc\u0648\u0627\u0631 \u0644\u06cc\u0632\u0631\u06cc: {sec:RemainingTime}"
-	},
-	{
-		"key": "Main contributors: {str:ListOfContributors}",
-		"value": "\u0647\u0645\u06a9\u0627\u0631\u0627\u0646 \u0627\u0635\u0644\u06cc: {str:ListOfContributors}"
-	},
-	{
-		"key": "Medic",
-		"value": "\u067e\u0632\u0634\u06a9"
-	},
-	{
-		"key": "Medic also has a powerful shotgun that can knock back the infected.",
-		"value": "\u0647\u0645\u0686\u0646\u06cc\u0646 \u0622\u0646\u0647\u0627 \u062f\u0627\u0631\u0627\u06cc \u06cc\u06a9 \u0634\u0627\u062a \u06af\u0627\u0646 \u0642\u062f\u0631\u062a\u0645\u0646\u062f \u0647\u0633\u062a\u0646\u062f \u06a9\u0647 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0631\u0627 \u0628\u0647 \u0639\u0642\u0628 \u0647\u0644 \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "Medics",
-		"value": "\u067e\u0632\u0634\u06a9"
-	},
-	{
-		"key": "Mercenaries",
-		"value": "\u0645\u0632\u062f\u0648\u0631"
-	},
-	{
-		"key": "Mercenary",
-		"value": "\u0645\u0632\u062f\u0648\u0631"
-	},
-	{
-		"key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-		"one": "\u0627\u0648 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u0627\u0632 \u0628\u0645\u0628 \u0647\u0627\u06cc \u0632\u0647\u0631 \u0622\u0644\u0648\u062f \u062e\u0648\u062f {int:NumDamagePoints} \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f.",
-		"other": "\u0627\u0648 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u0627\u0632 \u0628\u0645\u0628 \u0647\u0627\u06cc \u0632\u0647\u0631 \u0622\u0644\u0648\u062f \u062e\u0648\u062f {int:NumDamagePoints} \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f.",
-	},
-	{
-		"key": "Mine activated",
-		"value": "\u0645\u06cc\u0646 \u0641\u0639\u0627\u0644 \u0634\u062f"
-	},
-	{
-		"key": "Mines are limited to {int:NumMines} per player at the same time.",
-		"one": "\u062a\u0639\u062f\u0627\u062f \u0645\u06cc\u0646 \u0647\u0627\u06cc \u0647\u0645\u0632\u0645\u0627\u0646 {int:NumMines} \u0639\u062f\u062f \u0627\u0633\u062a.",
-		"other": "\u062a\u0639\u062f\u0627\u062f \u0645\u06cc\u0646 \u0647\u0627\u06cc \u0647\u0645\u0632\u0645\u0627\u0646 {int:NumMines} \u0639\u062f\u062f \u0627\u0633\u062a.",
-	},
-	{
-		"key": "Need at least {int:MinPlayers} players",
-		"one": "",
-		"other": "",
-	},
-	{
-		"key": "Next flag in {sec:RemainingTime}",
-		"value": "{sec:RemainingTime} \u062a\u0627 \u0638\u0627\u0647\u0631 \u0634\u062f\u0646 \u067e\u0631\u062c\u0645 \u0628\u0639\u062f\u06cc"
-	},
-	{
-		"key": "Next target in {sec:RemainingTime}",
-		"value": "\u0647\u062f\u0641 \u0628\u0639\u062f\u06cc \u062f\u0631 {sec:RemainingTime}"
-	},
-	{
-		"key": "Ninja",
-		"value": "\u0646\u06cc\u0646\u062c\u0627"
-	},
-	{
-		"key": "Ninjas",
-		"value": "\u0646\u06cc\u0646\u062c\u0627"
-	},
-	{
-		"key": "No player was found with this name",
-		"value": "\u0647\u06cc\u0686 \u0628\u0627\u0632\u06cc\u06a9\u0646\u06cc \u0628\u0627 \u0627\u06cc\u0646 \u0646\u0627\u0645 \u067e\u06cc\u062f\u0627 \u0646\u0634\u062f"
-	},
-	{
-		"key": "{int:NumBombs} bombs left",
-		"one": "{sec: RemainingTime} \u0628\u0645\u0628 \u0628\u0627\u0642\u06cc \u0645\u0627\u0646\u062f\u0647",
-		"other": "{int:NumBombs} \u0628\u0645\u0628 \u0628\u0627\u0642\u06cc \u0645\u0627\u0646\u062f\u0647",
-	},
-	{
-		"key": "{int:NumHumans} humans won the round",
-		"one": "{int:NumHumans} \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0628\u0631\u0646\u062f\u0647 \u0631\u0627\u0646\u062f \u0634\u062f\u0646\u062f",
-		"other": "{int:NumHumans} \u0627\u0646\u0633\u0627\u0646 \u0628\u0631\u0646\u062f\u0647 \u0634\u062f(\u0646\u062f)",
-	},
-	{
-		"key": "{int:NumMines} mines are active",
-		"one": "{int:NumMines} \u0645\u06cc\u0646 \u0641\u0639\u0627\u0644 \u0647\u0633\u062a\u0646\u062f",
-		"other": "{int:NumMines} \u0645\u06cc\u0646 \u0641\u0639\u0627\u0644 \u0647\u0633\u062a\u0646\u062f",
-	},
-	{
-		"key": "Please wait 5 minutes before creating another account",
-		"value": "\u0644\u0637\u0641\u0627 \u0628\u0631\u0627\u06cc \u0633\u0627\u062e\u062a \u0627\u06a9\u0627\u0646\u062a \u062c\u062f\u06cc\u062f \u062d\u062f\u0627\u0642\u0644 5 \u062f\u0642\u06cc\u0642\u0647 \u0635\u0628\u0631 \u06a9\u0646\u06cc\u062f"
-	},
-	{
-		"key": "Position lock: {sec:RemainingTime}",
-		"value": "\u0642\u0641\u0644 \u0634\u062f\u0646 \u062f\u0631 \u0645\u06a9\u0627\u0646: {sec:RemainingTime}"
-	},
-	{
-		"key": "Press <F3> or <F4> to enable or disable hook protection",
-		"value": "<F3> \u06cc\u0627 <F4> \u0631\u0627 \u0628\u0631\u0627\u06cc \u0641\u0639\u0627\u0644 \u06cc\u0627 \u063a\u06cc\u0631 \u0641\u0639\u0627\u0644 \u06a9\u0631\u062f\u0646 \u0645\u062d\u0627\u0641\u0638\u062a \u0632\u0646\u062c\u06cc\u0631 \u0641\u0634\u0627\u0631 \u062f\u0647\u06cc\u062f"
-	},
-	{
-		"key": "Random choice",
-		"value": "\u0627\u0646\u062a\u062e\u0627\u0628 \u062a\u0635\u0627\u062f\u0641\u06cc"
-	},
-	{
-		"key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-		"one": "",
-		"other": "",
-	},
-	{
-		"key": "Rules of the game",
-		"value": "\u0642\u0648\u0627\u0646\u06cc\u0646 \u0628\u0627\u0632\u06cc"
-	},
-	{
-		"key": "Santa {str:PlayerName} has arrived!",
-		"value": "{str:PlayerName} \u0628\u0627\u0632\u06cc \u0631\u0627 \u062a\u0631\u06a9 \u06a9\u0631\u062f"
-	},
-	{
-		"key": "Scientist",
-		"value": "\u062f\u0627\u0646\u0634\u0645\u0646\u062f"
-	},
-	{
-		"key": "Scientist has also grenades that teleport them.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u0627\u0632 \u0646\u0627\u0631\u0646\u062c\u06a9 \u0627\u0646\u062f\u0627\u0632 \u062e\u0648\u062f \u062c\u0627 \u0628\u0647 \u062c\u0627 \u0634\u0648\u062f."
-	},
-	{
-		"key": "Scientists",
-		"value": "\u062f\u0627\u0646\u0634\u0645\u0646\u062f"
-	},
-	{
-		"key": "Slug",
-		"value": "\u062d\u0644\u0632\u0648\u0646"
-	},
-	{
-		"key": "Slug can infect humans and heal the infected with the hammer.",
-		"value": "\u062d\u0644\u0632\u0648\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "Slugs",
-		"value": "\u062d\u0644\u0632\u0648\u0646"
-	},
-	{
-		"key": "Smoker",
-		"value": "\u0633\u06cc\u06af\u0627\u0631\u06cc"
-	},
-	{
-		"key": "Smokers",
-		"value": "\u0633\u06cc\u06af\u0627\u0631\u06cc"
-	},
-	{
-		"key": "Sniper",
-		"value": "\u062a\u06a9 \u062a\u06cc\u0631 \u0627\u0646\u062f\u0627\u0632"
-	},
-	{
-		"key": "Snipers",
-		"value": "\u062a\u06a9 \u062a\u06cc\u0631 \u0627\u0646\u062f\u0627\u0632"
-	},
-	{
-		"key": "Soldier",
-		"value": "\u0633\u0631\u0628\u0627\u0632"
-	},
-	{
-		"key": "Soldiers",
-		"value": "\u0633\u0631\u0628\u0627\u0632"
-	},
-	{
-		"key": "Someone was infected to balance the game.",
-		"value": "\u0647\u0646\u06af\u0627\u0645\u06cc \u06a9\u0647 \u0627\u0641\u0631\u0627\u062f \u0622\u0644\u0648\u062f\u0647 \u0628\u0627 \u062f\u06cc\u0648\u0627\u0631 \u0628\u0631\u062e\u0648\u0631\u062f \u06a9\u0646\u0646\u062f \u0645\u06cc \u0645\u06cc\u0631\u0646\u062f"
-	},
-	{
-		"key": "Spider",
-		"value": "\u0639\u0646\u06a9\u0628\u0648\u062a"
-	},
-	{
-		"key": "Spiders",
-		"value": "\u0639\u0646\u06a9\u0628\u0648\u062a"
-	},
-	{
-		"key": "Staying alive for: {int:RemainingTime}",
-		"value": "\u0642\u0641\u0644 \u0634\u062f\u0646 \u062f\u0631 \u0645\u06a9\u0627\u0646: {sec:RemainingTime}"
-	},
-	{
-		"key": "Stomach filled by {percent:FodderInStomach}",
-		"value": "{percent:FodderInStomach} \u0645\u0639\u062f\u0647 \u067e\u0631 \u0634\u062f\u0647 \u0627\u0633\u062a"
-	},
-	{
-		"key": "Switch language to english?",
-		"value": "\u062a\u0639\u0648\u06cc\u0636 \u0632\u0628\u0627\u0646 \u0628\u0647 \u067e\u0627\u0631\u0633\u06cc \u061f"
-	},
-	{
-		"key": "Sword strength increased",
-		"value": "\u0642\u062f\u0631\u062a \u0634\u0645\u0634\u06cc\u0631 \u0627\u0641\u0632\u0627\u0634 \u06cc\u0627\u0641\u062a"
-	},
-	{
-		"key": "Sword velocity increased",
-		"value": "\u0633\u0631\u0639\u062a \u0634\u0645\u0634\u06cc\u0631 \u0627\u0641\u0632\u0627\u0634 \u06cc\u0627\u0641\u062a"
-	},
-	{
-		"key": "Target to eliminate: {str:PlayerName}",
-		"value": "\u0647\u062f\u0641\u06cc \u06a9\u0647 \u0628\u0627\u06cc\u062f \u0646\u0627\u0628\u0648\u062f \u06a9\u0646\u06cc\u062f: {str:PlayerName}"
-	},
-	{
-		"key": "Targeted chat messages",
-		"value": "\u067e\u06cc\u0627\u0645 \u0647\u0627\u06cc \u0686\u062a \u0647\u062f\u0641 \u0642\u0631\u0627\u0631 \u06af\u0631\u0641\u062a\u0646\u062f"
-	},
-	{
-		"key": "Thanks to {str:ListOfContributors}",
-		"value": "\u0628\u0627 \u062a\u0634\u06a9\u0631 \u0627\u0632  {str:ListOfContributors}"
-	},
-	{
-		"key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
-		"value": "\u0632\u06cc\u0633\u062a \u0634\u0646\u0627\u0633 \u06cc\u06a9 \u0634\u0627\u062a \u06af\u0627\u0646 \u0628\u0627 \u06af\u0644\u0648\u0644\u0647\u200c\u0647\u0627\u06cc \u0642\u0648\u06cc \u062f\u0627\u0631\u062f \u0648 \u0645\u06cc\u200c\u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0634\u0644\u06cc\u06a9 \u062a\u0641\u0646\u06af \u062f\u06cc\u06af\u0631 \u062e\u0648\u062f \u06cc\u06a9 \u062e\u0637 \u0644\u06cc\u0632\u0631\u06cc \u0628\u0633\u0627\u0632\u062f."
-	},
-	{
-		"key": "The Boomer explodes when it attacks.",
-		"value": "\u0639\u0627\u0645\u0644 \u0627\u0646\u062a\u062d\u0627\u0631\u06cc \u062f\u0631 \u0647\u0646\u06af\u0627\u0645 \u062d\u0645\u0644\u0647 \u0645\u0646\u0641\u062c\u0631 \u0645\u06cc \u0634\u0648\u062f."
-	},
-	{
-		"key": "The Engineer can build walls with the hammer to block the infected.",
-		"value": "\u0645\u0647\u0646\u062f\u0633 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0686\u06a9\u0634 \u062e\u0648\u062f \u062f\u06cc\u0648\u0627\u0631 \u0644\u06cc\u0632\u0631\u06cc \u0628\u0633\u0627\u0632\u062f \u062a\u0627 \u062f\u0631 \u0628\u0631\u0627\u0628\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0627\u0632 \u062e\u0648\u062f \u062f\u0641\u0627\u0639 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-		"value": "\u0627\u0648 \u0646\u0627\u0645\u0631\u0626\u06cc \u0627\u0633\u062a \u062a\u0627 \u0632\u0645\u0627\u0646\u06cc \u06a9\u0647: \u06cc\u06a9 \u0627\u0646\u0633\u0627\u0646 \u0646\u0632\u062f\u06cc\u06a9\u0634 \u0634\u0648\u062f\u060c \u0628\u0647 \u0627\u0648 \u062d\u0645\u0644\u0647 \u06a9\u0646\u0646\u062f \u06cc\u0627 \u0627\u0632 \u0686\u06a9\u0634\u0634 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
-		"value": "\u0627\u0648 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0645\u0631\u062f\u0647 \u0647\u0627\u06cc \u0627\u0637\u0631\u0627\u0641 \u062e\u0648\u062f \u0631\u0627 \u0628\u0628\u0644\u0639\u062f \u0648 \u0642\u0648\u06cc \u062a\u0631\u060c \u0645\u0642\u0627\u0648\u0645 \u062a\u0631 \u0648 \u0633\u0631\u06cc\u0639\u062a\u0631 \u0634\u0648\u062f."
-	},
-	{
-		"key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
-		"value": "\u0642\u0647\u0631\u0645\u0627\u0646 \u0646\u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u062a\u0648\u0633\u0637 \u067e\u0632\u0634\u06a9 \u0633\u0644\u0627\u0645\u062a\u06cc \u062e\u0648\u062f \u0631\u0627 \u0628\u0627\u0632\u06cc\u0627\u0628\u062f \u0627\u0645\u0627 \u062f\u0631 \u0645\u0642\u0627\u0628\u0644 \u062a\u062d\u0645\u0644 \u0628\u06cc\u0634\u062a\u0631\u06cc \u062f\u0631\u0628\u0631\u0627\u0628\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u062f\u0627\u0631\u062f."
-	},
-	{
-		"key": "The Hero found the flag!",
-		"value": "\u0642\u0647\u0631\u0645\u0627\u0646 \u067e\u0631\u0686\u0645 \u0631\u0627 \u06cc\u0627\u0641\u062a!"
-	},
-	{
-		"key": "The Medic can protect humans with the hammer by giving them armor.",
-		"value": "\u062f\u06a9\u062a\u0631 \u0647\u0627 \u0645\u06cc \u062a\u0648\u0627\u0646\u0646\u062f \u0628\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u0627\u0632 \u0686\u06a9\u0634 \u062e\u0648\u062f \u0628\u0647 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0632\u0631\u0647 \u0628\u062f\u0647\u0646\u062f."
-	},
-	{
-		"key": "The Mercenary can fly in the air using their machine gun.",
-		"value": "\u0645\u0632\u062f\u0648\u0631 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u0627\u0632 \u0627\u0633\u0644\u062d\u0647 \u06cc \u0645\u0627\u0634\u06cc\u0646\u06cc \u062e\u0648\u062f \u062f\u0631 \u0622\u0633\u0645\u0627\u0646 \u067e\u0631\u0648\u0627\u0632 \u06a9\u0646\u062f"
-	},
-	{
-		"key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
-		"value": "\u0646\u06cc\u0646\u062c\u0627 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0645\u0628 \u0647\u0627\u06cc \u0641\u0644\u0627\u0634\u06cc \u067e\u0631\u062a\u0627\u0628 \u06a9\u0646\u062f \u0648 \u0628\u0631\u0627\u06cc \u0633\u0647 \u062b\u0627\u0646\u06cc\u0647 \u0627\u0641\u0631\u0627\u062f \u0648\u06cc\u0631\u0648\u0633\u06cc \u0631\u0627 \u0628\u0647 \u062d\u0627\u0644\u062a \u06cc\u062e \u0632\u062f\u0647 \u0641\u0631\u0648 \u0628\u0628\u0631\u062f."
-	},
-	{
-		"key": "The Scientist can pose floating mines with the hammer.",
-		"value": "\u062f\u0627\u0646\u0634\u0645\u0646\u062f \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0686\u06a9\u0634 \u062e\u0648\u062f \u0645\u06cc\u0646 \u0647\u0627\u06cc \u0627\u0644\u06a9\u062a\u0631\u0648\u0646\u06cc\u06a9\u06cc \u0628\u0633\u0627\u0632\u062f."
-	},
-	{
-		"key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-		"value": "\u0627\u0648 \u0645\u06cc\u200c\u062a\u0648\u0627\u0646\u062f \u0628\u0631 \u0631\u0648\u06cc \u0632\u0645\u06cc\u0646 \u0648 \u062f\u06cc\u0648\u0627\u0631\u0647\u0627 \u0628\u0627 \u06af\u0633\u062a\u0631\u0634 \u0644\u062c\u0646 \u0648 \u06af\u0644 \u0633\u0645 \u0628\u0633\u0627\u0632\u062f."
-	},
-	{
-		"key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
-		"value": "\u062a\u06a9 \u062a\u06cc\u0631\u0627\u0646\u062f\u0627\u0632 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0631\u0627\u06cc 15 \u062b\u0627\u0646\u06cc\u0647 \u062a\u0648\u0633\u0637 \u0686\u06a9\u0634 \u062e\u0648\u062f \u062f\u0631 \u0647\u0648\u0627 \u0645\u0639\u0644\u0642 \u0628\u0645\u0627\u0646\u062f."
-	},
-	{
-		"key": "The Soldier creates floating bombs with the hammer.",
-		"value": "\u0633\u0631\u0628\u0627\u0632 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0645\u0628 \u0647\u0627\u06cc \u067e\u0631\u0646\u062f\u0647 \u062a\u0648\u0633\u0637 \u0686\u06a9\u0634 \u062e\u0648\u062f \u0628\u0633\u0627\u0632\u062f."
-	},
-	{
-		"key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
-		"value": "\u0628\u0631\u0627\u06cc \u0647\u0631 \u0628\u0627\u0631 \u0645\u0631\u062f\u0646 \u0627\u0648 \u0628\u0631\u0627\u06cc 10 \u062b\u0627\u0646\u06cc\u0647 \u0628\u0647 \u062d\u0627\u0644\u062a \u06cc\u062e \u0632\u062f\u0647 \u062a\u0628\u062f\u06cc\u0644 \u0645\u06cc \u0634\u0648\u062f."
-	},
-	{
-		"key": "The class is disabled",
-		"value": "\u062c\u0627\u062f\u0648\u06af\u0631 \u0645\u0631\u062f"
-	},
-	{
-		"key": "The class selector will be displayed when round starts",
-		"value": "\u0627\u0646\u062a\u062e\u0627\u0628 \u06a9\u0646\u0646\u062f\u0647 \u06cc \u0646\u0642\u0634 \u062f\u0631 \u0627\u0628\u062a\u062f\u0627\u06cc \u0628\u0627\u0632\u06cc \u062f\u0631 \u062f\u0633\u062a\u0631\u0633 \u062e\u0648\u0627\u0647\u062f \u0628\u0648\u062f"
-	},
-	{
-		"key": "The goal for the humans is to survive until the army cleans the map.",
-		"value": "\u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0628\u0627\u06cc\u062f \u062a\u0627 \u0632\u0645\u0627\u0646\u06cc \u06a9\u0647 \u0627\u0631\u062a\u0634 \u0645\u0646\u0637\u0642\u0647 \u0631\u0627 \u0642\u0631\u0646\u0637\u06cc\u0646\u0647 \u06a9\u0646\u062f \u0632\u0646\u062f\u0647 \u0628\u0645\u0627\u0646\u0646\u062f."
-	},
-	{
-		"key": "The goal for the infected is to infect all humans.",
-		"value": "\u0627\u0641\u0631\u0627\u062f \u0648\u06cc\u0631\u0648\u0633\u06cc \u0628\u0627\u06cc\u062f \u0647\u0645\u0647 \u06cc \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u0646\u062f"
-	},
-	{
-		"key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
-		"value": "\u0632\u0645\u0627\u0646 \u0628\u0627\u0642\u06cc \u0645\u0627\u0646\u062f\u0646 \u062f\u06cc\u0648\u0627\u0631 \u0647\u0627 {sec:LifeSpan} \u0627\u0633\u062a \u0648 \u0647\u06cc\u0686 \u0645\u0647\u0646\u062f\u0633\u06cc \u0646\u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u06cc\u0634\u062a\u0631 \u0627\u0632 \u06cc\u06a9 \u062f\u06cc\u0648\u0627\u0631 \u0628\u0637\u0648\u0631 \u0647\u0645\u0632\u0645\u0627\u0646 \u062f\u0627\u0634\u062a\u0647 \u0628\u0627\u0634\u062f."
-	},
-	{
-		"key": "The undead is finally dead",
-		"value": "\u0633\u062e\u062a \u062c\u0627\u0646 \u0628\u0637\u0648\u0631 \u06a9\u0627\u0645\u0644 \u06a9\u0634\u062a\u0647 \u0634\u062f"
-	},
-	{
-		"key": "The witch is dead",
-		"value": "\u062c\u0627\u062f\u0648\u06af\u0631 \u0645\u0631\u062f"
-	},
-	{
-		"key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-		"one": "\u0646\u06cc\u0646\u062c\u0627 \u0628\u062c\u0627\u06cc \u0686\u06a9\u0634 \u06cc\u06a9 \u06a9\u0627\u062a\u0627\u0646\u0627 \u0628\u0627 \u062e\u0648\u062f \u062d\u0645\u0644 \u0645\u06cc \u06a9\u0646\u062f \u06a9\u0647 \u0628\u0647 \u0627\u0648 \u0627\u062c\u0627\u0632\u0647 \u0645\u06cc \u062f\u0647\u062f {int:NinjaJump} \u0628\u0627\u0631 \u0628\u062f\u0648\u0646 \u0628\u0631\u062e\u0648\u0631\u062f \u0628\u0647 \u0632\u0645\u06cc\u0646 \u0628\u067e\u0631\u062f.",
-		"other": "\u0646\u06cc\u0646\u062c\u0627 \u0628\u062c\u0627\u06cc \u0686\u06a9\u0634 \u06cc\u06a9 \u06a9\u0627\u062a\u0627\u0646\u0627 \u0628\u0627 \u062e\u0648\u062f \u062d\u0645\u0644 \u0645\u06cc \u06a9\u0646\u062f \u06a9\u0647 \u0628\u0647 \u0627\u0648 \u0627\u062c\u0627\u0632\u0647 \u0645\u06cc \u062f\u0647\u062f {int:NinjaJump} \u0628\u0627\u0631 \u0628\u062f\u0648\u0646 \u0628\u0631\u062e\u0648\u0631\u062f \u0628\u0647 \u0632\u0645\u06cc\u0646 \u0628\u067e\u0631\u062f.",
-	},
-	{
-		"key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
-		"value": "\u0633\u0631\u0628\u0627\u0632 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0645\u0628 \u0647\u0627\u06cc \u067e\u0631\u0646\u062f\u0647 \u062a\u0648\u0633\u0637 \u0686\u06a9\u0634 \u062e\u0648\u062f \u0628\u0633\u0627\u0632\u062f."
-	},
-	{
-		"key": "They can also jump two times in the air.",
-		"value": "\u0627\u0648 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u062f\u0631 \u0622\u0633\u0645\u0627\u0646 \u062f\u0648\u0628\u0627\u0631 \u0628\u067e\u0631\u062f."
-	},
-	{
-		"key": "They can also jump two times in the air.",
-		"value": "\u0627\u0648 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u062f\u0631 \u0622\u0633\u0645\u0627\u0646 \u062f\u0648\u0628\u0627\u0631 \u0628\u067e\u0631\u062f."
-	},
-	{
-		"key": "This username is already taken by an existing account",
-		"value": "\u0627\u06cc\u0646 \u0646\u0627\u0645 \u06a9\u0627\u0631\u0628\u0631\u06cc \u0642\u0628\u0644\u0627 \u0627\u0646\u062a\u062e\u0627\u0628 \u0634\u062f\u0647"
-	},
-	{
-		"key": "Too few infected to call the Santa",
-		"value": "\u0627\u0641\u0631\u0627\u062f \u0648\u06cc\u0631\u0648\u0633\u06cc \u0628\u0627\u06cc\u062f \u0647\u0645\u0647 \u06cc \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u0646\u062f"
-	},
-	{
-		"key": "Type \u201c/help {str:ClassName}\u201d for more information about your class",
-		"value": "\u062a\u0627\u06cc\u067e \u06a9\u0646\u06cc\u062f \u00abhelp {str:ClassName}/\u00bb \u0628\u0631\u0627\u06cc \u0627\u0637\u0644\u0627\u0639\u0627\u062a \u0628\u06cc\u0634\u062a\u0631 \u062f\u0631\u0645\u0648\u0631\u062f \u0646\u0642\u0634\u062a\u0627\u0646"
-	},
-	{
-		"key": "Undead",
-		"value": "\u062c\u0627\u0646 \u0633\u062e\u062a"
-	},
-	{
-		"key": "Undead can infect humans and heal the infected with the hammer.",
-		"value": "\u0633\u062e\u062a \u062c\u0627\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "Undeads",
-		"value": "\u062c\u0627\u0646 \u0633\u062e\u062a"
-	},
-	{
-		"key": "Unknown class",
-		"value": "\u0646\u0642\u0634 \u0646\u0627\u0634\u0646\u0627\u062e\u062a\u0647"
-	},
-	{
-		"key": "Unknown language",
-		"value": "\u0632\u0628\u0627\u0646 \u0646\u0627\u0634\u0646\u0627\u062e\u062a\u0647"
-	},
-	{
-		"key": "Unknowns",
-		"value": "\u0646\u0642\u0634 \u0646\u0627\u0634\u0646\u0627\u062e\u062a\u0647"
-	},
-	{
-		"key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
-		"value": "\u0628\u0631\u0627\u06cc \u062c\u0627\u06cc\u06af\u0630\u0627\u0631\u06cc \u0648 \u0627\u0646\u0641\u062c\u0627\u0631 \u0628\u0645\u0628 \u0647\u0627 \u0628\u0631\u0627\u06cc \u0686\u0646\u062f \u0628\u0627\u0631 \u0627\u0632 \u0686\u06a9\u0634 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f."
-	},
-	{
-		"key": "Use the hammer to place the bomb and explode it multiple times.",
-		"value": "\u0628\u0631\u0627\u06cc \u062c\u0627\u06cc\u06af\u0630\u0627\u0631\u06cc \u0648 \u0627\u0646\u0641\u062c\u0627\u0631 \u0628\u0645\u0628 \u0647\u0627 \u0628\u0631\u0627\u06cc \u0686\u0646\u062f \u0628\u0627\u0631 \u0627\u0632 \u0686\u06a9\u0634 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f."
-	},
-	{
-		"key": "Use \u201c/msg !<ClassName> <My Message>\u201d to send a private message to all players with a specific class.",
-		"value": "\u0627\u0632 \u00ab!<\u0646\u0627\u0645 \u0646\u0642\u0634> <\u067e\u06cc\u0627\u0645 \u0645\u0646> msg/\u00bb \u0628\u0631\u0627\u06cc \u0641\u0631\u0633\u062a\u0627\u062f\u0646 \u067e\u06cc\u0627\u0645 \u062e\u0635\u0648\u0635\u06cc \u0628\u0647 \u062a\u0645\u0627\u0645 \u0628\u0627\u0632\u06cc\u06a9\u0646 \u0647\u0627\u06cc \u06cc\u06a9 \u0646\u0642\u0634 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f!"
-	},
-	{
-		"key": "Use \u201c/msg !near\u201d to send a private message to all players near you.",
-		"value": "\u0627\u0632 \u00abmsg !near/\u00bb \u0628\u0631\u0627\u06cc \u0641\u0631\u0633\u062a\u0627\u062f\u0646 \u067e\u06cc\u0627\u0645 \u062e\u0635\u0648\u0635\u06cc \u0628\u0647 \u062a\u0645\u0627\u0645 \u0628\u0627\u0632\u06cc\u06a9\u0646 \u0647\u0627\u06cc \u0646\u0632\u062f\u06cc\u06a9 \u0628\u0647 \u062e\u0648\u062f\u062a\u0627\u0646 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f!"
-	},
-	{
-		"key": "Use \u201c/mute <PlayerName>\u201d to mute this player.",
-		"value": "\u0627\u0632 \u00ab<\u0646\u0627\u0645 \u0628\u0627\u0632\u06cc\u06a9\u0646> <\u067e\u06cc\u0627\u0645 \u0645\u0646> msg/\u00bb \u0628\u0631\u0627\u06cc \u0641\u0631\u0633\u062a\u0627\u062f\u0646 \u067e\u06cc\u0627\u0645 \u062e\u0635\u0648\u0635\u06cc \u0628\u0647 \u06cc\u06a9\u06cc \u0627\u0632 \u0628\u0627\u0632\u06cc\u06a9\u0646 \u0647\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f."
-	},
-	{
-		"key": "Use \u201c/w <PlayerName> <My Message>\u201d to send a private message to this player.",
-		"value": "\u0627\u0632 \u00ab<\u0646\u0627\u0645 \u0628\u0627\u0632\u06cc\u06a9\u0646> <\u067e\u06cc\u0627\u0645 \u0645\u0646> msg/\u00bb \u0628\u0631\u0627\u06cc \u0641\u0631\u0633\u062a\u0627\u062f\u0646 \u067e\u06cc\u0627\u0645 \u062e\u0635\u0648\u0635\u06cc \u0628\u0647 \u06cc\u06a9\u06cc \u0627\u0632 \u0628\u0627\u0632\u06cc\u06a9\u0646 \u0647\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u06a9\u0646\u06cc\u062f."
-	},
-	{
-		"key": "Voodoo can infect humans and heal the infected with the hammer.",
-		"value": "\u0631\u0648\u062d \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "Web mode enabled",
-		"value": "\u062d\u0627\u0644\u062a \u062a\u0627\u0631 \u0639\u0646\u06a9\u0628\u0648\u062a \u0641\u0639\u0627\u0644 \u0627\u0633\u062a"
-	},
-	{
-		"key": "When an infected touches the wall, it dies.",
-		"value": "\u0647\u0646\u06af\u0627\u0645\u06cc \u06a9\u0647 \u0627\u0641\u0631\u0627\u062f \u0622\u0644\u0648\u062f\u0647 \u0628\u0627 \u062f\u06cc\u0648\u0627\u0631 \u0628\u0631\u062e\u0648\u0631\u062f \u06a9\u0646\u0646\u062f \u0645\u06cc \u0645\u06cc\u0631\u0646\u062f"
-	},
-	{
-		"key": "White hole: {sec:RemainingTime}",
-		"value": "\u062f\u06cc\u0648\u0627\u0631 \u0644\u06cc\u0632\u0631\u06cc: {sec:RemainingTime}"
-	},
-	{
-		"key": "Witch",
-		"value": "\u062c\u0627\u062f\u0648\u06af\u0631"
-	},
-	{
-		"key": "Witch can infect humans and heal the infected with the hammer.",
-		"value": "\u062c\u0627\u062f\u0648\u06af\u0631 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "Witch {str:PlayerName} has arrived!",
-		"value": "{str:PlayerName} \u0628\u0627\u0632\u06cc \u0631\u0627 \u062a\u0631\u06a9 \u06a9\u0631\u062f"
-	},
-	{
-		"key": "Witches",
-		"value": "\u062c\u0627\u062f\u0648\u06af\u0631"
-	},
-	{
-		"key": "Wrong username/password.",
-		"value": "\u0646\u0627\u0645 \u06a9\u0627\u0631\u0628\u0631\u06cc \u06cc\u0627 \u0631\u0645\u0632\u0639\u0628\u0648\u0631 \u0627\u0634\u062a\u0628\u0627\u0647 \u0627\u0633\u062a."
-	},
-	{
-		"key": "You are a human: {str:ClassName}",
-		"value": "\u0634\u0645\u0627 \u06cc\u06a9 \u0627\u0646\u0633\u0627\u0646 \u062f\u0631 \u0646\u0642\u0634 {str:ClassName} \u0647\u0633\u062a\u06cc\u062f"
-	},
-	{
-		"key": "You are an infected: {str:ClassName}",
-		"value": "\u0634\u0645\u0627 \u06cc\u06a9 \u0641\u0631\u062f \u0648\u06cc\u0631\u0648\u0633\u06cc \u062f\u0631 \u0646\u0642\u0634 {str:ClassName} \u0647\u0633\u062a\u06cc\u062f"
-	},
-	{
-		"key": "You are blinded: {sec:EffectDuration}",
-		"value": "\u0634\u0645\u0627 \u062f\u0631 \u062d\u0627\u0644\u062a \u06cc\u062e \u0632\u062f\u0647 \u0647\u0633\u062a\u06cc\u062f: {str:VictimName}"
-	},
-	{
-		"key": "You are frozen: {sec:EffectDuration}",
-		"value": "\u0634\u0645\u0627 \u062f\u0631 \u062d\u0627\u0644\u062a \u06cc\u062e \u0632\u062f\u0647 \u0647\u0633\u062a\u06cc\u062f: {str:VictimName}"
-	},
-	{
-		"key": "You are muted for {sec:Duration}",
-		"value": "\u0634\u0645\u0627 \u062a\u0648\u0627\u0646\u0627\u06cc\u06cc \u0686\u062a \u06a9\u0631\u062f\u0646 \u0631\u0627 \u0628\u0647 \u0645\u062f\u062a {sec:Duration} \u0627\u0632 \u062f\u0633\u062a \u062f\u0627\u062f\u06cc\u062f"
-	},
-	{
-		"key": "You are slowed: {sec:EffectDuration}",
-		"value": "\u0634\u0645\u0627 \u062f\u0631 \u062d\u0627\u0644\u062a \u06cc\u062e \u0632\u062f\u0647 \u0647\u0633\u062a\u06cc\u062f: {str:VictimName}"
-	},
-	{
-		"key": "You can change the language of this mod using the command /language.",
-		"value": "\u0634\u0645\u0627 \u0645\u06cc \u062a\u0648\u0627\u0646\u06cc\u062f \u0628\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u0627\u0632 \u062f\u0633\u062a\u0648\u0631 /language \u0632\u0628\u0627\u0646 \u0628\u0627\u0632\u06cc \u0631\u0627 \u062a\u063a\u06cc\u06cc\u0631 \u062f\u0647\u06cc\u062f"
-	},
-	{
-		"key": "You can't join the spectators right now",
-		"value": "\u0634\u0645\u0627 \u062f\u0631 \u0627\u06cc\u0646 \u0632\u0645\u0627\u0646 \u0646\u0645\u06cc\u062a\u0648\u0627\u0646\u06cc\u062f \u0628\u0647 \u062a\u0645\u0627\u0634\u0627\u0686\u06cc\u0627\u0646 \u0645\u0644\u062d\u0642 \u0634\u0648\u06cc\u062f"
-	},
-	{
-		"key": "You have already notified that {str:PlayerName} ought to be banned",
-		"value": "\u0634\u0645\u0627 \u062f\u0631 \u062d\u0627\u0644 \u062d\u0627\u0636\u0631 \u0628\u0631\u0627\u06cc \u0628\u0646 \u0634\u062f\u0646 {str:PlayerName} \u0631\u0627\u06cc \u062f\u0627\u062f\u0647 \u0627\u06cc\u062f"
-	},
-	{
-		"key": "You have been infected by {str:KillerName}",
-		"value": "\u0634\u0645\u0627 \u06cc\u06a9 \u0641\u0631\u062f \u0648\u06cc\u0631\u0648\u0633\u06cc \u062f\u0631 \u0646\u0642\u0634 {str:ClassName} \u0647\u0633\u062a\u06cc\u062f"
-	},
-	{
-		"key": "You have called the Santa once again",
-		"value": "\u062c\u0627\u062f\u0648\u06af\u0631 \u0631\u0627 \u06a9\u0634\u062a\u06cc\u062f \u060c +5 \u0627\u0645\u062a\u06cc\u0627\u0632"
-	},
-	{
-		"key": "You have eliminated your target, +2 points",
-		"value": "\u0634\u0645\u0627 \u0647\u062f\u0641 \u062e\u0648\u062f \u0631\u0627 \u0646\u0627\u0628\u0648\u062f \u06a9\u0631\u062f\u06cc\u062f +2 \u0627\u0645\u062a\u06cc\u0627\u0632"
-	},
-	{
-		"key": "You have held a bonus area for one minute, +5 points",
-		"value": "\u0634\u0645\u0627 \u06cc\u06a9 \u0645\u0646\u0637\u0642\u0647 \u06cc \u0645\u0647\u0645 \u0631\u0627 \u0628\u0631\u0627\u06cc \u06cc\u06a9 \u062f\u0642\u06cc\u0642\u0647 \u062d\u0641\u0638 \u06a9\u0631\u062f\u06cc\u062f\u060c +5 \u0627\u0645\u062a\u06cc\u0627\u0632"
-	},
-	{
-		"key": "You have infected {str:VictimName}, +3 points",
-		"value": "\u0634\u0645\u0627 {str:VictimName} \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0631\u062f\u06cc\u062f\u060c +3 \u0627\u0645\u062a\u06cc\u0627\u0632!"
-	},
-	{
-		"key": "You have infected {str:VictimName}, shame on you!",
-		"value": "\u0634\u0645\u0627 {str:VictimName} \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0631\u062f\u06cc\u062f\u060c +3 \u0627\u0645\u062a\u06cc\u0627\u0632!"
-	},
-	{
-		"key": "You have killed a witch, +5 points",
-		"value": "\u062c\u0627\u062f\u0648\u06af\u0631 \u0631\u0627 \u06a9\u0634\u062a\u06cc\u062f \u060c +5 \u0627\u0645\u062a\u06cc\u0627\u0632"
-	},
-	{
-		"key": "You have killed an undead! +5 points",
-		"value": "\u062c\u0627\u062f\u0648\u06af\u0631 \u0631\u0627 \u06a9\u0634\u062a\u06cc\u062f \u060c +5 \u0627\u0645\u062a\u06cc\u0627\u0632"
-	},
-	{
-		"key": "You have survived, +5 points",
-		"value": "\u0634\u0645\u0627 \u062a\u0648\u0627\u0646\u0633\u062a\u06cc\u062f \u062c\u0627\u0646 \u0633\u0627\u0644\u0645 \u0628\u0647 \u062f\u0631 \u0628\u0628\u0631\u06cc\u062f\u060c +5 \u0627\u0645\u062a\u06cc\u0627\u0632"
-	},
-	{
-		"key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-		"one": "",
-		"other": "",
-	},
-	{
-		"key": "You must be logged for this operation",
-		"value": "\u0634\u0645\u0627 \u0628\u0627\u06cc\u062f \u0628\u0631\u0627\u06cc \u0627\u06cc\u0646 \u0639\u0645\u0644\u06cc\u0627\u062a \u0627\u0628\u062a\u062f\u0627 \u0648\u0627\u0631\u062f \u062d\u0633\u0627\u0628 \u062e\u0648\u062f \u0634\u0648\u06cc\u062f."
-	},
-	{
-		"key": "You must be logged to see stats",
-		"value": "\u0628\u0631\u0627\u06cc \u062f\u06cc\u062f\u0646 \u0631\u062a\u0628\u0647 \u06cc \u062e\u0648\u062f \u0648\u0627\u0631\u062f \u0634\u0648\u06cc\u062f"
-	},
-	{
-		"key": "You must be logged to see your goal",
-		"value": "\u0628\u0631\u0627\u06cc \u062f\u06cc\u062f\u0646 \u0647\u062f\u0641 \u062e\u0648\u062f \u0648\u0627\u0631\u062f \u0634\u0648\u06cc\u062f"
-	},
-	{
-		"key": "You must be logged to see your rank",
-		"value": "\u0628\u0631\u0627\u06cc \u062f\u06cc\u062f\u0646 \u0631\u062a\u0628\u0647 \u06cc \u062e\u0648\u062f \u0648\u0627\u0631\u062f \u0634\u0648\u06cc\u062f"
-	},
-	{
-		"key": "Your account has been created and you are now logged.",
-		"value": "\u0627\u06a9\u0627\u0646\u062a \u0634\u0645\u0627 \u0633\u0627\u062e\u062a\u0647 \u0634\u062f \u0648 \u0634\u0645\u0627 \u0627\u0644\u0627\u0646 \u0648\u0627\u0631\u062f \u0634\u062f\u06cc\u062f!"
-	},
-	{
-		"key": "{str:PlayerName} changed the class to {str:ClassName}",
-		"value": "{str:PlayerName} \u0646\u0627\u0645\u0634 \u0631\u0627 \u0628\u0647 {str:NewName} \u062a\u063a\u06cc\u06cc\u0631 \u062f\u0627\u062f"
-	},
-	{
-		"key": "{str:PlayerName} changed their name to {str:NewName}",
-		"value": "{str:PlayerName} \u0646\u0627\u0645\u0634 \u0631\u0627 \u0628\u0647 {str:NewName} \u062a\u063a\u06cc\u06cc\u0631 \u062f\u0627\u062f"
-	},
-	{
-		"key": "{str:PlayerName} entered and joined the game",
-		"value": "{str:PlayerName} \u0648\u0627\u0631\u062f \u0634\u062f \u0648 \u0628\u0647 \u0628\u0627\u0632\u06cc \u067e\u06cc\u0648\u0633\u062a"
-	},
-	{
-		"key": "{str:PlayerName} has been banned ({str:Reason})",
-		"value": "{str:PlayerName} \u0628\u0647 \u062f\u0644\u06cc\u0644 ({str:Reason}) \u0628\u0646 \u0634\u062f"
-	},
-	{
-		"key": "{str:PlayerName} has been kicked ({str:Reason})",
-		"value": "{str:PlayerName} \u0628\u0647 \u062f\u0644\u06cc\u0644 ({str:Reason}) \u06a9\u06cc\u06a9 \u0634\u062f"
-	},
-	{
-		"key": "{str:PlayerName} has destroyed your turret!",
-		"value": "{str:PlayerName} \u0628\u0627\u0632\u06cc \u0631\u0627 \u062a\u0631\u06a9 \u06a9\u0631\u062f"
-	},
-	{
-		"key": "{str:PlayerName} has left the game",
-		"value": "{str:PlayerName} \u0628\u0627\u0632\u06cc \u0631\u0627 \u062a\u0631\u06a9 \u06a9\u0631\u062f"
-	},
-	{
-		"key": "{str:PlayerName} has left the game ({str:Reason})",
-		"value": "{str:PlayerName} \u0628\u0647 \u062f\u0644\u06cc\u0644 ({str:Reason}) \u0628\u0627\u0632\u06cc \u0631\u0627 \u062a\u0631\u06a9 \u06a9\u0631\u062f"
-	},
-	{
-		"key": "{str:PlayerName} joined the game",
-		"value": "{str:PlayerName} \u0628\u0647 \u0628\u0627\u0632\u06cc \u0645\u0644\u062d\u0642 \u0634\u062f"
-	},
-	{
-		"key": "{str:PlayerName} joined the spectators",
-		"value": "{str:PlayerName} \u0628\u0647 \u062a\u0645\u0627\u0634\u0627\u0686\u06cc\u0627\u0646 \u0645\u0644\u062d\u0642 \u0634\u062f"
-	},
-	{
-		"key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
-		"value": "{str:PlayerName} \u0646\u0627\u0645\u0634 \u0631\u0627 \u0628\u0647 {str:NewName} \u062a\u063a\u06cc\u06cc\u0631 \u062f\u0627\u062f"
-	},
-	{
-		"key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
-		"value": "{str:PlayerName} \u0645\u06cc \u062e\u0648\u0627\u0647\u062f \u06a9\u0647 {str:VictimName} \u0628\u062f\u0644\u06cc\u0644 ({str:Reason}) \u0628\u0646 \u0634\u0648\u062f"
-	},
-	{
-		"key": "{str:VictimName} has been infected",
-		"value": "{str:VictimName} \u0632\u0627\u0645\u0628\u06cc \u0634\u062f"
-	},
-	{
-		"key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
-		"value": "{str:Victim} \u062a\u0648\u0627\u0646\u0627\u06cc\u06cc \u0635\u062d\u0628\u062a \u0631\u0627 \u0628\u0647 \u0645\u062f\u062a {sec:Duration} \u0628\u0647 \u062f\u0644\u06cc\u0644 ({str:Reason}) \u0627\u0632 \u062f\u0633\u062a \u062f\u0627\u062f"
-	},
-	{
-		"key": "Any human that touch a hook in web mode is automatically grabbed.",
-		"value": "\u0647\u0631 \u0627\u0646\u0633\u0627\u0646\u06cc \u06a9\u0647 \u0628\u0627 \u0627\u06cc\u0646 \u062a\u0627\u0631 \u0628\u0631\u062e\u0648\u0631\u062f \u06a9\u0646\u062f \u0628\u0647 \u0637\u0648\u0631 \u062e\u0648\u062f\u06a9\u0627\u0631 \u06af\u06cc\u0631 \u0645\u06cc \u0627\u0641\u062a\u062f."
-	},
-	{
-		"key": "Bat can jump multiple times in air.",
-		"value": "\u0627\u0648 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u062f\u0631 \u0622\u0633\u0645\u0627\u0646 \u062f\u0648\u0628\u0627\u0631 \u0628\u067e\u0631\u062f."
-	},
-	{
-		"key": "Bombs are limited to one per player at the same time.",
-		"value": "\u0628\u0645\u0628 \u0647\u0627 \u0628\u0631\u0627\u06cc \u0647\u0631 \u0633\u0631\u0628\u0627\u0632 \u06cc\u06a9 \u0639\u062f\u062f \u0628\u0637\u0648\u0631 \u0647\u0645\u0632\u0645\u0627\u0646 \u0647\u0633\u062a\u0646\u062f."
-	},
-	{
-		"key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-		"value": "\u0628\u0631\u0627\u06cc \u0647\u0631\u06af\u0648\u0646\u0647 \u0633\u0648\u0627\u0644\u06cc \u062f\u0631\u0645\u0648\u0631\u062f \u062a\u0631\u062c\u0645\u0647 \u0644\u0637\u0641\u0627 \u0628\u0627 \u0645\u0627 \u062f\u0631 IRC \u062f\u0631 \u062a\u0645\u0627\u0633 \u0628\u0627\u0634\u06cc\u062f ({str:IRCAddress})"
-	},
-	{
-		"key": "He can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "He can also inflict 4 damage points per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0647\u0631 \u062b\u0627\u0646\u06cc\u0647 4 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc\u0634\u0627\u0646 \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "He can coil explosives with his hammer that hinder infected from harming.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0627 \u0627\u0633\u062a\u0641\u0627\u062f\u0647 \u0627\u0632 \u0633\u06cc\u0645 \u0648 \u0645\u0648\u0627\u062f \u0645\u0646\u0641\u062c\u0631\u0647 \u0628\u0645\u0628 \u0647\u0627\u06cc\u06cc \u0628\u0627 \u062a\u0627\u062b\u06cc\u0631\u0627\u062a \u0645\u062e\u062a\u0644\u0641 \u0628\u0633\u0627\u0632\u062f."
-	},
-	{
-		"key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-		"value": "\u0628\u0631\u0627\u06cc \u0647\u0631\u0628\u0627\u0631 \u06af\u0631\u0641\u062a\u0646\u060c \u067e\u0631\u0686\u0645 1 \u0648\u0627\u062d\u062f \u0633\u0644\u0627\u0645\u062a\u06cc\u060c 4 \u0648\u0627\u062d\u062f \u0632\u0631\u0647 \u062f\u0631 \u0627\u062e\u062a\u06cc\u0627\u0631 \u0647\u0645\u0647 \u06cc \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0642\u0631\u0627\u0631 \u0645\u06cc \u062f\u0647\u062f \u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u062a\u0641\u0646\u06af \u0647\u0627 \u0631\u0627 \u067e\u0631 \u0645\u06cc \u06a9\u0646\u062f \u0648 \u062c\u0627\u0646 \u0648 \u0632\u0631\u0647 \u0642\u0647\u0631\u0645\u0627\u0646 \u0631\u0627 \u06a9\u0627\u0645\u0644\u0627 \u067e\u0631 \u0645\u06cc \u06a9\u0646\u062f."
-	},
-	{
-		"key": "She can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f 1 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc \u0631\u0627 \u0628\u0627 \u0632\u0646\u062c\u06cc\u0631 \u06a9\u0631\u062f\u0646 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "Snipers can jump two times in air.",
-		"value": "\u0627\u0648 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u062f\u0631 \u0622\u0633\u0645\u0627\u0646 \u062f\u0648\u0628\u0627\u0631 \u0628\u067e\u0631\u062f."
-	},
-	{
-		"key": "The Hero has a shotgun, a laser rifle, and a grenade launcher.",
-		"value": "\u0642\u0647\u0631\u0645\u0627\u0646 \u0647\u0645\u0647 \u06cc \u062a\u0641\u0646\u06af \u0647\u0627 \u0631\u0627 \u062f\u0627\u0631\u0627 \u0627\u0633\u062a."
-	},
-	{
-		"key": "The Hero must find a flag hidden in the map.",
-		"value": "\u0642\u0647\u0631\u0645\u0627\u0646 \u0628\u0627\u06cc\u062f \u067e\u0631\u0686\u0645 \u067e\u0646\u0647\u0627\u0646 \u0634\u062f\u0647 \u062f\u0631 \u0646\u0642\u0634\u0647 \u0631\u0627 \u0628\u06cc\u0627\u0628\u062f."
-	},
-	{
-		"key": "The Hunter can infect humans and heal infected with the hammer.",
-		"value": "\u0634\u06a9\u0627\u0631\u0686\u06cc \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "The Smoker can infect humans and heal infected with the hammer.",
-		"value": "\u0633\u06cc\u06af\u0627\u0631\u06cc \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "The Spider can infect humans and heal infected with the hammer.",
-		"value": "\u0639\u0646\u06a9\u0628\u0648\u062a \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u0628\u0647 \u0648\u0633\u06cc\u0644\u0647 \u06cc \u0686\u06a9\u0634 \u0627\u0646\u0633\u0627\u0646 \u0647\u0627 \u0631\u0627 \u0648\u06cc\u0631\u0648\u0633\u06cc \u06a9\u0646\u062f \u0648 \u0628\u0647 \u062f\u06cc\u06af\u0631 \u0648\u06cc\u0631\u0648\u0633\u06cc \u0647\u0627 \u0633\u0644\u0627\u0645\u062a\u06cc \u0628\u062f\u0647\u062f."
-	},
-	{
-		"key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-		"value": "\u0627\u0644\u0628\u062a\u0647 \u067e\u0633 \u0627\u0632 \u0645\u062f\u062a\u06cc \u063a\u0630\u0627\u06cc \u0627\u0648 \u0647\u0636\u0645 \u0645\u06cc \u0634\u0648\u062f \u0648 \u0628\u0647 \u062d\u0627\u0644\u062a \u0639\u0627\u062f\u06cc \u0628\u0631 \u0645\u06cc\u06af\u0631\u062f\u062f \u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u0627\u0648 \u0646\u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u062c\u0646\u0627\u0632\u0647 \u06cc \u062e\u0648\u062f \u0631\u0627 \u0628\u062e\u0648\u0631\u062f."
-	},
-	{
-		"key": "They also have a powerful rifle that deals 20 damage points in locked position, and 10\u201313 otherwise.",
-		"value": "\u0627\u0648 \u0647\u0645\u0686\u0646\u06cc\u0646 \u062a\u0641\u0646\u06af \u0642\u062f\u0631\u062a\u0645\u0646\u062f\u06cc \u062f\u0627\u0631\u062f \u06a9\u0647 \u0645\u06cc \u062a\u0648\u0627\u0646\u062f \u062f\u0631 \u062d\u0627\u0644\u062a \u0639\u0627\u062f\u06cc 10\u201313 \u0648\u0627\u062d\u062f \u0648 \u062f\u0631 \u062d\u0627\u0644\u062a \u0642\u0641\u0644 \u0645\u06a9\u0627\u0646 30 \u0648\u0627\u062d\u062f \u0627\u0632 \u0633\u0644\u0627\u0645\u062a\u06cc \u0631\u0627 \u06a9\u0645 \u06a9\u0646\u062f."
-	},
-	{
-		"key": "Touching the slime inflicts three damage points in three seconds on a human.",
-		"value": "\u0644\u0645\u0633 \u06a9\u0631\u062f\u0646 \u0644\u062c\u0646 \u0627\u0648\u0646 \u0628\u0627\u0639\u062b \u0648\u0627\u0631\u062f \u0634\u062f\u0646 \u0633\u0647 \u0648\u0627\u062d\u062f \u0636\u0631\u0628\u0647 \u062f\u0631 \u0647\u0631 \u0633\u0647 \u062b\u0627\u0646\u06cc\u0647 \u0628\u0647 \u0627\u0646\u0633\u0627\u0646\u200c\u0647\u0627 \u0645\u06cc\u200c\u0634\u0648\u062f."
-	},
-	{
-		"key": "When an infected dies, it may respawn near the Witch.",
-		"value": "\u0647\u0631\u06af\u0627\u0647 \u06cc\u06a9 \u0641\u0631\u062f \u0648\u06cc\u0631\u0648\u0633\u06cc \u0628\u0645\u06cc\u0631\u062f \u0646\u0632\u062f\u06cc\u06a9 \u0627\u0648 \u0628\u0627\u0632\u06cc \u0631\u0627 \u0634\u0631\u0648\u0639 \u0645\u06cc \u06a9\u0646\u062f."
-	},
-	{
-		"key": "When selecting any gun, the hook enter in web mode.",
-		"value": "\u0647\u0646\u06af\u0627\u0645\u06cc \u06a9\u0647 \u0647\u0631 \u062a\u0641\u0646\u06af\u06cc \u0631\u0627 \u0627\u0646\u062a\u062e\u0627\u0628 \u06a9\u0646\u06cc\u062f \u0627\u0648 \u0648\u0627\u0631\u062f \u062d\u0627\u0644\u062a \u062a\u0627\u0631 \u0639\u0646\u06a9\u0628\u0648\u062a \u0645\u06cc \u0634\u0648\u062f."
-	},
-	{
-		"key": "You are now logged.",
-		"value": "\u0634\u0645\u0627 \u0648\u0627\u0631\u062f \u0634\u062f\u06cc\u062f!"
-	},
-]}
+{
+    "translation": [
+        {
+            "key": "10 seconds later, a few players become infected.",
+            "value": "پس از 10 ثانیه دو انسان ویروسی می شوند"
+        },
+        {
+            "key": "A random class will be automatically attributed to you when round starts",
+            "value": "انتخاب خودکار نقش در ابتدای بازی بطور خودکار یک نقش برای شما انتخاب می کند"
+        },
+        {
+            "key": "All humans affected by the explosion become infected.",
+            "value": "تمامی انسان های نزدیک به او تحت تأثیر انفجار قرار می گیرند."
+        },
+        {
+            "key": "All players start as a human.",
+            "value": "همه ی بازیکن ها در نقش انسان بازی را آغاز می کنند."
+        },
+        {
+            "key": "An error occured during the creation of your account.",
+            "value": "مشکلی در ساخت حساب شما رخ داد"
+        },
+        {
+            "key": "An error occured during the operation.",
+            "value": "خطایی در عملیات رخ داده."
+        },
+        {
+            "key": "Available help pages: {str:PageList}",
+            "value": "تعداد صفحه های راهنمای در دسترس: {str:PageList}"
+        },
+        {
+            "key": "Available languages: {str:ListOfLanguage}",
+            "value": "زبان های در دسترس: {str:ListOfLanguage}"
+        },
+        {
+            "key": "Based on the concept of Infection mod by Gravity",
+            "value": "پایه ریزی شده بر روی مد ویروس اولیه توسط Gravity"
+        },
+        {
+            "key": "Bat can jump endlessly in the air but it cannot infect humans.",
+            "value": "افراد ویروسی باید همه ی انسان ها را ویروسی کنند"
+        },
+        {
+            "key": "Biologist",
+            "value": "زیست شناس"
+        },
+        {
+            "key": "Biologists",
+            "value": "زیست شناس"
+        },
+        {
+            "key": "Boomer",
+            "value": "عامل انتحاری"
+        },
+        {
+            "key": "Boomers",
+            "value": "عامل انتحاری"
+        },
+        {
+            "key": "Choose a help page with /help <page>",
+            "value": "برای انتخاب صفحه ی راهنما از /help <شماره ی صفحه> استفاده کنید"
+        },
+        {
+            "key": "Choose your class",
+            "value": "کلاس خود را انتخاب کن"
+        },
+        {
+            "key": "Class {str:ClassName} will be automatically attributed to you when round starts",
+            "value": "انتخاب خودکار نقش در ابتدای بازی بطور خودکار یک نقش برای شما انتخاب می کند"
+        },
+        {
+            "key": "Create an account on Crowdin and join the translation team:",
+            "value": "یک اکانت در Crowdin بسازید و در تیم ترجمه عضو شوید:"
+        },
+        {
+            "key": "Each bomb can explode {int:NumBombs} times.",
+            "one": "هر بمب می تواند یک بار منفجر شود.",
+            "other": "هر بمب می تواند {int:NumBombs} بار منفجر شود."
+        },
+        {
+            "key": "Engineer",
+            "value": "مهندس"
+        },
+        {
+            "key": "Engineers",
+            "value": "مهندس"
+        },
+        {
+            "key": "Example: “/msg !medic I'm wounded!”",
+            "value": "نمونه: «من زخمی شدم! msg !medic»"
+        },
+        {
+            "key": "Example: “/mute nameless tee”",
+            "value": "نمونه: «من زخمی شدم! msg !medic»"
+        },
+        {
+            "key": "Explosive yield: {percent:BombLevel}",
+            "value": "میزان عملکرد مواد منفجره: {percent:BombLevel}"
+        },
+        {
+            "key": "Ghost",
+            "value": "روح"
+        },
+        {
+            "key": "Ghosts",
+            "value": "روح"
+        },
+        {
+            "key": "Ghoul",
+            "value": "غول"
+        },
+        {
+            "key": "Ghoul can infect humans and heal the infected with the hammer.",
+            "value": "غول می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "Ghouls",
+            "value": "غول"
+        },
+        {
+            "key": "Grenade limit increased",
+            "value": "محدوده ی انفجار نارنجک افزایش یافت"
+        },
+        {
+            "key": "Hero",
+            "value": "قهرمان"
+        },
+        {
+            "key": "Heroes",
+            "value": "قهرمان"
+        },
+        {
+            "key": "Hook protection disabled",
+            "value": "محافظت زنجیر غیر فعال شد"
+        },
+        {
+            "key": "Hook protection enabled",
+            "value": "محافظت زنجیر فعال شد"
+        },
+        {
+            "key": "How to translate the mod",
+            "value": "نحوه ی ترجمه ی مود"
+        },
+        {
+            "key": "How to use taxi mode",
+            "value": "نحوه ی ترجمه ی مود"
+        },
+        {
+            "key": "Hunter",
+            "value": "شکارچی"
+        },
+        {
+            "key": "Hunters",
+            "value": "شکارچی"
+        },
+        {
+            "key": "If an infected heals it, the freeze effect disappears.",
+            "value": "اگر یک ویروسی به او جان بدهد حالت یخ زده ی او از بین می رود."
+        },
+        {
+            "key": "If the Witch dies, it disappears and is replaced by another class.",
+            "value": "اگر جادوگر بمیرد او در یکی دیگر از نقش های آلوده ظاهر می شود."
+        },
+        {
+            "key": "If your language is not available, you can help with translation (/help translate).",
+            "value": "اگر زبان مورد نظر شما در دسترس نبود شما می توانید با استفاده از (/help translate) در ترجمه کردن این مود ما را یاری کنید."
+        },
+        {
+            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
+            "value": "زنجیر عنکبوت (در حالت عادی) 1 واحد از سلامتی و هنگامی که کسی را گیر انداخته باشد 2 واحد را کم می کند."
+        },
+        {
+            "key": "Infected won the round in {sec:RoundDuration}",
+            "value": "زامبی ها برنده این راند شدند در {sec:RoundDuration}"
+        },
+        {
+            "key": "Infection is coming in {sec:RemainingTime}",
+            "value": "{sec:RemainingTime} تا ظاهر شدن پرجم بعدی"
+        },
+        {
+            "key": "InfectionClass is a team game between humans and the infected.",
+            "value": "InfectionClass یک مود تیمی بین انسان ها و افراد ویروسی و آلوده است."
+        },
+        {
+            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
+            "value": "InfectionClass, by necropotame (version {str:VersionCode})"
+        },
+        {
+            "key": "It can also infect humans and heal the infected with the hammer.",
+            "value": "روح می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "It can infect humans and heal the infected with the hammer.",
+            "value": "روح می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "It can infect humans and heal the infected with the hammer.",
+            "value": "روح می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "Laser wall: {sec:RemainingTime}",
+            "value": "دیوار لیزری: {sec:RemainingTime}"
+        },
+        {
+            "key": "List of commands",
+            "value": "لیست دستورات"
+        },
+        {
+            "key": "Looper laser wall: {sec:RemainingTime}",
+            "value": "دیوار لیزری: {sec:RemainingTime}"
+        },
+        {
+            "key": "Main contributors: {str:ListOfContributors}",
+            "value": "همکاران اصلی: {str:ListOfContributors}"
+        },
+        {
+            "key": "Medic",
+            "value": "پزشک"
+        },
+        {
+            "key": "Medic also has a powerful shotgun that can knock back the infected.",
+            "value": "همچنین آنها دارای یک شات گان قدرتمند هستند که می تواند ویروسی ها را به عقب هل بدهد."
+        },
+        {
+            "key": "Medics",
+            "value": "پزشک"
+        },
+        {
+            "key": "Mercenaries",
+            "value": "مزدور"
+        },
+        {
+            "key": "Mercenary",
+            "value": "مزدور"
+        },
+        {
+            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
+            "one": "او می تواند با استفاده از بمب های زهر آلود خود {int:NumDamagePoints} واحد از سلامتی را کم کند.",
+            "other": "او می تواند با استفاده از بمب های زهر آلود خود {int:NumDamagePoints} واحد از سلامتی را کم کند."
+        },
+        {
+            "key": "Mine activated",
+            "value": "مین فعال شد"
+        },
+        {
+            "key": "Mines are limited to {int:NumMines} per player at the same time.",
+            "one": "تعداد مین های همزمان {int:NumMines} عدد است.",
+            "other": "تعداد مین های همزمان {int:NumMines} عدد است."
+        },
+        {
+            "key": "Need at least {int:MinPlayers} players",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "Next flag in {sec:RemainingTime}",
+            "value": "{sec:RemainingTime} تا ظاهر شدن پرجم بعدی"
+        },
+        {
+            "key": "Next target in {sec:RemainingTime}",
+            "value": "هدف بعدی در {sec:RemainingTime}"
+        },
+        {
+            "key": "Ninja",
+            "value": "نینجا"
+        },
+        {
+            "key": "Ninjas",
+            "value": "نینجا"
+        },
+        {
+            "key": "No player was found with this name",
+            "value": "هیچ بازیکنی با این نام پیدا نشد"
+        },
+        {
+            "key": "{int:NumBombs} bombs left",
+            "one": "{sec: RemainingTime} بمب باقی مانده",
+            "other": "{int:NumBombs} بمب باقی مانده"
+        },
+        {
+            "key": "{int:NumHumans} humans won the round",
+            "one": "{int:NumHumans} انسان ها برنده راند شدند",
+            "other": "{int:NumHumans} انسان برنده شد(ند)"
+        },
+        {
+            "key": "{int:NumMines} mines are active",
+            "one": "{int:NumMines} مین فعال هستند",
+            "other": "{int:NumMines} مین فعال هستند"
+        },
+        {
+            "key": "Please wait 5 minutes before creating another account",
+            "value": "لطفا برای ساخت اکانت جدید حداقل 5 دقیقه صبر کنید"
+        },
+        {
+            "key": "Position lock: {sec:RemainingTime}",
+            "value": "قفل شدن در مکان: {sec:RemainingTime}"
+        },
+        {
+            "key": "Press <F3> or <F4> to enable or disable hook protection",
+            "value": "<F3> یا <F4> را برای فعال یا غیر فعال کردن محافظت زنجیر فشار دهید"
+        },
+        {
+            "key": "Random choice",
+            "value": "انتخاب تصادفی"
+        },
+        {
+            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "Rules of the game",
+            "value": "قوانین بازی"
+        },
+        {
+            "key": "Santa {str:PlayerName} has arrived!",
+            "value": "{str:PlayerName} بازی را ترک کرد"
+        },
+        {
+            "key": "Scientist",
+            "value": "دانشمند"
+        },
+        {
+            "key": "Scientist has also grenades that teleport them.",
+            "value": "او همچنین می تواند با استفاده از نارنجک انداز خود جا به جا شود."
+        },
+        {
+            "key": "Scientists",
+            "value": "دانشمند"
+        },
+        {
+            "key": "Slug",
+            "value": "حلزون"
+        },
+        {
+            "key": "Slug can infect humans and heal the infected with the hammer.",
+            "value": "حلزون می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "Slugs",
+            "value": "حلزون"
+        },
+        {
+            "key": "Smoker",
+            "value": "سیگاری"
+        },
+        {
+            "key": "Smokers",
+            "value": "سیگاری"
+        },
+        {
+            "key": "Sniper",
+            "value": "تک تیر انداز"
+        },
+        {
+            "key": "Snipers",
+            "value": "تک تیر انداز"
+        },
+        {
+            "key": "Soldier",
+            "value": "سرباز"
+        },
+        {
+            "key": "Soldiers",
+            "value": "سرباز"
+        },
+        {
+            "key": "Someone was infected to balance the game.",
+            "value": "هنگامی که افراد آلوده با دیوار برخورد کنند می میرند"
+        },
+        {
+            "key": "Spider",
+            "value": "عنکبوت"
+        },
+        {
+            "key": "Spiders",
+            "value": "عنکبوت"
+        },
+        {
+            "key": "Staying alive for: {int:RemainingTime}",
+            "value": "قفل شدن در مکان: {sec:RemainingTime}"
+        },
+        {
+            "key": "Stomach filled by {percent:FodderInStomach}",
+            "value": "{percent:FodderInStomach} معده پر شده است"
+        },
+        {
+            "key": "Switch language to english?",
+            "value": "تعویض زبان به پارسی ؟"
+        },
+        {
+            "key": "Sword strength increased",
+            "value": "قدرت شمشیر افزاش یافت"
+        },
+        {
+            "key": "Sword velocity increased",
+            "value": "سرعت شمشیر افزاش یافت"
+        },
+        {
+            "key": "Target to eliminate: {str:PlayerName}",
+            "value": "هدفی که باید نابود کنید: {str:PlayerName}"
+        },
+        {
+            "key": "Targeted chat messages",
+            "value": "پیام های چت هدف قرار گرفتند"
+        },
+        {
+            "key": "Thanks to {str:ListOfContributors}",
+            "value": "با تشکر از  {str:ListOfContributors}"
+        },
+        {
+            "key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
+            "value": "زیست شناس یک شات گان با گلوله‌های قوی دارد و می‌تواند با شلیک تفنگ دیگر خود یک خط لیزری بسازد."
+        },
+        {
+            "key": "The Boomer explodes when it attacks.",
+            "value": "عامل انتحاری در هنگام حمله منفجر می شود."
+        },
+        {
+            "key": "The Engineer can build walls with the hammer to block the infected.",
+            "value": "مهندس می تواند با چکش خود دیوار لیزری بسازد تا در برابر ویروسی ها از خود دفاع کند."
+        },
+        {
+            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
+            "value": "او نامرئی است تا زمانی که: یک انسان نزدیکش شود، به او حمله کنند یا از چکشش استفاده کند."
+        },
+        {
+            "key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
+            "value": "او می تواند مرده های اطراف خود را ببلعد و قوی تر، مقاوم تر و سریعتر شود."
+        },
+        {
+            "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
+            "value": "قهرمان نمی تواند توسط پزشک سلامتی خود را بازیابد اما در مقابل تحمل بیشتری دربرابر ویروسی ها دارد."
+        },
+        {
+            "key": "The Hero found the flag!",
+            "value": "قهرمان پرچم را یافت!"
+        },
+        {
+            "key": "The Medic can protect humans with the hammer by giving them armor.",
+            "value": "دکتر ها می توانند با استفاده از چکش خود به انسان ها زره بدهند."
+        },
+        {
+            "key": "The Mercenary can fly in the air using their machine gun.",
+            "value": "مزدور می تواند با استفاده از اسلحه ی ماشینی خود در آسمان پرواز کند"
+        },
+        {
+            "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
+            "value": "نینجا می تواند بمب های فلاشی پرتاب کند و برای سه ثانیه افراد ویروسی را به حالت یخ زده فرو ببرد."
+        },
+        {
+            "key": "The Scientist can pose floating mines with the hammer.",
+            "value": "دانشمند می تواند با چکش خود مین های الکترونیکی بسازد."
+        },
+        {
+            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
+            "value": "او می‌تواند بر روی زمین و دیوارها با گسترش لجن و گل سم بسازد."
+        },
+        {
+            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
+            "value": "تک تیرانداز می تواند برای 15 ثانیه توسط چکش خود در هوا معلق بماند."
+        },
+        {
+            "key": "The Soldier creates floating bombs with the hammer.",
+            "value": "سرباز می تواند بمب های پرنده توسط چکش خود بسازد."
+        },
+        {
+            "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
+            "value": "برای هر بار مردن او برای 10 ثانیه به حالت یخ زده تبدیل می شود."
+        },
+        {
+            "key": "The class is disabled",
+            "value": "جادوگر مرد"
+        },
+        {
+            "key": "The class selector will be displayed when round starts",
+            "value": "انتخاب کننده ی نقش در ابتدای بازی در دسترس خواهد بود"
+        },
+        {
+            "key": "The goal for the humans is to survive until the army cleans the map.",
+            "value": "انسان ها باید تا زمانی که ارتش منطقه را قرنطینه کند زنده بمانند."
+        },
+        {
+            "key": "The goal for the infected is to infect all humans.",
+            "value": "افراد ویروسی باید همه ی انسان ها را ویروسی کنند"
+        },
+        {
+            "key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
+            "value": "زمان باقی ماندن دیوار ها {sec:LifeSpan} است و هیچ مهندسی نمی تواند بیشتر از یک دیوار بطور همزمان داشته باشد."
+        },
+        {
+            "key": "The undead is finally dead",
+            "value": "سخت جان بطور کامل کشته شد"
+        },
+        {
+            "key": "The witch is dead",
+            "value": "جادوگر مرد"
+        },
+        {
+            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
+            "one": "نینجا بجای چکش یک کاتانا با خود حمل می کند که به او اجازه می دهد {int:NinjaJump} بار بدون برخورد به زمین بپرد.",
+            "other": "نینجا بجای چکش یک کاتانا با خود حمل می کند که به او اجازه می دهد {int:NinjaJump} بار بدون برخورد به زمین بپرد."
+        },
+        {
+            "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
+            "value": "سرباز می تواند بمب های پرنده توسط چکش خود بسازد."
+        },
+        {
+            "key": "They can also jump two times in the air.",
+            "value": "او می تواند در آسمان دوبار بپرد."
+        },
+        {
+            "key": "They can also jump two times in the air.",
+            "value": "او می تواند در آسمان دوبار بپرد."
+        },
+        {
+            "key": "This username is already taken by an existing account",
+            "value": "این نام کاربری قبلا انتخاب شده"
+        },
+        {
+            "key": "Too few infected to call the Santa",
+            "value": "افراد ویروسی باید همه ی انسان ها را ویروسی کنند"
+        },
+        {
+            "key": "Type “/help {str:ClassName}” for more information about your class",
+            "value": "تایپ کنید «help {str:ClassName}/» برای اطلاعات بیشتر درمورد نقشتان"
+        },
+        {
+            "key": "Undead",
+            "value": "جان سخت"
+        },
+        {
+            "key": "Undead can infect humans and heal the infected with the hammer.",
+            "value": "سخت جان می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "Undeads",
+            "value": "جان سخت"
+        },
+        {
+            "key": "Unknown class",
+            "value": "نقش ناشناخته"
+        },
+        {
+            "key": "Unknown language",
+            "value": "زبان ناشناخته"
+        },
+        {
+            "key": "Unknowns",
+            "value": "نقش ناشناخته"
+        },
+        {
+            "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
+            "value": "برای جایگذاری و انفجار بمب ها برای چند بار از چکش استفاده کنید."
+        },
+        {
+            "key": "Use the hammer to place the bomb and explode it multiple times.",
+            "value": "برای جایگذاری و انفجار بمب ها برای چند بار از چکش استفاده کنید."
+        },
+        {
+            "key": "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.",
+            "value": "از «!<نام نقش> <پیام من> msg/» برای فرستادن پیام خصوصی به تمام بازیکن های یک نقش استفاده کنید!"
+        },
+        {
+            "key": "Use “/msg !near” to send a private message to all players near you.",
+            "value": "از «msg !near/» برای فرستادن پیام خصوصی به تمام بازیکن های نزدیک به خودتان استفاده کنید!"
+        },
+        {
+            "key": "Use “/mute <PlayerName>” to mute this player.",
+            "value": "از «<نام بازیکن> <پیام من> msg/» برای فرستادن پیام خصوصی به یکی از بازیکن ها استفاده کنید."
+        },
+        {
+            "key": "Use “/w <PlayerName> <My Message>” to send a private message to this player.",
+            "value": "از «<نام بازیکن> <پیام من> msg/» برای فرستادن پیام خصوصی به یکی از بازیکن ها استفاده کنید."
+        },
+        {
+            "key": "Voodoo can infect humans and heal the infected with the hammer.",
+            "value": "روح می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "Web mode enabled",
+            "value": "حالت تار عنکبوت فعال است"
+        },
+        {
+            "key": "When an infected touches the wall, it dies.",
+            "value": "هنگامی که افراد آلوده با دیوار برخورد کنند می میرند"
+        },
+        {
+            "key": "White hole: {sec:RemainingTime}",
+            "value": "دیوار لیزری: {sec:RemainingTime}"
+        },
+        {
+            "key": "Witch",
+            "value": "جادوگر"
+        },
+        {
+            "key": "Witch can infect humans and heal the infected with the hammer.",
+            "value": "جادوگر می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "Witch {str:PlayerName} has arrived!",
+            "value": "{str:PlayerName} بازی را ترک کرد"
+        },
+        {
+            "key": "Witches",
+            "value": "جادوگر"
+        },
+        {
+            "key": "Wrong username/password.",
+            "value": "نام کاربری یا رمزعبور اشتباه است."
+        },
+        {
+            "key": "You are a human: {str:ClassName}",
+            "value": "شما یک انسان در نقش {str:ClassName} هستید"
+        },
+        {
+            "key": "You are an infected: {str:ClassName}",
+            "value": "شما یک فرد ویروسی در نقش {str:ClassName} هستید"
+        },
+        {
+            "key": "You are blinded: {sec:EffectDuration}",
+            "value": "شما در حالت یخ زده هستید: {str:VictimName}"
+        },
+        {
+            "key": "You are frozen: {sec:EffectDuration}",
+            "value": "شما در حالت یخ زده هستید: {str:VictimName}"
+        },
+        {
+            "key": "You are muted for {sec:Duration}",
+            "value": "شما توانایی چت کردن را به مدت {sec:Duration} از دست دادید"
+        },
+        {
+            "key": "You are slowed: {sec:EffectDuration}",
+            "value": "شما در حالت یخ زده هستید: {str:VictimName}"
+        },
+        {
+            "key": "You can change the language of this mod using the command /language.",
+            "value": "شما می توانید با استفاده از دستور /language زبان بازی را تغییر دهید"
+        },
+        {
+            "key": "You can't join the spectators right now",
+            "value": "شما در این زمان نمیتوانید به تماشاچیان ملحق شوید"
+        },
+        {
+            "key": "You have already notified that {str:PlayerName} ought to be banned",
+            "value": "شما در حال حاضر برای بن شدن {str:PlayerName} رای داده اید"
+        },
+        {
+            "key": "You have been infected by {str:KillerName}",
+            "value": "شما یک فرد ویروسی در نقش {str:ClassName} هستید"
+        },
+        {
+            "key": "You have called the Santa once again",
+            "value": "جادوگر را کشتید ، +5 امتیاز"
+        },
+        {
+            "key": "You have eliminated your target, +2 points",
+            "value": "شما هدف خود را نابود کردید +2 امتیاز"
+        },
+        {
+            "key": "You have held a bonus area for one minute, +5 points",
+            "value": "شما یک منطقه ی مهم را برای یک دقیقه حفظ کردید، +5 امتیاز"
+        },
+        {
+            "key": "You have infected {str:VictimName}, +3 points",
+            "value": "شما {str:VictimName} را ویروسی کردید، +3 امتیاز!"
+        },
+        {
+            "key": "You have infected {str:VictimName}, shame on you!",
+            "value": "شما {str:VictimName} را ویروسی کردید، +3 امتیاز!"
+        },
+        {
+            "key": "You have killed a witch, +5 points",
+            "value": "جادوگر را کشتید ، +5 امتیاز"
+        },
+        {
+            "key": "You have killed an undead! +5 points",
+            "value": "جادوگر را کشتید ، +5 امتیاز"
+        },
+        {
+            "key": "You have survived, +5 points",
+            "value": "شما توانستید جان سالم به در ببرید، +5 امتیاز"
+        },
+        {
+            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "You must be logged for this operation",
+            "value": "شما باید برای این عملیات ابتدا وارد حساب خود شوید."
+        },
+        {
+            "key": "You must be logged to see stats",
+            "value": "برای دیدن رتبه ی خود وارد شوید"
+        },
+        {
+            "key": "You must be logged to see your goal",
+            "value": "برای دیدن هدف خود وارد شوید"
+        },
+        {
+            "key": "You must be logged to see your rank",
+            "value": "برای دیدن رتبه ی خود وارد شوید"
+        },
+        {
+            "key": "Your account has been created and you are now logged.",
+            "value": "اکانت شما ساخته شد و شما الان وارد شدید!"
+        },
+        {
+            "key": "{str:PlayerName} changed the class to {str:ClassName}",
+            "value": "{str:PlayerName} نامش را به {str:NewName} تغییر داد"
+        },
+        {
+            "key": "{str:PlayerName} changed their name to {str:NewName}",
+            "value": "{str:PlayerName} نامش را به {str:NewName} تغییر داد"
+        },
+        {
+            "key": "{str:PlayerName} entered and joined the game",
+            "value": "{str:PlayerName} وارد شد و به بازی پیوست"
+        },
+        {
+            "key": "{str:PlayerName} has been banned ({str:Reason})",
+            "value": "{str:PlayerName} به دلیل ({str:Reason}) بن شد"
+        },
+        {
+            "key": "{str:PlayerName} has been kicked ({str:Reason})",
+            "value": "{str:PlayerName} به دلیل ({str:Reason}) کیک شد"
+        },
+        {
+            "key": "{str:PlayerName} has destroyed your turret!",
+            "value": "{str:PlayerName} بازی را ترک کرد"
+        },
+        {
+            "key": "{str:PlayerName} has left the game",
+            "value": "{str:PlayerName} بازی را ترک کرد"
+        },
+        {
+            "key": "{str:PlayerName} has left the game ({str:Reason})",
+            "value": "{str:PlayerName} به دلیل ({str:Reason}) بازی را ترک کرد"
+        },
+        {
+            "key": "{str:PlayerName} joined the game",
+            "value": "{str:PlayerName} به بازی ملحق شد"
+        },
+        {
+            "key": "{str:PlayerName} joined the spectators",
+            "value": "{str:PlayerName} به تماشاچیان ملحق شد"
+        },
+        {
+            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
+            "value": "{str:PlayerName} نامش را به {str:NewName} تغییر داد"
+        },
+        {
+            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
+            "value": "{str:PlayerName} می خواهد که {str:VictimName} بدلیل ({str:Reason}) بن شود"
+        },
+        {
+            "key": "{str:VictimName} has been infected",
+            "value": "{str:VictimName} زامبی شد"
+        },
+        {
+            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
+            "value": "{str:Victim} توانایی صحبت را به مدت {sec:Duration} به دلیل ({str:Reason}) از دست داد"
+        },
+        {
+            "key": "Any human that touch a hook in web mode is automatically grabbed.",
+            "value": "هر انسانی که با این تار برخورد کند به طور خودکار گیر می افتد."
+        },
+        {
+            "key": "Bat can jump multiple times in air.",
+            "value": "او می تواند در آسمان دوبار بپرد."
+        },
+        {
+            "key": "Bombs are limited to one per player at the same time.",
+            "value": "بمب ها برای هر سرباز یک عدد بطور همزمان هستند."
+        },
+        {
+            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
+            "value": "برای هرگونه سوالی درمورد ترجمه لطفا با ما در IRC در تماس باشید ({str:IRCAddress})"
+        },
+        {
+            "key": "He can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "He can also inflict 4 damage points per second by hooking humans.",
+            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 4 واحد از سلامتیشان را کم کند."
+        },
+        {
+            "key": "He can coil explosives with his hammer that hinder infected from harming.",
+            "value": "او همچنین می تواند با استفاده از سیم و مواد منفجره بمب هایی با تاثیرات مختلف بسازد."
+        },
+        {
+            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
+            "value": "برای هربار گرفتن، پرچم 1 واحد سلامتی، 4 واحد زره در اختیار همه ی انسان ها قرار می دهد و همچنین تفنگ ها را پر می کند و جان و زره قهرمان را کاملا پر می کند."
+        },
+        {
+            "key": "She can also inflict 1 damage point per second by hooking humans.",
+            "value": "او همچنین می تواند 1 واحد از سلامتی را با زنجیر کردن انسان ها کم کند."
+        },
+        {
+            "key": "Snipers can jump two times in air.",
+            "value": "او می تواند در آسمان دوبار بپرد."
+        },
+        {
+            "key": "The Hero has a shotgun, a laser rifle, and a grenade launcher.",
+            "value": "قهرمان همه ی تفنگ ها را دارا است."
+        },
+        {
+            "key": "The Hero must find a flag hidden in the map.",
+            "value": "قهرمان باید پرچم پنهان شده در نقشه را بیابد."
+        },
+        {
+            "key": "The Hunter can infect humans and heal infected with the hammer.",
+            "value": "شکارچی می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "The Smoker can infect humans and heal infected with the hammer.",
+            "value": "سیگاری می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "The Spider can infect humans and heal infected with the hammer.",
+            "value": "عنکبوت می تواند به وسیله ی چکش انسان ها را ویروسی کند و به دیگر ویروسی ها سلامتی بدهد."
+        },
+        {
+            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
+            "value": "البته پس از مدتی غذای او هضم می شود و به حالت عادی بر میگردد و همچنین او نمی تواند جنازه ی خود را بخورد."
+        },
+        {
+            "key": "They also have a powerful rifle that deals 20 damage points in locked position, and 10–13 otherwise.",
+            "value": "او همچنین تفنگ قدرتمندی دارد که می تواند در حالت عادی 10–13 واحد و در حالت قفل مکان 30 واحد از سلامتی را کم کند."
+        },
+        {
+            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
+            "value": "لمس کردن لجن اون باعث وارد شدن سه واحد ضربه در هر سه ثانیه به انسان‌ها می‌شود."
+        },
+        {
+            "key": "When an infected dies, it may respawn near the Witch.",
+            "value": "هرگاه یک فرد ویروسی بمیرد نزدیک او بازی را شروع می کند."
+        },
+        {
+            "key": "When selecting any gun, the hook enter in web mode.",
+            "value": "هنگامی که هر تفنگی را انتخاب کنید او وارد حالت تار عنکبوت می شود."
+        },
+        {
+            "key": "You are now logged.",
+            "value": "شما وارد شدید!"
+        }
+    ]
+}
