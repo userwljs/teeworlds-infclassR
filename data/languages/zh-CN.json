@@ -1,1162 +1,1164 @@
-{"translation":[
-	{
-		"key": "(page {int:PageNumber}/{int:PagesInTotal}, see /changelog {int:NextPage})",
-		"value": "({int:PageNumber}/{int:PagesInTotal}\uff0c \u4e0b\u4e00\u9875\u67e5\u770b /changelog {int:NextPage})"
-	},
-	{
-		"key": "10 seconds later, a few players become infected.",
-		"value": "10 \u79d2\u540e\uff0c\u6709\u4e9b\u73a9\u5bb6\u4f1a\u88ab\u611f\u67d3\u3002"
-	},
-	{
-		"key": "A lucky Scientist devoted to killing can get a white hole that sucks the infected in which can be placed with the laser rifle.",
-		"value": "\u5e78\u8fd0\u7684\u79d1\u5b66\u5bb6\u4f1a\u5728\u6740\u6b7b\u611f\u67d3\u8005\u65f6\u5f97\u5230\u767d\u6d1e, \u767d\u6d1e\u53ef\u7528\u6fc0\u5149\u67aa\u653e\u7f6e"
-	},
-	{
-		"key": "A random class will be automatically attributed to you when rounds start",
-		"value": "\u6e38\u620f\u5f00\u59cb\u65f6\u4f1a\u81ea\u52a8\u9009\u62e9\u968f\u673a\u804c\u4e1a"
-	},
-	{
-		"key": "All humans affected by the explosion become infected.",
-		"value": "\u4eba\u7c7b\u4f1a\u88ab\u7206\u70b8\u611f\u67d3"
-	},
-	{
-		"key": "All players start as a human.",
-		"value": "\u6240\u6709\u73a9\u5bb6\u4e00\u5f00\u59cb\u90fd\u662f\u4eba\u7c7b"
-	},
-	{
-		"key": "All witches are already here",
-		"value": "\u6240\u6709\u5973\u5deb\u5df2\u7ecf\u5728\u8fd9\u91cc\u4e86"
-	},
-	{
-		"key": "An error occured during the creation of your account.",
-		"value": "\u521b\u5efa\u5e10\u6237\u65f6\u53d1\u751f\u9519\u8bef\u3002"
-	},
-	{
-		"key": "An error occured during the operation.",
-		"value": "\u5728\u64cd\u4f5c\u8fc7\u7a0b\u4e2d\u53d1\u751f\u9519\u8bef\u3002"
-	},
-	{
-		"key": "Available help pages: {str:PageList}",
-		"value": "\u53ef\u7528\u7684\u5e2e\u52a9\u9875\u9762\ufe30{str:PageList}"
-	},
-	{
-		"key": "Available languages: {str:ListOfLanguage}",
-		"value": "\u53ef\u7528\u8bed\u8a00\ufe30 {str:ListOfLanguage}"
-	},
-	{
-		"key": "Based on the concept of Infection mod by Gravity",
-		"value": "\u57fa\u4e8e Gravity \u6240\u505a\u7684\u539f\u59cb\u611f\u67d3\u6a21\u5f0f (Infection) mod"
-	},
-	{
-		"key": "Bat",
-		"value": "\u8759\u8760"
-	},
-	{
-		"key": "Bat can jump endlessly in the air but it cannot infect humans.",
-		"value": "\u8759\u8760\u80fd\u591f\u5728\u7a7a\u4e2d\u65e0\u9650\u8df3\u8dc3. \u4f46\u662f\u4e0d\u80fd\u76f4\u63a5\u611f\u67d3\u4eba\u7c7b"
-	},
-	{
-		"key": "Bats",
-		"value": "\u8759\u8760"
-	},
-	{
-		"key": "Biologist",
-		"value": "\u751f\u7269\u5b66\u5bb6"
-	},
-	{
-		"key": "Biologists",
-		"value": "\u751f\u7269\u5b66\u5bb6"
-	},
-	{
-		"key": "Boomer",
-		"value": "\u7206\u70b8\u8005"
-	},
-	{
-		"key": "Boomers",
-		"value": "\u7206\u70b8\u8005"
-	},
-	{
-		"key": "ChangeLog is not provided",
-		"value": "\u65e0\u66f4\u6539\u65e5\u5fd7"
-	},
-	{
-		"key": "ChangeLog page {int:PageNumber} is not available",
-		"value": "\u4e0d\u80fd\u67e5\u770b\u7b2c {int:PageNumber} \u9875\u66f4\u6539\u65e5\u5fd7"
-	},
-	{
-		"key": "Choose a help page with /help <page>",
-		"value": "\u4f7f\u7528 /help <page> \u67e5\u770b\u5e2e\u52a9\u3002"
-	},
-	{
-		"key": "Choose your class",
-		"value": "\u9009\u62e9\u4f60\u7684\u804c\u4e1a"
-	},
-	{
-		"key": "Create an account on Crowdin and join the translation team:",
-		"value": "\u5728 Crowdin \u4e0a\u521b\u5efa\u4e00\u4e2a\u8d26\u6237\u5e76\u52a0\u5165\u7ffb\u8bd1\u56e2\u961f:"
-	},
-	{
-		"key": "Discord: {str:Url}",
-		"value": "Discord: {str:Url}"
-	},
-	{
-		"key": "Each bomb can explode {int:NumBombs} times.",
-		"other": "\u70b8\u5f39\u53ef\u4ee5\u7206\u70b8 {int:NumBombs} \u6b21\u3002",
-	},
-	{
-		"key": "Engineer",
-		"value": "\u5de5\u7a0b\u5e08"
-	},
-	{
-		"key": "Engineers",
-		"value": "\u5de5\u7a0b\u5e08"
-	},
-	{
-		"key": "Example: \u201c/msg !medic I'm wounded!\u201d",
-		"value": "\u4f8b\u5982\uff1a\u201c/msg !medic \u6211\u9700\u8981\u6cbb\u7597\uff01\u201d"
-	},
-	{
-		"key": "Example: \u201c/mute nameless tee\u201d",
-		"value": "\u4f8b\u5982: \"/mute nameless tee\""
-	},
-	{
-		"key": "Explosive yield: {percent:BombLevel}",
-		"value": "\u7206\u70b8\u5f53\u91cf\uff1a {percent:BombLevel}"
-	},
-	{
-		"key": "Fast round",
-		"value": "\u6781\u901f\u56de\u5408"
-	},
-	{
-		"key": "Ghost",
-		"value": "\u5e7d\u7075"
-	},
-	{
-		"key": "Ghosts",
-		"value": "\u5e7d\u7075"
-	},
-	{
-		"key": "Ghoul",
-		"value": "\u98df\u5c38\u9b3c"
-	},
-	{
-		"key": "Ghoul can infect humans and heal the infected with the hammer.",
-		"value": "\u98df\u5c38\u9b3c\u53ef\u4ee5\u7528\u9524\u5b50\u611f\u67d3\u4eba\u7c7b\u6216\u6cbb\u7597\u611f\u67d3"
-	},
-	{
-		"key": "Ghouls",
-		"value": "\u98df\u5c38\u9b3c"
-	},
-	{
-		"key": "Grenade limit increased",
-		"value": "\u69b4\u5f39\u9650\u91cf\u5df2\u589e\u52a0"
-	},
-	{
-		"key": "Grenades with medicine give armor to everybody in their range, including Heroes and the Medic themself.",
-		"value": "\u533b\u7597\u5175\u7684\u69b4\u5f39\u53ef\u4ee5\u7ed9\u5728\u8303\u56f4\u91cc\u7684\u6bcf\u4e2a\u4eba\u76fe, \u5305\u62ec\u82f1\u96c4\u548c\u533b\u7597\u5175\u81ea\u5df1"
-	},
-	{
-		"key": "Hero",
-		"value": "\u82f1\u96c4"
-	},
-	{
-		"key": "Heroes",
-		"value": "\u82f1\u96c4"
-	},
-	{
-		"key": "Hook protection disabled",
-		"value": "\u94a9\u5b50\u4fdd\u62a4\u5173\u95ed"
-	},
-	{
-		"key": "Hook protection enabled",
-		"value": "\u94a9\u5b50\u4fdd\u62a4\u5f00\u542f"
-	},
-	{
-		"key": "How to translate the mod",
-		"value": "\u5982\u4f55\u7ffb\u8bd1\u6b64 mod"
-	},
-	{
-		"key": "How to use taxi mode",
-		"value": "\u600e\u4e48\u5f00\u8f66"
-	},
-	{
-		"key": "Hunter",
-		"value": "\u730e\u4eba"
-	},
-	{
-		"key": "Hunters",
-		"value": "\u730e\u4eba"
-	},
-	{
-		"key": "If an infected heals it, the freeze effect disappears.",
-		"value": "\u5982\u679c\u4e00\u4e2a\u611f\u67d3\u51fb\u4e2d\u4e86\u4ed6, \u51bb\u7ed3\u6548\u679c\u4f1a\u6d88\u5931"
-	},
-	{
-		"key": "If the Witch dies, it disappears and is replaced by another class.",
-		"value": "\u5982\u679c\u5973\u5deb\u6b7b\u4e86, \u5979\u4f1a\u6d88\u5931\u5e76\u8f6c\u53d8\u89d2\u8272"
-	},
-	{
-		"key": "If your language is not available, you can help with translation (/help translate).",
-		"value": "\u5982\u679c\u60a8\u7684\u8bed\u8a00\u8fd8\u4e0d\u53ef\u7528\uff0c\u60a8\u53ef\u4ee5\u5e2e\u52a9\u7ffb\u8bd1 (\u8be6\u89c1 /help translate)\u3002"
-	},
-	{
-		"key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-		"value": "\u5728\u4e24\u79cd\u6a21\u5f0f\u91cc\u52fe\u5b50\u53ef\u4ee5\u7ed9\u4eba\u7c7b\u9020\u6210\u6bcf\u79d21\u70b9\u4f24\u5bb3, \u5e76\u4e14\u53ef\u957f\u65f6\u95f4\u52fe\u4f4f\u4eba\u7c7b"
-	},
-	{
-		"key": "In order to use it, both humans have to disable hook protection (usually, with F3). The human being hooked becomes the driver.",
-		"value": "\u4e3a\u4e86\u5f00\u8f66, \u4e24\u4e2a\u4eba\u90fd\u5fc5\u987b\u53d6\u6d88\u52fe\u5b50\u4fdd\u62a4(\u4e00\u822c\u6309F3), \u7136\u540e\u88ab\u52fe\u7684\u4eba\u5c06\u6210\u4e3a\u53f8\u673a"
-	},
-	{
-		"key": "In the fast rounds *more* humans become infected initially, the spawning rate is increased and the round time limit is decreased. White hole is also disabled.",
-		"value": "\u5728\u6781\u901f\u56de\u5408\u91cc, \u66f4\u591a\u7684\u4eba\u7c7b\u4f1a\u88ab\u611f\u67d3, \u91cd\u751f\u901f\u5ea6\u4f1a\u589e\u52a0, \u56de\u5408\u65f6\u95f4\u7f29\u77ed, \u767d\u6d1e\u88ab\u7981\u7528"
-	},
-	{
-		"key": "Infected won the round in {sec:RoundDuration}",
-		"value": "\u88ab\u611f\u67d3\u8005\u5728\u672c\u8f6e\u4e2d\u83b7\u5f97\u80dc\u5229 {sec:RoundDuration}"
-	},
-	{
-		"key": "Infection is coming in {sec:RemainingTime}",
-		"value": "\u611f\u67d3\u5c06\u5728{sec:RemainingTime}\u540e\u5230\u6765"
-	},
-	{
-		"key": "InfectionClass is a team game between humans and the infected.",
-		"value": "InfectionClass(\u611f\u67d3\u6a21\u5f0f) \u662f\u4e00\u4e2a\u4eba\u7c7b\u4e0e\u611f\u67d3\u8005\u95f4\u7684\u56e2\u961f\u6e38\u620f"
-	},
-	{
-		"key": "InfectionClass, by necropotame (version {str:VersionCode})",
-		"value": "InfectionClass (\u611f\u67d3\u6a21\u5f0f)\uff0c\u4f5c\u8005\uff1a necropotame (\u7248\u672c {str:VersionCode})"
-	},
-	{
-		"key": "Instead, it can hammer humans to reduce their health or even kill them.",
-		"value": "\u76f8\u53cd, \u4ed6\u53ef\u4ee5\u9524\u4eba\u7c7b\u4f7f\u4eba\u7c7b\u6389\u8840, \u6216\u8005\u6740\u6b7b\u4eba\u7c7b"
-	},
-	{
-		"key": "It can also infect humans and heal the infected with the hammer.",
-		"value": "\u4ed6\u53ef\u4ee5\u7528\u9524\u5b50\u611f\u67d3\u4eba\u7c7b\u6216\u6cbb\u7597\u611f\u67d3"
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-		"value": "\u4ed6\u53ef\u4ee5\u52fe\u4f4f\u4eba\u7c7b\u6bcf\u79d2\u9020\u62101\u70b9\u4f24\u5bb3\u5e76\u4e14\u4f7f\u81ea\u5df1\u56de\u8840"
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u4ed6\u53ef\u4ee5\u52fe\u4f4f\u4eba\u7c7b\u5e76\u6bcf\u79d2\u9020\u62101\u70b9\u4f24\u5bb3"
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u4ed6\u53ef\u4ee5\u52fe\u4f4f\u4eba\u7c7b\u5e76\u6bcf\u79d2\u9020\u62101\u70b9\u4f24\u5bb3"
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u4ed6\u53ef\u4ee5\u52fe\u4f4f\u4eba\u7c7b\u5e76\u6bcf\u79d2\u9020\u62101\u70b9\u4f24\u5bb3"
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u4ed6\u53ef\u4ee5\u52fe\u4f4f\u4eba\u7c7b\u5e76\u6bcf\u79d2\u9020\u62101\u70b9\u4f24\u5bb3"
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u4ed6\u53ef\u4ee5\u52fe\u4f4f\u4eba\u7c7b\u5e76\u6bcf\u79d2\u9020\u62101\u70b9\u4f24\u5bb3"
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u4ed6\u53ef\u4ee5\u52fe\u4f4f\u4eba\u7c7b\u5e76\u6bcf\u79d2\u9020\u62101\u70b9\u4f24\u5bb3"
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u4ed6\u53ef\u4ee5\u52fe\u4f4f\u4eba\u7c7b\u5e76\u6bcf\u79d2\u9020\u62101\u70b9\u4f24\u5bb3"
-	},
-	{
-		"key": "It can also inflict 1 damage point per second by hooking humans.",
-		"value": "\u5979\u53ef\u4ee5\u52fe\u4f4f\u4eba\u7c7b\u5e76\u6bcf\u79d2\u9020\u62101\u70b9\u4f24\u5bb3"
-	},
-	{
-		"key": "It can infect humans and heal the infected with the hammer.",
-		"value": "\u4ed6\u53ef\u4ee5\u7528\u9524\u5b50\u611f\u67d3\u4eba\u7c7b\u6216\u6cbb\u7597\u611f\u67d3"
-	},
-	{
-		"key": "It can infect humans and heal the infected with the hammer.",
-		"value": "\u4ed6\u53ef\u4ee5\u7528\u9524\u5b50\u611f\u67d3\u4eba\u7c7b\u6216\u6cbb\u7597\u611f\u67d3"
-	},
-	{
-		"key": "It digests the fodder over time, going back to the normal state. Some nourishment is also lost on death.",
-		"value": "\u4ed6\u4f1a\u9010\u6e10\u6d88\u8017\u8425\u517b\u76f4\u5230\u56de\u5230\u521d\u59cb\u5f62\u6001, \u6b7b\u4ea1\u4f1a\u5931\u53bb\u90e8\u5206\u8425\u517b"
-	},
-	{
-		"key": "It fully heals the Hero and it can grant a turret which you can place down with the hammer.",
-		"value": "\u5b83\u53ef\u4ee5\u6cbb\u7597\u82f1\u96c4, \u5e76\u4f7f\u82f1\u96c4\u5f97\u5230\u4e00\u4e2a\u7528\u9524\u5b50\u653e\u7f6e\u7684\u70ae\u5854"
-	},
-	{
-		"key": "Join our Discord server: {str:Url}",
-		"value": "\u52a0\u5165\u6211\u4eec\u7684 Discord \u670d\u52a1\u5668\uff1a {str:Url}"
-	},
-	{
-		"key": "Join our Matrix room: {str:Url}",
-		"value": "\u52a0\u5165\u6211\u4eec\u7684Matrix\u623f\u95f4: {str:Url}"
-	},
-	{
-		"key": "Join our Telegram: {str:Url}",
-		"value": "\u52a0\u5165\u6211\u4eec\u7684 Telegram\uff1a{str:Url}"
-	},
-	{
-		"key": "Laser rifle revives the infected, but at the cost of 17 hp and armor.",
-		"value": "\u6fc0\u5149\u67aa\u53ef\u4ee5\u6cbb\u7597\u611f\u67d3\u8005\uff0c\u4f46\u9700\u8981 17 \u751f\u547d\u6216\u62a4\u7532\u3002"
-	},
-	{
-		"key": "Laser wall: {sec:RemainingTime}",
-		"value": "\u6fc0\u5149\u5899\ufe30{sec:RemainingTime}"
-	},
-	{
-		"key": "List of commands",
-		"value": "\u547d\u4ee4\u5217\u8868"
-	},
-	{
-		"key": "Looper",
-		"value": "\u73af\u5f62\u5e08"
-	},
-	{
-		"key": "Looper laser wall: {sec:RemainingTime}",
-		"value": "\u73af\u5f62\u5e08\u6fc0\u5149\u5899\uff1a{sec:RemainingTime}"
-	},
-	{
-		"key": "Loopers",
-		"value": "\u73af\u5f62\u5e08"
-	},
-	{
-		"key": "Main contributors: {str:ListOfContributors}",
-		"value": "\u4e3b\u8981\u8d21\u732e\u8005\ufe30{str:ListOfContributors}"
-	},
-	{
-		"key": "Matrix room: {str:Url}",
-		"value": "Matrix\u623f\u95f4: {str:Url}"
-	},
-	{
-		"key": "Medic",
-		"value": "\u533b\u7597\u5175"
-	},
-	{
-		"key": "Medic also has a powerful shotgun that can knock back the infected.",
-		"value": "\u533b\u7597\u5175\u7684\u9730\u5f39\u67aa\u53ef\u4ee5\u51fb\u9000\u611f\u67d3\u8005"
-	},
-	{
-		"key": "Medic {str:MedicName} revived {str:RevivedName}",
-		"value": "\u533b\u7597\u5175 {str:MedicName} \u6cbb\u7597\u4e86 {str:RevivedName}"
-	},
-	{
-		"key": "Medics",
-		"value": "\u533b\u7597\u5175"
-	},
-	{
-		"key": "Mercenaries",
-		"value": "\u96c7\u4f63\u5175"
-	},
-	{
-		"key": "Mercenary",
-		"value": "\u96c7\u4f63\u5175"
-	},
-	{
-		"key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-		"other": "\u96c7\u4f63\u5175\u53ef\u4ee5\u53d1\u5c04\u6bd2\u6c14\u5f39, \u4f7f\u611f\u67d3\u8005\u4e2d\u6bd2, \u5e76\u5171\u9020\u6210{int:NumDamagePoints}\u70b9\u4f24\u5bb3",
-	},
-	{
-		"key": "Mine activated",
-		"value": "\u5730\u96f7\u5df2\u6fc0\u6d3b"
-	},
-	{
-		"key": "Mines are limited to {int:NumMines} per player at the same time.",
-		"other": "\u6bcf\u4e2a\u73a9\u5bb6\u540c\u65f6\u53ef\u4f7f\u7528 {int:NumMines} \u4e2a\u5730\u96f7\u3002",
-	},
-	{
-		"key": "Need at least {int:MinPlayers} players",
-		"other": "\u81f3\u5c11\u9700\u8981 {int:MinPlayers} \u73a9\u5bb6",
-	},
-	{
-		"key": "Next flag in {sec:RemainingTime}",
-		"value": "\u4e0b\u4e00\u4e2a\u65d7\u5e1c\u51fa\u73b0\u65f6\u95f4\uff1a{sec:RemainingTime}"
-	},
-	{
-		"key": "Next target in {sec:RemainingTime}",
-		"value": "{sec:RemainingTime} \u540e\u51fa\u73b0\u4e0b\u4e00\u4e2a\u76ee\u6807"
-	},
-	{
-		"key": "Ninja",
-		"value": "\u5fcd\u8005"
-	},
-	{
-		"key": "Ninja gets special targets. For killing a target, extra points and abilities are awarded.",
-		"value": "\u5fcd\u8005\u4f1a\u5f97\u5230\u4e00\u4e2a\u76ee\u6807, \u5f53\u4ed6\u6740\u6b7b\u76ee\u6807, \u4f1a\u83b7\u5f97\u5347\u7ea7\u548c\u989d\u5916\u7684\u5206\u6570"
-	},
-	{
-		"key": "Ninjas",
-		"value": "\u5fcd\u8005"
-	},
-	{
-		"key": "No player was found with this name",
-		"value": "\u6ca1\u6709\u627e\u5230\u8fd9\u4e2a\u540d\u5b57\u7684\u73a9\u5bb6"
-	},
-	{
-		"key": "{int:NumBombs} bombs left",
-		"other": "\u70b8\u5f39\u5269\u4f59 {int:NumBombs}",
-	},
-	{
-		"key": "{int:NumHumans} humans won the round",
-		"other": "{int:NumHumans} \u540d\u4eba\u7c7b\u83b7\u5f97\u672c\u8f6e\u80dc\u5229",
-	},
-	{
-		"key": "{int:NumMines} mines are active",
-		"other": "\u5730\u96f7\u5df2\u6fc0\u6d3b {int:NumMines} \u4e2a",
-	},
-	{
-		"key": "Persistent player mute",
-		"value": "\u6c38\u4e45\u7981\u8a00\u73a9\u5bb6"
-	},
-	{
-		"key": "Play more on this map",
-		"value": "\u5728\u5730\u56fe\u4e0a\u73a9\u66f4\u591a\u5185\u5bb9"
-	},
-	{
-		"key": "Please wait 5 minutes before creating another account",
-		"value": "\u5728\u521b\u5efa\u53e6\u4e00\u4e2a\u8d26\u53f7\u524d\u8bf7\u7b49\u5f85 5 \u5206\u949f"
-	},
-	{
-		"key": "Position lock: {sec:RemainingTime}",
-		"value": "\u4f4d\u7f6e\u9501\u5b9a\uff1a{sec:RemainingTime}"
-	},
-	{
-		"key": "Press <F3> or <F4> to enable or disable hook protection",
-		"value": "\u6309 <F3> \u6216 <F4> \u6765\u542f\u7528\u6216\u7981\u7528\u94a9\u5b50\u4fdd\u62a4"
-	},
-	{
-		"key": "Random choice",
-		"value": "\u968f\u673a\u9009\u62e9"
-	},
-	{
-		"key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-		"other": "\u79d1\u5b66\u5bb6\u901a\u8fc7\u6740\u6b7b\u81f3\u5c11{int:NumKills}\u4e2a\u611f\u67d3\u8005\u6765\u83b7\u5f97\u5b83",
-	},
-	{
-		"key": "Rules of the game",
-		"value": "\u6e38\u620f\u89c4\u5219"
-	},
-	{
-		"key": "Santa ({int:Callers}/{int:RequiredCallers})",
-		"value": "\u8bf7\u6c42\u5723\u8bde\u8001\u4eba ({int:Callers}/{int:RequiredCallers})"
-	},
-	{
-		"key": "Santa {str:PlayerName} has arrived!",
-		"value": "\u5723\u8bde\u8001\u4eba{str:PlayerName}\u5df2\u7ecf\u5230\u8fbe"
-	},
-	{
-		"key": "Scientist",
-		"value": "\u79d1\u5b66\u5bb6"
-	},
-	{
-		"key": "Scientist has also grenades that teleport them.",
-		"value": "\u79d1\u5b66\u5bb6\u6709\u7528\u4e8e\u77ac\u79fb\u7684\u69b4\u5f39\u67aa\u3002"
-	},
-	{
-		"key": "Scientists",
-		"value": "\u79d1\u5b66\u5bb6"
-	},
-	{
-		"key": "See also `/help pages`",
-		"value": "\u53e6\u89c1\uff1a/help pages"
-	},
-	{
-		"key": "See also: /credits",
-		"value": "\u53e6\u89c1\uff1a/credits"
-	},
-	{
-		"key": "See also: /help, /changelog, /about",
-		"value": "\u53e6\u89c1\uff1a/help\u3001/changelog\u3001/about"
-	},
-	{
-		"key": "Self kill attempt prevented. Trigger self kill again to confirm.",
-		"value": "\u81ea\u6740\u88ab\u963b\u6b62\u3002\u518d\u6b21\u81ea\u6740\u4ee5\u786e\u8ba4\u3002"
-	},
-	{
-		"key": "Server version from {str:ServerCompileDate} ",
-		"value": "\u670d\u52a1\u5668\u6784\u5efa\u65e5\u671f: {str:ServerCompileDate} "
-	},
-	{
-		"key": "Slug",
-		"value": "\u9f3b\u6d95\u866b"
-	},
-	{
-		"key": "Slug can infect humans and heal the infected with the hammer.",
-		"value": "\u9f3b\u6d95\u866b\u53ef\u4ee5\u7528\u9524\u5b50\u611f\u67d3\u4eba\u7c7b\u6216\u6cbb\u7597\u611f\u67d3\u3002"
-	},
-	{
-		"key": "Slugs",
-		"value": "\u9f3b\u6d95\u866b"
-	},
-	{
-		"key": "Smoker",
-		"value": "\u5438\u70df\u8005"
-	},
-	{
-		"key": "Smoker has a powerful hook that hurts humans and sucks their blood, restoring the Smoker's health.",
-		"value": "\u5438\u70df\u8005\u6709\u4e00\u4e2a\u5f3a\u5927\u7684\u94a9\u5b50\uff0c\u901a\u8fc7\u4f24\u5bb3\u4eba\u7c7b\uff0c\u6765\u6062\u590d\u5438\u70df\u8005\u7684\u8840\u91cf\u3002"
-	},
-	{
-		"key": "Smokers",
-		"value": "\u5438\u70df\u8005"
-	},
-	{
-		"key": "Sniper",
-		"value": "\u72d9\u51fb\u624b"
-	},
-	{
-		"key": "Snipers",
-		"value": "\u72d9\u51fb\u624b"
-	},
-	{
-		"key": "Soldier",
-		"value": "\u58eb\u5175"
-	},
-	{
-		"key": "Soldiers",
-		"value": "\u58eb\u5175"
-	},
-	{
-		"key": "Someone was infected to balance the game.",
-		"value": "\u4e3a\u4e86\u5e73\u8861\u6e38\u620f\u6709\u4eba\u88ab\u611f\u67d3\u4e86"
-	},
-	{
-		"key": "Sources: {str:SourceUrl} ",
-		"value": "\u6e90\u4ee3\u7801: {str:SourceUrl} "
-	},
-	{
-		"key": "Spider",
-		"value": "\u8718\u86db"
-	},
-	{
-		"key": "Spiders",
-		"value": "\u8718\u86db"
-	},
-	{
-		"key": "Staying alive for: {int:RemainingTime}",
-		"value": "\u5269\u4f59\u5b58\u6d3b\u65f6\u95f4: {int:RemainingTime}"
-	},
-	{
-		"key": "Stomach filled by {percent:FodderInStomach}",
-		"value": "\u8425\u517b\uff1a{percent:FodderInStomach}"
-	},
-	{
-		"key": "Switch language to english?",
-		"value": "\u5207\u6362\u5230\u4e2d\u6587\u5417\uff1f"
-	},
-	{
-		"key": "Sword strength increased",
-		"value": "\u5251\u5f3a\u5ea6\u5df2\u589e\u52a0"
-	},
-	{
-		"key": "Sword velocity increased",
-		"value": "\u5251\u901f\u5ea6\u5df2\u589e\u52a0"
-	},
-	{
-		"key": "Target to eliminate: {str:PlayerName}",
-		"value": "\u6d88\u9664\u76ee\u6807\ufe30{str:PlayerName}"
-	},
-	{
-		"key": "Targeted chat messages",
-		"value": "\u6709\u9488\u5bf9\u6027\u7684\u804a\u5929\u6d88\u606f"
-	},
-	{
-		"key": "Telegram: {str:Url}",
-		"value": "Telegram\uff1a{str:Url}"
-	},
-	{
-		"key": "Thanks to {str:ListOfContributors}",
-		"value": "\u611f\u8c22 {str:ListOfContributors}"
-	},
-	{
-		"key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
-		"value": "\u751f\u7269\u5b66\u5bb6\u53ef\u4ee5\u7528\u9730\u5f39\u67aa\u5c04\u51fa\u8df3\u5f39\uff0c\u4e5f\u53ef\u4ee5\u7528\u6fc0\u5149\u67aa\u8bbe\u7f6e\u6fc0\u5149\u9677\u9631\u3002"
-	},
-	{
-		"key": "The Boomer explodes when it attacks.",
-		"value": "\u7206\u70b8\u8005\u5728\u653b\u51fb\u7684\u65f6\u5019\u4f1a\u81ea\u7206\u3002"
-	},
-	{
-		"key": "The Engineer can build walls with the hammer to block the infected.",
-		"value": "\u5de5\u7a0b\u5e08\u53ef\u4ee5\u7528\u9524\u5b50\u521b\u5efa\u6fc0\u5149\u5899\uff0c\u963b\u6321\u88ab\u611f\u67d3\u8005\u3002"
-	},
-	{
-		"key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-		"value": "\u5e7d\u7075\u5728\u65c1\u8fb9\u65e0\u4eba\u7c7b\u65f6\u4e0d\u53ef\u89c1, \u9664\u975e\u9020\u6210\u4f24\u5bb3\u6216\u8005\u4f7f\u7528\u9524\u5b50"
-	},
-	{
-		"key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
-		"value": "\u98df\u5c38\u9b3c\u53ef\u4ee5\u541e\u98df\u4ed6\u9644\u8fd1\u5df2\u7ecf\u6b7b\u4ea1\u7684\u611f\u67d3\u8005\uff0c\u5e76\u4f1a\u4f7f\u4ed6\u66f4\u5feb\uff0c\u66f4\u58ee\uff0c\u66f4\u5f3a\uff01"
-	},
-	{
-		"key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
-		"value": "\u82f1\u96c4\u4e0d\u80fd\u88ab\u533b\u7597\u5175\u6cbb\u7597, \u4f46\u662f\u53ef\u4ee5\u627f\u53d7\u4e00\u6b21\u611f\u67d3\u8005\u7684\u653b\u51fb"
-	},
-	{
-		"key": "The Hero found the flag!",
-		"value": "\u82f1\u96c4\u627e\u5230\u4e86\u65d7\u5e1c \uff01"
-	},
-	{
-		"key": "The Hero has all standard weapons.",
-		"value": "\u82f1\u96c4\u62e5\u6709\u6240\u6709\u6807\u51c6\u6b66\u5668\u3002"
-	},
-	{
-		"key": "The Hero has to find a flag only visible to them. Stand still to be pointed towards it.",
-		"value": "\u82f1\u96c4\u53ea\u80fd\u627e\u5230\u5c5e\u4e8e\u4ed6\u81ea\u5df1\u7684\u65d7\u5e1c, \u9759\u6b62\u4e0d\u52a8\u4e00\u4f1a\u53ef\u4ee5\u4ea7\u751f\u4e00\u4e2a\u6307\u5411\u65d7\u5b50\u7684\u70b9"
-	},
-	{
-		"key": "The Hunter can jump two times in the air and has some resistance to knock-backs.",
-		"value": "\u730e\u4eba\u53ef\u4ee5\u4e09\u6bb5\u8df3, \u5e76\u4e14\u6297\u51fb\u9000"
-	},
-	{
-		"key": "The Looper has a laser wall that slows down the infected and a low-range laser rifle with a high fire rate.",
-		"value": "\u5faa\u73af\u8005\u6709\u6fc0\u5149\u5899\uff0c\u53ef\u4ee5\u51cf\u6162\u611f\u67d3\u8005\u7684\u901f\u5ea6\uff0c\u8fd8\u6709\u4e00\u652f\u5c04\u901f\u9ad8\u7684\u4f4e\u5c04\u7a0b\u6fc0\u5149\u67aa\u3002"
-	},
-	{
-		"key": "The Medic can protect humans with the hammer by giving them armor.",
-		"value": "\u533b\u7597\u5175\u53ef\u4ee5\u7528\u4ed6\u7684\u9524\u5b50\u4e3a\u5176\u4ed6\u4eba\u7c7b\u589e\u52a0\u62a4\u7532\u3002"
-	},
-	{
-		"key": "The Mercenary can fly in the air using their machine gun.",
-		"value": "\u96c7\u4f63\u5175\u53ef\u4ee5\u7528\u624b\u67aa\u98de\u884c"
-	},
-	{
-		"key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
-		"value": "\u5fcd\u8005\u53ef\u4ee5\u7528\u95ea\u5149\u5f39\u51bb\u7ed3\u611f\u67d3\u80053\u79d2"
-	},
-	{
-		"key": "The Santa is already here",
-		"value": "\u5723\u8bde\u8001\u4eba\u5df2\u7ecf\u5728\u8fd9\u91cc"
-	},
-	{
-		"key": "The Scientist can pose floating mines with the hammer.",
-		"value": "\u79d1\u5b66\u5bb6\u53ef\u4ee5\u7528\u9524\u5b50\u653e\u7f6e\u5730\u96f7"
-	},
-	{
-		"key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-		"value": "\u9f3b\u6d95\u866b\u53ef\u4ee5\u7528\u9524\u5b50\u5411\u5730\u9762\u548c\u5899\u58c1\u653e\u7f6e\u7c98\u6db2"
-	},
-	{
-		"key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
-		"value": "\u72d9\u51fb\u624b\u53ef\u4ee5\u7528\u9524\u5b50\u5728\u7a7a\u4e2d\u9501\u5b9a\u81ea\u5df1\u4f4d\u7f6e15\u79d2\u3002"
-	},
-	{
-		"key": "The Soldier creates floating bombs with the hammer.",
-		"value": "\u58eb\u5175\u53ef\u4ee5\u7528\u9524\u5b50\u6446\u653e\u70b8\u5f39"
-	},
-	{
-		"key": "The Spider has a web hook that automatically grabs any human touching it.",
-		"value": "\u8718\u86db\u6709\u7f51\u72b6\u52fe\u5b50, \u53ef\u4ee5\u6293\u4f4f\u78b0\u5230\u52fe\u5b50\u7684\u4eba\u7c7b"
-	},
-	{
-		"key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
-		"value": "\u4e0d\u6b7b\u65cf\u4e0d\u4f1a\u6b7b\u4ea1\uff0c\u800c\u662f\u88ab\u51bb\u7ed3 10 \u79d2\u3002"
-	},
-	{
-		"key": "The Voodoo does not die immediately when killed but instead enters Spirit mode for a short time.",
-		"value": "\u5deb\u6bd2\u8005\u4e0d\u4f1a\u5728\u88ab\u6740\u6b7b\u65f6\u7acb\u523b\u6b7b\u4ea1\u800c\u662f\u8fdb\u5165\u77ed\u6682\u7684\u5deb\u6bd2\u72b6\u6001"
-	},
-	{
-		"key": "The Witch can provide a spawn point for the infected.",
-		"value": "\u5973\u5deb\u53ef\u4ee5\u4e3a\u611f\u67d3\u8005\u63d0\u4f9b\u4e00\u4e2a\u51fa\u751f\u70b9\u3002"
-	},
-	{
-		"key": "The bomb is fully upgraded.\nThere is nothing to do with the laser.",
-		"value": "\u70b8\u5f39\u5f53\u91cf\u5df2\u7ecf\u6ee1\u4e86\n\u6fc0\u5149\u5df2\u7ecf\u65e0\u6cd5\u5347\u7ea7"
-	},
-	{
-		"key": "The class is disabled",
-		"value": "\u6b64\u804c\u4e1a\u88ab\u7981\u7528"
-	},
-	{
-		"key": "The class limit exceeded",
-		"value": "\u5df2\u8d85\u51fa\u804c\u4e1a\u9650\u5236"
-	},
-	{
-		"key": "The class selector will be displayed when rounds start",
-		"value": "\u5728\u56de\u5408\u5f00\u59cb\u65f6\uff0c\u5c06\u663e\u793a\u804c\u4e1a\u9009\u62e9\u5668"
-	},
-	{
-		"key": "The command is not available (enabled only in training mode)",
-		"value": "\u547d\u4ee4\u4e0d\u53ef\u7528(\u4ec5\u5728\u7ec3\u4e60\u6a21\u5f0f\u4e2d\u542f\u7528)"
-	},
-	{
-		"key": "The flag gifts a health point, {int:NumArmorGift} armor and full ammo to all humans.",
-		"value": "\u65d7\u5e1c\u4f1a\u7ed9\u6240\u6709\u4eba\u7c7b\u4e00\u683c\u8840\u91cf, {int:NumArmorGift}\u70b9\u62a4\u76fe, \u4ee5\u53ca\u6ee1\u5f39\u836f"
-	},
-	{
-		"key": "The game is not balanced. Infection is coming.",
-		"value": "\u6e38\u620f\u4e0d\u5e73\u8861, \u6b63\u5728\u611f\u67d3"
-	},
-	{
-		"key": "The gift to all humans is only applied when the flag is surrounded by hearts and armor.",
-		"value": "\u53ea\u6709\u88ab\u5fc3\u548c\u62a4\u76fe\u5305\u88f9\u7684\u65d7\u5e1c, \u624d\u53ef\u4ee5\u4e3a\u6240\u6709\u4eba\u7c7b\u52a0\u6210"
-	},
-	{
-		"key": "The goal for the humans is to survive until the army cleans the map.",
-		"value": "\u4eba\u7c7b\u7684\u76ee\u6807\u65f6\u751f\u5b58\u5230\u63f4\u519b\u6e05\u7406\u5730\u56fe"
-	},
-	{
-		"key": "The goal for the infected is to infect all humans.",
-		"value": "\u611f\u67d3\u8005\u76ee\u6807\u4e3a\u611f\u67d3\u6240\u6709\u4eba\u7c7b\u3002"
-	},
-	{
-		"key": "The hammer is also useful for healing the infected.",
-		"value": "\u9524\u5b50\u53ef\u4ee5\u6cbb\u7597\u611f\u67d3\u8005"
-	},
-	{
-		"key": "The last round",
-		"value": "\u6700\u540e\u4e00\u8f6e"
-	},
-	{
-		"key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
-		"value": "\u6fc0\u5149\u5899\u53ef\u4ee5\u5b58\u5728 {sec:LifeSpan}\uff0c\u6bcf\u4e2a\u73a9\u5bb6\u540c\u65f6\u53ea\u80fd\u62e5\u6709\u4e00\u4e2a\u6fc0\u5149\u5899\u3002"
-	},
-	{
-		"key": "The locked position increases the Sniper's rifle damage from usual 10-13 to 20 damage points.",
-		"value": "\u4f4d\u7f6e\u9501\u5b9a\u5c06\u72d9\u51fb\u624b\u7684\u6fc0\u5149\u67aa\u4f24\u5bb3\u4ece\u901a\u5e38\u7684 10-13 \u70b9\u589e\u52a0\u5230 20 \u70b9\u3002"
-	},
-	{
-		"key": "The round canceled: All humans have left the game",
-		"value": "\u56de\u5408\u53d6\u6d88, \u6240\u6709\u4eba\u7c7b\u79bb\u5f00\u4e86\u6e38\u620f"
-	},
-	{
-		"key": "The round canceled: All infected have left the game",
-		"value": "\u56de\u5408\u53d6\u6d88, \u6240\u6709\u611f\u67d3\u8005\u79bb\u5f00\u4e86\u6e38\u620f"
-	},
-	{
-		"key": "The slime heals the infected and deals damage to humans.",
-		"value": "\u7c98\u6db2\u53ef\u4ee5\u6cbb\u7597\u611f\u67d3\u8005\u5e76\u5bf9\u4eba\u7c7b\u9020\u6210\u4f24\u5bb3"
-	},
-	{
-		"key": "The undead is finally dead",
-		"value": "\u4e0d\u6b7b\u65cf\u6700\u7ec8\u8fd8\u662f\u6b7b\u4e86"
-	},
-	{
-		"key": "The web hook mode can be toggled by switching the weapon.",
-		"value": "\u901a\u8fc7\u5207\u6362\u6b66\u5668\u53ef\u4ee5\u5207\u6362\u94a9\u5b50\u6a21\u5f0f"
-	},
-	{
-		"key": "The white hole is available!",
-		"value": "\u767d\u6d1e\u5df2\u5c31\u7eea\uff01"
-	},
-	{
-		"key": "The white hole is ready, use the laser rifle to disrupt space-time",
-		"value": "\u767d\u6d1e\u5df2\u7ecf\u5c31\u7eea, \u4f7f\u7528\u6fc0\u5149\u67aa\u4f7f\u7a7a\u95f4\u6df7\u4e71"
-	},
-	{
-		"key": "The witch is dead",
-		"value": "\u5973\u5deb\u5df2\u6b7b"
-	},
-	{
-		"key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-		"other": "\u4ed6\u7684\u9524\u5b50\u88ab\u6b66\u58eb\u5200\u53d6\u4ee3\uff0c\u5141\u8bb8\u4ed6\u89e6\u5730\u540e\u51b2\u523a {int:NinjaJump} \u6b21\u3002",
-	},
-	{
-		"key": "They also have a laser rifle that blinds the target for a short period of time.",
-		"value": "\u4ed6\u4eec\u8fd8\u6709\u4e00\u628a\u6fc0\u5149\u67aa\uff0c\u53ef\u77ed\u65f6\u95f4\u5185\u4f7f\u76ee\u6807\u5931\u660e\u3002"
-	},
-	{
-		"key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
-		"value": "\u4ed6\u53ef\u4ee5\u7528\u9524\u5b50\u5236\u9020\u70b8\u5f39, \u70b8\u5f39\u53ef\u4ee5\u901a\u8fc7\u9524\u5b50\u6216\u8005\u6fc0\u5149\u67aa\u63d0\u5347\u5f53\u91cf"
-	},
-	{
-		"key": "They can also jump two times in the air.",
-		"value": "\u4ed6\u53ef\u4ee5\u4e09\u6bb5\u8df3"
-	},
-	{
-		"key": "They can also jump two times in the air.",
-		"value": "\u4ed6\u53ef\u4ee5\u4e09\u6bb5\u8df3\u3002"
-	},
-	{
-		"key": "This username is already taken by an existing account",
-		"value": "\u6b64\u7528\u6237\u540d\u5df2\u5b58\u5728"
-	},
-	{
-		"key": "To get off the taxi, jump. To drop off your passengers, enable hook protection (usually, with F3).",
-		"value": "\u82e5\u8981\u79bb\u5f00\u8f66\uff0c\u8bf7\u8df3\u8dc3\u3002\u8981\u4ece\u4e58\u5ba2\u8eab\u4e0a\u4e0b\u8f66\uff0c\u53ef\u542f\u7528\u94a9\u5b50\u4fdd\u62a4\uff08\u901a\u5e38\u4f7f\u7528F3\uff09\u3002"
-	},
-	{
-		"key": "Too few infected (less than {int:MinimumInfected})",
-		"value": "\u611f\u67d3\u8005\u592a\u5c11\u4e86\uff08\u5c0f\u4e8e {int:MinimumInfected}\u4e2a\uff09"
-	},
-	{
-		"key": "Too few infected to call a witch",
-		"value": "\u611f\u67d3\u8005\u592a\u5c11\uff0c\u4e0d\u80fd\u53ec\u5524\u5973\u5deb"
-	},
-	{
-		"key": "Too few infected to call the Santa",
-		"value": "\u611f\u67d3\u8005\u592a\u5c11\uff0c\u4e0d\u80fd\u53ec\u5524\u5723\u8bde\u8001\u4eba"
-	},
-	{
-		"key": "Too few players to call a witch",
-		"value": "\u73a9\u5bb6\u592a\u5c11\uff0c\u4e0d\u80fd\u53ec\u5524\u5973\u5deb"
-	},
-	{
-		"key": "Too few players to call the Santa",
-		"value": "\u73a9\u5bb6\u592a\u5c11\uff0c\u4e0d\u80fd\u53ec\u5524\u5723\u8bde\u8001\u4eba"
-	},
-	{
-		"key": "Too few zombies to revive anyone (less than {int:MinZombies})",
-		"value": "\u4e0d\u80fd\u6cbb\u7597\u611f\u67d3\u8005(\u611f\u67d3\u8005\u6570\u91cf\u5c0f\u4e8e{int:MinZombies}\u4e2a)"
-	},
-	{
-		"key": "Translation project: {str:Url}",
-		"value": "\u7ffb\u8bd1\u9879\u76ee\uff1a{str:Url}"
-	},
-	{
-		"key": "Two or more humans can form a taxi.",
-		"value": "\u4e24\u4e2a\u6216\u66f4\u591a\u7684\u4eba\u7c7b\u53ef\u4ee5\u7ec4\u6210\u4e00\u8f86\u8f66"
-	},
-	{
-		"key": "Type \u201c/help {str:ClassName}\u201d for more information about your class",
-		"value": "\u952e\u5165\u201c/help {str:ClassName}\u201d\u83b7\u53d6\u5f53\u524d\u804c\u4e1a\u7684\u66f4\u591a\u4fe1\u606f"
-	},
-	{
-		"key": "Unable to load the position: the character state is not valid",
-		"value": "\u65e0\u6cd5\u52a0\u8f7d\u5750\u6807: \u73a9\u5bb6\u72b6\u6001\u65e0\u6548"
-	},
-	{
-		"key": "Unable to load the position: you have no character to load its position",
-		"value": "\u65e0\u6cd5\u52a0\u8f7d\u5750\u6807: \u4f60\u6ca1\u6709\u89d2\u8272\u6765\u52a0\u8f7d\u4f4d\u7f6e"
-	},
-	{
-		"key": "Unable to save the position: the character does not stand on the ground",
-		"value": "\u65e0\u6cd5\u4fdd\u5b58\u5750\u6807: \u89d2\u8272\u4e0d\u5728\u5730\u4e0a"
-	},
-	{
-		"key": "Unable to save the position: the character state is not valid",
-		"value": "\u65e0\u6cd5\u4fdd\u5b58\u5750\u6807: \u73a9\u5bb6\u72b6\u6001\u65e0\u6548"
-	},
-	{
-		"key": "Unable to save the position: you have no character to save its position",
-		"value": "\u65e0\u6cd5\u4fdd\u5b58\u5750\u6807: \u4f60\u6ca1\u6709\u89d2\u8272\u6765\u4fdd\u5b58\u4f4d\u7f6e"
-	},
-	{
-		"key": "Undead",
-		"value": "\u4e0d\u6b7b\u65cf"
-	},
-	{
-		"key": "Undead can infect humans and heal the infected with the hammer.",
-		"value": "\u4e0d\u6b7b\u65cf\u53ef\u4ee5\u7528\u9524\u5b50\u611f\u67d3\u4eba\u7c7b\u6216\u6cbb\u7597\u611f\u67d3\u3002"
-	},
-	{
-		"key": "Undeads",
-		"value": "\u4e0d\u6b7b\u65cf"
-	},
-	{
-		"key": "Unknown class",
-		"value": "\u672a\u77e5\u804c\u4e1a"
-	},
-	{
-		"key": "Unknown language",
-		"value": "\u672a\u77e5\u8bed\u8a00"
-	},
-	{
-		"key": "Unknowns",
-		"value": "\u672a\u77e5\u804c\u4e1a"
-	},
-	{
-		"key": "Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects.",
-		"value": "\u4e0e\u5ba2\u6237\u7aef\u7684\u7981\u8a00\u4e0d\u540c\u7684\u662f, \u5982\u679c\u66f4\u6362\u5730\u56fe\u7981\u8a00\u4ecd\u7136\u751f\u6548"
-	},
-	{
-		"key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
-		"value": "\u4f7f\u7528\u9524\u5b50\u653e\u7f6e\u70b8\u5f39, \u53ef\u7528\u6fc0\u5149\u5347\u7ea7\u5b83"
-	},
-	{
-		"key": "Use the hammer to place the bomb and explode it multiple times.",
-		"value": "\u7528\u9524\u5b50\u653e\u7f6e\u70b8\u5f39\u5e76\u5f15\u7206\u5b83\u6570\u6b21\u3002"
-	},
-	{
-		"key": "Use the laser rifle to place it.",
-		"value": "\u7528\u6fc0\u5149\u653e\u7f6e\u5b83"
-	},
-	{
-		"key": "Use the laser to upgrade the bomb",
-		"value": "\u7528\u6fc0\u5149\u5347\u7ea7\u70b8\u5f39"
-	},
-	{
-		"key": "Use \u201c/msg !<ClassName> <My Message>\u201d to send a private message to all players with a specific class.",
-		"value": "\u4f7f\u7528\u201c/msg !<ClassName> <My Message>\u201d\u7ed9\u6240\u6709\u7279\u5b9a\u804c\u4e1a\u7684\u73a9\u5bb6\u53d1\u9001\u6d88\u606f\u3002"
-	},
-	{
-		"key": "Use \u201c/msg !near\u201d to send a private message to all players near you.",
-		"value": "\u4f7f\u7528\u201c/msg !near\u201d\u7ed9\u9644\u8fd1\u6240\u6709\u73a9\u5bb6\u53d1\u9001\u6d88\u606f\u3002"
-	},
-	{
-		"key": "Use \u201c/mute <PlayerName>\u201d to mute this player.",
-		"value": "\u4f7f\u7528 \"/mute <\u73a9\u5bb6\u540d>\"\u6765\u5355\u65b9\u9762\u7981\u8a00\u8fd9\u4e2a\u73a9\u5bb6"
-	},
-	{
-		"key": "Use \u201c/w <PlayerName> <My Message>\u201d to send a private message to this player.",
-		"value": "\u4f7f\u7528 \"/w <\u73a9\u5bb6\u540d> <\u6d88\u606f>\" \u7ed9\u8fd9\u4e2a\u73a9\u5bb6\u53d1\u9001\u79c1\u804a"
-	},
-	{
-		"key": "Voodoo",
-		"value": "\u5deb\u6bd2\u8005"
-	},
-	{
-		"key": "Voodoo can infect humans and heal the infected with the hammer.",
-		"value": "\u5deb\u6bd2\u8005\u53ef\u4ee5\u7528\u9524\u5b50\u611f\u67d3\u4eba\u7c7b\u6216\u6cbb\u7597\u611f\u67d3"
-	},
-	{
-		"key": "Voodoos",
-		"value": "\u5deb\u6bd2\u8005"
-	},
-	{
-		"key": "Warning: {sec:RemainingTime} until a kick for inactivity",
-		"value": "\u8b66\u544a: \u5c06\u5728 {sec:RemainingTime} \u540e\u56e0\u6302\u673a\u8e22\u51fa"
-	},
-	{
-		"key": "Warning: {sec:RemainingTime} until a move to spec for inactivity",
-		"value": "\u8b66\u544a: \u5c06\u5728 {sec:RemainingTime} \u540e\u56e0\u6302\u673a\u79fb\u52a8\u5230\u65c1\u89c2"
-	},
-	{
-		"key": "Web mode enabled",
-		"value": "\u7f51\u72b6\u6a21\u5f0f\u542f\u7528"
-	},
-	{
-		"key": "When an infected touches the wall, it dies.",
-		"value": "\u5f53\u611f\u67d3\u8005\u78b0\u5230\u6fc0\u5149\u5899\u65f6\uff0c \u4ed6\u4f1a\u6b7b\u4ea1\uff01"
-	},
-	{
-		"key": "While in Spirit mode it cannot be killed. When the time is up it finally dies.",
-		"value": "\u5728\u5deb\u6bd2\u72b6\u6001\u4e0b\u65e0\u6cd5\u88ab\u51fb\u6740, \u5f53\u65f6\u95f4\u7ed3\u675f\u624d\u4f1a\u6b7b\u4ea1"
-	},
-	{
-		"key": "White hole",
-		"value": "\u767d\u6d1e"
-	},
-	{
-		"key": "White hole found, adjusting scientific parameters...",
-		"value": "\u5df2\u83b7\u5f97\u767d\u6d1e\uff0c\u6b63\u5728\u8c03\u6574\u79d1\u5b66\u53c2\u6570..."
-	},
-	{
-		"key": "White hole pulls the infected into its center.",
-		"value": "\u767d\u6d1e\u628a\u611f\u67d3\u8005\u62c9\u8fdb\u5176\u4e2d\u5fc3\u3002"
-	},
-	{
-		"key": "White hole: {sec:RemainingTime}",
-		"value": "\u767d\u6d1e\uff1a{sec:RemainingTime}"
-	},
-	{
-		"key": "Witch",
-		"value": "\u5973\u5deb"
-	},
-	{
-		"key": "Witch ({int:Callers}/{int:RequiredCallers})",
-		"value": "\u53ec\u5524\u5973\u5deb\uff08{int:Callers}/{int:RequiredCallers}\uff09"
-	},
-	{
-		"key": "Witch can infect humans and heal the infected with the hammer.",
-		"value": "\u5973\u5deb\u53ef\u4ee5\u7528\u9524\u5b50\u611f\u67d3\u4eba\u7c7b\u6216\u6cbb\u7597\u611f\u67d3"
-	},
-	{
-		"key": "Witch {str:PlayerName} has arrived!",
-		"value": "\u5973\u5deb {str:PlayerName} \u5df2\u7ecf\u5230\u8fbe"
-	},
-	{
-		"key": "Witches",
-		"value": "\u5973\u5deb"
-	},
-	{
-		"key": "Wrong username/password.",
-		"value": "\u7528\u6237\u540d/\u5bc6\u7801\u9519\u8bef\u3002"
-	},
-	{
-		"key": "You are a human: {str:ClassName}",
-		"value": "\u4f60\u5904\u4e8e\u6b63\u5e38\u72b6\u6001\uff1a {str:ClassName}"
-	},
-	{
-		"key": "You are an infected: {str:ClassName}",
-		"value": "\u4f60\u88ab\u611f\u67d3\u4e86\uff1a{str:ClassName}"
-	},
-	{
-		"key": "You are blinded: {sec:EffectDuration}",
-		"value": "\u4f60\u5931\u660e\u4e86: {sec:EffectDuration}"
-	},
-	{
-		"key": "You are frozen: {sec:EffectDuration}",
-		"value": "\u4f60\u88ab\u51bb\u7ed3\u4e86\ufe30{sec:EffectDuration}"
-	},
-	{
-		"key": "You are muted for {sec:Duration}",
-		"value": "\u4f60\u88ab\u7981\u8a00\u4e86{sec:Duration}"
-	},
-	{
-		"key": "You are slowed: {sec:EffectDuration}",
-		"value": "\u4f60\u88ab\u51cf\u901f\u4e86\uff1a{sec:EffectDuration}"
-	},
-	{
-		"key": "You can change the language of this mod using the command /language.",
-		"value": "\u4f60\u53ef\u4ee5\u4f7f\u7528\u547d\u4ee4 /language \u5207\u6362\u6b64 mod \u7684\u8bed\u8a00\u3002"
-	},
-	{
-		"key": "You can't call witch twice",
-		"value": "\u4f60\u4e0d\u80fd\u91cd\u590d\u53ec\u5524\u5973\u5deb"
-	},
-	{
-		"key": "You can't join the spectators right now",
-		"value": "\u4f60\u73b0\u5728\u8fd8\u4e0d\u80fd\u8fdb\u5165\u65c1\u89c2\u6a21\u5f0f"
-	},
-	{
-		"key": "You destroyed {str:PlayerName}'s turret!",
-		"value": "\u4f60\u6467\u6bc1\u4e86 {str:PlayerName} \u7684\u70ae\u5854\uff01"
-	},
-	{
-		"key": "You don't have a turret to place",
-		"value": "\u4f60\u6ca1\u6709\u70ae\u5854\u53ef\u4ee5\u653e\u7f6e"
-	},
-	{
-		"key": "You have a turret. Use the hammer to place it.",
-		"value": "\u4f60\u6709\u4e00\u4e2a\u70ae\u5854, \u4f7f\u7528\u9524\u5b50\u653e\u7f6e\u5b83"
-	},
-	{
-		"key": "You have already notified that {str:PlayerName} ought to be banned",
-		"value": "\u4f60\u5df2\u52a8\u8bae\u5c01\u7981 {str:PlayerName}\u3002"
-	},
-	{
-		"key": "You have already voted to change this map",
-		"value": "\u4f60\u5df2\u6295\u7968\u8df3\u8fc7\u6b64\u5730\u56fe"
-	},
-	{
-		"key": "You have been infected by {str:KillerName}",
-		"value": "\u4f60\u88ab {str:KillerName} \u611f\u67d3\u4e86"
-	},
-	{
-		"key": "You have called the Santa once again",
-		"value": "\u4f60\u518d\u6b21\u547c\u53eb\u4e86\u5723\u8bde\u8001\u4eba"
-	},
-	{
-		"key": "You have eliminated your target, +2 points",
-		"value": "\u4f60\u9664\u6389\u4e86\u76ee\u6807\uff0c+ 2 \u5206"
-	},
-	{
-		"key": "You have held a bonus area for one minute, +5 points",
-		"value": "\u5728\u5956\u52b1\u5730\u533a\u5446\u4e00\u5206\u949f\u5c31\u4f1a\u589e\u52a0 5 \u5206\u3002"
-	},
-	{
-		"key": "You have infected {str:VictimName}, +3 points",
-		"value": "\u4f60\u611f\u67d3\u4e86 {str:VictimName}\uff0c+3 \u5206"
-	},
-	{
-		"key": "You have infected {str:VictimName}, shame on you!",
-		"value": "\u4f60\u4f7f {str:VictimName} \u88ab\u611f\u67d3\u4e86, \u4f60\u611f\u5230\u7f9e\u6127"
-	},
-	{
-		"key": "You have killed a witch, +5 points",
-		"value": "\u4f60\u6740\u4e86\u4e00\u4e2a\u5973\u5deb\uff0c+5 \u5206"
-	},
-	{
-		"key": "You have killed an undead! +5 points",
-		"value": "\u4f60\u6740\u4e86\u4e00\u4e2a\u4e0d\u6b7b\u65cf\uff0c+5 \u5206"
-	},
-	{
-		"key": "You have survived, +5 points",
-		"value": "\u4f60\u6210\u529f\u5b58\u6d3b\uff0c+5 \u5206"
-	},
-	{
-		"key": "You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to place one.",
-		"value": "\u4f60\u6709 {int:NumTurrets}/{int:MaxTurrets}\u4e2a\u70ae\u5854, \u53ef\u4f7f\u7528\u9524\u5b50\u653e\u7f6e\u4e00\u4e2a"
-	},
-	{
-		"key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-		"other": "\u4f60\u6709{int:NumTurrets}\u4e2a\u70ae\u5854, \u53ef\u7528\u9524\u5b50\u653e\u7f6e",
-	},
-	{
-		"key": "You must be logged for this operation",
-		"value": "\u4f60\u5fc5\u987b\u767b\u5f55\u624d\u53ef\u8fdb\u884c\u6b64\u64cd\u4f5c"
-	},
-	{
-		"key": "You must be logged to see stats",
-		"value": "\u4f60\u5fc5\u987b\u767b\u9646\u624d\u80fd\u770b\u89c1\u6570\u636e\u7edf\u8ba1"
-	},
-	{
-		"key": "You must be logged to see your goal",
-		"value": "\u4f60\u5fc5\u987b\u767b\u5f55\u624d\u80fd\u770b\u5230\u60a8\u7684\u76ee\u6807"
-	},
-	{
-		"key": "You must be logged to see your rank",
-		"value": "\u4f60\u5fc5\u987b\u767b\u5f55\u624d\u80fd\u770b\u5230\u60a8\u7684\u6392\u540d"
-	},
-	{
-		"key": "You need at least {int:MinHp} HP to revive a zombie",
-		"value": "\u4f60\u9700\u8981\u81f3\u5c11 {int:MinHp} \u70b9\u8840\u91cf\u624d\u80fd\u6cbb\u7597\u4e00\u4e2a\u611f\u67d3\u8005"
-	},
-	{
-		"key": "You need at least {int:MinimumHP} HP",
-		"value": "\u4f60\u81f3\u5c11\u9700\u8981 {int:MinimumHP}\u70b9\u8840\u91cf"
-	},
-	{
-		"key": "Your account has been created and you are now logged.",
-		"value": "\u5df2\u6210\u529f\u521b\u5efa\u8d26\u53f7\uff0c\u5e76\u6210\u529f\u767b\u5f55\u3002"
-	},
-	{
-		"key": "{str:PlayerName} changed the class to {str:ClassName}",
-		"value": "{str:PlayerName} \u4fee\u6539\u804c\u4e1a\u4e3a {str:ClassName}"
-	},
-	{
-		"key": "{str:PlayerName} changed their name to {str:NewName}",
-		"value": "{str:PlayerName} \u5df2\u6539\u540d\u4e3a {str:NewName}"
-	},
-	{
-		"key": "{str:PlayerName} entered and joined the game",
-		"value": "{str:PlayerName} \u8fde\u63a5\u5e76\u52a0\u5165\u6e38\u620f"
-	},
-	{
-		"key": "{str:PlayerName} has been banned ({str:Reason})",
-		"value": "{str:PlayerName} \u88ab\u5c01\u7981 ({str:Reason})"
-	},
-	{
-		"key": "{str:PlayerName} has been kicked ({str:Reason})",
-		"value": "{str:PlayerName} \u88ab\u8e22\u51fa\u670d\u52a1\u5668 ({str:Reason})"
-	},
-	{
-		"key": "{str:PlayerName} has destroyed your turret!",
-		"value": "{str:PlayerName} \u6467\u6bc1\u4e86\u4f60\u7684\u70ae\u5854\uff01"
-	},
-	{
-		"key": "{str:PlayerName} has left the game",
-		"value": "{str:PlayerName} \u79bb\u5f00\u6e38\u620f"
-	},
-	{
-		"key": "{str:PlayerName} has left the game ({str:Reason})",
-		"value": "{str:PlayerName} \u79bb\u5f00\u6e38\u620f ({str:Reason})"
-	},
-	{
-		"key": "{str:PlayerName} is calling for Santa! (1/{int:RequiredCallers}) To call the Santa write: /santa",
-		"value": "{str:PlayerName} \u6b63\u5728\u53ec\u5524\u5723\u8bde\u8001\u4eba\uff01\uff081/{int:RequiredCallers}\uff09\u8981\u53ec\u5524\u5723\u8bde\u8001\u4eba\u8f93\u5165\uff1a/witch"
-	},
-	{
-		"key": "{str:PlayerName} is calling for Witch! (1/{int:RequiredCallers}) To call witch write: /witch",
-		"value": "{str:PlayerName} \u6b63\u5728\u53ec\u5524\u5973\u5deb\uff01\uff081/{int:RequiredCallers}\uff09\u8981\u53ec\u5524\u5973\u5deb\u8f93\u5165\uff1a/witch"
-	},
-	{
-		"key": "{str:PlayerName} joined the game",
-		"value": "{str:PlayerName} \u52a0\u5165\u6e38\u620f"
-	},
-	{
-		"key": "{str:PlayerName} joined the spectators",
-		"value": "{str:PlayerName} \u52a0\u5165\u65c1\u89c2\u8005"
-	},
-	{
-		"key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
-		"value": "{str:PlayerName} \u63d0\u8bae\u5f00\u59cb\u6295\u7968 '{str:VoteName}'"
-	},
-	{
-		"key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
-		"value": "{str:PlayerName} \u63d0\u8bae\u5c01\u7981 {str:VictimName} ({str:Reason})"
-	},
-	{
-		"key": "{str:VictimName} has been infected",
-		"value": "{str:VictimName} \u88ab\u611f\u67d3\u4e86"
-	},
-	{
-		"key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
-		"value": "{str:Victim} \u88ab\u7981\u8a00\u4e86 {sec:Duration} ({str:Reason})"
-	},
-]}
+{
+    "translation": [
+        {
+            "key": "(page {int:PageNumber}/{int:PagesInTotal}, see /changelog {int:NextPage})",
+            "value": "({int:PageNumber}/{int:PagesInTotal}， 下一页查看 /changelog {int:NextPage})"
+        },
+        {
+            "key": "10 seconds later, a few players become infected.",
+            "value": "10 秒后，有些玩家会被感染。"
+        },
+        {
+            "key": "A lucky Scientist devoted to killing can get a white hole that sucks the infected in which can be placed with the laser rifle.",
+            "value": "幸运的科学家会在杀死感染者时得到白洞, 白洞可用激光枪放置"
+        },
+        {
+            "key": "A random class will be automatically attributed to you when rounds start",
+            "value": "游戏开始时会自动选择随机职业"
+        },
+        {
+            "key": "All humans affected by the explosion become infected.",
+            "value": "人类会被爆炸感染"
+        },
+        {
+            "key": "All players start as a human.",
+            "value": "所有玩家一开始都是人类"
+        },
+        {
+            "key": "All witches are already here",
+            "value": "所有女巫已经在这里了"
+        },
+        {
+            "key": "An error occured during the creation of your account.",
+            "value": "创建帐户时发生错误。"
+        },
+        {
+            "key": "An error occured during the operation.",
+            "value": "在操作过程中发生错误。"
+        },
+        {
+            "key": "Available help pages: {str:PageList}",
+            "value": "可用的帮助页面︰{str:PageList}"
+        },
+        {
+            "key": "Available languages: {str:ListOfLanguage}",
+            "value": "可用语言︰ {str:ListOfLanguage}"
+        },
+        {
+            "key": "Based on the concept of Infection mod by Gravity",
+            "value": "基于 Gravity 所做的原始感染模式 (Infection) mod"
+        },
+        {
+            "key": "Bat",
+            "value": "蝙蝠"
+        },
+        {
+            "key": "Bat can jump endlessly in the air but it cannot infect humans.",
+            "value": "蝙蝠能够在空中无限跳跃. 但是不能直接感染人类"
+        },
+        {
+            "key": "Bats",
+            "value": "蝙蝠"
+        },
+        {
+            "key": "Biologist",
+            "value": "生物学家"
+        },
+        {
+            "key": "Biologists",
+            "value": "生物学家"
+        },
+        {
+            "key": "Boomer",
+            "value": "爆炸者"
+        },
+        {
+            "key": "Boomers",
+            "value": "爆炸者"
+        },
+        {
+            "key": "ChangeLog is not provided",
+            "value": "无更改日志"
+        },
+        {
+            "key": "ChangeLog page {int:PageNumber} is not available",
+            "value": "不能查看第 {int:PageNumber} 页更改日志"
+        },
+        {
+            "key": "Choose a help page with /help <page>",
+            "value": "使用 /help <page> 查看帮助。"
+        },
+        {
+            "key": "Choose your class",
+            "value": "选择你的职业"
+        },
+        {
+            "key": "Create an account on Crowdin and join the translation team:",
+            "value": "在 Crowdin 上创建一个账户并加入翻译团队:"
+        },
+        {
+            "key": "Discord: {str:Url}",
+            "value": "Discord: {str:Url}"
+        },
+        {
+            "key": "Each bomb can explode {int:NumBombs} times.",
+            "other": "炸弹可以爆炸 {int:NumBombs} 次。"
+        },
+        {
+            "key": "Engineer",
+            "value": "工程师"
+        },
+        {
+            "key": "Engineers",
+            "value": "工程师"
+        },
+        {
+            "key": "Example: “/msg !medic I'm wounded!”",
+            "value": "例如：“/msg !medic 我需要治疗！”"
+        },
+        {
+            "key": "Example: “/mute nameless tee”",
+            "value": "例如: \"/mute nameless tee\""
+        },
+        {
+            "key": "Explosive yield: {percent:BombLevel}",
+            "value": "爆炸当量： {percent:BombLevel}"
+        },
+        {
+            "key": "Fast round",
+            "value": "极速回合"
+        },
+        {
+            "key": "Ghost",
+            "value": "幽灵"
+        },
+        {
+            "key": "Ghosts",
+            "value": "幽灵"
+        },
+        {
+            "key": "Ghoul",
+            "value": "食尸鬼"
+        },
+        {
+            "key": "Ghoul can infect humans and heal the infected with the hammer.",
+            "value": "食尸鬼可以用锤子感染人类或治疗感染"
+        },
+        {
+            "key": "Ghouls",
+            "value": "食尸鬼"
+        },
+        {
+            "key": "Grenade limit increased",
+            "value": "榴弹限量已增加"
+        },
+        {
+            "key": "Grenades with medicine give armor to everybody in their range, including Heroes and the Medic themself.",
+            "value": "医疗兵的榴弹可以给在范围里的每个人盾, 包括英雄和医疗兵自己"
+        },
+        {
+            "key": "Hero",
+            "value": "英雄"
+        },
+        {
+            "key": "Heroes",
+            "value": "英雄"
+        },
+        {
+            "key": "Hook protection disabled",
+            "value": "钩子保护关闭"
+        },
+        {
+            "key": "Hook protection enabled",
+            "value": "钩子保护开启"
+        },
+        {
+            "key": "How to translate the mod",
+            "value": "如何翻译此 mod"
+        },
+        {
+            "key": "How to use taxi mode",
+            "value": "怎么开车"
+        },
+        {
+            "key": "Hunter",
+            "value": "猎人"
+        },
+        {
+            "key": "Hunters",
+            "value": "猎人"
+        },
+        {
+            "key": "If an infected heals it, the freeze effect disappears.",
+            "value": "如果一个感染击中了他, 冻结效果会消失"
+        },
+        {
+            "key": "If the Witch dies, it disappears and is replaced by another class.",
+            "value": "如果女巫死了, 她会消失并转变角色"
+        },
+        {
+            "key": "If your language is not available, you can help with translation (/help translate).",
+            "value": "如果您的语言还不可用，您可以帮助翻译 (详见 /help translate)。"
+        },
+        {
+            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
+            "value": "在两种模式里勾子可以给人类造成每秒1点伤害, 并且可长时间勾住人类"
+        },
+        {
+            "key": "In order to use it, both humans have to disable hook protection (usually, with F3). The human being hooked becomes the driver.",
+            "value": "为了开车, 两个人都必须取消勾子保护(一般按F3), 然后被勾的人将成为司机"
+        },
+        {
+            "key": "In the fast rounds *more* humans become infected initially, the spawning rate is increased and the round time limit is decreased. White hole is also disabled.",
+            "value": "在极速回合里, 更多的人类会被感染, 重生速度会增加, 回合时间缩短, 白洞被禁用"
+        },
+        {
+            "key": "Infected won the round in {sec:RoundDuration}",
+            "value": "被感染者在本轮中获得胜利 {sec:RoundDuration}"
+        },
+        {
+            "key": "Infection is coming in {sec:RemainingTime}",
+            "value": "感染将在{sec:RemainingTime}后到来"
+        },
+        {
+            "key": "InfectionClass is a team game between humans and the infected.",
+            "value": "InfectionClass(感染模式) 是一个人类与感染者间的团队游戏"
+        },
+        {
+            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
+            "value": "InfectionClass (感染模式)，作者： necropotame (版本 {str:VersionCode})"
+        },
+        {
+            "key": "Instead, it can hammer humans to reduce their health or even kill them.",
+            "value": "相反, 他可以锤人类使人类掉血, 或者杀死人类"
+        },
+        {
+            "key": "It can also infect humans and heal the infected with the hammer.",
+            "value": "他可以用锤子感染人类或治疗感染"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
+            "value": "他可以勾住人类每秒造成1点伤害并且使自己回血"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "他可以勾住人类并每秒造成1点伤害"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "他可以勾住人类并每秒造成1点伤害"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "他可以勾住人类并每秒造成1点伤害"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "他可以勾住人类并每秒造成1点伤害"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "他可以勾住人类并每秒造成1点伤害"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "他可以勾住人类并每秒造成1点伤害"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "他可以勾住人类并每秒造成1点伤害"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "她可以勾住人类并每秒造成1点伤害"
+        },
+        {
+            "key": "It can infect humans and heal the infected with the hammer.",
+            "value": "他可以用锤子感染人类或治疗感染"
+        },
+        {
+            "key": "It can infect humans and heal the infected with the hammer.",
+            "value": "他可以用锤子感染人类或治疗感染"
+        },
+        {
+            "key": "It digests the fodder over time, going back to the normal state. Some nourishment is also lost on death.",
+            "value": "他会逐渐消耗营养直到回到初始形态, 死亡会失去部分营养"
+        },
+        {
+            "key": "It fully heals the Hero and it can grant a turret which you can place down with the hammer.",
+            "value": "它可以治疗英雄, 并使英雄得到一个用锤子放置的炮塔"
+        },
+        {
+            "key": "Join our Discord server: {str:Url}",
+            "value": "加入我们的 Discord 服务器： {str:Url}"
+        },
+        {
+            "key": "Join our Matrix room: {str:Url}",
+            "value": "加入我们的Matrix房间: {str:Url}"
+        },
+        {
+            "key": "Join our Telegram: {str:Url}",
+            "value": "加入我们的 Telegram：{str:Url}"
+        },
+        {
+            "key": "Laser rifle revives the infected, but at the cost of 17 hp and armor.",
+            "value": "激光枪可以治疗感染者，但需要 17 生命或护甲。"
+        },
+        {
+            "key": "Laser wall: {sec:RemainingTime}",
+            "value": "激光墙︰{sec:RemainingTime}"
+        },
+        {
+            "key": "List of commands",
+            "value": "命令列表"
+        },
+        {
+            "key": "Looper",
+            "value": "环形师"
+        },
+        {
+            "key": "Looper laser wall: {sec:RemainingTime}",
+            "value": "环形师激光墙：{sec:RemainingTime}"
+        },
+        {
+            "key": "Loopers",
+            "value": "环形师"
+        },
+        {
+            "key": "Main contributors: {str:ListOfContributors}",
+            "value": "主要贡献者︰{str:ListOfContributors}"
+        },
+        {
+            "key": "Matrix room: {str:Url}",
+            "value": "Matrix房间: {str:Url}"
+        },
+        {
+            "key": "Medic",
+            "value": "医疗兵"
+        },
+        {
+            "key": "Medic also has a powerful shotgun that can knock back the infected.",
+            "value": "医疗兵的霰弹枪可以击退感染者"
+        },
+        {
+            "key": "Medic {str:MedicName} revived {str:RevivedName}",
+            "value": "医疗兵 {str:MedicName} 治疗了 {str:RevivedName}"
+        },
+        {
+            "key": "Medics",
+            "value": "医疗兵"
+        },
+        {
+            "key": "Mercenaries",
+            "value": "雇佣兵"
+        },
+        {
+            "key": "Mercenary",
+            "value": "雇佣兵"
+        },
+        {
+            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
+            "other": "雇佣兵可以发射毒气弹, 使感染者中毒, 并共造成{int:NumDamagePoints}点伤害"
+        },
+        {
+            "key": "Mine activated",
+            "value": "地雷已激活"
+        },
+        {
+            "key": "Mines are limited to {int:NumMines} per player at the same time.",
+            "other": "每个玩家同时可使用 {int:NumMines} 个地雷。"
+        },
+        {
+            "key": "Need at least {int:MinPlayers} players",
+            "other": "至少需要 {int:MinPlayers} 玩家"
+        },
+        {
+            "key": "Next flag in {sec:RemainingTime}",
+            "value": "下一个旗帜出现时间：{sec:RemainingTime}"
+        },
+        {
+            "key": "Next target in {sec:RemainingTime}",
+            "value": "{sec:RemainingTime} 后出现下一个目标"
+        },
+        {
+            "key": "Ninja",
+            "value": "忍者"
+        },
+        {
+            "key": "Ninja gets special targets. For killing a target, extra points and abilities are awarded.",
+            "value": "忍者会得到一个目标, 当他杀死目标, 会获得升级和额外的分数"
+        },
+        {
+            "key": "Ninjas",
+            "value": "忍者"
+        },
+        {
+            "key": "No player was found with this name",
+            "value": "没有找到这个名字的玩家"
+        },
+        {
+            "key": "{int:NumBombs} bombs left",
+            "other": "炸弹剩余 {int:NumBombs}"
+        },
+        {
+            "key": "{int:NumHumans} humans won the round",
+            "other": "{int:NumHumans} 名人类获得本轮胜利"
+        },
+        {
+            "key": "{int:NumMines} mines are active",
+            "other": "地雷已激活 {int:NumMines} 个"
+        },
+        {
+            "key": "Persistent player mute",
+            "value": "永久禁言玩家"
+        },
+        {
+            "key": "Play more on this map",
+            "value": "在地图上玩更多内容"
+        },
+        {
+            "key": "Please wait 5 minutes before creating another account",
+            "value": "在创建另一个账号前请等待 5 分钟"
+        },
+        {
+            "key": "Position lock: {sec:RemainingTime}",
+            "value": "位置锁定：{sec:RemainingTime}"
+        },
+        {
+            "key": "Press <F3> or <F4> to enable or disable hook protection",
+            "value": "按 <F3> 或 <F4> 来启用或禁用钩子保护"
+        },
+        {
+            "key": "Random choice",
+            "value": "随机选择"
+        },
+        {
+            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "other": "科学家通过杀死至少{int:NumKills}个感染者来获得它"
+        },
+        {
+            "key": "Rules of the game",
+            "value": "游戏规则"
+        },
+        {
+            "key": "Santa ({int:Callers}/{int:RequiredCallers})",
+            "value": "请求圣诞老人 ({int:Callers}/{int:RequiredCallers})"
+        },
+        {
+            "key": "Santa {str:PlayerName} has arrived!",
+            "value": "圣诞老人{str:PlayerName}已经到达"
+        },
+        {
+            "key": "Scientist",
+            "value": "科学家"
+        },
+        {
+            "key": "Scientist has also grenades that teleport them.",
+            "value": "科学家有用于瞬移的榴弹枪。"
+        },
+        {
+            "key": "Scientists",
+            "value": "科学家"
+        },
+        {
+            "key": "See also `/help pages`",
+            "value": "另见：/help pages"
+        },
+        {
+            "key": "See also: /credits",
+            "value": "另见：/credits"
+        },
+        {
+            "key": "See also: /help, /changelog, /about",
+            "value": "另见：/help、/changelog、/about"
+        },
+        {
+            "key": "Self kill attempt prevented. Trigger self kill again to confirm.",
+            "value": "自杀被阻止。再次自杀以确认。"
+        },
+        {
+            "key": "Server version from {str:ServerCompileDate} ",
+            "value": "服务器构建日期: {str:ServerCompileDate} "
+        },
+        {
+            "key": "Slug",
+            "value": "鼻涕虫"
+        },
+        {
+            "key": "Slug can infect humans and heal the infected with the hammer.",
+            "value": "鼻涕虫可以用锤子感染人类或治疗感染。"
+        },
+        {
+            "key": "Slugs",
+            "value": "鼻涕虫"
+        },
+        {
+            "key": "Smoker",
+            "value": "吸烟者"
+        },
+        {
+            "key": "Smoker has a powerful hook that hurts humans and sucks their blood, restoring the Smoker's health.",
+            "value": "吸烟者有一个强大的钩子，通过伤害人类，来恢复吸烟者的血量。"
+        },
+        {
+            "key": "Smokers",
+            "value": "吸烟者"
+        },
+        {
+            "key": "Sniper",
+            "value": "狙击手"
+        },
+        {
+            "key": "Snipers",
+            "value": "狙击手"
+        },
+        {
+            "key": "Soldier",
+            "value": "士兵"
+        },
+        {
+            "key": "Soldiers",
+            "value": "士兵"
+        },
+        {
+            "key": "Someone was infected to balance the game.",
+            "value": "为了平衡游戏有人被感染了"
+        },
+        {
+            "key": "Sources: {str:SourceUrl} ",
+            "value": "源代码: {str:SourceUrl} "
+        },
+        {
+            "key": "Spider",
+            "value": "蜘蛛"
+        },
+        {
+            "key": "Spiders",
+            "value": "蜘蛛"
+        },
+        {
+            "key": "Staying alive for: {int:RemainingTime}",
+            "value": "剩余存活时间: {int:RemainingTime}"
+        },
+        {
+            "key": "Stomach filled by {percent:FodderInStomach}",
+            "value": "营养：{percent:FodderInStomach}"
+        },
+        {
+            "key": "Switch language to english?",
+            "value": "切换到中文吗？"
+        },
+        {
+            "key": "Sword strength increased",
+            "value": "剑强度已增加"
+        },
+        {
+            "key": "Sword velocity increased",
+            "value": "剑速度已增加"
+        },
+        {
+            "key": "Target to eliminate: {str:PlayerName}",
+            "value": "消除目标︰{str:PlayerName}"
+        },
+        {
+            "key": "Targeted chat messages",
+            "value": "有针对性的聊天消息"
+        },
+        {
+            "key": "Telegram: {str:Url}",
+            "value": "Telegram：{str:Url}"
+        },
+        {
+            "key": "Thanks to {str:ListOfContributors}",
+            "value": "感谢 {str:ListOfContributors}"
+        },
+        {
+            "key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
+            "value": "生物学家可以用霰弹枪射出跳弹，也可以用激光枪设置激光陷阱。"
+        },
+        {
+            "key": "The Boomer explodes when it attacks.",
+            "value": "爆炸者在攻击的时候会自爆。"
+        },
+        {
+            "key": "The Engineer can build walls with the hammer to block the infected.",
+            "value": "工程师可以用锤子创建激光墙，阻挡被感染者。"
+        },
+        {
+            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
+            "value": "幽灵在旁边无人类时不可见, 除非造成伤害或者使用锤子"
+        },
+        {
+            "key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
+            "value": "食尸鬼可以吞食他附近已经死亡的感染者，并会使他更快，更壮，更强！"
+        },
+        {
+            "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
+            "value": "英雄不能被医疗兵治疗, 但是可以承受一次感染者的攻击"
+        },
+        {
+            "key": "The Hero found the flag!",
+            "value": "英雄找到了旗帜 ！"
+        },
+        {
+            "key": "The Hero has all standard weapons.",
+            "value": "英雄拥有所有标准武器。"
+        },
+        {
+            "key": "The Hero has to find a flag only visible to them. Stand still to be pointed towards it.",
+            "value": "英雄只能找到属于他自己的旗帜, 静止不动一会可以产生一个指向旗子的点"
+        },
+        {
+            "key": "The Hunter can jump two times in the air and has some resistance to knock-backs.",
+            "value": "猎人可以三段跳, 并且抗击退"
+        },
+        {
+            "key": "The Looper has a laser wall that slows down the infected and a low-range laser rifle with a high fire rate.",
+            "value": "循环者有激光墙，可以减慢感染者的速度，还有一支射速高的低射程激光枪。"
+        },
+        {
+            "key": "The Medic can protect humans with the hammer by giving them armor.",
+            "value": "医疗兵可以用他的锤子为其他人类增加护甲。"
+        },
+        {
+            "key": "The Mercenary can fly in the air using their machine gun.",
+            "value": "雇佣兵可以用手枪飞行"
+        },
+        {
+            "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
+            "value": "忍者可以用闪光弹冻结感染者3秒"
+        },
+        {
+            "key": "The Santa is already here",
+            "value": "圣诞老人已经在这里"
+        },
+        {
+            "key": "The Scientist can pose floating mines with the hammer.",
+            "value": "科学家可以用锤子放置地雷"
+        },
+        {
+            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
+            "value": "鼻涕虫可以用锤子向地面和墙壁放置粘液"
+        },
+        {
+            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
+            "value": "狙击手可以用锤子在空中锁定自己位置15秒。"
+        },
+        {
+            "key": "The Soldier creates floating bombs with the hammer.",
+            "value": "士兵可以用锤子摆放炸弹"
+        },
+        {
+            "key": "The Spider has a web hook that automatically grabs any human touching it.",
+            "value": "蜘蛛有网状勾子, 可以抓住碰到勾子的人类"
+        },
+        {
+            "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
+            "value": "不死族不会死亡，而是被冻结 10 秒。"
+        },
+        {
+            "key": "The Voodoo does not die immediately when killed but instead enters Spirit mode for a short time.",
+            "value": "巫毒者不会在被杀死时立刻死亡而是进入短暂的巫毒状态"
+        },
+        {
+            "key": "The Witch can provide a spawn point for the infected.",
+            "value": "女巫可以为感染者提供一个出生点。"
+        },
+        {
+            "key": "The bomb is fully upgraded.\nThere is nothing to do with the laser.",
+            "value": "炸弹当量已经满了\n激光已经无法升级"
+        },
+        {
+            "key": "The class is disabled",
+            "value": "此职业被禁用"
+        },
+        {
+            "key": "The class limit exceeded",
+            "value": "已超出职业限制"
+        },
+        {
+            "key": "The class selector will be displayed when rounds start",
+            "value": "在回合开始时，将显示职业选择器"
+        },
+        {
+            "key": "The command is not available (enabled only in training mode)",
+            "value": "命令不可用(仅在练习模式中启用)"
+        },
+        {
+            "key": "The flag gifts a health point, {int:NumArmorGift} armor and full ammo to all humans.",
+            "value": "旗帜会给所有人类一格血量, {int:NumArmorGift}点护盾, 以及满弹药"
+        },
+        {
+            "key": "The game is not balanced. Infection is coming.",
+            "value": "游戏不平衡, 正在感染"
+        },
+        {
+            "key": "The gift to all humans is only applied when the flag is surrounded by hearts and armor.",
+            "value": "只有被心和护盾包裹的旗帜, 才可以为所有人类加成"
+        },
+        {
+            "key": "The goal for the humans is to survive until the army cleans the map.",
+            "value": "人类的目标时生存到援军清理地图"
+        },
+        {
+            "key": "The goal for the infected is to infect all humans.",
+            "value": "感染者目标为感染所有人类。"
+        },
+        {
+            "key": "The hammer is also useful for healing the infected.",
+            "value": "锤子可以治疗感染者"
+        },
+        {
+            "key": "The last round",
+            "value": "最后一轮"
+        },
+        {
+            "key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
+            "value": "激光墙可以存在 {sec:LifeSpan}，每个玩家同时只能拥有一个激光墙。"
+        },
+        {
+            "key": "The locked position increases the Sniper's rifle damage from usual 10-13 to 20 damage points.",
+            "value": "位置锁定将狙击手的激光枪伤害从通常的 10-13 点增加到 20 点。"
+        },
+        {
+            "key": "The round canceled: All humans have left the game",
+            "value": "回合取消, 所有人类离开了游戏"
+        },
+        {
+            "key": "The round canceled: All infected have left the game",
+            "value": "回合取消, 所有感染者离开了游戏"
+        },
+        {
+            "key": "The slime heals the infected and deals damage to humans.",
+            "value": "粘液可以治疗感染者并对人类造成伤害"
+        },
+        {
+            "key": "The undead is finally dead",
+            "value": "不死族最终还是死了"
+        },
+        {
+            "key": "The web hook mode can be toggled by switching the weapon.",
+            "value": "通过切换武器可以切换钩子模式"
+        },
+        {
+            "key": "The white hole is available!",
+            "value": "白洞已就绪！"
+        },
+        {
+            "key": "The white hole is ready, use the laser rifle to disrupt space-time",
+            "value": "白洞已经就绪, 使用激光枪使空间混乱"
+        },
+        {
+            "key": "The witch is dead",
+            "value": "女巫已死"
+        },
+        {
+            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
+            "other": "他的锤子被武士刀取代，允许他触地后冲刺 {int:NinjaJump} 次。"
+        },
+        {
+            "key": "They also have a laser rifle that blinds the target for a short period of time.",
+            "value": "他们还有一把激光枪，可短时间内使目标失明。"
+        },
+        {
+            "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
+            "value": "他可以用锤子制造炸弹, 炸弹可以通过锤子或者激光枪提升当量"
+        },
+        {
+            "key": "They can also jump two times in the air.",
+            "value": "他可以三段跳"
+        },
+        {
+            "key": "They can also jump two times in the air.",
+            "value": "他可以三段跳。"
+        },
+        {
+            "key": "This username is already taken by an existing account",
+            "value": "此用户名已存在"
+        },
+        {
+            "key": "To get off the taxi, jump. To drop off your passengers, enable hook protection (usually, with F3).",
+            "value": "若要离开车，请跳跃。要从乘客身上下车，可启用钩子保护（通常使用F3）。"
+        },
+        {
+            "key": "Too few infected (less than {int:MinimumInfected})",
+            "value": "感染者太少了（小于 {int:MinimumInfected}个）"
+        },
+        {
+            "key": "Too few infected to call a witch",
+            "value": "感染者太少，不能召唤女巫"
+        },
+        {
+            "key": "Too few infected to call the Santa",
+            "value": "感染者太少，不能召唤圣诞老人"
+        },
+        {
+            "key": "Too few players to call a witch",
+            "value": "玩家太少，不能召唤女巫"
+        },
+        {
+            "key": "Too few players to call the Santa",
+            "value": "玩家太少，不能召唤圣诞老人"
+        },
+        {
+            "key": "Too few zombies to revive anyone (less than {int:MinZombies})",
+            "value": "不能治疗感染者(感染者数量小于{int:MinZombies}个)"
+        },
+        {
+            "key": "Translation project: {str:Url}",
+            "value": "翻译项目：{str:Url}"
+        },
+        {
+            "key": "Two or more humans can form a taxi.",
+            "value": "两个或更多的人类可以组成一辆车"
+        },
+        {
+            "key": "Type “/help {str:ClassName}” for more information about your class",
+            "value": "键入“/help {str:ClassName}”获取当前职业的更多信息"
+        },
+        {
+            "key": "Unable to load the position: the character state is not valid",
+            "value": "无法加载坐标: 玩家状态无效"
+        },
+        {
+            "key": "Unable to load the position: you have no character to load its position",
+            "value": "无法加载坐标: 你没有角色来加载位置"
+        },
+        {
+            "key": "Unable to save the position: the character does not stand on the ground",
+            "value": "无法保存坐标: 角色不在地上"
+        },
+        {
+            "key": "Unable to save the position: the character state is not valid",
+            "value": "无法保存坐标: 玩家状态无效"
+        },
+        {
+            "key": "Unable to save the position: you have no character to save its position",
+            "value": "无法保存坐标: 你没有角色来保存位置"
+        },
+        {
+            "key": "Undead",
+            "value": "不死族"
+        },
+        {
+            "key": "Undead can infect humans and heal the infected with the hammer.",
+            "value": "不死族可以用锤子感染人类或治疗感染。"
+        },
+        {
+            "key": "Undeads",
+            "value": "不死族"
+        },
+        {
+            "key": "Unknown class",
+            "value": "未知职业"
+        },
+        {
+            "key": "Unknown language",
+            "value": "未知语言"
+        },
+        {
+            "key": "Unknowns",
+            "value": "未知职业"
+        },
+        {
+            "key": "Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects.",
+            "value": "与客户端的禁言不同的是, 如果更换地图禁言仍然生效"
+        },
+        {
+            "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
+            "value": "使用锤子放置炸弹, 可用激光升级它"
+        },
+        {
+            "key": "Use the hammer to place the bomb and explode it multiple times.",
+            "value": "用锤子放置炸弹并引爆它数次。"
+        },
+        {
+            "key": "Use the laser rifle to place it.",
+            "value": "用激光放置它"
+        },
+        {
+            "key": "Use the laser to upgrade the bomb",
+            "value": "用激光升级炸弹"
+        },
+        {
+            "key": "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.",
+            "value": "使用“/msg !<ClassName> <My Message>”给所有特定职业的玩家发送消息。"
+        },
+        {
+            "key": "Use “/msg !near” to send a private message to all players near you.",
+            "value": "使用“/msg !near”给附近所有玩家发送消息。"
+        },
+        {
+            "key": "Use “/mute <PlayerName>” to mute this player.",
+            "value": "使用 \"/mute <玩家名>\"来单方面禁言这个玩家"
+        },
+        {
+            "key": "Use “/w <PlayerName> <My Message>” to send a private message to this player.",
+            "value": "使用 \"/w <玩家名> <消息>\" 给这个玩家发送私聊"
+        },
+        {
+            "key": "Voodoo",
+            "value": "巫毒者"
+        },
+        {
+            "key": "Voodoo can infect humans and heal the infected with the hammer.",
+            "value": "巫毒者可以用锤子感染人类或治疗感染"
+        },
+        {
+            "key": "Voodoos",
+            "value": "巫毒者"
+        },
+        {
+            "key": "Warning: {sec:RemainingTime} until a kick for inactivity",
+            "value": "警告: 将在 {sec:RemainingTime} 后因挂机踢出"
+        },
+        {
+            "key": "Warning: {sec:RemainingTime} until a move to spec for inactivity",
+            "value": "警告: 将在 {sec:RemainingTime} 后因挂机移动到旁观"
+        },
+        {
+            "key": "Web mode enabled",
+            "value": "网状模式启用"
+        },
+        {
+            "key": "When an infected touches the wall, it dies.",
+            "value": "当感染者碰到激光墙时， 他会死亡！"
+        },
+        {
+            "key": "While in Spirit mode it cannot be killed. When the time is up it finally dies.",
+            "value": "在巫毒状态下无法被击杀, 当时间结束才会死亡"
+        },
+        {
+            "key": "White hole",
+            "value": "白洞"
+        },
+        {
+            "key": "White hole found, adjusting scientific parameters...",
+            "value": "已获得白洞，正在调整科学参数..."
+        },
+        {
+            "key": "White hole pulls the infected into its center.",
+            "value": "白洞把感染者拉进其中心。"
+        },
+        {
+            "key": "White hole: {sec:RemainingTime}",
+            "value": "白洞：{sec:RemainingTime}"
+        },
+        {
+            "key": "Witch",
+            "value": "女巫"
+        },
+        {
+            "key": "Witch ({int:Callers}/{int:RequiredCallers})",
+            "value": "召唤女巫（{int:Callers}/{int:RequiredCallers}）"
+        },
+        {
+            "key": "Witch can infect humans and heal the infected with the hammer.",
+            "value": "女巫可以用锤子感染人类或治疗感染"
+        },
+        {
+            "key": "Witch {str:PlayerName} has arrived!",
+            "value": "女巫 {str:PlayerName} 已经到达"
+        },
+        {
+            "key": "Witches",
+            "value": "女巫"
+        },
+        {
+            "key": "Wrong username/password.",
+            "value": "用户名/密码错误。"
+        },
+        {
+            "key": "You are a human: {str:ClassName}",
+            "value": "你处于正常状态： {str:ClassName}"
+        },
+        {
+            "key": "You are an infected: {str:ClassName}",
+            "value": "你被感染了：{str:ClassName}"
+        },
+        {
+            "key": "You are blinded: {sec:EffectDuration}",
+            "value": "你失明了: {sec:EffectDuration}"
+        },
+        {
+            "key": "You are frozen: {sec:EffectDuration}",
+            "value": "你被冻结了︰{sec:EffectDuration}"
+        },
+        {
+            "key": "You are muted for {sec:Duration}",
+            "value": "你被禁言了{sec:Duration}"
+        },
+        {
+            "key": "You are slowed: {sec:EffectDuration}",
+            "value": "你被减速了：{sec:EffectDuration}"
+        },
+        {
+            "key": "You can change the language of this mod using the command /language.",
+            "value": "你可以使用命令 /language 切换此 mod 的语言。"
+        },
+        {
+            "key": "You can't call witch twice",
+            "value": "你不能重复召唤女巫"
+        },
+        {
+            "key": "You can't join the spectators right now",
+            "value": "你现在还不能进入旁观模式"
+        },
+        {
+            "key": "You destroyed {str:PlayerName}'s turret!",
+            "value": "你摧毁了 {str:PlayerName} 的炮塔！"
+        },
+        {
+            "key": "You don't have a turret to place",
+            "value": "你没有炮塔可以放置"
+        },
+        {
+            "key": "You have a turret. Use the hammer to place it.",
+            "value": "你有一个炮塔, 使用锤子放置它"
+        },
+        {
+            "key": "You have already notified that {str:PlayerName} ought to be banned",
+            "value": "你已动议封禁 {str:PlayerName}。"
+        },
+        {
+            "key": "You have already voted to change this map",
+            "value": "你已投票跳过此地图"
+        },
+        {
+            "key": "You have been infected by {str:KillerName}",
+            "value": "你被 {str:KillerName} 感染了"
+        },
+        {
+            "key": "You have called the Santa once again",
+            "value": "你再次呼叫了圣诞老人"
+        },
+        {
+            "key": "You have eliminated your target, +2 points",
+            "value": "你除掉了目标，+ 2 分"
+        },
+        {
+            "key": "You have held a bonus area for one minute, +5 points",
+            "value": "在奖励地区呆一分钟就会增加 5 分。"
+        },
+        {
+            "key": "You have infected {str:VictimName}, +3 points",
+            "value": "你感染了 {str:VictimName}，+3 分"
+        },
+        {
+            "key": "You have infected {str:VictimName}, shame on you!",
+            "value": "你使 {str:VictimName} 被感染了, 你感到羞愧"
+        },
+        {
+            "key": "You have killed a witch, +5 points",
+            "value": "你杀了一个女巫，+5 分"
+        },
+        {
+            "key": "You have killed an undead! +5 points",
+            "value": "你杀了一个不死族，+5 分"
+        },
+        {
+            "key": "You have survived, +5 points",
+            "value": "你成功存活，+5 分"
+        },
+        {
+            "key": "You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to place one.",
+            "value": "你有 {int:NumTurrets}/{int:MaxTurrets}个炮塔, 可使用锤子放置一个"
+        },
+        {
+            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
+            "other": "你有{int:NumTurrets}个炮塔, 可用锤子放置"
+        },
+        {
+            "key": "You must be logged for this operation",
+            "value": "你必须登录才可进行此操作"
+        },
+        {
+            "key": "You must be logged to see stats",
+            "value": "你必须登陆才能看见数据统计"
+        },
+        {
+            "key": "You must be logged to see your goal",
+            "value": "你必须登录才能看到您的目标"
+        },
+        {
+            "key": "You must be logged to see your rank",
+            "value": "你必须登录才能看到您的排名"
+        },
+        {
+            "key": "You need at least {int:MinHp} HP to revive a zombie",
+            "value": "你需要至少 {int:MinHp} 点血量才能治疗一个感染者"
+        },
+        {
+            "key": "You need at least {int:MinimumHP} HP",
+            "value": "你至少需要 {int:MinimumHP}点血量"
+        },
+        {
+            "key": "Your account has been created and you are now logged.",
+            "value": "已成功创建账号，并成功登录。"
+        },
+        {
+            "key": "{str:PlayerName} changed the class to {str:ClassName}",
+            "value": "{str:PlayerName} 修改职业为 {str:ClassName}"
+        },
+        {
+            "key": "{str:PlayerName} changed their name to {str:NewName}",
+            "value": "{str:PlayerName} 已改名为 {str:NewName}"
+        },
+        {
+            "key": "{str:PlayerName} entered and joined the game",
+            "value": "{str:PlayerName} 连接并加入游戏"
+        },
+        {
+            "key": "{str:PlayerName} has been banned ({str:Reason})",
+            "value": "{str:PlayerName} 被封禁 ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has been kicked ({str:Reason})",
+            "value": "{str:PlayerName} 被踢出服务器 ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has destroyed your turret!",
+            "value": "{str:PlayerName} 摧毁了你的炮塔！"
+        },
+        {
+            "key": "{str:PlayerName} has left the game",
+            "value": "{str:PlayerName} 离开游戏"
+        },
+        {
+            "key": "{str:PlayerName} has left the game ({str:Reason})",
+            "value": "{str:PlayerName} 离开游戏 ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} is calling for Santa! (1/{int:RequiredCallers}) To call the Santa write: /santa",
+            "value": "{str:PlayerName} 正在召唤圣诞老人！（1/{int:RequiredCallers}）要召唤圣诞老人输入：/witch"
+        },
+        {
+            "key": "{str:PlayerName} is calling for Witch! (1/{int:RequiredCallers}) To call witch write: /witch",
+            "value": "{str:PlayerName} 正在召唤女巫！（1/{int:RequiredCallers}）要召唤女巫输入：/witch"
+        },
+        {
+            "key": "{str:PlayerName} joined the game",
+            "value": "{str:PlayerName} 加入游戏"
+        },
+        {
+            "key": "{str:PlayerName} joined the spectators",
+            "value": "{str:PlayerName} 加入旁观者"
+        },
+        {
+            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
+            "value": "{str:PlayerName} 提议开始投票 '{str:VoteName}'"
+        },
+        {
+            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
+            "value": "{str:PlayerName} 提议封禁 {str:VictimName} ({str:Reason})"
+        },
+        {
+            "key": "{str:VictimName} has been infected",
+            "value": "{str:VictimName} 被感染了"
+        },
+        {
+            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
+            "value": "{str:Victim} 被禁言了 {sec:Duration} ({str:Reason})"
+        }
+    ]
+}
