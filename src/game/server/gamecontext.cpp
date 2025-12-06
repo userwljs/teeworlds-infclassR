@@ -4773,16 +4773,16 @@ void CGameContext::RegisterChatCommands()
 	Console()->Register("changelog", "?i[page]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConChangeLog, this, "Display a changelog page");
 	Console()->Register("cmdlist", "", CFGFLAG_CHAT, ConCmdList, this, "List of commands");
 
-	Console()->Register("me", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConMe, this, "Like the famous irc command '/me says hi' will display '<yourname> says hi'");
-	Console()->Register("w", "s[player name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConWhisper, this, "Whisper something to someone (private message)");
-	Console()->Register("whisper", "s[player name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConWhisper, this, "Whisper something to someone (private message)");
-	Console()->Register("c", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)");
-	Console()->Register("converse", "r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)");
-	Console()->Register("msg", "s[player or group name] r[message]", CFGFLAG_CHAT | CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Check '/help msg' for details");
+	Console()->Register("me", "r[message]", CFGFLAG_CHAT | CFGFLAG_NONTEEHISTORIC, ConMe, this, "Like the famous irc command '/me says hi' will display '<yourname> says hi'");
+	Console()->Register("w", "s[player name] r[message]", CFGFLAG_CHAT | CFGFLAG_NONTEEHISTORIC, ConWhisper, this, "Whisper something to someone (private message)");
+	Console()->Register("whisper", "s[player name] r[message]", CFGFLAG_CHAT | CFGFLAG_NONTEEHISTORIC, ConWhisper, this, "Whisper something to someone (private message)");
+	Console()->Register("c", "r[message]", CFGFLAG_CHAT | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)");
+	Console()->Register("converse", "r[message]", CFGFLAG_CHAT | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Converse with the last person you whispered to (private message)");
+	Console()->Register("msg", "s[player or group name] r[message]", CFGFLAG_CHAT | CFGFLAG_NONTEEHISTORIC, ConConverse, this, "Check '/help msg' for details");
 
-	Console()->Register("mute", "r[player name]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConMute, this, "Mute player with specified id for x minutes for any reason");
+	Console()->Register("mute", "r[player name]", CFGFLAG_CHAT, ConMute, this, "Mute player with specified id for x minutes for any reason");
 
-	Console()->Register("timeout", "?s[code]", CFGFLAG_CHAT | CFGFLAG_SERVER, ConTimeout, this, "Set timeout protection code s");
+	Console()->Register("timeout", "?s[code]", CFGFLAG_CHAT, ConTimeout, this, "Set timeout protection code s");
 
 	static char aLangs[256] = {};
 	if(!aLangs[0] && Server()->Localization())
@@ -4803,8 +4803,8 @@ void CGameContext::RegisterChatCommands()
 
 	if(aLangs[0])
 	{
-		Console()->Register("language", aLangs, CFGFLAG_CHAT | CFGFLAG_SERVER, ConLanguage, this, "Set the language");
-		Console()->Register("lang", aLangs, CFGFLAG_CHAT | CFGFLAG_SERVER, ConLanguage, this, "Set the language");
+		Console()->Register("language", aLangs, CFGFLAG_CHAT, ConLanguage, this, "Set the language");
+		Console()->Register("lang", aLangs, CFGFLAG_CHAT, ConLanguage, this, "Set the language");
 	}
 }
 
