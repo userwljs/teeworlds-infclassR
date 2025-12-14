@@ -83,6 +83,7 @@ public:
 	void OnWhiteHoleSpawned(CWhiteHole *pWhiteHole);
 
 	void GiveUpgrades(const PlayerUpgradesArray &NewUpgrades) override;
+	void RefreshHeroFlagPosition();
 
 protected:
 	void GiveClassAttributes() override;
@@ -144,6 +145,7 @@ private:
 	int m_InvisibilityEndTick{};
 
 	CHeroFlag *m_pHeroFlag = nullptr;
+	int m_HeroFlagRefreshTick = 0;
 };
 
 #endif // GAME_SERVER_INFCLASS_CLASSES_HUMAN_H

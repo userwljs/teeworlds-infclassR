@@ -354,6 +354,8 @@ public:
 	void UpdateHeroFlags_Lua();
 #endif
 
+	static void ConRefreshHeroFlag(IConsole::IResult *pResult, void *pUserData);
+
 	static FunRoundConfiguration ParseFunRoundConfigArguments(IConsole::IResult *pResult);
 
 	static void ConQueueSpecialRound(IConsole::IResult *pResult, void *pUserData);
