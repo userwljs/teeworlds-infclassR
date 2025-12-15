@@ -517,33 +517,22 @@ void CInfClassHuman::OnCharacterSnap(int SnappingClient)
 						}
 					}
 
-					CNetObj_Pickup *pP = Server()->SnapNewItem<CNetObj_Pickup>(m_pCharacter->GetHeartId());
-					if(!pP)
-						return;
+					int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
+					CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 
 					const vec2 Pos = m_pCharacter->GetPos();
-					pP->m_X = Pos.x;
-					pP->m_Y = Pos.y - 60.0;
-
-					if(m_pCharacter->GetHealth() < 10 && m_pCharacter->GetArmor() == 0)
-						pP->m_Type = POWERUP_HEALTH;
-					else
-						pP->m_Type = POWERUP_ARMOR;
-					pP->m_Subtype = 0;
+					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId(), {Pos.x, Pos.y - 60.0},
+						(m_pCharacter->GetHealth() < 10 && m_pCharacter->GetArmor() == 0) ? POWERUP_HEALTH : POWERUP_ARMOR, 0);
 				}
 				break;
 			case EPlayerClass::Biologist:
 				if(m_pCharacter->IsPoisoned())
 				{
-					CNetObj_Pickup *pP = Server()->SnapNewItem<CNetObj_Pickup>(m_pCharacter->GetHeartId());
-					if(!pP)
-						return;
+					int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
+					CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 
 					const vec2 Pos = m_pCharacter->GetPos();
-					pP->m_X = Pos.x;
-					pP->m_Y = Pos.y - 60.0;
-					pP->m_Type = POWERUP_HEALTH;
-					pP->m_Subtype = 0;
+					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId(), {Pos.x, Pos.y - 60.0}, POWERUP_HEALTH, 0);
 				}
 				break;
 			default:
@@ -1335,6 +1324,9 @@ void CInfClassHuman::BroadcastWeaponState() const
 		if(pOwnWall && pOwnWall->HasSecondPosition() && pOwnWall->GetEndTick().has_value())
 		{
 			int Seconds = pOwnWall->GetLifespan() + 1;
+			if(Seconds <= 3) // make number red if low
+				str_copy(Server()->Localization()->m_ArgNumberColor, "^933");
+
 			GameServer()->SendBroadcast_Localization(GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Laser wall: {sec:RemainingTime}"),
@@ -1360,6 +1352,9 @@ void CInfClassHuman::BroadcastWeaponState() const
 		if(pOwnWall && pOwnWall->HasSecondPosition())
 		{
 			int Seconds = pOwnWall->GetLifespan() + 1;
+			if(Seconds <= 3) // make number red if low
+				str_copy(Server()->Localization()->m_ArgNumberColor, "^933");
+
 			GameServer()->SendBroadcast_Localization(GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Looper laser wall: {sec:RemainingTime}"),

@@ -189,6 +189,7 @@ public:
 	bool CanVote() override;
 
 	void OnPlayerVoteCommand(int ClientId, int Vote) override;
+	void SendSkin7(int ClientId, int To = -1);
 	void OnPlayerClassChanged(const CIcPlayer *pPlayer);
 
 	void OnPlayerConnect(CPlayer *pPlayer) override;

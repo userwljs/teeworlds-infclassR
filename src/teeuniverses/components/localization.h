@@ -133,6 +133,7 @@ public:
 	/* END EDIT ***********************************************************/
 
 	/* BEGIN EDIT *********************************************************/
+	char m_ArgNumberColor[5] = "\0"; // useful for colorizing numbers in broadcasts for 0.7 clients
 	/* END EDIT ***********************************************************/
 	bool Init();
 

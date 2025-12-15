@@ -9,6 +9,7 @@
 
 #include <game/server/gamecontext.h>
 #include <game/server/gamecontroller.h>
+#include <engine/shared/protocolglue.h>
 
 MACRO_ALLOC_POOL_ID_IMPL(CPlayer, MAX_CLIENTS)
 
@@ -214,7 +215,9 @@ void CPlayer::Snap(int SnappingClient)
 	int Latency = SnappingClient == SERVER_DEMO_CLIENT ? m_Latency.m_Min : GameServer()->m_apPlayers[SnappingClient]->m_aCurLatency[m_ClientId];
 	int PlayerInfoScore = GetScore(SnappingClient);
 
-	CNetObj_PlayerInfo *pPlayerInfo = Server()->SnapNewItem<CNetObj_PlayerInfo>(id);
+	if(!Server()->IsSixup(SnappingClient))
+	{
+		CNetObj_PlayerInfo *pPlayerInfo = Server()->SnapNewItem<CNetObj_PlayerInfo>(id);
 	if(!pPlayerInfo)
 		return;
 
@@ -238,6 +241,29 @@ void CPlayer::Snap(int SnappingClient)
 		pSpectatorInfo->m_SpectatorId = m_SpectatorId;
 		pSpectatorInfo->m_X = m_ViewPos.x;
 		pSpectatorInfo->m_Y = m_ViewPos.y;
+	}
+	}
+	else
+	{
+		protocol7::CNetObj_PlayerInfo *pPlayerInfo = Server()->SnapNewItem<protocol7::CNetObj_PlayerInfo>(id);
+		if(!pPlayerInfo)
+			return;
+
+		pPlayerInfo->m_PlayerFlags =  PlayerFlags_SixToSeven(m_PlayerFlags);
+
+		pPlayerInfo->m_Score = PlayerInfoScore;
+		pPlayerInfo->m_Latency = Latency;
+
+		if(m_ClientId == SnappingClient && m_Team == TEAM_SPECTATORS) {
+			protocol7::CNetObj_SpectatorInfo *pSpectatorInfo = Server()->SnapNewItem<protocol7::CNetObj_SpectatorInfo>(m_ClientId);
+			if(!pSpectatorInfo)
+				return;
+
+			pSpectatorInfo->m_SpecMode = m_SpectatorId == SPEC_FREEVIEW ? protocol7::SPEC_FREEVIEW : protocol7::SPEC_PLAYER;
+			pSpectatorInfo->m_SpectatorId = m_SpectatorId;
+			pSpectatorInfo->m_X = m_ViewPos.x;
+			pSpectatorInfo->m_Y = m_ViewPos.y;
+		}
 	}
 }
 

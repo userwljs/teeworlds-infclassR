@@ -686,15 +686,25 @@ std::string CLocalization::Format_V(const std::string_view LanguageCode, const s
 						else if(Text.length() >= ParamTypeStart + 4 && Text.substr(ParamTypeStart, 4) == "int:")
 						{
 							const int Number = *static_cast<const int *>(pVarArgValue);
+							if(m_ArgNumberColor[0])
+								Buffer.append(m_ArgNumberColor); // 0.7 broadcast coloring
 							AppendNumber(Buffer, pLanguage, Number);
+							if(m_ArgNumberColor[0])
+								Buffer.append("^999"); // 0.7 broadcast coloring (white)
 						}
 						else if(Text.length() >= ParamTypeStart + 8 && Text.substr(ParamTypeStart, 8) == "percent:")
 						{
+							if(m_ArgNumberColor[0])
+								Buffer.append(m_ArgNumberColor); // 0.7 broadcast coloring
 							const float Number = (*static_cast<const float *>(pVarArgValue));
 							AppendPercent(Buffer, pLanguage, Number);
+							if(m_ArgNumberColor[0])
+								Buffer.append("^999"); // 0.7 broadcast coloring (white)
 						}
 						else if(Text.length() >= ParamTypeStart + 4 && Text.substr(ParamTypeStart, 4) == "sec:")
 						{
+							if(m_ArgNumberColor[0])
+								Buffer.append(m_ArgNumberColor); // 0.7 broadcast coloring
 							const int Duration = *static_cast<const int *>(pVarArgValue);
 							const int Minutes = Duration / 60;
 							const int Seconds = Duration - Minutes * 60;
@@ -709,6 +719,8 @@ std::string CLocalization::Format_V(const std::string_view LanguageCode, const s
 							}
 							else
 								AppendDuration(Buffer, pLanguage, Seconds, icu::TimeUnit::UTIMEUNIT_SECOND);
+							if(m_ArgNumberColor[0])
+								Buffer.append("^999"); // 0.7 broadcast coloring (white)
 						}
 						break;
 					}
