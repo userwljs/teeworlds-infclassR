@@ -214,6 +214,7 @@ MACRO_CONFIG_INT(InfSurvivalMode, inf_survival_mode, 0, 0, 2, CFGFLAG_SERVER, "S
 MACRO_CONFIG_INT(InfSurvivalHardMode, inf_survival_hardmode, 0, 0, 1, CFGFLAG_SERVER, "Survival hard mode (another way of difficulty leveling)")
 MACRO_CONFIG_INT(InfSurvivalAutostart, inf_survival_autostart, 0, 0, 1, CFGFLAG_SERVER, "Automatically start the last choosen survival scenario")
 MACRO_CONFIG_INT(InfSurvivalDeadSeconds, inf_survival_dead_seconds, 0, 0, 30, CFGFLAG_SERVER, "The duration of 'Dead' effect")
+MACRO_CONFIG_INT(InfSurvivalClassLimit, inf_survival_class_limit, 1, 0, 1, CFGFLAG_SERVER, "Enable player count limits per class in survival mode.")
 
 // Deprecated variables
 MACRO_CONFIG_INT(InfStunGrenadeMinimalKills, inf_stun_grenade_minimal_kills, 2, 0, 30, CFGFLAG_SERVER, "Deprecated (has no effect now)")

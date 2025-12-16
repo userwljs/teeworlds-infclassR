@@ -8148,8 +8148,8 @@ CLASS_AVAILABILITY CIcGameController::GetPlayerClassAvailability(EPlayerClass Pl
 			EnabledHumansClasses = 1;
 		}
 
-		ClassLimit = std::ceil(ActivePlayerCount / static_cast<float>(EnabledHumansClasses));
-		uint32_t ExtraPlayers = ActivePlayerCount % EnabledHumansClasses;
+		ClassLimit = Config()->m_InfSurvivalClassLimit ? std::ceil(ActivePlayerCount / static_cast<float>(EnabledHumansClasses)) : Config()->m_SvMaxClients;
+		uint32_t ExtraPlayers = Config()->m_InfSurvivalClassLimit ? ActivePlayerCount % EnabledHumansClasses : 0;
 		if((ClassLimit > 1) && ExtraPlayers)
 		{
 			if (ExtraPlayers <= EnabledEarlyClasses.Size())
