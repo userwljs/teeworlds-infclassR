@@ -1747,6 +1747,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("lua", "r[code]", CFGFLAG_SERVER, ConLua, this, "Execute LUA code");
 #endif
 
+	pConsole->Register("inf_revive_near", "i[RevivedClientId] i[TargetClientId]", CFGFLAG_SERVER, ConReviveNear, this, "Revive a player near another player");
 	pConsole->Register("inf_set_class", "i[ClientId] s[classname]", CFGFLAG_SERVER, ConSetClass, this, "Set the class of a player");
 	pConsole->Register("queue_round", "s[type]", CFGFLAG_SERVER, ConQueueSpecialRound, this, "Start a special round");
 	pConsole->Register("start_round", "?s[type]", CFGFLAG_SERVER, ConStartRound, this, "Start a special round");
@@ -2547,6 +2548,39 @@ void CIcGameController::ConRefreshHeroFlag(IConsole::IResult *pResult, void *pUs
 	}
 	auto *HumanClass = dynamic_cast<CInfClassHuman*>(pPlayer->GetCharacterClass());
 	HumanClass->RefreshHeroFlagPosition();
+}
+
+void CIcGameController::ConReviveNear(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CIcGameController *>(pUserData);
+	pSelf->ConReviveNear(pResult);
+}
+
+void CIcGameController::ConReviveNear(const IConsole::IResult *pResult)
+{
+	if(!ReviveNear(pResult->GetInteger(0), pResult->GetInteger(1)))
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "inf_revive_near", "Revive operation failed");
+}
+
+bool CIcGameController::ReviveNear(const int RevivedPlayerId, const int TargetPlayerId)
+{
+	auto *pRevivedPlayer = GetPlayer(RevivedPlayerId);
+	auto *pTargetPlayer = GetPlayer(TargetPlayerId);
+
+	if(!(pRevivedPlayer && pTargetPlayer) || pRevivedPlayer->IsBot())
+		return false;
+
+	const auto Ok = pRevivedPlayer->TryRespawnNear(pTargetPlayer);
+
+	if(Ok && GetRoundType() == ERoundType::Survival)
+	{
+		if(pRevivedPlayer->IsInfected() || pRevivedPlayer->GetClass() == EPlayerClass::None)
+			pRevivedPlayer->SetClass(ChooseHumanClass(pRevivedPlayer));
+		if(m_SurvivalState.KilledPlayers.Contains(pRevivedPlayer->GetCid()))
+			m_SurvivalState.KilledPlayers.RemoveOne(pRevivedPlayer->GetCid());
+	}
+
+	return Ok;
 }
 
 void CIcGameController::ConSetClass(IConsole::IResult *pResult, void *pUserData)

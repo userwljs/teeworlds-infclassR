@@ -355,6 +355,9 @@ public:
 #endif
 
 	static void ConRefreshHeroFlag(IConsole::IResult *pResult, void *pUserData);
+	static void ConReviveNear(IConsole::IResult *pResult, void *pUserData);
+	void ConReviveNear(const IConsole::IResult *pResult);
+	bool ReviveNear(int RevivedPlayerId, int TargetPlayerId);
 
 	static FunRoundConfiguration ParseFunRoundConfigArguments(IConsole::IResult *pResult);
 

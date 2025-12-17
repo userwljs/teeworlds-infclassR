@@ -55,6 +55,26 @@ void CIcPlayer::TryRespawn()
 	GameServer()->CreatePlayerSpawn(Context.SpawnPos, GameController()->GetMaskForPlayerWorldEvent(m_ClientId));
 }
 
+bool CIcPlayer::TryRespawnNear(CIcPlayer *pTargetPlayer)
+{
+	if(GetCharacter() || GameController()->GameWorld()->m_ResetRequested || !pTargetPlayer)
+		return false;
+	const auto *pTargetCharacter = pTargetPlayer->GetCharacter();
+	if(!pTargetCharacter)
+		return false;
+
+	SetTeam(TEAM_RED);
+	SpawnContext Context;
+	m_Spawning = false;
+	Context.SpawnPos = pTargetCharacter->GetPos();
+	auto *pCharacter = new(m_ClientId) CIcCharacter(GameController(), GameServer()->GetLastPlayerInput(m_ClientId));
+	m_pCharacter = pCharacter;
+	m_pCharacter->Spawn(this, Context.SpawnPos);
+	OnCharacterSpawned(Context);
+	GameServer()->CreatePlayerSpawn(Context.SpawnPos, GameController()->GetMaskForPlayerWorldEvent(m_ClientId));
+	return true;
+}
+
 int CIcPlayer::GetScore(int SnappingClient) const
 {
 	if(GetTeam() == TEAM_SPECTATORS)
