@@ -207,6 +207,7 @@ MACRO_CONFIG_INT(InfWhiteHoleRadius, inf_white_hole_radius, 430, 0, 500, CFGFLAG
 MACRO_CONFIG_INT(InfWhiteHoleAffectsHumans, inf_white_hole_affects_humans, 0, 0, 1, CFGFLAG_SERVER, "Makes white holes suck in humans")
 MACRO_CONFIG_INT(InfWhiteHoleNumParticles, inf_white_hole_num_particles, 100, 20, 500, CFGFLAG_SERVER, "Number of particles that will be used for a white hole animation")
 MACRO_CONFIG_INT(InfWhiteHolePullStrength, inf_white_hole_pull_strength, 30, 0, 1000, CFGFLAG_SERVER, "How strong a white hole sucks players in")
+MACRO_CONFIG_INT(InfHeroFlagRefreshCD, inf_hero_flag_refresh_cd, 30, 0, 1000, CFGFLAG_SERVER, "Cooldown for the /rflag command.")
 
 MACRO_CONFIG_INT(InfBotLives, inf_bot_lives, 0, 0, 30, CFGFLAG_SERVER, "The number of bot lives (for survive rounds)")
 MACRO_CONFIG_INT(InfDebugBot, inf_debug_bot, -1, -1, MAX_CLIENTS, CFGFLAG_SERVER, "Filter the bot debug by one bot Id (-1 to unset)")
@@ -221,6 +222,7 @@ MACRO_CONFIG_INT(InfSurvivalMode, inf_survival_mode, 0, 0, 2, CFGFLAG_SERVER, "S
 MACRO_CONFIG_INT(InfSurvivalHardMode, inf_survival_hardmode, 0, 0, 1, CFGFLAG_SERVER, "Survival hard mode (another way of difficulty leveling)")
 MACRO_CONFIG_INT(InfSurvivalAutostart, inf_survival_autostart, 0, 0, 1, CFGFLAG_SERVER, "Automatically start the last choosen survival scenario")
 MACRO_CONFIG_INT(InfSurvivalDeadSeconds, inf_survival_dead_seconds, 0, 0, 30, CFGFLAG_SERVER, "The duration of 'Dead' effect")
+MACRO_CONFIG_INT(InfSurvivalClassLimit, inf_survival_class_limit, 1, 0, 1, CFGFLAG_SERVER, "Enable player count limits per class in survival mode.")
 
 // Deprecated variables
 MACRO_CONFIG_INT(InfStunGrenadeMinimalKills, inf_stun_grenade_minimal_kills, 2, 0, 30, CFGFLAG_SERVER, "Deprecated (has no effect now)")

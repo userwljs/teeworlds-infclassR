@@ -31,4 +31,7 @@ enum class EUpgradeType
 	LooperLaserRegen,
 	LooperGrenadesRegen,
 	LooperLaserWeapon,
+	EngineerWallTime,
+	EngineerWallDamage,
+	EngineerWallTimeReductionDecrease,
 };

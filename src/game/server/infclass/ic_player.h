@@ -52,6 +52,7 @@ public:
 	CIcGameController *GameController() const;
 
 	void TryRespawn() override;
+	bool TryRespawnNear(CIcPlayer *pTargetPlayer);
 
 	int GetScore(int SnappingClient) const override;
 

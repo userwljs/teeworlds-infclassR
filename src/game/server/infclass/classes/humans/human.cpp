@@ -368,6 +368,19 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 			break;
 		}
 		break;
+	case EPlayerClass::Engineer:
+		switch(UpgradeLevel)
+		{
+		case 1:
+			return { EUpgradeType::EngineerWallDamage };
+		case 2:
+			return { EUpgradeType::EngineerWallTime };
+		case 3:
+			return { EUpgradeType::EngineerWallTimeReductionDecrease };
+		default:
+			break;
+		}
+		break;
 	default:
 		break;
 	}
@@ -653,6 +666,7 @@ void CInfClassHuman::OnCharacterTickPaused()
 	{
 		++m_ResetKillsTick;
 	}
+	m_HeroFlagRefreshTick++;
 }
 
 void CInfClassHuman::OnCharacterPostCoreTick()
@@ -1339,6 +1353,8 @@ void CInfClassHuman::GiveClassAttributes()
 		m_pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
 		m_pCharacter->GiveWeapon(WEAPON_GUN, -1);
 		m_pCharacter->GiveWeapon(WEAPON_LASER, -1);
+		if (GameController()->GetRoundType() == ERoundType::Survival)
+			m_pCharacter->GiveWeapon(WEAPON_SHOTGUN, -1);
 		m_pCharacter->SetActiveWeapon(WEAPON_LASER);
 		break;
 	case EPlayerClass::Soldier:
@@ -2063,7 +2079,15 @@ void CInfClassHuman::PlaceEngineerWall(WeaponFireContext *pFireContext)
 		if(pFireContext->FireAccepted)
 		{
 			pExistingWall->SetSecondPosition(GetPos());
-			pExistingWall->SetLifespan(Config()->m_InfBarrierLifeSpan);
+			if(GameController()->GetRoundType() == ERoundType::Survival)
+			{
+				if(GetPlayer()->GetCharacterClass()->HasUpgrade(EUpgradeType::EngineerWallTime))
+					pExistingWall->SetLifespan(45.0f);
+				else
+					pExistingWall->SetLifespan(30.0f);
+			}
+			else
+				pExistingWall->SetLifespan(Config()->m_InfBarrierLifeSpan);
 			GameServer()->CreateSound(GetPos(), SOUND_LASER_FIRE);
 		}
 		else
@@ -2716,14 +2740,43 @@ void CInfClassHuman::GiveUpgrades(const PlayerUpgradesArray &NewUpgrades)
 			AddWeaponMessageIfNothingYet();
 			AddMessage(_("The laser rifle now has shock-explosive ammo"));
 			break;
+		case EUpgradeType::EngineerWallDamage:
+			AddMessage(_("Your wall's damage has increased to 9 HP."));
+			break;
+		case EUpgradeType::EngineerWallTime:
+			AddMessage(_("Your wall's time has increased to 45 seconds."));
+			break;
+		case EUpgradeType::EngineerWallTimeReductionDecrease:
+			AddMessage(_("When the Infected hit your wall, the duration reduction of your wall is decreased by 75%"));
+			break;
 		}
 	}
 
-	for (const char *pMessage : aMessages)
+	for(const char *pMessage : aMessages)
 	{
 		if (pMessage)
 		{
 			GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage, nullptr);
 		}
 	}
+}
+
+void CInfClassHuman::RefreshHeroFlagPosition()
+{
+	if (!m_pHeroFlag || Server()->Tick() < m_pHeroFlag->GetSpawnTick())
+	{
+		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, "You can't use this command now.");
+		return;
+	}
+	if (Server()->Tick() < m_HeroFlagRefreshTick)
+	{
+		int Seconds = 1 + (m_HeroFlagRefreshTick - Server()->Tick()) / Server()->TickSpeed();
+		GameServer()->SendChatTarget_Localization_P(GetCid(), CHATCATEGORY_DEFAULT, Seconds,
+			_P("You must wait for {int:Num} second to refresh your flag.", "You must wait for {int:Num} seconds to refresh your flag.", Seconds),
+			"Num", &Seconds);
+		return;
+	}
+	m_pHeroFlag->FindPosition();
+	m_HeroFlagRefreshTick = Server()->Tick() + Server()->TickSpeed() * g_Config.m_InfHeroFlagRefreshCD;
+	GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, "Your flag position has been refreshed.");
 }

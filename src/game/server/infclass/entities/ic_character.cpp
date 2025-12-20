@@ -1824,6 +1824,10 @@ EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 		{
 		case EPlayerClass::Medic:
 			return EInfclassWeapon::MEDIC_SHOTGUN;
+		case EPlayerClass::Engineer:
+			if (GameController()->GetRoundType() == ERoundType::Survival)
+				return EInfclassWeapon::MEDIC_SHOTGUN;
+			return EInfclassWeapon::SHOTGUN;
 		case EPlayerClass::Hero:
 			return EInfclassWeapon::HERO_SHOTGUN;
 		case EPlayerClass::Biologist:

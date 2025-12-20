@@ -1756,6 +1756,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("lua", "r[code]", CFGFLAG_SERVER, ConLua, this, "Execute LUA code");
 #endif
 
+	pConsole->Register("inf_revive_near", "i[RevivedClientId] i[TargetClientId]", CFGFLAG_SERVER, ConReviveNear, this, "Revive a player near another player");
 	pConsole->Register("inf_set_class", "i[ClientId] s[classname]", CFGFLAG_SERVER, ConSetClass, this, "Set the class of a player");
 	pConsole->Register("queue_round", "s[type]", CFGFLAG_SERVER, ConQueueSpecialRound, this, "Start a special round");
 	pConsole->Register("start_round", "?s[type]", CFGFLAG_SERVER, ConStartRound, this, "Start a special round");
@@ -1777,6 +1778,8 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("reset_map_data", "s[mapname]", CFGFLAG_SERVER, ConResetMapData, this, "Reset map rotation data");
 	pConsole->Register("add_map_data", "s[mapname] i[timestamp]", CFGFLAG_SERVER, ConAddMapData, this, "Add map rotation data");
 	pConsole->Register("set_map_min_max_players", "s[mapname] i[min] ?i[max]", CFGFLAG_SERVER, ConSetMapMinMaxPlayers, this, "Set min/max players for a map");
+
+	Console()->Register("rflag", "", CFGFLAG_CHAT, ConRefreshHeroFlag, this, "Refresh the position of hero flag");
 
 	Console()->Register("prefer_class", "s[classname]", CFGFLAG_CHAT, ConPreferClass, this, "Set the preferred human class to <classname>");
 	Console()->Register("alwaysrandom", "i['0'|'1']", CFGFLAG_CHAT, ConAlwaysRandom, this, "Set the preferred class to Random");
@@ -2540,6 +2543,53 @@ void CIcGameController::ConUserSetClass(IConsole::IResult *pResult)
 	}
 
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "inf_set_class", "Unknown class");
+}
+
+void CIcGameController::ConRefreshHeroFlag(IConsole::IResult *pResult, void *pUserData)
+{
+	const auto *pSelf = static_cast<CIcGameController *>(pUserData);
+	const int ClientId = pResult->GetClientId();
+	auto *pPlayer = pSelf->GetPlayer(ClientId);
+	if (pPlayer->GetClass() != EPlayerClass::Hero)
+	{
+		pSelf->GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, "Only heroes can use this command.");
+		return;
+	}
+	auto *HumanClass = dynamic_cast<CInfClassHuman*>(pPlayer->GetCharacterClass());
+	HumanClass->RefreshHeroFlagPosition();
+}
+
+void CIcGameController::ConReviveNear(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CIcGameController *>(pUserData);
+	pSelf->ConReviveNear(pResult);
+}
+
+void CIcGameController::ConReviveNear(const IConsole::IResult *pResult)
+{
+	if(!ReviveNear(pResult->GetInteger(0), pResult->GetInteger(1)))
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "inf_revive_near", "Revive operation failed");
+}
+
+bool CIcGameController::ReviveNear(const int RevivedPlayerId, const int TargetPlayerId)
+{
+	auto *pRevivedPlayer = GetPlayer(RevivedPlayerId);
+	auto *pTargetPlayer = GetPlayer(TargetPlayerId);
+
+	if(!(pRevivedPlayer && pTargetPlayer) || pRevivedPlayer->IsBot())
+		return false;
+
+	const auto Ok = pRevivedPlayer->TryRespawnNear(pTargetPlayer);
+
+	if(Ok && GetRoundType() == ERoundType::Survival)
+	{
+		if(pRevivedPlayer->IsInfected() || pRevivedPlayer->GetClass() == EPlayerClass::None)
+			pRevivedPlayer->SetClass(ChooseHumanClass(pRevivedPlayer));
+		if(m_SurvivalState.KilledPlayers.Contains(pRevivedPlayer->GetCid()))
+			m_SurvivalState.KilledPlayers.RemoveOne(pRevivedPlayer->GetCid());
+	}
+
+	return Ok;
 }
 
 void CIcGameController::ConSetClass(IConsole::IResult *pResult, void *pUserData)
@@ -4264,9 +4314,11 @@ void CIcGameController::GetPlayerCounter(int ClientException, int& NumHumans, in
 	while(Iter.Next())
 	{
 		if(Iter.ClientId() == ClientException) continue;
-		
-		if(Iter.Player()->IsInfected()) NumInfected++;
-		else NumHumans++;
+
+		if(Iter.Player()->IsInfected())
+			NumInfected++;
+		else if(!Iter.Player()->IsBot())
+			NumHumans++;
 	}
 }
 
@@ -6839,6 +6891,7 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 		ConLine(_C("Hero", "It fully heals the Hero and it can grant a turret which you can place down with the hammer."));
 		ConLine(_C("Hero", "The gift to all humans is only applied when the flag is surrounded by hearts and armor."));
 		ConLine(_C("Hero", "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected."));
+		AddLine(_C("Hero", "The Hero can refresh the position of the flag by /rflag."));
 		break;
 	case EPlayerClass::Engineer:
 		AddLine(_C("Engineer", "The Engineer can build walls with the hammer to block the infected."));
@@ -8222,7 +8275,6 @@ bool CIcGameController::GetPlayerClassEnabled(EPlayerClass PlayerClass) const
 	{
 		switch(PlayerClass)
 		{
-		case EPlayerClass::Engineer:
 		case EPlayerClass::Soldier:
 			return false;
 		default:
@@ -8337,7 +8389,8 @@ uint32_t CIcGameController::GetMinPlayersForClass(EPlayerClass PlayerClass) cons
 {
 	switch(PlayerClass)
 	{
-	case EPlayerClass::Engineer:
+	case EPlayerClass::Engineer: if(GetRoundType() == ERoundType::Survival)
+			return 0;
 		return Config()->m_InfMinPlayersForEngineer;
 	default:
 		return 0;
@@ -8568,8 +8621,8 @@ CLASS_AVAILABILITY CIcGameController::GetPlayerClassAvailability(EPlayerClass Pl
 			EnabledHumansClasses = 1;
 		}
 
-		ClassLimit = std::ceil(ActivePlayerCount / static_cast<float>(EnabledHumansClasses));
-		uint32_t ExtraPlayers = ActivePlayerCount % EnabledHumansClasses;
+		ClassLimit = Config()->m_InfSurvivalClassLimit ? std::ceil(ActivePlayerCount / static_cast<float>(EnabledHumansClasses)) : Config()->m_SvMaxClients;
+		uint32_t ExtraPlayers = Config()->m_InfSurvivalClassLimit ? ActivePlayerCount % EnabledHumansClasses : 0;
 		if((ClassLimit > 1) && ExtraPlayers)
 		{
 			if (ExtraPlayers <= EnabledEarlyClasses.Size())

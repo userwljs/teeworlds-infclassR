@@ -19,6 +19,7 @@ public:
 	void TickPaused() override;
 	void Snap(int SnappingClient) override;
 	void OnHitInfected(CIcCharacter *pCharacter);
+	void OnSurvivalHitInfected(CIcCharacter *pCharacter);
 
 private:
 	void PrepareSnapData();
@@ -26,6 +27,7 @@ private:
 	int m_EndPointId{};
 	int m_WallFlashTicks{};
 	int m_SnapStartTick{};
+	int m_PlayerNextDamageTick[MAX_CLIENTS] = {0};
 };
 
 #endif
