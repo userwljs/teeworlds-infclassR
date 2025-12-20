@@ -424,6 +424,8 @@ public:
 	void ConGiveUpgrade(IConsole::IResult *pResult);
 	static void ConSetDrop(IConsole::IResult *pResult, void *pUserData);
 	void ConSetDrop(IConsole::IResult *pResult);
+	static void ConChatSurvivalRespawn(IConsole::IResult *pResult, void *pUserData);
+	void ConChatSurvivalRespawn(IConsole::IResult *pResult);
 
 	static void ChatWitch(IConsole::IResult *pResult, void *pUserData);
 	void ChatWitch(IConsole::IResult *pResult);
@@ -467,6 +469,7 @@ public:
 	int InfectedBonusArmor() const;
 
 	void SendKillMessage(int Victim, const DeathContext &Context);
+	std::optional<int> GetClientIdByName(const char *pName) const;
 	void OnKillOrInfection(int Victim, const DeathContext &Context);
 
 protected:
