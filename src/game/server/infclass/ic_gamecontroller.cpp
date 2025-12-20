@@ -2,8 +2,10 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.				*/
 #include "ic_gamecontroller.h"
 
-#include <game/infclass/ic_classes.h>
+#include "engine/console.h"
+
 #include <game/infclass/damage_type.h>
+#include <game/infclass/ic_classes.h>
 #include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/server/infclass/classes/infected/infected.h>
@@ -1772,6 +1774,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 
 	Console()->Register("rflag", "", CFGFLAG_CHAT, ConRefreshHeroFlag, this, "Refresh the position of hero flag");
 
+	Console()->Register("respawn", "s[player name]", CFGFLAG_CHAT, ConChatSurvivalRespawn, this, "Respawn near an alive player in survival mode");
 	Console()->Register("prefer_class", "s[classname]", CFGFLAG_CHAT, ConPreferClass, this, "Set the preferred human class to <classname>");
 	Console()->Register("alwaysrandom", "i['0'|'1']", CFGFLAG_CHAT, ConAlwaysRandom, this, "Set the preferred class to Random");
 	Console()->Register("antiping", "i['0'|'1']", CFGFLAG_CHAT, ConAntiPing, this, "Try to improve your ping (reduce the traffic)");
@@ -3449,6 +3452,30 @@ void CIcGameController::ConSetDrop(IConsole::IResult *pResult)
 	pCharacter->SetDropLevel(DropLevel);
 }
 
+void CIcGameController::ConChatSurvivalRespawn(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CIcGameController *>(pUserData);
+	pSelf->ConChatSurvivalRespawn(pResult);
+}
+
+void CIcGameController::ConChatSurvivalRespawn(IConsole::IResult *pResult)
+{
+	if(GetRoundType() != ERoundType::Survival)
+		return;
+
+	auto *pCaller = GetPlayer(pResult->GetClientId());
+	if(pCaller->GetTeam() != TEAM_SPECTATORS)
+		return;
+
+	if(Server()->Tick() > pCaller->GetSurvivalRespawnTick())
+	{
+		const auto pTargetPlayer = GetClientIdByName(pResult->GetString(0));
+		if(!pTargetPlayer.has_value())
+			return;
+		ReviveNear(pResult->GetClientId(), pTargetPlayer.value());
+	}
+}
+
 void CIcGameController::ChatWitch(IConsole::IResult *pResult, void *pUserData)
 {
 	CIcGameController *pSelf = (CIcGameController *)pUserData;
@@ -4363,6 +4390,18 @@ void CIcGameController::SendKillMessage(int Victim, const DeathContext &Context)
 	OnKillOrInfection(Victim, Context);
 }
 
+std::optional<int> CIcGameController::GetClientIdByName(const char *pName) const
+{
+	for(int i = 0; i < MAX_CLIENTS; ++i)
+	{
+		if(str_comp(pName, GameServer()->Server()->ClientName(i)) == 0)
+		{
+			return i;
+		}
+	}
+	return std::nullopt;
+}
+
 void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Context)
 {
 	if(GetRoundType() != ERoundType::Survival)
@@ -4373,7 +4412,7 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 	if(VanillaWeapon == WEAPON_GAME)
 		return;
 
-	const CIcPlayer *pVictim = GetPlayer(Victim);
+	CIcPlayer *pVictim = GetPlayer(Victim);
 	const CIcPlayer *pKiller = Context.Killer < 0 ? pVictim : GetPlayer(Context.Killer);
 	const int Tick = Server()->Tick();
 	const int TickSpeed = Server()->TickSpeed();
@@ -4385,6 +4424,9 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 
 	if(!pVictim || pVictim->IsBot() || !pVictim->IsHuman())
 		return;
+
+	if(Config()->m_InfSurvivalRespawn)
+		pVictim->SetSurvivalRespawnTick(Tick + TickSpeed * Config()->m_InfSurvivalRespawnDelay);
 
 	if(!m_SurvivalState.KilledPlayers.Contains(Victim))
 	{
@@ -5097,6 +5139,32 @@ void CIcGameController::Tick()
 				}
 				const bool DoChatMsg = false;
 				DoTeamChange(pPlayer, TEAM_SPECTATORS, DoChatMsg);
+			}
+		}
+	}
+
+	for(int i = 0; i < MAX_CLIENTS; ++i)
+	{
+		CIcPlayer *pPlayer = GetPlayer(i);
+		if(!pPlayer)
+			continue;
+
+		if(GetRoundType() == ERoundType::Survival && pPlayer->GetTeam() == TEAM_SPECTATORS && !pPlayer->IsBot())
+		{
+			if(Server()->Tick() > pPlayer->GetSurvivalRespawnTick())
+			{
+				GameServer()->SendBroadcast_Localization(pPlayer->GetCid(),
+					EBroadcastPriority::GAMEANNOUNCE,
+					BROADCAST_DURATION_GAMEANNOUNCE,
+					_("You can respawn via '/respawn <player name>' now"), nullptr);
+			}
+			else
+			{
+				int Seconds = (pPlayer->GetSurvivalRespawnTick() - Server()->Tick()) / Server()->TickSpeed();
+				GameServer()->SendBroadcast_Localization(pPlayer->GetCid(),
+					EBroadcastPriority::GAMEANNOUNCE,
+					BROADCAST_DURATION_GAMEANNOUNCE,
+					_("You can respawn after {sec:Time}"), "Time", &Seconds);
 			}
 		}
 	}

@@ -147,6 +147,8 @@ public:
 	virtual void OnCharacterHPChanged(){};
 	virtual void OnCharacterDamage(const SDamageContext &DamageContext){};
 
+	int GetSurvivalRespawnTick() const { return m_SurvivalRespawnTick; }
+	void SetSurvivalRespawnTick(const int Tick) { m_SurvivalRespawnTick = Tick; }
 public:
 	int m_MapMenuItem = -1;
 
@@ -205,6 +207,8 @@ protected:
 	EPlayerClass m_PickedClass = EPlayerClass::Invalid;
 	icArray<EPlayerClass, 5> m_PreviousClasses;
 	icArray<vec2, 1> m_SavedPositions;
+
+	int m_SurvivalRespawnTick = 0;
 };
 
 inline const CIcPlayer *CIcPlayer::GetInstance(const CPlayer *pPlayer)
