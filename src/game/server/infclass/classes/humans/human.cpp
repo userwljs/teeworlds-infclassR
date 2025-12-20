@@ -653,6 +653,7 @@ void CInfClassHuman::OnCharacterTickPaused()
 	{
 		++m_ResetKillsTick;
 	}
+	m_HeroFlagRefreshTick++;
 }
 
 void CInfClassHuman::OnCharacterPostCoreTick()
