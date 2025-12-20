@@ -3462,6 +3462,13 @@ void CIcGameController::ConChatSurvivalRespawn(IConsole::IResult *pResult)
 {
 	if(GetRoundType() != ERoundType::Survival)
 		return;
+	if(!Config()->m_InfSurvivalRespawn)
+	{
+		GameServer()->SendChatTarget_Localization(pResult->GetClientId(),
+			CHATCATEGORY_DEFAULT,
+			_("Survival respawning is disabled"), nullptr);
+		return;
+	}
 
 	auto *pCaller = GetPlayer(pResult->GetClientId());
 	if(pCaller->GetTeam() != TEAM_SPECTATORS)
