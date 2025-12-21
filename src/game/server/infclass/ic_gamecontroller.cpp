@@ -4285,6 +4285,7 @@ void CIcGameController::DoTeamChange(CPlayer *pBasePlayer, int Team, bool DoChat
 	{
 		if(Team == TEAM_SPECTATORS)
 		{
+			pPlayer->SetSurvivalRespawnTick(Server()->Tick() + Server()->TickSpeed() * Config()->m_InfSurvivalRespawnDelay);
 			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} joined the spectators"), "PlayerName", Server()->ClientName(ClientId), NULL);
 		}
 		else
