@@ -217,6 +217,8 @@ MACRO_CONFIG_INT(InfSurvivalDeadSeconds, inf_survival_dead_seconds, 0, 0, 30, CF
 MACRO_CONFIG_INT(InfSurvivalClassLimit, inf_survival_class_limit, 1, 0, 1, CFGFLAG_SERVER, "Enable player count limits per class in survival mode.")
 MACRO_CONFIG_INT(InfSurvivalRespawn, inf_survival_respawn, 1, 0, 1, CFGFLAG_SERVER, "Enable /respawn in survival mode")
 MACRO_CONFIG_INT(InfSurvivalRespawnDelay, inf_survival_respawn_delay, 30, 0, 1000, CFGFLAG_SERVER, "Time (in seconds) the player must to wait before respawning after death")
+MACRO_CONFIG_INT(InfSurvivalHeroRevive, inf_survival_hero_revive, 1, 0, 1, CFGFLAG_SERVER, "Enable hero reviving in survival mode")
+MACRO_CONFIG_INT(InfHeroReviveMaxCharges, inf_hero_revive_max_charges, 2, 1, 1000, CFGFLAG_SERVER, "Maximum number of revival charges that can be held")
 
 // Deprecated variables
 MACRO_CONFIG_INT(InfStunGrenadeMinimalKills, inf_stun_grenade_minimal_kills, 2, 0, 30, CFGFLAG_SERVER, "Deprecated (has no effect now)")

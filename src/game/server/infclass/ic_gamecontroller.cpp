@@ -1774,6 +1774,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 
 	Console()->Register("rflag", "", CFGFLAG_CHAT, ConRefreshHeroFlag, this, "Refresh the position of hero flag");
 
+	Console()->Register("revive", "s[player name]", CFGFLAG_CHAT, ChatHeroRevive, this, "Revive a dead teammate near you (a hero) in survival mode");
 	Console()->Register("respawn", "s[player name]", CFGFLAG_CHAT, ConChatSurvivalRespawn, this, "Respawn near an alive player in survival mode");
 	Console()->Register("prefer_class", "s[classname]", CFGFLAG_CHAT, ConPreferClass, this, "Set the preferred human class to <classname>");
 	Console()->Register("alwaysrandom", "i['0'|'1']", CFGFLAG_CHAT, ConAlwaysRandom, this, "Set the preferred class to Random");
@@ -3480,6 +3481,52 @@ void CIcGameController::ConChatSurvivalRespawn(IConsole::IResult *pResult)
 		if(!pTargetPlayer.has_value())
 			return;
 		ReviveNear(pResult->GetClientId(), pTargetPlayer.value());
+	}
+}
+
+void CIcGameController::ChatHeroRevive(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CIcGameController *>(pUserData);
+	pSelf->ChatHeroRevive(pResult);
+}
+
+void CIcGameController::ChatHeroRevive(IConsole::IResult *pResult)
+{
+	const int CallerClientId = pResult->GetClientId();
+	auto *pCaller = GetPlayer(CallerClientId);
+	auto *pCallerCharacterClass = pCaller->GetCharacterClass();
+	if(GetRoundType() != ERoundType::Survival || pCaller->GetClass() != EPlayerClass::Hero || !pCallerCharacterClass)
+		return;
+	const auto RevivedClientId = GetClientIdByName(pResult->GetString(0));
+	if(!RevivedClientId.has_value())
+	{
+		char aBuf[256];
+		str_format(aBuf, sizeof(aBuf), _("No player with name \"%s\" found"), pResult->GetString(0));
+		GameServer()->SendChatTarget_Localization(CallerClientId, CHATCATEGORY_DEFAULT, aBuf);
+		return;
+	}
+	const auto *pRevivedPlayer = GetPlayer(RevivedClientId.value());
+	if(pRevivedPlayer->GetTeam() != TEAM_SPECTATORS || pRevivedPlayer->IsBot())
+		return;
+	auto *pCallerHumanClass = dynamic_cast<CInfClassHuman *>(pCallerCharacterClass);
+	if(pCallerHumanClass->GetSurvivalHeroReviveCharges() < 1)
+	{
+		GameServer()->SendChatTarget_Localization(CallerClientId, CHATCATEGORY_DEFAULT, _("No revive charges left"), nullptr);
+		return;
+	}
+
+	if(ReviveNear(RevivedClientId.value(), CallerClientId))
+	{
+		pCallerHumanClass->SetSurvivalHeroReviveCharges(pCallerHumanClass->GetSurvivalHeroReviveCharges() - 1);
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
+			_("The hero \"{str:Hero}\" revived \"{str:Revived}\""),
+			"Hero", Server()->ClientName(CallerClientId),
+			"Revived", Server()->ClientName(RevivedClientId.value()),
+			nullptr);
+	}
+	else
+	{
+		GameServer()->SendChatTarget_Localization(CallerClientId, CHATCATEGORY_DEFAULT, _("Revive failed"), nullptr);
 	}
 }
 
