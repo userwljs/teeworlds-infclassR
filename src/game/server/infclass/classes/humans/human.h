@@ -85,6 +85,9 @@ public:
 	void GiveUpgrades(const PlayerUpgradesArray &NewUpgrades) override;
 	void RefreshHeroFlagPosition();
 
+	[[nodiscard]] int GetSurvivalHeroReviveCharges() const { return m_SurvivalHeroReviveCharges; }
+	void SetSurvivalHeroReviveCharges(const int Charges) { m_SurvivalHeroReviveCharges = Charges; }
+
 protected:
 	void GiveClassAttributes() override;
 	void SpawnChildEntities();
@@ -146,6 +149,7 @@ private:
 
 	CHeroFlag *m_pHeroFlag = nullptr;
 	int m_HeroFlagRefreshTick = 0;
+	int m_SurvivalHeroReviveCharges = 0;
 };
 
 #endif // GAME_SERVER_INFCLASS_CLASSES_HUMAN_H

@@ -26,6 +26,8 @@ CIcPlayer::CIcPlayer(CIcGameController *pGameController, int UniqueClientId, int
 	m_HookProtectionAutomatic = true;
 	m_ShowOthers = SHOW_OTHERS_ONLY_TEAM;
 
+	m_SurvivalRespawnTick = Server()->Tick() + Server()->TickSpeed() * g_Config.m_InfSurvivalRespawnDelay;
+
 	SetClass(EPlayerClass::None);
 }
 

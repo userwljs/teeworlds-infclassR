@@ -426,6 +426,8 @@ public:
 	void ConSetDrop(IConsole::IResult *pResult);
 	static void ConChatSurvivalRespawn(IConsole::IResult *pResult, void *pUserData);
 	void ConChatSurvivalRespawn(IConsole::IResult *pResult);
+	static void ChatHeroRevive(IConsole::IResult *pResult, void *pUserData);
+	void ChatHeroRevive(IConsole::IResult *pResult);
 
 	static void ChatWitch(IConsole::IResult *pResult, void *pUserData);
 	void ChatWitch(IConsole::IResult *pResult);

@@ -2507,6 +2507,20 @@ void CInfClassHuman::OnHeroFlagTaken(CIcCharacter *pHero)
 		m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
 		m_pCharacter->GiveWeapon(WEAPON_LASER, -1);
 
+		if(Config()->m_InfSurvivalHeroRevive)
+		{
+			const int NewReviveCharges = clamp<int>(m_SurvivalHeroReviveCharges + 1, 0, Config()->m_InfHeroReviveMaxCharges);
+
+			if(NewReviveCharges != m_SurvivalHeroReviveCharges)
+			{
+				m_SurvivalHeroReviveCharges = NewReviveCharges;
+				GameServer()->SendChatTarget_Localization_P(GetCid(), CHATCATEGORY_SCORE, m_SurvivalHeroReviveCharges,
+					_P("Now you can revive {int:Num} teammate! Use /revive s[player name].",
+						"Now you can revive {int:Num} teammates! Use /revive s[player name].", m_SurvivalHeroReviveCharges),
+					"Num", &m_SurvivalHeroReviveCharges, nullptr);
+			}
+		}
+
 		if(GameController()->AreTurretsEnabled())
 		{
 			int TurretGive = GetTurretGive();
