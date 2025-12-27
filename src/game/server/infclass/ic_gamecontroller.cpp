@@ -4285,7 +4285,8 @@ void CIcGameController::DoTeamChange(CPlayer *pBasePlayer, int Team, bool DoChat
 	{
 		if(Team == TEAM_SPECTATORS)
 		{
-			pPlayer->SetSurvivalRespawnTick(Server()->Tick() + Server()->TickSpeed() * Config()->m_InfSurvivalRespawnDelay);
+			if(Config()->m_InfSurvivalRespawn)
+				pPlayer->SetSurvivalRespawnTick(Server()->Tick() + Server()->TickSpeed() * Config()->m_InfSurvivalRespawnDelay);
 			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} joined the spectators"), "PlayerName", Server()->ClientName(ClientId), NULL);
 		}
 		else
@@ -5198,28 +5199,31 @@ void CIcGameController::Tick()
 		}
 	}
 
-	for(int i = 0; i < MAX_CLIENTS; ++i)
+	if(Config()->m_InfSurvivalRespawn)
 	{
-		CIcPlayer *pPlayer = GetPlayer(i);
-		if(!pPlayer)
-			continue;
-
-		if(GetRoundType() == ERoundType::Survival && pPlayer->GetTeam() == TEAM_SPECTATORS && !pPlayer->IsBot())
+		for(int i = 0; i < MAX_CLIENTS; ++i)
 		{
-			if(Server()->Tick() > pPlayer->GetSurvivalRespawnTick())
+			CIcPlayer *pPlayer = GetPlayer(i);
+			if(!pPlayer)
+				continue;
+
+			if(GetRoundType() == ERoundType::Survival && pPlayer->GetTeam() == TEAM_SPECTATORS && !pPlayer->IsBot())
 			{
-				GameServer()->SendBroadcast_Localization(pPlayer->GetCid(),
-					EBroadcastPriority::GAMEANNOUNCE,
-					BROADCAST_DURATION_GAMEANNOUNCE,
-					_("You can respawn via '/respawn <player name>' now"), nullptr);
-			}
-			else
-			{
-				int Seconds = (pPlayer->GetSurvivalRespawnTick() - Server()->Tick()) / Server()->TickSpeed();
-				GameServer()->SendBroadcast_Localization(pPlayer->GetCid(),
-					EBroadcastPriority::GAMEANNOUNCE,
-					BROADCAST_DURATION_GAMEANNOUNCE,
-					_("You can respawn after {sec:Time}"), "Time", &Seconds);
+				if(Server()->Tick() > pPlayer->GetSurvivalRespawnTick())
+				{
+					GameServer()->SendBroadcast_Localization(pPlayer->GetCid(),
+						EBroadcastPriority::GAMEANNOUNCE,
+						BROADCAST_DURATION_GAMEANNOUNCE,
+						_("You can respawn via '/respawn <player name>' now"), nullptr);
+				}
+				else
+				{
+					int Seconds = (pPlayer->GetSurvivalRespawnTick() - Server()->Tick()) / Server()->TickSpeed();
+					GameServer()->SendBroadcast_Localization(pPlayer->GetCid(),
+						EBroadcastPriority::GAMEANNOUNCE,
+						BROADCAST_DURATION_GAMEANNOUNCE,
+						_("You can respawn after {sec:Time}"), "Time", &Seconds);
+				}
 			}
 		}
 	}
