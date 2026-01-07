@@ -46,6 +46,7 @@ private:
 	float m_SpawnInterval = -1;
 	int m_NetworkType = 0;
 	int m_NetworkSubtype{};
+	int m_AutoPickUpTick = -1;
 	PlayerUpgradesArray m_Upgrades;
 };
 
