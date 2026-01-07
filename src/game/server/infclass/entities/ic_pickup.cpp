@@ -3,6 +3,8 @@
 
 #include "ic_pickup.h"
 
+#include "engine/shared/config.h"
+
 #include <game/generated/protocol.h>
 #include <game/server/gamecontext.h>
 #include <game/server/player.h>
@@ -179,6 +181,7 @@ void CIcPickup::Tick()
 		{
 			// respawn
 			m_SpawnTick = -1;
+			m_AutoPickUpTick = Server()->Tick() + Server()->TickSpeed() * Config()->m_InfUpgradeAutoPickupTime;
 			GameServer()->CreateSound(m_Pos, SOUND_WEAPON_SPAWN);
 		}
 		else
@@ -201,7 +204,8 @@ void CIcPickup::Tick()
 	if(GetOwner() >= 0)
 	{
 		CIcCharacter *pOwner = GetOwnerCharacter();
-		if(pOwner && (distance(GetPos(), pOwner->GetPos()) < PickupPhysSize + pOwner->GetProximityRadius()))
+		if(pOwner && (distance(GetPos(), pOwner->GetPos()) < PickupPhysSize + pOwner->GetProximityRadius() ||
+						 (m_AutoPickUpTick > 0 && Server()->Tick() >= m_AutoPickUpTick)))
 		{
 			pChr = pOwner;
 		}
