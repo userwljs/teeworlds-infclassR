@@ -1054,17 +1054,18 @@ void CServer::DoSnapshot()
 			continue;
 
 		// this client is trying to recover, don't spam snapshots
-		if(m_aClients[i].m_SnapRate == CClient::SNAPRATE_RECOVER && (Tick() % 50) != 0)
+		if(m_aClients[i].m_SnapRate == CClient::SNAPRATE_RECOVER && (Tick() - m_aClients[i].m_LastSnapTick) < 50)
 			continue;
 
 		// this client is trying to recover, don't spam snapshots
-		if(m_aClients[i].m_SnapRate == CClient::SNAPRATE_INIT && (Tick() % 10) != 0)
+		if(m_aClients[i].m_SnapRate == CClient::SNAPRATE_INIT && (Tick() - m_aClients[i].m_LastSnapTick < 10))
 			continue;
 
 		{
 			m_SnapshotBuilder.Init(m_aClients[i].m_Sixup);
 
 			GameServer()->OnSnap(i);
+			m_aClients[i].m_LastSnapTick = Tick();
 
 			// finish snapshot
 			char aData[CSnapshot::MAX_SIZE];
@@ -3224,7 +3225,27 @@ int CServer::Run()
 			// snap game
 			if(NewTicks)
 			{
-				if(Config()->m_SvHighBandwidth || (m_CurrentGameTick % 2) == 0)
+				if(Config()->m_SvSnapsPerSecond != m_SnapsPerSecond)
+				{
+					// Update m_DoSnaps, make sure trues are distributed uniformly
+					const int total_len = TickSpeed();
+					m_SnapsPerSecond = Config()->m_SvSnapsPerSecond;
+
+					int acc = 0;
+					for(bool &val : m_DoSnap)
+					{
+						acc += Config()->m_SvSnapsPerSecond;
+						if(acc >= total_len)
+						{
+							val = true;
+							acc -= total_len;
+						}
+						else
+							val = false;
+					}
+				}
+
+				if(m_DoSnap[m_CurrentGameTick % SERVER_TICK_SPEED])
 					DoSnapshot();
 
 				UpdateClientRconCommands();
