@@ -173,6 +173,7 @@ public:
 		int m_SnapRate;
 		bool m_Quitting;
 		bool m_IsBot;
+		int m_LastSnapTick = 0;
 
 		double m_Traffic;
 		int64_t m_TrafficSince;
@@ -565,6 +566,8 @@ private:
 
 	IServer::CMapVote m_MapVotes[MAX_VOTE_OPTIONS];
 	int m_MapVotesCounter;
+	std::array<bool, SERVER_TICK_SPEED> m_DoSnap{};
+	int m_SnapsPerSecond = 0;
 
 	CClientAccountRequests m_AccountsRequests[MAX_CLIENTS];
 	char m_aServerSalt[ServerSaltMaxLength]{};

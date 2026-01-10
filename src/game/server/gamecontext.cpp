@@ -2838,7 +2838,8 @@ void CGameContext::OnEmoticonNetMessage(const CNetMsg_Cl_Emoticon *pMsg, int Cli
 
 	// Still apply a reasonable limit: 1-2 emotes per tick
 	if(g_Config.m_SvSpamprotection && pPlayer->m_LastEmote &&
-		pPlayer->m_LastEmote + maximum(Server()->TickSpeed() * g_Config.m_SvEmoticonDelay, g_Config.m_SvHighBandwidth ? 1 : 2) > Server()->Tick())
+		pPlayer->m_LastEmote + maximum(Server()->TickSpeed() * g_Config.m_SvEmoticonDelay,
+								   Server()->TickSpeed() / g_Config.m_SvSnapsPerSecond) > Server()->Tick())
 		return;
 
 	CCharacter *pChr = pPlayer->GetCharacter();
