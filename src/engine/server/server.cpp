@@ -357,6 +357,7 @@ void CServer::CClient::Reset(bool ResetScore)
 	m_NextMapChunk = 0;
 	m_Flags = 0;
 	m_RedirectDropTime = 0;
+	m_LastSnapTick = INT_MIN;
 	
 	if(ResetScore)
 	{
@@ -682,6 +683,7 @@ int CServer::Init()
 		Client.m_InfClassVersion = 0;
 		Client.m_Sixup = false;
 		Client.m_RedirectDropTime = 0;
+		Client.m_LastSnapTick = INT_MIN;
 	}
 
 	m_CurrentGameTick = MIN_TICK;
@@ -1054,11 +1056,11 @@ void CServer::DoSnapshot()
 			continue;
 
 		// this client is trying to recover, don't spam snapshots
-		if(m_aClients[i].m_SnapRate == CClient::SNAPRATE_RECOVER && (Tick() - m_aClients[i].m_LastSnapTick) < 50)
+		if(m_aClients[i].m_SnapRate == CClient::SNAPRATE_RECOVER && Tick() < m_aClients[i].m_LastSnapTick + 50)
 			continue;
 
 		// this client is trying to recover, don't spam snapshots
-		if(m_aClients[i].m_SnapRate == CClient::SNAPRATE_INIT && (Tick() - m_aClients[i].m_LastSnapTick < 10))
+		if(m_aClients[i].m_SnapRate == CClient::SNAPRATE_INIT && Tick() < m_aClients[i].m_LastSnapTick + 10)
 			continue;
 
 		{
