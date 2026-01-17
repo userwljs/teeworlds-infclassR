@@ -165,7 +165,7 @@ bool CLocalization::CLanguage::Load(CLocalization* pLocalization, CStorage* pSto
 					
 					//Zero
 					pPlural = rStart[i]["zero"];
-					if(pPlural && pPlural[PLURALTYPE_ZERO])
+					if(pPlural)
 					{
 						Length = str_length(pPlural)+1;
 						pEntry->m_apVersions[PLURALTYPE_ZERO] = new char[Length];
@@ -173,7 +173,7 @@ bool CLocalization::CLanguage::Load(CLocalization* pLocalization, CStorage* pSto
 					}
 					//One
 					pPlural = rStart[i]["one"];
-					if(pPlural && pPlural[PLURALTYPE_ONE])
+					if(pPlural)
 					{
 						Length = str_length(pPlural)+1;
 						pEntry->m_apVersions[PLURALTYPE_ONE] = new char[Length];
@@ -181,7 +181,7 @@ bool CLocalization::CLanguage::Load(CLocalization* pLocalization, CStorage* pSto
 					}
 					//Two
 					pPlural = rStart[i]["two"];
-					if(pPlural && pPlural[PLURALTYPE_TWO])
+					if(pPlural)
 					{
 						Length = str_length(pPlural)+1;
 						pEntry->m_apVersions[PLURALTYPE_TWO] = new char[Length];
@@ -189,7 +189,7 @@ bool CLocalization::CLanguage::Load(CLocalization* pLocalization, CStorage* pSto
 					}
 					//Few
 					pPlural = rStart[i]["few"];
-					if(pPlural && pPlural[PLURALTYPE_FEW])
+					if(pPlural)
 					{
 						Length = str_length(pPlural)+1;
 						pEntry->m_apVersions[PLURALTYPE_FEW] = new char[Length];
@@ -197,7 +197,7 @@ bool CLocalization::CLanguage::Load(CLocalization* pLocalization, CStorage* pSto
 					}
 					//Many
 					pPlural = rStart[i]["many"];
-					if(pPlural && pPlural[PLURALTYPE_MANY])
+					if(pPlural)
 					{
 						Length = str_length(pPlural)+1;
 						pEntry->m_apVersions[PLURALTYPE_MANY] = new char[Length];
@@ -205,7 +205,7 @@ bool CLocalization::CLanguage::Load(CLocalization* pLocalization, CStorage* pSto
 					}
 					//Other
 					pPlural = rStart[i]["other"];
-					if(pPlural && pPlural[PLURALTYPE_OTHER])
+					if(pPlural)
 					{
 						Length = str_length(pPlural)+1;
 						pEntry->m_apVersions[PLURALTYPE_OTHER] = new char[Length];
