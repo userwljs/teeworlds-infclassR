@@ -933,6 +933,8 @@ void CCharacter::HandleTiles(int MapIndex)
 {
 	m_MoveRestrictions = GameServer()->Collision()->GetMoveRestrictions(m_Pos);
 
+	if(MapIndex < 0)
+		return;
 	HandleTeleports(MapIndex);
 
 	int TileIndex = GameServer()->Collision()->GetTileIndex(MapIndex);
@@ -951,6 +953,8 @@ void CCharacter::HandleTiles(int MapIndex)
 
 void CCharacter::HandleTeleports(int MapIndex)
 {
+	if(MapIndex < 0)
+		return;
 	const std::optional<int> TeleCheckpoint = Collision()->GetTeleCheckpoint(MapIndex);
 	if(TeleCheckpoint.has_value())
 	{

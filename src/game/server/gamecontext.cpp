@@ -887,7 +887,8 @@ void CGameContext::SendChat(int ChatterClientId, int Team, const char *pText, in
 		// send to the clients that did not mute chatter
 		for(int i = 0; i < MAX_CLIENTS; i++)
 		{
-			if(m_apPlayers[i] && !CGameContext::m_ClientMuted[i][SpamProtectionClientId])
+			if((SpamProtectionClientId < 0 || SpamProtectionClientId >= MAX_CLIENTS)
+				|| (m_apPlayers[i] && !CGameContext::m_ClientMuted[i][SpamProtectionClientId]))
 			{
 				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
 			}
