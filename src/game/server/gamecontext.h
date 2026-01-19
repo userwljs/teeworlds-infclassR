@@ -77,6 +77,7 @@ class CGameContext : public IGameServer
 	IStorage *m_pStorage;
 	CLayers m_Layers;
 	CCollision m_Collision;
+	protocol7::CNetObjHandler m_NetObjHandler7;
 	CNetObjHandler m_NetObjHandler;
 	CTuningParams m_Tuning;
 
@@ -172,11 +173,21 @@ public:
 
 	bool HasActiveVote() const;
 
+	enum EVoteType
+	{
+		VOTE_TYPE_UNKNOWN = 0,
+		VOTE_TYPE_OPTION,
+		VOTE_TYPE_KICK,
+		VOTE_TYPE_SPECTATE,
+	};
+
 	int m_VoteCreator;
+	EVoteType m_VoteType;
 	int64_t m_VoteCloseTime;
 	bool m_VoteUpdate;
 	int m_VotePos;
 	char m_aVoteDescription[VOTE_DESC_LENGTH];
+	char m_aSixupVoteDescription[VOTE_DESC_LENGTH];
 	char m_aVoteCommand[VOTE_CMD_LENGTH];
 	char m_aVoteReason[VOTE_REASON_LENGTH];
 	int m_NumVoteOptions;
@@ -186,9 +197,13 @@ public:
 
 	enum
 	{
-		VOTE_ENFORCE_UNKNOWN=0,
+		VOTE_ENFORCE_UNKNOWN = 0,
 		VOTE_ENFORCE_NO,
 		VOTE_ENFORCE_YES,
+		VOTE_ENFORCE_NO_ADMIN,
+		VOTE_ENFORCE_YES_ADMIN,
+		VOTE_ENFORCE_ABORT,
+		VOTE_ENFORCE_CANCEL,
 	};
 	CHeap *m_pVoteOptionHeap;
 	CVoteOptionServer *m_pVoteOptionFirst;
@@ -457,6 +472,11 @@ private:
 public:
 	void SendRecord(int ClientId);
 	void SendFinish(int ClientId, float Time, float PreviousBestTime);
+
+	bool IsOptionVote() const { return m_VoteType == VOTE_TYPE_OPTION; }
+	bool IsKickVote() const { return m_VoteType == VOTE_TYPE_KICK; }
+	bool IsSpecVote() const { return m_VoteType == VOTE_TYPE_SPECTATE; }
+
 	void OnSetAuthed(int ClientId, int Level) override;
 
 public:
