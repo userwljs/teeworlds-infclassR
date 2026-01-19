@@ -5,7 +5,7 @@ Infection Mod with a class system for TeeWorlds, originally developed by
 
 This version is based on [breton's fork](https://github.com/bretonium/my-infclass-server)
 but also integrates latter [Yavl's fork](https://github.com/yavl/teeworlds-infclassR)
-features such as Hero Turret. See the [ChangeLog](https://github.com/infclass/teeworlds-infclassR/blob/production/CHANGELOG.md#infclassr-v120---2021-03-10)
+features such as Hero Turret. See the [ChangeLog](https://github.com/userwljs/teeworlds-infclassR/blob/production/CHANGELOG.md#infclassr-v120---2021-03-10)
 for details.
 
 # Building
@@ -13,6 +13,24 @@ for details.
 It is recommended to use [infclass-scripts](https://github.com/infclass/infclass-scripts) to build the server for GNU/Linux.
 
 ## Dependencies
+Installing on Debian / Ubuntu:
+```shell
+apt install -y \
+    python3 \
+    python-is-python3 \
+    build-essential \
+    cmake \
+    libicu-dev \
+    libpng-dev \
+    libcurl4-openssl-dev \
+    libsqlite3-dev \
+    zlib1g-dev \
+    ninja-build \
+    libmaxminddb-dev \
+    git \
+    ca-certificates \
+    pkg-config
+```
 
 ### Mandatory
 - CMake-3.15+
@@ -40,7 +58,7 @@ You also need a build toolchain, such as GCC and Ninja, or MSVC. The compiler mu
 ### Building on Linux
 
 ```
-git clone https://github.com/infclass/teeworlds-infclassR sources
+git clone https://github.com/userwljs/teeworlds-infclassR sources
 INSTALL_DIR=$(pwd)/install
 mkdir build
 cd build
