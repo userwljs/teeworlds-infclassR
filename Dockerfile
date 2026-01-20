@@ -1,3 +1,6 @@
+# To build this, you have to use the BuildKit backend.
+# For further information visit https://docs.docker.com/build/buildkit/
+
 FROM debian:13-slim AS build-stage
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -18,20 +21,17 @@ RUN apt update && apt install -y \
     git \
     ca-certificates
 
-WORKDIR /code
+RUN mkdir -p /build-stage/dist /build-stage/build /build-stage/source
 
-COPY . .
-
-RUN mkdir dist
-
-RUN cmake . \
+RUN --mount=type=cache,target=/build-stage/build \
+    --mount=type=bind,source=.,target=/build-stage/source \
+    cd /build-stage/build && \
+     cmake ../source \
     -Wno-dev \
     -DCMAKE_BUILD_TYPE=Release \
-    -DCMAKE_INSTALL_PREFIX=./dist \
-    -GNinja
-
-RUN cmake --build . --target install
-
+    -DCMAKE_INSTALL_PREFIX=../dist \
+    -GNinja && \
+    cmake --build . --target install
 
 FROM debian:13-slim
 
@@ -47,7 +47,7 @@ RUN apt update && apt install -y \
     libmaxminddb0 \
     ca-certificates
 
-COPY --from=build-stage /code/dist /dist
+COPY --from=build-stage /build-stage/dist /dist
 
 WORKDIR /dist
 
