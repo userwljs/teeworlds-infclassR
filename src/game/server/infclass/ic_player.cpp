@@ -178,7 +178,7 @@ void CIcPlayer::MayShowSurvivalNoHookHint() const
 		return;
 	GameServer()->SendBroadcast_Localization(GetCid(),
 		EBroadcastPriority::GAMEANNOUNCE,
-		BROADCAST_DURATION_GAMEANNOUNCE,
+		BROADCAST_DURATION_REALTIME,
 		_("Safe from hooks: {sec:RemainingTime}"),
 		"RemainingTime", &RemainingTime, nullptr);
 }
