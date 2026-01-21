@@ -87,6 +87,7 @@ public:
 
 	[[nodiscard]] int GetSurvivalHeroReviveCharges() const { return m_SurvivalHeroReviveCharges; }
 	void SetSurvivalHeroReviveCharges(const int Charges) { m_SurvivalHeroReviveCharges = Charges; }
+	[[nodiscard]] int GetSurvivalNoHookEndTick() const { return m_SurvivalNoHookEndTick; }
 
 protected:
 	void GiveClassAttributes() override;
@@ -150,6 +151,7 @@ private:
 	CHeroFlag *m_pHeroFlag = nullptr;
 	int m_HeroFlagRefreshTick = 0;
 	int m_SurvivalHeroReviveCharges = 0;
+	int m_SurvivalNoHookEndTick = 0;
 };
 
 #endif // GAME_SERVER_INFCLASS_CLASSES_HUMAN_H

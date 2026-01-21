@@ -667,6 +667,7 @@ void CInfClassHuman::OnCharacterTickPaused()
 		++m_ResetKillsTick;
 	}
 	m_HeroFlagRefreshTick++;
+	m_SurvivalNoHookEndTick++;
 }
 
 void CInfClassHuman::OnCharacterPostCoreTick()
@@ -1220,6 +1221,15 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 	case EInfclassWeapon::HEALING_GRENADE:
 		OnMedicGrenadeFired(pFireContext);
 		return;
+	case EInfclassWeapon::SURVIVAL_NO_HOOK_GUN:
+		if(pFireContext->NoAmmo)
+			return;
+		GameWorld()->ReleaseHooked(GetCid());
+		if(m_SurvivalNoHookEndTick < Server()->Tick())
+			m_SurvivalNoHookEndTick = Server()->Tick() + 5 * Server()->TickSpeed();
+		else
+			m_SurvivalNoHookEndTick += 5 * Server()->TickSpeed();
+		return;
 	default:
 		break;
 	}
@@ -1337,6 +1347,7 @@ void CInfClassHuman::GiveClassAttributes()
 	m_NinjaExtraDamage = 0;
 	m_NinjaAmmoBuff = 0;
 	m_NinjaComboFirstTick = 0;
+	m_SurvivalNoHookEndTick = 0;
 
 	RemoveWhiteHole();
 
@@ -1354,7 +1365,10 @@ void CInfClassHuman::GiveClassAttributes()
 		m_pCharacter->GiveWeapon(WEAPON_GUN, -1);
 		m_pCharacter->GiveWeapon(WEAPON_LASER, -1);
 		if (GameController()->GetRoundType() == ERoundType::Survival)
+		{
+			m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
 			m_pCharacter->GiveWeapon(WEAPON_SHOTGUN, -1);
+		}
 		m_pCharacter->SetActiveWeapon(WEAPON_LASER);
 		break;
 	case EPlayerClass::Soldier:

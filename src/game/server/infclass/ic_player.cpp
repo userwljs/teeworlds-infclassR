@@ -163,6 +163,24 @@ void CIcPlayer::Tick()
 	{
 		UpdateSpecialCamera();
 	}
+
+	if(GameController()->GetRoundType() == ERoundType::Survival && IsHuman())
+		MayShowSurvivalNoHookHint();
+}
+
+void CIcPlayer::MayShowSurvivalNoHookHint() const
+{
+	auto const *pHumanClass = dynamic_cast<const CInfClassHuman*>(GetCharacterClass());
+	if(!pHumanClass)
+		return;
+	int RemainingTime = (pHumanClass->GetSurvivalNoHookEndTick() - Server()->Tick()) / Server()->TickSpeed();
+	if(RemainingTime <= 0)
+		return;
+	GameServer()->SendBroadcast_Localization(GetCid(),
+		EBroadcastPriority::GAMEANNOUNCE,
+		BROADCAST_DURATION_GAMEANNOUNCE,
+		_("Safe from hooks: {sec:RemainingTime}"),
+		"RemainingTime", &RemainingTime, nullptr);
 }
 
 void CIcPlayer::PostTick()

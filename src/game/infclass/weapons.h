@@ -11,6 +11,7 @@ enum class EInfclassWeapon
 	NINJA,
 
 	ENGINEER_LASER,
+	SURVIVAL_NO_HOOK_GUN,
 
 	SNIPER_RIFLE,
 

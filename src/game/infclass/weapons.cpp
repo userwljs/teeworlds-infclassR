@@ -11,6 +11,7 @@ static const char *gs_aInfclassWeaponNames[] = {
 	"laser",
 	"ninja",
 	"engineer_laser",
+	"survival_no_hook_gun",
 	"sniper_rifle",
 	"soldier_grenade",
 	"teleport_gun",

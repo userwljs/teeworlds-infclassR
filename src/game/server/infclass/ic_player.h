@@ -158,6 +158,7 @@ protected:
 	void HandleAutoRespawn() override;
 	void UpdateSpectatorPos();
 	void UpdateSpecialCamera();
+	void MayShowSurvivalNoHookHint() const;
 
 	void SendClassIntro();
 

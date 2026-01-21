@@ -1856,6 +1856,10 @@ EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 			return EInfclassWeapon::BIOLOGIST_GRENADE;
 		case EPlayerClass::Looper:
 			return EInfclassWeapon::LOOPER_GRENADE;
+		case EPlayerClass::Engineer:
+			if(GameController()->GetRoundType() == ERoundType::Survival)
+				return EInfclassWeapon::SURVIVAL_NO_HOOK_GUN;
+			return EInfclassWeapon::GRENADE;
 		case EPlayerClass::Spitter:
 			return EInfclassWeapon::INFECTED_GRENADE;
 		default:

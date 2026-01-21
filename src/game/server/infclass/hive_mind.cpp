@@ -1,5 +1,7 @@
 #include "hive_mind.h"
 
+#include "classes/humans/human.h"
+
 #include <engine/shared/config.h>
 
 #include <game/server/infclass/entities/control-point.h>
@@ -216,6 +218,15 @@ bool CHiveMind::TryAttack(int TargetId)
 
 bool CHiveMind::TryHook(int HookerId, int TargetId)
 {
+	if(auto *const pPlayer = GameController()->GetPlayer(TargetId))
+	{
+		if(const auto *pHumanClass = dynamic_cast<CInfClassHuman *>(pPlayer->GetCharacterClass()))
+		{
+			if(pHumanClass->GetSurvivalNoHookEndTick() >= GameController()->GameServer()->Server()->Tick())
+				return false;
+		}
+	}
+
 	HiveVictim *pVictim = GetVictim(TargetId);
 	const auto &aHooks = pVictim->aHooks;
 

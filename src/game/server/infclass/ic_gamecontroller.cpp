@@ -8238,6 +8238,7 @@ void CIcGameController::InitWeapons()
 	SetWeaponForce(EInfclassWeapon::LASER, 0);
 	SetWeaponForce(EInfclassWeapon::NINJA, 10);
 	SetWeaponForce(EInfclassWeapon::ENGINEER_LASER, GetWeaponForce(EInfclassWeapon::LASER));
+	SetWeaponForce(EInfclassWeapon::SURVIVAL_NO_HOOK_GUN, GetWeaponForce(EInfclassWeapon::GRENADE));
 	SetWeaponForce(EInfclassWeapon::SOLDIER_GRENADE, GetWeaponForce(EInfclassWeapon::GRENADE));
 	SetWeaponForce(EInfclassWeapon::EXPLOSIVE_LASER, GetWeaponForce(EInfclassWeapon::LASER));
 	SetWeaponForce(EInfclassWeapon::TELEPORT_GUN, GetWeaponForce(EInfclassWeapon::GRENADE));
@@ -8269,6 +8270,7 @@ void CIcGameController::InitWeapons()
 	SetFireDelay(EInfclassWeapon::LASER, 800);
 	SetFireDelay(EInfclassWeapon::NINJA, 800);
 	SetFireDelay(EInfclassWeapon::ENGINEER_LASER, GetFireDelay(EInfclassWeapon::LASER));
+	SetFireDelay(EInfclassWeapon::SURVIVAL_NO_HOOK_GUN, GetFireDelay(EInfclassWeapon::GRENADE));
 	SetFireDelay(EInfclassWeapon::SOLDIER_GRENADE, GetFireDelay(EInfclassWeapon::GRENADE));
 	SetFireDelay(EInfclassWeapon::EXPLOSIVE_LASER, GetFireDelay(EInfclassWeapon::LASER));
 	SetFireDelay(EInfclassWeapon::TELEPORT_GUN, GetFireDelay(EInfclassWeapon::GRENADE));
@@ -8301,6 +8303,7 @@ void CIcGameController::InitWeapons()
 	SetAmmoRegenTime(EInfclassWeapon::NINJA, 0);
 
 	SetAmmoRegenTime(EInfclassWeapon::ENGINEER_LASER, 6000);
+	SetAmmoRegenTime(EInfclassWeapon::SURVIVAL_NO_HOOK_GUN, 15000);
 	SetAmmoRegenTime(EInfclassWeapon::SOLDIER_GRENADE, 7000);
 	SetAmmoRegenTime(EInfclassWeapon::EXPLOSIVE_LASER, 6000);
 	SetAmmoRegenTime(EInfclassWeapon::TELEPORT_GUN, 10000);
@@ -8332,6 +8335,7 @@ void CIcGameController::InitWeapons()
 	SetMaxAmmo(EInfclassWeapon::LASER, 10);
 	SetMaxAmmo(EInfclassWeapon::NINJA, 10);
 	SetMaxAmmo(EInfclassWeapon::ENGINEER_LASER, 10);
+	SetMaxAmmo(EInfclassWeapon::SURVIVAL_NO_HOOK_GUN, 3);
 	SetMaxAmmo(EInfclassWeapon::EXPLOSIVE_LASER, 10);
 	SetMaxAmmo(EInfclassWeapon::TELEPORT_GUN, 3);
 	SetMaxAmmo(EInfclassWeapon::SOLDIER_GRENADE, 10);
