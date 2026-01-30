@@ -2770,6 +2770,12 @@ SurvivalBotConfiguration *CIcGameController::SurvivalAddBot(int Wave, const char
 		return nullptr;
 	}
 
+	if(pConf->BotConfigurations.Size() >= pConf->BotConfigurations.Capacity())
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "SurvivalAddBot: Too many bots");
+		return nullptr;
+	}
+
 	pConf->BotConfigurations.Add(SurvivalBotConfiguration{.Class = PlayerClass});
 
 	return &pConf->BotConfigurations.Last();
