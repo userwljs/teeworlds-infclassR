@@ -7882,6 +7882,10 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 						pContext->SpawnType = SpawnContext::Scripted;
 						return true;
 					}
+					else
+					{
+						return false;
+					}
 				}
 				else
 				{
