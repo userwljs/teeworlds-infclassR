@@ -1,4 +1,3 @@
-
 if Zowling_loaded == nil then
     Zowling_loaded = true
     require("runtime.zowling")
@@ -82,7 +81,7 @@ end
 
 function Zowling_reset_entities()
     if Zowling_entities ~= nil then
-        for i,entity in ipairs(Zowling_entities) do
+        for i, entity in ipairs(Zowling_entities) do
             entity:Destroy()
         end
     end
@@ -132,15 +131,15 @@ function Zowling_respawn_entities()
     Animation_on_reset()
 
     -- Level1
-    local looperWall1_1 = Zowling_add_looper_wall(vec2(107*32, 10*32), vec2(107*32, 17*32))
-    local laser1_1 = Zowling_add_laser_wall(vec2(109 * 32, 10* 32), vec2(109 * 32, 16* 32))
+    local looperWall1_1 = Zowling_add_looper_wall(vec2(107 * 32, 10 * 32), vec2(107 * 32, 17 * 32))
+    local laser1_1 = Zowling_add_laser_wall(vec2(109 * 32, 10 * 32), vec2(109 * 32, 16 * 32))
 
     -- top way blocker
     local lvl1_mine1 = Zowling_add_sci_mine(vec2(38 * 32, 9.5 * 32))
 
-    local entrance_mine1 = Zowling_add_sci_mine(vec2(24*32, 13*32))
+    local entrance_mine1 = Zowling_add_sci_mine(vec2(24 * 32, 13 * 32))
 
-    local enterance_laser1 = Zowling_add_laser_wall(vec2(15.5 * 32, 11.5 *32), vec2(15.5 * 32, 18.5 * 32))
+    local enterance_laser1 = Zowling_add_laser_wall(vec2(15.5 * 32, 11.5 * 32), vec2(15.5 * 32, 18.5 * 32))
 
     -- Level2
     laser_lvl1_2_instance1 = Zowling_add_laser_wall(laser_1to2_p1, laser_1to2_p2)
@@ -152,8 +151,8 @@ function Zowling_respawn_entities()
     laser_lvl1_2_instance2.SecondPosition = vec2(laser_1to2_p2.x, laser_1to2_p2.y + yHalfDistance)
     laser_lvl1_2_instance2.Velocity = vec2(0, laser_1to2_velocity_y)
 
-    local entrance_mine2 = Zowling_add_sci_mine(vec2(24*32, 21*32))
-    local entrance_mine3 = Zowling_add_sci_mine(vec2(24*32, 27*32))
+    local entrance_mine2 = Zowling_add_sci_mine(vec2(24 * 32, 21 * 32))
+    local entrance_mine3 = Zowling_add_sci_mine(vec2(24 * 32, 27 * 32))
 
     local laser2_1 = Zowling_add_laser_wall(vec2(24.5 * 32, 24.5 * 32), vec2(38.5 * 32, 24.5 * 32))
 
@@ -359,7 +358,8 @@ function Zowling_give_scores2()
     if players_number.Infected == 0 then
         return
     end
-    Zowling_global_score = Zowling_global_score + (Zowling_chars_on_2nd_floor * 3 + Zowling_chars_on_finish * 10) / players_number.Infected
+    Zowling_global_score = Zowling_global_score +
+    (Zowling_chars_on_2nd_floor * 3 + Zowling_chars_on_finish * 10) / players_number.Infected
 
     ---@param character CInfClassCharacter
     local function give_bonus(character)

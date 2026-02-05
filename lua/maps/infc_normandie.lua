@@ -24,9 +24,9 @@ function on_control_point_effect(control_point)
 
     local give_bonus
     if control_point == survival_cp1 then
-        give_bonus = function (character) character:GiveHealth(2, -1) end
+        give_bonus = function(character) character:GiveHealth(2, -1) end
     else
-        give_bonus = function (character) character:GiveArmor(2, -1) end
+        give_bonus = function(character) character:GiveArmor(2, -1) end
     end
     for_each_human_character(give_bonus)
 end

@@ -9,7 +9,7 @@ if Survival_map_initialized == nil then
     local top_right_spawn = {}
     local bottom_spawn = {}
 
-    for i = 1,infected_spawns:Size() do
+    for i = 1, infected_spawns:Size() do
         local position = infected_spawns:At(i)
         if position.y > 60 * 32 then
             table.insert(bottom_spawn, i)

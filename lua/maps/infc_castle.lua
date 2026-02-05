@@ -14,11 +14,11 @@ Sleeper_pos_spider = vec2(146.5 * 32, 51.5 * 32)
 Sleeper_pos_witch = vec2(154 * 32, 45.5 * 32)
 Sleeper_pos_tank = vec2(254 * 32, 51.5 * 32)
 
-Castle_boss_bat_hp = {80, 120, 160, 180, 240, 240}
-Castle_boss_spitter_hp = {60, 90, 160, 180, 240, 240}
-Castle_boss_spider_hp = {120, 160, 220, 280, 320, 360}
-Castle_boss_witch_hp = {120, 180, 320, 420, 520, 640}
-Castle_boss_tank_hp = {320, 480, 640, 720, 960, 1200}
+Castle_boss_bat_hp = { 80, 120, 160, 180, 240, 240 }
+Castle_boss_spitter_hp = { 60, 90, 160, 180, 240, 240 }
+Castle_boss_spider_hp = { 120, 160, 220, 280, 320, 360 }
+Castle_boss_witch_hp = { 120, 180, 320, 420, 520, 640 }
+Castle_boss_tank_hp = { 320, 480, 640, 720, 960, 1200 }
 
 Castle_cp1_pos = vec2(116.5 * 32, 32 * 32)
 Castle_cp2_pos = vec2(164.5 * 32, 63 * 32)
@@ -87,7 +87,7 @@ if Survival_map_initialized == nil then
 
     local infected_spawns = Game.Controller:GetInfectedSpawns()
 
-    for i = 1,infected_spawns:Size() do
+    for i = 1, infected_spawns:Size() do
         local position = infected_spawns:At(i)
         if position.x < 40 * 32 then
             table.insert(Castle_first_spawn, i)
@@ -109,7 +109,7 @@ function add_bot_with_tweaks(wave, player_class)
     local bot_conf = Game.Controller:SurvivalAddBot(wave, player_class)
     if survival_default_tweaks ~= nil then
         local tweaks = bot_conf:GetTweaks()
-        for i,default_tweak in ipairs(survival_default_tweaks) do
+        for i, default_tweak in ipairs(survival_default_tweaks) do
             tweaks:Add(default_tweak)
         end
     end
@@ -165,7 +165,7 @@ end
 
 ---@param enabled boolean
 function Castle_set_infected_spawns_enabled(spawns_list, enabled)
-    for i = 1,table.getn(spawns_list) do
+    for i = 1, table.getn(spawns_list) do
         local spawn_id = spawns_list[i]
         Game.Controller:SetInfectedSpawnEnabled(spawn_id, enabled)
     end
@@ -212,7 +212,7 @@ function Castle_add_progress(amount)
 
     Castle_progress = Castle_progress + amount
     -- Game.Context:SendChatTarget(-1, string.format("New progress: %d", Castle_progress))
-    for i = 1,4 do
+    for i = 1, 4 do
         if Castle_progress == i then
             Castle_unlock_door_n(i)
             _G[string.format("setup_wave%d", i + 1)](Game.Controller:GetSecondsAfterInfection() + 3)
@@ -245,7 +245,7 @@ function Get_hero_flag_position(player)
     local flag_positions = Game.Controller:GetHeroFlagPositions()
 
     local suitable_positions = {}
-    for i = 1,flag_positions:Size(),1 do
+    for i = 1, flag_positions:Size(), 1 do
         local position = flag_positions:At(i)
         if is_flag_position_suitable(position) then
             table.insert(suitable_positions, position)
@@ -288,7 +288,7 @@ function check_sleepers()
         return
     end
 
-    for i,sleeper_descriptor in ipairs(Castle_sleepers) do
+    for i, sleeper_descriptor in ipairs(Castle_sleepers) do
         if not sleeper_descriptor.ignore then
             local character = Game.Controller:GetCharacter(sleeper_descriptor.sleeper_id)
             if character == nil then
@@ -381,18 +381,18 @@ function setup_wave1()
     local wave = 1
     local bot_conf = nil
 
-    local bats_n = {4, 6, 8, 10, 12, 16}
-    for i = 1,bats_n[survival_difficulty_level] do
+    local bats_n = { 4, 6, 8, 10, 12, 16 }
+    for i = 1, bats_n[survival_difficulty_level] do
         bot_conf = add_normal_infected(wave, "bat")
     end
 
     if survival_difficulty_level >= 3 then
-        for i = 1,2 do
+        for i = 1, 2 do
             bot_conf = add_normal_infected(wave, "bat")
             bot_conf.SpawnSecond = 5
         end
         if survival_difficulty_level >= 4 then
-            for i = 1,2 do
+            for i = 1, 2 do
                 bot_conf = add_normal_infected(wave, "bat")
                 bot_conf.SpawnSecond = 7
                 -- Limit the number of the late boring bats by 4
@@ -401,7 +401,7 @@ function setup_wave1()
         end
     else
         -- 1-2 players
-        for i = 1,survival_difficulty_level do
+        for i = 1, survival_difficulty_level do
             bot_conf = add_normal_infected(wave, "bat")
             bot_conf.SpawnSecond = 10
         end
@@ -412,8 +412,8 @@ function setup_wave1()
 
     -- Sleeping bosses
     spawn_boss_spider() -- wave 3
-    spawn_boss_witch() -- wave 4
-    spawn_boss_tank() -- wave 5
+    spawn_boss_witch()  -- wave 4
+    spawn_boss_tank()   -- wave 5
 end
 
 ---@param start_second number
@@ -425,7 +425,7 @@ function setup_wave2(start_second)
 
     start_second = start_second + 7.5
 
-    for i = 1,2 do
+    for i = 1, 2 do
         bot_conf = add_normal_infected(wave, "hunter")
         bot_conf.SpawnSecond = start_second
 
@@ -450,7 +450,7 @@ function setup_wave2(start_second)
 
     local spitter_spawn_second = start_second + 15
     if survival_difficulty_level >= 3 then
-        for i = 1,2 do
+        for i = 1, 2 do
             bot_conf = add_normal_infected(wave, "hunter")
             bot_conf.SpawnSecond = start_second + 10 + i * 0.1
 
@@ -473,7 +473,7 @@ function setup_wave2(start_second)
 
     local num_spitters = 1
 
-    for i = 1,num_spitters do
+    for i = 1, num_spitters do
         bot_conf = add_boss_infected(wave, "spitter")
         bot_conf.SpawnSecond = spitter_spawn_second
         bot_conf.HP = Castle_boss_spitter_hp[survival_difficulty_level]
@@ -495,7 +495,7 @@ function setup_wave3(start_second)
 
     start_second = start_second + 7.5
 
-    for i = 1,2 do
+    for i = 1, 2 do
         bot_conf = add_normal_infected(wave, "voodoo")
         bot_conf.SpawnSecond = start_second
         bot_conf = add_normal_infected(wave, "smoker")
@@ -529,7 +529,7 @@ end
 
 ---@return number
 function Survival_get_witch_horde_interval()
-    local intervals = {6, 5, 4, 3, 2, 1, 1}
+    local intervals = { 6, 5, 4, 3, 2, 1, 1 }
     return intervals[survival_difficulty_level]
 end
 
@@ -556,7 +556,7 @@ function Survival_spawn_initial_witch_wave(start_second, witch_id)
         "slug", "slug", "bat", "bat",
     }
     local wanted_count = survival_difficulty_level * 4
-    for i,infected_class in ipairs(classes) do
+    for i, infected_class in ipairs(classes) do
         add_infected(infected_class)
         if spawned_count >= wanted_count then
             return
@@ -587,7 +587,7 @@ function Survival_spawn_hit_witch_wave(start_second, witch_id)
         "slug", "slug", "bat", "bat",
     }
     local wanted_count = survival_difficulty_level * 2
-    for i,infected_class in ipairs(classes) do
+    for i, infected_class in ipairs(classes) do
         add_infected(infected_class)
         if spawned_count >= wanted_count then
             return
@@ -618,7 +618,7 @@ function Survival_spawn_severely_hit_witch_wave(start_second, witch_id)
         "slug", "slug", "bat", "bat",
     }
     local wanted_count = survival_difficulty_level * 3
-    for i,infected_class in ipairs(classes) do
+    for i, infected_class in ipairs(classes) do
         add_infected(infected_class)
         if spawned_count >= wanted_count then
             return
@@ -649,7 +649,7 @@ function Survival_spawn_critical_hp_witch_wave(start_second, witch_id)
         "ghost", "ghost", "ghost", "ghost",
     }
     local wanted_count = survival_difficulty_level * 4
-    for i,infected_class in ipairs(classes) do
+    for i, infected_class in ipairs(classes) do
         local bot_conf = add_infected(infected_class)
         if i > 4 then
             bot_conf.SpawnSecond = start_second + i * 0.1
@@ -804,7 +804,8 @@ function Castle_unlock_door_n(door_index)
     else
         Flags_zone_right_x = Game.Context.Collision.Width * 32
     end
-    dbg_msg(DebugLevel1, string.format("Safe zone is set to range %.2f - %.2f", Flags_zone_left_x / 32, Flags_zone_right_x/ 32))
+    dbg_msg(DebugLevel1,
+        string.format("Safe zone is set to range %.2f - %.2f", Flags_zone_left_x / 32, Flags_zone_right_x / 32))
     Game.Controller:UpdateHeroFlags()
 
     if Flags_zone_left_x > survival_cp1.Position.x then
@@ -846,7 +847,7 @@ end
 function update_difficulty()
     survival_default_tweaks = nil
     if survival_difficulty_level <= 4 then
-        survival_default_tweaks = {"weak-hook"}
+        survival_default_tweaks = { "weak-hook" }
     end
 
     if survival_difficulty_level == 1 then
@@ -892,7 +893,9 @@ function start_survival_game(base_difficulty)
     Game.Controller:PrepareSurvival()
     Game.Controller:QueueRound("survival")
     Game.Controller:DoWarmup(3)
-    Game.Context:SendChatTarget(-1, string.format("Starting survival game (difficulty %d, max players %d)", survival_difficulty_level, survival_max_players))
+    Game.Context:SendChatTarget(-1,
+        string.format("Starting survival game (difficulty %d, max players %d)", survival_difficulty_level,
+            survival_max_players))
 end
 
 function start_survival_auto()
@@ -929,7 +932,7 @@ function survival_init()
 end
 
 function Castle_on_shutdown()
-    for key,value in pairs(OldConfig) do
+    for key, value in pairs(OldConfig) do
         Config[key] = value
     end
 
@@ -962,18 +965,18 @@ if Castle_initialized == nil then
 end
 
 function survival_remove_votes()
-    for i = 1,6 do
+    for i = 1, 6 do
         local vote_command = string.format("lua start_survival_game(%d)", i)
         Game.Context:RemoveVote(vote_command)
     end
-    for i = 1,6 do
+    for i = 1, 6 do
         local vote_command = string.format("lua start_survival_game(%d)", i)
         Game.Context:RemoveVote(vote_command)
     end
 end
 
 function survival_setup_votes()
-    for i = 1,6 do
+    for i = 1, 6 do
         local vote_name = string.format("Start survival (%d, %d players max)", i, get_max_players_for_difficulty(i, 1))
         local vote_command = string.format("lua start_survival_game(%d)", i)
         Game.Context:RemoveVote(vote_command)
