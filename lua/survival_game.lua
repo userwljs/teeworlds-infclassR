@@ -8,6 +8,11 @@ active_submod = Submod.SurvivalGame
 
 DebugLevel1 = 1
 
+Player_limit = Config.inf_survival_player_limit ~= 0 and Config.inf_survival_player_limit ~= nil
+if Config.inf_survival_player_limit == nil then
+    print("Warning: 'Config.inf_survival_player_limit' is a nil value")
+end
+
 function dbg_msg(level, text)
     if debug_messages_target ~= nil then
         Game.Context:SendChatTarget(debug_messages_target, string.format("Lua: %s", text))
@@ -710,6 +715,9 @@ function on_control_point_effect(control_point)
 end
 
 function get_max_players_for_difficulty(difficulty, multiplier)
+    if not Player_limit then
+        return 64
+    end
     local max_players = difficulty + 2 * multiplier
     local hard_max = 4 + multiplier * 3
     if max_players > hard_max then
@@ -854,9 +862,14 @@ function start_survival_game(base_difficulty, hp_multiplier)
     Game.Controller:PrepareSurvival()
     Game.Controller:QueueRound("survival")
     Game.Controller:DoWarmup(3)
-    Game.Context:SendChatTarget(-1,
-        string.format("Starting survival game (difficulty %d, max players %d)", survival_difficulty_level,
-            survival_max_players))
+    if Player_limit then
+        Game.Context:SendChatTarget(-1,
+            string.format("Starting survival game (difficulty %d, max players %d)", survival_difficulty_level,
+                survival_max_players))
+    else
+        Game.Context:SendChatTarget(-1,
+            string.format("Starting survival game (difficulty %d)", survival_difficulty_level))
+    end
 end
 
 function start_survival_auto()
@@ -950,19 +963,15 @@ end
 ---@param multiplier number
 ---@return string
 function Get_vote_name(difficulty, multiplier)
-    if Config.inf_survival_player_limit == nil then
-        print("Warning: 'Game.inf_survival_player_limit' is a nil value")
-    end
-    local player_limit = Config.inf_survival_player_limit ~= 0 and Config.inf_survival_player_limit ~= nil
     if multiplier == 1 then
-        if player_limit then
+        if Player_limit then
             return string.format("Start survival (%d, %d players max)", difficulty,
                 get_max_players_for_difficulty(difficulty, multiplier))
         else
             return string.format("Start survival (difficulty %d)", difficulty)
         end
     else
-        if player_limit then
+        if Player_limit then
             return string.format("Start survival (%d, %dx HP, %d players max)", difficulty, multiplier,
                 get_max_players_for_difficulty(difficulty, multiplier))
         else
