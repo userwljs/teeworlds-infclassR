@@ -1,3 +1,5 @@
+-- TODO: Clean this file
+
 -- Snippet for LSP:
 -- local infclass = require("library.Infclass")
 -- local Game = infclass.Game
@@ -975,9 +977,34 @@ function survival_remove_votes()
     end
 end
 
+---@param difficulty number
+---@param multiplier number
+---@return string
+function Get_vote_name(difficulty, multiplier)
+    if Config.inf_survival_player_limit == nil then
+        print("Warning: 'Game.inf_survival_player_limit' is a nil value")
+    end
+    local player_limit = Config.inf_survival_player_limit ~= 0 and Config.inf_survival_player_limit ~= nil
+    if multiplier == 1 then
+        if player_limit then
+            return string.format("Start survival (%d, %d players max)", difficulty,
+                get_max_players_for_difficulty(difficulty, multiplier))
+        else
+            return string.format("Start survival (difficulty %d)", difficulty)
+        end
+    else
+        if player_limit then
+            return string.format("Start survival (%d, %dx HP, %d players max)", difficulty, multiplier,
+                get_max_players_for_difficulty(difficulty, multiplier))
+        else
+            return string.format("Start survival (difficulty %d, %dx HP)", difficulty, multiplier)
+        end
+    end
+end
+
 function survival_setup_votes()
     for i = 1, 6 do
-        local vote_name = string.format("Start survival (%d, %d players max)", i, get_max_players_for_difficulty(i, 1))
+        local vote_name = Get_vote_name(i, 1)
         local vote_command = string.format("lua start_survival_game(%d)", i)
         Game.Context:RemoveVote(vote_command)
         Game.Context:InsertVote(i - 1, vote_name, vote_command)

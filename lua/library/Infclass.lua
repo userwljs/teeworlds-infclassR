@@ -23,7 +23,6 @@ function ArrayVec2:Size() end
 ---@return Vec2
 function ArrayVec2:At(index) end
 
-
 ---@class CLuaPlayersNumber
 ---@field Humans number
 ---@field Infected number
@@ -46,7 +45,6 @@ local CIcEntity = {}
 
 ---@param position Vec2
 function CIcEntity:MoveTo(position) end
-
 
 ---@class CIcCharacter
 ---@field CID number
@@ -282,6 +280,7 @@ function CIcCharacter:ResetPoisonEffect() end
 ---@field inf_survival_mode number Survival mode (0 = off, 1 = kill-based, 2 = time-based)
 ---@field inf_survival_hardmode number Survival hard mode (another way of difficulty leveling)
 ---@field inf_survival_autostart number Automatically start the last choosen survival scenario
+---@field inf_survival_player_limit number Enable max players limit in survival mode
 ---@field inf_stun_grenade_minimal_kills number Deprecated (has no effect now)
 ---@field inf_stun_grenade_probability number Deprecated (has no effect now)
 ---@field inf_slime_poison_duration number Deprecated (has no effect now, use inf_slime_poison_damage instead)
@@ -365,7 +364,9 @@ function CIcGameController:DoWarmup(seconds) end
 function CIcGameController:QueueRound(round_type) end
 
 function CIcGameController:StartRound() end
+
 function CIcGameController:FinishRound() end
+
 function CIcGameController:CancelRound() end
 
 ---@return ArrayVec2

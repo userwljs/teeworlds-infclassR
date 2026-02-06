@@ -3990,7 +3990,7 @@ void CIcGameController::OnInfectionTriggered()
 	if(GetRoundType() == ERoundType::Survival)
 	{
 		int MaxPlayers = SurvivalGetGameConfiguration()->MaxPlayers;
-		if(MaxPlayers && NumPlayers > MaxPlayers)
+		if(Config()->m_InfSurvivalPlayerLimit && MaxPlayers && NumPlayers > MaxPlayers)
 		{
 			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("Unable to start the game: too many players!"), nullptr);
 			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
@@ -6009,7 +6009,7 @@ bool CIcGameController::CanJoinTeam(int Team, int ClientId)
 			}
 
 			int MaxPlayers = SurvivalGetGameConfiguration()->MaxPlayers;
-			if(MaxPlayers)
+			if(Config()->m_InfSurvivalPlayerLimit && MaxPlayers)
 			{
 				int NumHumans = 0;
 				int NumInfected = 0;

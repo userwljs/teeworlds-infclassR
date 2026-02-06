@@ -946,12 +946,36 @@ function survival_remove_votes()
     end
 end
 
+---@param difficulty number
+---@param multiplier number
+---@return string
+function Get_vote_name(difficulty, multiplier)
+    if Config.inf_survival_player_limit == nil then
+        print("Warning: 'Game.inf_survival_player_limit' is a nil value")
+    end
+    local player_limit = Config.inf_survival_player_limit ~= 0 and Config.inf_survival_player_limit ~= nil
+    if multiplier == 1 then
+        if player_limit then
+            return string.format("Start survival (%d, %d players max)", difficulty,
+                get_max_players_for_difficulty(difficulty, multiplier))
+        else
+            return string.format("Start survival (difficulty %d)", difficulty)
+        end
+    else
+        if player_limit then
+            return string.format("Start survival (%d, %dx HP, %d players max)", difficulty, multiplier,
+                get_max_players_for_difficulty(difficulty, multiplier))
+        else
+            return string.format("Start survival (difficulty %d, %dx HP)", difficulty, multiplier)
+        end
+    end
+end
+
 function survival_setup_votes()
     local vote_index = 0
     local multiplier = 1
     for i = 1, 6 do
-        local vote_name = string.format("Start survival (%d, %d players max)", i,
-            get_max_players_for_difficulty(i, multiplier))
+        local vote_name = Get_vote_name(i, multiplier)
         local vote_command = string.format("lua start_survival_game(%d, %d)", i, multiplier)
         Game.Context:RemoveVote(vote_command)
         Game.Context:InsertVote(vote_index, vote_name, vote_command)
@@ -959,8 +983,7 @@ function survival_setup_votes()
     end
     multiplier = 2
     for i = 4, 6 do
-        local vote_name = string.format("Start survival (%d, %dx HP, %d players max)", i, multiplier,
-            get_max_players_for_difficulty(i, multiplier))
+        local vote_name = Get_vote_name(i, multiplier)
         local vote_command = string.format("lua start_survival_game(%d, %d)", i, multiplier)
         Game.Context:RemoveVote(vote_command)
         Game.Context:InsertVote(vote_index, vote_name, vote_command)
