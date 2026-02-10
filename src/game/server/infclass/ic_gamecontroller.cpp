@@ -1604,7 +1604,7 @@ const char *CIcGameController::GetClassDisplayNameForKilledBy(EPlayerClass Playe
 		break;
 	}
 
-	return nullptr;
+	return "Unknown";
 }
 
 const char *CIcGameController::GetClanForClass(EPlayerClass PlayerClass, const char *pDefaultText)
