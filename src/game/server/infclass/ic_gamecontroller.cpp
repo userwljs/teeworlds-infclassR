@@ -2553,8 +2553,13 @@ void CIcGameController::ConRefreshHeroFlag(IConsole::IResult *pResult, void *pUs
 {
 	const auto *pSelf = static_cast<CIcGameController *>(pUserData);
 	const int ClientId = pResult->GetClientId();
+	if(pSelf->GetRoundType() != ERoundType::Survival)
+	{
+		pSelf->GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, "This command is only available in survival mode.");
+		return;
+	}
 	auto *pPlayer = pSelf->GetPlayer(ClientId);
-	if (pPlayer->GetClass() != EPlayerClass::Hero)
+	if(pPlayer->GetClass() != EPlayerClass::Hero)
 	{
 		pSelf->GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, "Only heroes can use this command.");
 		return;
@@ -7029,7 +7034,7 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 		ConLine(_C("Hero", "It fully heals the Hero and it can grant a turret which you can place down with the hammer."));
 		ConLine(_C("Hero", "The gift to all humans is only applied when the flag is surrounded by hearts and armor."));
 		ConLine(_C("Hero", "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected."));
-		AddLine(_C("Hero", "The Hero can refresh the position of the flag by /rflag."));
+		AddLine(_C("Hero", "The Hero can refresh the position of the flag by /rflag in survival mode."));
 		break;
 	case EPlayerClass::Engineer:
 		AddLine(_C("Engineer", "The Engineer can build walls with the hammer to block the infected."));
