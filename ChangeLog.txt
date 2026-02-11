@@ -1,4 +1,4 @@
-InfclassR v1.6.0_alpha2
+InfclassR v1.6.0
 - Ninja now gains 1HP per killed infected
 - Removed Ninja +4HP gain on target killed
 - Medic shotgun force reduced by 40% (from 10 to 6)
@@ -9,6 +9,11 @@ InfclassR v1.6.0_alpha2
 - Fixed MercBomb laser hit radius
 - Fixed `/mute` command was not listed in chat commands
 - Fixed `/mute` didn't work with quotes
+- Corrected some wrong command descriptions
+- Fixed fun round limit not working
+- Removed the incorrect hero flag position in the bottom-right corner of `infc_olddust`
+- Made the anti-ping for players without a class no longer predict hammers
+- Fixed some chat commands also registered as server commands (the mute server command is now working again)
 
 InfclassR v1.5.0_alpha8
 - Fixed Ghost kept invisible on some actions
