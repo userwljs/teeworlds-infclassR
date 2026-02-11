@@ -1,6 +1,6 @@
 # Changelog
 
-## InfclassR v1.6.0 - TBD
+## InfclassR v1.6.0 - 2026-02-11
 
 Balance:
 - Medic shotgun force changed from 10 to 6
@@ -14,6 +14,11 @@ Fixes:
 - Fixed `/mute` command was not listed in chat commands (e.g. for autocompletion)
 - Fixed `/mute` didn't work with quotes (e.g. `/mute "nameless tee"` now works as expected)
 - Fixed Merc Bomb hit radius for the upgrading laser was almost twice bigger than it should be
+- Corrected some wrong command descriptions
+- Fixed fun round limit not working
+- Removed the incorrect hero flag position in the bottom-right corner of `infc_olddust`
+- Made the anti-ping for players without a class no longer predict hammers
+- Fixed some chat commands also registered as server commands (the `mute` server command is now working again)
 
 Maintenance:
 - Implemented floating-point config variable type
@@ -27,6 +32,8 @@ Maintenance:
 - Added `sv_maps_base_url` for https downloads
 - Added `sv_use_ddnet_skins` (this can break the game for players with "Vanilla skins only" option enabled)
 - Added support for `sv_chat_initial_delay`
+- Replaced `sv_high_bandwith` with `sv_snaps_per_second`
+- Added Dockerfile
 
 Others:
 - Implemented vanilla maps support
