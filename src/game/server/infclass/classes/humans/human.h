@@ -75,7 +75,6 @@ public:
 	void OnHeroFlagTaken(CIcCharacter *pHero);
 	void OnWhiteHoleSpawned(CWhiteHole *pWhiteHole);
 	void GiveUpgrade() override;
-	void RefreshHeroFlagPosition();
 
 protected:
 	void GiveClassAttributes() override;
@@ -126,8 +125,8 @@ private:
 	int m_NinjaAmmoBuff = 0;
 	icArray<CEntity *, 24> m_apHitObjects;
 	bool m_HasWhiteHole = false;
+
 	CHeroFlag *m_pHeroFlag = nullptr;
-	int m_HeroFlagRefreshTick = 0;
 };
 
 #endif // GAME_SERVER_INFCLASS_CLASSES_HUMAN_H
