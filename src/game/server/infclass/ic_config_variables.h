@@ -12,7 +12,7 @@
 
 MACRO_CONFIG_STR(PlayerLogfile, playerlogfile, 128, "", CFGFLAG_SERVER, "Filename to log joined players info to")
 
-MACRO_CONFIG_STR(AboutSourceUrl, about_source_url, 128, "https://github.com/infclass/teeworlds-infclassR", CFGFLAG_SERVER, "The server source code URL")
+MACRO_CONFIG_STR(AboutSourceUrl, about_source_url, 128, "https://github.com/userwljs/teeworlds-infclassR", CFGFLAG_SERVER, "The server source code URL")
 MACRO_CONFIG_STR(AboutTranslationUrl, about_translation_url, 128, "https://crowdin.com/translate/infectiondust", CFGFLAG_SERVER, "The translation site URL")
 MACRO_CONFIG_STR(AboutContactsDiscord, about_contacts_discord, 128, "https://infclass.github.io/discord", CFGFLAG_SERVER, "Discord server invite URL")
 MACRO_CONFIG_STR(AboutContactsTelegram, about_contacts_telegram, 128, "", CFGFLAG_SERVER, "Telegram URL or ID")
@@ -126,7 +126,7 @@ MACRO_CONFIG_INT(InfProbaSpider, inf_proba_spider, 5, 0, 100, CFGFLAG_SERVER, "P
 MACRO_CONFIG_INT(InfProbaGhoul, inf_proba_ghoul, 5, 0, 100, CFGFLAG_SERVER, "Probability for an infected to be a ghoul")
 MACRO_CONFIG_INT(InfProbaSlug, inf_proba_slug, 5, 0, 100, CFGFLAG_SERVER, "Probability for an infected to be a slug")
 MACRO_CONFIG_INT(InfProbaVoodoo, inf_proba_voodoo, 5, 0, 100, CFGFLAG_SERVER, "Probability for an infected to be a voodoo")
-MACRO_CONFIG_INT(InfProbaWitch, inf_proba_witch, 5, 0, 100, CFGFLAG_SERVER, "Probability for an infected to be a witch")
+MACRO_CONFIG_INT(InfProbaWitch, inf_proba_witch, 0, 0, 100, CFGFLAG_SERVER, "Probability for an infected to be a witch")
 MACRO_CONFIG_INT(InfProbaUndead, inf_proba_undead, 4, 0, 100, CFGFLAG_SERVER, "Probability for an infected to be an undead")
 
 MACRO_CONFIG_INT(InfEnableEngineer, inf_enable_engineer, 1, 0, 1, CFGFLAG_SERVER, "Makes the engineer class available")

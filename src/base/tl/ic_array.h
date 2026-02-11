@@ -164,6 +164,8 @@ inline constexpr bool icArray<T, StackCapacity>::Contains(const T &Item) const
 template<class T, int StackCapacity>
 inline constexpr void icArray<T, StackCapacity>::Add(const T &Value)
 {
+	if(m_Size >= StackCapacity)
+		abort();
 	m_Data[m_Size] = Value;
 	++m_Size;
 }
