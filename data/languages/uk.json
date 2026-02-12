@@ -21,12 +21,6 @@
             "value": "Лазерна стіна: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "Наступний прапор через {sec:RemainingTime}"
         },
@@ -47,18 +41,6 @@
             "value": "Ліміт гранат збільшений"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "Choose your class",
             "value": "Виберіть свій клас"
         },
@@ -67,20 +49,8 @@
             "value": "Випадковий вибір"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Ви були замороженi: {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "few": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -179,6 +149,12 @@
             "value": "{str:VictimName}  Був заражений"
         },
         {
+            "key": "One human won the round",
+            "one": "{int:NumHumans} людина виграла",
+            "few": "{int:NumHumans} Людей виграло",
+            "other": "{int:NumHumans} Людей виграло"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "{int:NumHumans} людина виграла",
             "few": "{int:NumHumans} Людей виграло",
@@ -193,24 +169,12 @@
             "value": "Заражені виграли раунд за {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Правила гри"
         },
         {
             "key": "How to translate the mod",
             "value": "Як перекладати мод"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "few": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -343,90 +307,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} Покинув гру"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "З'явилась помилка при створені вашого аканту."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Помилка під час дії."
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Будь ласка заждіть 5 хвилин перед створенням нового акканту"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Це ім'я вже зайнято існуючим акантом"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Невідомий клас"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Неправильне ім'я користувача/пароль."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Ви повинні увійти для здійснення цієї дії."
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Ви маєте увійти в свій аккаунт, щоб побачити свою ціль"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Ви маєте увійти в свій аккаунт, щоб побачити свій ранг"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Ваш аккаунт створено та знайдено в нього."
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Кожна людина, що доторкнеться його гака в режимі павутини автоматично захоплена."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Бомби лімітовані для кожного гравця."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "Для будь яких питань по перекладанню будь ласка звертайтесь до на через IRC ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Він також може заподіяти 4 очки ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "Він має здатність накручувати вибухові пристрої котрі перешкоджають зараженіх шкодити."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Захоплений прапор надає 1 серце, 4 броні, та повній набір боєзапасів всім людям, крім того всі серця  та броню герою, що його знайшов."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Вона також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Герой має знаходити прапори, що сховані на карті."
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "Слідом за цим він перетравлює їжу і помалу повертається до свого звичайного стану, і також смерть повертає його до звичайного стану"
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "Доторкаючись до слизу людина отруюється на 3 секунди і втрачає 3 очки життя."
         }
     ]
 }

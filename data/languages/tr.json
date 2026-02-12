@@ -9,11 +9,6 @@
             "value": "Lazer duvarı: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "Yeni bayrak: {sec:RemainingTime}"
         },
@@ -34,16 +29,6 @@
             "value": "Bomba limiti arttı"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Choose your class",
             "value": "Sınıfınızı seçin"
         },
@@ -52,18 +37,8 @@
             "value": "Rastgele seçim"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Dondunuz: {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -154,6 +129,11 @@
             "value": "{str:VictimName} dönüştü"
         },
         {
+            "key": "One human won the round",
+            "one": "Bir tane insan bu eli kazandı",
+            "other": "{int:NumHumans} insan bu eli kazandı"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Bir tane insan bu eli kazandı",
             "other": "{int:NumHumans} insan bu eli kazandı"
@@ -167,22 +147,12 @@
             "value": "Zombiler bu eli {sec:RoundDuration} sürede kazandılar"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Oyunun kuralları"
         },
         {
             "key": "How to translate the mod",
             "value": "Modu nasıl tercüme edebilirim"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -303,90 +273,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} oyundan ayrıldı"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Hesabınız oluşturulurken bir hata oluştu."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "İşlem sırasında bir hata oluştu."
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Lütfen başka bir hesap oluşturmadan önce 5 dakika bekleyin"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Bu kullanıcı adı daha önceden alınmış"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Bilinmeyen sınıf"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Yanlış kullanıcı adı/şifre."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Bu işlem için giriş yapmış olmanız gerekiyor"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Hedefinizi görmek için giriş yapmalısınız"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Sıralamanızı görmek için giriş yapmalısınız"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Hesabınız oluşturuldu ve giriş yaptınız."
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Ağ modundaki kancaya dokunan herhangi bir insan otomatik olarak kancaya yakalanır."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Bombalar oyuncu başı aynı anda birer adet ile sınırlıdır."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "Tercüme işlemi hakkında herhangi bir sorunuz için, lütfen IRC üzerinden iletişime geçin ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Ayrıca kancayla insanları tuttuğu her saniye 1 puan zarar verir."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Ayrıca kancayla insanları tuttuğu her saniye 1 puan zarar verir."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "Çekiciyle çeşitli patlayıcılar kurabilir ve uzaktan patlatabilir."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Bayrağı aldığında bütün insanlara 1 can puanı, 4 zırh puanı ve tam mermi gelir. Ayrıca kahramana da tam sağlık ve zırh gelir."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Ayrıca kancayla insanları tuttuğu her saniye 1 puan zarar verir."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Kahraman, haritada gizli olan bir bayrağı bulmalıdır."
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "Yediklerini parça parça sindirerek normal haline döner, ayrıca ölmek de yediklerini ondan alır."
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "Balçığa dokunmak, insana 3 saniye içinde 3 puan hasar verir."
         }
     ]
 }

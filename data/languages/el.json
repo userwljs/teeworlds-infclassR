@@ -13,23 +13,8 @@
             "value": "Τοίχος λέιζερ: {sec:RemainingTime} "
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "Η επόμενη σημαία βγαίνει σε {sec:RemainingTime} δευτερόλεπτα"
-        },
-        {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Choose your class",
@@ -40,18 +25,8 @@
             "value": "Τυχαία επιλογή"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Είσαι παγωμένος: {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -142,6 +117,11 @@
             "value": "{str:VictimName} Μολύνθηκε"
         },
         {
+            "key": "One human won the round",
+            "one": "Ένας άνθρωπος κέρδισε τον γύρο",
+            "other": "{int:NumHumans}  κέρδισαν τον γύρο"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Ένας άνθρωπος κέρδισε τον γύρο",
             "other": "{int:NumHumans}  κέρδισαν τον γύρο"
@@ -155,22 +135,12 @@
             "value": "Οι μολυσμένοι κέρδισαν τον γύρο"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Κανόνες του παιχνιδιού"
         },
         {
             "key": "How to translate the mod",
             "value": "Πώς να μεταφράσεις αυτήν την έκδοση"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -291,86 +261,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} έφυγε από το παιχνίδι"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Ένα πρόβλημα δημιουργήθηκε στη δημιουργία ενος καινούργιου λογαριασμόυ"
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Ένα πρόβλημα εμφανίστηκε στην λειτουργία."
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Παρακαλώ περιμένεται 5 λεπτά πριν δημιουργήσεται έναν καινούργιο λογαριασμό"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Αυτό το όνομα έχει ήδη πιαστεί από έναν ήδη υπάρχοντα λογαριασμό"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Άγνωστη ιδιότητα"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Λάθος όνομα παίκτη/κωδικός."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Πρέπει να είσαι συνδεδεμένος για αυτή τη λειτουργία."
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Πρέπει να έιστε συνδεδεμένος για να δείτε τον στόχο σας"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Πρέπει να έιστε συνδεδεμένος για να δείτε την θέση σας"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Ο λογαριασμός σας δημιουργήθηκε και τώρα είστε συνδεδεμένος."
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Οποιοσδήποτε άνθρωπος αγγίξει τον γάντζο σε λειτουργεία αράχνης αυτόματα γαντζόνεται."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Οι βόμβες είναι περιορισμένες σε μια για καθε παίκτη συγχρόνως"
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "Για οποιαδήποτε ερώτηση σχετικά με την πρόοδο της μετάφρασης, παρακαλώ επικοινωνήστε μαζί μας στο  IRC ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Μπορεί επίσης να προκαλέσει 1 πόντο ζημιάς το δευτερόλεπτο με το να γαντζώνει τους ανθρώπους"
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Μπορεί επίσης να προκαλέσει 4 πόντους ζημιάς το δευτερόλεπτο με το να γαντζώνει τους ανθρώπους"
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "Αυτός μπορεί να συσπειρώσει και εξ αποστάσεως να ενεργοποιήσει τα εκρηκτικά διαφόρων εφέ με το σφυρί του."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Μόλις την πάρει, η σημαία δίνει έναν πόντο ζωής, 4 ασπίδες, και γεμάτα πυρομαχικά σε όλους τους ανθρώπους, επιπλέον γεμίζει την ζωή και τις ασπίδες στον συγκεκριμένο ήρωα."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Μπορεί επίσης να προκαλέσει 1 πόντο ζημιάς το δευτερόλεπτο με το να γαντζώνει τους ανθρώπους"
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Ο ήρωας πρέπεινα βρεί την σημαι που είναι κρυμμένη στην πίστα."
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "Έπειτα με την πέψη η τροφή του λίγο λίγο πηγαίνει στην κανονική κατάσταση, και εκτός των άλλων, ο θάνατός, του στερεί τη θρέψη."
         }
     ]
 }

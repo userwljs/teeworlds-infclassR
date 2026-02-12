@@ -5,28 +5,8 @@
             "value": "Lézer-fal: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "{int:NumMines} mines are active",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "Következő zászló érkezik: {sec:RemainingTime} másodperc"
-        },
-        {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Choose your class",
@@ -37,18 +17,8 @@
             "value": "Véletlenszerű"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Lefagytál: {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -135,6 +105,11 @@
             "value": "{str:VictimName}-t megfertőzték"
         },
         {
+            "key": "One human won the round",
+            "one": "Egy ember nyerte meg a játékot",
+            "other": "{int:NumHumans} ember nyerte meg játékot"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Egy ember nyerte meg a játékot",
             "other": "{int:NumHumans} ember nyerte meg játékot"
@@ -148,32 +123,12 @@
             "value": "A zombik megnyerték a játékot {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "A játékszabályok"
         },
         {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Use the hammer to place the bomb and explode it multiple times.",
             "value": "Szintén kalapáccsal lehet a bombákat aktiválni, hogy felrobbanjanak."
-        },
-        {
-            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "You have killed a witch, +5 points",
@@ -254,42 +209,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} kilépett a játékból"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Kérjük várj 5 percet mielőtt létrehozol egy másik felhasználót"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Ismeretlen osztály"
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Ha egy ember hozzáér a horoghoz háló módban, a zombi automatikusan ráakaszkodik."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Egy közkatonának egyszerre csak egy felállított bombája lehet."
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Továbbá másodpercenként 1 ponttal sebzi az embereket, ha rájuk akaszkodik."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Továbbá másodpercenként 4 ponttal sebzi az embereket, ha rájuk akaszkodik."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Ha megtalálják, a zászló minden embernek ad 1 életerőpontot, 4 páncélpontot és teljes tölténytárat; a hősnek ezen kívül teljes életerőt és páncélt."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Továbbá másodpercenként 1 ponttal sebzi az embereket, ha rájuk akaszkodik."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "A hősnek meg kell találnia a térképen elrejtett zászlót."
         }
     ]
 }

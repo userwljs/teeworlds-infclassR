@@ -17,11 +17,6 @@
             "value": "Pader ng laser: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "{sec:RemainingTime} bago ang sunod na watawat"
         },
@@ -42,16 +37,6 @@
             "value": "Bilang ng takdang granada ay nadagdagan"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Choose your class",
             "value": "Pumili ka ng class"
         },
@@ -60,18 +45,8 @@
             "value": "Random"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Ikaw ay frozen: {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -170,6 +145,11 @@
             "value": "si {str:VictimName} ay isa nang infected"
         },
         {
+            "key": "One human won the round",
+            "one": "Isang tao lamang ang nanalo",
+            "other": "{int:NumHumans} tao ang nanalo"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Isang tao lamang ang nanalo",
             "other": "{int:NumHumans} tao ang nanalo"
@@ -183,22 +163,12 @@
             "value": "Ang mga Infected ay nanalo sa loob ng {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Mga batas ng laro"
         },
         {
             "key": "How to translate the mod",
             "value": "Paano matranslate ang mod"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -327,90 +297,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} ay umalis na"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "May maling nangyari habang ginagawa ang iyong account."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "May maling nangyari habang ginagawa ang operasyon."
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Maghintay ng 5 minuto bago gumawa ng bagong account"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Ang panglan na ito ay nakuha na"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Di alam na klase"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Maling pangalan/hudyat."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Ikaw ay nakalogin dapat para sa operation na ito"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Ikaw ay nakalogin dapat para makita ang iyong layunin"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Ikaw ay nakalogin dapat para makita ag iyong ranko"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Ang account mo ay nagawa na at ikaw ay naka log-in na."
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Kahit sino na tao na hawakan ito ay mahohook."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Ang mga bomba ay limitado sa isang player sa parehas na panahon."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "Kung may tanong sa pagtratranslate, tawagan mo kami sa IRC ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Kaya nya rin na magdeal ng 4 damage points kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "Kaya nyang mag lagay ng mga pasabog gamit ang kanyang hammer na pinipigil ang mga infected na makasakit."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Pagnahanap ang watawat ng hero nagbibigay ito ng 1 heart, 4 na armor, at full ammo sa lahat ng tao, at sa paghanap nito ng hero siya ay binibigyan ng full hearts at armor."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nyarin na mag deal ng isang damge sa paghohook ng mga tao."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Ang hero ay dapat hanapin ang watawat na nakatago sa loob ng map."
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "Dahil nyan dinadigest niya ang kanyang mga nakain at paunti-unting bumabalik sa normal nitong lagay, at kalakip nyan, kamatayan ang lumalansag sa kanyang pagpapakain."
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "Pagnahawakan mo ang slime nadadamage ka nito ng 3 sa panahon ng tatkong segundo bilang tao."
         }
     ]
 }

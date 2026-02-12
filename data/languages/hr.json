@@ -21,12 +21,6 @@
             "value": "Laserski zid: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "Iduća zastava u {sec:RemainingTime}"
         },
@@ -47,18 +41,6 @@
             "value": "Ograničenje granate povećano"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "Choose your class",
             "value": "Izaberi svoju klasu"
         },
@@ -67,20 +49,8 @@
             "value": "Nasumičan izbor"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Ti si zamrznut: {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "few": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -179,6 +149,12 @@
             "value": "{str:VictimName} je zaražen"
         },
         {
+            "key": "One human won the round",
+            "one": "{int:NumHumans} čovjek je pobijedio ovu rundu",
+            "few": "{int:NumHumans} čovjeka su pobijedili ovu rundu",
+            "other": "{int:NumHumans} ljudi su pobijedili ovu rundu"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "{int:NumHumans} čovjek je pobijedio ovu rundu",
             "few": "{int:NumHumans} čovjeka su pobijedili ovu rundu",
@@ -193,24 +169,12 @@
             "value": "Zaraženi su pobijedili ovu rundu za {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Pravila igre"
         },
         {
             "key": "How to translate the mod",
             "value": "Kako prevesti mod"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "few": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -343,90 +307,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} je izašao iz igre"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Dogodila se greška pri izradi Vašeg računa."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Pojavila se greška prilikom operacije."
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Molimo pričekajte 5 minuta prije nego napravite još jedan račun"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Korisničko ime je već zauzeto"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Nepoznata klasa"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Pogrešno korisničko ime/šifra."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Morate biti ulogovani za ovu operaciju"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Morate biti ulogirani da bi vidjeli svoj cilj"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Morate biti ulogirani da bi vidjeli Vaš rang"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Vaš nalog je napravljen i sada ste ulogirani."
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Kada čovjek dotakne mrežu, ona ga automatski dohvati."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Bombe su ograničene na jednog igrača u isto vrijeme."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "Za pitanja o procesu prevođenja, molimo da nas kontaktirate na IRC ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Može nanijeti 1 škodan bod po sekundi kada huka ljude."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Nanosi 4 škodnih boda po sekundi kad huka ljude."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "On može naviti eksplozive pomoću svog čekića koji onemoguće zaraženima škoditi."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Kad ju uzme, zastava daje 1 zdravlje, 4 oklopa, i punu municiju svim ljudima, te puno zdravlje i oklop za heroja."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Može nanijeti 1 škodan bod po sekundi kada huka ljude."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Heroj mora naći zastavu skrivenu u mapi."
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "Odmah nakon što svari svoju hranu malo pomalo vraća u svoje normalno stanje, i osim toga, smrt ucvili njega od svoje hrane."
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "Dodirivanje sluzi daje ljudima tri poena štete za tri sekunde."
         }
     ]
 }

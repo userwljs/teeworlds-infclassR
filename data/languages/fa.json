@@ -21,11 +21,6 @@
             "value": "دیوار لیزری: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "{sec:RemainingTime} تا ظاهر شدن پرجم بعدی"
         },
@@ -46,16 +41,6 @@
             "value": "محدوده ی انفجار نارنجک افزایش یافت"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Choose your class",
             "value": "کلاس خود را انتخاب کن"
         },
@@ -64,18 +49,8 @@
             "value": "انتخاب تصادفی"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "شما در حالت یخ زده هستید: {str:VictimName}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -174,6 +149,11 @@
             "value": "{str:VictimName} زامبی شد"
         },
         {
+            "key": "One human won the round",
+            "one": "{int:NumHumans} انسان ها برنده راند شدند",
+            "other": "{int:NumHumans} انسان برنده شد(ند)"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "{int:NumHumans} انسان ها برنده راند شدند",
             "other": "{int:NumHumans} انسان برنده شد(ند)"
@@ -187,22 +167,12 @@
             "value": "زامبی ها برنده این راند شدند در {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "قوانین بازی"
         },
         {
             "key": "How to translate the mod",
             "value": "نحوه ی ترجمه ی مود"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -335,90 +305,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} بازی را ترک کرد"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "مشکلی در ساخت حساب شما رخ داد"
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "خطایی در عملیات رخ داده."
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "لطفا برای ساخت اکانت جدید حداقل 5 دقیقه صبر کنید"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "این نام کاربری قبلا انتخاب شده"
-        },
-        {
-            "key": "Unknown class",
-            "value": "نقش ناشناخته"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "نام کاربری یا رمزعبور اشتباه است."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "شما باید برای این عملیات ابتدا وارد حساب خود شوید."
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "برای دیدن هدف خود وارد شوید"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "برای دیدن رتبه ی خود وارد شوید"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "اکانت شما ساخته شد و شما الان وارد شدید!"
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "هر انسانی که با این تار برخورد کند به طور خودکار گیر می افتد."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "بمب ها برای هر سرباز یک عدد بطور همزمان هستند."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "برای هرگونه سوالی درمورد ترجمه لطفا با ما در IRC در تماس باشید ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 1 واحد از سلامتیشان را کم کند."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "او همچنین می تواند با زنجیر کردن انسان ها هر ثانیه 4 واحد از سلامتیشان را کم کند."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "او همچنین می تواند با استفاده از سیم و مواد منفجره بمب هایی با تاثیرات مختلف بسازد."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "برای هربار گرفتن، پرچم 1 واحد سلامتی، 4 واحد زره در اختیار همه ی انسان ها قرار می دهد و همچنین تفنگ ها را پر می کند و جان و زره قهرمان را کاملا پر می کند."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "او همچنین می تواند 1 واحد از سلامتی را با زنجیر کردن انسان ها کم کند."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "قهرمان باید پرچم پنهان شده در نقشه را بیابد."
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "البته پس از مدتی غذای او هضم می شود و به حالت عادی بر میگردد و همچنین او نمی تواند جنازه ی خود را بخورد."
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "لمس کردن لجن اون باعث وارد شدن سه واحد ضربه در هر سه ثانیه به انسان‌ها می‌شود."
         }
     ]
 }

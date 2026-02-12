@@ -21,11 +21,6 @@
             "value": "Vallum lasericum: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "Vexillum sequens post {sec:RemainingTime}"
         },
@@ -46,16 +41,6 @@
             "value": "Limes granatarius auctus"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Choose your class",
             "value": "Classem elige"
         },
@@ -64,18 +49,8 @@
             "value": "Electio fortuita"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Gelatus es: {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -174,6 +149,11 @@
             "value": "{str:VictimName} infectus est"
         },
         {
+            "key": "One human won the round",
+            "one": "Homo unicus pugnam evicit",
+            "other": "{int:NumHumans} Homines pugnam evicere"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Homo unicus pugnam evicit",
             "other": "{int:NumHumans} Homines pugnam evicere"
@@ -187,22 +167,12 @@
             "value": "Infecti evicere per {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Regulae ludi"
         },
         {
             "key": "How to translate the mod",
             "value": "Quemadmodum modificationem traducere potes:"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -335,90 +305,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} pugnam reliquit"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Error obvenit, quum accomputus creatus est."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Error obvenit operatione."
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Expecta minutas 5 ante quam recrees adcomputum alium"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Hoc accomputus iam exemptus est."
-        },
-        {
-            "key": "Unknown class",
-            "value": "Classis incognita"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Nomen falsum aut tessera falsa."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Tibi conscriptum esse opus est, ut hanc operationem conficias."
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Tibi conscriptum esse opus est, ut terminum videas."
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Tibi conscriptum esse opus est, ut decus videas."
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Accomputus tuus confectus est tuque iam conscriptus es."
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Homo quicumque uncum in modo retiali tangens apprehenditur."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Bombae terminatae sunt, ut una arenario quoicumque quandocumque sola exstet."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "Quaestione de traductionis processu exorta nos via IRC ({str:IRCAddress}) postula"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Plagam 1 quoque per secundam unco infligere potest."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Plagas quoque 4 per secundam unco infligere potest."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "Vasa displosiva quae infectos nocendi valentia distineunt convolvere capax est."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Heroe vexillum indepto punctum unum integritatis valetudinis uniquoique gregis humani redditur, puncta quatuor tegumentorum suppletur et arma replentur, integritas herois penitus."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Plagam 1 quoque per secundam unco infligere potest."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Heroi vexillum in mappa reconditum inveniendum est. "
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "Exinde pabulum digerit sensim ad statum vulgarem revolviens, ultro ei letum alimenta detrahit."
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "Contamen muci homini plagas tres per secunda tria infligit."
         }
     ]
 }

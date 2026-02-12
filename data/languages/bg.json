@@ -21,11 +21,6 @@
             "value": "Лазерна стена: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "Следващат флаг в {sec:RemainingTime}"
         },
@@ -46,16 +41,6 @@
             "value": "Лимита на гранатите е увеличен"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Choose your class",
             "value": "Изберете вашия клас"
         },
@@ -64,18 +49,8 @@
             "value": "Случаен избор"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Вие сте замразени: {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -174,6 +149,11 @@
             "value": "{str:VictimName} беше инфектиран"
         },
         {
+            "key": "One human won the round",
+            "one": "Един човек спечели рунда",
+            "other": "{int:NumHumans} хора спечелиха рунда"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Един човек спечели рунда",
             "other": "{int:NumHumans} хора спечелиха рунда"
@@ -187,22 +167,12 @@
             "value": "Инфектираните спечелиха рунда за {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Правилата на играта"
         },
         {
             "key": "How to translate the mod",
             "value": "Как да се преведете този мод"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -335,90 +305,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} напусна играта"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Възникна грешка по време на създаването на вашия акаунт."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Имаше грешка по време на операцията."
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Моля, изчакайте 5 минути преди да създадете друг акаунт"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Това потребителско име вече е заето"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Неизвестен клас"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Грешен юзер/парола."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Трябва да се влезли за да изпълните тази операция"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Трябва да сте логнати за да видите вашата цел"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Трябва да сте логнати за да видите вашия ранг"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Вашият акаунт беше създаден, и сега сте влезли."
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Всеки човек, докоснал куката в режим паяжина, автоматично бива закачен."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Бомбите са ограничени до една за всеки играч в даден момент."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "За всякакви въпроси относно процеса на превод моля свържете се с нас чрез IRC ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Също така, той може да нанесе 1 точка повреда за секунда като използва своята кука върху хора."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Той може да нанесе 4 точки повреда за секунда като използва своята кука върху хора."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "Той може да приготви експлозиви използвайки своя чук."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Флага, когато бъде взет, дава 1 живот, 4 броня и пълна амуниции на всички хора, и възвръща напълно живота и бронята на героя."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Също така, тя може да нанесе 1 точка повреда за секунда като използва своята кука върху хора."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Героят трябва да намери флага, скрит някъде по картата."
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "След това той смила храната си постепенно обратно към нормалното му състояние, и освен това, смъртта премахва част от неговата храна."
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "Докосването на слузта от някой човек му нанася три точки повреда за три секунди."
         }
     ]
 }

@@ -72,11 +72,14 @@ LANGUAGES: List[Language] = [
     Language("pt-BR", ["one"]),
     Language("ru", ["one", "few", "many"]),
     Language("sah", []),
+    Language("sq", ["one"]),
+    Language("sr-CS", ["one", "few"]),
     Language("sr-Latn", ["one", "few"]),
     Language("tl", ["one"]),
     Language("tr", ["one"]),
     Language("uk", ["one", "few"]),
     Language("zh-CN", []),
+    Language("zh-TW", []),
 ]
 
 for language in LANGUAGES:

@@ -73,12 +73,16 @@
             "value": "环形师激光墙：{sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "other": ""
-        },
-        {
             "key": "The white hole is available!",
             "value": "白洞已就绪！"
+        },
+        {
+            "key": "{int:NumMines} mine is active",
+            "other": "地雷已激活 {int:NumMines} 个"
+        },
+        {
+            "key": "{int:NumMines} mines are active",
+            "other": "地雷已激活 {int:NumMines} 个"
         },
         {
             "key": "White hole: {sec:RemainingTime}",
@@ -121,12 +125,12 @@
             "value": "榴弹限量已增加"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "other": ""
-        },
-        {
             "key": "The white hole is ready, use the laser rifle to disrupt space-time",
             "value": "白洞已经就绪, 使用激光枪使空间混乱"
+        },
+        {
+            "key": "You have {int:NumTurrets} turret available, use the Hammer to place it",
+            "other": "你有{int:NumTurrets}个炮塔, 可用锤子放置"
         },
         {
             "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
@@ -159,6 +163,10 @@
         {
             "key": "The class is disabled",
             "value": "此职业被禁用"
+        },
+        {
+            "key": "Need at least {int:MinPlayers} player",
+            "other": "至少需要 {int:MinPlayers} 玩家"
         },
         {
             "key": "Need at least {int:MinPlayers} players",
@@ -195,10 +203,6 @@
         {
             "key": "{str:PlayerName} has destroyed your turret!",
             "value": "{str:PlayerName} 摧毁了你的炮塔！"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "other": ""
         },
         {
             "key": "The game is not balanced. Infection is coming.",
@@ -525,6 +529,10 @@
             "value": "回合取消, 所有人类离开了游戏"
         },
         {
+            "key": "One human won the round",
+            "other": "{int:NumHumans} 名人类获得本轮胜利"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "other": "{int:NumHumans} 名人类获得本轮胜利"
         },
@@ -539,10 +547,6 @@
         {
             "key": "Infection is coming in {sec:RemainingTime}",
             "value": "感染将在{sec:RemainingTime}后到来"
-        },
-        {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "other": ""
         },
         {
             "key": "Rules of the game",
@@ -723,6 +727,10 @@
         {
             "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
             "value": "忍者可以用闪光弹冻结感染者3秒"
+        },
+        {
+            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} time before touching the ground.",
+            "other": "他的锤子被武士刀取代，允许他触地后冲刺 {int:NinjaJump} 次。"
         },
         {
             "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
@@ -1083,58 +1091,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} 离开游戏"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "创建帐户时发生错误。"
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "在操作过程中发生错误。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "他可以勾住人类每秒造成1点伤害并且使自己回血"
-        },
-        {
-            "key": "{int:NumBombs} bombs left",
-            "other": "炸弹剩余 {int:NumBombs}"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "在创建另一个账号前请等待 5 分钟"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "此用户名已存在"
-        },
-        {
-            "key": "Unknown class",
-            "value": "未知职业"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "用户名/密码错误。"
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "你必须登录才可进行此操作"
-        },
-        {
-            "key": "You must be logged to see stats",
-            "value": "你必须登陆才能看见数据统计"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "你必须登录才能看到您的目标"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "你必须登录才能看到您的排名"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "已成功创建账号，并成功登录。"
         }
     ]
 }

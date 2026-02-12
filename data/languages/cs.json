@@ -13,26 +13,8 @@
             "value": "Laserová stěna: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "Příští vlajka se spawne za {sec:RemainingTime}"
-        },
-        {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "few": "",
-            "other": ""
         },
         {
             "key": "Choose your class",
@@ -43,20 +25,8 @@
             "value": "Náhodná volba"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Jsi zmražený:  {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "few": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -147,6 +117,12 @@
             "value": "{str:VictimName} byl nakažen"
         },
         {
+            "key": "One human won the round",
+            "one": "Vyhrál jeden človek",
+            "few": "{int:NumHumans} lidé vyhráli",
+            "other": "{int:NumHumans} lidé vyhráli"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Vyhrál jeden človek",
             "few": "{int:NumHumans} lidé vyhráli",
@@ -161,24 +137,12 @@
             "value": "Nakažení vyhráli kolo v čase {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Pravidla hry"
         },
         {
             "key": "How to translate the mod",
             "value": "Jak přeložit mód"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "few": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -303,86 +267,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} opustil hru"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Při vytváření účtu se stala chyba."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Během operace se stala chyba"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Prosím, počkej 5 minut před vytvořením dalšího účtu"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Toto jméno je obsazené"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Neznámé povolání"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Špatné jméno. nebo heslo"
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "K tomuto úkonu musíš být přihlášen"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Musíš být přihlášen, aby jsi viděl svůj cíl"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Musíš být příhlášen, aby jsi viděl svou pozici"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Tvůj účet byl vytvořen a už jsi přihlášen."
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Jakýkoliv člověk, který se dotkne háku v pavučinovém módu tak je automaticky přitáhnut k pavoukovi."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Bombu můžeš umístit jen jednu."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "Pokud máš nějaké otázky o překládání kontaktuj nás na IRC ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Taky může způsobit 4 útočné body za sekundu dotknutí se hákem člověka."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "Může svým kladivem tvořit exploze."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Když vezme vlajku, přidá 1 život, 4 štíty a všechny náboje všem lidem.\nK tomu přidá všechny životy a brnění hrdinovi."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Může udělit 1 útočný bod za sekundu zaháknutím člověka."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Musí najít vlajku skrytou někde ve hře"
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "Poté se postupně vrací do svého normálního stavu.\nKdyž umře, instantně ztratí část toho co absorboval"
         }
     ]
 }

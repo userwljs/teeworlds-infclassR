@@ -73,11 +73,6 @@
             "value": "Parede com laser: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "The white hole is available!",
             "value": "O buraco branco está disponível!"
         },
@@ -122,13 +117,13 @@
             "value": "Limite de granadas aumentado"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "The white hole is ready, use the laser rifle to disrupt space-time",
             "value": "O buraco branco está pronto, use o rifle laser para desestabilizar o espaço-tempo"
+        },
+        {
+            "key": "You have {int:NumTurrets} turret available, use the Hammer to place it",
+            "one": "Você tem {int:NumTurrets} torre disponível, use o Martelo para colocá-lo",
+            "other": "Você tem {int:NumTurrets} torres disponíveis, use o Martelo para colocá-lo"
         },
         {
             "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
@@ -162,6 +157,11 @@
         {
             "key": "The class is disabled",
             "value": "A classe está desabilitada"
+        },
+        {
+            "key": "Need at least {int:MinPlayers} player",
+            "one": "Precisa de pelo menos {int:MinPlayers} jogador",
+            "other": "Precisa de pelo menos {int:MinPlayers} jogadores"
         },
         {
             "key": "Need at least {int:MinPlayers} players",
@@ -199,11 +199,6 @@
         {
             "key": "{str:PlayerName} has destroyed your turret!",
             "value": "{str:PlayerName} destruiu a sua torre!"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "The game is not balanced. Infection is coming.",
@@ -530,6 +525,11 @@
             "value": "A rodada foi cancelada: Todos os humanos saíram do jogo"
         },
         {
+            "key": "One human won the round",
+            "one": "Um humano venceu a rodada",
+            "other": "{int:NumHumans} humanos venceram a rodada"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Um humano venceu a rodada",
             "other": "{int:NumHumans} humanos venceram a rodada"
@@ -545,11 +545,6 @@
         {
             "key": "Infection is coming in {sec:RemainingTime}",
             "value": "A infecção chegará em {sec:RemainingTime}"
-        },
-        {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Rules of the game",
@@ -730,6 +725,11 @@
         {
             "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
             "value": "O Ninja pode arremessar granadas, que congelam os infectados por três segundos."
+        },
+        {
+            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} time before touching the ground.",
+            "one": "O martelo deles é substituído por um katana, permitindo-lhes correr {int:NinjaJump} vez antes de tocar o chão.",
+            "other": "Seu martelo é substituído por um katana, permitindo-lhes correr {int:NinjaJump} vezes antes de tocar o chão."
         },
         {
             "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
@@ -1091,59 +1091,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} saiu da partida"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Ocorreu um erro na criação da sua conta."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Ocorreu um erro durante a operação."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "Ele também pode infligir 1 ponto de dano por segundo ao prender humanos, que suga seu sangue, restaurando a saúde do Morcego."
-        },
-        {
-            "key": "{int:NumBombs} bombs left",
-            "one": "Uma bomba restante",
-            "other": "{int:NumBombs} bombas restantes"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Por favor, aguarde 5 minutos antes de criar outra conta"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Este nome de usuário já está sendo usado por uma conta existente"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Classe desconhecida"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Nome de usuário/senha incorretos."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Você deve estar logado para esta operação"
-        },
-        {
-            "key": "You must be logged to see stats",
-            "value": "Você precisa estar logado para ver as estatísticas"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Você deve estar logado para ver sua pontuação"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Você precisa estar logado para ver seu rank"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Sua conta foi criada e você está logado agora."
         }
     ]
 }

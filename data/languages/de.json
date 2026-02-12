@@ -73,11 +73,6 @@
             "value": "Schlepper Laser-Wand: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "The white hole is available!",
             "value": "Das weiße Loch ist verfügbar!"
         },
@@ -122,13 +117,13 @@
             "value": "Granatenhöchstzahl erhöht"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "The white hole is ready, use the laser rifle to disrupt space-time",
             "value": "Das weiße Loch ist verfügbar, verwende das Lasergewehr um Raum und Zeit zu zerreißen"
+        },
+        {
+            "key": "You have {int:NumTurrets} turret available, use the Hammer to place it",
+            "one": "Du hast {int:NumTurrets} Geschützturm verfügbar, benutze zum Platzieren den Hammer",
+            "other": "Du hast {int:NumTurrets} Geschützturme verfügbar, benutze zum Platzieren den Hammer"
         },
         {
             "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
@@ -162,6 +157,11 @@
         {
             "key": "The class is disabled",
             "value": "Diese Klasse ist momentan deaktiviert"
+        },
+        {
+            "key": "Need at least {int:MinPlayers} player",
+            "one": "Benötigt mindestens {int:MinPlayers} Spieler",
+            "other": "Benötigt mindestens {int:MinPlayers} Spieler"
         },
         {
             "key": "Need at least {int:MinPlayers} players",
@@ -199,11 +199,6 @@
         {
             "key": "{str:PlayerName} has destroyed your turret!",
             "value": "{str:PlayerName} hat deinen Geschützturm zerstört!"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "The game is not balanced. Infection is coming.",
@@ -530,6 +525,11 @@
             "value": "Runde abgebrochen: Alle Überlebenden haben das Spiel verlassen"
         },
         {
+            "key": "One human won the round",
+            "one": "Ein Überlebender hat die Runde gewonnen.",
+            "other": "{int:NumHumans} Überlebende haben die Runde gewonnen."
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Ein Überlebender hat die Runde gewonnen.",
             "other": "{int:NumHumans} Überlebende haben die Runde gewonnen."
@@ -545,11 +545,6 @@
         {
             "key": "Infection is coming in {sec:RemainingTime}",
             "value": "Die Infizierten kommen in {sec:RemainingTime}"
-        },
-        {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Rules of the game",
@@ -730,6 +725,11 @@
         {
             "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
             "value": "Der Ninja kann Granaten werfen, die beim Aufprall getroffene Erkrankte für drei Sekunden einfrieren."
+        },
+        {
+            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} time before touching the ground.",
+            "one": "Sein Hammer ist durch ein japanisches Langschwert ersetzt, welches seinem Träger die Fähigkeit verleiht, {int:NinjaJump}mal durch die Luft zu stoßen, ehe er wieder den Boden berühren muß.",
+            "other": "Sein Hammer ist durch ein japanisches Langschwert ersetzt, welches seinem Träger die Fähigkeit verleiht, {int:NinjaJump}mal durch die Luft zu stoßen, ehe er wieder den Boden berühren muß."
         },
         {
             "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
@@ -1091,59 +1091,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} hat den Server verlassen"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Ein Fehler ist während der Erstellung deines Kontos aufgetreten."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Ein Fehler ist während des Vorganges aufgetreten."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "Indem er einen Überlebenden packt, kann er Blut saugen und pro Sekunde einen Lebenspunkt an Schaden hinzufügen, und sich selbst heilen."
-        },
-        {
-            "key": "{int:NumBombs} bombs left",
-            "one": "Eine Bombe übrig",
-            "other": "{int:NumBombs} Bomben übrig"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Warte bitte 5 Minuten, bevor du ein neues Konto erstellst"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Dieser Nutzername ist bereits durch ein Konto belegt"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Unbekannte Klasse"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Falscher Nutzername/Falsches Paßwort"
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Du mußt für diesen Vorgang angemeldet sein"
-        },
-        {
-            "key": "You must be logged to see stats",
-            "value": "Du musst angemeldet sein, um Statistiken sehen zu können"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Zur Einsicht der Zielpunktzahl bedarfst du der Anmeldung"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Zur Einsicht deines Ranges bedarfst du der Anmeldung"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Dein Konto ist erstellt worden, du bist jetzt angemeldet."
         }
     ]
 }

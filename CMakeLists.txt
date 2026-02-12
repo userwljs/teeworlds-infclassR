@@ -1050,6 +1050,8 @@ add_custom_target(dev-generate-pot
 
 add_custom_target(dev-update-po-files)
 
+# TODO: Unify them into one config file
+# (current: 3 files, in CMakeLists.txt, translation-python3.py and index.json)
 set(PO_LANGS
   ar
   bg
@@ -1070,8 +1072,10 @@ set(PO_LANGS
   pt
   pt-BR
   ru
+  sah
   sq
   sr-CS
+  sr-Latn
   tl
   tr
   uk

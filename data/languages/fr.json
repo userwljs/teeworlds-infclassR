@@ -21,11 +21,6 @@
             "value": "Barrière laser : {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "Prochain drapeau dans {sec:RemainingTime}"
         },
@@ -46,16 +41,6 @@
             "value": "Limite du nombre de grenades augmentée"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Choose your class",
             "value": "Choisissez votre classe"
         },
@@ -64,18 +49,8 @@
             "value": "Choix aléatoire"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "Vous êtes gelés : {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -174,6 +149,11 @@
             "value": "{str:VictimName} a été infecté·e"
         },
         {
+            "key": "One human won the round",
+            "one": "Un·e humain·e a gagné la manche",
+            "other": "{int:NumHumans} humain·e·s ont gagné la manche"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Un·e humain·e a gagné la manche",
             "other": "{int:NumHumans} humain·e·s ont gagné la manche"
@@ -187,22 +167,12 @@
             "value": "Les infecté·e·s ont gagné la manche en {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Règles du jeu"
         },
         {
             "key": "How to translate the mod",
             "value": "Comment traduire le mod"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -335,90 +305,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} a quitté la partie"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Une erreur est survenue durant la création de votre compte"
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Une erreur s'est produite durant cette opération. "
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Veuillez attendre 5 minutes avant de créer un nouveau compte"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Ce nom d'utilisateur est déjà pris par un compte existant"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Classe inconnue"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "L'identifiant ou le mot de passe est incorrect."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Vous devez être connecté pour effectuer cette opération."
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Vous devez être connecté pour voir votre objectif"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Vous devez être connecté pour voir votre rang"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Votre compte a été créé et vous êtes maintenant connecté"
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Lorsqu'un humain ou une humaine touche un grappin en mode toile, ille est automatiquement attrapé par l'Araignée."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Il ne peut y avoir qu'une bombe par Soldat·e au même moment."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "Pour toute question sur le processus de traduction, merci de nous contacter par IRC ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Illes peuvent aussi infliger 1 point de dégât par seconde en agrippant un humain ou une humaine."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Illes peut aussi infliger 4 points de dégât par seconde quand illes agrippent une humaine ou un humain."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "Illes peuvent poser des bombes lesquelles empêchent des infecté·e·s de endommager."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Lorsqu'illes le trouvent, le drapeau donne 1 point de vie, 4 points d'armure et toutes les munitions à chaque humain·e"
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Illes peuvent aussi infliger 1 point de dégât par seconde en agrippant un humain ou une humaine."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Les Héro·ïne·s doivent trouver un drapeau caché dans la carte."
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "Elles digèrent progressivement et revient petit à petit à leur état normal. Lorsqu'elles meurent, elles conservent une partie de leur nourriture."
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "En touchant cette bave toxique, les humain·e·s perdent trois points de vie en trois secondes."
         }
     ]
 }

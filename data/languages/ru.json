@@ -73,13 +73,6 @@
             "value": "Стена: {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "few": "",
-            "many": "",
-            "other": ""
-        },
-        {
             "key": "The white hole is available!",
             "value": "Доступна белая дыра!"
         },
@@ -124,15 +117,15 @@
             "value": "Предел гранат поднят"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "few": "",
-            "many": "",
-            "other": ""
-        },
-        {
             "key": "The white hole is ready, use the laser rifle to disrupt space-time",
             "value": "Белая дыра готова; используйте лазер, чтобы исказить пространство и время"
+        },
+        {
+            "key": "You have {int:NumTurrets} turret available, use the Hammer to place it",
+            "one": "У вас есть {int:NumTurrets} турель. Используйте молот, чтобы установить её.",
+            "few": "У вас есть {int:NumTurrets} турели. Используйте молот, чтобы установить одну из них.",
+            "many": "У вас есть {int:NumTurrets} турелей. Используйте молот, чтобы установить одну из них.",
+            "other": "У вас есть {int:NumTurrets} турели. Используйте молот, чтобы установить одну из них."
         },
         {
             "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
@@ -168,6 +161,13 @@
         {
             "key": "The class is disabled",
             "value": "Класс недоступен"
+        },
+        {
+            "key": "Need at least {int:MinPlayers} player",
+            "one": "Требуется как минимум {int:MinPlayers} игрок",
+            "few": "Требуется как минимум {int:MinPlayers} игрока",
+            "many": "Требуется как минимум {int:MinPlayers} игроков",
+            "other": "Требуется как минимум {int:MinPlayers} игроков"
         },
         {
             "key": "Need at least {int:MinPlayers} players",
@@ -207,13 +207,6 @@
         {
             "key": "{str:PlayerName} has destroyed your turret!",
             "value": "Игрок {str:PlayerName} уничтожил вашу турель!"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "few": "",
-            "many": "",
-            "other": ""
         },
         {
             "key": "The game is not balanced. Infection is coming.",
@@ -508,6 +501,13 @@
             "value": "Раунд отменен: все люди вышли из игры"
         },
         {
+            "key": "One human won the round",
+            "one": "{int:NumHumans} человек победил",
+            "few": "{int:NumHumans} человека победили",
+            "many": "{int:NumHumans} человек победили",
+            "other": "{int:NumHumans} человека победили"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "{int:NumHumans} человек победил",
             "few": "{int:NumHumans} человека победили",
@@ -525,13 +525,6 @@
         {
             "key": "Infection is coming in {sec:RemainingTime}",
             "value": "Заражение через {sec:RemainingTime}"
-        },
-        {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "few": "",
-            "many": "",
-            "other": ""
         },
         {
             "key": "Rules of the game",
@@ -692,6 +685,13 @@
         {
             "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
             "value": "Ниндзя может кидать специальные гранаты, которые оглушают заражённых на 3 секунды."
+        },
+        {
+            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} time before touching the ground.",
+            "one": "Его молот заменён катаной, позволяющей ему делать рывок {int:NinjaJump} раз не касаясь земли.",
+            "few": "Его молот заменён катаной, позволяющей ему делать рывок {int:NinjaJump} раза не касаясь земли.",
+            "many": "Его молот заменён катаной, позволяющей ему делать рывок {int:NinjaJump} раз не касаясь земли.",
+            "other": "Его молот заменён катаной, позволяющей ему делать рывок {int:NinjaJump} раза не касаясь земли."
         },
         {
             "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
@@ -1055,61 +1055,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "Игрок {str:PlayerName} вышел из игры"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "При создании вашей учётной записи произошла ошибка."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Возникла ошибка во время действия."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "С помощью хука она также может наносить 1 единицу урона в секунду и восстанавливать своё здоровье с помощью крови жертвы."
-        },
-        {
-            "key": "{int:NumBombs} bombs left",
-            "one": "Осталась {int:NumBombs} бомба",
-            "few": "Осталось {int:NumBombs} бомбы",
-            "many": "Осталось {int:NumBombs} бомб",
-            "other": "Осталось {int:NumBombs} бомбы"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Пожалуйста, подожди 5 минут перед созданием ещё одной учётной записи"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Это прозвище уже занято"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Неизвестный класс"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Неверное имя пользователя/неверный пароль."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Надо войти в учётную запись для этого действия"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Надо быть подключённым к своей учётной записи, чтобы видеть свой целевой балл"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Надо быть подключённым к своей учётной записи, чтобы видеть свой ранг"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Учётная запись создана и выполнен вход."
-        },
-        {
-            "key": "A bomb is needed",
-            "value": "Нужна бомба"
         }
     ]
 }

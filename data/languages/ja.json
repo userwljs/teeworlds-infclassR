@@ -13,20 +13,8 @@
             "value": "バリア展開中 残り {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "次のフラグ出現まで 残り {sec:RemainingTime}"
-        },
-        {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "other": ""
         },
         {
             "key": "Choose your class",
@@ -35,14 +23,6 @@
         {
             "key": "Random choice",
             "value": "抽選で決める"
-        },
-        {
-            "key": "Need at least {int:MinPlayers} players",
-            "other": ""
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -129,6 +109,10 @@
             "value": "{str:VictimName} は感染した"
         },
         {
+            "key": "One human won the round",
+            "other": "{int:NumHumans} 人が生き残った！"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "other": "{int:NumHumans} 人が生き残った！"
         },
@@ -141,20 +125,12 @@
             "value": "{sec:RoundDuration} で全員感染した！"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "ゲームルール"
         },
         {
             "key": "How to translate the mod",
             "value": "どのようにmodを翻訳しますか"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "other": ""
         },
         {
             "key": "Use the hammer to place the bomb and explode it multiple times.",
@@ -259,66 +235,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} が離脱しました"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "アカウント作成中にエラーが発生しました。"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "別アカウントが作成完了するまで5分間お待ちください"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "この名前は既に使用されています"
-        },
-        {
-            "key": "Unknown class",
-            "value": "未知のクラス"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "記録が完了しました。"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "記録をすることであなたのランクが閲覧できるようになります。"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "アカウントの作成が完了し、現在アカウント情報を記録しています。"
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "どんな生存者でも、蜘蛛糸モード中に捕らえられると逃げるのが困難になります。"
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "爆弾は1人につき1つ構築できます。"
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "翻訳プロセスについてのどんな問題の解決の為、ぜひ私たちIRCにご連絡下さい ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に4ダメージずつ与えます。"
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "フラグを1本取るごとに、生存者全員のハートを1回復し、アーマーを4回復させます。また、獲得したヒーローはハートとアーマーがそれぞれ全回復します。"
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "彼女がフックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "ヒーローはマップの所々にあるフラグを見つけなかればいけません。"
         }
     ]
 }

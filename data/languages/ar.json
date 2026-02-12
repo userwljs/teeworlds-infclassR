@@ -21,15 +21,6 @@
             "value": "حاجز الليزر : {sec:RemainingTime}"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "zero": "",
-            "one": "",
-            "two": "",
-            "few": "",
-            "many": "",
-            "other": ""
-        },
-        {
             "key": "Next flag in {sec:RemainingTime}",
             "value": "العَلَمَ التالي في {sec:RemainingTime}"
         },
@@ -50,24 +41,6 @@
             "value": "ارتفع حد القذائف"
         },
         {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "zero": "",
-            "one": "",
-            "two": "",
-            "few": "",
-            "many": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "zero": "",
-            "one": "",
-            "two": "",
-            "few": "",
-            "many": "",
-            "other": ""
-        },
-        {
             "key": "Choose your class",
             "value": "إختر شخصيتك"
         },
@@ -76,26 +49,8 @@
             "value": "إختيار عشوائي"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "zero": "",
-            "one": "",
-            "two": "",
-            "few": "",
-            "many": "",
-            "other": ""
-        },
-        {
             "key": "You are frozen: {sec:EffectDuration}",
             "value": "لقد تجمدت : {sec:EffectDuration}"
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "zero": "",
-            "one": "",
-            "two": "",
-            "few": "",
-            "many": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -194,6 +149,15 @@
             "value": "أصيب بالعدوى {str:VictimName}"
         },
         {
+            "key": "One human won the round",
+            "zero": "٠ بشر فاز {int:NumHumans}",
+            "one": "١ بشري فاز {int:NumHumans}",
+            "two": "٢ بشران فازا",
+            "few": "بشر فازوا في الجولة {int:NumHumans}",
+            "many": "بشر فازوا في الجولة {int:NumHumans}",
+            "other": "بشريون فازوا في الجولة {int:NumHumans}"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "zero": "٠ بشر فاز {int:NumHumans}",
             "one": "١ بشري فاز {int:NumHumans}",
@@ -211,30 +175,12 @@
             "value": "فاز المصابون بالجولة في {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "zero": "",
-            "one": "",
-            "two": "",
-            "few": "",
-            "many": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "قواعد اللعبة :"
         },
         {
             "key": "How to translate the mod",
             "value": "كيف تترجم اللعبة"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "zero": "",
-            "one": "",
-            "two": "",
-            "few": "",
-            "many": "",
-            "other": ""
         },
         {
             "key": "Targeted chat messages",
@@ -367,90 +313,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} غادر اللعبة"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "حدث خطأ اثناء صنع حسابك"
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "لقد حدث خطأ أثناء العملية"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "الرجاء الانتظار 5 دقائق قبل صنع حساب اخر"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "اسم المستخدم مأخوذ"
-        },
-        {
-            "key": "Unknown class",
-            "value": "شخصية غير معروفة"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "إسم مستخدم\\رمز مرور خاطئ"
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "يجب أن تقوم بالولوج للقيام بهذه العملية"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "يجب ان تسجل الدخوال لترى الهدف"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "يجب ان تسجل الدخول لترى رتبتك"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "تم صنع حسابك وانت الان مسجل دخولك"
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "اي بشري يلمس السحب في وضع الشبكة تلقائيا يسحب."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "لايمكن إستعمال أكثر من قنبلة واحدة لكل جندي."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "اي سؤال عن الترجمة، الرجاء التواصل معنا على IRC ة ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "و يمكن أن يضعف من طاقة البشر بأربع نقاط كل ثانية."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "يمكن أن يلفّ بمطرقته متفجرات تعوق المصابين عن إيذاء."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "عند اخذ العلم، يعطي كل بشري ١ قلب، ٤ درع، ويملئ اسلحة كل البشر, والبطل يستعيد كل القلوب والدروع."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "و يمنكنها أيضا إحداث ضرر واحد في الثانية للبشر عند الإمساك به."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "البطل عليه ايجاد العلم المخفي في الخريطة."
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "وعلى أثر ذلك يهضم اعلافه رويداً منخفض إلى حالته الطبيعية، وبالأضافة الموت يسلبه غذائه."
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "اتّصال بلعابه يضعف من طاقة البشر بثلاث نقاط في ثلاث ثوان."
         }
     ]
 }

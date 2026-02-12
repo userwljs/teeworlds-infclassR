@@ -13,38 +13,8 @@
             "value": "{str:PlayerName} haluaa {str:VictimName} bannit({str:Reason})"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "{int:NumMines} mines are active",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "You have eliminated your target, +2 points",
             "value": "Tuhosit kohteesi, +2 pistettä"
-        },
-        {
-            "key": "Placed a turret, {int:TurretsNumber} turrets left",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "Scientist can get a white hole after {int:Kills} kills.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -139,6 +109,11 @@
             "value": "{str:VictimName} on infectoitu"
         },
         {
+            "key": "One human won the round",
+            "one": "Yksi ihminen voitti kierroksen",
+            "other": "{int:NumHumans} ihmistä voitti kierroksen"
+        },
+        {
             "key": "{int:NumHumans} humans won the round",
             "one": "Yksi ihminen voitti kierroksen",
             "other": "{int:NumHumans} ihmistä voitti kierroksen"
@@ -152,38 +127,8 @@
             "value": "Infectoitu voitti kierroksen {sec:RoundDuration}"
         },
         {
-            "key": "The survival is over after {int:NumWaves} waves.",
-            "one": "",
-            "other": ""
-        },
-        {
             "key": "Rules of the game",
             "value": "Pelin säännöt"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "Each bomb can explode {int:NumBombs} times.",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "Mines are limited to {int:NumMines} per player at the same time.",
-            "one": "",
-            "other": ""
         },
         {
             "key": "You have killed a witch, +5 points",
@@ -232,50 +177,6 @@
         {
             "key": "{str:PlayerName} has left the game",
             "value": "{str:PlayerName} jätti pelin"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Virhe tapahtui käyttäjäsi tekemisessä."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Virhe tapahtui operaatiossa."
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Odota 5 minuuttia niin voit tehdä toisen käyttäjän"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Tämä käyttäjänimi on valmiiksi otettu"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Tuntematon luokka"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Väärä käyttäjänimi/salasana."
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Sinun pitää liittyä tähän operaatioon"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Sinun pitää liittyä nähdäksesi maalisi"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Sinun pitää liittyä nähdäksesi arvon"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Sinun käyttäjä on tehty ja olet nyt liittynyt."
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Verkkotilassa oleva koukku tarttuu itsestään siihen osuvaan ihmiseen."
         }
     ]
 }
