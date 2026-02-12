@@ -4272,13 +4272,13 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 		if(!AccountsDisabled)
 		{
 			Buffer.append("\n\n");
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You can use RCON interface or chat commands to register and log in."), NULL);
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You can use RCON interface or chat commands to register and log in."), nullptr);
 			Buffer.append("\n\n");
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use `/register` without arguments to start registration via RCON."), NULL);
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use `/register` without arguments to start registration via RCON."), nullptr);
 			Buffer.append("\n\n");
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use `/register <username> <password>` to register via chat commands."), NULL);
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use `/register <username> <password>` to register via chat commands."), nullptr);
 			Buffer.append("\n\n");
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use RCON or `/login <username> <password>` to login into an existing account."), NULL);
+			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use RCON or `/login <username> <password>` to login into an existing account."), nullptr);
 		}
 	}
 	else
@@ -4410,7 +4410,7 @@ void CGameContext::ConCmdList(IConsole::IResult *pResult, void *pUserData)
 	Buffer.append("\n\n");
 	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/changelog", nullptr);
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/register, /login, /logout", NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/register, /login, /logout", nullptr);
 	Buffer.append("\n\n");
 	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Press <F3> or <F4> to enable or disable hook protection"), nullptr);
 
