@@ -1,243 +1,19 @@
 {
     "translation": [
         {
-            "key": "10 seconds later, a few players become infected.",
-            "value": "開始10秒後、プレイヤーが2人ランダムで感染します。"
+            "key": "You have already notified that {str:PlayerName} ought to be banned",
+            "value": "このアカウント {str:PlayerName} はBANされています"
         },
         {
-            "key": "A random class will be automatically attributed to you when round starts",
-            "value": "スタート時に職業抽選を選んだ場合、職業がランダムで決まります"
-        },
-        {
-            "key": "All humans affected by the explosion become infected.",
-            "value": "どんな生存者でも、爆風に触れると感染します。"
-        },
-        {
-            "key": "All players start as a human.",
-            "value": "開始時は全員生存者です。"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "アカウント作成中にエラーが発生しました。"
-        },
-        {
-            "key": "Available help pages: {str:PageList}",
-            "value": "閲覧できるヘルプページ：{str:PageList}"
-        },
-        {
-            "key": "Available languages: {str:ListOfLanguage}",
-            "value": "使用可能な言語：{str:ListOfLanguage}"
-        },
-        {
-            "key": "Bat can jump endlessly in the air but it cannot infect humans.",
-            "value": "感染者の勝利条件は全ての生存者を感染させることです。"
-        },
-        {
-            "key": "Boomer",
-            "value": "爆弾魔"
-        },
-        {
-            "key": "Boomers",
-            "value": "爆弾魔"
-        },
-        {
-            "key": "Choose a help page with /help <page>",
-            "value": "\"/help <ページ>\"でヘルプページを選んで下さい"
-        },
-        {
-            "key": "Choose your class",
-            "value": "好きな職業を選んで下さい"
-        },
-        {
-            "key": "Class {str:ClassName} will be automatically attributed to you when round starts",
-            "value": "スタート時に職業抽選を選んだ場合、職業がランダムで決まります"
-        },
-        {
-            "key": "Create an account on Crowdin and join the translation team:",
-            "value": "Crowdinのアカウントを作成して、翻訳のチームに参加して下さい"
-        },
-        {
-            "key": "Each bomb can explode {int:NumBombs} times.",
-            "other": "爆弾は {int:NumBombs} 回まで爆発させれます。"
-        },
-        {
-            "key": "Engineer",
-            "value": "エンジニア"
-        },
-        {
-            "key": "Engineers",
-            "value": "エンジニア"
-        },
-        {
-            "key": "Ghost",
-            "value": "ゴースト"
-        },
-        {
-            "key": "Ghosts",
-            "value": "ゴースト"
-        },
-        {
-            "key": "Ghoul can infect humans and heal the infected with the hammer.",
-            "value": "ゴーストはハンマーで生存者を感染させたり、他の感染者を回復させることができます。"
-        },
-        {
-            "key": "Hero",
-            "value": "ヒーロー"
-        },
-        {
-            "key": "Heroes",
-            "value": "ヒーロー"
-        },
-        {
-            "key": "Hook protection disabled",
-            "value": "フック無保護中"
-        },
-        {
-            "key": "Hook protection enabled",
-            "value": "フック保護中"
-        },
-        {
-            "key": "How to translate the mod",
-            "value": "どのようにmodを翻訳しますか"
-        },
-        {
-            "key": "How to use taxi mode",
-            "value": "どのようにmodを翻訳しますか"
-        },
-        {
-            "key": "Hunter",
-            "value": "ハンター"
-        },
-        {
-            "key": "Hunters",
-            "value": "ハンター"
-        },
-        {
-            "key": "If an infected heals it, the freeze effect disappears.",
-            "value": "しかし、他の感染者からの回復ですぐに復活できます。"
-        },
-        {
-            "key": "If the Witch dies, it disappears and is replaced by another class.",
-            "value": "魔女は倒れると、別の感染者の職業になって復活します。"
-        },
-        {
-            "key": "If your language is not available, you can help with translation (/help translate).",
-            "value": "もしあなたの国の言語がない場合、翻訳をして作りましょう。(/help translate)"
-        },
-        {
-            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-            "value": "フック(蜘蛛糸モード中)で生存者を捕らえると、その生存者に1ダメージずつ与え、さらに2秒間掴むことができます。"
-        },
-        {
-            "key": "Infected won the round in {sec:RoundDuration}",
-            "value": "{sec:RoundDuration} で全員感染した！"
-        },
-        {
-            "key": "Infection is coming in {sec:RemainingTime}",
-            "value": "次のフラグ出現まで 残り {sec:RemainingTime}"
-        },
-        {
-            "key": "InfectionClass is a team game between humans and the infected.",
-            "value": "InfectionClassは生存者と感染者によるチームゲームです。"
-        },
-        {
-            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
-            "value": "InfectionClass, by necropotame (version {str:VersionCode})"
-        },
-        {
-            "key": "It can also infect humans and heal the infected with the hammer.",
-            "value": "ゴーストはハンマーで生存者を感染させたり、他の感染者を回復させることができます。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "また、フックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "ゴーストはハンマーで生存者を感染させたり、他の感染者を回復させることができます。"
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "ゴーストはハンマーで生存者を感染させたり、他の感染者を回復させることができます。"
+            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
+            "value": "{str:PlayerName}により、{str:VictimName}はBANされました ({str:Reason})"
         },
         {
             "key": "Laser wall: {sec:RemainingTime}",
             "value": "バリア展開中 残り {sec:RemainingTime}"
         },
         {
-            "key": "List of commands",
-            "value": "コマンドリスト"
-        },
-        {
-            "key": "Looper laser wall: {sec:RemainingTime}",
-            "value": "バリア展開中 残り {sec:RemainingTime}"
-        },
-        {
-            "key": "Medic",
-            "value": "医者"
-        },
-        {
-            "key": "Medic also has a powerful shotgun that can knock back the infected.",
-            "value": "また、所持しているショットガンは感染者を追い払いつつダメージを与えられます。"
-        },
-        {
-            "key": "Medics",
-            "value": "医者"
-        },
-        {
-            "key": "Mercenaries",
-            "value": "傭兵"
-        },
-        {
-            "key": "Mercenary",
-            "value": "傭兵"
-        },
-        {
-            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-            "other": "また、ポイズングレネードを投げることもでき、効果範囲にいる感染者に{int:NumDamagePoints}ダメージを与えます。"
-        },
-        {
-            "key": "Mine activated",
-            "value": "{int:NumMines} 個の地雷が展開中"
-        },
-        {
-            "key": "Mines are limited to {int:NumMines} per player at the same time.",
-            "other": "地雷は1人につき{int:NumMines}つまで構築できます。"
-        },
-        {
-            "key": "Need at least {int:MinPlayers} players",
+            "key": "{int:NumBombs} bombs left",
             "other": ""
         },
         {
@@ -245,51 +21,127 @@
             "value": "次のフラグ出現まで 残り {sec:RemainingTime}"
         },
         {
-            "key": "Next target in {sec:RemainingTime}",
-            "value": "次のフラグ出現まで 残り {sec:RemainingTime}"
+            "key": "Placed a turret, {int:TurretsNumber} turrets left",
+            "other": ""
         },
         {
-            "key": "Ninja",
-            "value": "忍者"
+            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
+            "other": ""
         },
         {
-            "key": "Ninjas",
-            "value": "忍者"
-        },
-        {
-            "key": "No player was found with this name",
-            "value": "その名前のプレイヤーは見つかりませんでした"
-        },
-        {
-            "key": "{int:NumBombs} bombs left",
-            "other": "{int:NumBombs} 個の爆弾が展開中"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "other": "{int:NumHumans} 人が生き残った！"
-        },
-        {
-            "key": "{int:NumMines} mines are active",
-            "other": "{int:NumMines} 個の地雷が展開中"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "別アカウントが作成完了するまで5分間お待ちください"
-        },
-        {
-            "key": "Position lock: {sec:RemainingTime}",
-            "value": "位置固定 残り {sec:RemainingTime}"
-        },
-        {
-            "key": "Press <F3> or <F4> to enable or disable hook protection",
-            "value": "フックの保護を許可、禁止するために<F3>か<F4>を押して下さい"
+            "key": "Choose your class",
+            "value": "好きな職業を選んで下さい"
         },
         {
             "key": "Random choice",
             "value": "抽選で決める"
         },
         {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "key": "Need at least {int:MinPlayers} players",
+            "other": ""
+        },
+        {
+            "key": "Scientist can get a white hole after {int:Kills} kills.",
+            "other": ""
+        },
+        {
+            "key": "{str:PlayerName} entered and joined the game",
+            "value": "{str:PlayerName}が参加しました"
+        },
+        {
+            "key": "You have infected {str:VictimName}, +3 points",
+            "value": "{str:VictimName} を感染させた！ +3ポイント"
+        },
+        {
+            "key": "The Hero found the flag!",
+            "value": "ヒーローはフラグを見つけた！"
+        },
+        {
+            "key": "Mercenary",
+            "value": "傭兵"
+        },
+        {
+            "key": "Medic",
+            "value": "医者"
+        },
+        {
+            "key": "Hero",
+            "value": "ヒーロー"
+        },
+        {
+            "key": "Engineer",
+            "value": "エンジニア"
+        },
+        {
+            "key": "Soldier",
+            "value": "兵士"
+        },
+        {
+            "key": "Ninja",
+            "value": "忍者"
+        },
+        {
+            "key": "Sniper",
+            "value": "狙撃兵"
+        },
+        {
+            "key": "Scientist",
+            "value": "科学者"
+        },
+        {
+            "key": "Smoker",
+            "value": "ゾンビ"
+        },
+        {
+            "key": "Boomer",
+            "value": "爆弾魔"
+        },
+        {
+            "key": "Hunter",
+            "value": "ハンター"
+        },
+        {
+            "key": "Ghost",
+            "value": "ゴースト"
+        },
+        {
+            "key": "Spider",
+            "value": "蜘蛛"
+        },
+        {
+            "key": "Witch",
+            "value": "魔女"
+        },
+        {
+            "key": "Undead",
+            "value": "アンデッド"
+        },
+        {
+            "key": "{str:PlayerName} joined the spectators",
+            "value": "{str:PlayerName} が観戦モードに参加しました"
+        },
+        {
+            "key": "{str:PlayerName} joined the game",
+            "value": "{str:PlayerName} が参加しました"
+        },
+        {
+            "key": "{str:VictimName} has been infected",
+            "value": "{str:VictimName} は感染した"
+        },
+        {
+            "key": "{int:NumHumans} humans won the round",
+            "other": "{int:NumHumans} 人が生き残った！"
+        },
+        {
+            "key": "You have survived, +5 points",
+            "value": "最後まで生き残った！ +5ポイント"
+        },
+        {
+            "key": "Infected won the round in {sec:RoundDuration}",
+            "value": "{sec:RoundDuration} で全員感染した！"
+        },
+        {
+            "key": "The survival is over after {int:NumWaves} waves.",
             "other": ""
         },
         {
@@ -297,248 +149,36 @@
             "value": "ゲームルール"
         },
         {
-            "key": "Santa {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} が離脱しました"
+            "key": "How to translate the mod",
+            "value": "どのようにmodを翻訳しますか"
         },
         {
-            "key": "Scientist",
-            "value": "科学者"
-        },
-        {
-            "key": "Scientist has also grenades that teleport them.",
-            "value": "また、グレネードを使用して自身をテレポートすることができます。"
-        },
-        {
-            "key": "Scientists",
-            "value": "科学者"
-        },
-        {
-            "key": "Slug can infect humans and heal the infected with the hammer.",
-            "value": "ゾンビはハンマーで生存者を感染させたり、他の感染者を回復させたりできます。"
-        },
-        {
-            "key": "Smoker",
-            "value": "ゾンビ"
-        },
-        {
-            "key": "Smokers",
-            "value": "ゾンビ"
-        },
-        {
-            "key": "Sniper",
-            "value": "狙撃兵"
-        },
-        {
-            "key": "Snipers",
-            "value": "狙撃兵"
-        },
-        {
-            "key": "Soldier",
-            "value": "兵士"
-        },
-        {
-            "key": "Soldiers",
-            "value": "兵士"
-        },
-        {
-            "key": "Someone was infected to balance the game.",
-            "value": "彼が倒れると、そのバリアは解かれます。"
-        },
-        {
-            "key": "Spider",
-            "value": "蜘蛛"
-        },
-        {
-            "key": "Spiders",
-            "value": "蜘蛛"
-        },
-        {
-            "key": "Staying alive for: {int:RemainingTime}",
-            "value": "位置固定 残り {sec:RemainingTime}"
-        },
-        {
-            "key": "Switch language to english?",
-            "value": "言語を日本語に設定しますか？"
-        },
-        {
-            "key": "Target to eliminate: {str:PlayerName}",
-            "value": "感染して{str:ClassName}になりました"
-        },
-        {
-            "key": "Thanks to {str:ListOfContributors}",
-            "value": "{str:ListOfContributors} のおかげで"
-        },
-        {
-            "key": "The Boomer explodes when it attacks.",
-            "value": "爆弾魔は自爆をすることで攻撃ができます。"
-        },
-        {
-            "key": "The Engineer can build walls with the hammer to block the infected.",
-            "value": "エンジニアはハンマーでバリアの壁を構築でき、感染者を妨げます。"
-        },
-        {
-            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-            "value": "また、彼は常に透明で、生存者が近くにいると姿を現します。彼がダメージを受けた時や、ハンマーを使用した時にも姿を現します。"
-        },
-        {
-            "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
-            "value": "ヒーローは医者での回復を行うことができませんが、感染者からの攻撃に少し耐性が付きます。"
-        },
-        {
-            "key": "The Hero found the flag!",
-            "value": "ヒーローはフラグを見つけた！"
-        },
-        {
-            "key": "The Medic can protect humans with the hammer by giving them armor.",
-            "value": "医者はハンマーで他の生存者のアーマーを回復させることができます。"
-        },
-        {
-            "key": "The Mercenary can fly in the air using their machine gun.",
-            "value": "傭兵はマシンガンを使用して飛ぶことができます。"
-        },
-        {
-            "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
-            "value": "忍者はフラッシュグレネードを使用することができ、グレネードの効果範囲にいた感染者の動きを3秒間封じれます。"
-        },
-        {
-            "key": "The Scientist can pose floating mines with the hammer.",
-            "value": "科学者はハンマーで地雷を仕掛けられます。"
-        },
-        {
-            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-            "value": "ゾンビはハンマーで生存者を感染させたり、他の感染者を回復させたりできます。"
-        },
-        {
-            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
-            "value": "狙撃兵はハンマーで現在位置を15秒間固定することができます。"
-        },
-        {
-            "key": "The Soldier creates floating bombs with the hammer.",
-            "value": "兵士はハンマーで爆弾を仕掛けられます。"
-        },
-        {
-            "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
-            "value": "彼が倒れると10秒間行動不能になります。"
-        },
-        {
-            "key": "The class is disabled",
-            "value": "魔女は倒れた"
-        },
-        {
-            "key": "The class selector will be displayed when round starts",
-            "value": "職業選択メニューは、スタート時に表示されます"
-        },
-        {
-            "key": "The goal for the humans is to survive until the army cleans the map.",
-            "value": "生存者側の勝利条件は最後まで生き残ることです。"
-        },
-        {
-            "key": "The goal for the infected is to infect all humans.",
-            "value": "感染者の勝利条件は全ての生存者を感染させることです。"
-        },
-        {
-            "key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
-            "value": "バリアは {sec:LifeSpan} まで持ち、また1人につき1つまでしか構築できません。"
-        },
-        {
-            "key": "The undead is finally dead",
-            "value": "アンデッドは倒れた"
-        },
-        {
-            "key": "The witch is dead",
-            "value": "魔女は倒れた"
-        },
-        {
-            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-            "other": "また、彼のハンマーは刀として使用できます。そして、彼は空中で跳ぶことができます。ただし、{int:NinjaJump}回跳んだ後は着地しないと再使用することができません。"
-        },
-        {
-            "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
-            "value": "兵士はハンマーで爆弾を仕掛けられます。"
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "また、空中で2回ジャンプを行うことができます。"
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "また、空中で2回ジャンプを行うことができます。"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "この名前は既に使用されています"
-        },
-        {
-            "key": "Too few infected to call the Santa",
-            "value": "感染者の勝利条件は全ての生存者を感染させることです。"
-        },
-        {
-            "key": "Type “/help {str:ClassName}” for more information about your class",
-            "value": "\"/help {str:ClassName}\" でその職業の詳細を開けます"
-        },
-        {
-            "key": "Undead",
-            "value": "アンデッド"
-        },
-        {
-            "key": "Undead can infect humans and heal the infected with the hammer.",
-            "value": "アンデッドはハンマーで生存者を感染させたり、他の感染者を回復させることができます。"
-        },
-        {
-            "key": "Undeads",
-            "value": "アンデッド"
-        },
-        {
-            "key": "Unknown class",
-            "value": "未知のクラス"
-        },
-        {
-            "key": "Unknown language",
-            "value": "未知の言語"
-        },
-        {
-            "key": "Unknowns",
-            "value": "未知のクラス"
-        },
-        {
-            "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
-            "value": "1度ハンマーを使用すると爆弾を設置し、もう一度使用すると爆弾を爆発させれます。"
+            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "other": ""
         },
         {
             "key": "Use the hammer to place the bomb and explode it multiple times.",
             "value": "1度ハンマーを使用すると爆弾を設置し、もう一度使用すると爆弾を爆発させれます。"
         },
         {
-            "key": "Voodoo can infect humans and heal the infected with the hammer.",
-            "value": "ゴーストはハンマーで生存者を感染させたり、他の感染者を回復させることができます。"
+            "key": "You have killed a witch, +5 points",
+            "value": "魔女を倒した！ +5ポイント"
         },
         {
-            "key": "Web mode enabled",
-            "value": "蜘蛛糸モード中"
+            "key": "The witch is dead",
+            "value": "魔女は倒れた"
         },
         {
-            "key": "When an infected touches the wall, it dies.",
-            "value": "彼が倒れると、そのバリアは解かれます。"
+            "key": "The undead is finally dead",
+            "value": "アンデッドは倒れた"
         },
         {
-            "key": "White hole: {sec:RemainingTime}",
-            "value": "バリア展開中 残り {sec:RemainingTime}"
+            "key": "Hook protection enabled",
+            "value": "フック保護中"
         },
         {
-            "key": "Witch",
-            "value": "魔女"
-        },
-        {
-            "key": "Witch can infect humans and heal the infected with the hammer.",
-            "value": "魔女はハンマーで生存者を感染させたり、他の感染者を回復させることができます。"
-        },
-        {
-            "key": "Witch {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} が離脱しました"
-        },
-        {
-            "key": "Witches",
-            "value": "魔女"
+            "key": "Hook protection disabled",
+            "value": "フック無保護中"
         },
         {
             "key": "You are a human: {str:ClassName}",
@@ -549,52 +189,92 @@
             "value": "感染して{str:ClassName}になりました"
         },
         {
-            "key": "You can change the language of this mod using the command /language.",
-            "value": "\"/language\" でこのmodの言語を変更できます。"
+            "key": "Type “/help {str:ClassName}” for more information about your class",
+            "value": "\"/help {str:ClassName}\" でその職業の詳細を開けます"
         },
         {
             "key": "You can't join the spectators right now",
             "value": "今は観戦モードに移ることができません"
         },
         {
-            "key": "You have already notified that {str:PlayerName} ought to be banned",
-            "value": "このアカウント {str:PlayerName} はBANされています"
+            "key": "{str:PlayerName} changed their name to {str:NewName}",
+            "value": "{str:PlayerName} は名前を {str:NewName} へ変更しました"
         },
         {
-            "key": "You have been infected by {str:KillerName}",
-            "value": "感染して{str:ClassName}になりました"
+            "key": "You can change the language of this mod using the command /language.",
+            "value": "\"/language\" でこのmodの言語を変更できます。"
         },
         {
-            "key": "You have called the Santa once again",
-            "value": "魔女を倒した！ +5ポイント"
+            "key": "If your language is not available, you can help with translation (/help translate).",
+            "value": "もしあなたの国の言語がない場合、翻訳をして作りましょう。(/help translate)"
         },
         {
-            "key": "You have infected {str:VictimName}, +3 points",
-            "value": "{str:VictimName} を感染させた！ +3ポイント"
+            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
+            "value": "InfectionClass, by necropotame (version {str:VersionCode})"
         },
         {
-            "key": "You have infected {str:VictimName}, shame on you!",
-            "value": "{str:VictimName} を感染させた！ +3ポイント"
+            "key": "Thanks to {str:ListOfContributors}",
+            "value": "{str:ListOfContributors} のおかげで"
         },
         {
-            "key": "You have killed a witch, +5 points",
-            "value": "魔女を倒した！ +5ポイント"
+            "key": "No player was found with this name",
+            "value": "その名前のプレイヤーは見つかりませんでした"
         },
         {
-            "key": "You have killed an undead! +5 points",
-            "value": "魔女を倒した！ +5ポイント"
+            "key": "Choose a help page with /help <page>",
+            "value": "\"/help <ページ>\"でヘルプページを選んで下さい"
         },
         {
-            "key": "You have survived, +5 points",
-            "value": "最後まで生き残った！ +5ポイント"
+            "key": "Available help pages: {str:PageList}",
+            "value": "閲覧できるヘルプページ：{str:PageList}"
         },
         {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "other": ""
+            "key": "Unknown language",
+            "value": "未知の言語"
         },
         {
-            "key": "You must be logged to see stats",
-            "value": "記録をすることであなたのランクが閲覧できるようになります。"
+            "key": "Available languages: {str:ListOfLanguage}",
+            "value": "使用可能な言語：{str:ListOfLanguage}"
+        },
+        {
+            "key": "List of commands",
+            "value": "コマンドリスト"
+        },
+        {
+            "key": "Press <F3> or <F4> to enable or disable hook protection",
+            "value": "フックの保護を許可、禁止するために<F3>か<F4>を押して下さい"
+        },
+        {
+            "key": "{str:PlayerName} has been banned ({str:Reason})",
+            "value": "{str:PlayerName} はBANされた({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has been kicked ({str:Reason})",
+            "value": "{str:PlayerName} は追放された({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game ({str:Reason})",
+            "value": "{str:PlayerName} は離脱した ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game",
+            "value": "{str:PlayerName} が離脱しました"
+        },
+        {
+            "key": "An error occured during the creation of your account.",
+            "value": "アカウント作成中にエラーが発生しました。"
+        },
+        {
+            "key": "Please wait 5 minutes before creating another account",
+            "value": "別アカウントが作成完了するまで5分間お待ちください"
+        },
+        {
+            "key": "This username is already taken by an existing account",
+            "value": "この名前は既に使用されています"
+        },
+        {
+            "key": "Unknown class",
+            "value": "未知のクラス"
         },
         {
             "key": "You must be logged to see your goal",
@@ -609,64 +289,8 @@
             "value": "アカウントの作成が完了し、現在アカウント情報を記録しています。"
         },
         {
-            "key": "{str:PlayerName} changed the class to {str:ClassName}",
-            "value": "{str:PlayerName} は名前を {str:NewName} へ変更しました"
-        },
-        {
-            "key": "{str:PlayerName} changed their name to {str:NewName}",
-            "value": "{str:PlayerName} は名前を {str:NewName} へ変更しました"
-        },
-        {
-            "key": "{str:PlayerName} entered and joined the game",
-            "value": "{str:PlayerName}が参加しました"
-        },
-        {
-            "key": "{str:PlayerName} has been banned ({str:Reason})",
-            "value": "{str:PlayerName} はBANされた({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has been kicked ({str:Reason})",
-            "value": "{str:PlayerName} は追放された({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has destroyed your turret!",
-            "value": "{str:PlayerName} が離脱しました"
-        },
-        {
-            "key": "{str:PlayerName} has left the game",
-            "value": "{str:PlayerName} が離脱しました"
-        },
-        {
-            "key": "{str:PlayerName} has left the game ({str:Reason})",
-            "value": "{str:PlayerName} は離脱した ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} joined the game",
-            "value": "{str:PlayerName} が参加しました"
-        },
-        {
-            "key": "{str:PlayerName} joined the spectators",
-            "value": "{str:PlayerName} が観戦モードに参加しました"
-        },
-        {
-            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
-            "value": "{str:PlayerName} は名前を {str:NewName} へ変更しました"
-        },
-        {
-            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
-            "value": "{str:PlayerName}により、{str:VictimName}はBANされました ({str:Reason})"
-        },
-        {
-            "key": "{str:VictimName} has been infected",
-            "value": "{str:VictimName} は感染した"
-        },
-        {
             "key": "Any human that touch a hook in web mode is automatically grabbed.",
             "value": "どんな生存者でも、蜘蛛糸モード中に捕らえられると逃げるのが困難になります。"
-        },
-        {
-            "key": "Bat can jump multiple times in air.",
-            "value": "また、空中で2回ジャンプを行うことができます。"
         },
         {
             "key": "Bombs are limited to one per player at the same time.",
@@ -693,40 +317,8 @@
             "value": "彼女がフックで生存者を捕らえると、その生存者に1ダメージずつ与えます。"
         },
         {
-            "key": "Snipers can jump two times in air.",
-            "value": "また、空中で2回ジャンプを行うことができます。"
-        },
-        {
-            "key": "The Hero has a shotgun, a laser rifle, and a grenade launcher.",
-            "value": "ヒーローはショットガン、レーザー、グレネードランチャーを所持しています。"
-        },
-        {
             "key": "The Hero must find a flag hidden in the map.",
             "value": "ヒーローはマップの所々にあるフラグを見つけなかればいけません。"
-        },
-        {
-            "key": "The Hunter can infect humans and heal infected with the hammer.",
-            "value": "ハンターはハンマーで生存者を感染させたり、他の感染者を回復させることができます。"
-        },
-        {
-            "key": "The Smoker can infect humans and heal infected with the hammer.",
-            "value": "ゾンビはハンマーで生存者を感染させたり、他の感染者を回復させたりできます。"
-        },
-        {
-            "key": "The Spider can infect humans and heal infected with the hammer.",
-            "value": "蜘蛛はハンマーで生存者を感染させたり、他の感染者を回復させることができます。"
-        },
-        {
-            "key": "They also have a powerful rifle that deals 20 damage points in locked position, and 10–13 otherwise.",
-            "value": "彼は強力なライフルを所持しており、位置を固定している間は30ダメージを与えられます。通常時でも10-13ダメージを与えられます。"
-        },
-        {
-            "key": "When an infected dies, it may respawn near the Witch.",
-            "value": "また、感染者が倒れたときの一時的な復活地点として機能します。"
-        },
-        {
-            "key": "When selecting any gun, the hook enter in web mode.",
-            "value": "また、マウスカーソルを操作すると、フックを蜘蛛糸モードに変更できます。"
         }
     ]
 }

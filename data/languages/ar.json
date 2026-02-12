@@ -1,302 +1,27 @@
 {
     "translation": [
         {
-            "key": "10 seconds later, a few players become infected.",
-            "value": "بعد 10 ثوان، يصاب لاعبان بالعدوى."
+            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
+            "value": "تم كتم {str:Victim} لمدة {sec:Duration} ({str:Reason})"
         },
         {
-            "key": "A random class will be automatically attributed to you when round starts",
-            "value": "سيم تعيين شخصية تلقائيا عند بداية الشوط"
+            "key": "You have already notified that {str:PlayerName} ought to be banned",
+            "value": "انت نوهت للتو ان {str:PlayerName} يجب حظره"
         },
         {
-            "key": "All humans affected by the explosion become infected.",
-            "value": "كل البشر ألذين يصلهم الإنفجار يصابو بالعدوى."
+            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
+            "value": "{str:PlayerName} يريد {str:VictimName} ان يحظر {str:VictimName}"
         },
         {
-            "key": "All players start as a human.",
-            "value": "جميع اللاعبين يبدؤن كبشر"
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "حدث خطأ اثناء صنع حسابك"
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "لقد حدث خطأ أثناء العملية"
-        },
-        {
-            "key": "Available help pages: {str:PageList}",
-            "value": "صفحات المساعدة المتاحة: {str:PageList}"
-        },
-        {
-            "key": "Available languages: {str:ListOfLanguage}",
-            "value": "اللغات المتاحة: {str:ListOfLanguage}"
-        },
-        {
-            "key": "Based on the concept of Infection mod by Gravity",
-            "value": "مستلهمة من مفهوم لعبة العدوى ل gravity"
-        },
-        {
-            "key": "Bat can jump endlessly in the air but it cannot infect humans.",
-            "value": "هدف المصابين بالعدوى أن يمرروها إلى البشر."
-        },
-        {
-            "key": "Biologist",
-            "value": "عالم بيئي"
-        },
-        {
-            "key": "Biologists",
-            "value": "عالم بيئي"
-        },
-        {
-            "key": "Boomer",
-            "value": "متفجر"
-        },
-        {
-            "key": "Boomers",
-            "value": "متفجر"
-        },
-        {
-            "key": "Choose a help page with /help <page>",
-            "value": "اختر صفحة مساعدة بأمر help/"
-        },
-        {
-            "key": "Choose your class",
-            "value": "إختر شخصيتك"
-        },
-        {
-            "key": "Class {str:ClassName} will be automatically attributed to you when round starts",
-            "value": "سيم تعيين شخصية تلقائيا عند بداية الشوط"
-        },
-        {
-            "key": "Create an account on Crowdin and join the translation team:",
-            "value": "سجل حساب على Crowdin وانضم الى فريق الترجمة:"
-        },
-        {
-            "key": "Each bomb can explode {int:NumBombs} times.",
-            "zero": "إحدى قنبلة يمكن أن تنفجر {int:NumBombs} من مرّات.",
-            "one": "احدى قنبلة واحدة يمكن ان تنفجر {int:NumBombs} مرة واحدة",
-            "two": "احدى قنبلتين يمكن ان تنفجر {int:NumBombs} مرتين.",
-            "few": "إحدى قنبلة يمكن أن تنفجر {int:NumBombs} مرّات.",
-            "many": "إحدى قنبلة يمكن أن تنفجر {int:NumBombs} مرة.",
-            "other": "إحدى قنبلة يمكن أن تنفجر {int:NumBombs} مرة."
-        },
-        {
-            "key": "Engineer",
-            "value": "مهندس"
-        },
-        {
-            "key": "Engineers",
-            "value": "مهندس"
-        },
-        {
-            "key": "Example: “/msg !medic I'm wounded!”",
-            "value": "مثال: «!msg !medic 2anā garī7un/»"
-        },
-        {
-            "key": "Example: “/mute nameless tee”",
-            "value": "مثال: «!msg !medic 2anā garī7un/»"
-        },
-        {
-            "key": "Explosive yield: {percent:BombLevel}",
-            "value": "نتيجة انفجار: {percent:BombLevel}"
-        },
-        {
-            "key": "Ghost",
-            "value": "شبح"
-        },
-        {
-            "key": "Ghosts",
-            "value": "شبح"
-        },
-        {
-            "key": "Ghoul",
-            "value": "شيطان"
-        },
-        {
-            "key": "Ghoul can infect humans and heal the infected with the hammer.",
-            "value": "الغول يمكنه إصابة البشر وإشفاء المصابين بمطرقته."
-        },
-        {
-            "key": "Ghouls",
-            "value": "شيطان"
-        },
-        {
-            "key": "Grenade limit increased",
-            "value": "ارتفع حد القذائف"
-        },
-        {
-            "key": "Hero",
-            "value": "بطل"
-        },
-        {
-            "key": "Heroes",
-            "value": "بطل"
-        },
-        {
-            "key": "Hook protection disabled",
-            "value": "يمكن للاعبين الإمساك بك"
-        },
-        {
-            "key": "Hook protection enabled",
-            "value": "لا يمكن للاعبين الإمساك بك"
-        },
-        {
-            "key": "How to translate the mod",
-            "value": "كيف تترجم اللعبة"
-        },
-        {
-            "key": "How to use taxi mode",
-            "value": "كيف تترجم اللعبة"
-        },
-        {
-            "key": "Hunter",
-            "value": "صياد"
-        },
-        {
-            "key": "Hunters",
-            "value": "صياد"
-        },
-        {
-            "key": "If an infected heals it, the freeze effect disappears.",
-            "value": "إذا مصاب عالجه، التجمد سيختفي."
-        },
-        {
-            "key": "If the Witch dies, it disappears and is replaced by another class.",
-            "value": "إذا ماتت الساحرة، سيتم تعويضها بشخصية أخرى من المصابين بالعدوى."
-        },
-        {
-            "key": "If your language is not available, you can help with translation (/help translate).",
-            "value": "اذا كانت لغتك غير متاحة، تستطيع المساعدة في الترجمة (help translate/)."
-        },
-        {
-            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-            "value": "في جميع الحالات الإمساك بأحد البشر ضرّر واحدا لطاقته كل ثانية ويمسكه خلال ثانيتين."
-        },
-        {
-            "key": "Infected won the round in {sec:RoundDuration}",
-            "value": "فاز المصابون بالجولة في {sec:RoundDuration}"
-        },
-        {
-            "key": "Infection is coming in {sec:RemainingTime}",
-            "value": "العَلَمَ التالي في {sec:RemainingTime}"
-        },
-        {
-            "key": "InfectionClass is a team game between humans and the infected.",
-            "value": "InfectionClass هي لعبة بين البشر و المصابين بالعدوى"
-        },
-        {
-            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
-            "value": "عبة المصابون، مصممها necropotame ة (version {str:VersionCode})"
-        },
-        {
-            "key": "It can also infect humans and heal the infected with the hammer.",
-            "value": "يمكن للشبح أن يمرر العدوى إلى البشر وأن يشفي المصابين يإستعمال مطرقته."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "يمكنه أيضا ان ينقص طاقة البشر نقطة ١ عن طريق الإمساك بهم."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "يمكن للشبح أن يمرر العدوى إلى البشر وأن يشفي المصابين يإستعمال مطرقته."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "يمكن للشبح أن يمرر العدوى إلى البشر وأن يشفي المصابين يإستعمال مطرقته."
+            "key": "You have held a bonus area for one minute, +5 points",
+            "value": "احتفظْت متطقة مكافأة لخمس دقائق, +٥ نقاط"
         },
         {
             "key": "Laser wall: {sec:RemainingTime}",
             "value": "حاجز الليزر : {sec:RemainingTime}"
         },
         {
-            "key": "List of commands",
-            "value": "لائحة الأوامر"
-        },
-        {
-            "key": "Looper laser wall: {sec:RemainingTime}",
-            "value": "حاجز الليزر : {sec:RemainingTime}"
-        },
-        {
-            "key": "Main contributors: {str:ListOfContributors}",
-            "value": "المساهمون الرئيسيون: {str:ListOfContributors}"
-        },
-        {
-            "key": "Medic",
-            "value": "طبيب"
-        },
-        {
-            "key": "Medic also has a powerful shotgun that can knock back the infected.",
-            "value": "لديه أيظا بندقية يمكنها أن تدفع المصابين بالعدوى."
-        },
-        {
-            "key": "Medics",
-            "value": "طبيب"
-        },
-        {
-            "key": "Mercenaries",
-            "value": "مرتزق"
-        },
-        {
-            "key": "Mercenary",
-            "value": "مرتزق"
-        },
-        {
-            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-            "zero": "ويمكن أن يرمي قذائف سامّة كله تدِرّ بـ {int:NumDamagePoints} من نقاط.",
-            "one": "ويمكن أن يرمي قذائف سامّة كله تدِرّ بنقطة واحدة.",
-            "two": "ويمكن أن يرمي قذائف سامّة كله تدِرّ بـ {int:NumDamagePoints} نقطتين.",
-            "few": "ويمكن أن يرمي قذائف سامّة كله تدِرّ بـ {int:NumDamagePoints} نقاط.",
-            "many": "ويمكن أن يرمي قذائف سامّة كله تدِرّ بـ {int:NumDamagePoints} نقطة.",
-            "other": "ويمكن أن يرمي قذائف سامّة كله تدِرّ بـ {int:NumDamagePoints} نقطة."
-        },
-        {
-            "key": "Mine activated",
-            "value": "يشتغل لغم"
-        },
-        {
-            "key": "Mines are limited to {int:NumMines} per player at the same time.",
-            "zero": "الالغام محدودة ل {int:NumMines} كل لاعب في الوقت ذاته",
-            "one": "الالغام محدودة ل {int:NumMines} كل لاعب في الوقت ذاته",
-            "two": "الالغام محدودة ل {int:NumMines} كل لاعب في الوقت ذاته",
-            "few": "الالغام محدودة ل {int:NumMines} كل لاعب في الوقت ذاته",
-            "many": "الالغام محدودة ل {int:NumMines} كل لاعب في الوقت ذاته",
-            "other": "الالغام محدودة ل {int:NumMines} كل لاعب في الوقت ذاته"
-        },
-        {
-            "key": "Need at least {int:MinPlayers} players",
+            "key": "{int:NumBombs} bombs left",
             "zero": "",
             "one": "",
             "two": "",
@@ -309,29 +34,164 @@
             "value": "العَلَمَ التالي في {sec:RemainingTime}"
         },
         {
-            "key": "Next target in {sec:RemainingTime}",
-            "value": "الهدف التالي في  {sec:RemainingTime}"
+            "key": "You have eliminated your target, +2 points",
+            "value": "لقد تخلصت من الهدف الخاص بك، +2 نقاط"
+        },
+        {
+            "key": "Sword velocity increased",
+            "value": "ارتفعت سرعة السيف"
+        },
+        {
+            "key": "Sword strength increased",
+            "value": "ارتفعت قوة السيف"
+        },
+        {
+            "key": "Grenade limit increased",
+            "value": "ارتفع حد القذائف"
+        },
+        {
+            "key": "Placed a turret, {int:TurretsNumber} turrets left",
+            "zero": "",
+            "one": "",
+            "two": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        {
+            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
+            "zero": "",
+            "one": "",
+            "two": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        {
+            "key": "Choose your class",
+            "value": "إختر شخصيتك"
+        },
+        {
+            "key": "Random choice",
+            "value": "إختيار عشوائي"
+        },
+        {
+            "key": "Need at least {int:MinPlayers} players",
+            "zero": "",
+            "one": "",
+            "two": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        {
+            "key": "You are frozen: {sec:EffectDuration}",
+            "value": "لقد تجمدت : {sec:EffectDuration}"
+        },
+        {
+            "key": "Scientist can get a white hole after {int:Kills} kills.",
+            "zero": "",
+            "one": "",
+            "two": "",
+            "few": "",
+            "many": "",
+            "other": ""
+        },
+        {
+            "key": "{str:PlayerName} entered and joined the game",
+            "value": "{str:PlayerName} دخل و إنضم إلى اللعبة"
+        },
+        {
+            "key": "You have infected {str:VictimName}, +3 points",
+            "value": "لقد اصبت غيرك بالعدوى {str:VictimName}، +٣ نقاط"
+        },
+        {
+            "key": "The Hero found the flag!",
+            "value": "البطل وجد العلم!"
+        },
+        {
+            "key": "Mercenary",
+            "value": "مرتزق"
+        },
+        {
+            "key": "Medic",
+            "value": "طبيب"
+        },
+        {
+            "key": "Hero",
+            "value": "بطل"
+        },
+        {
+            "key": "Engineer",
+            "value": "مهندس"
+        },
+        {
+            "key": "Soldier",
+            "value": "جندي"
         },
         {
             "key": "Ninja",
             "value": "نينجا"
         },
         {
-            "key": "Ninjas",
-            "value": "نينجا"
+            "key": "Sniper",
+            "value": "قناص"
         },
         {
-            "key": "No player was found with this name",
-            "value": "لا يوجد لاعب بهذا الاسم"
+            "key": "Scientist",
+            "value": "عالم"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "zero": "٠ قنبلة متبقية {int:NumBombs}",
-            "one": "قنبلة واحدة متبقية {int:NumBombs}",
-            "two": "قنبلتين متبقيتين {int:NumBombs}",
-            "few": "قنابل متبقية {int:NumBombs}",
-            "many": "قنبلة متبقية {int:NumBombs}",
-            "other": "قنبلة متبقية {int:NumBombs}"
+            "key": "Biologist",
+            "value": "عالم بيئي"
+        },
+        {
+            "key": "Smoker",
+            "value": "مدخن"
+        },
+        {
+            "key": "Boomer",
+            "value": "متفجر"
+        },
+        {
+            "key": "Hunter",
+            "value": "صياد"
+        },
+        {
+            "key": "Ghost",
+            "value": "شبح"
+        },
+        {
+            "key": "Spider",
+            "value": "عنكبوت"
+        },
+        {
+            "key": "Ghoul",
+            "value": "شيطان"
+        },
+        {
+            "key": "Slug",
+            "value": "حلزون"
+        },
+        {
+            "key": "Witch",
+            "value": "ساحرة"
+        },
+        {
+            "key": "Undead",
+            "value": "الاميت"
+        },
+        {
+            "key": "{str:PlayerName} joined the spectators",
+            "value": "{str:PlayerName} إنضم الى المشاهدين"
+        },
+        {
+            "key": "{str:PlayerName} joined the game",
+            "value": "{str:PlayerName} إنضم إلى اللعبة"
+        },
+        {
+            "key": "{str:VictimName} has been infected",
+            "value": "أصيب بالعدوى {str:VictimName}"
         },
         {
             "key": "{int:NumHumans} humans won the round",
@@ -343,32 +203,15 @@
             "other": "بشريون فازوا في الجولة {int:NumHumans}"
         },
         {
-            "key": "{int:NumMines} mines are active",
-            "zero": "لا يشتغل لغم",
-            "one": "يشتغل لغم واحد",
-            "two": "يشتغل لغمان",
-            "few": "تشتغل {int:NumMines} ألغام",
-            "many": "تشتغل {int:NumMines} لغما",
-            "other": "تشتغل {int:NumMines} لغم"
+            "key": "You have survived, +5 points",
+            "value": "لقد نجوت، +٥ نقاط"
         },
         {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "الرجاء الانتظار 5 دقائق قبل صنع حساب اخر"
+            "key": "Infected won the round in {sec:RoundDuration}",
+            "value": "فاز المصابون بالجولة في {sec:RoundDuration}"
         },
         {
-            "key": "Position lock: {sec:RemainingTime}",
-            "value": "تجمد الموقف : {sec:RemainingTime}"
-        },
-        {
-            "key": "Press <F3> or <F4> to enable or disable hook protection",
-            "value": "اضغط <F3> أو <F4> لتفعيل او الغاء تفعيل السحب"
-        },
-        {
-            "key": "Random choice",
-            "value": "إختيار عشوائي"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "key": "The survival is over after {int:NumWaves} waves.",
             "zero": "",
             "one": "",
             "two": "",
@@ -381,305 +224,57 @@
             "value": "قواعد اللعبة :"
         },
         {
-            "key": "Santa {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} غادر اللعبة"
+            "key": "How to translate the mod",
+            "value": "كيف تترجم اللعبة"
         },
         {
-            "key": "Scientist",
-            "value": "عالم"
-        },
-        {
-            "key": "Scientist has also grenades that teleport them.",
-            "value": "ايضا لديه قنبلة يدوية يستطيع الانتقال بها."
-        },
-        {
-            "key": "Scientists",
-            "value": "عالم"
-        },
-        {
-            "key": "Slug",
-            "value": "حلزون"
-        },
-        {
-            "key": "Slug can infect humans and heal the infected with the hammer.",
-            "value": "يمكن للحلزون أن يصيب البشر و يشفي المصابين بمطرقته."
-        },
-        {
-            "key": "Slugs",
-            "value": "حلزون"
-        },
-        {
-            "key": "Smoker",
-            "value": "مدخن"
-        },
-        {
-            "key": "Smokers",
-            "value": "مدخن"
-        },
-        {
-            "key": "Sniper",
-            "value": "قناص"
-        },
-        {
-            "key": "Snipers",
-            "value": "قناص"
-        },
-        {
-            "key": "Soldier",
-            "value": "جندي"
-        },
-        {
-            "key": "Soldiers",
-            "value": "جندي"
-        },
-        {
-            "key": "Someone was infected to balance the game.",
-            "value": "عندما يلمس مصاب بالعدوى الحائط يموت."
-        },
-        {
-            "key": "Spider",
-            "value": "عنكبوت"
-        },
-        {
-            "key": "Spiders",
-            "value": "عنكبوت"
-        },
-        {
-            "key": "Staying alive for: {int:RemainingTime}",
-            "value": "تجمد الموقف : {sec:RemainingTime}"
-        },
-        {
-            "key": "Stomach filled by {percent:FodderInStomach}",
-            "value": "المعدة ممتلئة حتى  {percent:FodderInStomach}"
-        },
-        {
-            "key": "Switch language to english?",
-            "value": "تغيير اللغة إلى العربية ؟"
-        },
-        {
-            "key": "Sword strength increased",
-            "value": "ارتفعت قوة السيف"
-        },
-        {
-            "key": "Sword velocity increased",
-            "value": "ارتفعت سرعة السيف"
-        },
-        {
-            "key": "Target to eliminate: {str:PlayerName}",
-            "value": "الهدف للإقصاء : {str:PlayerName}"
+            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "zero": "",
+            "one": "",
+            "two": "",
+            "few": "",
+            "many": "",
+            "other": ""
         },
         {
             "key": "Targeted chat messages",
             "value": "رسالة دردشة موجهة"
         },
         {
-            "key": "Thanks to {str:ListOfContributors}",
-            "value": "شكرا ل : {str:ListOfContributors}"
-        },
-        {
-            "key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
-            "value": "عالم الأحياء يملك بندقية مع لرصاص مرتد ويمكن إنشاء فخ عن طريق إطلاق النار باليزر."
-        },
-        {
-            "key": "The Boomer explodes when it attacks.",
-            "value": "يمكن أن يتفجر عندما يهاجم."
-        },
-        {
-            "key": "The Engineer can build walls with the hammer to block the infected.",
-            "value": "يمكن للمهندس أن يبني حواجز بالمطرقة تمنع على المصابين بالعدوى المرور."
-        },
-        {
-            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-            "value": "هو مخفي، إلا البشر القريبين منه، اذا تضرر او استخدم المطرقة."
-        },
-        {
-            "key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
-            "value": "يمكن ان يلتهم كل ما هلك بالقرب منه ما يجعله أقوى وأسرع واكثر مقاوما."
-        },
-        {
-            "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
-            "value": "البطل لا يمكن ان يتعالج عن طريق الطبيب، لكنه يستطيع الصمود امام مصاب, قلوبه تكفي."
-        },
-        {
-            "key": "The Hero found the flag!",
-            "value": "البطل وجد العلم!"
-        },
-        {
-            "key": "The Medic can protect humans with the hammer by giving them armor.",
-            "value": "يمكن للطبيب أن يشفي الاعبين الأحياء عن طريق تزويدهم بدرع."
-        },
-        {
-            "key": "The Mercenary can fly in the air using their machine gun.",
-            "value": "يحلق العميل في الهواء بإستعمال رشاشه."
-        },
-        {
-            "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
-            "value": "يمكن لالنينجا أن يرمي قنابل تشل حركة المصابين بالعدوى لثلاثة ثوانن."
-        },
-        {
-            "key": "The Scientist can pose floating mines with the hammer.",
-            "value": "العالم يستطيع وضع قنابل بالمطرقة."
-        },
-        {
-            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-            "value": "يمكن أن يجعل الأرض والاسوار سامّة بمطرقته."
-        },
-        {
-            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
-            "value": "يمكن للقناص أن يوقف بمطرقته حركته في الهواء لمدة 15 ثانية."
-        },
-        {
-            "key": "The Soldier creates floating bombs with the hammer.",
-            "value": "يمكن للجندي أن يخلق قنابل بإستعمال مطرقته."
-        },
-        {
-            "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
-            "value": "بدلا من ان يموت، يتجمد لمدة ١٠ ثواني."
-        },
-        {
-            "key": "The class is disabled",
-            "value": "الساحرة ماتت"
-        },
-        {
-            "key": "The class selector will be displayed when round starts",
-            "value": "تستطيع معرفة إختيار شخصيتك عند بداية الشوط"
-        },
-        {
-            "key": "The goal for the humans is to survive until the army cleans the map.",
-            "value": "يجب على البشر ان ينجوا الي ان يقضي الجيش على المصابن بالعدوى."
-        },
-        {
-            "key": "The goal for the infected is to infect all humans.",
-            "value": "هدف المصابين بالعدوى أن يمرروها إلى البشر."
-        },
-        {
-            "key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
-            "value": "وقت الجدار {sec:LifeSpan}، والجدران محدودة للاعب واحد في الوقت ذاته."
-        },
-        {
-            "key": "The undead is finally dead",
-            "value": "الميّت مات"
-        },
-        {
-            "key": "The witch is dead",
-            "value": "الساحرة ماتت"
-        },
-        {
-            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-            "zero": "مطرقته مستبدلة بالسيف، تمكنه من القفز {int:NinjaJump} من مرّات قبل أن يلمس الأرض.",
-            "one": "مطرقته مستبدلة بالسيف، تمكنه من القفز {int:NinjaJump} مرّة واحدة قبل أن يلمس الأرض.",
-            "two": "مطرقته مستبدلة بالسيف، تمكنه من القفز {int:NinjaJump} مرّتين قبل أن يلمس الأرض.",
-            "few": "مطرقته مستبدلة بالسيف، تمكنه من القفز {int:NinjaJump} مرّات قبل أن يلمس الأرض.",
-            "many": "مطرقته مستبدلة بالسيف، تمكنه من القفز {int:NinjaJump} مرّة قبل أن يلمس الأرض.",
-            "other": "مطرقته مستبدلة بالسيف، تمكنه من القفز {int:NinjaJump} مرّة قبل أن يلمس الأرض."
-        },
-        {
-            "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
-            "value": "يمكن للجندي أن يخلق قنابل بإستعمال مطرقته."
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "يمكنه أن يقفز مرتين في الهواء."
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "يمكنه أن يقفز مرتين في الهواء."
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "اسم المستخدم مأخوذ"
-        },
-        {
-            "key": "Too few infected to call the Santa",
-            "value": "هدف المصابين بالعدوى أن يمرروها إلى البشر."
-        },
-        {
-            "key": "Type “/help {str:ClassName}” for more information about your class",
-            "value": "أكتب «help {str:ClassName}/» لمزيد من المعلومات عن شخصيتك"
-        },
-        {
-            "key": "Undead",
-            "value": "الاميت"
-        },
-        {
-            "key": "Undead can infect humans and heal the infected with the hammer.",
-            "value": "الميّت يستطيع أن يصيب البشر ويعالج المصابين بالمطرقة."
-        },
-        {
-            "key": "Undeads",
-            "value": "الاميت"
-        },
-        {
-            "key": "Unknown class",
-            "value": "شخصية غير معروفة"
-        },
-        {
-            "key": "Unknown language",
-            "value": "لغة غير معروفة"
-        },
-        {
-            "key": "Unknowns",
-            "value": "شخصية غير معروفة"
-        },
-        {
-            "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
-            "value": "إستعمل المطرقة لوضع القنبلة و التحكم في وقت تفجرها."
-        },
-        {
-            "key": "Use the hammer to place the bomb and explode it multiple times.",
-            "value": "إستعمل المطرقة لوضع القنبلة و التحكم في وقت تفجرها."
-        },
-        {
             "key": "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.",
             "value": "استعملْ «<رسالتي> <اسم شخصية>! msg/» لرسالة خاصة بكل لاعب بشخصية محددة."
+        },
+        {
+            "key": "Example: “/msg !medic I'm wounded!”",
+            "value": "مثال: «!msg !medic 2anā garī7un/»"
         },
         {
             "key": "Use “/msg !near” to send a private message to all players near you.",
             "value": "استعملْ «msg !near/» لرسالة خاصة بكل لاعب بالقرب منك."
         },
         {
-            "key": "Use “/mute <PlayerName>” to mute this player.",
-            "value": "إستخدم «<إسم اللاعب> <رسالتي> msg/» لإرسال رسالة له."
+            "key": "Use the hammer to place the bomb and explode it multiple times.",
+            "value": "إستعمل المطرقة لوضع القنبلة و التحكم في وقت تفجرها."
         },
         {
-            "key": "Use “/w <PlayerName> <My Message>” to send a private message to this player.",
-            "value": "إستخدم «<إسم اللاعب> <رسالتي> msg/» لإرسال رسالة له."
+            "key": "You have killed a witch, +5 points",
+            "value": "لقد قتتلت ساحرة . +5 نقاط"
         },
         {
-            "key": "Voodoo can infect humans and heal the infected with the hammer.",
-            "value": "يمكن للشبح أن يمرر العدوى إلى البشر وأن يشفي المصابين يإستعمال مطرقته."
+            "key": "The witch is dead",
+            "value": "الساحرة ماتت"
         },
         {
-            "key": "Web mode enabled",
-            "value": "وضعية العنكبوت تعمل"
+            "key": "The undead is finally dead",
+            "value": "الميّت مات"
         },
         {
-            "key": "When an infected touches the wall, it dies.",
-            "value": "عندما يلمس مصاب بالعدوى الحائط يموت."
+            "key": "Hook protection enabled",
+            "value": "لا يمكن للاعبين الإمساك بك"
         },
         {
-            "key": "White hole: {sec:RemainingTime}",
-            "value": "حاجز الليزر : {sec:RemainingTime}"
-        },
-        {
-            "key": "Witch",
-            "value": "ساحرة"
-        },
-        {
-            "key": "Witch can infect humans and heal the infected with the hammer.",
-            "value": "يمكن للساحرة أن يمرّر العدوى إلي البشر بمطرقته وأن يشفي المصابن بالعدوى بمطرقته."
-        },
-        {
-            "key": "Witch {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} غادر اللعبة"
-        },
-        {
-            "key": "Witches",
-            "value": "ساحرة"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "إسم مستخدم\\رمز مرور خاطئ"
+            "key": "Hook protection disabled",
+            "value": "يمكن للاعبين الإمساك بك"
         },
         {
             "key": "You are a human: {str:ClassName}",
@@ -690,85 +285,116 @@
             "value": "انت مصاب بالعدوى : {str:ClassName}"
         },
         {
-            "key": "You are blinded: {sec:EffectDuration}",
-            "value": "لقد تجمدت : {sec:EffectDuration}"
-        },
-        {
-            "key": "You are frozen: {sec:EffectDuration}",
-            "value": "لقد تجمدت : {sec:EffectDuration}"
-        },
-        {
-            "key": "You are muted for {sec:Duration}",
-            "value": "تم إسكاتك لمدة {sec:Duration}"
-        },
-        {
-            "key": "You are slowed: {sec:EffectDuration}",
-            "value": "لقد تجمدت : {sec:EffectDuration}"
-        },
-        {
-            "key": "You can change the language of this mod using the command /language.",
-            "value": "تستطيع تغيير اللغة باستخدام الأمر language/"
+            "key": "Type “/help {str:ClassName}” for more information about your class",
+            "value": "أكتب «help {str:ClassName}/» لمزيد من المعلومات عن شخصيتك"
         },
         {
             "key": "You can't join the spectators right now",
             "value": "لايمكنك الانضمام الى المشاهدين الآن"
         },
         {
-            "key": "You have already notified that {str:PlayerName} ought to be banned",
-            "value": "انت نوهت للتو ان {str:PlayerName} يجب حظره"
+            "key": "{str:PlayerName} changed their name to {str:NewName}",
+            "value": "{str:PlayerName} غير إسمه إلى {str:NewName}"
         },
         {
-            "key": "You have been infected by {str:KillerName}",
-            "value": "انت مصاب بالعدوى : {str:ClassName}"
+            "key": "You can change the language of this mod using the command /language.",
+            "value": "تستطيع تغيير اللغة باستخدام الأمر language/"
         },
         {
-            "key": "You have called the Santa once again",
-            "value": "لقد قتتلت ساحرة . +5 نقاط"
+            "key": "If your language is not available, you can help with translation (/help translate).",
+            "value": "اذا كانت لغتك غير متاحة، تستطيع المساعدة في الترجمة (help translate/)."
         },
         {
-            "key": "You have eliminated your target, +2 points",
-            "value": "لقد تخلصت من الهدف الخاص بك، +2 نقاط"
+            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
+            "value": "عبة المصابون، مصممها necropotame ة (version {str:VersionCode})"
         },
         {
-            "key": "You have held a bonus area for one minute, +5 points",
-            "value": "احتفظْت متطقة مكافأة لخمس دقائق, +٥ نقاط"
+            "key": "Based on the concept of Infection mod by Gravity",
+            "value": "مستلهمة من مفهوم لعبة العدوى ل gravity"
         },
         {
-            "key": "You have infected {str:VictimName}, +3 points",
-            "value": "لقد اصبت غيرك بالعدوى {str:VictimName}، +٣ نقاط"
+            "key": "Main contributors: {str:ListOfContributors}",
+            "value": "المساهمون الرئيسيون: {str:ListOfContributors}"
         },
         {
-            "key": "You have infected {str:VictimName}, shame on you!",
-            "value": "لقد اصبت غيرك بالعدوى {str:VictimName}، +٣ نقاط"
+            "key": "Thanks to {str:ListOfContributors}",
+            "value": "شكرا ل : {str:ListOfContributors}"
         },
         {
-            "key": "You have killed a witch, +5 points",
-            "value": "لقد قتتلت ساحرة . +5 نقاط"
+            "key": "No player was found with this name",
+            "value": "لا يوجد لاعب بهذا الاسم"
         },
         {
-            "key": "You have killed an undead! +5 points",
-            "value": "لقد قتتلت ساحرة . +5 نقاط"
+            "key": "Choose a help page with /help <page>",
+            "value": "اختر صفحة مساعدة بأمر help/"
         },
         {
-            "key": "You have survived, +5 points",
-            "value": "لقد نجوت، +٥ نقاط"
+            "key": "Available help pages: {str:PageList}",
+            "value": "صفحات المساعدة المتاحة: {str:PageList}"
         },
         {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "zero": "",
-            "one": "",
-            "two": "",
-            "few": "",
-            "many": "",
-            "other": ""
+            "key": "Unknown language",
+            "value": "لغة غير معروفة"
+        },
+        {
+            "key": "Available languages: {str:ListOfLanguage}",
+            "value": "اللغات المتاحة: {str:ListOfLanguage}"
+        },
+        {
+            "key": "List of commands",
+            "value": "لائحة الأوامر"
+        },
+        {
+            "key": "Press <F3> or <F4> to enable or disable hook protection",
+            "value": "اضغط <F3> أو <F4> لتفعيل او الغاء تفعيل السحب"
+        },
+        {
+            "key": "You are muted for {sec:Duration}",
+            "value": "تم إسكاتك لمدة {sec:Duration}"
+        },
+        {
+            "key": "{str:PlayerName} has been banned ({str:Reason})",
+            "value": "{str:PlayerName} تم نفيه ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has been kicked ({str:Reason})",
+            "value": "{str:PlayerName} تم طرده ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game ({str:Reason})",
+            "value": "{str:PlayerName} غادر اللعبة ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game",
+            "value": "{str:PlayerName} غادر اللعبة"
+        },
+        {
+            "key": "An error occured during the creation of your account.",
+            "value": "حدث خطأ اثناء صنع حسابك"
+        },
+        {
+            "key": "An error occured during the operation.",
+            "value": "لقد حدث خطأ أثناء العملية"
+        },
+        {
+            "key": "Please wait 5 minutes before creating another account",
+            "value": "الرجاء الانتظار 5 دقائق قبل صنع حساب اخر"
+        },
+        {
+            "key": "This username is already taken by an existing account",
+            "value": "اسم المستخدم مأخوذ"
+        },
+        {
+            "key": "Unknown class",
+            "value": "شخصية غير معروفة"
+        },
+        {
+            "key": "Wrong username/password.",
+            "value": "إسم مستخدم\\رمز مرور خاطئ"
         },
         {
             "key": "You must be logged for this operation",
             "value": "يجب أن تقوم بالولوج للقيام بهذه العملية"
-        },
-        {
-            "key": "You must be logged to see stats",
-            "value": "يجب ان تسجل الدخول لترى رتبتك"
         },
         {
             "key": "You must be logged to see your goal",
@@ -783,68 +409,8 @@
             "value": "تم صنع حسابك وانت الان مسجل دخولك"
         },
         {
-            "key": "{str:PlayerName} changed the class to {str:ClassName}",
-            "value": "{str:PlayerName} غير إسمه إلى {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} changed their name to {str:NewName}",
-            "value": "{str:PlayerName} غير إسمه إلى {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} entered and joined the game",
-            "value": "{str:PlayerName} دخل و إنضم إلى اللعبة"
-        },
-        {
-            "key": "{str:PlayerName} has been banned ({str:Reason})",
-            "value": "{str:PlayerName} تم نفيه ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has been kicked ({str:Reason})",
-            "value": "{str:PlayerName} تم طرده ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has destroyed your turret!",
-            "value": "{str:PlayerName} غادر اللعبة"
-        },
-        {
-            "key": "{str:PlayerName} has left the game",
-            "value": "{str:PlayerName} غادر اللعبة"
-        },
-        {
-            "key": "{str:PlayerName} has left the game ({str:Reason})",
-            "value": "{str:PlayerName} غادر اللعبة ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} joined the game",
-            "value": "{str:PlayerName} إنضم إلى اللعبة"
-        },
-        {
-            "key": "{str:PlayerName} joined the spectators",
-            "value": "{str:PlayerName} إنضم الى المشاهدين"
-        },
-        {
-            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
-            "value": "{str:PlayerName} غير إسمه إلى {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
-            "value": "{str:PlayerName} يريد {str:VictimName} ان يحظر {str:VictimName}"
-        },
-        {
-            "key": "{str:VictimName} has been infected",
-            "value": "أصيب بالعدوى {str:VictimName}"
-        },
-        {
-            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
-            "value": "تم كتم {str:Victim} لمدة {sec:Duration} ({str:Reason})"
-        },
-        {
             "key": "Any human that touch a hook in web mode is automatically grabbed.",
             "value": "اي بشري يلمس السحب في وضع الشبكة تلقائيا يسحب."
-        },
-        {
-            "key": "Bat can jump multiple times in air.",
-            "value": "يمكنه أن يقفز مرتين في الهواء."
         },
         {
             "key": "Bombs are limited to one per player at the same time.",
@@ -875,52 +441,16 @@
             "value": "و يمنكنها أيضا إحداث ضرر واحد في الثانية للبشر عند الإمساك به."
         },
         {
-            "key": "Snipers can jump two times in air.",
-            "value": "يمكنه أن يقفز مرتين في الهواء."
-        },
-        {
-            "key": "The Hero has a shotgun, a laser rifle, and a grenade launcher.",
-            "value": "البطل له بندقية، ليزر وقنبلة يدوية."
-        },
-        {
             "key": "The Hero must find a flag hidden in the map.",
             "value": "البطل عليه ايجاد العلم المخفي في الخريطة."
-        },
-        {
-            "key": "The Hunter can infect humans and heal infected with the hammer.",
-            "value": "يمكن للصياد أن يمرر العدوى إلي البشر بمطرقته وأن يشفي المصابن بالعدوى بمطرقته."
-        },
-        {
-            "key": "The Smoker can infect humans and heal infected with the hammer.",
-            "value": "يمكن للمدخن أن يصيب البشر و يشفي المصابين بمطرقته."
-        },
-        {
-            "key": "The Spider can infect humans and heal infected with the hammer.",
-            "value": "يمكن للعنكبوت أن يمرر العدوى إلى البشر وأن يشفي المصابين يإستعمال مطرقته."
         },
         {
             "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
             "value": "وعلى أثر ذلك يهضم اعلافه رويداً منخفض إلى حالته الطبيعية، وبالأضافة الموت يسلبه غذائه."
         },
         {
-            "key": "They also have a powerful rifle that deals 20 damage points in locked position, and 10–13 otherwise.",
-            "value": "لديه ليزر قوي يسبب ٣٠ ضرر في الوضع المغلق، و ١٠–١٣ في الوضع العادي."
-        },
-        {
             "key": "Touching the slime inflicts three damage points in three seconds on a human.",
             "value": "اتّصال بلعابه يضعف من طاقة البشر بثلاث نقاط في ثلاث ثوان."
-        },
-        {
-            "key": "When an infected dies, it may respawn near the Witch.",
-            "value": "عندما يموت أحد المصابين، يمكن أن يظهر بجانبها مرة أخرى."
-        },
-        {
-            "key": "When selecting any gun, the hook enter in web mode.",
-            "value": "عند اختيار اي سلاح، الامساك يكون في وضع الشبكة."
-        },
-        {
-            "key": "You are now logged.",
-            "value": "لقد قمت بالولوج للتو"
         }
     ]
 }

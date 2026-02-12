@@ -1,282 +1,23 @@
 {
     "translation": [
         {
-            "key": "10 seconds later, a few players become infected.",
-            "value": "Pakatapos ng 10 segundo, dalawang players ay magiging infected."
+            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
+            "value": "{str:Victim} ay namute ng {sec:Duration} ({str:Reason})"
         },
         {
-            "key": "A random class will be automatically attributed to you when round starts",
-            "value": "Random class ang ibibigay sayo pag wala kang napili sa pagsimula ng round"
+            "key": "You have already notified that {str:PlayerName} ought to be banned",
+            "value": "Napaalam mo na si {str:PlayerName} ay dapat ma ban"
         },
         {
-            "key": "All humans affected by the explosion become infected.",
-            "value": "Lahat ng tao sa loob ng pagsabog ay magiging infected."
-        },
-        {
-            "key": "All players start as a human.",
-            "value": "Lahat ng naglalaro ay nagsisimula bilang tao."
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "May maling nangyari habang ginagawa ang iyong account."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "May maling nangyari habang ginagawa ang operasyon."
-        },
-        {
-            "key": "Available help pages: {str:PageList}",
-            "value": "Available na mga pages: {str:PageList}"
-        },
-        {
-            "key": "Available languages: {str:ListOfLanguage}",
-            "value": "Available na languages: {str:ListOfLanguage}"
-        },
-        {
-            "key": "Based on the concept of Infection mod by Gravity",
-            "value": "Base sa concepto ng infection mod ni Gravity"
-        },
-        {
-            "key": "Bat can jump endlessly in the air but it cannot infect humans.",
-            "value": "Ang layunin ng mga infected ay i-infect lahat ng mga tao."
-        },
-        {
-            "key": "Biologist",
-            "value": "Biologist"
-        },
-        {
-            "key": "Biologists",
-            "value": "Biologist"
-        },
-        {
-            "key": "Boomer",
-            "value": "Boomer"
-        },
-        {
-            "key": "Boomers",
-            "value": "Boomer"
-        },
-        {
-            "key": "Choose a help page with /help <page>",
-            "value": "Pumili ng help page gamit ang /help <page>"
-        },
-        {
-            "key": "Choose your class",
-            "value": "Pumili ka ng class"
-        },
-        {
-            "key": "Class {str:ClassName} will be automatically attributed to you when round starts",
-            "value": "Random class ang ibibigay sayo pag wala kang napili sa pagsimula ng round"
-        },
-        {
-            "key": "Create an account on Crowdin and join the translation team:",
-            "value": "Gumawa ng account sa Crowdin at sumama sa translation team:"
-        },
-        {
-            "key": "Each bomb can explode {int:NumBombs} times.",
-            "one": "Kada bomba ay kayang sumabog ng paisa-isa.",
-            "other": "Kada bomba ay kayang sumabog ng {int:NumBombs} beses."
-        },
-        {
-            "key": "Engineer",
-            "value": "Engineer"
-        },
-        {
-            "key": "Engineers",
-            "value": "Engineer"
-        },
-        {
-            "key": "Explosive yield: {percent:BombLevel}",
-            "value": "Laki ng pagsabog: {percent:BombLevel}"
-        },
-        {
-            "key": "Ghost",
-            "value": "Ghost"
-        },
-        {
-            "key": "Ghosts",
-            "value": "Ghost"
-        },
-        {
-            "key": "Ghoul",
-            "value": "Ghould"
-        },
-        {
-            "key": "Ghoul can infect humans and heal the infected with the hammer.",
-            "value": "Ang Ghoul ay kayang maka infect ng mga tao at makagamot ng mga infected gamit ang kanyang hammer."
-        },
-        {
-            "key": "Ghouls",
-            "value": "Ghould"
-        },
-        {
-            "key": "Grenade limit increased",
-            "value": "Bilang ng takdang granada ay nadagdagan"
-        },
-        {
-            "key": "Hero",
-            "value": "Hero"
-        },
-        {
-            "key": "Heroes",
-            "value": "Hero"
-        },
-        {
-            "key": "Hook protection disabled",
-            "value": "Ang iyong proteksyon sa hook ay wala na"
-        },
-        {
-            "key": "Hook protection enabled",
-            "value": "Proteksyon sa hook ay nakaon"
-        },
-        {
-            "key": "How to translate the mod",
-            "value": "Paano matranslate ang mod"
-        },
-        {
-            "key": "How to use taxi mode",
-            "value": "Paano matranslate ang mod"
-        },
-        {
-            "key": "Hunter",
-            "value": "Hunter"
-        },
-        {
-            "key": "Hunters",
-            "value": "Hunter"
-        },
-        {
-            "key": "If an infected heals it, the freeze effect disappears.",
-            "value": "Kung may infected na gumamot sa kanya, mawawala ng pagka freeze niya."
-        },
-        {
-            "key": "If the Witch dies, it disappears and is replaced by another class.",
-            "value": "Kung ang witch ay mamatay, siya ay mawawala at mapapalitan ng bagong class."
-        },
-        {
-            "key": "If your language is not available, you can help with translation (/help translate).",
-            "value": "Kung ang wika mo ay wala sa mga nabangit, pwede kang tumulong sa pagtranslate nito (/help translate)."
-        },
-        {
-            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-            "value": "Ang hook ng spider (sa parehas nitong modes) ay nakakadamage ng 1 damage point kada segundo at kayang ma hook ang isang tao ng 2 segundo."
-        },
-        {
-            "key": "Infected won the round in {sec:RoundDuration}",
-            "value": "Ang mga Infected ay nanalo sa loob ng {sec:RoundDuration}"
-        },
-        {
-            "key": "Infection is coming in {sec:RemainingTime}",
-            "value": "{sec:RemainingTime} bago ang sunod na watawat"
-        },
-        {
-            "key": "InfectionClass is a team game between humans and the infected.",
-            "value": "Ang InfectionClass ay isang laro ng dalawng grupo ang isa ay mga tao at ang isa ay ang mga infected."
-        },
-        {
-            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
-            "value": "InfectionClass, gawa ni necropotame (bersyon {str:VersionCode})"
-        },
-        {
-            "key": "It can also infect humans and heal the infected with the hammer.",
-            "value": "Ang Ghost ay kayang maka infect ng humans at makagamot ng mga infected gamit ang kanyang hammer."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Kaya nya rin na magbigay ng isang damage point kada segundo sa paghohohook ng mga tao."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Ang Ghost ay kayang maka infect ng humans at makagamot ng mga infected gamit ang kanyang hammer."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Ang Ghost ay kayang maka infect ng humans at makagamot ng mga infected gamit ang kanyang hammer."
+            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
+            "value": "Si {str:PlayerName} ay gustong maban si {str:VictimName} dahil ({str:Reason})"
         },
         {
             "key": "Laser wall: {sec:RemainingTime}",
             "value": "Pader ng laser: {sec:RemainingTime}"
         },
         {
-            "key": "List of commands",
-            "value": "Lista ng mga commands"
-        },
-        {
-            "key": "Looper laser wall: {sec:RemainingTime}",
-            "value": "Pader ng laser: {sec:RemainingTime}"
-        },
-        {
-            "key": "Main contributors: {str:ListOfContributors}",
-            "value": "Mga pangunahing contributors: {str:ListOfContributors}"
-        },
-        {
-            "key": "Medic",
-            "value": "Medic"
-        },
-        {
-            "key": "Medic also has a powerful shotgun that can knock back the infected.",
-            "value": "Mayroon din siyang malakas na shotgun na kayang maka tulak ng infected."
-        },
-        {
-            "key": "Medics",
-            "value": "Medic"
-        },
-        {
-            "key": "Mercenaries",
-            "value": "Mercenary"
-        },
-        {
-            "key": "Mercenary",
-            "value": "Mercenary"
-        },
-        {
-            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-            "one": "Kaya rin nyang magtapon ng poison grenades na nakakadamge sa infected ng isang damage point.",
-            "other": "Kaya rin nyang magtapon ng poison grenades na nakakadamge sa infected ng {int:NumDamagePoints} damage point."
-        },
-        {
-            "key": "Mine activated",
-            "value": "Nailagay na ang mine"
-        },
-        {
-            "key": "Mines are limited to {int:NumMines} per player at the same time.",
-            "one": "Ang mga mines ay limitado sa isa kada player.",
-            "other": "Ang mga mines ay limitado sa {int:NumMines} kada player."
-        },
-        {
-            "key": "Need at least {int:MinPlayers} players",
+            "key": "{int:NumBombs} bombs left",
             "one": "",
             "other": ""
         },
@@ -285,25 +26,148 @@
             "value": "{sec:RemainingTime} bago ang sunod na watawat"
         },
         {
-            "key": "Next target in {sec:RemainingTime}",
-            "value": "Sunod na layon sa {sec:RemainingTime}"
+            "key": "You have eliminated your target, +2 points",
+            "value": "Napatay mo ang iyong layon, +2 puntos"
+        },
+        {
+            "key": "Sword velocity increased",
+            "value": "Ang iyong espada ay bumilis"
+        },
+        {
+            "key": "Sword strength increased",
+            "value": "Ang iyong espada ay lumakas"
+        },
+        {
+            "key": "Grenade limit increased",
+            "value": "Bilang ng takdang granada ay nadagdagan"
+        },
+        {
+            "key": "Placed a turret, {int:TurretsNumber} turrets left",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "Choose your class",
+            "value": "Pumili ka ng class"
+        },
+        {
+            "key": "Random choice",
+            "value": "Random"
+        },
+        {
+            "key": "Need at least {int:MinPlayers} players",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "You are frozen: {sec:EffectDuration}",
+            "value": "Ikaw ay frozen: {sec:EffectDuration}"
+        },
+        {
+            "key": "Scientist can get a white hole after {int:Kills} kills.",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "{str:PlayerName} entered and joined the game",
+            "value": "{str:PlayerName} ay pumasok at sumama sa laro"
+        },
+        {
+            "key": "You have infected {str:VictimName}, +3 points",
+            "value": "Napatay mo si {str:VictimName}, +3 puntos"
+        },
+        {
+            "key": "The Hero found the flag!",
+            "value": "Ang hero ay nahanap na ang watawat!"
+        },
+        {
+            "key": "Mercenary",
+            "value": "Mercenary"
+        },
+        {
+            "key": "Medic",
+            "value": "Medic"
+        },
+        {
+            "key": "Hero",
+            "value": "Hero"
+        },
+        {
+            "key": "Engineer",
+            "value": "Engineer"
+        },
+        {
+            "key": "Soldier",
+            "value": "Soldier"
         },
         {
             "key": "Ninja",
             "value": "Ninja"
         },
         {
-            "key": "Ninjas",
-            "value": "Ninja"
+            "key": "Sniper",
+            "value": "Sniper"
         },
         {
-            "key": "No player was found with this name",
-            "value": "Walang player na nahanap sa pangalan na ito"
+            "key": "Scientist",
+            "value": "Scientist"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "Isang bomba ang natira",
-            "other": "{int:NumBombs} bomba ang natira"
+            "key": "Biologist",
+            "value": "Biologist"
+        },
+        {
+            "key": "Smoker",
+            "value": "Smoker"
+        },
+        {
+            "key": "Boomer",
+            "value": "Boomer"
+        },
+        {
+            "key": "Hunter",
+            "value": "Hunter"
+        },
+        {
+            "key": "Ghost",
+            "value": "Ghost"
+        },
+        {
+            "key": "Spider",
+            "value": "Spider"
+        },
+        {
+            "key": "Ghoul",
+            "value": "Ghould"
+        },
+        {
+            "key": "Slug",
+            "value": "Slug"
+        },
+        {
+            "key": "Witch",
+            "value": "Witch"
+        },
+        {
+            "key": "Undead",
+            "value": "Undead"
+        },
+        {
+            "key": "{str:PlayerName} joined the spectators",
+            "value": "{str:PlayerName} ay sumama sa mga manonood"
+        },
+        {
+            "key": "{str:PlayerName} joined the game",
+            "value": "si {str:PlayerName} ay sumama sa laro"
+        },
+        {
+            "key": "{str:VictimName} has been infected",
+            "value": "si {str:VictimName} ay isa nang infected"
         },
         {
             "key": "{int:NumHumans} humans won the round",
@@ -311,28 +175,15 @@
             "other": "{int:NumHumans} tao ang nanalo"
         },
         {
-            "key": "{int:NumMines} mines are active",
-            "one": "Isang mine ang active",
-            "other": "{int:NumMines} mine ang active"
+            "key": "You have survived, +5 points",
+            "value": "Ikaw ay nabuhay, +5 na puntos"
         },
         {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Maghintay ng 5 minuto bago gumawa ng bagong account"
+            "key": "Infected won the round in {sec:RoundDuration}",
+            "value": "Ang mga Infected ay nanalo sa loob ng {sec:RoundDuration}"
         },
         {
-            "key": "Position lock: {sec:RemainingTime}",
-            "value": "Ikandado ang kanyang pwesto ng: {sec:RemainingTime}"
-        },
-        {
-            "key": "Press <F3> or <F4> to enable or disable hook protection",
-            "value": "Pindutin ang <F3> o <F4> para ion o ioff ang hook protection"
-        },
-        {
-            "key": "Random choice",
-            "value": "Random"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "key": "The survival is over after {int:NumWaves} waves.",
             "one": "",
             "other": ""
         },
@@ -341,249 +192,17 @@
             "value": "Mga batas ng laro"
         },
         {
-            "key": "Santa {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} ay umalis na"
+            "key": "How to translate the mod",
+            "value": "Paano matranslate ang mod"
         },
         {
-            "key": "Scientist",
-            "value": "Scientist"
-        },
-        {
-            "key": "Scientist has also grenades that teleport them.",
-            "value": "Mayroon din siyang grenade na kaya sa kanyang magteleport."
-        },
-        {
-            "key": "Scientists",
-            "value": "Scientist"
-        },
-        {
-            "key": "Slug",
-            "value": "Slug"
-        },
-        {
-            "key": "Slug can infect humans and heal the infected with the hammer.",
-            "value": "Ang Slug ay kayang maka infect ng humans at makagamot ng mga infected gamit ang kanyang hammer."
-        },
-        {
-            "key": "Slugs",
-            "value": "Slug"
-        },
-        {
-            "key": "Smoker",
-            "value": "Smoker"
-        },
-        {
-            "key": "Smokers",
-            "value": "Smoker"
-        },
-        {
-            "key": "Sniper",
-            "value": "Sniper"
-        },
-        {
-            "key": "Snipers",
-            "value": "Sniper"
-        },
-        {
-            "key": "Soldier",
-            "value": "Soldier"
-        },
-        {
-            "key": "Soldiers",
-            "value": "Soldier"
-        },
-        {
-            "key": "Someone was infected to balance the game.",
-            "value": "Pagnadikitan ng infected ang wall, mamatay siya."
-        },
-        {
-            "key": "Spider",
-            "value": "Spider"
-        },
-        {
-            "key": "Spiders",
-            "value": "Spider"
-        },
-        {
-            "key": "Staying alive for: {int:RemainingTime}",
-            "value": "Ikandado ang kanyang pwesto ng: {sec:RemainingTime}"
-        },
-        {
-            "key": "Stomach filled by {percent:FodderInStomach}",
-            "value": "Ang tiyan ay puno ng {percent:FodderInStomach}"
-        },
-        {
-            "key": "Switch language to english?",
-            "value": "Gawin ang wika na tagalog?"
-        },
-        {
-            "key": "Sword strength increased",
-            "value": "Ang iyong espada ay lumakas"
-        },
-        {
-            "key": "Sword velocity increased",
-            "value": "Ang iyong espada ay bumilis"
-        },
-        {
-            "key": "Target to eliminate: {str:PlayerName}",
-            "value": "Layon na dapat patayin: {str:PlayerName}"
+            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "one": "",
+            "other": ""
         },
         {
             "key": "Targeted chat messages",
             "value": "Targeted chat messages"
-        },
-        {
-            "key": "Thanks to {str:ListOfContributors}",
-            "value": "Salamat kanila {str:ListOfContributors}"
-        },
-        {
-            "key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
-            "value": "Ang biologist ay may shotgun na ang bala ay umountol at kaya niyang gumawa ng spring laser trap gamit ang kanyang laser rifle."
-        },
-        {
-            "key": "The Boomer explodes when it attacks.",
-            "value": "Ang Boomer ay kayang sumabog pag siya ay umatak."
-        },
-        {
-            "key": "The Engineer can build walls with the hammer to block the infected.",
-            "value": "Ang Engineer ay kayang gumawa ng mga pader ng laser gamit ang kanyang hammer para maghadlang ang infected."
-        },
-        {
-            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-            "value": "Siya ay hindi nakikita, except kung may malapit na tao sa kanya, o kung masaktan sya o kung ginamit niya ang kanyang hammer."
-        },
-        {
-            "key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
-            "value": "Kaya nyang makain lahat ng namatay malapit sa kanya, ito ay nagpapalakas sa kanya, pinapabilis at binibigyan siya ng mas malakas na resistensya."
-        },
-        {
-            "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
-            "value": "Ang hero ay hindi pwedeng magamot ng medic pero, kaya niyang maka survive ang isang hammer ng infected at mabuhay."
-        },
-        {
-            "key": "The Hero found the flag!",
-            "value": "Ang hero ay nahanap na ang watawat!"
-        },
-        {
-            "key": "The Medic can protect humans with the hammer by giving them armor.",
-            "value": "Ang Medic ay kaya maka protect ng mga tao gamit ang kanyang hammer na nagbibigya ng armor."
-        },
-        {
-            "key": "The Mercenary can fly in the air using their machine gun.",
-            "value": "Ang Mercenary ay kayang lumipad sa hangin gamit ang kanyang pistol/machinegun."
-        },
-        {
-            "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
-            "value": "Ang ninja ay kayang mag tapon ng flash grenades na kayang magstun ng infected sa loob ng 3 segundo."
-        },
-        {
-            "key": "The Scientist can pose floating mines with the hammer.",
-            "value": "Ang scientist ay kayang maglagay ng mga mine gamit ang kanyang hammer."
-        },
-        {
-            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-            "value": "Kaya niyang gawin nakalalason ang mga pader at ang lupa sapamamagitan ng paglagay niya ng slime gamit ang kanyag hammer."
-        },
-        {
-            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
-            "value": "Ang sniper ay kayang ikandado ang kanyang position gamit ang kanyang hammer sa loob ng 15 segundo."
-        },
-        {
-            "key": "The Soldier creates floating bombs with the hammer.",
-            "value": "Ang soldier ay kayang maglagay ng lumulutang na mga bomba gamit ang kanyang hammer."
-        },
-        {
-            "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
-            "value": "Imbes na mamatay, siya ay hindi pwedeng makagalaw sa loob ng 10 segundo."
-        },
-        {
-            "key": "The class is disabled",
-            "value": "Ang witch ay patay na"
-        },
-        {
-            "key": "The class selector will be displayed when round starts",
-            "value": "Ang class selector ay ipapakita sa pagsimula ng round"
-        },
-        {
-            "key": "The goal for the humans is to survive until the army cleans the map.",
-            "value": "Ang layunin ng mga tao ay maka survive hangang sa matapos ang oras at linisin ng army ang map."
-        },
-        {
-            "key": "The goal for the infected is to infect all humans.",
-            "value": "Ang layunin ng mga infected ay i-infect lahat ng mga tao."
-        },
-        {
-            "key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
-            "value": "Ang haba ng buhay ng mga pader ay {sec:LifeSpan}, at isa lamang ang pader nakayang magawa ng player sa parehas na panahon."
-        },
-        {
-            "key": "The undead is finally dead",
-            "value": "Wala na ang undead"
-        },
-        {
-            "key": "The witch is dead",
-            "value": "Ang witch ay patay na"
-        },
-        {
-            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-            "one": "Ang kanyang hammer ay napapalitan ng katana, na binibigyan siya ng isang talon bago siya tumama sa lupa.",
-            "other": "Ang kanyang hammer ay napapalitan ng katana, na binibigyan siya ng {int:NinjaJump} talon bago siya tumama sa lupa."
-        },
-        {
-            "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
-            "value": "Ang soldier ay kayang maglagay ng lumulutang na mga bomba gamit ang kanyang hammer."
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "Kaya nyang tumalon ng dalawang beses sa hangin."
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "Kaya nyang tumalon ng dalawang beses sa hangin."
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Ang panglan na ito ay nakuha na"
-        },
-        {
-            "key": "Too few infected to call the Santa",
-            "value": "Ang layunin ng mga infected ay i-infect lahat ng mga tao."
-        },
-        {
-            "key": "Type “/help {str:ClassName}” for more information about your class",
-            "value": "Isulat \"/help {str:ClassName}\" para sa mas marami na inpormasyon tungkol sa iyong klase"
-        },
-        {
-            "key": "Undead",
-            "value": "Undead"
-        },
-        {
-            "key": "Undead can infect humans and heal the infected with the hammer.",
-            "value": "Ang undead ay kayang maka infect ng mga tao at maggamot ng infected gamit ang kanyang hammer."
-        },
-        {
-            "key": "Undeads",
-            "value": "Undead"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Di alam na klase"
-        },
-        {
-            "key": "Unknown language",
-            "value": "Hindi alam na lingwahe"
-        },
-        {
-            "key": "Unknowns",
-            "value": "Di alam na klase"
-        },
-        {
-            "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
-            "value": "Gamitin ang hammer para mailagay ang bomba at pasabugin ito ng talong beses."
-        },
-        {
-            "key": "Use the hammer to place the bomb and explode it multiple times.",
-            "value": "Gamitin ang hammer para mailagay ang bomba at pasabugin ito ng talong beses."
         },
         {
             "key": "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.",
@@ -594,48 +213,28 @@
             "value": "Gamitin “/msg !near” para magsend ng private message sa lahat ng tao sa palibot mo."
         },
         {
-            "key": "Use “/mute <PlayerName>” to mute this player.",
-            "value": "Gamitin “/msg <panglan> <mensahe>” para masend sa player privately."
+            "key": "Use the hammer to place the bomb and explode it multiple times.",
+            "value": "Gamitin ang hammer para mailagay ang bomba at pasabugin ito ng talong beses."
         },
         {
-            "key": "Use “/w <PlayerName> <My Message>” to send a private message to this player.",
-            "value": "Gamitin “/msg <panglan> <mensahe>” para masend sa player privately."
+            "key": "You have killed a witch, +5 points",
+            "value": "Napatay mo ang Mangkukulam, +5 puntos"
         },
         {
-            "key": "Voodoo can infect humans and heal the infected with the hammer.",
-            "value": "Ang Ghost ay kayang maka infect ng humans at makagamot ng mga infected gamit ang kanyang hammer."
+            "key": "The witch is dead",
+            "value": "Ang witch ay patay na"
         },
         {
-            "key": "Web mode enabled",
-            "value": "Ang hook ay nasa lagay ng sapot na"
+            "key": "The undead is finally dead",
+            "value": "Wala na ang undead"
         },
         {
-            "key": "When an infected touches the wall, it dies.",
-            "value": "Pagnadikitan ng infected ang wall, mamatay siya."
+            "key": "Hook protection enabled",
+            "value": "Proteksyon sa hook ay nakaon"
         },
         {
-            "key": "White hole: {sec:RemainingTime}",
-            "value": "Pader ng laser: {sec:RemainingTime}"
-        },
-        {
-            "key": "Witch",
-            "value": "Witch"
-        },
-        {
-            "key": "Witch can infect humans and heal the infected with the hammer.",
-            "value": "Ang witch ay kayang makainfect ng mga tao at gumamot ng infected gamit ang kanyang hammer."
-        },
-        {
-            "key": "Witch {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} ay umalis na"
-        },
-        {
-            "key": "Witches",
-            "value": "Witch"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Maling pangalan/hudyat."
+            "key": "Hook protection disabled",
+            "value": "Ang iyong proteksyon sa hook ay wala na"
         },
         {
             "key": "You are a human: {str:ClassName}",
@@ -646,77 +245,116 @@
             "value": "Ikaw ay nainfected: {str:ClassName}"
         },
         {
-            "key": "You are blinded: {sec:EffectDuration}",
-            "value": "Ikaw ay frozen: {sec:EffectDuration}"
-        },
-        {
-            "key": "You are frozen: {sec:EffectDuration}",
-            "value": "Ikaw ay frozen: {sec:EffectDuration}"
-        },
-        {
-            "key": "You are muted for {sec:Duration}",
-            "value": "Ikaw ay hindi pwedeng magsalita ng {sec:Duration} minuto"
-        },
-        {
-            "key": "You are slowed: {sec:EffectDuration}",
-            "value": "Ikaw ay frozen: {sec:EffectDuration}"
-        },
-        {
-            "key": "You can change the language of this mod using the command /language.",
-            "value": "Kaya mong palitan ang wika ng mod na ito gamit ang command na /language."
+            "key": "Type “/help {str:ClassName}” for more information about your class",
+            "value": "Isulat \"/help {str:ClassName}\" para sa mas marami na inpormasyon tungkol sa iyong klase"
         },
         {
             "key": "You can't join the spectators right now",
             "value": "Hindi ka pwedeng makajoin sa spectators ngayong panahon"
         },
         {
-            "key": "You have already notified that {str:PlayerName} ought to be banned",
-            "value": "Napaalam mo na si {str:PlayerName} ay dapat ma ban"
+            "key": "{str:PlayerName} changed their name to {str:NewName}",
+            "value": "Si {str:PlayerName} ay nagpalit ng pangalan at siya na si {str:NewName}"
         },
         {
-            "key": "You have been infected by {str:KillerName}",
-            "value": "Ikaw ay nainfected: {str:ClassName}"
+            "key": "You can change the language of this mod using the command /language.",
+            "value": "Kaya mong palitan ang wika ng mod na ito gamit ang command na /language."
         },
         {
-            "key": "You have called the Santa once again",
-            "value": "Napatay mo ang Mangkukulam, +5 puntos"
+            "key": "If your language is not available, you can help with translation (/help translate).",
+            "value": "Kung ang wika mo ay wala sa mga nabangit, pwede kang tumulong sa pagtranslate nito (/help translate)."
         },
         {
-            "key": "You have eliminated your target, +2 points",
-            "value": "Napatay mo ang iyong layon, +2 puntos"
+            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
+            "value": "InfectionClass, gawa ni necropotame (bersyon {str:VersionCode})"
         },
         {
-            "key": "You have infected {str:VictimName}, +3 points",
-            "value": "Napatay mo si {str:VictimName}, +3 puntos"
+            "key": "Based on the concept of Infection mod by Gravity",
+            "value": "Base sa concepto ng infection mod ni Gravity"
         },
         {
-            "key": "You have infected {str:VictimName}, shame on you!",
-            "value": "Napatay mo si {str:VictimName}, +3 puntos"
+            "key": "Main contributors: {str:ListOfContributors}",
+            "value": "Mga pangunahing contributors: {str:ListOfContributors}"
         },
         {
-            "key": "You have killed a witch, +5 points",
-            "value": "Napatay mo ang Mangkukulam, +5 puntos"
+            "key": "Thanks to {str:ListOfContributors}",
+            "value": "Salamat kanila {str:ListOfContributors}"
         },
         {
-            "key": "You have killed an undead! +5 points",
-            "value": "Napatay mo ang Mangkukulam, +5 puntos"
+            "key": "No player was found with this name",
+            "value": "Walang player na nahanap sa pangalan na ito"
         },
         {
-            "key": "You have survived, +5 points",
-            "value": "Ikaw ay nabuhay, +5 na puntos"
+            "key": "Choose a help page with /help <page>",
+            "value": "Pumili ng help page gamit ang /help <page>"
         },
         {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
+            "key": "Available help pages: {str:PageList}",
+            "value": "Available na mga pages: {str:PageList}"
+        },
+        {
+            "key": "Unknown language",
+            "value": "Hindi alam na lingwahe"
+        },
+        {
+            "key": "Available languages: {str:ListOfLanguage}",
+            "value": "Available na languages: {str:ListOfLanguage}"
+        },
+        {
+            "key": "List of commands",
+            "value": "Lista ng mga commands"
+        },
+        {
+            "key": "Press <F3> or <F4> to enable or disable hook protection",
+            "value": "Pindutin ang <F3> o <F4> para ion o ioff ang hook protection"
+        },
+        {
+            "key": "You are muted for {sec:Duration}",
+            "value": "Ikaw ay hindi pwedeng magsalita ng {sec:Duration} minuto"
+        },
+        {
+            "key": "{str:PlayerName} has been banned ({str:Reason})",
+            "value": "{str:PlayerName} ay naban dahil ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has been kicked ({str:Reason})",
+            "value": "{str:PlayerName} ay nakick dahil ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game ({str:Reason})",
+            "value": "{str:PlayerName} ay umalis dahil ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game",
+            "value": "{str:PlayerName} ay umalis na"
+        },
+        {
+            "key": "An error occured during the creation of your account.",
+            "value": "May maling nangyari habang ginagawa ang iyong account."
+        },
+        {
+            "key": "An error occured during the operation.",
+            "value": "May maling nangyari habang ginagawa ang operasyon."
+        },
+        {
+            "key": "Please wait 5 minutes before creating another account",
+            "value": "Maghintay ng 5 minuto bago gumawa ng bagong account"
+        },
+        {
+            "key": "This username is already taken by an existing account",
+            "value": "Ang panglan na ito ay nakuha na"
+        },
+        {
+            "key": "Unknown class",
+            "value": "Di alam na klase"
+        },
+        {
+            "key": "Wrong username/password.",
+            "value": "Maling pangalan/hudyat."
         },
         {
             "key": "You must be logged for this operation",
             "value": "Ikaw ay nakalogin dapat para sa operation na ito"
-        },
-        {
-            "key": "You must be logged to see stats",
-            "value": "Ikaw ay nakalogin dapat para makita ag iyong ranko"
         },
         {
             "key": "You must be logged to see your goal",
@@ -731,68 +369,8 @@
             "value": "Ang account mo ay nagawa na at ikaw ay naka log-in na."
         },
         {
-            "key": "{str:PlayerName} changed the class to {str:ClassName}",
-            "value": "Si {str:PlayerName} ay nagpalit ng pangalan at siya na si {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} changed their name to {str:NewName}",
-            "value": "Si {str:PlayerName} ay nagpalit ng pangalan at siya na si {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} entered and joined the game",
-            "value": "{str:PlayerName} ay pumasok at sumama sa laro"
-        },
-        {
-            "key": "{str:PlayerName} has been banned ({str:Reason})",
-            "value": "{str:PlayerName} ay naban dahil ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has been kicked ({str:Reason})",
-            "value": "{str:PlayerName} ay nakick dahil ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has destroyed your turret!",
-            "value": "{str:PlayerName} ay umalis na"
-        },
-        {
-            "key": "{str:PlayerName} has left the game",
-            "value": "{str:PlayerName} ay umalis na"
-        },
-        {
-            "key": "{str:PlayerName} has left the game ({str:Reason})",
-            "value": "{str:PlayerName} ay umalis dahil ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} joined the game",
-            "value": "si {str:PlayerName} ay sumama sa laro"
-        },
-        {
-            "key": "{str:PlayerName} joined the spectators",
-            "value": "{str:PlayerName} ay sumama sa mga manonood"
-        },
-        {
-            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
-            "value": "Si {str:PlayerName} ay nagpalit ng pangalan at siya na si {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
-            "value": "Si {str:PlayerName} ay gustong maban si {str:VictimName} dahil ({str:Reason})"
-        },
-        {
-            "key": "{str:VictimName} has been infected",
-            "value": "si {str:VictimName} ay isa nang infected"
-        },
-        {
-            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
-            "value": "{str:Victim} ay namute ng {sec:Duration} ({str:Reason})"
-        },
-        {
             "key": "Any human that touch a hook in web mode is automatically grabbed.",
             "value": "Kahit sino na tao na hawakan ito ay mahohook."
-        },
-        {
-            "key": "Bat can jump multiple times in air.",
-            "value": "Kaya nyang tumalon ng dalawang beses sa hangin."
         },
         {
             "key": "Bombs are limited to one per player at the same time.",
@@ -823,52 +401,16 @@
             "value": "Kaya nyarin na mag deal ng isang damge sa paghohook ng mga tao."
         },
         {
-            "key": "Snipers can jump two times in air.",
-            "value": "Kaya nyang tumalon ng dalawang beses sa hangin."
-        },
-        {
-            "key": "The Hero has a shotgun, a laser rifle, and a grenade launcher.",
-            "value": "Ang Hero ay mayroong shotgun, laser, at granada."
-        },
-        {
             "key": "The Hero must find a flag hidden in the map.",
             "value": "Ang hero ay dapat hanapin ang watawat na nakatago sa loob ng map."
-        },
-        {
-            "key": "The Hunter can infect humans and heal infected with the hammer.",
-            "value": "Ang Hunter ay kayang makainfect ng humans at makagamot ng mga infected gamit ang kanyang hammer."
-        },
-        {
-            "key": "The Smoker can infect humans and heal infected with the hammer.",
-            "value": "Ang Smoker ay kayang makainfect ng mga tao at manggamot ng infected gamit ang kanyang hammer."
-        },
-        {
-            "key": "The Spider can infect humans and heal infected with the hammer.",
-            "value": "Ang Spider ay kayang maka infect ng humans at makagamot ng mga infected gamit ang kanyang hammer."
         },
         {
             "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
             "value": "Dahil nyan dinadigest niya ang kanyang mga nakain at paunti-unting bumabalik sa normal nitong lagay, at kalakip nyan, kamatayan ang lumalansag sa kanyang pagpapakain."
         },
         {
-            "key": "They also have a powerful rifle that deals 20 damage points in locked position, and 10–13 otherwise.",
-            "value": "Mayroon din siyang sniper rifle na kayang pumatay ng isang infected kung nakalock ang kanyang position, at 10–13 kung hindi."
-        },
-        {
             "key": "Touching the slime inflicts three damage points in three seconds on a human.",
             "value": "Pagnahawakan mo ang slime nadadamage ka nito ng 3 sa panahon ng tatkong segundo bilang tao."
-        },
-        {
-            "key": "When an infected dies, it may respawn near the Witch.",
-            "value": "Pagang infected ay namatay pwede silang magrespawn malapit sa kanya."
-        },
-        {
-            "key": "When selecting any gun, the hook enter in web mode.",
-            "value": "Kung piliin niya ang kahit anong baril ang kanyang hook ay papasok sa web mode."
-        },
-        {
-            "key": "You are now logged.",
-            "value": "Ikaw ay nakalogin na."
         }
     ]
 }

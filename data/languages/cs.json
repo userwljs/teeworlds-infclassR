@@ -1,277 +1,19 @@
 {
     "translation": [
         {
-            "key": "10 seconds later, a few players become infected.",
-            "value": "Za 10 sekund se 2 hráči stanou nakaženými."
+            "key": "You have already notified that {str:PlayerName} ought to be banned",
+            "value": "Už jsi oznámil, že {str:PlayerName} musí být zabanován"
         },
         {
-            "key": "A random class will be automatically attributed to you when round starts",
-            "value": "Pokud si do začátku kola nevybereš povolání, tak je ti náhodně uděleno."
-        },
-        {
-            "key": "All humans affected by the explosion become infected.",
-            "value": "Všichni lidé v dosahu exploze se stanou nakaženými."
-        },
-        {
-            "key": "All players start as a human.",
-            "value": "Všichni hráči začínají jako člověk."
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "Při vytváření účtu se stala chyba."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Během operace se stala chyba"
-        },
-        {
-            "key": "Available help pages: {str:PageList}",
-            "value": "Dostupné stránky pomoci: {str:PageList}"
-        },
-        {
-            "key": "Available languages: {str:ListOfLanguage}",
-            "value": "Dostupné jazyky: {str:ListOfLanguage}"
-        },
-        {
-            "key": "Bat can jump endlessly in the air but it cannot infect humans.",
-            "value": "Cíl nakažených, je nakazit všechny lidi."
-        },
-        {
-            "key": "Boomer",
-            "value": "Sebevrah"
-        },
-        {
-            "key": "Boomers",
-            "value": "Sebevrah"
-        },
-        {
-            "key": "Choose a help page with /help <page>",
-            "value": "Vyber si stránku pomocí příkazu /help <čislo-strany>"
-        },
-        {
-            "key": "Choose your class",
-            "value": "Vyber si své povolání"
-        },
-        {
-            "key": "Class {str:ClassName} will be automatically attributed to you when round starts",
-            "value": "Pokud si do začátku kola nevybereš povolání, tak je ti náhodně uděleno."
-        },
-        {
-            "key": "Create an account on Crowdin and join the translation team:",
-            "value": "Vytvoř si účet na Crowdin a připoj se k překladatelům:"
-        },
-        {
-            "key": "Each bomb can explode {int:NumBombs} times.",
-            "one": "Každá bomba může vybouchnout jednou",
-            "few": "Každá bomba může vybouchnout dvakrát",
-            "other": "Každá bomba může vybouchnout třikrát"
-        },
-        {
-            "key": "Engineer",
-            "value": "Inženýr"
-        },
-        {
-            "key": "Engineers",
-            "value": "Inženýr"
-        },
-        {
-            "key": "Example: “/msg !medic I'm wounded!”",
-            "value": "Příklad: »/msg !medic Jsem zraněný!«"
-        },
-        {
-            "key": "Example: “/mute nameless tee”",
-            "value": "Příklad: »/msg !medic Jsem zraněný!«"
-        },
-        {
-            "key": "Explosive yield: {percent:BombLevel}",
-            "value": "Explosivní efekt: {percent:BombLevel}"
-        },
-        {
-            "key": "Ghost",
-            "value": "Duch"
-        },
-        {
-            "key": "Ghosts",
-            "value": "Duch"
-        },
-        {
-            "key": "Ghoul",
-            "value": "Ghůl"
-        },
-        {
-            "key": "Ghoul can infect humans and heal the infected with the hammer.",
-            "value": "Ghůl může nakazit lidi a léčit nakažené kladivem"
-        },
-        {
-            "key": "Ghouls",
-            "value": "Ghůl"
-        },
-        {
-            "key": "Hero",
-            "value": "Hrdina"
-        },
-        {
-            "key": "Heroes",
-            "value": "Hrdina"
-        },
-        {
-            "key": "Hook protection disabled",
-            "value": "Ochrana proti hákům deaktivována"
-        },
-        {
-            "key": "Hook protection enabled",
-            "value": "Ochrana proti hákům aktivována"
-        },
-        {
-            "key": "How to translate the mod",
-            "value": "Jak přeložit mód"
-        },
-        {
-            "key": "How to use taxi mode",
-            "value": "Jak přeložit mód"
-        },
-        {
-            "key": "Hunter",
-            "value": "Lovec"
-        },
-        {
-            "key": "Hunters",
-            "value": "Lovec"
-        },
-        {
-            "key": "If an infected heals it, the freeze effect disappears.",
-            "value": "Pokud ho nakažený vyléčí zmrazení zmizí"
-        },
-        {
-            "key": "If the Witch dies, it disappears and is replaced by another class.",
-            "value": "Když zemřeš jako čarodějnice, tak se spawneš s jiným povoláním."
-        },
-        {
-            "key": "If your language is not available, you can help with translation (/help translate).",
-            "value": "Pokud tvůk jazyk není dostupný, můžeš pomoct s překladem (/help translate)."
-        },
-        {
-            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-            "value": "Hák pavouka uděluje 1 útočný bod(v jakémoliv módu) za sekundu a člověka může držet 2 sekundy."
-        },
-        {
-            "key": "Infected won the round in {sec:RoundDuration}",
-            "value": "Nakažení vyhráli kolo v čase {sec:RoundDuration}"
-        },
-        {
-            "key": "Infection is coming in {sec:RemainingTime}",
-            "value": "Příští vlajka se spawne za {sec:RemainingTime}"
-        },
-        {
-            "key": "InfectionClass is a team game between humans and the infected.",
-            "value": "InfectionClass je týmová hra, mezi lidmi a nakaženými."
-        },
-        {
-            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
-            "value": "InfectionClass, vytvořil necropotame (version{str:VersionCode})"
-        },
-        {
-            "key": "It can also infect humans and heal the infected with the hammer.",
-            "value": "Duch může infikovat lidi a léčit nakažené svým kladivem."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Taky může způsobit 1 útočný bod za sekundu zaháknutím lidí."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Duch může infikovat lidi a léčit nakažené svým kladivem."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Duch může infikovat lidi a léčit nakažené svým kladivem."
+            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
+            "value": "{str:PlayerName} chce, aby byl {str:VictimName} zabanován z důvodu: ({str:Reason})"
         },
         {
             "key": "Laser wall: {sec:RemainingTime}",
             "value": "Laserová stěna: {sec:RemainingTime}"
         },
         {
-            "key": "List of commands",
-            "value": "List příkazů"
-        },
-        {
-            "key": "Looper laser wall: {sec:RemainingTime}",
-            "value": "Laserová stěna: {sec:RemainingTime}"
-        },
-        {
-            "key": "Main contributors: {str:ListOfContributors}",
-            "value": "Hlavní přispěvatelé: {str:ListOfContributors}"
-        },
-        {
-            "key": "Medic",
-            "value": "Lékař"
-        },
-        {
-            "key": "Medic also has a powerful shotgun that can knock back the infected.",
-            "value": "Má i silnou brokovnici, která dokáže odžduchnout nakažené"
-        },
-        {
-            "key": "Medics",
-            "value": "Lékař"
-        },
-        {
-            "key": "Mercenaries",
-            "value": "Žoldnéř"
-        },
-        {
-            "key": "Mercenary",
-            "value": "Žoldnéř"
-        },
-        {
-            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-            "one": "Může házet jedovaté granáty, které ubírají postupně 1 život.",
-            "few": "Může házet jedovaté granáty, které ubírají postupně {int:NumDamagePoints} životy.",
-            "other": "Může házet jedovaté granáty, které ubírají postupně {int:NumDamagePoints} životů."
-        },
-        {
-            "key": "Mine activated",
-            "value": "Jedna mina je aktivní"
-        },
-        {
-            "key": "Mines are limited to {int:NumMines} per player at the same time.",
-            "one": "Minu můžeš mít vždy jen jednu.",
-            "few": "Miny můžeš mít maximálně {int:NumMines}",
-            "other": "Minu můžeš mít vždy jen {int:NumMines}"
-        },
-        {
-            "key": "Need at least {int:MinPlayers} players",
+            "key": "{int:NumBombs} bombs left",
             "one": "",
             "few": "",
             "other": ""
@@ -281,26 +23,128 @@
             "value": "Příští vlajka se spawne za {sec:RemainingTime}"
         },
         {
-            "key": "Next target in {sec:RemainingTime}",
-            "value": "Příští cíl za {sec:RemainingTime}"
+            "key": "Placed a turret, {int:TurretsNumber} turrets left",
+            "one": "",
+            "few": "",
+            "other": ""
+        },
+        {
+            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
+            "one": "",
+            "few": "",
+            "other": ""
+        },
+        {
+            "key": "Choose your class",
+            "value": "Vyber si své povolání"
+        },
+        {
+            "key": "Random choice",
+            "value": "Náhodná volba"
+        },
+        {
+            "key": "Need at least {int:MinPlayers} players",
+            "one": "",
+            "few": "",
+            "other": ""
+        },
+        {
+            "key": "You are frozen: {sec:EffectDuration}",
+            "value": "Jsi zmražený:  {sec:EffectDuration}"
+        },
+        {
+            "key": "Scientist can get a white hole after {int:Kills} kills.",
+            "one": "",
+            "few": "",
+            "other": ""
+        },
+        {
+            "key": "{str:PlayerName} entered and joined the game",
+            "value": "{str:PlayerName} se připojil a vstoupil do hry"
+        },
+        {
+            "key": "You have infected {str:VictimName}, +3 points",
+            "value": "Nakazil jsi {str:VictimName}, +3 body"
+        },
+        {
+            "key": "The Hero found the flag!",
+            "value": "Hrdina našel vlajku!"
+        },
+        {
+            "key": "Mercenary",
+            "value": "Žoldnéř"
+        },
+        {
+            "key": "Medic",
+            "value": "Lékař"
+        },
+        {
+            "key": "Hero",
+            "value": "Hrdina"
+        },
+        {
+            "key": "Engineer",
+            "value": "Inženýr"
+        },
+        {
+            "key": "Soldier",
+            "value": "Voják"
         },
         {
             "key": "Ninja",
             "value": "Nindža"
         },
         {
-            "key": "Ninjas",
-            "value": "Nindža"
+            "key": "Sniper",
+            "value": "Odstřelovač"
         },
         {
-            "key": "No player was found with this name",
-            "value": "Nebyl nalezen žádný hráč s tímhle jménem"
+            "key": "Scientist",
+            "value": "Vědec"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "Jedna bomba zbývá",
-            "few": "{int:NumBombs} bomby zbývají",
-            "other": "{int:NumBombs} bomby zbývají"
+            "key": "Smoker",
+            "value": "Kuřák"
+        },
+        {
+            "key": "Boomer",
+            "value": "Sebevrah"
+        },
+        {
+            "key": "Hunter",
+            "value": "Lovec"
+        },
+        {
+            "key": "Ghost",
+            "value": "Duch"
+        },
+        {
+            "key": "Spider",
+            "value": "Pavouk"
+        },
+        {
+            "key": "Ghoul",
+            "value": "Ghůl"
+        },
+        {
+            "key": "Witch",
+            "value": "Čarodějnice"
+        },
+        {
+            "key": "Undead",
+            "value": "Nemrtvý"
+        },
+        {
+            "key": "{str:PlayerName} joined the spectators",
+            "value": "{str:PlayerName} začal pozorovat"
+        },
+        {
+            "key": "{str:PlayerName} joined the game",
+            "value": "{str:PlayerName} se připojil do hry"
+        },
+        {
+            "key": "{str:VictimName} has been infected",
+            "value": "{str:VictimName} byl nakažen"
         },
         {
             "key": "{int:NumHumans} humans won the round",
@@ -309,29 +153,15 @@
             "other": "{int:NumHumans} lidé vyhráli"
         },
         {
-            "key": "{int:NumMines} mines are active",
-            "one": "Jedna mina je aktivní",
-            "few": "{int:NumMines} miny jsou aktivní",
-            "other": "{int:NumMines} miny jsou aktivní"
+            "key": "You have survived, +5 points",
+            "value": "Přežil jsi, +5 bodů"
         },
         {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Prosím, počkej 5 minut před vytvořením dalšího účtu"
+            "key": "Infected won the round in {sec:RoundDuration}",
+            "value": "Nakažení vyhráli kolo v čase {sec:RoundDuration}"
         },
         {
-            "key": "Position lock: {sec:RemainingTime}",
-            "value": "Znehybnění: {sec:RemainingTime}"
-        },
-        {
-            "key": "Press <F3> or <F4> to enable or disable hook protection",
-            "value": "Zmáčkni <F3> nebo <F4> k aktivaci,  nebo deaktivaci hákové ochrany"
-        },
-        {
-            "key": "Random choice",
-            "value": "Náhodná volba"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "key": "The survival is over after {int:NumWaves} waves.",
             "one": "",
             "few": "",
             "other": ""
@@ -341,282 +171,54 @@
             "value": "Pravidla hry"
         },
         {
-            "key": "Santa {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} opustil hru"
+            "key": "How to translate the mod",
+            "value": "Jak přeložit mód"
         },
         {
-            "key": "Scientist",
-            "value": "Vědec"
-        },
-        {
-            "key": "Scientist has also grenades that teleport them.",
-            "value": "Vědec má taky gránatomet, který ho teleportuje."
-        },
-        {
-            "key": "Scientists",
-            "value": "Vědec"
-        },
-        {
-            "key": "Slug can infect humans and heal the infected with the hammer.",
-            "value": "Ghůl může nakazit lidi a léčit nakažené kladivem"
-        },
-        {
-            "key": "Smoker",
-            "value": "Kuřák"
-        },
-        {
-            "key": "Smokers",
-            "value": "Kuřák"
-        },
-        {
-            "key": "Sniper",
-            "value": "Odstřelovač"
-        },
-        {
-            "key": "Snipers",
-            "value": "Odstřelovač"
-        },
-        {
-            "key": "Soldier",
-            "value": "Voják"
-        },
-        {
-            "key": "Soldiers",
-            "value": "Voják"
-        },
-        {
-            "key": "Someone was infected to balance the game.",
-            "value": "Když se nakažený dotkne zdi, zemře."
-        },
-        {
-            "key": "Spider",
-            "value": "Pavouk"
-        },
-        {
-            "key": "Spiders",
-            "value": "Pavouk"
-        },
-        {
-            "key": "Staying alive for: {int:RemainingTime}",
-            "value": "Znehybnění: {sec:RemainingTime}"
-        },
-        {
-            "key": "Stomach filled by {percent:FodderInStomach}",
-            "value": "Žaludek naplněn za {percent:FodderInStomach}"
-        },
-        {
-            "key": "Switch language to english?",
-            "value": "Změnit jazyk do angličtiny"
-        },
-        {
-            "key": "Target to eliminate: {str:PlayerName}",
-            "value": "Terč k zavraždění: {str:PlayerName}"
+            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "one": "",
+            "few": "",
+            "other": ""
         },
         {
             "key": "Targeted chat messages",
             "value": "Cílené zprávy chatu"
         },
         {
-            "key": "Thanks to {str:ListOfContributors}",
-            "value": "Děkujeme {str:ListOfContributors}"
-        },
-        {
-            "key": "The Boomer explodes when it attacks.",
-            "value": "Sebevrah exploduje když zaútočí svým kladivem."
-        },
-        {
-            "key": "The Engineer can build walls with the hammer to block the infected.",
-            "value": "Inženýr může kladivem budovat laserové zdi."
-        },
-        {
-            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-            "value": "Je neviditelný dokud nezaútočí, nebo dokud se neocitne příliš blízko člověka."
-        },
-        {
-            "key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
-            "value": "Může absorbovat nakažené, které umřeli blízko něho, což ho poté dělá odolnějším a rychlejším."
-        },
-        {
-            "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
-            "value": "Hrdina nemůže být vyléčen léařem, ale dokáže vydržet bouchnutí od nakaženého, když má dost životů."
-        },
-        {
-            "key": "The Hero found the flag!",
-            "value": "Hrdina našel vlajku!"
-        },
-        {
-            "key": "The Medic can protect humans with the hammer by giving them armor.",
-            "value": "Lékař může lidím svým kladivem dát štíty."
-        },
-        {
-            "key": "The Mercenary can fly in the air using their machine gun.",
-            "value": "Žoldnéř létá ve vzduchu pomocí jeho pistole."
-        },
-        {
-            "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
-            "value": "Ninja má granátomet, který zmrazí nakažené na 3 vteřiny."
-        },
-        {
-            "key": "The Scientist can pose floating mines with the hammer.",
-            "value": "Vědci můžou kladivem umístit nehybné miny"
-        },
-        {
-            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-            "value": "Ghůl může nakazit lidi a léčit nakažené kladivem"
-        },
-        {
-            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
-            "value": "Sniper se může znehybnit ve vzduchu po dobu 15 sekund použitím kladiva."
-        },
-        {
-            "key": "The Soldier creates floating bombs with the hammer.",
-            "value": "Voják může svým kladivem umístit nehybné bomby"
-        },
-        {
-            "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
-            "value": "Místo smrti se zmrazí na 10 sekund"
-        },
-        {
-            "key": "The class is disabled",
-            "value": "Čarodějnice byla zabita"
-        },
-        {
-            "key": "The class selector will be displayed when round starts",
-            "value": "Výběr povolání se ti zobrazí na obrazovce když začne kolo."
-        },
-        {
-            "key": "The goal for the humans is to survive until the army cleans the map.",
-            "value": "Cíl lidí je přežít, dokud armáda konflikt nevyřeší."
-        },
-        {
-            "key": "The goal for the infected is to infect all humans.",
-            "value": "Cíl nakažených, je nakazit všechny lidi."
-        },
-        {
-            "key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
-            "value": "Životnost zdi je {sec:LifeSpan}, a zeď můžeš mít vždy jen jednu."
-        },
-        {
-            "key": "The undead is finally dead",
-            "value": "Nemrtvý je konečně mrtvý"
-        },
-        {
-            "key": "The witch is dead",
-            "value": "Čarodějnice byla zabita"
-        },
-        {
-            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-            "one": "Jeho kladivo je nahrazeno katanou, se kterou může skočit 1 krát, před dotknutím se země",
-            "few": "Jeho kladivo je nahrazeno katanou, se kterou může skočit {int:NinjaJump} krát před dotkutím se země.",
-            "other": "Jeho kladivo je nahrazeno katanou, se kterou může skočit {int:NinjaJump} krát před dotkutím se země"
-        },
-        {
-            "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
-            "value": "Voják může svým kladivem umístit nehybné bomby"
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "Může skočit 3 krát"
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "Může skočit 3 krát"
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Toto jméno je obsazené"
-        },
-        {
-            "key": "Too few infected to call the Santa",
-            "value": "Cíl nakažených, je nakazit všechny lidi."
-        },
-        {
-            "key": "Type “/help {str:ClassName}” for more information about your class",
-            "value": "Napiš »/help {str:ClassName}« pro víc informací o tvém povolání"
-        },
-        {
-            "key": "Undead",
-            "value": "Nemrtvý"
-        },
-        {
-            "key": "Undead can infect humans and heal the infected with the hammer.",
-            "value": "Nemrtvý může infikovat lidi a léčit nakažené."
-        },
-        {
-            "key": "Undeads",
-            "value": "Nemrtvý"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Neznámé povolání"
-        },
-        {
-            "key": "Unknown language",
-            "value": "Neznámý jazyk"
-        },
-        {
-            "key": "Unknowns",
-            "value": "Neznámé povolání"
-        },
-        {
-            "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
-            "value": "Použij kladivo poprvé k umístění bomby, podruhé k nechání bomby vybouchnout."
-        },
-        {
-            "key": "Use the hammer to place the bomb and explode it multiple times.",
-            "value": "Použij kladivo poprvé k umístění bomby, podruhé k nechání bomby vybouchnout."
-        },
-        {
             "key": "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.",
             "value": "Když chceš poslat zprávu specifické třídě, použij »/msg!<JménoTřídy> <Zpráva>«."
+        },
+        {
+            "key": "Example: “/msg !medic I'm wounded!”",
+            "value": "Příklad: »/msg !medic Jsem zraněný!«"
         },
         {
             "key": "Use “/msg !near” to send a private message to all players near you.",
             "value": "Použij »/msg !near« k napsání zprávy všem hráčům blízko tebe."
         },
         {
-            "key": "Use “/mute <PlayerName>” to mute this player.",
-            "value": "Pokud chceš napsat zprávu jinému hráči použij »/msg <JménoHráče> <Zpráva>«."
+            "key": "Use the hammer to place the bomb and explode it multiple times.",
+            "value": "Použij kladivo poprvé k umístění bomby, podruhé k nechání bomby vybouchnout."
         },
         {
-            "key": "Use “/w <PlayerName> <My Message>” to send a private message to this player.",
-            "value": "Pokud chceš napsat zprávu jinému hráči použij »/msg <JménoHráče> <Zpráva>«."
+            "key": "You have killed a witch, +5 points",
+            "value": "Zabil jsi čarodějnici, +5 bodů"
         },
         {
-            "key": "Voodoo can infect humans and heal the infected with the hammer.",
-            "value": "Duch může infikovat lidi a léčit nakažené svým kladivem."
+            "key": "The witch is dead",
+            "value": "Čarodějnice byla zabita"
         },
         {
-            "key": "Web mode enabled",
-            "value": "Pavučinový mód aktivován"
+            "key": "The undead is finally dead",
+            "value": "Nemrtvý je konečně mrtvý"
         },
         {
-            "key": "When an infected touches the wall, it dies.",
-            "value": "Když se nakažený dotkne zdi, zemře."
+            "key": "Hook protection enabled",
+            "value": "Ochrana proti hákům aktivována"
         },
         {
-            "key": "White hole: {sec:RemainingTime}",
-            "value": "Laserová stěna: {sec:RemainingTime}"
-        },
-        {
-            "key": "Witch",
-            "value": "Čarodějnice"
-        },
-        {
-            "key": "Witch can infect humans and heal the infected with the hammer.",
-            "value": "Čarodějnice můžou infikovat lidi a léčit nakažené svým kladivem."
-        },
-        {
-            "key": "Witch {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} opustil hru"
-        },
-        {
-            "key": "Witches",
-            "value": "Čarodějnice"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Špatné jméno. nebo heslo"
+            "key": "Hook protection disabled",
+            "value": "Ochrana proti hákům deaktivována"
         },
         {
             "key": "You are a human: {str:ClassName}",
@@ -627,70 +229,108 @@
             "value": "Jsi nakažený: {str:ClassName}"
         },
         {
-            "key": "You are blinded: {sec:EffectDuration}",
-            "value": "Jsi zmražený:  {sec:EffectDuration}"
-        },
-        {
-            "key": "You are frozen: {sec:EffectDuration}",
-            "value": "Jsi zmražený:  {sec:EffectDuration}"
-        },
-        {
-            "key": "You are slowed: {sec:EffectDuration}",
-            "value": "Jsi zmražený:  {sec:EffectDuration}"
-        },
-        {
-            "key": "You can change the language of this mod using the command /language.",
-            "value": "Můžeš změnit jazyk tohoto módu pomocí příkazu /language"
+            "key": "Type “/help {str:ClassName}” for more information about your class",
+            "value": "Napiš »/help {str:ClassName}« pro víc informací o tvém povolání"
         },
         {
             "key": "You can't join the spectators right now",
             "value": "Právě nemůžeš pozorovat"
         },
         {
-            "key": "You have already notified that {str:PlayerName} ought to be banned",
-            "value": "Už jsi oznámil, že {str:PlayerName} musí být zabanován"
+            "key": "{str:PlayerName} changed their name to {str:NewName}",
+            "value": "{str:PlayerName} změnil své jméno na {str:NewName}"
         },
         {
-            "key": "You have been infected by {str:KillerName}",
-            "value": "Jsi nakažený: {str:ClassName}"
+            "key": "You can change the language of this mod using the command /language.",
+            "value": "Můžeš změnit jazyk tohoto módu pomocí příkazu /language"
         },
         {
-            "key": "You have called the Santa once again",
-            "value": "Zabil jsi čarodějnici, +5 bodů"
+            "key": "If your language is not available, you can help with translation (/help translate).",
+            "value": "Pokud tvůk jazyk není dostupný, můžeš pomoct s překladem (/help translate)."
         },
         {
-            "key": "You have infected {str:VictimName}, +3 points",
-            "value": "Nakazil jsi {str:VictimName}, +3 body"
+            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
+            "value": "InfectionClass, vytvořil necropotame (version{str:VersionCode})"
         },
         {
-            "key": "You have infected {str:VictimName}, shame on you!",
-            "value": "Nakazil jsi {str:VictimName}, +3 body"
+            "key": "Main contributors: {str:ListOfContributors}",
+            "value": "Hlavní přispěvatelé: {str:ListOfContributors}"
         },
         {
-            "key": "You have killed a witch, +5 points",
-            "value": "Zabil jsi čarodějnici, +5 bodů"
+            "key": "Thanks to {str:ListOfContributors}",
+            "value": "Děkujeme {str:ListOfContributors}"
         },
         {
-            "key": "You have killed an undead! +5 points",
-            "value": "Zabil jsi čarodějnici, +5 bodů"
+            "key": "No player was found with this name",
+            "value": "Nebyl nalezen žádný hráč s tímhle jménem"
         },
         {
-            "key": "You have survived, +5 points",
-            "value": "Přežil jsi, +5 bodů"
+            "key": "Choose a help page with /help <page>",
+            "value": "Vyber si stránku pomocí příkazu /help <čislo-strany>"
         },
         {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "few": "",
-            "other": ""
+            "key": "Available help pages: {str:PageList}",
+            "value": "Dostupné stránky pomoci: {str:PageList}"
+        },
+        {
+            "key": "Unknown language",
+            "value": "Neznámý jazyk"
+        },
+        {
+            "key": "Available languages: {str:ListOfLanguage}",
+            "value": "Dostupné jazyky: {str:ListOfLanguage}"
+        },
+        {
+            "key": "List of commands",
+            "value": "List příkazů"
+        },
+        {
+            "key": "Press <F3> or <F4> to enable or disable hook protection",
+            "value": "Zmáčkni <F3> nebo <F4> k aktivaci,  nebo deaktivaci hákové ochrany"
+        },
+        {
+            "key": "{str:PlayerName} has been banned ({str:Reason})",
+            "value": "{str:PlayerName} byl zabanován ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has been kicked ({str:Reason})",
+            "value": "{str:PlayerName} byl vyhozen ze hry ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game ({str:Reason})",
+            "value": "{str:PlayerName} opustil hru ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game",
+            "value": "{str:PlayerName} opustil hru"
+        },
+        {
+            "key": "An error occured during the creation of your account.",
+            "value": "Při vytváření účtu se stala chyba."
+        },
+        {
+            "key": "An error occured during the operation.",
+            "value": "Během operace se stala chyba"
+        },
+        {
+            "key": "Please wait 5 minutes before creating another account",
+            "value": "Prosím, počkej 5 minut před vytvořením dalšího účtu"
+        },
+        {
+            "key": "This username is already taken by an existing account",
+            "value": "Toto jméno je obsazené"
+        },
+        {
+            "key": "Unknown class",
+            "value": "Neznámé povolání"
+        },
+        {
+            "key": "Wrong username/password.",
+            "value": "Špatné jméno. nebo heslo"
         },
         {
             "key": "You must be logged for this operation",
             "value": "K tomuto úkonu musíš být přihlášen"
-        },
-        {
-            "key": "You must be logged to see stats",
-            "value": "Musíš být příhlášen, aby jsi viděl svou pozici"
         },
         {
             "key": "You must be logged to see your goal",
@@ -705,64 +345,8 @@
             "value": "Tvůj účet byl vytvořen a už jsi přihlášen."
         },
         {
-            "key": "{str:PlayerName} changed the class to {str:ClassName}",
-            "value": "{str:PlayerName} změnil své jméno na {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} changed their name to {str:NewName}",
-            "value": "{str:PlayerName} změnil své jméno na {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} entered and joined the game",
-            "value": "{str:PlayerName} se připojil a vstoupil do hry"
-        },
-        {
-            "key": "{str:PlayerName} has been banned ({str:Reason})",
-            "value": "{str:PlayerName} byl zabanován ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has been kicked ({str:Reason})",
-            "value": "{str:PlayerName} byl vyhozen ze hry ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has destroyed your turret!",
-            "value": "{str:PlayerName} opustil hru"
-        },
-        {
-            "key": "{str:PlayerName} has left the game",
-            "value": "{str:PlayerName} opustil hru"
-        },
-        {
-            "key": "{str:PlayerName} has left the game ({str:Reason})",
-            "value": "{str:PlayerName} opustil hru ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} joined the game",
-            "value": "{str:PlayerName} se připojil do hry"
-        },
-        {
-            "key": "{str:PlayerName} joined the spectators",
-            "value": "{str:PlayerName} začal pozorovat"
-        },
-        {
-            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
-            "value": "{str:PlayerName} změnil své jméno na {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
-            "value": "{str:PlayerName} chce, aby byl {str:VictimName} zabanován z důvodu: ({str:Reason})"
-        },
-        {
-            "key": "{str:VictimName} has been infected",
-            "value": "{str:VictimName} byl nakažen"
-        },
-        {
             "key": "Any human that touch a hook in web mode is automatically grabbed.",
             "value": "Jakýkoliv člověk, který se dotkne háku v pavučinovém módu tak je automaticky přitáhnut k pavoukovi."
-        },
-        {
-            "key": "Bat can jump multiple times in air.",
-            "value": "Může skočit 3 krát"
         },
         {
             "key": "Bombs are limited to one per player at the same time.",
@@ -793,48 +377,12 @@
             "value": "Může udělit 1 útočný bod za sekundu zaháknutím člověka."
         },
         {
-            "key": "Snipers can jump two times in air.",
-            "value": "Může skočit 3 krát"
-        },
-        {
-            "key": "The Hero has a shotgun, a laser rifle, and a grenade launcher.",
-            "value": "Hrdina má brokovnici, laser a granátomet"
-        },
-        {
             "key": "The Hero must find a flag hidden in the map.",
             "value": "Musí najít vlajku skrytou někde ve hře"
         },
         {
-            "key": "The Hunter can infect humans and heal infected with the hammer.",
-            "value": "lovec může infikovat lidi a léčit nakažené svým kladivem."
-        },
-        {
-            "key": "The Smoker can infect humans and heal infected with the hammer.",
-            "value": "Kuřák může infikovat lidi and léčit infikované svým kladivem"
-        },
-        {
-            "key": "The Spider can infect humans and heal infected with the hammer.",
-            "value": "Pavou může infikovat lidi a léčit infikované svým kladivem"
-        },
-        {
             "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
             "value": "Poté se postupně vrací do svého normálního stavu.\nKdyž umře, instantně ztratí část toho co absorboval"
-        },
-        {
-            "key": "They also have a powerful rifle that deals 20 damage points in locked position, and 10–13 otherwise.",
-            "value": "Taky má velmi silný laser, který uděluje 30 životů v zhehybněnosti a 10-13 normálně."
-        },
-        {
-            "key": "When an infected dies, it may respawn near the Witch.",
-            "value": "Když nakažený zemře, může se spawnout u čarodějnice."
-        },
-        {
-            "key": "When selecting any gun, the hook enter in web mode.",
-            "value": "Při pokoušení se přepnout na jinou zbraň se jeho hák dostane do pavučinového módu"
-        },
-        {
-            "key": "You are now logged.",
-            "value": "Jsi příhlášen/a"
         }
     ]
 }

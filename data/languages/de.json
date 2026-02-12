@@ -1,221 +1,542 @@
 {
     "translation": [
         {
-            "key": "(page {int:PageNumber}/{int:PagesInTotal}, see /changelog {int:NextPage})",
-            "value": "(Seite {int:PageNumber}/{int:PagesInTotal}, siehe /changelog {int:NextPage})"
+            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
+            "value": "{str:Victim} ist stummgeschalten worden für {sec:Duration} ({str:Reason})"
         },
         {
-            "key": "10 seconds later, a few players become infected.",
-            "value": "Nach 10 Sekunden werden zwei Spieler von der Erkrankung erfaßt."
+            "key": "You have already notified that {str:PlayerName} ought to be banned",
+            "value": "Du hast bereits einen Bann für {str:PlayerName} gefordert"
         },
         {
-            "key": "A lucky Scientist devoted to killing can get a white hole that sucks the infected in which can be placed with the laser rifle.",
-            "value": "Ein Wissenschaftler, der dem Töten gewidmet ist, kann ein weißes Loch bekommen, welches mit dem Lasergewehr platziert werden kann und dann Erkrankte in das Loch saugt"
+            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
+            "value": "{str:PlayerName} verlangt nach einem Bann für {str:VictimName} ({str:Reason})"
         },
         {
-            "key": "A random class will be automatically attributed to you when round starts",
-            "value": "Dir wird ab jetzt eine zufällige Klasse am Anfange jeder Runde zugewiesen"
+            "key": "You have already voted to change this map",
+            "value": "Du hast bereits dafür gestimmt, diese Karte zu überspringen"
         },
         {
-            "key": "All humans affected by the explosion become infected.",
-            "value": "Alle von der Explosion erfassten Überlebenden werden infiziert."
+            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
+            "value": "{str:PlayerName} möchte die Abstimmung '{str:VoteName}' starten"
         },
         {
-            "key": "All players start as a human.",
-            "value": "Alle Spieler beginnen als Überlebende."
+            "key": "White hole found, adjusting scientific parameters...",
+            "value": "Weißes Loch gefunden, die wissenschaftlichen Parameter werden angepasst..."
         },
         {
-            "key": "All witches are already here",
-            "value": "Alle Hexen wurden bereits beschworen"
+            "key": "You have held a bonus area for one minute, +5 points",
+            "value": "Du hast einen Gutschriftgürtel der Karte für eine Minute gehalten, +5 Punkte"
         },
         {
-            "key": "An error occured during the creation of your account.",
-            "value": "Ein Fehler ist während der Erstellung deines Kontos aufgetreten."
+            "key": "You need at least {int:MinHp} HP to revive a zombie",
+            "value": "Du brauchst mindestens {int:MinHp} Lebenspunkte um einen Zombie wiederzubeleben"
         },
         {
-            "key": "An error occured during the operation.",
-            "value": "Ein Fehler ist während des Vorganges aufgetreten."
+            "key": "Too few zombies to revive anyone (less than {int:MinZombies})",
+            "value": "Zu wenig Zombies, um jemanden wiederzubeleben (weniger als {int:MinZombies})"
         },
         {
-            "key": "Available help pages: {str:PageList}",
-            "value": "Verfügbare Hilfeseiten: {str:PageList}"
-        },
-        {
-            "key": "Available languages: {str:ListOfLanguage}",
-            "value": "Verfügbare Sprachen: {str:ListOfLanguage}"
-        },
-        {
-            "key": "Based on the concept of Infection mod by Gravity",
-            "value": "Fußend auf dem Einfalle der Infection-Mod von Gravity"
-        },
-        {
-            "key": "Bat",
-            "value": "Fledermaus"
-        },
-        {
-            "key": "Bat can jump endlessly in the air but it cannot infect humans.",
-            "value": "Fledermäuse können grenzenlos in der Luft springen, jedoch nicht mit einem Schlag infizieren."
-        },
-        {
-            "key": "Bats",
-            "value": "Fledermäuse"
-        },
-        {
-            "key": "Biologist",
-            "value": "Lebenskundler"
-        },
-        {
-            "key": "Biologists",
-            "value": "Lebenskundler"
-        },
-        {
-            "key": "Boomer",
-            "value": "Bomber"
-        },
-        {
-            "key": "Boomers",
-            "value": "Bomber"
-        },
-        {
-            "key": "ChangeLog is not provided",
-            "value": "Das Änderungsprotokoll ist nicht angegeben"
-        },
-        {
-            "key": "ChangeLog page {int:PageNumber} is not available",
-            "value": "Sete {int:PageNumber} im Änderungsprotokoll ist nicht verfügbar"
-        },
-        {
-            "key": "Choose a help page with /help <page>",
-            "value": "Wähle eine Hilfeseite durch /help <Seite>"
-        },
-        {
-            "key": "Choose your class",
-            "value": "Wähle deine Klasse"
-        },
-        {
-            "key": "Class {str:ClassName} will be automatically attributed to you when round starts",
-            "value": "Dir wird ab jetzt eine zufällige Klasse am Anfange jeder Runde zugewiesen"
-        },
-        {
-            "key": "Create an account on Crowdin and join the translation team:",
-            "value": "Erstelle ein Konto bei Crowdin und trete dem Übersetzungsteam bei:"
-        },
-        {
-            "key": "Discord: {str:Url}",
-            "value": "Discord {str:Url}"
-        },
-        {
-            "key": "Each bomb can explode {int:NumBombs} times.",
-            "one": "Jede Bombe kann einmal explodieren.",
-            "other": "Jede Bombe kann {int:NumBombs} Mal explodieren."
-        },
-        {
-            "key": "Engineer",
-            "value": "Ingenieur"
-        },
-        {
-            "key": "Engineers",
-            "value": "Ingenieure"
-        },
-        {
-            "key": "Example: “/msg !medic I'm wounded!”",
-            "value": "Beispiel: »/msg !medic Ich bin verwundet!«"
-        },
-        {
-            "key": "Example: “/mute nameless tee”",
-            "value": "Beispielsweise: „/mute nameless tee“"
+            "key": "Use the laser to upgrade the bomb",
+            "value": "Benutze den Laser, um die Bombe aufzubauen"
         },
         {
             "key": "Explosive yield: {percent:BombLevel}",
             "value": "Ladungsmenge: {percent:BombLevel}"
         },
         {
-            "key": "Fast round",
-            "value": "Schnelle Runde"
+            "key": "The bomb is fully upgraded.\nThere is nothing to do with the laser.",
+            "value": "Die Bombe ist vollständig ausgebaut.\nMit dem Laser gibt es nichts mehr zu tun."
         },
         {
-            "key": "Ghost",
-            "value": "Geist"
+            "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
+            "value": "Benutze den Hammer um eine Bombe zu platzieren\nund dann den Laser, um sie zu verbessern"
         },
         {
-            "key": "Ghosts",
-            "value": "Geister"
+            "key": "You have a turret. Use the hammer to place it.",
+            "value": "Du hast einen Geschützturm. Zum Platzieren, benutze den Hammer."
         },
         {
-            "key": "Ghoul",
-            "value": "Ġul"
+            "key": "You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to place one.",
+            "value": "Du hast {int:NumTurrets} von {int:MaxTurrets} Geschütztürmen. Verwende den Hammer, um einen zu platzieren."
         },
         {
-            "key": "Ghoul can infect humans and heal the infected with the hammer.",
-            "value": "Der Ġul kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken. "
+            "key": "You don't have a turret to place",
+            "value": "Du hast keinen Geschützturm zum Platzieren"
         },
         {
-            "key": "Ghouls",
-            "value": "Ġule"
+            "key": "Laser wall: {sec:RemainingTime}",
+            "value": "Laser-Wand: {sec:RemainingTime}"
+        },
+        {
+            "key": "Looper laser wall: {sec:RemainingTime}",
+            "value": "Schlepper Laser-Wand: {sec:RemainingTime}"
+        },
+        {
+            "key": "{int:NumBombs} bombs left",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "The white hole is available!",
+            "value": "Das weiße Loch ist verfügbar!"
+        },
+        {
+            "key": "White hole: {sec:RemainingTime}",
+            "value": "Weißes Loch: {sec:RemainingTime}"
+        },
+        {
+            "key": "Mine activated",
+            "value": "Mine aufgebaut"
+        },
+        {
+            "key": "Next target in {sec:RemainingTime}",
+            "value": "Nächstes Ziel in {sec:RemainingTime}"
+        },
+        {
+            "key": "Target to eliminate: {str:PlayerName}",
+            "value": "Zu beseitigendes Ziel: {str:PlayerName}"
+        },
+        {
+            "key": "Position lock: {sec:RemainingTime}",
+            "value": "Feste Aufstellung: {sec:RemainingTime}"
+        },
+        {
+            "key": "Next flag in {sec:RemainingTime}",
+            "value": "Nächste Flagge in {sec:RemainingTime}"
+        },
+        {
+            "key": "You have eliminated your target, +2 points",
+            "value": "Du hast dein Ziel beseitigt, +2 Punkte."
+        },
+        {
+            "key": "Sword velocity increased",
+            "value": "Schwertschnelligkeit erhöht"
+        },
+        {
+            "key": "Sword strength increased",
+            "value": "Schwertstärke erhöht"
         },
         {
             "key": "Grenade limit increased",
             "value": "Granatenhöchstzahl erhöht"
         },
         {
-            "key": "Grenades with medicine give armor to everybody in their range, including Heroes and the Medic themself.",
-            "value": "Granaten mit Medizin heilen jeden in der Explosionsreichweite, einschließlich Recken und Sanitäter selbst."
+            "key": "Placed a turret, {int:TurretsNumber} turrets left",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "The white hole is ready, use the laser rifle to disrupt space-time",
+            "value": "Das weiße Loch ist verfügbar, verwende das Lasergewehr um Raum und Zeit zu zerreißen"
+        },
+        {
+            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
+            "one": "Du hast {int:NumTurrets} Geschützturm verfügbar, benutze zum Platzieren den Hammer",
+            "other": "Du hast {int:NumTurrets} Geschützturme verfügbar, benutze zum Platzieren den Hammer"
+        },
+        {
+            "key": "Staying alive for: {int:RemainingTime}",
+            "value": "Lebendig für: {int:RemainingTime}"
+        },
+        {
+            "key": "Web mode enabled",
+            "value": "Spinnennetz-Betrieb eingeschaltet"
+        },
+        {
+            "key": "Stomach filled by {percent:FodderInStomach}",
+            "value": "Wanstfüllung {percent:FodderInStomach}"
+        },
+        {
+            "key": "You are blinded: {sec:EffectDuration}",
+            "value": "Du bist erblindet: {sec:EffectDuration}"
+        },
+        {
+            "key": "Choose your class",
+            "value": "Wähle deine Klasse"
+        },
+        {
+            "key": "Random choice",
+            "value": "Zufällige Auswahl"
+        },
+        {
+            "key": "The class is disabled",
+            "value": "Diese Klasse ist momentan deaktiviert"
+        },
+        {
+            "key": "Need at least {int:MinPlayers} players",
+            "one": "Benötigt mindestens {int:MinPlayers} Spieler",
+            "other": "Benötigt mindestens {int:MinPlayers} Spieler"
+        },
+        {
+            "key": "The class limit exceeded",
+            "value": "Das Klassenlimit ist überschritten"
+        },
+        {
+            "key": "You are frozen: {sec:EffectDuration}",
+            "value": "Du bist eingefroren: {sec:EffectDuration}"
+        },
+        {
+            "key": "You are slowed: {sec:EffectDuration}",
+            "value": "Du wurdest verlangsamt: {sec:EffectDuration}"
+        },
+        {
+            "key": "You need at least {int:MinimumHP} HP",
+            "value": "Du benötigst mindestens {int:MinimumHP} Lebenspunkte"
+        },
+        {
+            "key": "Too few infected (less than {int:MinimumInfected})",
+            "value": "Zu wenig Erkrankte (weniger als {int:MinimumInfected})"
+        },
+        {
+            "key": "Medic {str:MedicName} revived {str:RevivedName}",
+            "value": "Sanitäter {str:MedicName} hat {str:RevivedName} wiederbelebt"
+        },
+        {
+            "key": "You destroyed {str:PlayerName}'s turret!",
+            "value": "Du hast den Geschützturm von {str:PlayerName} zerstört!"
+        },
+        {
+            "key": "{str:PlayerName} has destroyed your turret!",
+            "value": "{str:PlayerName} hat deinen Geschützturm zerstört!"
+        },
+        {
+            "key": "Scientist can get a white hole after {int:Kills} kills.",
+            "one": "",
+            "other": ""
+        },
+        {
+            "key": "The game is not balanced. Infection is coming.",
+            "value": "Das Spiel ist nicht ausgeglichen, die Infektion kommt."
+        },
+        {
+            "key": "{str:PlayerName} entered and joined the game",
+            "value": "{str:PlayerName} hat den Server und das Spiel betreten"
+        },
+        {
+            "key": "See also: /help, /changelog, /about",
+            "value": "Siehe auch: /help, /changelog, /about"
+        },
+        {
+            "key": "Join our Discord server: {str:Url}",
+            "value": "Trete unserem Discord-Server bei: {str:Url}"
+        },
+        {
+            "key": "Join our Telegram: {str:Url}",
+            "value": "Trete unserem Telegram bei: {str:Url}"
+        },
+        {
+            "key": "Join our Matrix room: {str:Url}",
+            "value": "Trete unserem Matrix-Raum bei: {str:Url}"
+        },
+        {
+            "key": "You have infected {str:VictimName}, shame on you!",
+            "value": "Du hast {str:VictimName} infiziert, Schande über dich!"
+        },
+        {
+            "key": "You have been infected by {str:KillerName}",
+            "value": "Du wurdest von {str:KillerName} infiziert"
+        },
+        {
+            "key": "You have infected {str:VictimName}, +3 points",
+            "value": "Du hast {str:VictimName} angesteckt, +3 Punkte"
+        },
+        {
+            "key": "The Hero found the flag!",
+            "value": "Der Recke hat die Flagge gefunden!"
+        },
+        {
+            "key": "Mercenary",
+            "value": "Söldner"
+        },
+        {
+            "key": "Medic",
+            "value": "Sanitäter"
         },
         {
             "key": "Hero",
             "value": "Recke"
         },
         {
-            "key": "Heroes",
-            "value": "Recken"
+            "key": "Engineer",
+            "value": "Ingenieur"
         },
         {
-            "key": "Hook protection disabled",
-            "value": "Verhakungsschutz ausgeschalten"
+            "key": "Soldier",
+            "value": "Soldat"
         },
         {
-            "key": "Hook protection enabled",
-            "value": "Verhakungsschutz eingeschaltet"
+            "key": "Ninja",
+            "value": "Ninja"
         },
         {
-            "key": "How to translate the mod",
-            "value": "Wie sich diese Mod übersetzen läßt"
+            "key": "Sniper",
+            "value": "Scharfschütze"
         },
         {
-            "key": "How to use taxi mode",
-            "value": "Wie man den Taxi-Modus benutzt"
+            "key": "Scientist",
+            "value": "Wissenschaftler"
+        },
+        {
+            "key": "Biologist",
+            "value": "Lebenskundler"
+        },
+        {
+            "key": "Looper",
+            "value": "Schlepper"
+        },
+        {
+            "key": "Smoker",
+            "value": "Raucher"
+        },
+        {
+            "key": "Boomer",
+            "value": "Bomber"
         },
         {
             "key": "Hunter",
             "value": "Jäger"
         },
         {
+            "key": "Bat",
+            "value": "Fledermaus"
+        },
+        {
+            "key": "Ghost",
+            "value": "Geist"
+        },
+        {
+            "key": "Spider",
+            "value": "Spinne"
+        },
+        {
+            "key": "Ghoul",
+            "value": "Ġul"
+        },
+        {
+            "key": "Slug",
+            "value": "Schnecke"
+        },
+        {
+            "key": "Voodoo",
+            "value": "Voodoo"
+        },
+        {
+            "key": "Witch",
+            "value": "Hexe"
+        },
+        {
+            "key": "Undead",
+            "value": "Untoter"
+        },
+        {
+            "key": "Mercenaries",
+            "value": "Söldner"
+        },
+        {
+            "key": "Medics",
+            "value": "Sanitäter"
+        },
+        {
+            "key": "Heroes",
+            "value": "Recken"
+        },
+        {
+            "key": "Engineers",
+            "value": "Ingenieure"
+        },
+        {
+            "key": "Soldiers",
+            "value": "Soldaten"
+        },
+        {
+            "key": "Ninjas",
+            "value": "Ninjas"
+        },
+        {
+            "key": "Snipers",
+            "value": "Scharfschützen"
+        },
+        {
+            "key": "Scientists",
+            "value": "Wissenschaftler"
+        },
+        {
+            "key": "Biologists",
+            "value": "Lebenskundler"
+        },
+        {
+            "key": "Loopers",
+            "value": "Schlepper"
+        },
+        {
+            "key": "Smokers",
+            "value": "Raucher"
+        },
+        {
+            "key": "Boomers",
+            "value": "Bomber"
+        },
+        {
             "key": "Hunters",
             "value": "Jäger"
         },
         {
-            "key": "If an infected heals it, the freeze effect disappears.",
-            "value": "Wenn ein Erkrankter ihn heilt, ist er nicht mehr eingefroren."
+            "key": "Bats",
+            "value": "Fledermäuse"
         },
         {
-            "key": "If the Witch dies, it disappears and is replaced by another class.",
-            "value": "Wenn die Hexe stirbt, verschwindet sie und wird durch eine andere Klasse ersetzt."
+            "key": "Ghosts",
+            "value": "Geister"
         },
         {
-            "key": "If your language is not available, you can help with translation (/help translate).",
-            "value": "Sofern deine Sprache nicht verfügbar ist, kannst du durch Übersetzung behilflich sein (/help translate)."
+            "key": "Spiders",
+            "value": "Spinnen"
         },
         {
-            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-            "value": "In beiden Modi verursacht der Haken 1 Schadenspunkt pro Sekunde und kann einen Überlebenden länger packen."
+            "key": "Ghouls",
+            "value": "Ġule"
         },
         {
-            "key": "In order to use it, both humans have to disable hook protection (usually, with F3). The human being hooked becomes the driver.",
-            "value": "Um ihn zu verwenden, müssen beide Überlebenden den Verhakungsschutz deaktivieren (üblicherweise mit F3). Der gehookte wird zum Fahrer."
+            "key": "Slugs",
+            "value": "Schnecken"
         },
         {
-            "key": "In the fast rounds *more* humans become infected initially, the spawning rate is increased and the round time limit is decreased. White hole is also disabled.",
-            "value": "In schnellen Runden werden anfangs mehr Überlebende infiziert, Erkrankte spawnen schneller, und das Zeitlimit ist verringert. Auch das weiße Loch ist deaktiviert."
+            "key": "Voodoos",
+            "value": "Voodoos"
+        },
+        {
+            "key": "Witches",
+            "value": "Hexen"
+        },
+        {
+            "key": "Undeads",
+            "value": "Untote"
+        },
+        {
+            "key": "The command is not available (enabled only in training mode)",
+            "value": "Der Befehl ist nicht verfügbar (nur im Trainingsmodus vorhanden)"
+        },
+        {
+            "key": "{str:PlayerName} changed the class to {str:ClassName}",
+            "value": "{str:PlayerName} hat sich zum {str:ClassName} geändert"
+        },
+        {
+            "key": "Unable to save the position: you have no character to save its position",
+            "value": "Position konnte nicht gespeichert werden: Du hast keinen Charakter dessen Position gespeichert werden könnte"
+        },
+        {
+            "key": "Unable to save the position: the character state is not valid",
+            "value": "Position konnte nicht gespeichert werden: Charakterzustand ungültig"
+        },
+        {
+            "key": "Unable to save the position: the character does not stand on the ground",
+            "value": "Position konnte nicht gespeichert werden: Der Charakter steht nicht auf dem Boden"
+        },
+        {
+            "key": "Unable to load the position: you have no character to load its position",
+            "value": "Position kann nicht geladen werden: Du hast keinen Charakter dessen Position geladen werden könnte"
+        },
+        {
+            "key": "Unable to load the position: the character state is not valid",
+            "value": "Position kann nicht geladen werden: Der Charakterzustand ist ungültig"
+        },
+        {
+            "key": "The Santa is already here",
+            "value": "Santa ist bereits hier."
+        },
+        {
+            "key": "All witches are already here",
+            "value": "Alle Hexen wurden bereits beschworen"
+        },
+        {
+            "key": "Too few players to call the Santa",
+            "value": "Zu wenig Erkrankte, um Santa zu beschwören"
+        },
+        {
+            "key": "Too few players to call a witch",
+            "value": "Zu wenig Erkrankte, um eine Hexe zu beschwören"
+        },
+        {
+            "key": "Too few infected to call the Santa",
+            "value": "Zu wenig Erkrankte, um Santa zu beschwören"
+        },
+        {
+            "key": "Too few infected to call a witch",
+            "value": "Zu wenig Erkrankte, um eine Hexe zu beschwören"
+        },
+        {
+            "key": "You have called the Santa once again",
+            "value": "Du hast Santa erneut gerufen"
+        },
+        {
+            "key": "You can't call witch twice",
+            "value": "Die Hexe kann nicht zweimal gerufen werden"
+        },
+        {
+            "key": "{str:PlayerName} is calling for Santa! (1/{int:RequiredCallers}) To call the Santa write: /santa",
+            "value": "{str:PlayerName} ruft nach Santa! (1/{int:RequiredCallers}) Um den Weihnachtsmann zu rufen: /santa"
+        },
+        {
+            "key": "{str:PlayerName} is calling for Witch! (1/{int:RequiredCallers}) To call witch write: /witch",
+            "value": "{str:PlayerName} ruft nach der Hexe! (1/{int:RequiredCallers}) Um die Hexe zu rufen, schreibe: /witch"
+        },
+        {
+            "key": "Santa ({int:Callers}/{int:RequiredCallers})",
+            "value": "Santa ({int:Callers}/{int:RequiredCallers})"
+        },
+        {
+            "key": "Witch ({int:Callers}/{int:RequiredCallers})",
+            "value": "Hexe ({int:Callers}/{int:RequiredCallers})"
+        },
+        {
+            "key": "Santa {str:PlayerName} has arrived!",
+            "value": "Santa {str:PlayerName} ist eingetroffen!"
+        },
+        {
+            "key": "Witch {str:PlayerName} has arrived!",
+            "value": "Hexe {str:PlayerName} ist eingetroffen!"
+        },
+        {
+            "key": "{str:PlayerName} joined the spectators",
+            "value": "{str:PlayerName} ist Zuschauer geworden"
+        },
+        {
+            "key": "{str:PlayerName} joined the game",
+            "value": "{str:PlayerName} ist dem Spiele beigetreten"
+        },
+        {
+            "key": "Play more on this map",
+            "value": "Mehr auf dieser Karte spielen"
+        },
+        {
+            "key": "The last round",
+            "value": "Die letzte Runde"
+        },
+        {
+            "key": "{str:VictimName} has been infected",
+            "value": "{str:VictimName} ist angesteckt worden"
+        },
+        {
+            "key": "Someone was infected to balance the game.",
+            "value": "Jemand wurde infiziert, um das Spiel auszugleichen."
+        },
+        {
+            "key": "The round canceled: All infected have left the game",
+            "value": "Runde abgebrochen: Alle Infizierten haben das Spiel verlassen"
+        },
+        {
+            "key": "The round canceled: All humans have left the game",
+            "value": "Runde abgebrochen: Alle Überlebenden haben das Spiel verlassen"
+        },
+        {
+            "key": "{int:NumHumans} humans won the round",
+            "one": "Ein Überlebender hat die Runde gewonnen.",
+            "other": "{int:NumHumans} Überlebende haben die Runde gewonnen."
+        },
+        {
+            "key": "You have survived, +5 points",
+            "value": "Du hast überlebt, +5 Punkte"
         },
         {
             "key": "Infected won the round in {sec:RoundDuration}",
@@ -226,487 +547,25 @@
             "value": "Die Infizierten kommen in {sec:RemainingTime}"
         },
         {
-            "key": "InfectionClass is a team game between humans and the infected.",
-            "value": "InfectionClass ist ein Spiel zwischen Überlebenden und erkrankten Zombies."
-        },
-        {
-            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
-            "value": "InfectionClass, von necropotame (Version {str:VersionCode})"
-        },
-        {
-            "key": "Instead, it can hammer humans to reduce their health or even kill them.",
-            "value": "Jedoch kann er mit seinem Hammer Überlebende verletzen, oder sie sogar töten."
-        },
-        {
-            "key": "It can also infect humans and heal the infected with the hammer.",
-            "value": "Der Raucher kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "Indem er einen Überlebenden packt, kann er Blut saugen und pro Sekunde einen Lebenspunkt an Schaden hinzufügen, und sich selbst heilen."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Der Geist kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken. "
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Der Jäger kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken. "
-        },
-        {
-            "key": "It digests the fodder over time, going back to the normal state. Some nourishment is also lost on death.",
-            "value": "Es verdaut das Futter im Laufe der Zeit und kehrt zum normalen Zustand zurück. Einiges an Nahrung wird beim Tod verloren."
-        },
-        {
-            "key": "It fully heals the Hero and it can grant a turret which you can place down with the hammer.",
-            "value": "Es heilt den Recken volständig und gewährt einen Geschützturm, welcher mit dem Hammer platziert werden kann."
-        },
-        {
-            "key": "Join our Discord server: {str:Url}",
-            "value": "Trete unserem Discord-Server bei: {str:Url}"
-        },
-        {
-            "key": "Join our Matrix room: {str:Url}",
-            "value": "Trete unserem Matrix-Raum bei: {str:Url}"
-        },
-        {
-            "key": "Join our Telegram: {str:Url}",
-            "value": "Trete unserem Telegram bei: {str:Url}"
-        },
-        {
-            "key": "Laser rifle revives the infected, but at the cost of 17 hp and armor.",
-            "value": "Das Lasergewehr belebt einen Erkrankten auf Kosten von 17 HP und Rüstung wieder."
-        },
-        {
-            "key": "Laser wall: {sec:RemainingTime}",
-            "value": "Laser-Wand: {sec:RemainingTime}"
-        },
-        {
-            "key": "List of commands",
-            "value": "Liste der Befehle"
-        },
-        {
-            "key": "Looper",
-            "value": "Schlepper"
-        },
-        {
-            "key": "Looper laser wall: {sec:RemainingTime}",
-            "value": "Schlepper Laser-Wand: {sec:RemainingTime}"
-        },
-        {
-            "key": "Loopers",
-            "value": "Schlepper"
-        },
-        {
-            "key": "Main contributors: {str:ListOfContributors}",
-            "value": "Vornehmlichste Beiträger: {str:ListOfContributors}"
-        },
-        {
-            "key": "Matrix room: {str:Url}",
-            "value": "Matrix-Raum bei: {str:Url}"
-        },
-        {
-            "key": "Medic",
-            "value": "Sanitäter"
-        },
-        {
-            "key": "Medic also has a powerful shotgun that can knock back the infected.",
-            "value": "Der Sanitäter hat auch eine starke Schrotflinte, mit der er Erkrankte zurückstoßen kann."
-        },
-        {
-            "key": "Medic {str:MedicName} revived {str:RevivedName}",
-            "value": "Sanitäter {str:MedicName} hat {str:RevivedName} wiederbelebt"
-        },
-        {
-            "key": "Medics",
-            "value": "Sanitäter"
-        },
-        {
-            "key": "Mercenaries",
-            "value": "Söldner"
-        },
-        {
-            "key": "Mercenary",
-            "value": "Söldner"
-        },
-        {
-            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-            "one": "Söldner können auch Giftgranaten werfen, die einen Schadenspunkt je Sekunde zufügen und verhindern, dass sich die Erkrankten heilen.",
-            "other": "Soldaten kann auch Granaten werfen, die {int:NumDamagePoints} Schadenspunkte je Sekunde hinzufügen und verhindern, dass sich die Erkrankten gegenseitig heilen."
-        },
-        {
-            "key": "Mine activated",
-            "value": "Mine aufgebaut"
-        },
-        {
-            "key": "Mines are limited to {int:NumMines} per player at the same time.",
-            "one": "Spieler können je nur eine Mine gleichzeitig haben.",
-            "other": "Spieler können je nur {int:NumMines} Mine(n) gleichzeitig haben."
-        },
-        {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "Benötigt mindestens {int:MinPlayers} Spieler",
-            "other": "Benötigt mindestens {int:MinPlayers} Spieler"
-        },
-        {
-            "key": "Next flag in {sec:RemainingTime}",
-            "value": "Nächste Flagge in {sec:RemainingTime}"
-        },
-        {
-            "key": "Next target in {sec:RemainingTime}",
-            "value": "Nächstes Ziel in {sec:RemainingTime}"
-        },
-        {
-            "key": "Ninja",
-            "value": "Ninja"
-        },
-        {
-            "key": "Ninja gets special targets. For killing a target, extra points and abilities are awarded.",
-            "value": "Der Ninja bekommt spezielle Zielpersonen. Beim auslöschen einer Zielperson wird er mit Extrapunkten und Fähigkeiten belohnt."
-        },
-        {
-            "key": "Ninjas",
-            "value": "Ninjas"
-        },
-        {
-            "key": "No player was found with this name",
-            "value": "Kein Spieler mit diesem Namen ist gefunden worden"
-        },
-        {
-            "key": "{int:NumBombs} bombs left",
-            "one": "Eine Bombe übrig",
-            "other": "{int:NumBombs} Bomben übrig"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Ein Überlebender hat die Runde gewonnen.",
-            "other": "{int:NumHumans} Überlebende haben die Runde gewonnen."
-        },
-        {
-            "key": "{int:NumMines} mines are active",
-            "one": "Eine Mine ist scharf",
-            "other": "{int:NumMines} Minen sind scharf"
-        },
-        {
-            "key": "Persistent player mute",
-            "value": "Dauerhafte Spielerstummschaltung"
-        },
-        {
-            "key": "Play more on this map",
-            "value": "Mehr auf dieser Karte spielen"
-        },
-        {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Warte bitte 5 Minuten, bevor du ein neues Konto erstellst"
-        },
-        {
-            "key": "Position lock: {sec:RemainingTime}",
-            "value": "Feste Aufstellung: {sec:RemainingTime}"
-        },
-        {
-            "key": "Press <F3> or <F4> to enable or disable hook protection",
-            "value": "Drücke <F3> oder <F4>, um den Verhakungsschutz an- oder auszuschalten"
-        },
-        {
-            "key": "Random choice",
-            "value": "Zufällige Auswahl"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "Erhalte es, indem du mindestens einen Erkrankten als Wissenschaftler tötest.",
-            "other": "Erhalte es, indem du mindestens {int:NumKills} Erkrankte als Wissenschaftler tötest."
+            "key": "The survival is over after {int:NumWaves} waves.",
+            "one": "",
+            "other": ""
         },
         {
             "key": "Rules of the game",
             "value": "Spielregeln"
         },
         {
-            "key": "Santa ({int:Callers}/{int:RequiredCallers})",
-            "value": "Santa ({int:Callers}/{int:RequiredCallers})"
+            "key": "InfectionClass is a team game between humans and the infected.",
+            "value": "InfectionClass ist ein Spiel zwischen Überlebenden und erkrankten Zombies."
         },
         {
-            "key": "Santa {str:PlayerName} has arrived!",
-            "value": "Santa {str:PlayerName} ist eingetroffen!"
+            "key": "All players start as a human.",
+            "value": "Alle Spieler beginnen als Überlebende."
         },
         {
-            "key": "Scientist",
-            "value": "Wissenschaftler"
-        },
-        {
-            "key": "Scientist has also grenades that teleport them.",
-            "value": "Er besitzt darüberhinaus Granaten, die ihn teleportieren können."
-        },
-        {
-            "key": "Scientists",
-            "value": "Wissenschaftler"
-        },
-        {
-            "key": "See also `/help pages`",
-            "value": "Siehe auch `/help pages`"
-        },
-        {
-            "key": "See also: /credits",
-            "value": "Siehe auch: /credits"
-        },
-        {
-            "key": "See also: /help, /changelog, /about",
-            "value": "Siehe auch: /help, /changelog, /about"
-        },
-        {
-            "key": "Self kill attempt prevented. Trigger self kill again to confirm.",
-            "value": "Selbstmordversuch verhindert. Drücke zur Bestätigung erneut die Taste."
-        },
-        {
-            "key": "Server version from {str:ServerCompileDate} ",
-            "value": "Server-Version vom {str:ServerCompileDate} "
-        },
-        {
-            "key": "Slug",
-            "value": "Schnecke"
-        },
-        {
-            "key": "Slug can infect humans and heal the infected with the hammer.",
-            "value": "Die Schnecke kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken."
-        },
-        {
-            "key": "Slugs",
-            "value": "Schnecken"
-        },
-        {
-            "key": "Smoker",
-            "value": "Raucher"
-        },
-        {
-            "key": "Smoker has a powerful hook that hurts humans and sucks their blood, restoring the Smoker's health.",
-            "value": "Der Raucher hat einen starken Enterhaken, welcher Überlebenden das Blut wegsaugt und ihnen schadet, und den Raucher heilt."
-        },
-        {
-            "key": "Smokers",
-            "value": "Raucher"
-        },
-        {
-            "key": "Sniper",
-            "value": "Scharfschütze"
-        },
-        {
-            "key": "Snipers",
-            "value": "Scharfschützen"
-        },
-        {
-            "key": "Soldier",
-            "value": "Soldat"
-        },
-        {
-            "key": "Soldiers",
-            "value": "Soldaten"
-        },
-        {
-            "key": "Someone was infected to balance the game.",
-            "value": "Jemand wurde infiziert, um das Spiel auszugleichen."
-        },
-        {
-            "key": "Sources: {str:SourceUrl} ",
-            "value": "Quellen: {str:SourceUrl} "
-        },
-        {
-            "key": "Spider",
-            "value": "Spinne"
-        },
-        {
-            "key": "Spiders",
-            "value": "Spinnen"
-        },
-        {
-            "key": "Staying alive for: {int:RemainingTime}",
-            "value": "Lebendig für: {int:RemainingTime}"
-        },
-        {
-            "key": "Stomach filled by {percent:FodderInStomach}",
-            "value": "Wanstfüllung {percent:FodderInStomach}"
-        },
-        {
-            "key": "Switch language to english?",
-            "value": "Sprache auf Deutsch umändern?"
-        },
-        {
-            "key": "Sword strength increased",
-            "value": "Schwertstärke erhöht"
-        },
-        {
-            "key": "Sword velocity increased",
-            "value": "Schwertschnelligkeit erhöht"
-        },
-        {
-            "key": "Target to eliminate: {str:PlayerName}",
-            "value": "Zu beseitigendes Ziel: {str:PlayerName}"
-        },
-        {
-            "key": "Targeted chat messages",
-            "value": "Gezielte Chatansprachen"
-        },
-        {
-            "key": "Telegram: {str:Url}",
-            "value": "Telegram: {str:Url}"
-        },
-        {
-            "key": "Thanks to {str:ListOfContributors}",
-            "value": "Dank an {str:ListOfContributors}"
-        },
-        {
-            "key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
-            "value": "Der Biologe hat eine Schrotflinte mit abprallenden Kugeln und kann eine Selbstschußlaserfalle durch Schuß mit seinem Gewehr errichten."
-        },
-        {
-            "key": "The Boomer explodes when it attacks.",
-            "value": "Der Bomber führt keinen Hammer. Sein Angriff sprengt ihn selbst."
-        },
-        {
-            "key": "The Engineer can build walls with the hammer to block the infected.",
-            "value": "Der Ingenieur kann Wände aus Licht (Walls) aufbauen, die Erkrankte bei Berührung töten."
-        },
-        {
-            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-            "value": "Der Geist ist unsichtbar, bis ein Überlebender in die Nähe kommt, er Schaden nimmt, oder den Hammer benutzt."
-        },
-        {
-            "key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
-            "value": "Er hat die Fähigkeit, alles zu verschlingen, was in seiner Nähe gestorben ist – das macht ihn stärker, schneller und widerständiger."
-        },
-        {
-            "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
-            "value": "Der Recke kann nicht durch einen Sanitäter geheilt werden, jedoch einen Treffer eines Zombies wiederstehen."
-        },
-        {
-            "key": "The Hero found the flag!",
-            "value": "Der Recke hat die Flagge gefunden!"
-        },
-        {
-            "key": "The Hero has all standard weapons.",
-            "value": "Der Recke hat alle Standardwaffen."
-        },
-        {
-            "key": "The Hero has to find a flag only visible to them. Stand still to be pointed towards it.",
-            "value": "Der Recke muss eine Flagge finden, die nur er sehen kann. Bleibe still stehen, damit dir die Richtung gezeigt wird."
-        },
-        {
-            "key": "The Hunter can jump two times in the air and has some resistance to knock-backs.",
-            "value": "Der Jäger kann zweimal in die Luft springen und hat etwas Widerstand gegen Rückschläge."
-        },
-        {
-            "key": "The Looper has a laser wall that slows down the infected and a low-range laser rifle with a high fire rate.",
-            "value": "Der Schlepper hat eine Laserwand, welche Erkrankte verlangsamt, sowie einen Kurzstrecken-Laser mit hoher Feuerrate."
-        },
-        {
-            "key": "The Medic can protect humans with the hammer by giving them armor.",
-            "value": "Der Sanitäter kann Überlebende beschützen, indem er ihre Rüstung mit dem Hammer heilt."
-        },
-        {
-            "key": "The Mercenary can fly in the air using their machine gun.",
-            "value": "Der Söldner kann mithilfe seines Maschinengewehrs in der Luft fliegen."
-        },
-        {
-            "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
-            "value": "Der Ninja kann Granaten werfen, die beim Aufprall getroffene Erkrankte für drei Sekunden einfrieren."
-        },
-        {
-            "key": "The Santa is already here",
-            "value": "Santa ist bereits hier."
-        },
-        {
-            "key": "The Scientist can pose floating mines with the hammer.",
-            "value": "Der Wissenschaftler kann vermöge seines Hammers schwebende Bomben erzeugen."
-        },
-        {
-            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-            "value": "Er kann Boden und Wände verseuchen, indem er mittels seines Hammers Schleim auf ihnen ausbreitet."
-        },
-        {
-            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
-            "value": "Der Scharfschütze kann sich, seines Hammers bedienend, an einem beliebigen Orte festigen."
-        },
-        {
-            "key": "The Soldier creates floating bombs with the hammer.",
-            "value": "Der Soldat kann vermöge seines Hammers schwebende Bomben erzeugen."
-        },
-        {
-            "key": "The Spider has a web hook that automatically grabs any human touching it.",
-            "value": "Die Spinne hat einen Enterhaken mit Spinnennetzfunktion, welcher jeden Überlebenden festhält, der ihn berührt oder durchquert."
-        },
-        {
-            "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
-            "value": "Untote können nicht sterben, sondern werden für 10 Sekunden eingefroren."
-        },
-        {
-            "key": "The Voodoo does not die immediately when killed but instead enters Spirit mode for a short time.",
-            "value": "Der Voodoo stirbt nicht sofort, wenn er getötet wird, sondern ist für kurze Zeit in einem geistlichen Modus."
-        },
-        {
-            "key": "The Witch can provide a spawn point for the infected.",
-            "value": "Die Hexe kann einen Spawnpunkt für die Infizierten liefern."
-        },
-        {
-            "key": "The bomb is fully upgraded.\nThere is nothing to do with the laser.",
-            "value": "Die Bombe ist vollständig ausgebaut.\nMit dem Laser gibt es nichts mehr zu tun."
-        },
-        {
-            "key": "The class is disabled",
-            "value": "Diese Klasse ist momentan deaktiviert"
-        },
-        {
-            "key": "The class limit exceeded",
-            "value": "Das Klassenlimit ist überschritten"
-        },
-        {
-            "key": "The class selector will be displayed when round starts",
-            "value": "Du kannst wieder eine Klasse am Anfang jeder Runde wählen"
-        },
-        {
-            "key": "The command is not available (enabled only in training mode)",
-            "value": "Der Befehl ist nicht verfügbar (nur im Trainingsmodus vorhanden)"
-        },
-        {
-            "key": "The flag gifts a health point, {int:NumArmorGift} armor and full ammo to all humans.",
-            "value": "Die Flagge verleiht einen Gesundheitspunkt, {int:NumArmorGift} Rüstung und volle Munition an alle Überlebenden."
-        },
-        {
-            "key": "The game is not balanced. Infection is coming.",
-            "value": "Das Spiel ist nicht ausgeglichen, die Infektion kommt."
-        },
-        {
-            "key": "The gift to all humans is only applied when the flag is surrounded by hearts and armor.",
-            "value": "Die Gabe wird nur dann an alle Überlebenden verliehen, wenn die Flagge mit Herzen und Rüstung umrandet ist."
+            "key": "10 seconds later, a few players become infected.",
+            "value": "Nach 10 Sekunden werden zwei Spieler von der Erkrankung erfaßt."
         },
         {
             "key": "The goal for the humans is to survive until the army cleans the map.",
@@ -717,52 +576,160 @@
             "value": "Das Ziel der Erkrankten ist es, alle Überlebenden anzustecken."
         },
         {
-            "key": "The hammer is also useful for healing the infected.",
-            "value": "Der Hammer wird auch zur Heilung der Erkrankten benutzt."
+            "key": "See also `/help pages`",
+            "value": "Siehe auch `/help pages`"
         },
         {
-            "key": "The last round",
-            "value": "Die letzte Runde"
+            "key": "How to translate the mod",
+            "value": "Wie sich diese Mod übersetzen läßt"
+        },
+        {
+            "key": "Create an account on Crowdin and join the translation team:",
+            "value": "Erstelle ein Konto bei Crowdin und trete dem Übersetzungsteam bei:"
+        },
+        {
+            "key": "White hole",
+            "value": "Weißes Loch"
+        },
+        {
+            "key": "White hole pulls the infected into its center.",
+            "value": "Das weiße Loch zieht die Erkrankten in den Mittelpunkt."
+        },
+        {
+            "key": "Use the laser rifle to place it.",
+            "value": "Benutze den Laser um es zu platzieren."
+        },
+        {
+            "key": "Targeted chat messages",
+            "value": "Gezielte Chatansprachen"
+        },
+        {
+            "key": "Use “/w <PlayerName> <My Message>” to send a private message to this player.",
+            "value": "Nutze »/w <PlayerName><My Message>«, um eine Privatnachricht an den genannten Spieler zu schicken."
+        },
+        {
+            "key": "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.",
+            "value": "Nutze »/msg !<Klassenname> <Meine Nachricht>«, um eine Nachricht beschränkt auf die Spieler einer Klasse auszusenden."
+        },
+        {
+            "key": "Example: “/msg !medic I'm wounded!”",
+            "value": "Beispiel: »/msg !medic Ich bin verwundet!«"
+        },
+        {
+            "key": "Use “/msg !near” to send a private message to all players near you.",
+            "value": "Nutze »/msg !near«, um eine Nachricht beschränkt auf alle Spieler in deiner Nähe zu versenden."
+        },
+        {
+            "key": "Persistent player mute",
+            "value": "Dauerhafte Spielerstummschaltung"
+        },
+        {
+            "key": "Use “/mute <PlayerName>” to mute this player.",
+            "value": "Benutze \"/mute <PlayerName>\" um diesen Spieler für dich stummzuschalten."
+        },
+        {
+            "key": "Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects.",
+            "value": "Im Gegensatz zu einer Client-Stummschaltung, bleibt diese über verschiedene Karten hinweg bestehen und läuft nur dann aus, wenn entweder du, oder der stummgeschaltete Spieler sich trennt."
+        },
+        {
+            "key": "Example: “/mute nameless tee”",
+            "value": "Beispielsweise: „/mute nameless tee“"
+        },
+        {
+            "key": "How to use taxi mode",
+            "value": "Wie man den Taxi-Modus benutzt"
+        },
+        {
+            "key": "Two or more humans can form a taxi.",
+            "value": "Zwei oder mehr Überlebende können ein Taxi bilden."
+        },
+        {
+            "key": "In order to use it, both humans have to disable hook protection (usually, with F3). The human being hooked becomes the driver.",
+            "value": "Um ihn zu verwenden, müssen beide Überlebenden den Verhakungsschutz deaktivieren (üblicherweise mit F3). Der gehookte wird zum Fahrer."
+        },
+        {
+            "key": "To get off the taxi, jump. To drop off your passengers, enable hook protection (usually, with F3).",
+            "value": "Um vom Taxi abzuspringen, springe einfach. Um Passagiere abzuwerfen, aktiviere den Verhakungsschutz (F3)."
+        },
+        {
+            "key": "Fast round",
+            "value": "Schnelle Runde"
+        },
+        {
+            "key": "In the fast rounds *more* humans become infected initially, the spawning rate is increased and the round time limit is decreased. White hole is also disabled.",
+            "value": "In schnellen Runden werden anfangs mehr Überlebende infiziert, Erkrankte spawnen schneller, und das Zeitlimit ist verringert. Auch das weiße Loch ist deaktiviert."
+        },
+        {
+            "key": "The Mercenary can fly in the air using their machine gun.",
+            "value": "Der Söldner kann mithilfe seines Maschinengewehrs in der Luft fliegen."
+        },
+        {
+            "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
+            "value": "Sie können auch einen mächtigen Geschützturm errichten, welches mit dem Hammer oder durch das Lasergewehr verstärkt werden kann."
+        },
+        {
+            "key": "The Medic can protect humans with the hammer by giving them armor.",
+            "value": "Der Sanitäter kann Überlebende beschützen, indem er ihre Rüstung mit dem Hammer heilt."
+        },
+        {
+            "key": "Grenades with medicine give armor to everybody in their range, including Heroes and the Medic themself.",
+            "value": "Granaten mit Medizin heilen jeden in der Explosionsreichweite, einschließlich Recken und Sanitäter selbst."
+        },
+        {
+            "key": "Laser rifle revives the infected, but at the cost of 17 hp and armor.",
+            "value": "Das Lasergewehr belebt einen Erkrankten auf Kosten von 17 HP und Rüstung wieder."
+        },
+        {
+            "key": "Medic also has a powerful shotgun that can knock back the infected.",
+            "value": "Der Sanitäter hat auch eine starke Schrotflinte, mit der er Erkrankte zurückstoßen kann."
+        },
+        {
+            "key": "The Hero has all standard weapons.",
+            "value": "Der Recke hat alle Standardwaffen."
+        },
+        {
+            "key": "The Hero has to find a flag only visible to them. Stand still to be pointed towards it.",
+            "value": "Der Recke muss eine Flagge finden, die nur er sehen kann. Bleibe still stehen, damit dir die Richtung gezeigt wird."
+        },
+        {
+            "key": "The flag gifts a health point, {int:NumArmorGift} armor and full ammo to all humans.",
+            "value": "Die Flagge verleiht einen Gesundheitspunkt, {int:NumArmorGift} Rüstung und volle Munition an alle Überlebenden."
+        },
+        {
+            "key": "It fully heals the Hero and it can grant a turret which you can place down with the hammer.",
+            "value": "Es heilt den Recken volständig und gewährt einen Geschützturm, welcher mit dem Hammer platziert werden kann."
+        },
+        {
+            "key": "The gift to all humans is only applied when the flag is surrounded by hearts and armor.",
+            "value": "Die Gabe wird nur dann an alle Überlebenden verliehen, wenn die Flagge mit Herzen und Rüstung umrandet ist."
+        },
+        {
+            "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
+            "value": "Der Recke kann nicht durch einen Sanitäter geheilt werden, jedoch einen Treffer eines Zombies wiederstehen."
+        },
+        {
+            "key": "The Engineer can build walls with the hammer to block the infected.",
+            "value": "Der Ingenieur kann Wände aus Licht (Walls) aufbauen, die Erkrankte bei Berührung töten."
+        },
+        {
+            "key": "When an infected touches the wall, it dies.",
+            "value": "Wenn ein Erkrankter die Mauer berührt, stirbt er."
         },
         {
             "key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
             "value": "Die Lebensdauer einer Wall beträgt {sec:LifeSpan}. Außerdem ist nur eine Wall je Ingenieur möglich."
         },
         {
-            "key": "The locked position increases the Sniper's rifle damage from usual 10-13 to 20 damage points.",
-            "value": "Die Feststellung ermöglicht eine Schadenserhöhung des Gewehrs von 10-13 auf 20 Schadenspunkte."
+            "key": "The Soldier creates floating bombs with the hammer.",
+            "value": "Der Soldat kann vermöge seines Hammers schwebende Bomben erzeugen."
         },
         {
-            "key": "The round canceled: All humans have left the game",
-            "value": "Runde abgebrochen: Alle Überlebenden haben das Spiel verlassen"
+            "key": "Use the hammer to place the bomb and explode it multiple times.",
+            "value": "Benutze den Hammer, um deine Bombe zu setzen; imgleichen, um sie danach zu sprengen."
         },
         {
-            "key": "The round canceled: All infected have left the game",
-            "value": "Runde abgebrochen: Alle Infizierten haben das Spiel verlassen"
-        },
-        {
-            "key": "The slime heals the infected and deals damage to humans.",
-            "value": "Der Schleim heilt die Erkrankten und fügt Menschen Schaden zu."
-        },
-        {
-            "key": "The undead is finally dead",
-            "value": "Der Untote ist endgültig tot"
-        },
-        {
-            "key": "The web hook mode can be toggled by switching the weapon.",
-            "value": "Der Spinnennetz-Modus kann mit dem Mausrad aktiviert werden."
-        },
-        {
-            "key": "The white hole is available!",
-            "value": "Das weiße Loch ist verfügbar!"
-        },
-        {
-            "key": "The white hole is ready, use the laser rifle to disrupt space-time",
-            "value": "Das weiße Loch ist verfügbar, verwende das Lasergewehr um Raum und Zeit zu zerreißen"
-        },
-        {
-            "key": "The witch is dead",
-            "value": "Die Hexe ist tot"
+            "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
+            "value": "Der Ninja kann Granaten werfen, die beim Aufprall getroffene Erkrankte für drei Sekunden einfrieren."
         },
         {
             "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
@@ -774,292 +741,184 @@
             "value": "Sie haben auch ein Lasergewehr, welches das Ziel für eine kurze Zeit erblindet."
         },
         {
-            "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
-            "value": "Sie können auch einen mächtigen Geschützturm errichten, welches mit dem Hammer oder durch das Lasergewehr verstärkt werden kann."
+            "key": "Ninja gets special targets. For killing a target, extra points and abilities are awarded.",
+            "value": "Der Ninja bekommt spezielle Zielpersonen. Beim auslöschen einer Zielperson wird er mit Extrapunkten und Fähigkeiten belohnt."
+        },
+        {
+            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
+            "value": "Der Scharfschütze kann sich, seines Hammers bedienend, an einem beliebigen Orte festigen."
         },
         {
             "key": "They can also jump two times in the air.",
             "value": "Er kann zweimal in der Luft springen."
         },
         {
+            "key": "The Scientist can pose floating mines with the hammer.",
+            "value": "Der Wissenschaftler kann vermöge seines Hammers schwebende Bomben erzeugen."
+        },
+        {
+            "key": "Scientist has also grenades that teleport them.",
+            "value": "Er besitzt darüberhinaus Granaten, die ihn teleportieren können."
+        },
+        {
+            "key": "A lucky Scientist devoted to killing can get a white hole that sucks the infected in which can be placed with the laser rifle.",
+            "value": "Ein Wissenschaftler, der dem Töten gewidmet ist, kann ein weißes Loch bekommen, welches mit dem Lasergewehr platziert werden kann und dann Erkrankte in das Loch saugt"
+        },
+        {
+            "key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
+            "value": "Der Biologe hat eine Schrotflinte mit abprallenden Kugeln und kann eine Selbstschußlaserfalle durch Schuß mit seinem Gewehr errichten."
+        },
+        {
+            "key": "The Looper has a laser wall that slows down the infected and a low-range laser rifle with a high fire rate.",
+            "value": "Der Schlepper hat eine Laserwand, welche Erkrankte verlangsamt, sowie einen Kurzstrecken-Laser mit hoher Feuerrate."
+        },
+        {
             "key": "They can also jump two times in the air.",
             "value": "Er kann zweimal in der Luft springen."
         },
         {
-            "key": "This username is already taken by an existing account",
-            "value": "Dieser Nutzername ist bereits durch ein Konto belegt"
+            "key": "Smoker has a powerful hook that hurts humans and sucks their blood, restoring the Smoker's health.",
+            "value": "Der Raucher hat einen starken Enterhaken, welcher Überlebenden das Blut wegsaugt und ihnen schadet, und den Raucher heilt."
         },
         {
-            "key": "To get off the taxi, jump. To drop off your passengers, enable hook protection (usually, with F3).",
-            "value": "Um vom Taxi abzuspringen, springe einfach. Um Passagiere abzuwerfen, aktiviere den Verhakungsschutz (F3)."
+            "key": "It can also infect humans and heal the infected with the hammer.",
+            "value": "Der Raucher kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken."
         },
         {
-            "key": "Too few infected (less than {int:MinimumInfected})",
-            "value": "Zu wenig Erkrankte (weniger als {int:MinimumInfected})"
+            "key": "The Boomer explodes when it attacks.",
+            "value": "Der Bomber führt keinen Hammer. Sein Angriff sprengt ihn selbst."
         },
         {
-            "key": "Too few infected to call a witch",
-            "value": "Zu wenig Erkrankte, um eine Hexe zu beschwören"
+            "key": "All humans affected by the explosion become infected.",
+            "value": "Alle von der Explosion erfassten Überlebenden werden infiziert."
         },
         {
-            "key": "Too few infected to call the Santa",
-            "value": "Zu wenig Erkrankte, um Santa zu beschwören"
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
         },
         {
-            "key": "Too few players to call a witch",
-            "value": "Zu wenig Erkrankte, um eine Hexe zu beschwören"
+            "key": "The Hunter can jump two times in the air and has some resistance to knock-backs.",
+            "value": "Der Jäger kann zweimal in die Luft springen und hat etwas Widerstand gegen Rückschläge."
         },
         {
-            "key": "Too few players to call the Santa",
-            "value": "Zu wenig Erkrankte, um Santa zu beschwören"
+            "key": "It can infect humans and heal the infected with the hammer.",
+            "value": "Der Jäger kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken. "
         },
         {
-            "key": "Too few zombies to revive anyone (less than {int:MinZombies})",
-            "value": "Zu wenig Zombies, um jemanden wiederzubeleben (weniger als {int:MinZombies})"
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
         },
         {
-            "key": "Translation project: {str:Url}",
-            "value": "Link zum Übersetzungsprojekt: {str:Url}"
+            "key": "Bat can jump endlessly in the air but it cannot infect humans.",
+            "value": "Fledermäuse können grenzenlos in der Luft springen, jedoch nicht mit einem Schlag infizieren."
         },
         {
-            "key": "Two or more humans can form a taxi.",
-            "value": "Zwei oder mehr Überlebende können ein Taxi bilden."
+            "key": "The hammer is also useful for healing the infected.",
+            "value": "Der Hammer wird auch zur Heilung der Erkrankten benutzt."
         },
         {
-            "key": "Type “/help {str:ClassName}” for more information about your class",
-            "value": "Gib »/help {str:ClassName}« ein für zusätzliche Angaben in betreff auf deine Klasse"
+            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
+            "value": "Der Geist ist unsichtbar, bis ein Überlebender in die Nähe kommt, er Schaden nimmt, oder den Hammer benutzt."
         },
         {
-            "key": "Unable to load the position: the character state is not valid",
-            "value": "Position kann nicht geladen werden: Der Charakterzustand ist ungültig"
+            "key": "It can infect humans and heal the infected with the hammer.",
+            "value": "Der Geist kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken. "
         },
         {
-            "key": "Unable to load the position: you have no character to load its position",
-            "value": "Position kann nicht geladen werden: Du hast keinen Charakter dessen Position geladen werden könnte"
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
         },
         {
-            "key": "Unable to save the position: the character does not stand on the ground",
-            "value": "Position konnte nicht gespeichert werden: Der Charakter steht nicht auf dem Boden"
+            "key": "The Spider has a web hook that automatically grabs any human touching it.",
+            "value": "Die Spinne hat einen Enterhaken mit Spinnennetzfunktion, welcher jeden Überlebenden festhält, der ihn berührt oder durchquert."
         },
         {
-            "key": "Unable to save the position: the character state is not valid",
-            "value": "Position konnte nicht gespeichert werden: Charakterzustand ungültig"
+            "key": "The web hook mode can be toggled by switching the weapon.",
+            "value": "Der Spinnennetz-Modus kann mit dem Mausrad aktiviert werden."
         },
         {
-            "key": "Unable to save the position: you have no character to save its position",
-            "value": "Position konnte nicht gespeichert werden: Du hast keinen Charakter dessen Position gespeichert werden könnte"
+            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
+            "value": "In beiden Modi verursacht der Haken 1 Schadenspunkt pro Sekunde und kann einen Überlebenden länger packen."
         },
         {
-            "key": "Undead",
-            "value": "Untoter"
+            "key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
+            "value": "Er hat die Fähigkeit, alles zu verschlingen, was in seiner Nähe gestorben ist – das macht ihn stärker, schneller und widerständiger."
         },
         {
-            "key": "Undead can infect humans and heal the infected with the hammer.",
-            "value": "Der Untote kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken."
+            "key": "It digests the fodder over time, going back to the normal state. Some nourishment is also lost on death.",
+            "value": "Es verdaut das Futter im Laufe der Zeit und kehrt zum normalen Zustand zurück. Einiges an Nahrung wird beim Tod verloren."
         },
         {
-            "key": "Undeads",
-            "value": "Untote"
+            "key": "Ghoul can infect humans and heal the infected with the hammer.",
+            "value": "Der Ġul kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken. "
         },
         {
-            "key": "Unknown class",
-            "value": "Unbekannte Klasse"
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
         },
         {
-            "key": "Unknown language",
-            "value": "Unbekannte Sprache"
+            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
+            "value": "Er kann Boden und Wände verseuchen, indem er mittels seines Hammers Schleim auf ihnen ausbreitet."
         },
         {
-            "key": "Unknowns",
-            "value": "Unbekannte"
+            "key": "The slime heals the infected and deals damage to humans.",
+            "value": "Der Schleim heilt die Erkrankten und fügt Menschen Schaden zu."
         },
         {
-            "key": "Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects.",
-            "value": "Im Gegensatz zu einer Client-Stummschaltung, bleibt diese über verschiedene Karten hinweg bestehen und läuft nur dann aus, wenn entweder du, oder der stummgeschaltete Spieler sich trennt."
+            "key": "Slug can infect humans and heal the infected with the hammer.",
+            "value": "Die Schnecke kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken."
         },
         {
-            "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
-            "value": "Benutze den Hammer um eine Bombe zu platzieren\nund dann den Laser, um sie zu verbessern"
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
         },
         {
-            "key": "Use the hammer to place the bomb and explode it multiple times.",
-            "value": "Benutze den Hammer, um deine Bombe zu setzen; imgleichen, um sie danach zu sprengen."
-        },
-        {
-            "key": "Use the laser rifle to place it.",
-            "value": "Benutze den Laser um es zu platzieren."
-        },
-        {
-            "key": "Use the laser to upgrade the bomb",
-            "value": "Benutze den Laser, um die Bombe aufzubauen"
-        },
-        {
-            "key": "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.",
-            "value": "Nutze »/msg !<Klassenname> <Meine Nachricht>«, um eine Nachricht beschränkt auf die Spieler einer Klasse auszusenden."
-        },
-        {
-            "key": "Use “/msg !near” to send a private message to all players near you.",
-            "value": "Nutze »/msg !near«, um eine Nachricht beschränkt auf alle Spieler in deiner Nähe zu versenden."
-        },
-        {
-            "key": "Use “/mute <PlayerName>” to mute this player.",
-            "value": "Benutze \"/mute <PlayerName>\" um diesen Spieler für dich stummzuschalten."
-        },
-        {
-            "key": "Use “/w <PlayerName> <My Message>” to send a private message to this player.",
-            "value": "Nutze »/w <PlayerName><My Message>«, um eine Privatnachricht an den genannten Spieler zu schicken."
-        },
-        {
-            "key": "Voodoo",
-            "value": "Voodoo"
-        },
-        {
-            "key": "Voodoo can infect humans and heal the infected with the hammer.",
-            "value": "Der Voodoo kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken."
-        },
-        {
-            "key": "Voodoos",
-            "value": "Voodoos"
-        },
-        {
-            "key": "Warning: {sec:RemainingTime} until a kick for inactivity",
-            "value": "Warnung: {sec:RemainingTime} bis du für Inaktivität gekickt wirst"
-        },
-        {
-            "key": "Warning: {sec:RemainingTime} until a move to spec for inactivity",
-            "value": "Warnung: {sec:RemainingTime} bis du zu einem Zuschauert gemacht wirst"
-        },
-        {
-            "key": "Web mode enabled",
-            "value": "Spinnennetz-Betrieb eingeschaltet"
-        },
-        {
-            "key": "When an infected touches the wall, it dies.",
-            "value": "Wenn ein Erkrankter die Mauer berührt, stirbt er."
+            "key": "The Voodoo does not die immediately when killed but instead enters Spirit mode for a short time.",
+            "value": "Der Voodoo stirbt nicht sofort, wenn er getötet wird, sondern ist für kurze Zeit in einem geistlichen Modus."
         },
         {
             "key": "While in Spirit mode it cannot be killed. When the time is up it finally dies.",
             "value": "Im geistlichen Modus kann er nicht getötet werden. Wenn die Zeit vorüber ist, stirbt er jedoch automatisch."
         },
         {
-            "key": "White hole",
-            "value": "Weißes Loch"
+            "key": "Voodoo can infect humans and heal the infected with the hammer.",
+            "value": "Der Voodoo kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken."
         },
         {
-            "key": "White hole found, adjusting scientific parameters...",
-            "value": "Weißes Loch gefunden, die wissenschaftlichen Parameter werden angepasst..."
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
         },
         {
-            "key": "White hole pulls the infected into its center.",
-            "value": "Das weiße Loch zieht die Erkrankten in den Mittelpunkt."
+            "key": "The Witch can provide a spawn point for the infected.",
+            "value": "Die Hexe kann einen Spawnpunkt für die Infizierten liefern."
         },
         {
-            "key": "White hole: {sec:RemainingTime}",
-            "value": "Weißes Loch: {sec:RemainingTime}"
-        },
-        {
-            "key": "Witch",
-            "value": "Hexe"
-        },
-        {
-            "key": "Witch ({int:Callers}/{int:RequiredCallers})",
-            "value": "Hexe ({int:Callers}/{int:RequiredCallers})"
+            "key": "If the Witch dies, it disappears and is replaced by another class.",
+            "value": "Wenn die Hexe stirbt, verschwindet sie und wird durch eine andere Klasse ersetzt."
         },
         {
             "key": "Witch can infect humans and heal the infected with the hammer.",
             "value": "Die Hexe kann unter Verwendung ihres Hammers entweder Erkrankte heilen oder Überlebende anstecken."
         },
         {
-            "key": "Witch {str:PlayerName} has arrived!",
-            "value": "Hexe {str:PlayerName} ist eingetroffen!"
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
         },
         {
-            "key": "Witches",
-            "value": "Hexen"
+            "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
+            "value": "Untote können nicht sterben, sondern werden für 10 Sekunden eingefroren."
         },
         {
-            "key": "Wrong username/password.",
-            "value": "Falscher Nutzername/Falsches Paßwort"
+            "key": "If an infected heals it, the freeze effect disappears.",
+            "value": "Wenn ein Erkrankter ihn heilt, ist er nicht mehr eingefroren."
         },
         {
-            "key": "You are a human: {str:ClassName}",
-            "value": "Du bist ein Überlebender: {str:ClassName}"
+            "key": "Undead can infect humans and heal the infected with the hammer.",
+            "value": "Der Untote kann unter Verwendung seines Hammers entweder Erkrankte heilen oder Überlebende anstecken."
         },
         {
-            "key": "You are an infected: {str:ClassName}",
-            "value": "Du bist ein Erkrankter: {str:ClassName}"
-        },
-        {
-            "key": "You are blinded: {sec:EffectDuration}",
-            "value": "Du bist erblindet: {sec:EffectDuration}"
-        },
-        {
-            "key": "You are frozen: {sec:EffectDuration}",
-            "value": "Du bist eingefroren: {sec:EffectDuration}"
-        },
-        {
-            "key": "You are muted for {sec:Duration}",
-            "value": "Du bist für {sec:Duration} stummgeschalten worden."
-        },
-        {
-            "key": "You are slowed: {sec:EffectDuration}",
-            "value": "Du wurdest verlangsamt: {sec:EffectDuration}"
-        },
-        {
-            "key": "You can change the language of this mod using the command /language.",
-            "value": "Du kannst die Sprache dieser Mod vermittels des Befehls /language wechseln."
-        },
-        {
-            "key": "You can't call witch twice",
-            "value": "Die Hexe kann nicht zweimal gerufen werden"
-        },
-        {
-            "key": "You can't join the spectators right now",
-            "value": "Du kannst gerade nicht zuschauen"
-        },
-        {
-            "key": "You destroyed {str:PlayerName}'s turret!",
-            "value": "Du hast den Geschützturm von {str:PlayerName} zerstört!"
-        },
-        {
-            "key": "You don't have a turret to place",
-            "value": "Du hast keinen Geschützturm zum Platzieren"
-        },
-        {
-            "key": "You have a turret. Use the hammer to place it.",
-            "value": "Du hast einen Geschützturm. Zum Platzieren, benutze den Hammer."
-        },
-        {
-            "key": "You have already notified that {str:PlayerName} ought to be banned",
-            "value": "Du hast bereits einen Bann für {str:PlayerName} gefordert"
-        },
-        {
-            "key": "You have already voted to change this map",
-            "value": "Du hast bereits dafür gestimmt, diese Karte zu überspringen"
-        },
-        {
-            "key": "You have been infected by {str:KillerName}",
-            "value": "Du wurdest von {str:KillerName} infiziert"
-        },
-        {
-            "key": "You have called the Santa once again",
-            "value": "Du hast Santa erneut gerufen"
-        },
-        {
-            "key": "You have eliminated your target, +2 points",
-            "value": "Du hast dein Ziel beseitigt, +2 Punkte."
-        },
-        {
-            "key": "You have held a bonus area for one minute, +5 points",
-            "value": "Du hast einen Gutschriftgürtel der Karte für eine Minute gehalten, +5 Punkte"
-        },
-        {
-            "key": "You have infected {str:VictimName}, +3 points",
-            "value": "Du hast {str:VictimName} angesteckt, +3 Punkte"
-        },
-        {
-            "key": "You have infected {str:VictimName}, shame on you!",
-            "value": "Du hast {str:VictimName} infiziert, Schande über dich!"
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "Außerdem kann er einem Überlebenden einen Schadenspunkt für jede Sekunde, in der er sich an ihn klammert, zufügen."
         },
         {
             "key": "You have killed a witch, +5 points",
@@ -1070,17 +929,201 @@
             "value": "Du hast einen Untoten getötet! +5 Punkte"
         },
         {
-            "key": "You have survived, +5 points",
-            "value": "Du hast überlebt, +5 Punkte"
+            "key": "The witch is dead",
+            "value": "Die Hexe ist tot"
         },
         {
-            "key": "You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to place one.",
-            "value": "Du hast {int:NumTurrets} von {int:MaxTurrets} Geschütztürmen. Verwende den Hammer, um einen zu platzieren."
+            "key": "The undead is finally dead",
+            "value": "Der Untote ist endgültig tot"
         },
         {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "Du hast {int:NumTurrets} Geschützturm verfügbar, benutze zum Platzieren den Hammer",
-            "other": "Du hast {int:NumTurrets} Geschützturme verfügbar, benutze zum Platzieren den Hammer"
+            "key": "Self kill attempt prevented. Trigger self kill again to confirm.",
+            "value": "Selbstmordversuch verhindert. Drücke zur Bestätigung erneut die Taste."
+        },
+        {
+            "key": "Hook protection enabled",
+            "value": "Verhakungsschutz eingeschaltet"
+        },
+        {
+            "key": "Hook protection disabled",
+            "value": "Verhakungsschutz ausgeschalten"
+        },
+        {
+            "key": "You are a human: {str:ClassName}",
+            "value": "Du bist ein Überlebender: {str:ClassName}"
+        },
+        {
+            "key": "You are an infected: {str:ClassName}",
+            "value": "Du bist ein Erkrankter: {str:ClassName}"
+        },
+        {
+            "key": "Type “/help {str:ClassName}” for more information about your class",
+            "value": "Gib »/help {str:ClassName}« ein für zusätzliche Angaben in betreff auf deine Klasse"
+        },
+        {
+            "key": "You can't join the spectators right now",
+            "value": "Du kannst gerade nicht zuschauen"
+        },
+        {
+            "key": "{str:PlayerName} changed their name to {str:NewName}",
+            "value": "{str:PlayerName} hat sich zu {str:NewName} umbenannt"
+        },
+        {
+            "key": "Switch language to english?",
+            "value": "Sprache auf Deutsch umändern?"
+        },
+        {
+            "key": "You can change the language of this mod using the command /language.",
+            "value": "Du kannst die Sprache dieser Mod vermittels des Befehls /language wechseln."
+        },
+        {
+            "key": "If your language is not available, you can help with translation (/help translate).",
+            "value": "Sofern deine Sprache nicht verfügbar ist, kannst du durch Übersetzung behilflich sein (/help translate)."
+        },
+        {
+            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
+            "value": "InfectionClass, von necropotame (Version {str:VersionCode})"
+        },
+        {
+            "key": "Based on the concept of Infection mod by Gravity",
+            "value": "Fußend auf dem Einfalle der Infection-Mod von Gravity"
+        },
+        {
+            "key": "Main contributors: {str:ListOfContributors}",
+            "value": "Vornehmlichste Beiträger: {str:ListOfContributors}"
+        },
+        {
+            "key": "Thanks to {str:ListOfContributors}",
+            "value": "Dank an {str:ListOfContributors}"
+        },
+        {
+            "key": "Server version from {str:ServerCompileDate} ",
+            "value": "Server-Version vom {str:ServerCompileDate} "
+        },
+        {
+            "key": "Sources: {str:SourceUrl} ",
+            "value": "Quellen: {str:SourceUrl} "
+        },
+        {
+            "key": "Discord: {str:Url}",
+            "value": "Discord {str:Url}"
+        },
+        {
+            "key": "Telegram: {str:Url}",
+            "value": "Telegram: {str:Url}"
+        },
+        {
+            "key": "Matrix room: {str:Url}",
+            "value": "Matrix-Raum bei: {str:Url}"
+        },
+        {
+            "key": "Translation project: {str:Url}",
+            "value": "Link zum Übersetzungsprojekt: {str:Url}"
+        },
+        {
+            "key": "See also: /credits",
+            "value": "Siehe auch: /credits"
+        },
+        {
+            "key": "No player was found with this name",
+            "value": "Kein Spieler mit diesem Namen ist gefunden worden"
+        },
+        {
+            "key": "Choose a help page with /help <page>",
+            "value": "Wähle eine Hilfeseite durch /help <Seite>"
+        },
+        {
+            "key": "Available help pages: {str:PageList}",
+            "value": "Verfügbare Hilfeseiten: {str:PageList}"
+        },
+        {
+            "key": "Unknown language",
+            "value": "Unbekannte Sprache"
+        },
+        {
+            "key": "Available languages: {str:ListOfLanguage}",
+            "value": "Verfügbare Sprachen: {str:ListOfLanguage}"
+        },
+        {
+            "key": "List of commands",
+            "value": "Liste der Befehle"
+        },
+        {
+            "key": "Press <F3> or <F4> to enable or disable hook protection",
+            "value": "Drücke <F3> oder <F4>, um den Verhakungsschutz an- oder auszuschalten"
+        },
+        {
+            "key": "ChangeLog is not provided",
+            "value": "Das Änderungsprotokoll ist nicht angegeben"
+        },
+        {
+            "key": "ChangeLog page {int:PageNumber} is not available",
+            "value": "Sete {int:PageNumber} im Änderungsprotokoll ist nicht verfügbar"
+        },
+        {
+            "key": "(page {int:PageNumber}/{int:PagesInTotal}, see /changelog {int:NextPage})",
+            "value": "(Seite {int:PageNumber}/{int:PagesInTotal}, siehe /changelog {int:NextPage})"
+        },
+        {
+            "key": "You are muted for {sec:Duration}",
+            "value": "Du bist für {sec:Duration} stummgeschalten worden."
+        },
+        {
+            "key": "Warning: {sec:RemainingTime} until a move to spec for inactivity",
+            "value": "Warnung: {sec:RemainingTime} bis du zu einem Zuschauert gemacht wirst"
+        },
+        {
+            "key": "Warning: {sec:RemainingTime} until a kick for inactivity",
+            "value": "Warnung: {sec:RemainingTime} bis du für Inaktivität gekickt wirst"
+        },
+        {
+            "key": "{str:PlayerName} has been banned ({str:Reason})",
+            "value": "{str:PlayerName} ist gebannt worden ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has been kicked ({str:Reason})",
+            "value": "{str:PlayerName} ist vom Server geworfen worden ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game ({str:Reason})",
+            "value": "{str:PlayerName} hat den Server verlassen ({str:Reason})"
+        },
+        {
+            "key": "{str:PlayerName} has left the game",
+            "value": "{str:PlayerName} hat den Server verlassen"
+        },
+        {
+            "key": "An error occured during the creation of your account.",
+            "value": "Ein Fehler ist während der Erstellung deines Kontos aufgetreten."
+        },
+        {
+            "key": "An error occured during the operation.",
+            "value": "Ein Fehler ist während des Vorganges aufgetreten."
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
+            "value": "Indem er einen Überlebenden packt, kann er Blut saugen und pro Sekunde einen Lebenspunkt an Schaden hinzufügen, und sich selbst heilen."
+        },
+        {
+            "key": "{int:NumBombs} bombs left",
+            "one": "Eine Bombe übrig",
+            "other": "{int:NumBombs} Bomben übrig"
+        },
+        {
+            "key": "Please wait 5 minutes before creating another account",
+            "value": "Warte bitte 5 Minuten, bevor du ein neues Konto erstellst"
+        },
+        {
+            "key": "This username is already taken by an existing account",
+            "value": "Dieser Nutzername ist bereits durch ein Konto belegt"
+        },
+        {
+            "key": "Unknown class",
+            "value": "Unbekannte Klasse"
+        },
+        {
+            "key": "Wrong username/password.",
+            "value": "Falscher Nutzername/Falsches Paßwort"
         },
         {
             "key": "You must be logged for this operation",
@@ -1099,80 +1142,8 @@
             "value": "Zur Einsicht deines Ranges bedarfst du der Anmeldung"
         },
         {
-            "key": "You need at least {int:MinHp} HP to revive a zombie",
-            "value": "Du brauchst mindestens {int:MinHp} Lebenspunkte um einen Zombie wiederzubeleben"
-        },
-        {
-            "key": "You need at least {int:MinimumHP} HP",
-            "value": "Du benötigst mindestens {int:MinimumHP} Lebenspunkte"
-        },
-        {
             "key": "Your account has been created and you are now logged.",
             "value": "Dein Konto ist erstellt worden, du bist jetzt angemeldet."
-        },
-        {
-            "key": "{str:PlayerName} changed the class to {str:ClassName}",
-            "value": "{str:PlayerName} hat sich zum {str:ClassName} geändert"
-        },
-        {
-            "key": "{str:PlayerName} changed their name to {str:NewName}",
-            "value": "{str:PlayerName} hat sich zu {str:NewName} umbenannt"
-        },
-        {
-            "key": "{str:PlayerName} entered and joined the game",
-            "value": "{str:PlayerName} hat den Server und das Spiel betreten"
-        },
-        {
-            "key": "{str:PlayerName} has been banned ({str:Reason})",
-            "value": "{str:PlayerName} ist gebannt worden ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has been kicked ({str:Reason})",
-            "value": "{str:PlayerName} ist vom Server geworfen worden ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} has destroyed your turret!",
-            "value": "{str:PlayerName} hat deinen Geschützturm zerstört!"
-        },
-        {
-            "key": "{str:PlayerName} has left the game",
-            "value": "{str:PlayerName} hat den Server verlassen"
-        },
-        {
-            "key": "{str:PlayerName} has left the game ({str:Reason})",
-            "value": "{str:PlayerName} hat den Server verlassen ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} is calling for Santa! (1/{int:RequiredCallers}) To call the Santa write: /santa",
-            "value": "{str:PlayerName} ruft nach Santa! (1/{int:RequiredCallers}) Um den Weihnachtsmann zu rufen: /santa"
-        },
-        {
-            "key": "{str:PlayerName} is calling for Witch! (1/{int:RequiredCallers}) To call witch write: /witch",
-            "value": "{str:PlayerName} ruft nach der Hexe! (1/{int:RequiredCallers}) Um die Hexe zu rufen, schreibe: /witch"
-        },
-        {
-            "key": "{str:PlayerName} joined the game",
-            "value": "{str:PlayerName} ist dem Spiele beigetreten"
-        },
-        {
-            "key": "{str:PlayerName} joined the spectators",
-            "value": "{str:PlayerName} ist Zuschauer geworden"
-        },
-        {
-            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
-            "value": "{str:PlayerName} möchte die Abstimmung '{str:VoteName}' starten"
-        },
-        {
-            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
-            "value": "{str:PlayerName} verlangt nach einem Bann für {str:VictimName} ({str:Reason})"
-        },
-        {
-            "key": "{str:VictimName} has been infected",
-            "value": "{str:VictimName} ist angesteckt worden"
-        },
-        {
-            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
-            "value": "{str:Victim} ist stummgeschalten worden für {sec:Duration} ({str:Reason})"
         }
     ]
 }
