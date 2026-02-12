@@ -34,6 +34,10 @@ def convert_po_to_json(language: "Language"):
                             target_entry[plurals[i]] = entry.msgstr_plural[i]
                     if len(target_entry) <= 1:
                         continue
+                    if entry.msgid:
+                        one_entry = target_entry.copy()
+                        one_entry["key"] = entry.msgid
+                        translations.append(one_entry)
                 else:
                     continue
                 translations.append(target_entry)
