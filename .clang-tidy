@@ -1,0 +1,6 @@
+HeaderFilterRegex: '.*'
+ExcludeHeaderFilterRegex: '(external/|generated/|include/)'
+
+Checks: >
+  -*,
+  modernize-use-nullptr,

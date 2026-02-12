@@ -1647,7 +1647,7 @@ bool CServer::GenerateClientMap(const char *pMapFilePath, const char *pMapName)
 	if(!Config()->m_SvSixup)
 	{
 		free(m_apCurrentMapData[MAP_TYPE_SIXUP]);
-		m_apCurrentMapData[MAP_TYPE_SIXUP] = 0;
+		m_apCurrentMapData[MAP_TYPE_SIXUP] = nullptr;
 	}
 
 	return true;
@@ -2893,7 +2893,7 @@ int CServer::LoadMap(const char *pMapName)
 			if(!Config()->m_SvSixup)
 			{
 				free(m_apCurrentMapData[MAP_TYPE_SIXUP]);
-				m_apCurrentMapData[MAP_TYPE_SIXUP] = 0;
+				m_apCurrentMapData[MAP_TYPE_SIXUP] = nullptr;
 			}
 		}
 
@@ -4268,7 +4268,7 @@ public:
 
 	virtual void Execute(IGameServer* pGameServer)
 	{
-		pGameServer->SendChatTarget_Localization(m_ClientId, m_ChatCategory, m_aText, NULL);
+		pGameServer->SendChatTarget_Localization(m_ClientId, m_ChatCategory, m_aText, nullptr);
 	}
 };
 
@@ -4435,7 +4435,7 @@ void CServer::SetEmail(int ClientId, const char* pEmail)
 {
 	if(m_aClients[ClientId].m_UserId < 0 && m_pGameServer)
 	{
-		m_pGameServer->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You must be logged for this operation"), NULL);
+		m_pGameServer->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You must be logged for this operation"), nullptr);
 	}
 	else
 	{
@@ -5152,7 +5152,7 @@ void CServer::ShowRank(int ClientId, int ScoreType)
 	}
 	else if(m_pGameServer)
 	{
-		m_pGameServer->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You must be logged to see your rank"), NULL);
+		m_pGameServer->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You must be logged to see your rank"), nullptr);
 	}
 }
 
@@ -5236,7 +5236,7 @@ void CServer::ShowGoal(int ClientId, int ScoreType)
 	}
 	else if(m_pGameServer)
 	{
-		m_pGameServer->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You must be logged to see your goal"), NULL);
+		m_pGameServer->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You must be logged to see your goal"), nullptr);
 	}
 }
 
@@ -5320,7 +5320,7 @@ void CServer::ShowStats(int ClientId, int UserId)
 	}
 	else if(m_pGameServer)
 	{
-		m_pGameServer->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You must be logged to see stats"), NULL);
+		m_pGameServer->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You must be logged to see stats"), nullptr);
 	}
 }
 
@@ -5663,7 +5663,7 @@ void CServer::AddAccusation(int From, int To, const char* pReason)
 		if(net_addr_comp(&m_aClients[To].m_Accusation.m_Addresses[i], &FromAddr) == 0)
 		{
 			if(m_pGameServer)
-				m_pGameServer->SendChatTarget_Localization(From, CHATCATEGORY_DEFAULT, _("You have already notified that {str:PlayerName} ought to be banned"), "PlayerName", ClientName(To), NULL);
+				m_pGameServer->SendChatTarget_Localization(From, CHATCATEGORY_DEFAULT, _("You have already notified that {str:PlayerName} ought to be banned"), "PlayerName", ClientName(To), nullptr);
 			return;
 		}
 	}
@@ -5682,7 +5682,7 @@ void CServer::AddAccusation(int From, int To, const char* pReason)
 			"PlayerName", ClientName(From),
 			"VictimName", ClientName(To),
 			"Reason", pReason,
-			NULL
+			nullptr
 		);
 	}
 }
@@ -5746,7 +5746,7 @@ void CServer::AddMapVote(int From, const char* pCommand, const char* pReason, co
 			if(net_addr_comp(&m_MapVotes[Index].m_pAddresses[i], &FromAddr) == 0)
 			{
 				if(m_pGameServer)
-					m_pGameServer->SendChatTarget_Localization(From, CHATCATEGORY_DEFAULT, _("You have already voted to change this map"), NULL);
+					m_pGameServer->SendChatTarget_Localization(From, CHATCATEGORY_DEFAULT, _("You have already voted to change this map"), nullptr);
 				return;
 			}
 		}
@@ -5761,7 +5761,7 @@ void CServer::AddMapVote(int From, const char* pCommand, const char* pReason, co
 		m_pGameServer->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("{str:PlayerName} wants to start the vote '{str:VoteName}'"),
 			"PlayerName", ClientName(From),
 			"VoteName", pDesc,
-			NULL
+			nullptr
 		);
 	}
 }

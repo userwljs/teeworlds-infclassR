@@ -52,7 +52,7 @@ bool CSqlServer::Connect()
 {
 	Lock();
 
-	if (m_pDriver != NULL && m_pConnection != NULL)
+	if (m_pDriver != nullptr && m_pConnection != nullptr)
 	{
 		try
 		{

@@ -103,7 +103,7 @@ private:
 
 public:
 	_dynamic_string_core() :
-		m_pBuffer(NULL),
+		m_pBuffer(nullptr),
 		m_MaxSize(0)
 	{
 		resize_buffer(INITIALSIZE);
@@ -153,7 +153,7 @@ public:
 		
 		m_pBuffer = String.m_pBuffer;
 		m_MaxSize = String.m_MaxSize;
-		String.m_pBuffer = NULL;
+		String.m_pBuffer = nullptr;
 		String.m_MaxSize = 0;
 	}
 	

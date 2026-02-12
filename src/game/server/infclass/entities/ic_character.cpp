@@ -1862,7 +1862,7 @@ void CIcCharacter::HandleMapMenu()
 		pPlayer->m_MapMenuItem = -1;
 		GameServer()->SendBroadcast_Localization(GetCid(),
 			EBroadcastPriority::INTERFACE, BROADCAST_DURATION_REALTIME,
-			_("Choose your class"), NULL);
+			_("Choose your class"), nullptr);
 
 		return;
 	}
@@ -2485,7 +2485,7 @@ void CIcCharacter::PreCoreTick()
 		else
 		{
 			int FreezeSec = 1 + (m_FrozenTime / Server()->TickSpeed());
-			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE, BROADCAST_DURATION_REALTIME, _("You are frozen: {sec:EffectDuration}"), "EffectDuration", &FreezeSec, NULL);
+			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE, BROADCAST_DURATION_REALTIME, _("You are frozen: {sec:EffectDuration}"), "EffectDuration", &FreezeSec, nullptr);
 		}
 	}
 
@@ -2496,7 +2496,7 @@ void CIcCharacter::PreCoreTick()
 		if(m_SlowMotionTick > 0)
 		{
 			int SloMoSec = 1 + (m_SlowMotionTick / Server()->TickSpeed());
-			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE, BROADCAST_DURATION_REALTIME, _("You are slowed: {sec:EffectDuration}"), "EffectDuration", &SloMoSec, NULL);
+			GameServer()->SendBroadcast_Localization(m_pPlayer->GetCid(), EBroadcastPriority::EFFECTSTATE, BROADCAST_DURATION_REALTIME, _("You are slowed: {sec:EffectDuration}"), "EffectDuration", &SloMoSec, nullptr);
 		}
 	}
 

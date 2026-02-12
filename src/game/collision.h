@@ -63,7 +63,7 @@ public:
 	int GetMoveRestrictions(CALLBACK_SWITCHACTIVE pfnSwitchActive, void *pUser, vec2 Pos, float Distance = 18.0f, int OverrideCenterTileIndex = -1);
 	int GetMoveRestrictions(vec2 Pos, float Distance = 18.0f)
 	{
-		return GetMoveRestrictions(0, 0, Pos, Distance);
+		return GetMoveRestrictions(nullptr, nullptr, Pos, Distance);
 	}
 
 	EZonePhysics GetPhysicsTile(int x, int y) const;

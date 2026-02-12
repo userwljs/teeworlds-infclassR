@@ -507,9 +507,9 @@ void CIcPlayer::SetHookProtection(bool Value, bool Automatic)
 		if(!m_HookProtectionAutomatic || !Automatic)
 		{
 			if(m_HookProtection)
-				GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, _("Hook protection enabled"), NULL);
+				GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, _("Hook protection enabled"), nullptr);
 			else
-				GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, _("Hook protection disabled"), NULL);
+				GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, _("Hook protection disabled"), nullptr);
 		}
 	}
 
@@ -799,16 +799,16 @@ void CIcPlayer::SendClassIntro()
 
 		if(IsHuman())
 			GameServer()->SendBroadcast_Localization(GetCid(), EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
-				_("You are a human: {str:ClassName}"), "ClassName", pTranslated, NULL);
+				_("You are a human: {str:ClassName}"), "ClassName", pTranslated, nullptr);
 		else
 			GameServer()->SendBroadcast_Localization(GetCid(), EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
-				_("You are an infected: {str:ClassName}"), "ClassName", pTranslated, NULL);
+				_("You are an infected: {str:ClassName}"), "ClassName", pTranslated, nullptr);
 
 		int Index = static_cast<int>(Class);
 		if(!m_aKnownClasses[Index])
 		{
 			const char *className = CIcGameController::GetClassName(Class);
-			GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, _("Type “/help {str:ClassName}” for more information about your class"), "ClassName", className, NULL);
+			GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, _("Type “/help {str:ClassName}” for more information about your class"), "ClassName", className, nullptr);
 			m_aKnownClasses[Index] = true;
 		}
 	}

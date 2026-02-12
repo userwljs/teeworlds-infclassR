@@ -2695,7 +2695,7 @@ void CGameContext::OnSetTeamNetMessage(const CNetMsg_Cl_SetTeam *pMsg, int Clien
 	/* INFECTION MODIFICATION START ***************************************/
 	if(pMsg->m_Team == TEAM_SPECTATORS && !m_pController->CanJoinTeam(TEAM_SPECTATORS, ClientId))
 	{
-		SendBroadcast_Localization(ClientId, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, _("You can't join the spectators right now"), NULL);
+		SendBroadcast_Localization(ClientId, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, _("You can't join the spectators right now"), nullptr);
 		return;
 	}
 	/* INFECTION MODIFICATION END *****************************************/
@@ -2756,7 +2756,7 @@ void CGameContext::OnChangeInfoNetMessage(const CNetMsg_Cl_ChangeInfo *pMsg, int
 
 		Server()->SetClientName(ClientId, pMsg->m_pName);
 
-		SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} changed their name to {str:NewName}"), "PlayerName", aOldName, "NewName", Server()->ClientName(ClientId), NULL);
+		SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} changed their name to {str:NewName}"), "PlayerName", aOldName, "NewName", Server()->ClientName(ClientId), nullptr);
 		char aBuf[256];
 		str_format(aBuf, sizeof(aBuf), "change_name previous='%s' now='%s'", aOldName, Server()->ClientName(ClientId));
 		Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", aBuf);
@@ -2887,8 +2887,8 @@ void CGameContext::OnStartInfoNetMessage(const CNetMsg_Cl_StartInfo *pMsg, int C
 		}
 		else
 		{
-			SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You can change the language of this mod using the command /language."), NULL);
-			SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("If your language is not available, you can help with translation (/help translate)."), NULL);
+			SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("You can change the language of this mod using the command /language."), nullptr);
+			SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("If your language is not available, you can help with translation (/help translate)."), nullptr);
 		}
 
 		Server()->SetClientMemory(ClientId, CLIENTMEMORY_LANGUAGESELECTION, true);
@@ -3750,13 +3750,13 @@ void CGameContext::ConCredits(IConsole::IResult *pResult, void *pUserData)
 	                             ", Kaffeine"
 	                             ;
 
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", "InfectionDust", NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", "InfectionDust", nullptr);
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Based on the concept of Infection mod by Gravity"), NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Based on the concept of Infection mod by Gravity"), nullptr);
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Main contributors: {str:ListOfContributors}"), "ListOfContributors", aContributors, NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Main contributors: {str:ListOfContributors}"), "ListOfContributors", aContributors, nullptr);
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Thanks to {str:ListOfContributors}"), "ListOfContributors", aThanks, NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Thanks to {str:ListOfContributors}"), "ListOfContributors", aThanks, nullptr);
 	Buffer.append("\n\n");
 	pSelf->SendMOTD(ClientId, Buffer.buffer());
 }
@@ -3778,11 +3778,11 @@ void CGameContext::ConAbout(IConsole::IResult *pResult)
 	const char* pLanguage = m_apPlayers[ClientId]->GetLanguage();
 
 	dynamic_string Buffer;
-	Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", GAME_VERSION, NULL);
+	Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", GAME_VERSION, nullptr);
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
 	Buffer.clear();
 
-	Server()->Localization()->Format_L(Buffer, pLanguage, _("Server version from {str:ServerCompileDate} "), "ServerCompileDate", LAST_COMPILE_DATE, NULL);
+	Server()->Localization()->Format_L(Buffer, pLanguage, _("Server version from {str:ServerCompileDate} "), "ServerCompileDate", LAST_COMPILE_DATE, nullptr);
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
 	Buffer.clear();
 
@@ -3797,7 +3797,7 @@ void CGameContext::ConAbout(IConsole::IResult *pResult)
 	if(pSourceUrl[0])
 	{
 		Server()->Localization()->Format_L(Buffer, pLanguage, _("Sources: {str:SourceUrl} "), "SourceUrl",
-			pSourceUrl, NULL
+			pSourceUrl, nullptr
 		);
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
 		Buffer.clear();
@@ -4420,7 +4420,7 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 		
 		Server()->Localization()->Format_L(Buffer, pLanguage, _("Available help pages: {str:PageList}"),
 			"PageList", "game, translate, msg, mute, taxi",
-			NULL
+			nullptr
 		);
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
 		
@@ -4515,7 +4515,7 @@ void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 		}
 		
 		dynamic_string Buffer;
-		pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Available languages: {str:ListOfLanguage}"), "ListOfLanguage", BufferList.buffer(), NULL);
+		pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Available languages: {str:ListOfLanguage}"), "ListOfLanguage", BufferList.buffer(), nullptr);
 		
 		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", Buffer.buffer());
 	}
@@ -4532,19 +4532,19 @@ void CGameContext::ConCmdList(IConsole::IResult *pResult, void *pUserData)
 	Buffer.append("~~ ");
 	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("List of commands")); 
 	Buffer.append(" ~~\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/antiping, /alwaysrandom, /customskin, /help, /about, /language", NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/antiping, /alwaysrandom, /customskin, /help, /about, /language", nullptr);
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/msg, /mute", NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/msg, /mute", nullptr);
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/changelog", NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/changelog", nullptr);
 	Buffer.append("\n\n");
 #ifdef CONF_SQL
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/register, /login, /logout, /setemail", NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/register, /login, /logout, /setemail", nullptr);
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/challenge, /top10, /rank, /goal", NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/challenge, /top10, /rank, /goal", nullptr);
 	Buffer.append("\n\n");
 #endif
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Press <F3> or <F4> to enable or disable hook protection"), NULL);
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Press <F3> or <F4> to enable or disable hook protection"), nullptr);
 			
 	pSelf->SendMOTD(ClientId, Buffer.buffer());
 }
@@ -5163,7 +5163,7 @@ bool CGameContext::ProcessSpamProtection(int ClientId, bool RespectChatInitialDe
 
 	if(Muted > 0)
 	{
-		SendChatTarget_Localization(ClientId, CHATCATEGORY_ACCUSATION, _("You are muted for {sec:Duration}"), "Duration", &Muted, NULL);
+		SendChatTarget_Localization(ClientId, CHATCATEGORY_ACCUSATION, _("You are muted for {sec:Duration}"), "Duration", &Muted, nullptr);
 		return true;
 	}
 
