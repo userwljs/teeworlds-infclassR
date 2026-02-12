@@ -767,8 +767,6 @@ void CBotPlayer::UpdateControls()
 	if(!m_pCharacter)
 		return;
 
-	const int Tick = Server()->Tick();
-
 	CNetObj_PlayerInput NewInput;
 	NewInput.m_Direction = 0;
 	NewInput.m_TargetX = 0;
@@ -1333,7 +1331,6 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 
 	bool WantToJump = false;
 	bool WantGoDown = false;
-	bool TargetIsReachable = true;
 
 	if(Tick >= m_CachedSameGroundTargetUntilTick)
 	{
@@ -3232,7 +3229,6 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 	if(HasDangerBelow())
 	{
 		int NeedJumps = 0;
-		bool CheckAnotherDir = true;
 		float MaxHDistance = TileSizeF * 3;
 		NeedJumps = GetJumpsNeededToJumpOnPlatform(m_RoamingDirection, MaxJumps, pTargetPosition, MaxHDistance);
 		if(NeedJumps == 0 || NeedJumps > MaxJumps)

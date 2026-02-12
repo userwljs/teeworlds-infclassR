@@ -39,7 +39,7 @@ int CLuaBinding::LuaListdir(lua_State *L)
 	argcheck(lua_isfunction(L, -1), 2, "function name (as a string)");
 	lua_pop(L, 1); // pop temporary lua function
 
-	const char *pDir = lua_tostring(L, 1); // arg1
+	lua_tostring(L, 1); // arg1, side effect: if the value is a number, then this also changes the actual value in the stack to a string.
 	LuaListdirCallbackParams params(L, lua_tostring(L, 2)); // arg2
 	lua_pop(L, 1); // pop arg2
 	lua_Number ret = 0; // (lua_Number)fs_listdir(pDir, LuaListdirCallback, IStorage::TYPE_ALL, &params);
