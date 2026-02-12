@@ -1523,7 +1523,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("You need at least {int:MinHp} HP to revive a zombie"),
 				"MinHp", &MinimumHP,
-				NULL);
+				nullptr);
 		}
 		else if(GameController()->GetInfectedCount() < MinimumInfected)
 		{
@@ -1531,7 +1531,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Too few zombies to revive anyone (less than {int:MinZombies})"),
 				"MinZombies", &MinimumInfected,
-				NULL);
+				nullptr);
 		}
 		return;
 	}
@@ -1557,11 +1557,11 @@ void CInfClassHuman::BroadcastWeaponState() const
 			{
 				dynamic_string Line1;
 				Server()->Localization()->Format_L(Line1, GetPlayer()->GetLanguage(),
-					_C("Mercenary", "Use the laser to upgrade the bomb"), NULL);
+					_C("Mercenary", "Use the laser to upgrade the bomb"), nullptr);
 
 				dynamic_string Line2;
 				Server()->Localization()->Format_L(Line2, GetPlayer()->GetLanguage(),
-					_C("Mercenary", "Explosive yield: {percent:BombLevel}"), "BombLevel", &BombLevel, NULL);
+					_C("Mercenary", "Explosive yield: {percent:BombLevel}"), "BombLevel", &BombLevel, nullptr);
 
 				Line1.append("\n");
 				Line1.append(Line2);
@@ -1575,7 +1575,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 					EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 					_C("Mercenary", "The bomb is fully upgraded.\n"
 									"There is nothing to do with the laser."),
-					NULL);
+					nullptr);
 			}
 		}
 		else
@@ -1584,7 +1584,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Mercenary", "Use the hammer to place a bomb and\n"
 								"then use the laser to upgrade it"),
-				NULL);
+				nullptr);
 		}
 
 		return;
@@ -1729,7 +1729,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				NumBombs,
 				_CP("Soldier", "{int:NumBombs} bomb left", "{int:NumBombs} bombs left", NumBombs),
 				"NumBombs", &NumBombs,
-				NULL
+				nullptr
 			);
 		}
 	}
@@ -1757,7 +1757,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("The white hole is available!"),
-				NULL
+				nullptr
 			);
 		}
 		else if(NumMines > 0 && !pOwnWhiteHole)
@@ -1766,7 +1766,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME, NumMines,
 				_P("{int:NumMines} mine is active", "{int:NumMines} mines are active", NumMines),
 				"NumMines", &NumMines,
-				NULL
+				nullptr
 			);
 		}
 		else if(NumMines <= 0 && pOwnWhiteHole)
@@ -1776,7 +1776,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("White hole: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				NULL
+				nullptr
 			);
 		}
 		else if(NumMines > 0 && pOwnWhiteHole)
@@ -1810,7 +1810,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Biologist", "Mine activated"),
-				NULL
+				nullptr
 			);
 		}
 	}
@@ -1826,7 +1826,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Ninja", "Next target in {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				NULL
+				nullptr
 			);
 		}
 		else if(TargetId >= 0)
@@ -1835,7 +1835,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Ninja", "Target to eliminate: {str:PlayerName}"),
 				"PlayerName", Server()->ClientName(TargetId),
-				NULL
+				nullptr
 			);
 		}
 	}
@@ -1848,7 +1848,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Sniper", "Position lock: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				NULL
+				nullptr
 			);
 		}
 	}
@@ -1873,7 +1873,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Mercenary", "Explosive yield: {percent:BombLevel}"),
 				"BombLevel", &BombLevel,
-				NULL);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Hero)
@@ -1912,7 +1912,7 @@ void CInfClassHuman::ResetUpgrades()
 
 void CInfClassHuman::OnNinjaTargetKiller(bool Assisted)
 {
-	GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("You have eliminated your target, +2 points"), NULL);
+	GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("You have eliminated your target, +2 points"), nullptr);
 	Server()->RoundStatistics()->OnScoreEvent(GetCid(), EScoreEvent::KILL_TARGET, GetPlayerClass(), Server()->ClientName(GetCid()), GameServer()->Console());
 
 	if(m_pCharacter)
@@ -1933,15 +1933,15 @@ void CInfClassHuman::GiveNinjaBuf()
 	{
 	case 0: //Velocity Buff
 		m_NinjaVelocityBuff++;
-		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Sword velocity increased"), NULL);
+		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Sword velocity increased"), nullptr);
 		break;
 	case 1: //Strength Buff
 		m_NinjaExtraDamage++;
-		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Sword strength increased"), NULL);
+		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Sword strength increased"), nullptr);
 		break;
 	case 2: //Ammo Buff
 		m_NinjaAmmoBuff++;
-		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Grenade limit increased"), NULL);
+		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Grenade limit increased"), nullptr);
 		break;
 	}
 

@@ -359,7 +359,7 @@ public:
 		if(!m_Finished)
 		{
 			SetConsoleTextAttribute(m_pConsole, Color);
-			WriteConsoleW(m_pConsole, WideMessage.c_str(), WideMessage.length(), NULL, NULL);
+			WriteConsoleW(m_pConsole, WideMessage.c_str(), WideMessage.length(), nullptr, nullptr);
 		}
 	}
 	void GlobalFinish() override REQUIRES(!m_OutputLock)
@@ -388,8 +388,8 @@ public:
 		}
 		const CLockScope LockScope(m_OutputLock);
 		DWORD Written; // we don't care about the value, but Windows 7 crashes if we pass NULL
-		WriteFile(m_pFile, pMessage->m_aLine, pMessage->m_LineLength, &Written, NULL);
-		WriteFile(m_pFile, "\r\n", 2, &Written, NULL);
+		WriteFile(m_pFile, pMessage->m_aLine, pMessage->m_LineLength, &Written, nullptr);
+		WriteFile(m_pFile, "\r\n", 2, &Written, nullptr);
 	}
 };
 #endif

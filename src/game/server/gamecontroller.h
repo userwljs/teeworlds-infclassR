@@ -58,7 +58,7 @@ public:
 	void ConSmartMapRotationStatus();
 	void LoadMapRotationData();
 	void SaveMapRotationData(const char *pFileName);
-	void PrintMapRotationData(IOHANDLE Output = 0);
+	void PrintMapRotationData(IOHANDLE Output = nullptr);
 	virtual bool MapRotationEnabled() const;
 
 	static CMapInfoEx *GetMapInfo(const char *pMapName);

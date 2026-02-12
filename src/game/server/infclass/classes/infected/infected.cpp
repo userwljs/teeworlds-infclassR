@@ -301,7 +301,7 @@ void CInfClassInfected::OnCharacterTick()
 		GameServer()->SendBroadcast_Localization(GetCid(), EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 			_C("Voodoo", "Staying alive for: {int:RemainingTime}"),
 			"RemainingTime", &Time,
-			NULL
+			nullptr
 		);
 	}
 	if(GetPlayerClass() == EPlayerClass::Spider)
@@ -767,7 +767,7 @@ void CInfClassInfected::BroadcastWeaponState() const
 		if(m_pCharacter->m_HookMode > 0)
 		{
 			GameServer()->SendBroadcast_Localization(GetCid(), EBroadcastPriority::WEAPONSTATE,
-				BROADCAST_DURATION_REALTIME, _C("Spider", "Web mode enabled"), NULL);
+				BROADCAST_DURATION_REALTIME, _C("Spider", "Web mode enabled"), nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Ghoul)
@@ -779,7 +779,7 @@ void CInfClassInfected::BroadcastWeaponState() const
 				BROADCAST_DURATION_REALTIME,
 				_C("Ghoul", "Stomach filled by {percent:FodderInStomach}"),
 				"FodderInStomach", &FodderInStomach,
-				NULL
+				nullptr
 			);
 		}
 	}

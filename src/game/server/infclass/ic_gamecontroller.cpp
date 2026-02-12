@@ -676,7 +676,7 @@ void CIcGameController::OnHeroFlagCollected(int ClientId)
 	{
 		pText = _("The Hero got the flag!");
 	}
-	GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, pText, NULL);
+	GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, pText, nullptr);
 	GameServer()->CreateSoundGlobal(SOUND_CTF_CAPTURE);
 
 	int Tick = Server()->Tick();
@@ -4337,10 +4337,7 @@ void CIcGameController::EndRound(ERoundEndReason Reason)
 	RunCallback(Lua()->GetLuaState(), "on_round_end", toString(Reason));
 
 	if(Reason == ERoundEndReason::FINISHED)
-	{
-		MaybeSendStatistics();
 		Server()->OnRoundIsOver();
-	}
 	else if(Reason == ERoundEndReason::CANCELED)
 	{
 		if(!m_InfectedStarted || (NumHumans + NumInfected) < 2)
@@ -4389,11 +4386,11 @@ void CIcGameController::DoTeamChange(CPlayer *pBasePlayer, int Team, bool DoChat
 		{
 			if(Config()->m_InfSurvivalRespawn)
 				pPlayer->SetSurvivalRespawnTick(Server()->Tick() + Server()->TickSpeed() * Config()->m_InfSurvivalRespawnDelay);
-			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} joined the spectators"), "PlayerName", Server()->ClientName(ClientId), NULL);
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} joined the spectators"), "PlayerName", Server()->ClientName(ClientId), nullptr);
 		}
 		else
 		{
-			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} joined the game"), "PlayerName", Server()->ClientName(ClientId), NULL);
+			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} joined the game"), "PlayerName", Server()->ClientName(ClientId), nullptr);
 		}
 	}
 
@@ -5634,25 +5631,6 @@ void CIcGameController::UpdateBalanceFactors()
 	m_InfBalanceBoostFactor = 0;
 }
 
-void CIcGameController::MaybeSendStatistics()
-{
-	// skip some maps that are not very fair
-	if (
-			str_comp(g_Config.m_SvMap, "infc_toilet") == 0 ||
-			str_comp(g_Config.m_SvMap, "infc_toilet_old") == 0) {
-		return;
-	}
-
-	if (Server()->GetActivePlayerCount() < 6) {
-		return;
-	}
-
-	if(GetRoundType() != ERoundType::Normal)
-		return;
-
-	Server()->SendStatistics();
-}
-
 void CIcGameController::CancelTheRound(ROUND_CANCELATION_REASON Reason)
 {
 	switch(Reason)
@@ -5716,7 +5694,7 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 				Server()->RoundStatistics()->SetPlayerAsWinner(Iter.ClientId());
 				GameServer()->SendScoreSound(Iter.ClientId());
 
-				GameServer()->SendChatTarget_Localization(Iter.ClientId(), CHATCATEGORY_SCORE, _("You have survived, +5 points"), NULL);
+				GameServer()->SendChatTarget_Localization(Iter.ClientId(), CHATCATEGORY_SCORE, _("You have survived, +5 points"), nullptr);
 				str_format(aBuf, sizeof(aBuf), "survived player='%s'", Server()->ClientName(Iter.ClientId()));
 				Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", aBuf);
 			}
@@ -5725,7 +5703,7 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 	else
 	{
 		const int Seconds = (Server()->Tick() - m_RoundStartTick) / ((float)Server()->TickSpeed());
-		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTED, _("Infected won the round in {sec:RoundDuration}"), "RoundDuration", &Seconds, NULL);
+		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_INFECTED, _("Infected won the round in {sec:RoundDuration}"), "RoundDuration", &Seconds, nullptr);
 	}
 
 	EndRound(ERoundEndReason::FINISHED);
@@ -6848,35 +6826,35 @@ void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const
 	if(!pHelpPage || str_comp_nocase(pHelpPage, "game") == 0)
 	{
 		Buffer.append("~~ ");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Rules of the game"), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Rules of the game"), nullptr);
 		Buffer.append(" ~~\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass is a team game between humans and the infected."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass is a team game between humans and the infected."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("All players start as a human."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("All players start as a human."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("10 seconds later, a few players become infected."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("10 seconds later, a few players become infected."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("The goal for the humans is to survive until the army cleans the map."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("The goal for the humans is to survive until the army cleans the map."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("The goal for the infected is to infect all humans."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("The goal for the infected is to infect all humans."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("See also `/help pages`"), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("See also `/help pages`"), nullptr);
 	}
 	else if(str_comp_nocase(pHelpPage, "translate") == 0)
 	{
 		Buffer.append("~~ ");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("How to translate the mod"), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("How to translate the mod"), nullptr);
 		Buffer.append(" ~~\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Create an account on Crowdin and join the translation team:"), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Create an account on Crowdin and join the translation team:"), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, Config()->m_AboutTranslationUrl, NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, Config()->m_AboutTranslationUrl, nullptr);
 	}
 	else if(str_comp_nocase(pHelpPage, "whitehole") == 0)
 	{
 		Buffer.append("~~ ");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("White hole"), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("White hole"), nullptr);
 		Buffer.append(" ~~\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _C("White hole", "White hole pulls the infected into its center."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _C("White hole", "White hole pulls the infected into its center."), nullptr);
 		Buffer.append("\n\n");
 		Server()->Localization()->Format_LP(Buffer, pLanguage, g_Config.m_InfWhiteHoleMinimalKills,
 			_CP("White hole",
@@ -6884,7 +6862,7 @@ void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const
 				"Receive it by killing at least {int:NumKills} of the infected as a Scientist.", g_Config.m_InfWhiteHoleMinimalKills),
 			"NumKills", &g_Config.m_InfWhiteHoleMinimalKills, nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _C("White hole", "Use the laser rifle to place it."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _C("White hole", "Use the laser rifle to place it."), nullptr);
 	}
 	else if(str_comp_nocase(pHelpPage, "msg") == 0)
 	{
@@ -6892,13 +6870,13 @@ void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const
 		Server()->Localization()->Format_L(Buffer, pLanguage, _("Targeted chat messages"));
 		Buffer.append(" ~~\n\n");
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Use “/w <PlayerName> <My Message>” to send a private message to this player."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Use “/w <PlayerName> <My Message>” to send a private message to this player."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Example: “/msg !medic I'm wounded!”"), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Example: “/msg !medic I'm wounded!”"), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Use “/msg !near” to send a private message to all players near you."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Use “/msg !near” to send a private message to all players near you."), nullptr);
 	}
 	else if(str_comp_nocase(pHelpPage, "mute") == 0)
 	{
@@ -6906,34 +6884,34 @@ void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const
 		Server()->Localization()->Format_L(Buffer, pLanguage, _("Persistent player mute"));
 		Buffer.append(" ~~\n\n");
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Use “/mute <PlayerName>” to mute this player."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Use “/mute <PlayerName>” to mute this player."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Example: “/mute nameless tee”"), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Example: “/mute nameless tee”"), nullptr);
 		Buffer.append("\n\n");
 	}
 	else if(str_comp_nocase(pHelpPage, "taxi") == 0)
 	{
 		Buffer.append("~~ ");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("How to use taxi mode"), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("How to use taxi mode"), nullptr);
 		Buffer.append(" ~~\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Two or more humans can form a taxi."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Two or more humans can form a taxi."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("In order to use it, both humans have to disable hook protection (usually, with F3). The human being hooked becomes the driver."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("In order to use it, both humans have to disable hook protection (usually, with F3). The human being hooked becomes the driver."), nullptr);
 		Buffer.append("\n\n");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("To get off the taxi, jump. To drop off your passengers, enable hook protection (usually, with F3)."), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("To get off the taxi, jump. To drop off your passengers, enable hook protection (usually, with F3)."), nullptr);
 	}
 	else if(str_comp_nocase(pHelpPage, "fast_round") == 0)
 	{
 		Buffer.append("~~ ");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Fast round"), NULL);
+		Server()->Localization()->Format_L(Buffer, pLanguage, _("Fast round"), nullptr);
 		Buffer.append(" ~~\n\n");
 		Server()->Localization()->Format_L(Buffer, pLanguage,
 			_("In the fast rounds *more* humans become infected initially, "
 			  "the spawning rate is increased and the round time limit is decreased. "
 			  "White hole is also disabled."),
-			NULL);
+			nullptr);
 	}
 	else
 	{
@@ -7319,11 +7297,11 @@ void CIcGameController::RewardTheKillers(CIcCharacter *pVictim, const DeathConte
 			{
 			case EPlayerClass::Witch:
 				ScoreEvent = EScoreEvent::KILL_WITCH;
-				GameServer()->SendChatTarget_Localization(pKiller->GetCid(), CHATCATEGORY_SCORE, _("You have killed a witch, +5 points"), NULL);
+				GameServer()->SendChatTarget_Localization(pKiller->GetCid(), CHATCATEGORY_SCORE, _("You have killed a witch, +5 points"), nullptr);
 				break;
 			case EPlayerClass::Undead:
 				ScoreEvent = EScoreEvent::KILL_UNDEAD;
-				GameServer()->SendChatTarget_Localization(pKiller->GetCid(), CHATCATEGORY_SCORE, _("You have killed an undead! +5 points"), NULL);
+				GameServer()->SendChatTarget_Localization(pKiller->GetCid(), CHATCATEGORY_SCORE, _("You have killed an undead! +5 points"), nullptr);
 				break;
 			default:
 				break;
@@ -7447,12 +7425,12 @@ void CIcGameController::OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *
 		switch(VictimClass)
 		{
 			case EPlayerClass::Witch:
-				GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, _("The witch is dead"), NULL);
+				GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, _("The witch is dead"), nullptr);
 				GameServer()->CreateSoundGlobal(SOUND_CTF_RETURN);
 				InfectionType = INFECTION_TYPE::RESTORE_INF_CLASS;
 				break;
 			case EPlayerClass::Undead:
-				GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, _("The undead is finally dead"), NULL);
+				GameServer()->SendBroadcast_Localization(-1, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, _("The undead is finally dead"), nullptr);
 				GameServer()->CreateSoundGlobal(SOUND_CTF_RETURN);
 				InfectionType = INFECTION_TYPE::RESTORE_INF_CLASS;
 				break;
