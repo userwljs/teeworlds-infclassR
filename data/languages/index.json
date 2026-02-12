@@ -117,16 +117,6 @@
 		"parent": "cs"
 	},
 	{
-		"file": "sr",
-		"name": "Српски",
-		"parent": "sr-Cyrl"
-	},
-	{
-		"file": "sr-Cyrl",
-		"name": "Српски ћирилицом",
-		"parent": "sr-Latn"
-	},
-	{
 		"file": "sr-Latn",
 		"name": "Srpski latinicom",
 		"parent": "hr"
