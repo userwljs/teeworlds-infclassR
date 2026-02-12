@@ -347,14 +347,6 @@ private:
 	static void ConRegister(IConsole::IResult *pResult, void *pUserData);
 	static void ConLogin(IConsole::IResult *pResult, void *pUserData);
 	static void ConLogout(IConsole::IResult *pResult, void *pUserData);
-#ifdef CONF_SQL
-	static void ConSetEmail(IConsole::IResult *pResult, void *pUserData);
-	static void ConTop10(IConsole::IResult *pResult, void *pUserData);
-	static void ConChallenge(IConsole::IResult *pResult, void *pUserData);
-	static void ConRank(IConsole::IResult *pResult, void *pUserData);
-	static void ConGoal(IConsole::IResult *pResult, void *pUserData);
-	static void ConStats(IConsole::IResult *pResult, void *pUserData);
-#endif
 	void ChatHelp(int ClientId, const char *pHelpPage);
 	static void ConLanguage(IConsole::IResult *pResult, void *pUserData);
 	static void ConCmdList(IConsole::IResult *pResult, void *pUserData);

@@ -2867,10 +2867,7 @@ void CIcGameController::EndRound(ERoundEndReason Reason)
 	IGameController::EndRound();
 
 	if(Reason == ERoundEndReason::FINISHED)
-	{
-		MaybeSendStatistics();
 		Server()->OnRoundIsOver();
-	}
 	else if(Reason == ERoundEndReason::CANCELED)
 	{
 		if(!m_InfectedStarted || (NumHumans + NumInfected) < 2)
@@ -3654,25 +3651,6 @@ void CIcGameController::UpdateBalanceFactors()
 	}
 
 	m_InfBalanceBoostFactor = 0;
-}
-
-void CIcGameController::MaybeSendStatistics()
-{
-	// skip some maps that are not very fair
-	if (
-			str_comp(g_Config.m_SvMap, "infc_toilet") == 0 ||
-			str_comp(g_Config.m_SvMap, "infc_toilet_old") == 0) {
-		return;
-	}
-
-	if (Server()->GetActivePlayerCount() < 6) {
-		return;
-	}
-
-	if(GetRoundType() != ERoundType::Normal)
-		return;
-
-	Server()->SendStatistics();
 }
 
 void CIcGameController::CancelTheRound(ROUND_CANCELATION_REASON Reason)

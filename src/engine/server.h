@@ -351,27 +351,13 @@ public:
 	virtual void SetClientLanguage(int ClientId, const char* pLanguage) = 0;
 
 	virtual bool IsClientLogged(int ClientId) = 0;
-#ifdef CONF_SQL
-	virtual void Login(int ClientId, const char* pUsername, const char* pPassword) = 0;
-	virtual void Logout(int ClientId) = 0;
-	virtual void SetEmail(int ClientId, const char* pEmail) = 0;
-	virtual void Register(int ClientId, const char* pUsername, const char* pPassword, const char* pEmail) = 0;
-	virtual void ShowTop10(int ClientId, int ScoreType) = 0;
-	virtual void ShowChallenge(int ClientId) = 0;
-	virtual void ShowRank(int ClientId, int ScoreType) = 0;
-	virtual void ShowGoal(int ClientId, int ScoreType) = 0;
-	virtual void ShowStats(int ClientId, int UserId) = 0;
-	virtual int GetUserLevel(int ClientId) = 0;
-#else
 	virtual void Register(int ClientId, const char* pUsername, const char* pPassword, const char* pEmail) = 0;
 	virtual void Login(int ClientId, const char* pUsername, const char* pPassword) = 0;
 	virtual void Logout(int ClientId) = 0;
-#endif
 
 public:
 	virtual class CRoundStatistics* RoundStatistics() = 0;
 	virtual void ResetStatistics() = 0;
-	virtual void SendStatistics() = 0;
 
 	virtual void OnRoundIsOver() = 0;
 	

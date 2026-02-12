@@ -208,9 +208,6 @@ public:
 		//Login
 		int m_LogInstance;
 		int m_UserId;
-#ifdef CONF_SQL
-		int m_UserLevel;
-#endif
 		char m_aUsername[MAX_NAME_LENGTH];
 
 		// DDRace
@@ -517,23 +514,9 @@ public:
 	int GetClientNbRound(int ClientId) override;
 
 	bool IsClientLogged(int ClientId) override;
-#ifdef CONF_SQL
-	void Login(int ClientId, const char* pUsername, const char* pPassword) override;
-	void Logout(int ClientId) override;
-	void SetEmail(int ClientId, const char* pEmail) override;
-	void Register(int ClientId, const char* pUsername, const char* pPassword, const char* pEmail) override;
-	void ShowChallenge(int ClientId) override;
-	void ShowTop10(int ClientId, int ScoreType) override;
-	void ShowRank(int ClientId, int ScoreType) override;
-	void ShowGoal(int ClientId, int ScoreType) override;
-	void ShowStats(int ClientId, int UserId) override;
-	void RefreshChallenge() override;
-	int GetUserLevel(int ClientId) override;
-#else
 	void Register(int ClientId, const char* pUsername, const char* pPassword, const char* pEmail) override;
 	void Login(int ClientId, const char* pUsername, const char* pPassword) override;
 	void Logout(int ClientId) override;
-#endif
 private:
 	bool GenerateClientMap(const char *pMapFilePath, const char *pMapName);
 	
@@ -555,15 +538,6 @@ private:
 	std::array<bool, SERVER_TICK_SPEED> m_DoSnap{};
 	int m_SnapsPerSecond = 0;
 
-#ifdef CONF_SQL
-public:
-	array<CGameServerCmd*> m_lGameServerCmds;
-	LOCK m_GameServerCmdLock;
-	LOCK m_ChallengeLock;
-	char m_aChallengeWinner[16];
-	int64_t m_ChallengeRefreshTick;
-	int m_ChallengeType;
-#endif
 	int m_LastRegistrationRequestId = 0;
 
 	int m_TimeShiftUnit;
@@ -573,7 +547,6 @@ public:
 	
 	CRoundStatistics* RoundStatistics() override { return &m_RoundStatistics; }
 	void ResetStatistics() override;
-	void SendStatistics() override;
 
 	void OnRoundIsOver() override;
 	

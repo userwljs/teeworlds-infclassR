@@ -857,8 +857,6 @@ set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
   server.h
   server_logger.cpp
   server_logger.h
-  sql_string_helpers.cpp
-  sql_string_helpers.h
 )
 
 set_glob(GAME_SERVER GLOB_RECURSE src/game/server
@@ -1085,6 +1083,7 @@ foreach(PO_LANG ${PO_LANGS})
   set(PO_LANG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/other/po/${PO_LANG}/infclass.po")
   add_custom_command(
     TARGET dev-update-po-files
+    POST_BUILD
     # BYPRODUCTS ${PO_LANG_FILE}
     COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --sort-output --update --backup=off --width=200 ${PO_LANG_FILE} ${PO_TEMPlATE}
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -1094,6 +1093,7 @@ endforeach()
 add_custom_target(dev-update-json-files)
 add_custom_command(
   TARGET dev-update-json-files
+  POST_BUILD
   COMMAND ${Python3_EXECUTABLE} scripts/translation-python3.py
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 )
