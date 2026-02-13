@@ -482,7 +482,7 @@ void CServer::CClient::Reset(bool ResetScore)
 	m_Flags = 0;
 	m_RedirectDropTime = 0;
 	m_LastSnapTick = INT_MIN;
-	
+
 	if(ResetScore)
 	{
 		m_NbRound = 0;
@@ -494,12 +494,12 @@ void CServer::CClient::Reset(bool ResetScore)
 		str_copy(m_aLanguage, "en", sizeof(m_aLanguage));
 
 		mem_zero(m_Memory, sizeof(m_Memory));
-		
+
 		m_Session.m_RoundId = -1;
 		m_Session.m_Class = 0;
 		m_Session.m_MuteTick = 0;
 		m_Session.m_LastInfectionTime = 0;
-		
+
 		m_Accusation.m_Num = 0;
 	}
 }
@@ -607,7 +607,7 @@ bool CServer::IsClientNameAvailable(int ClientId, const char *pNameRequest)
 	// make sure that two clients don't have the same name
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
-		const CClient & Client = m_aClients[i];
+		const CClient &Client = m_aClients[i];
 		if(i != ClientId && Client.m_State >= CClient::STATE_READY)
 		{
 			const char *pClientName = Client.m_UserId.has_value() ? Client.m_aUsername : Client.m_aName;
@@ -760,7 +760,7 @@ void CServer::Kick(int ClientId, const char *pReason)
 	else if(m_aClients[ClientId].m_Authed > m_RconAuthLevel)
 	{
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "kick command denied");
- 		return;
+		return;
 	}
 	else if(m_aClients[ClientId].m_IsBot)
 	{
@@ -838,7 +838,7 @@ int CServer::Init()
 
 	mem_zero(m_aPrevStates, sizeof(m_aPrevStates));
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	m_aPreviousMap[0] = 0;
 	m_aCurrentMap[0] = 0;
 	/* INFECTION MODIFICATION END *****************************************/
@@ -916,7 +916,7 @@ const char *CServer::ClientName(int ClientId) const
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS || m_aClients[ClientId].m_State == CServer::CClient::STATE_EMPTY)
 		return "(invalid)";
-		
+
 	if(m_aClients[ClientId].m_State == CServer::CClient::STATE_INGAME)
 	{
 		if(m_aClients[ClientId].m_UserId.has_value())
@@ -926,7 +926,6 @@ const char *CServer::ClientName(int ClientId) const
 	}
 	else
 		return "(connecting)";
-
 }
 
 const char *CServer::ClientClan(int ClientId) const
@@ -1314,18 +1313,18 @@ int CServer::ClientRejoinCallback(int ClientId, void *pUser)
 	pThis->m_aClients[ClientId].m_Quitting = false;
 
 	pThis->m_aClients[ClientId].Reset();
-	
-	//Getback session about the client
-	IServer::CClientSession* pSession = pThis->m_NetSession.GetData(pThis->m_NetServer.ClientAddr(ClientId));
+
+	// Getback session about the client
+	IServer::CClientSession *pSession = pThis->m_NetSession.GetData(pThis->m_NetServer.ClientAddr(ClientId));
 	if(pSession)
 	{
 		dbg_msg("infclass", "session found for the client %d. Round id = %d, class id = %d", ClientId, pSession->m_RoundId, pSession->m_Class);
 		pThis->m_aClients[ClientId].m_Session = *pSession;
 		pThis->m_NetSession.RemoveSession(pThis->m_NetServer.ClientAddr(ClientId));
 	}
-	
-	//Getback accusation about the client
-	IServer::CClientAccusation* pAccusation = pThis->m_NetAccusation.GetData(pThis->m_NetServer.ClientAddr(ClientId));
+
+	// Getback accusation about the client
+	IServer::CClientAccusation *pAccusation = pThis->m_NetAccusation.GetData(pThis->m_NetServer.ClientAddr(ClientId));
 	if(pAccusation)
 	{
 		dbg_msg("infclass", "%d accusation(s) found for the client %d", pAccusation->m_Num, ClientId);
@@ -1352,7 +1351,7 @@ int CServer::NewBot(int ClientId)
 
 int CServer::DelBot(int ClientId)
 {
-	if( !m_aClients[ClientId].m_IsBot )
+	if(!m_aClients[ClientId].m_IsBot)
 		return 1;
 	m_aClients[ClientId].m_State = CClient::STATE_EMPTY;
 	m_aClients[ClientId].m_aName[0] = 0;
@@ -1410,17 +1409,17 @@ int CServer::NewClientCallback(int ClientId, void *pUser, bool Sixup)
 	Requests.Reset();
 	net_addr_str(pThis->m_NetServer.ClientAddr(ClientId), Requests.m_aIpStr, sizeof(Requests.m_aIpStr), false);
 
-	//Getback session about the client
-	IServer::CClientSession* pSession = pThis->m_NetSession.GetData(pThis->m_NetServer.ClientAddr(ClientId));
+	// Getback session about the client
+	IServer::CClientSession *pSession = pThis->m_NetSession.GetData(pThis->m_NetServer.ClientAddr(ClientId));
 	if(pSession)
 	{
 		dbg_msg("infclass", "session found for the client %d. Round id = %d, class id = %d", ClientId, pSession->m_RoundId, pSession->m_Class);
 		pThis->m_aClients[ClientId].m_Session = *pSession;
 		pThis->m_NetSession.RemoveSession(pThis->m_NetServer.ClientAddr(ClientId));
 	}
-	
-	//Getback accusation about the client
-	IServer::CClientAccusation* pAccusation = pThis->m_NetAccusation.GetData(pThis->m_NetServer.ClientAddr(ClientId));
+
+	// Getback accusation about the client
+	IServer::CClientAccusation *pAccusation = pThis->m_NetAccusation.GetData(pThis->m_NetServer.ClientAddr(ClientId));
 	if(pAccusation)
 	{
 		dbg_msg("infclass", "%d accusation(s) found for the client %d", pAccusation->m_Num, ClientId);
@@ -1434,7 +1433,7 @@ int CServer::NewClientCallback(int ClientId, void *pUser, bool Sixup)
 int CServer::DelClientCallback(int ClientId, EClientDropType Type, const char *pReason, void *pUser)
 {
 	CServer *pThis = (CServer *)pUser;
-	
+
 	if(pThis->m_aClients[ClientId].m_Quitting)
 		return 0;
 
@@ -1480,14 +1479,14 @@ int CServer::DelClientCallback(int ClientId, EClientDropType Type, const char *p
 	CClientAccountRequests &Requests = pThis->m_AccountsRequests[ClientId];
 	Requests.Reset();
 
-	//Keep information about client for 10 minutes
-	pThis->m_NetSession.AddSession(pThis->m_NetServer.ClientAddr(ClientId), 10*60, &pThis->m_aClients[ClientId].m_Session);
+	// Keep information about client for 10 minutes
+	pThis->m_NetSession.AddSession(pThis->m_NetServer.ClientAddr(ClientId), 10 * 60, &pThis->m_aClients[ClientId].m_Session);
 	dbg_msg("infclass", "session created for the client %d", ClientId);
-	
-	//Keep accusation for 30 minutes
-	pThis->m_NetAccusation.AddSession(pThis->m_NetServer.ClientAddr(ClientId), 30*60, &pThis->m_aClients[ClientId].m_Accusation);
+
+	// Keep accusation for 30 minutes
+	pThis->m_NetAccusation.AddSession(pThis->m_NetServer.ClientAddr(ClientId), 30 * 60, &pThis->m_aClients[ClientId].m_Accusation);
 	dbg_msg("infclass", "accusation created for the client %d", ClientId);
-	
+
 	return 0;
 }
 
@@ -1690,9 +1689,9 @@ bool CServer::GenerateClientMap(const char *pMapFilePath, const char *pMapName)
 	if(!m_pMap->Load(pMapFilePath))
 		return 0;
 
-	//The map format of InfectionClass is different from the vanilla format.
-	//We need to convert the map to something that the client can use
-	//First, try to find if the client map is already generated
+	// The map format of InfectionClass is different from the vanilla format.
+	// We need to convert the map to something that the client can use
+	// First, try to find if the client map is already generated
 
 	CDataFileReader dfServerMap;
 	dfServerMap.Open(Storage(), pMapFilePath, IStorage::TYPE_ALL);
@@ -1717,14 +1716,14 @@ bool CServer::GenerateClientMap(const char *pMapFilePath, const char *pMapName)
 	m_TimeShiftUnit = MapConverter.GetTimeShiftUnit();
 
 	CDataFileReader dfClientMap;
-	//The map is already converted
+	// The map is already converted
 	if(!Config()->m_InfConverterForceRegeneration && dfClientMap.Open(Storage(), aClientMapName, IStorage::TYPE_ALL))
 	{
 		m_aCurrentMapCrc[MAP_TYPE_SIX] = dfClientMap.Crc();
 		m_aCurrentMapSha256[MAP_TYPE_SIX] = dfClientMap.Sha256();
 		dfClientMap.Close();
 	}
-	//The map must be converted
+	// The map must be converted
 	else
 	{
 		char aFullPath[512];
@@ -1916,7 +1915,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 		}
 		else if(Msg == NETMSG_REQUEST_MAP_DATA)
 		{
-			if((pPacket->m_Flags&NET_CHUNKFLAG_VITAL) == 0 || m_aClients[ClientId].m_State < CClient::STATE_CONNECTING)
+			if((pPacket->m_Flags & NET_CHUNKFLAG_VITAL) == 0 || m_aClients[ClientId].m_State < CClient::STATE_CONNECTING)
 				return;
 
 			if(m_aClients[ClientId].m_Sixup)
@@ -1960,7 +1959,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				str_format(aBuf, sizeof(aBuf), "player is ready. ClientId=%d addr=<{%s}> secure=%s", ClientId, aAddrStr, m_NetServer.HasSecurityToken(ClientId) ? "yes" : "no");
 				Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "server", aBuf);
 				m_aClients[ClientId].m_State = CClient::STATE_READY;
-				m_aClients[ClientId].m_WaitingTime = TickSpeed()*g_Config.m_InfConWaitingTime;
+				m_aClients[ClientId].m_WaitingTime = TickSpeed() * g_Config.m_InfConWaitingTime;
 			}
 		}
 		else if(Msg == NETMSG_ENTERGAME)
@@ -1974,7 +1973,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				str_format(aBuf, sizeof(aBuf), "player has entered the game. ClientId=%d addr=%s", ClientId, aAddrStr);
 				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 				m_aClients[ClientId].m_State = CClient::STATE_INGAME;
-				
+
 				if(m_aClients[ClientId].m_WaitingTime <= 0)
 				{
 					if(!IsSixup(ClientId))
@@ -2066,14 +2065,14 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				m_RconAuthLevel = m_aClients[ClientId].m_Authed;
 				switch(m_aClients[ClientId].m_Authed)
 				{
-					case AUTHED_ADMIN:
-						Console()->SetAccessLevel(EAccessLevel::ADMIN);
-						break;
-					case AUTHED_MOD:
-						Console()->SetAccessLevel(EAccessLevel::MOD);
-						break;
-					default:
-						Console()->SetAccessLevel(EAccessLevel::USER);
+				case AUTHED_ADMIN:
+					Console()->SetAccessLevel(EAccessLevel::ADMIN);
+					break;
+				case AUTHED_MOD:
+					Console()->SetAccessLevel(EAccessLevel::MOD);
+					break;
+				default:
+					Console()->SetAccessLevel(EAccessLevel::USER);
 				}
 				{
 					CRconClientLogger Logger(this, ClientId);
@@ -2303,7 +2302,7 @@ void CServer::CacheServerInfo(CCache *pCache, int Type, bool SendClients)
 		SendClients = false;
 		pMapName = "";
 	}
-	else if (Config()->m_SvInfoMaxClients >= 0)
+	else if(Config()->m_SvInfoMaxClients >= 0)
 	{
 		ClientCount = minimum(ClientCount, Config()->m_SvInfoMaxClients);
 		PlayerCount = minimum(ClientCount, PlayerCount);
@@ -2653,7 +2652,7 @@ void CServer::UpdateRegisterServerInfo()
 		ClientCount = 0;
 		pMapName = "";
 	}
-	else if (Config()->m_SvInfoMaxClients >= 0)
+	else if(Config()->m_SvInfoMaxClients >= 0)
 	{
 		ClientCount = minimum(ClientCount, Config()->m_SvInfoMaxClients);
 	}
@@ -2873,7 +2872,7 @@ int CServer::LoadMap(const char *pMapName)
 	m_MapReload = false;
 
 	char aBuf[IO_MAX_PATH_LENGTH];
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	const char *pLoadedMapFileName = nullptr;
 	const char *pEventMapName = EventsDirector::GetEventMapName(pMapName);
 	for(const char *pMapFileName : {pEventMapName, pMapName})
@@ -2956,7 +2955,7 @@ int CServer::LoadMap(const char *pMapName)
 
 	str_format(aBuf, sizeof(aBuf), "map_loaded name='%s' file='maps/%s.map'", pMapName, pLoadedMapFileName);
 	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 	// stop recording when we change map
 	for(int i = 0; i < MAX_CLIENTS + 1; i++)
@@ -2978,12 +2977,12 @@ int CServer::LoadMap(const char *pMapName)
 	// reinit snapshot ids
 	m_IdPool.TimeoutIds();
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	str_copy(m_aPreviousMap, m_aCurrentMap);
 	str_copy(m_aCurrentMap, pMapName);
 	ResetMapVotes();
 
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 	using namespace std::string_literals;
 
@@ -3043,39 +3042,39 @@ int CServer::Run()
 
 	InitPersistentData();
 
-	//Choose a random map from the rotation
+	// Choose a random map from the rotation
 	if(!str_length(g_Config.m_SvMap) && str_length(g_Config.m_SvMaprotation))
 	{
 		int nbMaps = 0;
 		{
 			const char *pNextMap = g_Config.m_SvMaprotation;
-			
-			//Skip initial separator
+
+			// Skip initial separator
 			while(*pNextMap && IsSeparator(*pNextMap))
 				pNextMap++;
-				
+
 			while(*pNextMap)
 			{
 				while(*pNextMap && !IsSeparator(*pNextMap))
 					pNextMap++;
 				while(*pNextMap && IsSeparator(*pNextMap))
 					pNextMap++;
-			
+
 				nbMaps++;
 			}
 		}
-		
-		int MapPos = random_int(0, nbMaps-1);
+
+		int MapPos = random_int(0, nbMaps - 1);
 		char aBuf[512] = {0};
-		
+
 		{
 			int MapPosIter = 0;
 			const char *pNextMap = g_Config.m_SvMaprotation;
-			
-			//Skip initial separator
+
+			// Skip initial separator
 			while(*pNextMap && IsSeparator(*pNextMap))
 				pNextMap++;
-				
+
 			while(*pNextMap)
 			{
 				if(MapPosIter == MapPos)
@@ -3083,20 +3082,20 @@ int CServer::Run()
 					int MapNameLength = 0;
 					while(pNextMap[MapNameLength] && !IsSeparator(pNextMap[MapNameLength]))
 						MapNameLength++;
-					mem_copy(aBuf, pNextMap, MapNameLength);	
+					mem_copy(aBuf, pNextMap, MapNameLength);
 					aBuf[MapNameLength] = 0;
 					break;
 				}
-				
+
 				while(*pNextMap && !IsSeparator(*pNextMap))
 					pNextMap++;
 				while(*pNextMap && IsSeparator(*pNextMap))
 					pNextMap++;
-			
+
 				MapPosIter++;
 			}
 		}
-		
+
 		str_copy(g_Config.m_SvMap, aBuf, sizeof(g_Config.m_SvMap));
 	}
 
@@ -3233,9 +3232,9 @@ int CServer::Run()
 
 						SendMap(ClientId);
 						bool HasPersistentData = m_aClients[ClientId].m_HasPersistentData;
-/* INFECTION MODIFICATION START ***************************************/
+						/* INFECTION MODIFICATION START ***************************************/
 						m_aClients[ClientId].Reset(false);
-/* INFECTION MODIFICATION END *****************************************/
+						/* INFECTION MODIFICATION END *****************************************/
 						m_aClients[ClientId].m_HasPersistentData = HasPersistentData;
 						m_aClients[ClientId].m_State = CClient::STATE_CONNECTING;
 						SetClientMemory(ClientId, CLIENTMEMORY_ROUNDSTART_OR_MAPCHANGE, true);
@@ -3282,14 +3281,14 @@ int CServer::Run()
 				m_CurrentGameTick++;
 				NewTicks++;
 
-				//Check for name collision. We add this because the login is in a different thread and can't check it himself.
-				for(int i=MAX_CLIENTS-1; i>=0; i--)
+				// Check for name collision. We add this because the login is in a different thread and can't check it himself.
+				for(int i = MAX_CLIENTS - 1; i >= 0; i--)
 				{
 					if(m_aClients[i].m_State >= CClient::STATE_READY && m_aClients[i].m_Session.m_MuteTick > 0)
 						m_aClients[i].m_Session.m_MuteTick--;
 				}
-				
-				for(int ClientId=0; ClientId<MAX_CLIENTS; ClientId++)
+
+				for(int ClientId = 0; ClientId < MAX_CLIENTS; ClientId++)
 				{
 					if(m_aClients[ClientId].m_WaitingTime > 0)
 					{
@@ -3485,10 +3484,10 @@ int CServer::Run()
 
 void CServer::ConUnmute(IConsole::IResult *pResult, void *pUser)
 {
-	CServer* pThis = (CServer *)pUser;
-	
+	CServer *pThis = (CServer *)pUser;
+
 	const char *pStr = pResult->GetString(0);
-	
+
 	if(str_isallnum(pStr))
 	{
 		int ClientId = str_toint(pStr);
@@ -3522,8 +3521,8 @@ void CServer::ConMute(IConsole::IResult *pResult, void *pUser)
 
 void CServer::ConWhisper(IConsole::IResult *pResult, void *pUser)
 {
-	CServer* pThis = (CServer *)pUser;
-	
+	CServer *pThis = (CServer *)pUser;
+
 	const char *pStrClientId = pResult->GetString(0);
 	const char *pText = pResult->GetString(1);
 
@@ -3545,8 +3544,7 @@ void CServer::ConWhisper(IConsole::IResult *pResult, void *pUser)
 			char aBuf[1024];
 			str_format(aBuf, sizeof(aBuf), "Whisper '%s' sent to %s",
 				pText,
-				pThis->ClientName(ClientId)
-			);
+				pThis->ClientName(ClientId));
 			pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", aBuf);
 		}
 	}
@@ -3575,22 +3573,22 @@ void CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 {
 	char aBuf[1024];
 	char aAddrStr[NETADDR_MAXSTRSIZE];
-	CServer* pThis = static_cast<CServer *>(pUser);
+	CServer *pThis = static_cast<CServer *>(pUser);
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if((pThis->m_aClients[i].m_State != CClient::STATE_EMPTY) && !pThis->m_aClients[i].m_IsBot)
 		{
 			net_addr_str(pThis->m_NetServer.ClientAddr(i), aAddrStr, sizeof(aAddrStr), true);
 			if(pThis->m_aClients[i].m_State == CClient::STATE_INGAME)
-			{				
-				//Add some padding to make the command more readable
+			{
+				// Add some padding to make the command more readable
 				char aBufName[18];
 				str_copy(aBufName, pThis->ClientName(i), sizeof(aBufName));
-				for(int c=str_length(aBufName); c<((int)sizeof(aBufName))-1; c++)
+				for(int c = str_length(aBufName); c < ((int)sizeof(aBufName)) - 1; c++)
 					aBufName[c] = ' ';
-				aBufName[sizeof(aBufName)-1] = 0;
+				aBufName[sizeof(aBufName) - 1] = 0;
 
 				int AuthLevel = pThis->m_aClients[i].m_Authed == AUTHED_ADMIN ? 2 :
 								pThis->m_aClients[i].m_Authed == AUTHED_MOD   ? 1 :
@@ -3604,15 +3602,14 @@ void CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 					AuthLevel,
 					aAddrStr,
 					pThis->m_aClients[i].m_DDNetVersion,
-					pThis->m_aClients[i].m_InfClassVersion
-				);
+					pThis->m_aClients[i].m_InfClassVersion);
 			}
 			else
 				str_format(aBuf, sizeof(aBuf), "id=%d addr=%s connecting", i, aAddrStr);
 			pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", aBuf);
 		}
 	}
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 }
 
 void CServer::ConNameBan(IConsole::IResult *pResult, void *pUser)
@@ -3674,7 +3671,7 @@ void CServer::ConNameBans(IConsole::IResult *pResult, void *pUser)
 
 void CServer::ConShutdown(IConsole::IResult *pResult, void *pUser)
 {
-	CServer* pThis = static_cast<CServer *>(pUser);
+	CServer *pThis = static_cast<CServer *>(pUser);
 	pThis->m_RunServer = STOPPING;
 	const char *pReason = pResult->GetString(0);
 	if(pReason[0])
@@ -3856,7 +3853,7 @@ void CServer::ConAccounts(IConsole::IResult *pResult)
 	};
 
 	const char *pOptionStr = pResult->GetString(0);
-	if (!pOptionStr || !pOptionStr[0] || (str_comp(pOptionStr, "status") == 0))
+	if(!pOptionStr || !pOptionStr[0] || (str_comp(pOptionStr, "status") == 0))
 	{
 		PrintStatus();
 		PrintHelp();
@@ -4095,8 +4092,8 @@ void CServer::ConDumpSqlServers(IConsole::IResult *pResult, void *pUserData)
 void CServer::LogoutClient(int ClientId, const char *pReason)
 {
 	CMsgPacker Msg(NETMSG_RCON_AUTH_STATUS, true);
-	Msg.AddInt(0); //authed
-	Msg.AddInt(0); //cmdlist
+	Msg.AddInt(0); // authed
+	Msg.AddInt(0); // cmdlist
 	SendMsg(&Msg, MSGFLAG_VITAL, ClientId);
 
 	m_aClients[ClientId].m_AuthTries = 0;
@@ -4267,7 +4264,6 @@ void CServer::RegisterCommands()
 	m_pGameServer->OnConsoleInit();
 }
 
-
 int CServer::SnapNewId()
 {
 	return m_IdPool.NewId();
@@ -4365,12 +4361,12 @@ const char *CServer::GetAnnouncementLine(char const *pFileName)
 }
 
 /* INFECTION MODIFICATION START ***************************************/
-const char* CServer::GetClientLanguage(int ClientId)
+const char *CServer::GetClientLanguage(int ClientId)
 {
 	return m_aClients[ClientId].m_aLanguage;
 }
 
-void CServer::SetClientLanguage(int ClientId, const char* pLanguage)
+void CServer::SetClientLanguage(int ClientId, const char *pLanguage)
 {
 	char aAddrStr[NETADDR_MAXSTRSIZE];
 	net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), true);
@@ -4391,7 +4387,7 @@ bool CServer::IsClientLogged(int ClientId)
 
 void CServer::Register(int ClientId, const char *pUsername, const char *pPassword)
 {
-	if (Config()->m_SvAccountsRegistration == 0)
+	if(Config()->m_SvAccountsRegistration == 0)
 	{
 		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
 			_("The registration is currently disabled on the server"), nullptr);
@@ -4587,14 +4583,14 @@ void CServer::OnAuthFailed(int ClientId)
 	}
 }
 
-void CServer::Ban(int ClientId, int Seconds, const char* pReason)
+void CServer::Ban(int ClientId, int Seconds, const char *pReason)
 {
 	m_ServerBan.BanAddr(m_NetServer.ClientAddr(ClientId), Seconds, pReason);
 }
 
 void CServer::OnRoundIsOver()
 {
-	for(int i=0; i<MAX_CLIENTS; i++)
+	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if(m_aClients[i].m_State == CClient::STATE_INGAME)
 		{
@@ -4607,12 +4603,12 @@ void CServer::ResetStatistics()
 {
 	RoundStatistics()->Reset();
 }
-	
+
 void CServer::SetClientMemory(int ClientId, int Memory, bool Value)
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS || Memory < 0 || Memory >= NUM_CLIENTMEMORIES)
 		return;
-	
+
 	m_aClients[ClientId].m_Memory[Memory] = Value;
 }
 
@@ -4620,7 +4616,7 @@ bool CServer::GetClientMemory(int ClientId, int Memory)
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS || Memory < 0 || Memory >= NUM_CLIENTMEMORIES)
 		return false;
-	
+
 	return m_aClients[ClientId].m_Memory[Memory];
 }
 
@@ -4628,15 +4624,15 @@ void CServer::ResetClientMemoryAboutGame(int ClientId)
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS)
 		return;
-	
+
 	m_aClients[ClientId].m_Memory[CLIENTMEMORY_TOP10] = false;
 }
 
-IServer::CClientSession* CServer::GetClientSession(int ClientId)
+IServer::CClientSession *CServer::GetClientSession(int ClientId)
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS)
 		return nullptr;
-	
+
 	return &m_aClients[ClientId].m_Session;
 }
 
@@ -4644,7 +4640,7 @@ IServer::CClientSession* CServer::GetClientSession(int ClientId)
 uint32_t CServer::GetActivePlayerCount()
 {
 	uint32_t PlayerCount = 0;
-	for(int i=0; i<MAX_CLIENTS; i++)
+	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if(m_aClients[i].m_State == CClient::STATE_INGAME && !m_aClients[i].m_IsBot)
 		{
@@ -4660,15 +4656,15 @@ const char *CServer::GetPreviousMapName() const
 	return m_aPreviousMap;
 }
 
-void CServer::AddAccusation(int From, int To, const char* pReason)
+void CServer::AddAccusation(int From, int To, const char *pReason)
 {
 	if(From < 0 || From >= MAX_CLIENTS || To < 0 || To >= MAX_CLIENTS)
 		return;
-	
-	//Check if "From" already accusate "To"
+
+	// Check if "From" already accusate "To"
 	NETADDR FromAddr = *m_NetServer.ClientAddr(From);
 	FromAddr.port = 0;
-	for(int i=0; i<m_aClients[To].m_Accusation.m_Num; i++)
+	for(int i = 0; i < m_aClients[To].m_Accusation.m_Num; i++)
 	{
 		if(net_addr_comp(&m_aClients[To].m_Accusation.m_Addresses[i], &FromAddr) == 0)
 		{
@@ -4677,23 +4673,22 @@ void CServer::AddAccusation(int From, int To, const char* pReason)
 			return;
 		}
 	}
-	
-	//Check the number of accusation against "To"
+
+	// Check the number of accusation against "To"
 	if(m_aClients[To].m_Accusation.m_Num < MAX_ACCUSATIONS)
 	{
-		//Add the accusation
+		// Add the accusation
 		m_aClients[To].m_Accusation.m_Addresses[m_aClients[To].m_Accusation.m_Num] = FromAddr;
 		m_aClients[To].m_Accusation.m_Num++;
 	}
-		
+
 	if(m_pGameServer)
 	{
 		m_pGameServer->SendChatTarget_Localization(-1, CHATCATEGORY_ACCUSATION, _("{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})"),
 			"PlayerName", ClientName(From),
 			"VictimName", ClientName(To),
 			"Reason", pReason,
-			nullptr
-		);
+			nullptr);
 	}
 }
 
@@ -4701,7 +4696,7 @@ bool CServer::ClientShouldBeBanned(int ClientId)
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS)
 		return false;
-	
+
 	return (m_aClients[ClientId].m_Accusation.m_Num >= g_Config.m_InfAccusationThreshold);
 }
 
@@ -4709,49 +4704,48 @@ void CServer::RemoveAccusations(int ClientId)
 {
 	if(ClientId < 0 || ClientId >= MAX_CLIENTS)
 		return;
-	
+
 	m_aClients[ClientId].m_Accusation.m_Num = 0;
 }
 
-void CServer::AddMapVote(int From, const char* pCommand, const char* pReason, const char* pDesc)
+void CServer::AddMapVote(int From, const char *pCommand, const char *pReason, const char *pDesc)
 {
 	NETADDR FromAddr = *m_NetServer.ClientAddr(From);
 	int Index = -1;
-	for (int i=0; i<m_MapVotesCounter; i++)
+	for(int i = 0; i < m_MapVotesCounter; i++)
 	{
 		if(str_comp_nocase(m_MapVotes[i].m_pCommand, pCommand) == 0)
 		{
 			Index = i;
 			break;
-
 		}
 	}
-	if (Index < 0)
-	{		
+	if(Index < 0)
+	{
 		// create a new variable of type CMapVote for a specific map
 		// in order to count how many players want to start this map vote
 		Index = m_MapVotesCounter;
 		m_MapVotes[Index].m_pCommand = new char[VOTE_CMD_LENGTH];
-		str_copy(const_cast<char*>(m_MapVotes[Index].m_pCommand), pCommand, VOTE_CMD_LENGTH);
+		str_copy(const_cast<char *>(m_MapVotes[Index].m_pCommand), pCommand, VOTE_CMD_LENGTH);
 		m_MapVotes[Index].m_pAddresses = new NETADDR[MAX_MAPVOTEADDRESSES];
 		m_MapVotes[Index].m_pAddresses[0] = FromAddr;
 		m_MapVotes[Index].m_Num = 1;
 		m_MapVotes[Index].m_pReason = new char[VOTE_REASON_LENGTH];
-		str_copy(const_cast<char*>(m_MapVotes[Index].m_pReason), pReason, VOTE_REASON_LENGTH);
+		str_copy(const_cast<char *>(m_MapVotes[Index].m_pReason), pReason, VOTE_REASON_LENGTH);
 		m_MapVotes[Index].m_pDesc = new char[VOTE_DESC_LENGTH];
-		str_copy(const_cast<char*>(m_MapVotes[Index].m_pDesc), pDesc, VOTE_DESC_LENGTH);
+		str_copy(const_cast<char *>(m_MapVotes[Index].m_pDesc), pDesc, VOTE_DESC_LENGTH);
 		m_MapVotesCounter++;
 	}
-	else 
+	else
 	{
 		// CMapVote variable for this map already exists -> add player to it
 
-		if (str_comp_nocase(m_MapVotes[Index].m_pReason, "No reason given") == 0)
+		if(str_comp_nocase(m_MapVotes[Index].m_pReason, "No reason given") == 0)
 			// if there is a reason, use it instead of "No reason given"
-			str_copy(const_cast<char*>(m_MapVotes[Index].m_pReason), pReason, VOTE_REASON_LENGTH);
+			str_copy(const_cast<char *>(m_MapVotes[Index].m_pReason), pReason, VOTE_REASON_LENGTH);
 
 		// check if the player has already voted
-		for(int i=0; i<m_MapVotes[Index].m_Num; i++)
+		for(int i = 0; i < m_MapVotes[Index].m_Num; i++)
 		{
 			if(net_addr_comp(&m_MapVotes[Index].m_pAddresses[i], &FromAddr) == 0)
 			{
@@ -4771,21 +4765,20 @@ void CServer::AddMapVote(int From, const char* pCommand, const char* pReason, co
 		m_pGameServer->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("{str:PlayerName} wants to start the vote '{str:VoteName}'"),
 			"PlayerName", ClientName(From),
 			"VoteName", pDesc,
-			nullptr
-		);
+			nullptr);
 	}
 }
 
 void CServer::RemoveMapVotesForId(int ClientId)
 {
 	NETADDR Addr = *m_NetServer.ClientAddr(ClientId);
-	for (int i=0; i<m_MapVotesCounter; i++)
+	for(int i = 0; i < m_MapVotesCounter; i++)
 	{
-		for(int k=0; k<m_MapVotes[i].m_Num; k++)
+		for(int k = 0; k < m_MapVotes[i].m_Num; k++)
 		{
 			if(net_addr_comp(&m_MapVotes[i].m_pAddresses[k], &Addr) == 0)
 			{
-				if (k+1 == m_MapVotes[i].m_Num)
+				if(k + 1 == m_MapVotes[i].m_Num)
 				{
 					// leaving player has the last position inside the array - just decrease the size and continue
 					m_MapVotes[i].m_Num--;
@@ -4793,44 +4786,44 @@ void CServer::RemoveMapVotesForId(int ClientId)
 				}
 				// save the last address to the position which the player used that left (overwrite it)
 				// in order to not lose the last address when we decrease the size of the array in the next line
-				m_MapVotes[i].m_pAddresses[k] = m_MapVotes[i].m_pAddresses[m_MapVotes[i].m_Num-1];
+				m_MapVotes[i].m_pAddresses[k] = m_MapVotes[i].m_pAddresses[m_MapVotes[i].m_Num - 1];
 				m_MapVotes[i].m_Num--;
 			}
 		}
 	}
 }
 
-IServer::CMapVote* CServer::GetMapVote()
+IServer::CMapVote *CServer::GetMapVote()
 {
-	if (m_MapVotesCounter <= 0)
+	if(m_MapVotesCounter <= 0)
 		return nullptr;
 
 	float PlayerCount = GetActivePlayerCount();
 
 	int HighestNum = -1;
 	int HighestNumIndex = -1;
-	for (int i = 0; i < m_MapVotesCounter; i++)
+	for(int i = 0; i < m_MapVotesCounter; i++)
 	{
-		if (m_MapVotes[i].m_Num <= 0)
+		if(m_MapVotes[i].m_Num <= 0)
 			continue;
-		if (m_MapVotes[i].m_Num >= g_Config.m_InfMinPlayerNumberForMapVote)
+		if(m_MapVotes[i].m_Num >= g_Config.m_InfMinPlayerNumberForMapVote)
 		{
-			if (m_MapVotes[i].m_Num > HighestNum)
+			if(m_MapVotes[i].m_Num > HighestNum)
 			{
 				HighestNum = m_MapVotes[i].m_Num;
 				HighestNumIndex = i;
 			}
 		}
-		if (m_MapVotes[i].m_Num/PlayerCount >= g_Config.m_InfMinPlayerPercentForMapVote/(float)100)
+		if(m_MapVotes[i].m_Num / PlayerCount >= g_Config.m_InfMinPlayerPercentForMapVote / (float)100)
 		{
-			if (m_MapVotes[i].m_Num > HighestNum)
+			if(m_MapVotes[i].m_Num > HighestNum)
 			{
 				HighestNum = m_MapVotes[i].m_Num;
 				HighestNumIndex = i;
 			}
 		}
 	}
-	if (HighestNumIndex >= 0)
+	if(HighestNumIndex >= 0)
 		return &m_MapVotes[HighestNumIndex];
 
 	return nullptr;
@@ -4838,7 +4831,7 @@ IServer::CMapVote* CServer::GetMapVote()
 
 void CServer::ResetMapVotes()
 {
-	for (int i = 0; i < m_MapVotesCounter; i++)
+	for(int i = 0; i < m_MapVotesCounter; i++)
 	{
 		delete[] m_MapVotes[i].m_pCommand;
 		delete[] m_MapVotes[i].m_pAddresses;
@@ -4895,7 +4888,7 @@ void CServer::TakeUserName(int ClientId)
 
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
-		if (i == ClientId)
+		if(i == ClientId)
 			continue;
 
 		if(str_comp(Client.m_aUsername, m_aClients[i].m_aName) == 0)

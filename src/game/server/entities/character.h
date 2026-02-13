@@ -163,15 +163,15 @@ protected:
 	int m_Health;
 	int m_Armor;
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	int m_MaxArmor;
-	//Dart
+	// Dart
 public:
 	int m_DartLifeSpan;
 	vec2 m_DartDir;
 	int m_DartLeft;
 	int m_DartOldVelAmount;
-	
+
 	int m_WaterJumpLifeSpan;
 	/* INFECTION MODIFICATION END *****************************************/
 
@@ -265,7 +265,7 @@ public:
 
 	const CCharacterCore *Core() const { return &m_Core; }
 
-	virtual void PreCoreTick() { }
+	virtual void PreCoreTick() {}
 	virtual void PostCoreTick();
 };
 

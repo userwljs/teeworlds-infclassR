@@ -12,9 +12,7 @@
 
 static constexpr int MercLaserDamage = 0;
 
-CMercenaryLaser::CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, float UpgradePoints)
-	: CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, MercLaserDamage, EInfclassWeapon::MERCENARY_UPGRADE_LASER)
-	, m_UpgradePoints(UpgradePoints)
+CMercenaryLaser::CMercenaryLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, float UpgradePoints) : CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, MercLaserDamage, EInfclassWeapon::MERCENARY_UPGRADE_LASER), m_UpgradePoints(UpgradePoints)
 {
 	CIcLaser::DoBounce();
 }
@@ -31,7 +29,7 @@ bool CMercenaryLaser::HitTarget(vec2 From, vec2 To)
 		}
 	}
 
-	if (pCurrentBomb == nullptr)
+	if(pCurrentBomb == nullptr)
 		return false;
 
 	vec2 IntersectPos;

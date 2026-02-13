@@ -43,12 +43,12 @@ protected:
 
 	void DoActivityCheck();
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	std::vector<vec2> m_avSpawnPoints[2];
 	int m_RoundId;
-	
+
 public:
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	ILua *Lua() const;
 
 	CMapInfoEx *AddMapInfo(const char *pMapName);
@@ -157,7 +157,7 @@ public:
 			bool?
 	*/
 	virtual bool OnEntity(int Index, int x, int y, int Layer, int Flags, bool Initial, int Number = 0);
-	virtual bool OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv);
+	virtual bool OnEntity(const char *pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv);
 
 	virtual void OnPlayerConnect(CPlayer *pPlayer);
 	virtual void OnPlayerDisconnect(CPlayer *pPlayer, EClientDropType Type, const char *pReason);
@@ -202,7 +202,7 @@ public:
 	virtual void Tick();
 
 	virtual void Snap(int SnappingClient);
-	
+
 	virtual bool CanVote();
 	virtual void OnPlayerVoteCommand(int ClientId, int Vote) {};
 
@@ -211,7 +211,7 @@ public:
 	virtual CPlayer *CreatePlayer(int ClientId, bool IsSpectator, void *pData);
 
 	//
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	int GetRoundId() { return m_RoundId; }
 	/* INFECTION MODIFICATION END *****************************************/
 

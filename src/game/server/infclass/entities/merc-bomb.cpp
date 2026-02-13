@@ -1,7 +1,7 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
-#include <game/server/gamecontext.h>
 #include <engine/shared/config.h>
+#include <game/server/gamecontext.h>
 
 #include "merc-bomb.h"
 
@@ -14,8 +14,7 @@
 int CMercenaryBomb::EntityId{};
 static const float s_MercBombRadius = 80.0f;
 
-CMercenaryBomb::CMercenaryBomb(CGameContext *pGameContext, vec2 Pos, int Owner)
-	: CPlacedObject(pGameContext, EntityId, Pos, Owner, s_MercBombRadius)
+CMercenaryBomb::CMercenaryBomb(CGameContext *pGameContext, vec2 Pos, int Owner) : CPlacedObject(pGameContext, EntityId, Pos, Owner, s_MercBombRadius)
 {
 	m_InfClassObjectType = INFCLASS_OBJECT_TYPE_MERCENARY_BOMB;
 	GameWorld()->InsertEntity(this);
@@ -40,13 +39,13 @@ CMercenaryBomb::~CMercenaryBomb()
 
 void CMercenaryBomb::SetLoad(float Load)
 {
-	if (Load > m_Load)
+	if(Load > m_Load)
 		GameServer()->CreateSound(GetPos(), SOUND_PICKUP_ARMOR);
 
 	m_Load = Load;
 
 	float Factor = static_cast<float>(m_Load) / Config()->m_InfMercBombs;
-	if (Factor > 1)
+	if(Factor > 1)
 	{
 		m_ProximityRadius = s_MercBombRadius * Factor;
 	}
@@ -64,7 +63,7 @@ void CMercenaryBomb::Tick()
 
 	if(m_Load >= Config()->m_InfMercBombs && m_LoadingTick > 0)
 		m_LoadingTick--;
-	
+
 	// Find other players
 	CIcCharacter *pTriggerCharacter = nullptr;
 	float ClosestLength = CCharacterCore::PhysicalSize() + GetProximityRadius();
@@ -123,14 +122,14 @@ void CMercenaryBomb::Snap(int SnappingClient)
 		pInfClassObject->m_Data1 = f2fx(GetLaserHitRadius());
 	}
 
-	float AngleStart = (2.0f * pi * Server()->Tick()/static_cast<float>(Server()->TickSpeed()))/10.0f;
+	float AngleStart = (2.0f * pi * Server()->Tick() / static_cast<float>(Server()->TickSpeed())) / 10.0f;
 	float AngleStep = 2.0f * pi / static_cast<float>(CMercenaryBomb::NUM_SIDE);
 	float R = 50.0f * static_cast<float>(m_Load) / Config()->m_InfMercBombs;
 
 	CSnapContext Context(SnappingClientVersion);
 	for(int i = 0; i < CMercenaryBomb::NUM_SIDE; i++)
 	{
-		vec2 PosStart = m_Pos + vec2(R * cos(AngleStart + AngleStep*i), R * sin(AngleStart + AngleStep*i));
+		vec2 PosStart = m_Pos + vec2(R * cos(AngleStart + AngleStep * i), R * sin(AngleStart + AngleStep * i));
 		GameServer()->SnapPickup(Context, m_Ids[i], PosStart, POWERUP_HEALTH, 0);
 	}
 
@@ -141,7 +140,7 @@ void CMercenaryBomb::Snap(int SnappingClient)
 		for(int i = 0; i < CMercenaryBomb::NUM_SIDE; i++)
 		{
 			vec2 PosStart = m_Pos + vec2(R * cos(AngleStart + AngleStep * i), R * sin(AngleStart + AngleStep * i));
-			GameController()->SendHammerDot(PosStart, m_Ids[CMercenaryBomb::NUM_SIDE+i]);
+			GameController()->SendHammerDot(PosStart, m_Ids[CMercenaryBomb::NUM_SIDE + i]);
 		}
 	}
 }

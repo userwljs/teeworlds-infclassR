@@ -1,8 +1,8 @@
 // Strongly modified version of ddnet Plasma. Source: Shereef Marzouk
 #include "plasma.h"
 
-#include <engine/server.h>
 #include <engine/config.h>
+#include <engine/server.h>
 #include <engine/shared/config.h>
 #include <game/generated/protocol.h>
 #include <game/server/gamecontext.h>
@@ -13,8 +13,7 @@
 
 int CPlasma::EntityId{};
 
-CPlasma::CPlasma(CGameContext *pGameContext, vec2 Pos, int Owner, int TrackedPlayer, vec2 Direction, bool Freeze, bool Explosive)
-	: CIcEntity(pGameContext, EntityId, Pos, Owner)
+CPlasma::CPlasma(CGameContext *pGameContext, vec2 Pos, int Owner, int TrackedPlayer, vec2 Direction, bool Freeze, bool Explosive) : CIcEntity(pGameContext, EntityId, Pos, Owner)
 {
 	m_Freeze = Freeze;
 	m_DamageType = EDamageType::NO_DAMAGE;
@@ -34,7 +33,7 @@ void CPlasma::Tick()
 
 	if(IsMarkedForDestroy())
 		return;
-	
+
 	// tracking, position and collision calculation
 	CIcCharacter *pTarget = GameController()->GetCharacter(m_TrackedPlayer);
 	if(pTarget)
@@ -42,34 +41,33 @@ void CPlasma::Tick()
 		float Dist = distance(GetPos(), pTarget->GetPos());
 		if(Dist < 24.0f)
 		{
-			//freeze or explode
-			if (m_Freeze) 
+			// freeze or explode
+			if(m_Freeze)
 			{
 				pTarget->Freeze(3.0f, GetOwner(), FREEZEREASON_FLASH);
 			}
-			
+
 			Explode();
 		}
 		else
 		{
 			m_Dir = normalize(pTarget->GetPos() - GetPos());
 			m_Speed = clamp(Dist, 0.0f, 16.0f) * (1.0f - m_InitialAmount);
-			m_Pos += m_Dir*m_Speed;
-			
+			m_Pos += m_Dir * m_Speed;
+
 			m_InitialAmount *= 0.98f;
-			
-			//collision detection
+
+			// collision detection
 			if(GameServer()->Collision()->CheckPoint(m_Pos.x, m_Pos.y)) // this only works as long as the projectile is not moving too fast
 			{
 				Explode();
 			}
 		}
-	} 
-	else //Target died before impact -> explode
+	}
+	else // Target died before impact -> explode
 	{
 		Explode();
 	}
-	
 }
 
 void CPlasma::SetDamageType(EDamageType Type)
@@ -77,19 +75,19 @@ void CPlasma::SetDamageType(EDamageType Type)
 	m_DamageType = Type;
 }
 
-void CPlasma::Explode() 
+void CPlasma::Explode()
 {
-	//GameServer()->CreateSound(CurPos, m_SoundImpact);
-	if (m_Explosive) 
+	// GameServer()->CreateSound(CurPos, m_SoundImpact);
+	if(m_Explosive)
 	{
-		GameController()->CreateExplosion(m_Pos, GetOwner(), m_DamageType, Config()->m_InfTurretDmgFactor*0.1f);
+		GameController()->CreateExplosion(m_Pos, GetOwner(), m_DamageType, Config()->m_InfTurretDmgFactor * 0.1f);
 	}
 	Reset();
 }
 
 void CPlasma::Snap(int SnappingClient)
 {
-	if (NetworkClipped(SnappingClient))
+	if(NetworkClipped(SnappingClient))
 		return;
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);

@@ -1,7 +1,7 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
-#include <game/server/gamecontext.h>
 #include <engine/shared/config.h>
+#include <game/server/gamecontext.h>
 
 #include "biologist-laser.h"
 #include "biologist-mine.h"
@@ -33,7 +33,8 @@ void CBiologistMine::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireC
 
 	for(TEntityPtr<CBiologistMine> pMine = pCharacter->GameWorld()->FindFirst<CBiologistMine>(); pMine; ++pMine)
 	{
-		if(pMine->GetOwner() != OwnerCid) continue;
+		if(pMine->GetOwner() != OwnerCid)
+			continue;
 		pCharacter->GameWorld()->DestroyEntity(pMine);
 	}
 
@@ -54,8 +55,8 @@ CBiologistMine::CBiologistMine(CGameContext *pGameContext, vec2 Pos, vec2 EndPos
 	m_InfClassObjectType = INFCLASS_OBJECT_TYPE_BIOLOGIST_MINE;
 	m_EndPos = EndPos;
 	GameWorld()->InsertEntity(this);
-	
-	for(int i=0; i<NUM_IDS; i++)
+
+	for(int i = 0; i < NUM_IDS; i++)
 	{
 		m_Ids[i] = Server()->SnapNewId();
 	}
@@ -63,7 +64,7 @@ CBiologistMine::CBiologistMine(CGameContext *pGameContext, vec2 Pos, vec2 EndPos
 
 CBiologistMine::~CBiologistMine()
 {
-	for(int i=0; i<NUM_IDS; i++)
+	for(int i = 0; i < NUM_IDS; i++)
 	{
 		Server()->SnapFreeId(m_Ids[i]);
 	}
@@ -77,7 +78,7 @@ void CBiologistMine::Explode()
 	{
 		new CBiologistLaser(GameServer(), m_Pos, direction(RandomShift + AngleStep * i), GetOwner(), m_PerLaserDamage);
 	}
-	
+
 	GameWorld()->DestroyEntity(this);
 }
 
@@ -110,14 +111,16 @@ void CBiologistMine::Snap(int SnappingClient)
 
 void CBiologistMine::Tick()
 {
-	if(m_MarkedForDestroy) return;
-	
-	
+	if(m_MarkedForDestroy)
+		return;
+
 	// Find other players
 	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
-		if(p->IsHuman()) continue;
-		if(!p->CanDie()) continue;
+		if(p->IsHuman())
+			continue;
+		if(!p->CanDie())
+			continue;
 
 		vec2 IntersectPos;
 		if(!closest_point_on_line(m_Pos, m_EndPos, p->m_Pos, IntersectPos))

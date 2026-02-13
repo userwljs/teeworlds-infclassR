@@ -68,7 +68,7 @@ CEntity *CGameWorld::ClosestEntity(vec2 Pos, float Radius, int Type, const CEnti
 
 	CEntity *p = FindFirst(Type);
 	for(; p; p = p->TypeNext())
- 	{
+	{
 		if(p == pNotThis)
 			continue;
 
@@ -181,7 +181,7 @@ void CGameWorld::RemoveEntities()
 		}
 }
 
-bool distCompare(std::pair<float,int> a, std::pair<float,int> b)
+bool distCompare(std::pair<float, int> a, std::pair<float, int> b)
 {
 	return (a.first < b.first);
 }
@@ -241,7 +241,7 @@ CEntity *CGameWorld::IntersectEntity(vec2 Pos0, vec2 Pos1, float Radius, vec2 *N
 			continue;
 
 		float Len = distance(p->m_Pos, IntersectPos);
-		if(Len < p->m_ProximityRadius+Radius)
+		if(Len < p->m_ProximityRadius + Radius)
 		{
 			Len = distance(Pos0, IntersectPos);
 			if(Len < ClosestLen)
@@ -321,7 +321,7 @@ CEntity *CGameWorld::IntersectEntity(vec2 Pos0, vec2 Pos1, float Radius, vec2 *N
 			continue;
 
 		float Len = distance(p->m_Pos, IntersectPos);
-		if(Len < p->m_ProximityRadius+Radius)
+		if(Len < p->m_ProximityRadius + Radius)
 		{
 			Len = distance(Pos0, IntersectPos);
 			if(Len < ClosestLen)
@@ -358,20 +358,20 @@ CEntity *CGameWorld::GetClosestEntity(const vec2 From, CEntity *pEntity1, CEntit
 CCharacter *CGameWorld::ClosestCharacter(vec2 Pos, float Radius, CEntity *pNotThis)
 {
 	// Find other players
-	float ClosestRange = Radius*2;
+	float ClosestRange = Radius * 2;
 	CCharacter *pClosest = nullptr;
 
 	CCharacter *p = (CCharacter *)GameServer()->m_World.FindFirst(ENTTYPE_CHARACTER);
 	for(; p; p = (CCharacter *)p->TypeNext())
- 	{
+	{
 		if(p == pNotThis)
 			continue;
-			
+
 		if(p->GetPlayer())
 			continue;
-			
+
 		float Len = distance(Pos, p->m_Pos);
-		if(Len < p->m_ProximityRadius+Radius)
+		if(Len < p->m_ProximityRadius + Radius)
 		{
 			if(Len < ClosestRange)
 			{

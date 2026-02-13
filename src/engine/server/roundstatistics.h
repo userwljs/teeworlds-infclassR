@@ -50,7 +50,7 @@ public:
 	int m_NumPlayersMin{};
 	int m_NumPlayersMax{};
 	int m_PlayedTicks{};
-	
+
 public:
 	CRoundStatistics() = default;
 	void Reset() { *this = CRoundStatistics{}; }
@@ -58,16 +58,16 @@ public:
 	void OnScoreEvent(int ClientId, EScoreEvent EventType, EPlayerClass Class, const char *pName, IConsole *console,
 		std::optional<int> Param1 = std::nullopt);
 	void SetPlayerAsWinner(int ClientId);
-	
-	CRoundStatistics::CPlayerStats* PlayerStatistics(int ClientId);
+
+	CRoundStatistics::CPlayerStats *PlayerStatistics(int ClientId);
 	int PlayerScore(int ClientId);
 	void SetPlayerScore(int ClientId, int Score);
-	
+
 	int NumWinners() const;
-	
+
 	void UpdatePlayer(int ClientId, bool IsSpectator);
 	void UpdateNumberOfPlayers(int Num);
-	
+
 	bool IsValidePlayer(int ClientId);
 };
 

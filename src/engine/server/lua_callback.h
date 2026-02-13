@@ -2,8 +2,8 @@
 
 #if CONF_LUA
 
-#include <lua.hpp>
 #include <LuaBridge/LuaBridge.h>
+#include <lua.hpp>
 
 int LuaErrorFunc(lua_State *L);
 

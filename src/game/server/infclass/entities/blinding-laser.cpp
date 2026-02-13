@@ -18,8 +18,7 @@ void CBlindingLaser::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireC
 	pLaser->DoBounce();
 }
 
-CBlindingLaser::CBlindingLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner)
-	: CIcLaser(pGameContext, Pos, Direction, 600, Owner, 0, EInfclassWeapon::BLINDING_LASER)
+CBlindingLaser::CBlindingLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner) : CIcLaser(pGameContext, Pos, Direction, 600, Owner, 0, EInfclassWeapon::BLINDING_LASER)
 {
 }
 

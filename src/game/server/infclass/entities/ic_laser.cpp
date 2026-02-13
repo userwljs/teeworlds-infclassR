@@ -156,7 +156,7 @@ CIcLaser *CIcLaser::MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Directi
 
 void CIcLaser::Tick()
 {
-	if(Server()->Tick() > m_EvalTick+(Server()->TickSpeed()*GameServer()->Tuning()->m_LaserBounceDelay)/1000.0f)
+	if(Server()->Tick() > m_EvalTick + (Server()->TickSpeed() * GameServer()->Tuning()->m_LaserBounceDelay) / 1000.0f)
 		DoBounce();
 }
 

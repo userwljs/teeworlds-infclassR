@@ -59,7 +59,7 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 
 		// Copy aHooks
 		const auto aHooks = Victim.aHooks;
-		for (int HookerId : aHooks)
+		for(int HookerId : aHooks)
 		{
 			const CIcCharacter *pCharacter = pGameController->GetCharacter(HookerId);
 			if(pCharacter && pCharacter->GetHookedPlayer() == VictimId)
@@ -103,11 +103,11 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 		if(!pPlayer || !pPlayer->GetCharacter() || !pPlayer->GetCharacter()->IsAlive())
 			continue;
 
-		if (pPlayer->IsHuman())
+		if(pPlayer->IsHuman())
 		{
 			m_aHumanPositions.Add(pPlayer->GetCharacter()->GetPos());
 		}
-		else if (pPlayer->IsBot())
+		else if(pPlayer->IsBot())
 		{
 			m_aInfectedPositions.Add(pPlayer->GetCharacter()->GetPos());
 			m_aInfectedBots.Add(i);
@@ -118,7 +118,7 @@ void CHiveMind::UpdateTick(CIcGameController *pGameController, int Tick)
 void CHiveMind::UpdateGroups()
 {
 	m_Groups.Clear();
-	for (int ClientId = 0; ClientId < MAX_CLIENTS; ++ClientId)
+	for(int ClientId = 0; ClientId < MAX_CLIENTS; ++ClientId)
 	{
 		const CIcCharacter *pCharacter = GameController()->GetCharacter(ClientId);
 		if(!pCharacter || !pCharacter->IsInfected())
@@ -128,16 +128,16 @@ void CHiveMind::UpdateGroups()
 	}
 
 	constexpr float MaxD2 = 8.0_Tiles * 8.0_Tiles;
-	for (std::size_t BaseIndex = 0; BaseIndex < m_Groups.Size(); ++BaseIndex)
+	for(std::size_t BaseIndex = 0; BaseIndex < m_Groups.Size(); ++BaseIndex)
 	{
 		auto &BaseItem = m_Groups[BaseIndex];
 		const vec2 BasePos = BaseItem.pCharacter->GetPos();
 
-		for (std::size_t Index = BaseIndex + 1; Index < m_Groups.Size(); ++Index)
+		for(std::size_t Index = BaseIndex + 1; Index < m_Groups.Size(); ++Index)
 		{
 			auto &SecondItem = m_Groups[Index];
 			const vec2 SecondPos = SecondItem.pCharacter->GetPos();
-			if (distance_squared(BasePos, SecondPos) > MaxD2)
+			if(distance_squared(BasePos, SecondPos) > MaxD2)
 				continue;
 
 			BaseItem.aNearbies.Add(SecondItem.pCharacter);
@@ -149,19 +149,19 @@ void CHiveMind::UpdateGroups()
 void CHiveMind::ReportKilled(CBotPlayer *pPlayer)
 {
 	// Does not work
-//	const auto &aRecentCheckPoints = pPlayer->GetRecentCheckPoints();
-//	for(int i = 0; i < aRecentCheckPoints.Size(); ++i)
-//	{
-//		STilePosition Pos = aRecentCheckPoints.At(i).TilePos;
-//		if(m_aUncheckedPos.Contains(Pos))
-//			continue;
+	//	const auto &aRecentCheckPoints = pPlayer->GetRecentCheckPoints();
+	//	for(int i = 0; i < aRecentCheckPoints.Size(); ++i)
+	//	{
+	//		STilePosition Pos = aRecentCheckPoints.At(i).TilePos;
+	//		if(m_aUncheckedPos.Contains(Pos))
+	//			continue;
 
-//		if(m_aUncheckedPos.Capacity() == m_aUncheckedPos.Size())
-//		{
-//			CleanupUncheckedPositions();
-//		}
-//		m_aUncheckedPos.Add(Pos);
-//	}
+	//		if(m_aUncheckedPos.Capacity() == m_aUncheckedPos.Size())
+	//		{
+	//			CleanupUncheckedPositions();
+	//		}
+	//		m_aUncheckedPos.Add(Pos);
+	//	}
 }
 
 void CHiveMind::ReportTargetFound(const CBotPlayer *pPlayer, const vec2 &TargetPos)
@@ -230,7 +230,7 @@ bool CHiveMind::TryHook(int HookerId, int TargetId)
 	HiveVictim *pVictim = GetVictim(TargetId);
 	const auto &aHooks = pVictim->aHooks;
 
-	if (aHooks.Contains(HookerId))
+	if(aHooks.Contains(HookerId))
 		return true;
 
 	if(aHooks.Size() == aHooks.Capacity())
@@ -269,11 +269,11 @@ std::optional<vec2> CHiveMind::PickPOI(const vec2 &FromPos) const
 {
 	float BestDistance2 = 800 * 800;
 	std::optional<vec2> BestPOI;
-	for (const vec2 &POIPos : m_aPOIs)
+	for(const vec2 &POIPos : m_aPOIs)
 	{
 		vec2 VectorToPOI = POIPos - FromPos;
 		const float Distance2 = length_squared(VectorToPOI);
-		if (Distance2 > BestDistance2)
+		if(Distance2 > BestDistance2)
 			continue;
 		BestDistance2 = Distance2;
 		BestPOI = POIPos;

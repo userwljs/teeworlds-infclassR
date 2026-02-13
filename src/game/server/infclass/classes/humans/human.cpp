@@ -8,8 +8,8 @@
 
 #include <game/generated/server_data.h>
 
-#include <game/server/infclass/damage_context.h>
 #include <game/infclass/damage_type.h>
+#include <game/server/infclass/damage_context.h>
 #include <game/server/infclass/death_context.h>
 #include <game/server/infclass/entities/biologist-mine.h>
 #include <game/server/infclass/entities/blinding-laser.h>
@@ -41,8 +41,7 @@ static const int s_SniperPositionLockTimeLimit = 15;
 
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassHuman, MAX_CLIENTS)
 
-CInfClassHuman::CInfClassHuman(CIcPlayer *pPlayer)
-	: CIcPlayerClass(pPlayer)
+CInfClassHuman::CInfClassHuman(CIcPlayer *pPlayer) : CIcPlayerClass(pPlayer)
 {
 	m_BroadcastWhiteHoleReady = -100;
 
@@ -141,7 +140,6 @@ bool CInfClassHuman::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pOutp
 	return true;
 }
 
-
 CAmmoParams CInfClassHuman::GetAmmoParams(int Weapon) const
 {
 	CAmmoParams Params = CIcPlayerClass::GetAmmoParams(Weapon);
@@ -217,7 +215,6 @@ void CInfClassHuman::GiveGift(EGiftType GiftType, int Level)
 		break;
 	}
 
-
 	const EWeapon AllWeaponsWithAmmo[] =
 		{
 			WEAPON_GUN,
@@ -257,11 +254,11 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		switch(UpgradeLevel)
 		{
 		case 1:
-			return { EUpgradeType::MercBombTools };
+			return {EUpgradeType::MercBombTools};
 		case 2:
-			return { EUpgradeType::MercGunAirRegen, EUpgradeType::MercGrenades };
+			return {EUpgradeType::MercGunAirRegen, EUpgradeType::MercGrenades};
 		case 3:
-			return { EUpgradeType::MercGunRegen, EUpgradeType::MercBombSupercharge };
+			return {EUpgradeType::MercGunRegen, EUpgradeType::MercBombSupercharge};
 		default:
 			break;
 		}
@@ -271,11 +268,11 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		switch(UpgradeLevel)
 		{
 		case 1:
-			return { EUpgradeType::MedicShotgunSpread, EUpgradeType::MedicPistolRegen };
+			return {EUpgradeType::MedicShotgunSpread, EUpgradeType::MedicPistolRegen};
 		case 2:
-			return { EUpgradeType::MedicShotgunRegen };
+			return {EUpgradeType::MedicShotgunRegen};
 		case 3:
-			return { EUpgradeType::MedicHealingHose };
+			return {EUpgradeType::MedicHealingHose};
 		default:
 			break;
 		}
@@ -285,11 +282,11 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		switch(UpgradeLevel)
 		{
 		case 1:
-			return { EUpgradeType::HeroFlagGift };
+			return {EUpgradeType::HeroFlagGift};
 		case 2:
-			return { EUpgradeType::HeroWeapons };
+			return {EUpgradeType::HeroWeapons};
 		case 3:
-			return { EUpgradeType::HeroArmor };
+			return {EUpgradeType::HeroArmor};
 		default:
 			break;
 		}
@@ -299,11 +296,11 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		switch(UpgradeLevel)
 		{
 		case 1:
-			return { EUpgradeType::NinjaSlashBreaksHooks };
+			return {EUpgradeType::NinjaSlashBreaksHooks};
 		case 2:
-			return { EUpgradeType::NinjaFlashGrenadeArea };
+			return {EUpgradeType::NinjaFlashGrenadeArea};
 		case 3:
-			return { EUpgradeType::NinjaSlashCombo };
+			return {EUpgradeType::NinjaSlashCombo};
 		default:
 			break;
 		}
@@ -313,11 +310,11 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		switch(UpgradeLevel)
 		{
 		case 1:
-			return { EUpgradeType::SniperLaserRegenReload };
+			return {EUpgradeType::SniperLaserRegenReload};
 		case 2:
-			return { EUpgradeType::SniperLaserRange };
+			return {EUpgradeType::SniperLaserRange};
 		case 3:
-			return { EUpgradeType::SniperLaserPiercing };
+			return {EUpgradeType::SniperLaserPiercing};
 		default:
 			break;
 		}
@@ -327,13 +324,13 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		switch(UpgradeLevel)
 		{
 		case 1:
-			return { EUpgradeType::ScientistLaserRegenReload };
+			return {EUpgradeType::ScientistLaserRegenReload};
 		case 2:
-			return { EUpgradeType::ScientistTeleportGun };
+			return {EUpgradeType::ScientistTeleportGun};
 		case 3:
-			return { EUpgradeType::ScientistPortalGun };
+			return {EUpgradeType::ScientistPortalGun};
 		case 4:
-			return { EUpgradeType::ScientistExtraMine };
+			return {EUpgradeType::ScientistExtraMine};
 		default:
 			break;
 		}
@@ -343,13 +340,13 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		switch(UpgradeLevel)
 		{
 		case 1:
-			return { EUpgradeType::BiologistShotgunSpread };
+			return {EUpgradeType::BiologistShotgunSpread};
 		case 2:
-			return { EUpgradeType::BiologistMineCharges };
+			return {EUpgradeType::BiologistMineCharges};
 		case 3:
-			return { EUpgradeType::BiologistGrenade };
+			return {EUpgradeType::BiologistGrenade};
 		case 4:
-			return { EUpgradeType::BiologistInvisibilityHammer };
+			return {EUpgradeType::BiologistInvisibilityHammer};
 		default:
 			break;
 		}
@@ -359,11 +356,11 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		switch(UpgradeLevel)
 		{
 		case 1:
-			return { EUpgradeType::LooperLaserRegen };
+			return {EUpgradeType::LooperLaserRegen};
 		case 2:
-			return { EUpgradeType::LooperGrenadesRegen };
+			return {EUpgradeType::LooperGrenadesRegen};
 		case 3:
-			return { EUpgradeType::LooperLaserWeapon };
+			return {EUpgradeType::LooperLaserWeapon};
 		default:
 			break;
 		}
@@ -372,11 +369,11 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		switch(UpgradeLevel)
 		{
 		case 1:
-			return { EUpgradeType::EngineerWallDamage };
+			return {EUpgradeType::EngineerWallDamage};
 		case 2:
-			return { EUpgradeType::EngineerWallTime };
+			return {EUpgradeType::EngineerWallTime};
 		case 3:
-			return { EUpgradeType::EngineerWallTimeReductionDecrease };
+			return {EUpgradeType::EngineerWallTimeReductionDecrease};
 		default:
 			break;
 		}
@@ -508,46 +505,46 @@ void CInfClassHuman::OnCharacterPreCoreTick()
 {
 	CIcPlayerClass::OnCharacterPreCoreTick();
 
-	switch (GetPlayerClass())
+	switch(GetPlayerClass())
 	{
-		case EPlayerClass::Sniper:
+	case EPlayerClass::Sniper:
+	{
+		if(m_pCharacter->PositionIsLocked())
 		{
-			if(m_pCharacter->PositionIsLocked())
+			--m_PositionLockTicksRemaining;
+			if((m_PositionLockTicksRemaining <= 0) || m_pCharacter->IsPassenger())
 			{
-				--m_PositionLockTicksRemaining;
-				if((m_PositionLockTicksRemaining <= 0) || m_pCharacter->IsPassenger())
-				{
-					m_pCharacter->UnlockPosition();
-				}
-			}
-
-			if(!m_pCharacter->PositionIsLocked())
-			{
-				if(m_pCharacter->IsGrounded())
-				{
-					m_PositionLockTicksRemaining = Server()->TickSpeed() * s_SniperPositionLockTimeLimit;
-				}
-			}
-
-			if(m_pCharacter->PositionIsLocked())
-			{
-				if(m_pCharacter->m_Input.m_Jump && !m_pCharacter->m_PrevInput.m_Jump)
-				{
-					m_pCharacter->UnlockPosition();
-				}
+				m_pCharacter->UnlockPosition();
 			}
 		}
-			break;
-		case EPlayerClass::Ninja:
+
+		if(!m_pCharacter->PositionIsLocked())
 		{
-			if(m_pCharacter->IsGrounded() && m_pCharacter->m_DartLifeSpan <= 0)
+			if(m_pCharacter->IsGrounded())
 			{
-				m_pCharacter->m_DartLeft = Config()->m_InfNinjaJump;
+				m_PositionLockTicksRemaining = Server()->TickSpeed() * s_SniperPositionLockTimeLimit;
 			}
 		}
-			break;
-		default:
-			break;
+
+		if(m_pCharacter->PositionIsLocked())
+		{
+			if(m_pCharacter->m_Input.m_Jump && !m_pCharacter->m_PrevInput.m_Jump)
+			{
+				m_pCharacter->UnlockPosition();
+			}
+		}
+	}
+	break;
+	case EPlayerClass::Ninja:
+	{
+		if(m_pCharacter->IsGrounded() && m_pCharacter->m_DartLifeSpan <= 0)
+		{
+			m_pCharacter->m_DartLeft = Config()->m_InfNinjaJump;
+		}
+	}
+	break;
+	default:
+		break;
 	}
 
 	if(m_pCharacter->IsInvisible())
@@ -620,7 +617,7 @@ void CInfClassHuman::OnCharacterTick()
 			m_BonusTick++;
 		}
 
-		if(m_BonusTick > Server()->TickSpeed()*60)
+		if(m_BonusTick > Server()->TickSpeed() * 60)
 		{
 			m_BonusTick = 0;
 
@@ -869,7 +866,7 @@ void CInfClassHuman::OnHumanHammerHitHuman(CIcCharacter *pTarget)
 		if(HasUpgrade(EUpgradeType::BiologistInvisibilityHammer))
 		{
 			CInfClassHuman *pTargetHuman = CInfClassHuman::GetInstance(pTarget);
-			float Duration  = Config()->m_InfHumanInvisibilityTime;
+			float Duration = Config()->m_InfHumanInvisibilityTime;
 			pTargetHuman->GiveInvisibility(Duration, GetCid());
 		}
 	}
@@ -1110,7 +1107,7 @@ void CInfClassHuman::OnGunFired(WeaponFireContext *pFireContext)
 			GetCid(),
 			ProjStartPos,
 			Direction,
-			(int)(Server()->TickSpeed()*GameServer()->Tuning()->m_GunLifetime),
+			(int)(Server()->TickSpeed() * GameServer()->Tuning()->m_GunLifetime),
 			Damage, Force, DamageType);
 	}
 
@@ -1168,7 +1165,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 		float Speed = mix<float>(GameServer()->Tuning()->m_ShotgunSpeeddiff, 1.0f, v);
 		vec2 Direction = vec2(cosf(a), sinf(a)) * Speed;
 
-		float LifeTime = GameServer()->Tuning()->m_ShotgunLifetime + 0.1f * static_cast<float>(pFireContext->AmmoAvailable)/10.0f;
+		float LifeTime = GameServer()->Tuning()->m_ShotgunLifetime + 0.1f * static_cast<float>(pFireContext->AmmoAvailable) / 10.0f;
 
 		if(pFireContext->InfClassWeapon == EInfclassWeapon::RICOCHET_SHOTGUN)
 		{
@@ -1202,7 +1199,7 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 		return;
 	case EInfclassWeapon::TELEPORT_GUN:
 	{
-		if (HasUpgrade(EUpgradeType::ScientistPortalGun))
+		if(HasUpgrade(EUpgradeType::ScientistPortalGun))
 		{
 			CPortal::OnPortalGunFired(m_pCharacter, pFireContext);
 		}
@@ -1250,7 +1247,7 @@ void CInfClassHuman::OnGrenadeFired(WeaponFireContext *pFireContext)
 		}
 		pProj->SetFlashRadius(FlashRadius);
 	}
-	else if (pFireContext->InfClassWeapon == EInfclassWeapon::BIOLOGIST_GRENADE)
+	else if(pFireContext->InfClassWeapon == EInfclassWeapon::BIOLOGIST_GRENADE)
 	{
 		CIcProjectile *pProj = CIcProjectile::MakeGrenade(GameContext(), ProjStartPos, Direction, GetCid(), EDamageType::BIOLOGIST_MINE);
 		pProj->SetSoundImpact(SOUND_LASER_BOUNCE);
@@ -1311,7 +1308,7 @@ void CInfClassHuman::OnLaserFired(WeaponFireContext *pFireContext)
 		}
 		pLaser->DoBounce();
 	}
-		break;
+	break;
 	case EInfclassWeapon::SNIPER_RIFLE:
 	{
 		const bool HasPiercing = HasUpgrade(EUpgradeType::SniperLaserPiercing);
@@ -1364,7 +1361,7 @@ void CInfClassHuman::GiveClassAttributes()
 		m_pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
 		m_pCharacter->GiveWeapon(WEAPON_GUN, -1);
 		m_pCharacter->GiveWeapon(WEAPON_LASER, -1);
-		if (GameController()->GetRoundType() == ERoundType::Survival)
+		if(GameController()->GetRoundType() == ERoundType::Survival)
 		{
 			m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
 			m_pCharacter->GiveWeapon(WEAPON_SHOTGUN, -1);
@@ -1608,8 +1605,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				GameServer()->SendBroadcast_Localization(GetCid(),
 					EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 					_("You have a turret. Use the hammer to place it."),
-					nullptr
-					);
+					nullptr);
 			}
 			else
 			{
@@ -1618,8 +1614,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 					_("You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to place one."),
 					"NumTurrets", &Turrets,
 					"MaxTurrets", &MaxTurrets,
-					nullptr
-					);
+					nullptr);
 			}
 		}
 		else
@@ -1627,8 +1622,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("You don't have a turret to place"),
-				nullptr
-				);
+				nullptr);
 		}
 		return;
 	}
@@ -1681,8 +1675,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Laser wall: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Looper)
@@ -1690,7 +1683,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 		if(ClientVersion >= VERSION_INFC_160)
 			return;
 
-		CLooperWall* pOwnWall = nullptr;
+		CLooperWall *pOwnWall = nullptr;
 		for(TEntityPtr<CLooperWall> pWall = GameWorld()->FindFirst<CLooperWall>(); pWall; ++pWall)
 		{
 			if(pWall->GetOwner() == m_pPlayer->GetCid())
@@ -1707,8 +1700,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Looper laser wall: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Soldier)
@@ -1729,8 +1721,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				NumBombs,
 				_CP("Soldier", "{int:NumBombs} bomb left", "{int:NumBombs} bombs left", NumBombs),
 				"NumBombs", &NumBombs,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Scientist)
@@ -1757,8 +1748,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("The white hole is available!"),
-				nullptr
-			);
+				nullptr);
 		}
 		else if(NumMines > 0 && !pOwnWhiteHole)
 		{
@@ -1766,8 +1756,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME, NumMines,
 				_P("{int:NumMines} mine is active", "{int:NumMines} mines are active", NumMines),
 				"NumMines", &NumMines,
-				nullptr
-			);
+				nullptr);
 		}
 		else if(NumMines <= 0 && pOwnWhiteHole)
 		{
@@ -1776,8 +1765,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("White hole: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 		else if(NumMines > 0 && pOwnWhiteHole)
 		{
@@ -1810,8 +1798,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Biologist", "Mine activated"),
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Ninja)
@@ -1826,8 +1813,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Ninja", "Next target in {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 		else if(TargetId >= 0)
 		{
@@ -1835,21 +1821,19 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Ninja", "Target to eliminate: {str:PlayerName}"),
 				"PlayerName", Server()->ClientName(TargetId),
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Sniper)
 	{
 		if(m_pCharacter->PositionIsLocked())
 		{
-			int Seconds = 1+m_PositionLockTicksRemaining/Server()->TickSpeed();
+			int Seconds = 1 + m_PositionLockTicksRemaining / Server()->TickSpeed();
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Sniper", "Position lock: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Mercenary)
@@ -1878,7 +1862,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 	}
 	else if(GetPlayerClass() == EPlayerClass::Hero)
 	{
-		//Search for flag
+		// Search for flag
 		int CoolDown = m_pHeroFlag ? m_pHeroFlag->GetSpawnTick() - CurrentTick : 0;
 
 		if(CoolDown > 0 && (ClientVersion < VERSION_INFC_140)) // 140 introduces native timers for Hero
@@ -1888,8 +1872,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Next flag in {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 }
@@ -1931,15 +1914,15 @@ void CInfClassHuman::GiveNinjaBuf()
 {
 	switch(random_int(0, 2))
 	{
-	case 0: //Velocity Buff
+	case 0: // Velocity Buff
 		m_NinjaVelocityBuff++;
 		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Sword velocity increased"), nullptr);
 		break;
-	case 1: //Strength Buff
+	case 1: // Strength Buff
 		m_NinjaExtraDamage++;
 		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Sword strength increased"), nullptr);
 		break;
-	case 2: //Ammo Buff
+	case 2: // Ammo Buff
 		m_NinjaAmmoBuff++;
 		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Grenade limit increased"), nullptr);
 		break;
@@ -2213,32 +2196,32 @@ void CInfClassHuman::PlaceScientistMine(WeaponFireContext *pFireContext)
 	CScientistMine *pIntersectMine = nullptr;
 
 	for(TEntityPtr<CScientistMine> p = GameWorld()->FindFirst<CScientistMine>(); p; ++p)
-	while(p)
-	{
-		float d = distance(p->GetPos(), ProjStartPos);
-
-		if(p->GetOwner() == GetCid())
+		while(p)
 		{
-			if(OlderMineTick > p->m_StartTick)
-			{
-				OlderMineTick = p->m_StartTick;
-				pOlderMine = p;
-			}
-			NbMine++;
+			float d = distance(p->GetPos(), ProjStartPos);
 
-			if(d < 2.0f * g_Config.m_InfMineRadius)
+			if(p->GetOwner() == GetCid())
 			{
-				if(pIntersectMine)
-					FreeSpace = false;
-				else
-					pIntersectMine = p;
+				if(OlderMineTick > p->m_StartTick)
+				{
+					OlderMineTick = p->m_StartTick;
+					pOlderMine = p;
+				}
+				NbMine++;
+
+				if(d < 2.0f * g_Config.m_InfMineRadius)
+				{
+					if(pIntersectMine)
+						FreeSpace = false;
+					else
+						pIntersectMine = p;
+				}
 			}
+			else if(d < 2.0f * g_Config.m_InfMineRadius)
+				FreeSpace = false;
+
+			p = (CScientistMine *)p->TypeNext();
 		}
-		else if(d < 2.0f * g_Config.m_InfMineRadius)
-			FreeSpace = false;
-
-		p = (CScientistMine *)p->TypeNext();
-	}
 
 	if(!FreeSpace)
 		return;
@@ -2479,7 +2462,7 @@ float CInfClassHuman::GetInvisibilityRemainingDuration() const
 	if(m_InvisibilityEndTick == 0.0f)
 		return 0;
 
-	if (Server()->Tick() < m_InvisibilityStartTick)
+	if(Server()->Tick() < m_InvisibilityStartTick)
 		return 0;
 
 	int RemainingTicks = m_InvisibilityEndTick - Server()->Tick();
@@ -2584,7 +2567,7 @@ void CInfClassHuman::OnWhiteHoleSpawned(CWhiteHole *pWhiteHole)
 
 void CInfClassHuman::GiveUpgrades(const PlayerUpgradesArray &NewUpgrades)
 {
-	if (NewUpgrades.IsEmpty())
+	if(NewUpgrades.IsEmpty())
 	{
 		return;
 	}
@@ -2593,14 +2576,12 @@ void CInfClassHuman::GiveUpgrades(const PlayerUpgradesArray &NewUpgrades)
 	const char *pWeaponUpgradeMsg = _("You have found a weapon upgrade!");
 	icArray<const char *, 4> aMessages;
 
-	auto AddMessage = [&aMessages](const char *pMessage)
-	{
+	auto AddMessage = [&aMessages](const char *pMessage) {
 		aMessages.Add(pMessage);
 	};
 
-	auto AddWeaponMessageIfNothingYet = [&aMessages, pWeaponUpgradeMsg]()
-	{
-		if (aMessages.IsEmpty())
+	auto AddWeaponMessageIfNothingYet = [&aMessages, pWeaponUpgradeMsg]() {
+		if(aMessages.IsEmpty())
 		{
 			aMessages.Add(pWeaponUpgradeMsg);
 		}
@@ -2782,7 +2763,7 @@ void CInfClassHuman::GiveUpgrades(const PlayerUpgradesArray &NewUpgrades)
 
 	for(const char *pMessage : aMessages)
 	{
-		if (pMessage)
+		if(pMessage)
 		{
 			GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, pMessage, nullptr);
 		}
@@ -2791,12 +2772,12 @@ void CInfClassHuman::GiveUpgrades(const PlayerUpgradesArray &NewUpgrades)
 
 void CInfClassHuman::RefreshHeroFlagPosition()
 {
-	if (!m_pHeroFlag || Server()->Tick() < m_pHeroFlag->GetSpawnTick())
+	if(!m_pHeroFlag || Server()->Tick() < m_pHeroFlag->GetSpawnTick())
 	{
 		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_DEFAULT, "You can't use this command now.");
 		return;
 	}
-	if (Server()->Tick() < m_HeroFlagRefreshTick)
+	if(Server()->Tick() < m_HeroFlagRefreshTick)
 	{
 		int Seconds = 1 + (m_HeroFlagRefreshTick - Server()->Tick()) / Server()->TickSpeed();
 		GameServer()->SendChatTarget_Localization_P(GetCid(), CHATCATEGORY_DEFAULT, Seconds,

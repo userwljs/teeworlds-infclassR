@@ -22,8 +22,8 @@
 
 #include <base/tl/ic_enum.h>
 
-#include <lua.hpp>
 #include <LuaBridge/LuaBridge.h>
+#include <lua.hpp>
 
 struct CLuaPlayersNumber
 {
@@ -32,16 +32,15 @@ struct CLuaPlayersNumber
 	int Spectators{};
 };
 
-namespace
-{
+namespace {
 
 void SetPlayerClass_Lua(CIcPlayer *pPlayer, const char *pClass)
 {
-	if (!pClass)
+	if(!pClass)
 		return;
 
 	EPlayerClass Class = fromString<EPlayerClass>(pClass);
-	if (Class == EPlayerClass::Invalid)
+	if(Class == EPlayerClass::Invalid)
 		return;
 
 	pPlayer->SetClass(Class);
@@ -49,7 +48,7 @@ void SetPlayerClass_Lua(CIcPlayer *pPlayer, const char *pClass)
 
 const char *GetPlayerClass_Lua(const CIcPlayer *pPlayer)
 {
-	if (!pPlayer)
+	if(!pPlayer)
 		return nullptr;
 
 	return toString(pPlayer->GetClass());
@@ -170,7 +169,7 @@ const char *TweaksArray_At_Lua(const TweaksArray *pArray, int Index)
 void SetSurvivalBotConfigurationClass_Lua(SurvivalBotConfiguration *pConfiguration, const char *pClass)
 {
 	EPlayerClass Class = fromString<EPlayerClass>(pClass);
-	if (Class == EPlayerClass::Invalid)
+	if(Class == EPlayerClass::Invalid)
 		return;
 
 	pConfiguration->Class = Class;
@@ -178,7 +177,7 @@ void SetSurvivalBotConfigurationClass_Lua(SurvivalBotConfiguration *pConfigurati
 
 const char *GetSurvivalBotConfigurationClass_Lua(const SurvivalBotConfiguration *pConfiguration)
 {
-	if (!pConfiguration)
+	if(!pConfiguration)
 		return nullptr;
 
 	return toString(pConfiguration->Class);
@@ -236,7 +235,7 @@ void SetSurvivalBotSpawnWitchId(SurvivalBotConfiguration *pConfiguration, int Cl
 
 TweaksArray *SurvivalBotConfigurationClass_GetTweaks_Lua(SurvivalBotConfiguration *pConfiguration)
 {
-	if (!pConfiguration)
+	if(!pConfiguration)
 		return nullptr;
 
 	return &pConfiguration->Tweaks;
@@ -364,89 +363,89 @@ void CIcGameController::RegisterLuaBindings()
 	lua_State *L = Lua()->GetLuaState();
 
 	luabridge::getGlobalNamespace(L)
-		.beginClass< CLuaPlayersNumber >("PlayersNumber")
-			.addConstructor <void (*) ()> ()
-			.addProperty("Humans", &CLuaPlayersNumber::Humans)
-			.addProperty("Infected", &CLuaPlayersNumber::Infected)
-			.addProperty("Spectators", &CLuaPlayersNumber::Spectators)
+		.beginClass<CLuaPlayersNumber>("PlayersNumber")
+		.addConstructor<void (*)()>()
+		.addProperty("Humans", &CLuaPlayersNumber::Humans)
+		.addProperty("Infected", &CLuaPlayersNumber::Infected)
+		.addProperty("Spectators", &CLuaPlayersNumber::Spectators)
 		.endClass();
 
 	luabridge::getGlobalNamespace(L)
 		.deriveClass<CIcPlayer, CPlayer>("CIcPlayer")
-			.addProperty("Class", &GetPlayerClass_Lua, &SetPlayerClass_Lua)
-			.addProperty("MaxHP", &CIcPlayer::GetMaxHP, &CIcPlayer::SetMaxHP)
-			.addProperty("Tag", &CIcPlayer::GetTag)
-			.addFunction("ApplyMaxHP", &CIcPlayer::ApplyMaxHP)
-			.addFunction("IsInfected", &CIcPlayer::IsInfected)
-			.addProperty("Score", &GetPlayerScore_Lua, &SetPlayerScore_Lua)
-			.addProperty("Deaths", &CIcPlayer::GetDeaths)
+		.addProperty("Class", &GetPlayerClass_Lua, &SetPlayerClass_Lua)
+		.addProperty("MaxHP", &CIcPlayer::GetMaxHP, &CIcPlayer::SetMaxHP)
+		.addProperty("Tag", &CIcPlayer::GetTag)
+		.addFunction("ApplyMaxHP", &CIcPlayer::ApplyMaxHP)
+		.addFunction("IsInfected", &CIcPlayer::IsInfected)
+		.addProperty("Score", &GetPlayerScore_Lua, &SetPlayerScore_Lua)
+		.addProperty("Deaths", &CIcPlayer::GetDeaths)
 
-			.addFunction("HookProtectionEnabled", &CIcPlayer::HookProtectionEnabled)
-			.addFunction("SetHookProtection", &CIcPlayer::SetHookProtection)
+		.addFunction("HookProtectionEnabled", &CIcPlayer::HookProtectionEnabled)
+		.addFunction("SetHookProtection", &CIcPlayer::SetHookProtection)
 
-			.addFunction("SpecialCameraIsActive", &CIcPlayer::SpecialCameraIsActive)
-			.addFunction("ResetSpecialCamera", &CIcPlayer::ResetSpecialCamera)
-			.addFunction("GetSpecialCameraTargetCid", &CIcPlayer::GetSpecialCameraTargetCid)
-			.addFunction("SetSpecialCameraTargetCid", &CIcPlayer::SetSpecialCameraTargetCid)
+		.addFunction("SpecialCameraIsActive", &CIcPlayer::SpecialCameraIsActive)
+		.addFunction("ResetSpecialCamera", &CIcPlayer::ResetSpecialCamera)
+		.addFunction("GetSpecialCameraTargetCid", &CIcPlayer::GetSpecialCameraTargetCid)
+		.addFunction("SetSpecialCameraTargetCid", &CIcPlayer::SetSpecialCameraTargetCid)
 		.endClass()
 		.deriveClass<CIcCharacter, CCharacter>("CIcCharacter")
-			.addFunction("IsInfected", &CIcCharacter::IsInfected)
-			.addFunction("Heal", &CIcCharacter::Heal)
+		.addFunction("IsInfected", &CIcCharacter::IsInfected)
+		.addFunction("Heal", &CIcCharacter::Heal)
 
-			.addFunction("GiveArmor", &CIcCharacter::GiveArmor)
-			.addFunction("GiveHealth", &CIcCharacter::GiveHealth)
+		.addFunction("GiveArmor", &CIcCharacter::GiveArmor)
+		.addFunction("GiveHealth", &CIcCharacter::GiveHealth)
 
-			.addFunction("GetDropLevel", &CIcCharacter::GetDropLevel)
-			.addFunction("SetDropLevel", &CIcCharacter::SetDropLevel)
+		.addFunction("GetDropLevel", &CIcCharacter::GetDropLevel)
+		.addFunction("SetDropLevel", &CIcCharacter::SetDropLevel)
 
-			.addFunction("IsPassenger", &CIcCharacter::IsPassenger)
-			.addFunction("HasPassenger", &CIcCharacter::HasPassenger)
-			.addFunction("GetPassenger", &CIcCharacter::GetPassenger)
-			.addFunction("GetTaxi", &CIcCharacter::GetTaxi)
-			.addFunction("GetTaxiDriver", &CIcCharacter::GetTaxiDriver)
+		.addFunction("IsPassenger", &CIcCharacter::IsPassenger)
+		.addFunction("HasPassenger", &CIcCharacter::HasPassenger)
+		.addFunction("GetPassenger", &CIcCharacter::GetPassenger)
+		.addFunction("GetTaxi", &CIcCharacter::GetTaxi)
+		.addFunction("GetTaxiDriver", &CIcCharacter::GetTaxiDriver)
 
-			.addFunction("IsInvisible", &CIcCharacter::IsInvisible)
-			.addFunction("MakeVisible", &CIcCharacter::MakeVisible)
-			.addFunction("GrantInvisibility", &CIcCharacter::GrantInvisibility)
-			.addFunction("SetInvincible", &CIcCharacter::SetInvincible)
-			.addFunction("SetDeepDefence", &CIcCharacter::SetDeepDefence)
-			.addFunction("IsSleeping", &CIcCharacter::IsSleeping)
-			.addFunction("PutToSleep", &CIcCharacter::PutToSleep)
-			.addFunction("CancelSleep", &CIcCharacter::CancelSleep)
-			.addFunction("AwakenedBy", &CIcCharacter::AwakenedBy)
-			.addFunction("MakeBlind", &CIcCharacter::MakeBlind)
-			.addFunction("ResetBlindness", &CIcCharacter::ResetBlindness)
-			.addFunction("IsFrozen", &CIcCharacter::IsFrozen)
-			.addProperty("FreezeStartTick", &CIcCharacter::FreezeStartTick)
-			.addFunction("Unfreeze", &CIcCharacter::Unfreeze)
-			.addFunction("TryUnfreeze", &CIcCharacter::TryUnfreeze)
-			.addFunction("IsInSlowMotion", &CIcCharacter::IsInSlowMotion)
-			.addFunction("MakeSlow", &CIcCharacter::SlowMotionEffect)
-			.addFunction("IsPoisoned", &CIcCharacter::IsPoisoned)
-			.addFunction("ResetPoisonEffect", &CIcCharacter::ResetPoisonEffect)
-			.addFunction("LoveEffect", &CIcCharacter::LoveEffect)
-			.addFunction("IsInLove", &CIcCharacter::IsInLove)
-			.addFunction("ResetLoveEffect", &CIcCharacter::CancelLoveEffect)
-			.addFunction("IsDead", &CIcCharacter::IsDead)
-			.addFunction("SetDeadForDuration", &CIcCharacter::SetDeadForDuration)
-			.addFunction("SetAntiFireDuration", &CIcCharacter::SetAntiFireDuration)
+		.addFunction("IsInvisible", &CIcCharacter::IsInvisible)
+		.addFunction("MakeVisible", &CIcCharacter::MakeVisible)
+		.addFunction("GrantInvisibility", &CIcCharacter::GrantInvisibility)
+		.addFunction("SetInvincible", &CIcCharacter::SetInvincible)
+		.addFunction("SetDeepDefence", &CIcCharacter::SetDeepDefence)
+		.addFunction("IsSleeping", &CIcCharacter::IsSleeping)
+		.addFunction("PutToSleep", &CIcCharacter::PutToSleep)
+		.addFunction("CancelSleep", &CIcCharacter::CancelSleep)
+		.addFunction("AwakenedBy", &CIcCharacter::AwakenedBy)
+		.addFunction("MakeBlind", &CIcCharacter::MakeBlind)
+		.addFunction("ResetBlindness", &CIcCharacter::ResetBlindness)
+		.addFunction("IsFrozen", &CIcCharacter::IsFrozen)
+		.addProperty("FreezeStartTick", &CIcCharacter::FreezeStartTick)
+		.addFunction("Unfreeze", &CIcCharacter::Unfreeze)
+		.addFunction("TryUnfreeze", &CIcCharacter::TryUnfreeze)
+		.addFunction("IsInSlowMotion", &CIcCharacter::IsInSlowMotion)
+		.addFunction("MakeSlow", &CIcCharacter::SlowMotionEffect)
+		.addFunction("IsPoisoned", &CIcCharacter::IsPoisoned)
+		.addFunction("ResetPoisonEffect", &CIcCharacter::ResetPoisonEffect)
+		.addFunction("LoveEffect", &CIcCharacter::LoveEffect)
+		.addFunction("IsInLove", &CIcCharacter::IsInLove)
+		.addFunction("ResetLoveEffect", &CIcCharacter::CancelLoveEffect)
+		.addFunction("IsDead", &CIcCharacter::IsDead)
+		.addFunction("SetDeadForDuration", &CIcCharacter::SetDeadForDuration)
+		.addFunction("SetAntiFireDuration", &CIcCharacter::SetAntiFireDuration)
 		.endClass();
 
 	luabridge::getGlobalNamespace(L)
 		.beginClass<CMapInfoEx>("MapInfo")
-			.addProperty("MinimumPlayers", &CMapInfoEx::MinimumPlayers)
-			.addProperty("MaximumPlayers", &CMapInfoEx::MaximumPlayers)
-			.addProperty("Enabled", &CMapInfoEx::mEnabled)
-			.addProperty("Name", &CMapInfoEx::Name)
+		.addProperty("MinimumPlayers", &CMapInfoEx::MinimumPlayers)
+		.addProperty("MaximumPlayers", &CMapInfoEx::MaximumPlayers)
+		.addProperty("Enabled", &CMapInfoEx::mEnabled)
+		.addProperty("Name", &CMapInfoEx::Name)
 		.endClass();
 
 	luabridge::getGlobalNamespace(L)
 		.deriveClass<CBaseBotPlayer, CIcPlayer>("CBaseBotPlayer")
-			.addProperty("Lives", &CBaseBotPlayer::Lives, &CBaseBotPlayer::SetLives)
-			.addProperty("MaxLives", &CBaseBotPlayer::MaxLives, &CBaseBotPlayer::SetMaxLives)
-			.addProperty("RespawnInterval", &CBaseBotPlayer::GetRespawnInterval, &CBaseBotPlayer::SetRespawnInterval)
-			.addProperty("LastSeenTargetAtTick", &CBaseBotPlayer::LastSeenTargetAtTick)
-			.addFunction("UpdateControls", &CBaseBotPlayer::UpdateControls)
+		.addProperty("Lives", &CBaseBotPlayer::Lives, &CBaseBotPlayer::SetLives)
+		.addProperty("MaxLives", &CBaseBotPlayer::MaxLives, &CBaseBotPlayer::SetMaxLives)
+		.addProperty("RespawnInterval", &CBaseBotPlayer::GetRespawnInterval, &CBaseBotPlayer::SetRespawnInterval)
+		.addProperty("LastSeenTargetAtTick", &CBaseBotPlayer::LastSeenTargetAtTick)
+		.addFunction("UpdateControls", &CBaseBotPlayer::UpdateControls)
 		.endClass()
 		.beginClass<CHiveMind>("CHiveMind")
 		.endClass();
@@ -458,131 +457,131 @@ void CIcGameController::RegisterLuaBindings()
 
 	luabridge::getGlobalNamespace(L)
 		.beginClass<TweaksArray>("TweaksArray")
-			.addFunction("Add", &TweaksArray_Add_Lua)
-			.addFunction("Remove", &TweaksArray_Remove_Lua)
-			.addFunction("Contains", &TweaksArray_Contains_Lua)
-			.addFunction("At", &TweaksArray_At_Lua)
-			.addFunction("Size", &TweaksArray::Size)
+		.addFunction("Add", &TweaksArray_Add_Lua)
+		.addFunction("Remove", &TweaksArray_Remove_Lua)
+		.addFunction("Contains", &TweaksArray_Contains_Lua)
+		.addFunction("At", &TweaksArray_At_Lua)
+		.addFunction("Size", &TweaksArray::Size)
 		.endClass()
 		.beginClass<SurvivalGameConfiguration>("SurvivalConfiguration")
-			.addProperty("MaxPlayers", &SurvivalGameConfiguration::MaxPlayers)
-			.addProperty("Hardmode", &SurvivalGameConfiguration::HardMode)
-			.addFunction("Reset", &SurvivalGameConfiguration::Reset)
+		.addProperty("MaxPlayers", &SurvivalGameConfiguration::MaxPlayers)
+		.addProperty("Hardmode", &SurvivalGameConfiguration::HardMode)
+		.addFunction("Reset", &SurvivalGameConfiguration::Reset)
 		.endClass()
 		.beginClass<SurvivalBotConfiguration>("SurvivalBotConfiguration")
-			.addProperty("Class", &GetSurvivalBotConfigurationClass_Lua, &SetSurvivalBotConfigurationClass_Lua)
-			.addProperty("Tag", &GetSurvivalBotConfigurationTag_Lua, &SetSurvivalBotConfigurationTag_Lua)
-			.addProperty("SpawnSecond", &GetSurvivalBotConfigurationSpawnSecond_Lua, &SetSurvivalBotConfigurationSpawnSecond_Lua)
-			.addProperty("SpawnPointId", &GetSurvivalBotSpawnPointId, &SetSurvivalBotSpawnPointId)
-			.addProperty("SpawnWitchId", &GetSurvivalBotSpawnWitchId, &SetSurvivalBotSpawnWitchId)
-			.addProperty("ScriptedSpawn", &GetSurvivalBotScriptedSpawn, &SetSurvivalBotScriptedSpawn)
-			.addProperty("Lives", &SurvivalBotConfiguration::Lives)
-			.addProperty("HP", &SurvivalBotConfiguration::HP)
-			.addProperty("DropLevel", &SurvivalBotConfiguration::DropLevel)
-			.addProperty("RespawnInterval", &SurvivalBotConfiguration::RespawnInterval)
-			.addFunction("GetTweaks", &SurvivalBotConfigurationClass_GetTweaks_Lua)
+		.addProperty("Class", &GetSurvivalBotConfigurationClass_Lua, &SetSurvivalBotConfigurationClass_Lua)
+		.addProperty("Tag", &GetSurvivalBotConfigurationTag_Lua, &SetSurvivalBotConfigurationTag_Lua)
+		.addProperty("SpawnSecond", &GetSurvivalBotConfigurationSpawnSecond_Lua, &SetSurvivalBotConfigurationSpawnSecond_Lua)
+		.addProperty("SpawnPointId", &GetSurvivalBotSpawnPointId, &SetSurvivalBotSpawnPointId)
+		.addProperty("SpawnWitchId", &GetSurvivalBotSpawnWitchId, &SetSurvivalBotSpawnWitchId)
+		.addProperty("ScriptedSpawn", &GetSurvivalBotScriptedSpawn, &SetSurvivalBotScriptedSpawn)
+		.addProperty("Lives", &SurvivalBotConfiguration::Lives)
+		.addProperty("HP", &SurvivalBotConfiguration::HP)
+		.addProperty("DropLevel", &SurvivalBotConfiguration::DropLevel)
+		.addProperty("RespawnInterval", &SurvivalBotConfiguration::RespawnInterval)
+		.addFunction("GetTweaks", &SurvivalBotConfigurationClass_GetTweaks_Lua)
 		.endClass()
 		.beginClass<CIcEntity>("CIcEntity")
-			.addFunction("Destroy", &CIcEntity::MarkForDestroy)
-			.addFunction("MarkForDestroy", &CIcEntity::MarkForDestroy)
-			.addProperty("Position", &EntityGetPosition_Lua, &EntitySetPosition_Lua)
-			.addProperty("Velocity", &CIcEntity::GetVelocity, &CIcEntity::SetVelocity)
-			.addProperty("Lifespan", &CIcEntity::GetLifespan, &CIcEntity::SetLifespan)
-			.addProperty("ProximityRadius", &CIcEntity::m_ProximityRadius)
-			.addFunction("MoveTo", &CIcEntity::MoveTo)
+		.addFunction("Destroy", &CIcEntity::MarkForDestroy)
+		.addFunction("MarkForDestroy", &CIcEntity::MarkForDestroy)
+		.addProperty("Position", &EntityGetPosition_Lua, &EntitySetPosition_Lua)
+		.addProperty("Velocity", &CIcEntity::GetVelocity, &CIcEntity::SetVelocity)
+		.addProperty("Lifespan", &CIcEntity::GetLifespan, &CIcEntity::SetLifespan)
+		.addProperty("ProximityRadius", &CIcEntity::m_ProximityRadius)
+		.addFunction("MoveTo", &CIcEntity::MoveTo)
 		.endClass()
 		.deriveClass<CPlacedObject, CIcEntity>("CPlacedObject")
-			.addFunction("HasSecondPosition", &CPlacedObject::HasSecondPosition)
-			.addProperty("SecondPosition", &CPlacedObject::SecondPosition, &CPlacedObject::SetSecondPosition)
-			.addProperty("MaxLength", &CPlacedObject::MaxLength, &CPlacedObject::SetMaxLength)
+		.addFunction("HasSecondPosition", &CPlacedObject::HasSecondPosition)
+		.addProperty("SecondPosition", &CPlacedObject::SecondPosition, &CPlacedObject::SetSecondPosition)
+		.addProperty("MaxLength", &CPlacedObject::MaxLength, &CPlacedObject::SetMaxLength)
 		.endClass()
 		.deriveClass<CControlPoint, CPlacedObject>("CControlPoint")
-			.addFunction("IsTaken", &CControlPoint::IsTaken)
-			.addFunction("IsInfected", &CControlPoint::IsInfected)
-			.addFunction("SetNextEffectTime", &CControlPoint::SetNextEffectTime)
+		.addFunction("IsTaken", &CControlPoint::IsTaken)
+		.addFunction("IsInfected", &CControlPoint::IsInfected)
+		.addFunction("SetNextEffectTime", &CControlPoint::SetNextEffectTime)
 		.endClass()
 		.deriveClass<CDoor, CPlacedObject>("CDoor")
-			.addFunction("SetOpen", &CDoor::SetOpen)
+		.addFunction("SetOpen", &CDoor::SetOpen)
 		.endClass()
 		.deriveClass<CScientistMine, CPlacedObject>("CScientistMine")
-			.addFunction("SetExplosionRadius", &CScientistMine::SetExplosionRadius)
+		.addFunction("SetExplosionRadius", &CScientistMine::SetExplosionRadius)
 		.endClass()
 		.deriveClass<CTurret, CPlacedObject>("CTurret")
-			.addProperty("ReloadDuration", &CTurret::GetReloadDuration, &CTurret::SetReloadDuration)
-			.addProperty("Damage", &CTurret::GetDamage, &CTurret::SetDamage)
-			.addProperty("Destructable", &CTurret::IsDestructable, &CTurret::SetDestructable)
+		.addProperty("ReloadDuration", &CTurret::GetReloadDuration, &CTurret::SetReloadDuration)
+		.addProperty("Damage", &CTurret::GetDamage, &CTurret::SetDamage)
+		.addProperty("Destructable", &CTurret::IsDestructable, &CTurret::SetDestructable)
 		.endClass()
 		.deriveClass<CIcGameController, IGameController>("CIcGameController")
-			.addProperty("GameType", &CIcGameController::GameType, &CIcGameController::SetGameType)
-			.addProperty("RoundType", &GetRoundType_Lua)
-			.addProperty("RoundStartTick", &CIcGameController::GetRoundStartTick)
-			.addProperty("InfectionTick", &CIcGameController::GetInfectionTick)
-			.addProperty("InfectionStartTick", &CIcGameController::GetInfectionStartTick)
-			.addProperty("RoundTick", &CIcGameController::GetRoundTick)
-			.addProperty("TimeLimitSeconds",
-				&CIcGameController::GetTimeLimitSeconds,
-				&CIcGameController::SetTimeLimitSeconds)
-			.addProperty("InfectionDelaySeconds",
-				&CIcGameController::GetInfectionDelay,
-				&CIcGameController::SetInfectionDelay)
-			.addProperty("WinCheckEnabled",
-				&CIcGameController::IsWinCheckEnabled,
-				&CIcGameController::SetWinCheckEnabled)
-			.addProperty("VotesEnabled",
-				&CIcGameController::GetVotesEnabled,
-				&CIcGameController::SetVotesEnabled)
-			.addProperty("RoundMinimumPlayers",
-				&CIcGameController::GetMinPlayers,
-				&CIcGameController::SetRoundMinimumPlayers)
-			.addProperty("RoundMinimumInfected",
-				&CIcGameController::GetMinimumInfected,
-				&CIcGameController::SetRoundMinimumInfected)
-			.addFunction("AddMapInfo", &CIcGameController::AddMapInfo)
-			.addFunction("GetMapInfo", &GetMapInfo_Lua)
-			.addFunction("GetPlayer", &CIcGameController::GetPlayer)
-			.addFunction("GetCharacter", &CIcGameController::GetCharacter)
-			.addFunction("GetSecondsAfterInfection", &GetSecondsAfterInfection_Lua)
-			.addFunction("GetSecondsElapsed", &CIcGameController::GetSecondsElapsed)
-			.addFunction("GetSecondsRemaining", &CIcGameController::GetSecondsRemaining)
-			.addFunction("GetPlayersNumber", &CIcGameController::GetPlayersNumber_Lua)
-			.addFunction("GetHeroFlagPositions", &CIcGameController::GetHeroFlagPositions)
-			.addFunction("GetHumanSpawns", &CIcGameController::GetHumanSpawns)
-			.addFunction("GetInfectedSpawns", &CIcGameController::GetInfectedSpawns)
-			.addFunction("SetHumanSpawnEnabled", &CIcGameController::SetHumanSpawnEnabled)
-			.addFunction("SetInfectedSpawnEnabled", &CIcGameController::SetInfectedSpawnEnabled)
-			.addFunction("IsPositionAvailableForHumans", &CIcGameController::IsPositionAvailableForHumans)
-			.addFunction("UpdateHeroFlags", &CIcGameController::UpdateHeroFlags_Lua)
+		.addProperty("GameType", &CIcGameController::GameType, &CIcGameController::SetGameType)
+		.addProperty("RoundType", &GetRoundType_Lua)
+		.addProperty("RoundStartTick", &CIcGameController::GetRoundStartTick)
+		.addProperty("InfectionTick", &CIcGameController::GetInfectionTick)
+		.addProperty("InfectionStartTick", &CIcGameController::GetInfectionStartTick)
+		.addProperty("RoundTick", &CIcGameController::GetRoundTick)
+		.addProperty("TimeLimitSeconds",
+			&CIcGameController::GetTimeLimitSeconds,
+			&CIcGameController::SetTimeLimitSeconds)
+		.addProperty("InfectionDelaySeconds",
+			&CIcGameController::GetInfectionDelay,
+			&CIcGameController::SetInfectionDelay)
+		.addProperty("WinCheckEnabled",
+			&CIcGameController::IsWinCheckEnabled,
+			&CIcGameController::SetWinCheckEnabled)
+		.addProperty("VotesEnabled",
+			&CIcGameController::GetVotesEnabled,
+			&CIcGameController::SetVotesEnabled)
+		.addProperty("RoundMinimumPlayers",
+			&CIcGameController::GetMinPlayers,
+			&CIcGameController::SetRoundMinimumPlayers)
+		.addProperty("RoundMinimumInfected",
+			&CIcGameController::GetMinimumInfected,
+			&CIcGameController::SetRoundMinimumInfected)
+		.addFunction("AddMapInfo", &CIcGameController::AddMapInfo)
+		.addFunction("GetMapInfo", &GetMapInfo_Lua)
+		.addFunction("GetPlayer", &CIcGameController::GetPlayer)
+		.addFunction("GetCharacter", &CIcGameController::GetCharacter)
+		.addFunction("GetSecondsAfterInfection", &GetSecondsAfterInfection_Lua)
+		.addFunction("GetSecondsElapsed", &CIcGameController::GetSecondsElapsed)
+		.addFunction("GetSecondsRemaining", &CIcGameController::GetSecondsRemaining)
+		.addFunction("GetPlayersNumber", &CIcGameController::GetPlayersNumber_Lua)
+		.addFunction("GetHeroFlagPositions", &CIcGameController::GetHeroFlagPositions)
+		.addFunction("GetHumanSpawns", &CIcGameController::GetHumanSpawns)
+		.addFunction("GetInfectedSpawns", &CIcGameController::GetInfectedSpawns)
+		.addFunction("SetHumanSpawnEnabled", &CIcGameController::SetHumanSpawnEnabled)
+		.addFunction("SetInfectedSpawnEnabled", &CIcGameController::SetInfectedSpawnEnabled)
+		.addFunction("IsPositionAvailableForHumans", &CIcGameController::IsPositionAvailableForHumans)
+		.addFunction("UpdateHeroFlags", &CIcGameController::UpdateHeroFlags_Lua)
 
-			.addFunction("StartRound", &CIcGameController::StartRound)
-			.addFunction("FinishRound", &FinishRound_Lua)
-			.addFunction("CancelRound", &CancelRound_Lua)
-			.addFunction("QueueRound", &CIcGameController::ConQueueRound)
-			.addFunction("DoWarmup", &CIcGameController::DoWarmup)
-			.addFunction("PrepareSurvival", &PrepareSurvival_Lua)
+		.addFunction("StartRound", &CIcGameController::StartRound)
+		.addFunction("FinishRound", &FinishRound_Lua)
+		.addFunction("CancelRound", &CancelRound_Lua)
+		.addFunction("QueueRound", &CIcGameController::ConQueueRound)
+		.addFunction("DoWarmup", &CIcGameController::DoWarmup)
+		.addFunction("PrepareSurvival", &PrepareSurvival_Lua)
 
-			.addFunction("GetPlayerClassEnabled", &GetPlayerClassEnabled_Lua)
-			.addFunction("SetPlayerClassEnabled", &SetPlayerClassEnabled_Lua)
-			.addFunction("ResetPlayerClassEnabled", &ResetPlayerClassEnabled_Lua)
-			.addFunction("ResetPlayerClassesEnablement", &CIcGameController::ResetPlayerClassesEnablement)
+		.addFunction("GetPlayerClassEnabled", &GetPlayerClassEnabled_Lua)
+		.addFunction("SetPlayerClassEnabled", &SetPlayerClassEnabled_Lua)
+		.addFunction("ResetPlayerClassEnabled", &ResetPlayerClassEnabled_Lua)
+		.addFunction("ResetPlayerClassesEnablement", &CIcGameController::ResetPlayerClassesEnablement)
 
-			.addFunction("AddControlPoint", &CIcGameController::AddControlPoint)
-			.addFunction("AddDoor", &CIcGameController::AddDoor)
-			.addFunction("AddSciMine", &AddSciMine)
-			.addFunction("AddLaserWall", &AddLaserWall)
-			.addFunction("AddLooperWall", &AddLooperWall)
-			.addFunction("AddTurret", &AddTurret)
+		.addFunction("AddControlPoint", &CIcGameController::AddControlPoint)
+		.addFunction("AddDoor", &CIcGameController::AddDoor)
+		.addFunction("AddSciMine", &AddSciMine)
+		.addFunction("AddLaserWall", &AddLaserWall)
+		.addFunction("AddLooperWall", &AddLooperWall)
+		.addFunction("AddTurret", &AddTurret)
 
-			.addFunction("AddBot", &CIcGameController::AddBot_Lua)
-			.addFunction("GetBot", &CIcGameController::GetBot)
-			.addFunction("RemoveBot", &CIcGameController::RemoveBot_Lua)
-			.addFunction("RemoveAllBots", &CIcGameController::RemoveBots)
+		.addFunction("AddBot", &CIcGameController::AddBot_Lua)
+		.addFunction("GetBot", &CIcGameController::GetBot)
+		.addFunction("RemoveBot", &CIcGameController::RemoveBot_Lua)
+		.addFunction("RemoveAllBots", &CIcGameController::RemoveBots)
 
-			.addFunction("SurvivalGetGameConfiguration", &CIcGameController::SurvivalGetMutableGameConfiguration)
-			.addFunction("SurvivalAddWave", &CIcGameController::SurvivalAddWave)
-			.addFunction("SurvivalAddBot", &CIcGameController::SurvivalAddBot)
+		.addFunction("SurvivalGetGameConfiguration", &CIcGameController::SurvivalGetMutableGameConfiguration)
+		.addFunction("SurvivalAddWave", &CIcGameController::SurvivalAddWave)
+		.addFunction("SurvivalAddBot", &CIcGameController::SurvivalAddBot)
 		.endClass()
 		.beginNamespace("Game")
-			.addProperty("Controller", &pGameController, false)
+		.addProperty("Controller", &pGameController, false)
 		.endNamespace();
 }
 #else // USE_LUA

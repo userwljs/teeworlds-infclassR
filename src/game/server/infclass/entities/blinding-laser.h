@@ -13,7 +13,6 @@ public:
 protected:
 	bool OnCharacterHit(CIcCharacter *pHit, const vec2 &At) final;
 	void DoBounce() final;
-
 };
 
 #endif

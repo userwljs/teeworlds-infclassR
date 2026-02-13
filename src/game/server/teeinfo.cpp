@@ -138,9 +138,9 @@ void CTeeInfo::FromSixup()
 	str_copy(m_aSkinName, g_aStdSkins[BestSkin].m_aSkinName, sizeof(m_aSkinName));
 	m_UseCustomColor = true;
 	m_ColorBody = ColorHSLA(m_aUseCustomColors[protocol7::SKINPART_BODY] ? m_aSkinPartColors[protocol7::SKINPART_BODY] : 255)
-			      .UnclampLighting(ColorHSLA::DARKEST_LGT7)
-			      .Pack(ColorHSLA::DARKEST_LGT);
+					  .UnclampLighting(ColorHSLA::DARKEST_LGT7)
+					  .Pack(ColorHSLA::DARKEST_LGT);
 	m_ColorFeet = ColorHSLA(m_aUseCustomColors[protocol7::SKINPART_FEET] ? m_aSkinPartColors[protocol7::SKINPART_FEET] : 255)
-			      .UnclampLighting(ColorHSLA::DARKEST_LGT7)
-			      .Pack(ColorHSLA::DARKEST_LGT);
+					  .UnclampLighting(ColorHSLA::DARKEST_LGT7)
+					  .Pack(ColorHSLA::DARKEST_LGT);
 }

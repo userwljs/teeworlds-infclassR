@@ -22,7 +22,6 @@ private:
 	vec2 m_StartPos;
 	vec2 m_EndPos;
 	bool m_LaserFired;
-
 };
 
 #endif

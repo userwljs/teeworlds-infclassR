@@ -6,12 +6,12 @@
 
 enum class EDamageType;
 
-class CPlasma: public CIcEntity
+class CPlasma : public CIcEntity
 {
 public:
 	static int EntityId;
 
-	CPlasma(CGameContext *pGameContext, vec2 Pos, int Owner,int TrackedPlayer, vec2 Direction, bool Freeze, bool Explosive);
+	CPlasma(CGameContext *pGameContext, vec2 Pos, int Owner, int TrackedPlayer, vec2 Direction, bool Freeze, bool Explosive);
 
 	void Tick() override;
 	void Snap(int SnappingClient) override;

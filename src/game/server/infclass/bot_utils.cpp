@@ -129,12 +129,12 @@ int ICollision::IntersectLine(vec2 Pos0, vec2 Pos1, vec2 *pOutCollision, vec2 *p
 
 	vec2 Pos1Pos0 = Pos1 - Pos0;
 	float Distance = length(Pos1Pos0);
-	int End(Distance+1);
+	int End(Distance + 1);
 	vec2 Last = Pos0;
 
 	for(int i = 0; i < End; i++)
 	{
-		float a = i/Distance;
+		float a = i / Distance;
 		vec2 Pos = Pos0 + Pos1Pos0 * a;
 		if(CheckPoint(Pos.x, Pos.y))
 		{
@@ -281,7 +281,7 @@ int CBotUtils::GetGroundJumpTicks() const
 
 int CBotUtils::GetJumpTicksInAir(int MaxJumps, bool FromGround, float JumpMaxHeight, float Velocity) const
 {
-	if ((MaxJumps == 0) && (Velocity == 0.0f))
+	if((MaxJumps == 0) && (Velocity == 0.0f))
 		return 0;
 
 	dbg_assert(MaxJumps >= 0, "MaxJumps can't be a negative number");
@@ -479,7 +479,7 @@ int CBotUtils::GetAirTilesAbove(const CTileRoundedPosition &TilePosition, int Ma
 std::optional<float> CBotUtils::GetSolidBelow(const vec2 &Position, int MaxTiles) const
 {
 	std::optional<int> SolidTileY = GetSolidTileBelow(CTileRoundedPosition(Position), MaxTiles);
-	if (SolidTileY.has_value())
+	if(SolidTileY.has_value())
 		return SolidTileY.value() * TileSize;
 
 	return std::nullopt;
@@ -503,7 +503,6 @@ std::optional<int> CBotUtils::GetSolidTileBelow(const CTileRoundedPosition &Tile
 	return std::nullopt;
 }
 
-
 bool CBotUtils::IsReachableByGround(const vec2 &From, const vec2 &To, int MaxJumps, int MaxSteps) const
 {
 	return IsReachableByGroundImpl<false>(From, To, MaxJumps, MaxSteps);
@@ -522,11 +521,11 @@ bool CBotUtils::IsReachableByGroundImpl(const vec2 &From, const vec2 &To, int Ma
 
 	// Ground the positions:
 	std::optional<int> SolidBelowFrom = GetSolidTileBelow(FromTile);
-	if (!SolidBelowFrom.has_value())
+	if(!SolidBelowFrom.has_value())
 		return false;
 
 	std::optional<int> SolidBelowTo = GetSolidTileBelow(ToTile);
-	if (!SolidBelowTo.has_value())
+	if(!SolidBelowTo.has_value())
 		return false;
 
 	FromTile.Y = SolidBelowFrom.value() - 1;
@@ -568,7 +567,7 @@ bool CBotUtils::IsReachableByGroundImpl(const vec2 &From, const vec2 &To, int Ma
 			}
 
 			std::optional<int> SolidBelowPrevPOI = GetSolidTileBelow(PreviousPOI);
-			if (!SolidBelowPrevPOI.has_value())
+			if(!SolidBelowPrevPOI.has_value())
 				return false;
 
 			int LastAirBelow = SolidBelowPrevPOI.value() - 1;
@@ -614,7 +613,7 @@ bool CBotUtils::IsReachableByGroundImpl(const vec2 &From, const vec2 &To, int Ma
 	}
 
 	std::optional<int> SolidBelowCurent = GetSolidTileBelow(CurrentTile);
-	if (!SolidBelowCurent.has_value())
+	if(!SolidBelowCurent.has_value())
 		return false;
 
 	CurrentTile.Y = SolidBelowCurent.value() - 1;

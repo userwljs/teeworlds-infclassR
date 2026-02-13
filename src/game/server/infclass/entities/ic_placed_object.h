@@ -5,7 +5,7 @@
 class CPlacedObject : public CIcEntity
 {
 public:
-	CPlacedObject(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), int Owner = -1, int ProximityRadius=0);
+	CPlacedObject(CGameContext *pGameContext, int ObjectType, vec2 Pos = vec2(), int Owner = -1, int ProximityRadius = 0);
 	~CPlacedObject() override;
 
 	void MoveTo(const vec2 &Position) override;

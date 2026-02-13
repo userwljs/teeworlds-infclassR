@@ -52,7 +52,7 @@ TEST(ICArray, ReverseItTest)
 {
 	icArray<int, 10> Array1;
 
-	for (int i = 0; i < 5; ++i)
+	for(int i = 0; i < 5; ++i)
 	{
 		Array1.Add(i);
 		EXPECT_EQ(Array1.Size(), static_cast<std::size_t>(i + 1));
@@ -69,7 +69,8 @@ TEST(ICArray, ReverseItTest)
 
 	Index -= 1;
 	EXPECT_EQ(Index, 4); // Sanity check
-	for (auto it = Array1.rbegin(); it != Array1.rend(); ++it) {
+	for(auto it = Array1.rbegin(); it != Array1.rend(); ++it)
+	{
 		EXPECT_EQ(*it, Array1.At(Index));
 		Index--;
 	}
@@ -79,13 +80,13 @@ TEST(ICArray, EraseIf)
 {
 	icArray<int, 10> Array1;
 
-	for (int i = 0; i < 5; ++i)
+	for(int i = 0; i < 5; ++i)
 	{
 		Array1.Add(i);
 		EXPECT_EQ(Array1.Size(), static_cast<std::size_t>(i + 1));
 	}
 
-	std::size_t RemovedCount = std::erase_if(Array1, [](int Value) { return Value % 2;});
+	std::size_t RemovedCount = std::erase_if(Array1, [](int Value) { return Value % 2; });
 	EXPECT_EQ(RemovedCount, 2);
 	EXPECT_EQ(Array1.Size(), 3);
 
@@ -98,7 +99,7 @@ TEST(ICArray, InsertAt)
 {
 	icArray<int, 10> Array1;
 
-	for (int i = 0; i < 5; ++i)
+	for(int i = 0; i < 5; ++i)
 	{
 		Array1.Add(i);
 		EXPECT_EQ(Array1.Size(), static_cast<std::size_t>(i + 1));
@@ -108,7 +109,7 @@ TEST(ICArray, InsertAt)
 	EXPECT_EQ(Array1.At(5), 5);
 	EXPECT_EQ(Array1.Size(), 6);
 
-	for (int i = 0; i < 6; ++i)
+	for(int i = 0; i < 6; ++i)
 	{
 		EXPECT_EQ(Array1.At(static_cast<std::size_t>(i)), i);
 	}
@@ -117,7 +118,7 @@ TEST(ICArray, InsertAt)
 	EXPECT_EQ(Array1.At(0), -1);
 	EXPECT_EQ(Array1.Size(), 7);
 
-	for (int i = 0; i < 7; ++i)
+	for(int i = 0; i < 7; ++i)
 	{
 		EXPECT_EQ(Array1.At(static_cast<std::size_t>(i)), i - 1);
 	}
@@ -126,14 +127,14 @@ TEST(ICArray, InsertAt)
 	EXPECT_EQ(Array1.At(4), -4);
 	EXPECT_EQ(Array1.Size(), 8);
 
-	for (int i = 0; i < 4; ++i)
+	for(int i = 0; i < 4; ++i)
 	{
 		int ExpectedValue{};
-		if (i < 4)
+		if(i < 4)
 			ExpectedValue = i - 1;
-		else if (i == 4)
+		else if(i == 4)
 			ExpectedValue = -4;
-		else if (i > 4)
+		else if(i > 4)
 			ExpectedValue = i - 2;
 		EXPECT_EQ(Array1.At(static_cast<std::size_t>(i)), ExpectedValue);
 	}

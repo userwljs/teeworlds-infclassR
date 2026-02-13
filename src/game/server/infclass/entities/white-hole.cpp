@@ -2,11 +2,11 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.				*/
 #include "white-hole.h"
 
-#include <game/server/gamecontext.h>
 #include <engine/shared/config.h>
+#include <game/server/gamecontext.h>
 
-#include <game/server/infclass/classes/humans/human.h>
 #include <game/infclass/damage_type.h>
+#include <game/server/infclass/classes/humans/human.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 
@@ -15,8 +15,7 @@
 
 int CWhiteHole::EntityId{};
 
-CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner)
-	: CIcEntity(pGameContext, EntityId, CenterPos, Owner)
+CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner) : CIcEntity(pGameContext, EntityId, CenterPos, Owner)
 {
 	GameWorld()->InsertEntity(this);
 
@@ -24,7 +23,7 @@ CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner)
 	m_Ids = new int[m_NumParticles];
 	m_ParticlePos = new vec2[m_NumParticles];
 	m_ParticleVec = new vec2[m_NumParticles];
-	for(int i=0; i<m_NumParticles; i++)
+	for(int i = 0; i < m_NumParticles; i++)
 	{
 		m_Ids[i] = Server()->SnapNewId();
 	}
@@ -41,7 +40,7 @@ CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner)
 
 CWhiteHole::~CWhiteHole()
 {
-	for(int i=0; i<m_NumParticles; i++)
+	for(int i = 0; i < m_NumParticles; i++)
 	{
 		Server()->SnapFreeId(m_Ids[i]);
 	}
@@ -55,9 +54,9 @@ void CWhiteHole::StartVisualEffect()
 	float Radius = Config()->m_InfWhiteHoleRadius;
 	float RandomRadius, RandomAngle;
 	float VecX, VecY;
-	for(int i=0; i<m_NumParticles; i++)
+	for(int i = 0; i < m_NumParticles; i++)
 	{
-		RandomRadius = random_float()*(Radius-4.0f);
+		RandomRadius = random_float() * (Radius - 4.0f);
 		RandomAngle = 2.0f * pi * random_float();
 		VecX = cos(RandomAngle);
 		VecY = sin(RandomAngle);
@@ -65,7 +64,7 @@ void CWhiteHole::StartVisualEffect()
 		m_ParticleVec[i] = vec2(-VecX, -VecY);
 	}
 	// find out how long it takes for a particle to reach the mid
-	RandomRadius = random_float()*(Radius-4.0f);
+	RandomRadius = random_float() * (Radius - 4.0f);
 	RandomAngle = 2.0f * pi * random_float();
 	VecX = cos(RandomAngle);
 	VecY = sin(RandomAngle);
@@ -73,16 +72,17 @@ void CWhiteHole::StartVisualEffect()
 	vec2 ParticleVec = vec2(-VecX, -VecY);
 	vec2 VecMid;
 	float Speed;
-	int i=0;
-	for ( ; i<500; i++) {
+	int i = 0;
+	for(; i < 500; i++)
+	{
 		VecMid = m_Pos - ParticlePos;
-		Speed = m_ParticleStartSpeed * clamp(1.0f-length(VecMid)/Radius+0.5f, 0.0f, 1.0f);
-		ParticlePos += vec2(ParticleVec.x*Speed, ParticleVec.y*Speed); 
-		if (dot(VecMid, ParticleVec) <= 0)
+		Speed = m_ParticleStartSpeed * clamp(1.0f - length(VecMid) / Radius + 0.5f, 0.0f, 1.0f);
+		ParticlePos += vec2(ParticleVec.x * Speed, ParticleVec.y * Speed);
+		if(dot(VecMid, ParticleVec) <= 0)
 			break;
-		ParticleVec *= m_ParticleAcceleration; 
+		ParticleVec *= m_ParticleAcceleration;
 	}
-	//if (i > 499) dbg_msg("CWhiteHole::StartVisualEffect()", "Problem in finding out how long a particle needs to reach the mid"); // this should never happen
+	// if (i > 499) dbg_msg("CWhiteHole::StartVisualEffect()", "Problem in finding out how long a particle needs to reach the mid"); // this should never happen
 	m_ParticleStopTickTime = i;
 }
 
@@ -103,17 +103,17 @@ void CWhiteHole::Snap(int SnappingClient)
 		int NumSide = 6;
 		float AngleStep = 2.0f * pi / NumSide;
 		float Radius = Config()->m_InfWhiteHoleRadius;
-		for(int i=0; i<NumSide; i++)
+		for(int i = 0; i < NumSide; i++)
 		{
-			vec2 PartPosStart = m_Pos + vec2(Radius * cos(AngleStep*i), Radius * sin(AngleStep*i));
-			vec2 PartPosEnd = m_Pos + vec2(Radius * cos(AngleStep*(i+1)), Radius * sin(AngleStep*(i+1)));
+			vec2 PartPosStart = m_Pos + vec2(Radius * cos(AngleStep * i), Radius * sin(AngleStep * i));
+			vec2 PartPosEnd = m_Pos + vec2(Radius * cos(AngleStep * (i + 1)), Radius * sin(AngleStep * (i + 1)));
 			GameServer()->SnapLaserObject(Context, m_Ids[i], PartPosStart, PartPosEnd, Server()->Tick());
 		}
 		return;
 	}
 
 	// Draw full particle effect - if anti ping is not set to true
-	for(int i=0; i<m_NumParticles; i++)
+	for(int i = 0; i < m_NumParticles; i++)
 	{
 		if(!m_IsDieing && distance(m_ParticlePos[i], m_Pos) > m_Radius)
 			continue; // start animation
@@ -130,14 +130,14 @@ void CWhiteHole::MoveParticles()
 	float RandomAngle, Speed;
 	float VecX, VecY;
 	vec2 VecMid;
-	for(int i=0; i<m_NumParticles; i++)
+	for(int i = 0; i < m_NumParticles; i++)
 	{
 		VecMid = m_Pos - m_ParticlePos[i];
-		Speed = m_ParticleStartSpeed * clamp(1.0f-length(VecMid)/Radius+0.5f, 0.0f, 1.0f);
-		m_ParticlePos[i] += vec2(m_ParticleVec[i].x*Speed, m_ParticleVec[i].y*Speed); 
-		if (dot(VecMid, m_ParticleVec[i]) <= 0)
+		Speed = m_ParticleStartSpeed * clamp(1.0f - length(VecMid) / Radius + 0.5f, 0.0f, 1.0f);
+		m_ParticlePos[i] += vec2(m_ParticleVec[i].x * Speed, m_ParticleVec[i].y * Speed);
+		if(dot(VecMid, m_ParticleVec[i]) <= 0)
 		{
-			if (LifeSpan < m_ParticleStopTickTime)
+			if(LifeSpan < m_ParticleStopTickTime)
 			{
 				// make particles disappear
 				m_ParticlePos[i] = vec2(-99999.0f, -99999.0f);
@@ -151,7 +151,7 @@ void CWhiteHole::MoveParticles()
 			m_ParticleVec[i] = vec2(-VecX, -VecY);
 			continue;
 		}
-		m_ParticleVec[i] *= m_ParticleAcceleration; 
+		m_ParticleVec[i] *= m_ParticleAcceleration;
 	}
 }
 

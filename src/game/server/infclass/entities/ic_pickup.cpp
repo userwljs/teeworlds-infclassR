@@ -15,7 +15,8 @@
 #include <game/server/infclass/player_upgrades.h>
 #include <game/server/infclass/snap_filter.h>
 
-struct SUpgradeNetInfo {
+struct SUpgradeNetInfo
+{
 	int Type;
 	int SubType;
 };
@@ -286,7 +287,7 @@ void CIcPickup::Snap(int SnappingClient)
 {
 	if(m_SpawnTick != -1 || NetworkClipped(SnappingClient))
 		return;
-	
+
 	if(m_Type == EICPickupType::Invalid)
 		return;
 
@@ -300,7 +301,7 @@ void CIcPickup::Snap(int SnappingClient)
 	case EICPickupType::Health:
 	case EICPickupType::Armor:
 	case EICPickupType::ClassUpgrade:
-		if (m_NetworkType == SClassUpgrade::GetFlagPickupId())
+		if(m_NetworkType == SClassUpgrade::GetFlagPickupId())
 		{
 			SnapAsFlag();
 		}

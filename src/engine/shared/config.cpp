@@ -89,25 +89,25 @@ bool CConfigManager::Save()
 	char aEscapeBuf[1024 * 2];
 
 #define MACRO_CONFIG_INT(Name, ScriptName, Def, Min, Max, Flags, Desc) \
-	if((Flags)&CFGFLAG_SAVE && g_Config.m_##Name != Def) \
+	if((Flags) & CFGFLAG_SAVE && g_Config.m_##Name != Def) \
 	{ \
 		str_format(aLineBuf, sizeof(aLineBuf), "%s %i", #ScriptName, g_Config.m_##Name); \
 		WriteLine(aLineBuf); \
 	}
 #define MACRO_CONFIG_FLOAT(Name, ScriptName, Def, Min, Max, Flags, Desc) \
-	if((Flags)&CFGFLAG_SAVE && g_Config.m_##Name != Def) \
+	if((Flags) & CFGFLAG_SAVE && g_Config.m_##Name != Def) \
 	{ \
 		str_format(aLineBuf, sizeof(aLineBuf), "%s %s", #ScriptName, g_Config.m_##Name.AsStr()); \
 		WriteLine(aLineBuf); \
 	}
 #define MACRO_CONFIG_COL(Name, ScriptName, Def, Flags, Desc) \
-	if((Flags)&CFGFLAG_SAVE && g_Config.m_##Name != Def) \
+	if((Flags) & CFGFLAG_SAVE && g_Config.m_##Name != Def) \
 	{ \
 		str_format(aLineBuf, sizeof(aLineBuf), "%s %u", #ScriptName, g_Config.m_##Name); \
 		WriteLine(aLineBuf); \
 	}
 #define MACRO_CONFIG_STR(Name, ScriptName, len, Def, Flags, Desc) \
-	if((Flags)&CFGFLAG_SAVE && str_comp(g_Config.m_##Name, Def) != 0) \
+	if((Flags) & CFGFLAG_SAVE && str_comp(g_Config.m_##Name, Def) != 0) \
 	{ \
 		EscapeParam(aEscapeBuf, g_Config.m_##Name, sizeof(aEscapeBuf)); \
 		str_format(aLineBuf, sizeof(aLineBuf), "%s \"%s\"", #ScriptName, aEscapeBuf); \

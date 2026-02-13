@@ -13,7 +13,7 @@ void IDbConnection::FormatCreatePasswords(char *aBuf, unsigned int BufferSize, b
 		"  Username VARCHAR(%d) COLLATE %s UNIQUE NOT NULL, "
 		"  PasswordHash VARCHAR(64) COLLATE %s NOT NULL,"
 		"  RegisterDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
-		"  RegisterIp VARCHAR(64) NOT NULL" //The IP is kept in order to prevent registration flooding
+		"  RegisterIp VARCHAR(64) NOT NULL" // The IP is kept in order to prevent registration flooding
 		")",
 		GetPrefix(), Backup ? "_backup" : "",
 		MAX_NAME_LENGTH_SQL, BinaryCollate(), BinaryCollate());

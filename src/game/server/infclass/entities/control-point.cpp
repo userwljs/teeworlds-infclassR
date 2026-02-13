@@ -109,7 +109,7 @@ void CControlPoint::Tick()
 		for(int TargetID : Targets)
 		{
 			CIcPlayer *pTarget = GameController()->GetPlayer(TargetID);
-			if (pTarget->GetCharacter()->IsSolo())
+			if(pTarget->GetCharacter()->IsSolo())
 				continue;
 
 			if(pTarget->IsHuman())

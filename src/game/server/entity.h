@@ -3,9 +3,9 @@
 #ifndef GAME_SERVER_ENTITY_H
 #define GAME_SERVER_ENTITY_H
 
-#include <new>
 #include <base/vmath.h>
 #include <game/server/gameworld.h>
+#include <new>
 
 #include "alloc.h"
 
@@ -21,27 +21,28 @@ class CEntity
 {
 	MACRO_ALLOC_HEAP()
 
-	friend class CGameWorld;	// entity list handling
+	friend class CGameWorld; // entity list handling
 	CEntity *m_pPrevTypeEntity;
 	CEntity *m_pNextTypeEntity;
 
 	/* Identity */
 	CGameWorld *m_pGameWorld;
 	CCollision *m_pCCollision;
+
 protected:
 	bool m_MarkedForDestroy;
 	int m_Id;
 	int m_ObjType;
-public:
 
+public:
 	int GetId() const { return m_Id; }
 
 	/* Constructor */
-	CEntity(CGameWorld *pGameWorld, int Objtype, const vec2 &Pos = vec2(0,0), int ProximityRadius = 0);
+	CEntity(CGameWorld *pGameWorld, int Objtype, const vec2 &Pos = vec2(0, 0), int ProximityRadius = 0);
 
 	/* Destructor */
 	virtual ~CEntity();
-	
+
 	/* Objects */
 	class CGameWorld *GameWorld() { return m_pGameWorld; }
 	class CConfig *Config() { return m_pGameWorld->Config(); }
@@ -151,13 +152,13 @@ protected:
 
 protected:
 	virtual void Tick();
-	
+
 public:
 	CAnimatedEntity(CGameWorld *pGameWorld, int Objtype, vec2 Pivot);
 	CAnimatedEntity(CGameWorld *pGameWorld, int Objtype, vec2 Pivot, vec2 RelPosition, int PosEnv);
 };
 
-template <typename T>
+template<typename T>
 class TEntityPtr
 {
 public:
@@ -170,16 +171,16 @@ public:
 
 	T &operator*()
 	{
-		return *(static_cast<T*>(m_pData));
+		return *(static_cast<T *>(m_pData));
 	}
 	T *operator->()
 	{
-		return static_cast<T*>(m_pData);
+		return static_cast<T *>(m_pData);
 	}
-	
+
 	T *data()
 	{
-		return static_cast<T*>(m_pData);
+		return static_cast<T *>(m_pData);
 	}
 
 	operator bool()
@@ -189,7 +190,7 @@ public:
 
 	operator T *()
 	{
-		return static_cast<T*>(m_pData);
+		return static_cast<T *>(m_pData);
 	}
 
 	TEntityPtr &operator++()
@@ -198,7 +199,7 @@ public:
 		{
 			m_pData = m_pData->TypeNext();
 		}
-		
+
 		return *this;
 	}
 
@@ -209,10 +210,10 @@ public:
 		{
 			m_pData = m_pData->TypeNext();
 		}
-		
+
 		return tmp;
 	}
-	
+
 	friend bool operator==(const TEntityPtr &a, const TEntityPtr &b)
 	{
 		return a.m_pData == b.m_pData;

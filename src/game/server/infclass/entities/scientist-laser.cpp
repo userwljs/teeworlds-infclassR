@@ -1,8 +1,8 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
+#include "scientist-laser.h"
 #include <game/generated/protocol.h>
 #include <game/server/gamecontext.h>
-#include "scientist-laser.h"
 
 #include <game/infclass/damage_type.h>
 #include <game/infclass/weapons.h>
@@ -13,8 +13,7 @@
 #include "ic_character.h"
 #include "white-hole.h"
 
-CScientistLaser::CScientistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg)
-	: CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, EInfclassWeapon::EXPLOSIVE_LASER)
+CScientistLaser::CScientistLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, int Dmg) : CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, Dmg, EInfclassWeapon::EXPLOSIVE_LASER)
 {
 	DoBounce();
 }

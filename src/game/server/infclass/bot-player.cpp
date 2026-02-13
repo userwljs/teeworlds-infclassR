@@ -242,7 +242,7 @@ void CBotPlayer::Tick()
 			{
 				m_JumpTargetingTicks--;
 			}
-			if (m_HookAimingRemainingTicks.has_value())
+			if(m_HookAimingRemainingTicks.has_value())
 			{
 				m_HookAimingRemainingTicks.value()--;
 			}
@@ -282,7 +282,7 @@ void CBotPlayer::TickPaused()
 	if(m_NextRandomFireTick)
 		m_NextRandomFireTick++;
 	m_HookUntilTick++;
-	if (m_HookAimingRemainingTicks.has_value())
+	if(m_HookAimingRemainingTicks.has_value())
 		m_HookAimingRemainingTicks.value()++;
 	m_IgnoreTargetUntil++;
 	m_DeepDefenceChangedTick++;
@@ -460,7 +460,6 @@ void CBotPlayer::UpdateTarget()
 	{
 		if(IsHuman())
 		{
-
 			TargetId = GetHumanTarget(Targets);
 		}
 		else
@@ -545,7 +544,7 @@ std::optional<int> CBotPlayer::GetHumanTarget(const ClientsArray &Targets) const
 	for(int CandidateId : Targets)
 	{
 		const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
-		if (!pChar->IsAlive() || pChar->IsInvisible())
+		if(!pChar->IsAlive() || pChar->IsInvisible())
 			continue;
 
 		if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos()))
@@ -590,7 +589,7 @@ std::optional<int> CBotPlayer::GetHumanTarget(const ClientsArray &Targets) const
 			break;
 		}
 
-		if (CheckNumTargets == 0)
+		if(CheckNumTargets == 0)
 		{
 			break;
 		}
@@ -632,7 +631,7 @@ std::optional<int> CBotPlayer::GetInfectedTarget(const ClientsArray &Targets) co
 	for(int CandidateId : Targets)
 	{
 		const CIcCharacter *pChar = GameController()->GetCharacter(CandidateId);
-		if (!pChar->IsHuman() || !pChar->IsAlive() || pChar->IsInvisible())
+		if(!pChar->IsHuman() || !pChar->IsAlive() || pChar->IsInvisible())
 			continue;
 
 		if(GameServer()->Collision()->IntersectLine(Pos, pChar->GetPos()))
@@ -665,14 +664,14 @@ std::optional<int> CBotPlayer::GetInfectedTarget(const ClientsArray &Targets) co
 
 std::optional<vec2> CBotPlayer::GetNewPOI() const
 {
-	if (IsHuman())
+	if(IsHuman())
 		return std::nullopt;
 
-	if (!GetHiveMind().HasPOI())
+	if(!GetHiveMind().HasPOI())
 		return std::nullopt;
 
 	float TargetCooldown = 2.0f;
-	if (Server()->Tick() < m_LastSeenTargetAtTick.value_or(0) + Server()->TickSpeed() * TargetCooldown)
+	if(Server()->Tick() < m_LastSeenTargetAtTick.value_or(0) + Server()->TickSpeed() * TargetCooldown)
 	{
 		return std::nullopt;
 	}
@@ -1193,7 +1192,7 @@ void CBotPlayer::UpdateControlsRoaming(CNetObj_PlayerInput *pInput)
 	}
 
 	pInput->m_Direction = m_RoamingDirection * KeepMoving;
-	if (KeepMoving != 1)
+	if(KeepMoving != 1)
 	{
 		// We're stopping or braking and can't not do the landing maneuvers
 	}
@@ -1749,7 +1748,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 			}
 		}
 	}
-	else if (WeaponClass == EWeaponClass::HAMMER)
+	else if(WeaponClass == EWeaponClass::HAMMER)
 	{
 		if(Distance < HitDistance * 2)
 		{
@@ -1878,7 +1877,7 @@ void CBotPlayer::UpdateControlsHunting(CNetObj_PlayerInput *pInput)
 	}
 	else
 	{
-		if (!WantFlee)
+		if(!WantFlee)
 		{
 			int PrevAttackTick = ma_RecentFailedAttackTicks.IsEmpty() ? 0 : ma_RecentFailedAttackTicks.Last();
 			if(Tick > PrevAttackTick + SERVER_TICK_SPEED * 0.5f)
@@ -2078,14 +2077,14 @@ void CBotPlayer::SetObjectionEnabled(EObjection Objection, bool Enabled)
 		}
 		else
 		{
-		  // Do nothing
+			// Do nothing
 		}
 	}
 	else
 	{
 		if(Enabled)
 		{
-		  // Do nothing
+			// Do nothing
 		}
 		else
 		{
@@ -2195,7 +2194,7 @@ bool CBotPlayer::HasDangerBelow() const
 	const float X1 = Pos.x + TileSize / 2;
 	const float X2 = Pos.x - TileSize / 2;
 	const float Y1 = Pos.y + ProximityRadius / 2 + TileSize * 0.9f;
-	for (int i = 0 ; i < 3; ++i)
+	for(int i = 0; i < 3; ++i)
 	{
 		int DamageIndex1 = GameController()->GetDamageZoneValueAt(vec2(X1, Y1 + i * TileSize));
 		int DamageIndex2 = GameController()->GetDamageZoneValueAt(vec2(X2, Y1 + i * TileSize));
@@ -2439,7 +2438,7 @@ int CBotPlayer::GetJumpsNeededToJumpOnPlatform(DIRECTION Direction, int MaxJumps
 	const int BottomRowIndex = MapWidth * (MapHeight - 1);
 
 	const auto GetMapIndexBelow = [MapWidth, BottomRowIndex](int ReferenceIndex) {
-		if (ReferenceIndex > BottomRowIndex)
+		if(ReferenceIndex > BottomRowIndex)
 			return ReferenceIndex;
 
 		return ReferenceIndex + MapWidth;
@@ -3037,7 +3036,7 @@ bool CBotPlayer::MaybeFallDown() const
 	{
 		return m_BotUtils.IsReachableByGround(m_pCharacter->GetPos(), m_LastTargetSeenAtPos, GetMaxJumps());
 	}
-	if (m_RoamingObjection == EObjection::CheckPOI)
+	if(m_RoamingObjection == EObjection::CheckPOI)
 	{
 		return m_CachedPOIReachableByGround;
 	}
@@ -3249,7 +3248,7 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 	}
 
 	constexpr int MaxJumpsToAvoid = 1;
-	if (MaxJumps > MaxJumpsToAvoid)
+	if(MaxJumps > MaxJumpsToAvoid)
 	{
 		MaxJumps = MaxJumpsToAvoid;
 	}
@@ -3298,7 +3297,7 @@ int CBotPlayer::GetJumpsToAvoidDanger(vec2 *pTargetPosition) const
 	}
 
 	float Distance = 0;
-	while (Distance < PredictedXDistanceAbs)
+	while(Distance < PredictedXDistanceAbs)
 	{
 		// There should be at least the same tiles above AirTilesAbovePos
 		const float AirTilesAboveX = m_BotUtils.GetAirTilesAbove(Pos + vec2(Distance * DirectionSign, 0), MaxTiles);

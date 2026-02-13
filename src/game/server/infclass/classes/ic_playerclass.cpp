@@ -9,8 +9,7 @@
 #include <game/server/infclass/ic_player.h>
 #include <game/server/teeinfo.h>
 
-CIcPlayerClass::CIcPlayerClass(CIcPlayer *pPlayer)
-	: m_pPlayer(pPlayer)
+CIcPlayerClass::CIcPlayerClass(CIcPlayer *pPlayer) : m_pPlayer(pPlayer)
 {
 	m_NormalEmote = EMOTE_NORMAL;
 }
@@ -263,12 +262,12 @@ float CIcPlayerClass::GetHammerProjOffset() const
 
 float CIcPlayerClass::GetHammerRange() const
 {
-	if (!m_pCharacter)
+	if(!m_pCharacter)
 		return 0;
 
 	const EInfclassWeapon Weapon = m_pCharacter->GetInfWeaponId(WEAPON_HAMMER);
 	float Range = m_pCharacter->GetProximityRadius() * 0.5f;
-	if (Weapon == EInfclassWeapon::STUNNING_HAMMER)
+	if(Weapon == EInfclassWeapon::STUNNING_HAMMER)
 	{
 		Range += 1.5f * 32;
 	}
@@ -291,7 +290,7 @@ EPlayerClass CIcPlayerClass::GetPlayerClass() const
 void CIcPlayerClass::OnPlayerClassChanged()
 {
 	UpdateSkin();
-	IsZombie() ? SetNormalEmote(EMOTE_ANGRY) : SetNormalEmote(EMOTE_NORMAL); 
+	IsZombie() ? SetNormalEmote(EMOTE_ANGRY) : SetNormalEmote(EMOTE_NORMAL);
 
 	// Enable hook protection by default for both infected and humans on class changed
 	m_pPlayer->SetHookProtection(true);
@@ -401,26 +400,26 @@ void CIcPlayerClass::OnWeaponFired(WeaponFireContext *pFireContext)
 {
 	switch(pFireContext->Weapon)
 	{
-		case WEAPON_HAMMER:
-			OnHammerFired(pFireContext);
-			break;
-		case WEAPON_GUN:
-			OnGunFired(pFireContext);
-			break;
-		case WEAPON_SHOTGUN:
-			OnShotgunFired(pFireContext);
-			break;
-		case WEAPON_GRENADE:
-			OnGrenadeFired(pFireContext);
-			break;
-		case WEAPON_LASER:
-			OnLaserFired(pFireContext);
-			break;
-		case WEAPON_NINJA:
-			OnNinjaFired(pFireContext);
-			break;
-		default:
-			break;
+	case WEAPON_HAMMER:
+		OnHammerFired(pFireContext);
+		break;
+	case WEAPON_GUN:
+		OnGunFired(pFireContext);
+		break;
+	case WEAPON_SHOTGUN:
+		OnShotgunFired(pFireContext);
+		break;
+	case WEAPON_GRENADE:
+		OnGrenadeFired(pFireContext);
+		break;
+	case WEAPON_LASER:
+		OnLaserFired(pFireContext);
+		break;
+	case WEAPON_NINJA:
+		OnNinjaFired(pFireContext);
+		break;
+	default:
+		break;
 	}
 }
 

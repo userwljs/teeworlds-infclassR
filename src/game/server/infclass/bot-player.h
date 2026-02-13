@@ -307,6 +307,7 @@ public:
 	void PushIgnoredPosition(const STilePosition &ShortPos);
 
 	STilePosition m_DecisionPos{};
+
 protected:
 	CGameWorld *GameWorld() const;
 	void UpdateCharacterState();

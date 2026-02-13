@@ -29,11 +29,11 @@ CIcProjectile::CIcProjectile(CGameContext *pGameContext, int Type, int Owner, ve
 	m_StartTick = Server()->Tick();
 
 	GameWorld()->InsertEntity(this);
-	
-/* INFECTION MODIFICATION START ***************************************/
+
+	/* INFECTION MODIFICATION START ***************************************/
 	m_StartPos = Pos;
 	m_Weapon = DamageTypeToWeapon(DamageType, &m_TakeDamageMode);
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 }
 
 CIcProjectile *CIcProjectile::MakeGrenade(CGameContext *pGameContext, vec2 Pos, vec2 Direction, int Owner, EDamageType DamageType)
@@ -59,30 +59,29 @@ vec2 CIcProjectile::GetPos(float Time)
 
 	switch(m_Type)
 	{
-		case WEAPON_GRENADE:
-			Curvature = GameServer()->Tuning()->m_GrenadeCurvature;
-			Speed = GameServer()->Tuning()->m_GrenadeSpeed;
-			break;
+	case WEAPON_GRENADE:
+		Curvature = GameServer()->Tuning()->m_GrenadeCurvature;
+		Speed = GameServer()->Tuning()->m_GrenadeSpeed;
+		break;
 
-		case WEAPON_SHOTGUN:
-			Curvature = GameServer()->Tuning()->m_ShotgunCurvature;
-			Speed = GameServer()->Tuning()->m_ShotgunSpeed;
-			break;
+	case WEAPON_SHOTGUN:
+		Curvature = GameServer()->Tuning()->m_ShotgunCurvature;
+		Speed = GameServer()->Tuning()->m_ShotgunSpeed;
+		break;
 
-		case WEAPON_GUN:
-			Curvature = GameServer()->Tuning()->m_GunCurvature;
-			Speed = GameServer()->Tuning()->m_GunSpeed;
-			break;
+	case WEAPON_GUN:
+		Curvature = GameServer()->Tuning()->m_GunCurvature;
+		Speed = GameServer()->Tuning()->m_GunSpeed;
+		break;
 	}
 
 	return CalcPos(m_Pos, m_Direction, Curvature, Speed, Time);
 }
 
-
 void CIcProjectile::Tick()
 {
-	float Pt = (Server()->Tick()-m_StartTick-1)/(float)Server()->TickSpeed();
-	float Ct = (Server()->Tick()-m_StartTick)/(float)Server()->TickSpeed();
+	float Pt = (Server()->Tick() - m_StartTick - 1) / (float)Server()->TickSpeed();
+	float Ct = (Server()->Tick() - m_StartTick) / (float)Server()->TickSpeed();
 	vec2 PrevPos = GetPos(Pt);
 	vec2 CurPos = GetPos(Ct);
 	int Collide = GameServer()->Collision()->IntersectLine(PrevPos, CurPos, &CurPos, nullptr);
@@ -93,8 +92,8 @@ void CIcProjectile::Tick()
 	CIcCharacter *TargetChr = CIcCharacter::GetInstance(GameWorld()->IntersectCharacter(PrevPos, CurPos, ProjectileRadius, CurPos, OnlyOtherTeamFilter));
 
 	m_LifeSpan--;
-	
-/* INFECTION MODIFICATION START ***************************************/
+
+	/* INFECTION MODIFICATION START ***************************************/
 	if(TargetChr || Collide || m_LifeSpan < 0 || GameLayerClipped(CurPos))
 	{
 		if(m_LifeSpan >= 0 || (m_Weapon == WEAPON_GRENADE))
@@ -117,8 +116,9 @@ void CIcProjectile::Tick()
 		else if(m_FlashRadius)
 		{
 			vec2 Dir = normalize(PrevPos - CurPos);
-			if(length(Dir) > 1.1) Dir = normalize(m_StartPos - CurPos);
-			
+			if(length(Dir) > 1.1)
+				Dir = normalize(m_StartPos - CurPos);
+
 			new CGrowingExplosion(GameServer(), CurPos, Dir, GetOwner(), m_FlashRadius, m_DamageType);
 		}
 		else if(m_Explosive)
@@ -135,7 +135,7 @@ void CIcProjectile::Tick()
 				}
 				else
 				{
-					TargetChr->TakeDamage(m_Direction * maximum(0.001f, m_Force), m_Damage, GetOwner(),m_DamageType);
+					TargetChr->TakeDamage(m_Direction * maximum(0.001f, m_Force), m_Damage, GetOwner(), m_DamageType);
 				}
 			}
 		}
@@ -152,7 +152,7 @@ void CIcProjectile::Tick()
 		GameWorld()->DestroyEntity(this);
 	}
 
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 }
 
 void CIcProjectile::TickPaused()
@@ -164,8 +164,8 @@ void CIcProjectile::FillInfo(CNetObj_Projectile *pProj)
 {
 	pProj->m_X = (int)m_Pos.x;
 	pProj->m_Y = (int)m_Pos.y;
-	pProj->m_VelX = (int)(m_Direction.x*100.0f);
-	pProj->m_VelY = (int)(m_Direction.y*100.0f);
+	pProj->m_VelX = (int)(m_Direction.x * 100.0f);
+	pProj->m_VelY = (int)(m_Direction.y * 100.0f);
 	pProj->m_StartTick = m_StartTick;
 	pProj->m_Type = m_Type;
 }

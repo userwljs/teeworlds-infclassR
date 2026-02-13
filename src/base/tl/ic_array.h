@@ -6,7 +6,7 @@
 #include <iterator>
 #include <optional>
 
-template <class T, int StackCapacity>
+template<class T, int StackCapacity>
 class icArray
 {
 public:
@@ -70,8 +70,7 @@ protected:
 	std::size_t m_Size = 0;
 };
 
-namespace std
-{
+namespace std {
 
 template<class T, int StackCapacity, typename Predicate>
 inline typename icArray<T, StackCapacity>::size_type
@@ -79,7 +78,8 @@ erase_if(icArray<T, StackCapacity> &container, Predicate predicate)
 {
 	const auto HadSize = container.Size();
 
-	for (auto it = container.rbegin(); it != container.rend(); ++it) {
+	for(auto it = container.rbegin(); it != container.rend(); ++it)
+	{
 		if(predicate(*it))
 			container.erase(&*it);
 	}
@@ -173,7 +173,7 @@ inline constexpr void icArray<T, StackCapacity>::Add(const T &Value)
 template<class T, int StackCapacity>
 inline constexpr void icArray<T, StackCapacity>::AddWithOverwrite(const T &Value)
 {
-	if (m_Size == StackCapacity)
+	if(m_Size == StackCapacity)
 		RemoveAt(0);
 
 	Add(Value);

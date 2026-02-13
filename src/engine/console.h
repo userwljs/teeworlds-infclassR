@@ -59,16 +59,20 @@ public:
 	public:
 		int m_Value;
 		char m_aValue[128];
-		IResult() { m_NumArgs = 0; m_ClientId = -1; }
+		IResult()
+		{
+			m_NumArgs = 0;
+			m_ClientId = -1;
+		}
 		virtual ~IResult() {}
 
 		virtual int GetInteger(unsigned Index) const = 0;
 		virtual float GetFloat(unsigned Index) const = 0;
 		virtual const char *GetString(unsigned Index) const = 0;
 		virtual ColorHSLA GetColor(unsigned Index, float DarkestLighting) const = 0;
-		
+
 		int GetClientId() { return m_ClientId; }
-		
+
 		void SetClientId(int ClientId) { m_ClientId = ClientId; }
 
 		virtual void RemoveArgument(unsigned Index) = 0;

@@ -158,7 +158,7 @@ void CIcCharacter::OnCharacterInInfectionZone()
 {
 	if(IsInfected())
 	{
-		if(Server()->Tick() >= m_HealTick + (Server()->TickSpeed()/g_Config.m_InfInfzoneHealRate))
+		if(Server()->Tick() >= m_HealTick + (Server()->TickSpeed() / g_Config.m_InfInfzoneHealRate))
 		{
 			m_HealTick = Server()->Tick();
 			int BonusArmor = GameController()->InfectedBonusArmor();
@@ -333,7 +333,7 @@ void CIcCharacter::Tick()
 		{
 			int DeathEventsPerInterval = std::ceil(m_PoisonEffectInterval);
 			int DeathEventsTicks = Server()->TickSpeed() * m_PoisonEffectInterval / DeathEventsPerInterval;
-			if ((CurrentTick - m_PoisonTick) % DeathEventsTicks == 0)
+			if((CurrentTick - m_PoisonTick) % DeathEventsTicks == 0)
 			{
 				GameServer()->CreateDeath(GetPos(), m_PoisonFrom);
 			}
@@ -589,7 +589,7 @@ void CIcCharacter::HandleWeaponSwitch()
 		{
 			while(Next) // Next Weapon selection
 			{
-				WantedHookMode = (WantedHookMode+1)%2;
+				WantedHookMode = (WantedHookMode + 1) % 2;
 				Next--;
 			}
 		}
@@ -598,14 +598,14 @@ void CIcCharacter::HandleWeaponSwitch()
 		{
 			while(Prev) // Prev Weapon selection
 			{
-				WantedHookMode = (WantedHookMode+2-1)%2;
+				WantedHookMode = (WantedHookMode + 2 - 1) % 2;
 				Prev--;
 			}
 		}
 
 		// Direct Weapon selection
 		if(m_LatestInput.m_WantedWeapon)
-			WantedHookMode = m_Input.m_WantedWeapon-1;
+			WantedHookMode = m_Input.m_WantedWeapon - 1;
 
 		if(WantedHookMode >= 0 && WantedHookMode < 2)
 			m_HookMode = WantedHookMode;
@@ -644,8 +644,7 @@ void CIcCharacter::FireWeapon()
 	bool WillFire = false;
 	if(CountInput(m_LatestPrevInput.m_Fire, m_LatestInput.m_Fire).m_Presses)
 		WillFire = true;
-	else if(FullAuto && (m_LatestInput.m_Fire&1) && (m_aWeapons[m_ActiveWeapon].m_Ammo || (GetInfWeaponId(m_ActiveWeapon) == EInfclassWeapon::POISON_GRENADE)
-																					   || (GetInfWeaponId(m_ActiveWeapon) == EInfclassWeapon::HEALING_GRENADE)))
+	else if(FullAuto && (m_LatestInput.m_Fire & 1) && (m_aWeapons[m_ActiveWeapon].m_Ammo || (GetInfWeaponId(m_ActiveWeapon) == EInfclassWeapon::POISON_GRENADE) || (GetInfWeaponId(m_ActiveWeapon) == EInfclassWeapon::HEALING_GRENADE)))
 	{
 		WillFire = true;
 	}
@@ -763,7 +762,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 
 	/* INFECTION MODIFICATION START ***************************************/
 
-	//KillerPlayer
+	// KillerPlayer
 	CIcPlayer *pKillerPlayer = GameController()->GetPlayer(From);
 	CIcCharacter *pKillerChar = nullptr;
 	if(pKillerPlayer)
@@ -850,7 +849,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		}
 		else
 		{
-			//If the player is a new infected, don't infected other -> nobody knows that he is infected.
+			// If the player is a new infected, don't infected other -> nobody knows that he is infected.
 			if(!pKillerPlayer->IsInfected() || (Server()->Tick() - pKillerPlayer->GetInfectionTick()) < Server()->TickSpeed() * 0.5)
 			{
 				return false;
@@ -858,7 +857,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		}
 	}
 
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 	// m_pPlayer only inflicts half damage on self
 	if(From == GetCid())
@@ -878,10 +877,10 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 	m_DamageTaken++;
 
 	// create healthmod indicator
-	if(Server()->Tick() < m_DamageTakenTick+25)
+	if(Server()->Tick() < m_DamageTakenTick + 25)
 	{
 		// make sure that the damage indicators doesn't group together
-		GameServer()->CreateDamageInd(GetPos(), m_DamageTaken*0.25f, Dmg);
+		GameServer()->CreateDamageInd(GetPos(), m_DamageTaken * 0.25f, Dmg);
 	}
 	else
 	{
@@ -889,7 +888,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		GameServer()->CreateDamageInd(GetPos(), 0, Dmg);
 	}
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	if(Dmg)
 	{
 		HandleDamage(From, Dmg, DamageType);
@@ -926,7 +925,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		if(From >= 0 && From != GetCid())
 			GameServer()->SendHitSound(From);
 	}
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 	m_DamageTakenTick = Server()->Tick();
 
@@ -940,7 +939,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 		return false;
 	}
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	if(Mode == TAKEDAMAGEMODE::INFECTION)
 	{
 		GetPlayer()->StartInfection(DamageContext.Killer);
@@ -956,7 +955,7 @@ bool CIcCharacter::TakeDamage(const vec2 &Force, float FloatDmg, int From, EDama
 
 		GameController()->SendKillMessage(GetCid(), Context);
 	}
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 	if(Dmg > 2)
 		GameServer()->CreateSound(GetPos(), SOUND_PLAYER_PAIN_LONG);
@@ -1000,7 +999,7 @@ bool CIcCharacter::GiveHealth(int HitPoints, std::optional<int> FromCid)
 	{
 		return false;
 	}
-	
+
 	bool Healed = IncreaseHealth(HitPoints);
 
 	if(Healed)
@@ -1368,8 +1367,7 @@ void CIcCharacter::GetDeathContext(const SDamageContext &DamageContext, DeathCon
 	// - Smoker hooked a med poisoned by a slug:
 	//   killer=smoker assistant=slug
 
-	const auto AddUnique = [](int CID, ClientsArray *pArray)
-	{
+	const auto AddUnique = [](int CID, ClientsArray *pArray) {
 		if(pArray->Contains(CID))
 			return;
 
@@ -1422,7 +1420,8 @@ void CIcCharacter::GetDeathContext(const SDamageContext &DamageContext, DeathCon
 	}
 
 	bool DirectKill = true;
-	switch(DamageType) {
+	switch(DamageType)
+	{
 	case EDamageType::DEATH_TILE:
 	case EDamageType::INFECTION_TILE:
 	case EDamageType::KILL_COMMAND:
@@ -1493,7 +1492,8 @@ void CIcCharacter::GetDeathContext(const SDamageContext &DamageContext, DeathCon
 			int MinAcceptableTick = Server()->Tick() - MaxTime * Server()->TickSpeed();
 
 			const CDamagePoint *pPoint = nullptr;
-			for(int i = m_TakenDamageDetails.Size() - 1; i >= 0; --i) {
+			for(int i = m_TakenDamageDetails.Size() - 1; i >= 0; --i)
+			{
 				if(m_TakenDamageDetails.At(i).From == GivenKiller)
 					continue;
 
@@ -1673,14 +1673,14 @@ void CIcCharacter::SaturateVelocity(vec2 Force, float MaxSpeed)
 	vec2 NewVel = m_Core.m_Vel;
 	if(Speed < MaxSpeed || VelDirFactor < 0.0f)
 	{
-		NewVel += VelDir*VelDirFactor;
+		NewVel += VelDir * VelDirFactor;
 		float NewSpeed = length(NewVel);
 		if(NewSpeed > MaxSpeed)
 		{
 			if(VelDirFactor > 0.f)
-				NewVel = VelDir*MaxSpeed;
+				NewVel = VelDir * MaxSpeed;
 			else
-				NewVel = -VelDir*MaxSpeed;
+				NewVel = -VelDir * MaxSpeed;
 		}
 	}
 
@@ -1825,7 +1825,7 @@ EInfclassWeapon CIcCharacter::GetInfWeaponId(int WID) const
 		case EPlayerClass::Medic:
 			return EInfclassWeapon::MEDIC_SHOTGUN;
 		case EPlayerClass::Engineer:
-			if (GameController()->GetRoundType() == ERoundType::Survival)
+			if(GameController()->GetRoundType() == ERoundType::Survival)
 				return EInfclassWeapon::MEDIC_SHOTGUN;
 			return EInfclassWeapon::SHOTGUN;
 		case EPlayerClass::Hero:
@@ -2055,7 +2055,7 @@ void CIcCharacter::HandleWeaponsRegen()
 		return;
 	}
 
-	for(int i=WEAPON_GUN; i<=WEAPON_LASER; i++)
+	for(int i = WEAPON_GUN; i <= WEAPON_LASER; i++)
 	{
 		if(m_ReloadTimer)
 		{
@@ -2069,10 +2069,10 @@ void CIcCharacter::HandleWeaponsRegen()
 
 		if(Params.RegenInterval)
 		{
-			if (m_aWeapons[i].m_AmmoRegenStart < 0)
+			if(m_aWeapons[i].m_AmmoRegenStart < 0)
 				m_aWeapons[i].m_AmmoRegenStart = Server()->Tick();
 
-			if ((Server()->Tick() - m_aWeapons[i].m_AmmoRegenStart) >= Params.RegenInterval * Server()->TickSpeed() / 1000)
+			if((Server()->Tick() - m_aWeapons[i].m_AmmoRegenStart) >= Params.RegenInterval * Server()->TickSpeed() / 1000)
 			{
 				// Add some ammo
 				m_aWeapons[i].m_Ammo = minimum(m_aWeapons[i].m_Ammo + 1, Params.MaxAmmo);
@@ -2186,7 +2186,7 @@ void CIcCharacter::Die(DeathContext *pContext)
 	DestroyChildEntities();
 
 	// we got to wait 0.5 secs before respawning
-	m_pPlayer->m_RespawnTick = Server()->Tick()+Server()->TickSpeed()/2;
+	m_pPlayer->m_RespawnTick = Server()->Tick() + Server()->TickSpeed() / 2;
 	GameController()->OnIcCharacterDeath(this, pContext);
 
 	// a nice sound
@@ -2211,7 +2211,7 @@ void CIcCharacter::Die(DeathContext *pContext)
 
 CAmmoParams CIcCharacter::GetAmmoParams(EWeapon Weapon) const
 {
-	if (!m_pClass)
+	if(!m_pClass)
 		return {};
 
 	return m_pClass->GetAmmoParams(Weapon);
@@ -2229,10 +2229,10 @@ bool CIcCharacter::HasWeapon(int Weapon) const
 
 bool CIcCharacter::HasWeapon(EWeaponClass WeaponClass) const
 {
-	for (int WeaponSlot = 0; WeaponSlot < NUM_WEAPONS; ++WeaponSlot)
+	for(int WeaponSlot = 0; WeaponSlot < NUM_WEAPONS; ++WeaponSlot)
 	{
 		const CWeaponStat &Weapon = m_aWeapons[WeaponSlot];
-		if (!Weapon.m_Got)
+		if(!Weapon.m_Got)
 			continue;
 
 		const EInfclassWeapon InfId = GetInfWeaponId(WeaponSlot);
@@ -2247,7 +2247,7 @@ bool CIcCharacter::HasWeapon(EWeaponClass WeaponClass) const
 
 CIcPlayer *CIcCharacter::GetPlayer()
 {
-	return static_cast<CIcPlayer*>(m_pPlayer);
+	return static_cast<CIcPlayer *>(m_pPlayer);
 }
 
 void CIcCharacter::SetClass(CIcPlayerClass *pClass)
@@ -2412,7 +2412,7 @@ void CIcCharacter::SetInvincible(int Invincible)
 
 void CIcCharacter::SetDeepDefence(bool Active)
 {
-	if (m_WantDeepDefence == Active)
+	if(m_WantDeepDefence == Active)
 		return;
 
 	m_WantDeepDefence = Active;
@@ -2433,7 +2433,7 @@ void CIcCharacter::Freeze(float Time, int Player, FREEZEREASON Reason)
 		Time *= m_EffectsFactor;
 	}
 	m_IsFrozen = true;
-	m_FrozenTime = Server()->TickSpeed()*Time;
+	m_FrozenTime = Server()->TickSpeed() * Time;
 	m_FreezeReason = Reason;
 
 	m_LastFreezer = Player;
@@ -2682,7 +2682,7 @@ void CIcCharacter::PreCoreTick()
 	{
 		if(m_FrozenTime % Server()->TickSpeed() == Server()->TickSpeed() - 1)
 		{
-			int FreezeSec = 1+(m_FrozenTime/Server()->TickSpeed());
+			int FreezeSec = 1 + (m_FrozenTime / Server()->TickSpeed());
 			GameServer()->CreateDamageInd(m_Pos, 0, FreezeSec);
 		}
 
@@ -2868,13 +2868,13 @@ void CIcCharacter::UpdateCoreSolo()
 
 void CIcCharacter::UpdateTuningParam()
 {
-	CTuningParams* pTuningParams = &m_pPlayer->m_NextTuningParams;
-	
+	CTuningParams *pTuningParams = &m_pPlayer->m_NextTuningParams;
+
 	bool NoHook = false;
 	bool NoHookAcceleration = false;
 	bool NoControls = false;
 	bool NoGravity = false;
-	
+
 	if(PositionIsLocked())
 	{
 		NoControls = true;
@@ -2893,7 +2893,7 @@ void CIcCharacter::UpdateTuningParam()
 		NoControls = true;
 		NoGravity = true;
 	}
-	
+
 	if(m_SlowMotionTick > 0)
 	{
 		float Factor = 1.0f - ((float)g_Config.m_InfSlowMotionPercent / 100);
@@ -2901,8 +2901,8 @@ void CIcCharacter::UpdateTuningParam()
 		float FactorAccel = 1.0f - ((float)g_Config.m_InfSlowMotionHookAccel / 100);
 		pTuningParams->m_GroundControlSpeed = pTuningParams->m_GroundControlSpeed * Factor;
 		pTuningParams->m_HookFireSpeed = pTuningParams->m_HookFireSpeed * FactorSpeed;
-		//pTuningParams->m_GroundJumpImpulse = pTuningParams->m_GroundJumpImpulse * Factor;
-		//pTuningParams->m_AirJumpImpulse = pTuningParams->m_AirJumpImpulse * Factor;
+		// pTuningParams->m_GroundJumpImpulse = pTuningParams->m_GroundJumpImpulse * Factor;
+		// pTuningParams->m_AirJumpImpulse = pTuningParams->m_AirJumpImpulse * Factor;
 		pTuningParams->m_AirControlSpeed = pTuningParams->m_AirControlSpeed * Factor;
 		pTuningParams->m_HookDragAccel = pTuningParams->m_HookDragAccel * FactorAccel;
 		pTuningParams->m_HookDragSpeed = pTuningParams->m_HookDragSpeed * FactorSpeed;
@@ -2920,10 +2920,11 @@ void CIcCharacter::UpdateTuningParam()
 		{
 			float MaxSpeed = g_Config.m_InfSlowMotionMaxSpeed * 0.1f;
 			float diff = MaxSpeed / length(m_Core.m_Vel);
-			if (diff < 1.0f) m_Core.m_Vel *= diff;
+			if(diff < 1.0f)
+				m_Core.m_Vel *= diff;
 		}
 	}
-	
+
 	if(GetEffectiveHookMode() == 1)
 	{
 		pTuningParams->m_HookDragSpeed = 0.0f;

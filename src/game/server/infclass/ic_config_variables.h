@@ -3,10 +3,10 @@
 #ifndef MACRO_CONFIG_INT
 
 #error "Config macros must be defined"
-#define MACRO_CONFIG_INT(Name, ScriptName, Def, Min, Max, Save, Desc);
-#define MACRO_CONFIG_FLOAT(Name, ScriptName, Def, Min, Max, Save, Desc);
-#define MACRO_CONFIG_COL(Name, ScriptName, Def, Save, Desc);
-#define MACRO_CONFIG_STR(Name, ScriptName, Len, Def, Save, Desc);
+#define MACRO_CONFIG_INT(Name, ScriptName, Def, Min, Max, Save, Desc) ;
+#define MACRO_CONFIG_FLOAT(Name, ScriptName, Def, Min, Max, Save, Desc) ;
+#define MACRO_CONFIG_COL(Name, ScriptName, Def, Save, Desc) ;
+#define MACRO_CONFIG_STR(Name, ScriptName, Len, Def, Save, Desc) ;
 
 #endif
 
@@ -163,7 +163,7 @@ MACRO_CONFIG_INT(FunRoundGhoulStomachSize, funround_ghoul_stomach_size, 40, 0, 1
 
 MACRO_CONFIG_INT(TipsInterval, tips_interval, 10, 0, 100, CFGFLAG_SERVER, "Interval between tip messages (minutes, 0 to disable)")
 
-//Looper class config
+// Looper class config
 MACRO_CONFIG_INT(InfSlowMotionWallDuration, inf_slow_motion_wall_duration, 30, 0, 1024, CFGFLAG_SERVER, "How long looper wall slow motion effect will slow down zombies (in centiSec)")
 MACRO_CONFIG_INT(InfSlowMotionGunDuration, inf_slow_motion_gun_duration, 6, 0, 1024, CFGFLAG_SERVER, "How long looper gun slow motion effect will slow down zombies (in centiSec)")
 MACRO_CONFIG_INT(InfLooperBarrierLifeSpan, inf_looper_barrier_life_span, 59, 0, 1024, CFGFLAG_SERVER, "How long looper barrier will last (in seconds)")
@@ -178,7 +178,7 @@ MACRO_CONFIG_INT(InfControlPointCaptionRadius, inf_cp_caption_radius, 48, 32, 10
 MACRO_CONFIG_INT(InfControlPointVisualRadius, inf_cp_visual_radius, 48 + 64, 32, 10000, CFGFLAG_SERVER, "Control Point outer (effect) radius")
 MACRO_CONFIG_INT(InfControlPointGlobalInterval, inf_cp_global_effect_interval, 20, 1, 100, CFGFLAG_SERVER, "Control Point global effect rate (1HP every N seconds)")
 
-//Turret
+// Turret
 MACRO_CONFIG_INT(InfMinPlayersForTurrets, inf_min_players_for_turrets, 3, 0, 100, CFGFLAG_SERVER, "Minimum number of players that are needed to enable turrets")
 MACRO_CONFIG_INT(InfTurretEnable, inf_turret_enable, 1, 0, 1, CFGFLAG_SERVER, "If turrets are available")
 MACRO_CONFIG_INT(InfTurretGive, inf_turret_give, 1, 0, 1000, CFGFLAG_SERVER, "Gives hero extra turrets")
@@ -199,7 +199,7 @@ MACRO_CONFIG_INT(InfTurretMaxPerPlayer, inf_turret_max_per_player, 3, 0, 10, CFG
 
 MACRO_CONFIG_FLOAT(InfBlindnessDuration, inf_blindness_duration, 2.5, 0, 100, CFGFLAG_SERVER, "The duration of blindness in seconds")
 
-//SuperWeapons
+// SuperWeapons
 MACRO_CONFIG_INT(InfMinPlayersForWhiteHole, inf_min_players_for_white_hole, 8, 0, 30, CFGFLAG_SERVER, "Minimal number of players that are needed to enable white hole")
 MACRO_CONFIG_INT(InfWhiteHoleMinimalKills, inf_white_hole_minimal_kills, 15, 0, 30, CFGFLAG_SERVER, "Minimal number of kills before white hole become available")
 MACRO_CONFIG_INT(InfWhiteHoleProbability, inf_white_hole_probability, 20, 0, 100, CFGFLAG_SERVER, "Probability of super weapon being available after MinimalKill requirement")

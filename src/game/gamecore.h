@@ -3,15 +3,15 @@
 #ifndef GAME_GAMECORE_H
 #define GAME_GAMECORE_H
 
-#include <base/system.h>
 #include <base/math.h>
+#include <base/system.h>
 #include <base/vmath.h>
 
 #include <set>
 
-#include <math.h>
 #include <engine/shared/protocol.h>
 #include <game/generated/protocol.h>
+#include <math.h>
 
 #include "mapitems.h"
 
@@ -51,9 +51,11 @@ public:
 #undef MACRO_TUNING_PARAM
 	}
 
-	bool operator==(const CTuningParams& TuningParams) const
+	bool operator==(const CTuningParams &TuningParams) const
 	{
-#define MACRO_TUNING_PARAM(Name, ScriptName, Value, Description) if(m_##Name != TuningParams.m_##Name) return false;
+#define MACRO_TUNING_PARAM(Name, ScriptName, Value, Description) \
+	if(m_##Name != TuningParams.m_##Name) \
+		return false;
 #include "tuning.h"
 #undef MACRO_TUNING_PARAM
 		return true;
@@ -167,15 +169,15 @@ class CCharacterCore
 public:
 	struct CParams : public CTuningParams
 	{
-		const CTuningParams* m_pTuningParams;
+		const CTuningParams *m_pTuningParams;
 		int m_HookMode;
 		int m_HookGrabTime;
-		
-		CParams(const CTuningParams* pTuningParams)
+
+		CParams(const CTuningParams *pTuningParams)
 		{
 			m_pTuningParams = pTuningParams;
 			m_HookMode = 0;
-			m_HookGrabTime = SERVER_TICK_SPEED+SERVER_TICK_SPEED/5;
+			m_HookGrabTime = SERVER_TICK_SPEED + SERVER_TICK_SPEED / 5;
 		}
 	};
 
@@ -203,7 +205,7 @@ public:
 	// InfClassR
 	int m_PassengerNumber = 0;
 	static const float PassengerYOffset;
-	CCharacterCore* m_Passenger;
+	CCharacterCore *m_Passenger;
 	bool m_IsPassenger;
 	bool m_ProbablyStucked;
 
@@ -224,7 +226,7 @@ public:
 	void Reset();
 	void TickDeferred(const CParams *pParams);
 	void Tick(bool UseInput, const CParams *pParams);
-	void Move(const CParams* pParams);
+	void Move(const CParams *pParams);
 
 	void Read(const CNetObj_CharacterCore *pObjCore);
 	void Write(CNetObj_CharacterCore *pObjCore) const;
@@ -258,7 +260,7 @@ protected:
 	void UpdateTaxiPassengers();
 };
 
-//input count
+// input count
 struct CInputCount
 {
 	int m_Presses;

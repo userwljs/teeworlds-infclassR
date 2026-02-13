@@ -133,7 +133,7 @@ public:
 	void GetHelpText(dynamic_string *pBuffer, int ClientId, const char *pHelpPage) const override;
 	bool GetClassHelpPage(dynamic_string *pOutput, const char *pLanguage, EPlayerClass PlayerClass) const;
 
-	bool OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv) override;
+	bool OnEntity(const char *pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv) override;
 	void HandleCharacterTiles(CIcCharacter *pCharacter);
 	void HandleLastHookers();
 
@@ -415,7 +415,7 @@ public:
 	void ConLoadPosition(IConsole::IResult *pResult);
 
 	static void ConSetHealthArmor(IConsole::IResult *pResult, void *pUserData);
-	void ConSetHealthArmor(IConsole::IResult *pResult);	
+	void ConSetHealthArmor(IConsole::IResult *pResult);
 	static void ConSetInvincible(IConsole::IResult *pResult, void *pUserData);
 	void ConSetInvincible(IConsole::IResult *pResult);
 	static void ConSetHookProtection(IConsole::IResult *pResult, void *pUserData);
@@ -508,7 +508,7 @@ private:
 	void SnapMapMenu(int SnappingClient, CNetObj_GameInfo *pGameInfoObj);
 	void FallInLoveIfInfectedEarly(CIcCharacter *pCharacter);
 	void RewardTheKillers(CIcCharacter *pVictim, const DeathContext &Context);
-	void GetPlayerCounter(int ClientException, int& NumHumans, int& NumInfected);
+	void GetPlayerCounter(int ClientException, int &NumHumans, int &NumInfected);
 	int GetMinimumInfectedForPlayers(int PlayersNumber) const;
 
 	int GetClientIdForNewWitch() const;
@@ -575,7 +575,7 @@ private:
 
 	int m_MapWidth;
 	int m_MapHeight;
-	int* m_GrowingMap;
+	int *m_GrowingMap;
 	EFinalExplosionState m_FinalExplosionState{};
 
 	std::optional<std::string> m_GameType;

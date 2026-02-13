@@ -4,19 +4,19 @@
 
 #include <base/logger.h>
 #include <base/math.h>
-#include <engine/shared/config.h>
-#include <engine/map.h>
 #include <engine/console.h>
-#include <engine/storage.h>
+#include <engine/map.h>
 #include <engine/server/lua.h>
 #include <engine/server/lua_callback.h>
 #include <engine/server/roundstatistics.h>
+#include <engine/shared/config.h>
 #include <engine/shared/json.h>
 #include <engine/shared/linereader.h>
 #include <engine/shared/protocolglue.h>
-#include <game/version.h>
+#include <engine/storage.h>
 #include <game/collision.h>
 #include <game/gamecore.h>
+#include <game/version.h>
 
 #include <game/server/entities/character.h>
 #include <game/server/gamecontroller.h>
@@ -96,7 +96,7 @@ void CGameContext::Construct(int Resetting)
 	mem_zero(&m_aLastPlayerInput, sizeof(m_aLastPlayerInput));
 	mem_zero(&m_aPlayerHasInput, sizeof(m_aPlayerHasInput));
 
-	if(Resetting==NO_RESET) // first init
+	if(Resetting == NO_RESET) // first init
 	{
 		for(int i = 0; i < MAX_CLIENTS; i++)
 			for(int j = 0; j < MAX_CLIENTS; j++)
@@ -156,7 +156,7 @@ CGameContext::~CGameContext()
 }
 
 void CGameContext::Clear()
-{	
+{
 	CHeap *pVoteOptionHeap = m_pVoteOptionHeap;
 	CVoteOptionServer *pVoteOptionFirst = m_pVoteOptionFirst;
 	CVoteOptionServer *pVoteOptionLast = m_pVoteOptionLast;
@@ -165,15 +165,15 @@ void CGameContext::Clear()
 
 	m_Resetting = true;
 	this->~CGameContext();
-	new (this) CGameContext(RESET);
+	new(this) CGameContext(RESET);
 
 	m_pVoteOptionHeap = pVoteOptionHeap;
 	m_pVoteOptionFirst = pVoteOptionFirst;
 	m_pVoteOptionLast = pVoteOptionLast;
 	m_NumVoteOptions = NumVoteOptions;
 	m_Tuning = Tuning;
-	
-	for(int i=0; i<MAX_CLIENTS; i++)
+
+	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		m_BroadcastStates[i].m_NoChangeTick = 0;
 		m_BroadcastStates[i].m_LifeSpanTick = 0;
@@ -212,7 +212,7 @@ void CGameContext::FillAntibot(CAntibotRoundData *pData)
 void CGameContext::CreateDamageInd(vec2 Pos, float Angle, int Amount, CClientMask Mask)
 {
 	float a = 3 * 3.14159f / 2 + Angle;
-	//float a = get_angle(dir);
+	// float a = get_angle(dir);
 	float s = a - pi / 3;
 	float e = a + pi / 3;
 	for(int i = 0; i < Amount; i++)
@@ -246,7 +246,7 @@ void CGameContext::CreateLaserDotEvent(vec2 Pos0, vec2 Pos1, int LifeSpan)
 	State.m_Pos1 = Pos1;
 	State.m_LifeSpan = LifeSpan;
 	State.m_SnapId = Server()->SnapNewId();
-	
+
 	m_LaserDots.add(State);
 }
 
@@ -256,7 +256,7 @@ void CGameContext::CreateHammerDotEvent(vec2 Pos, int LifeSpan)
 	State.m_Pos = Pos;
 	State.m_LifeSpan = LifeSpan;
 	State.m_SnapId = Server()->SnapNewId();
-	
+
 	m_HammerDots.add(State);
 }
 
@@ -266,7 +266,7 @@ void CGameContext::CreateLoveEvent(vec2 Pos)
 	State.m_Pos = Pos;
 	State.m_LifeSpan = Server()->TickSpeed();
 	State.m_SnapId = Server()->SnapNewId();
-	
+
 	m_LoveDots.add(State);
 }
 
@@ -407,7 +407,8 @@ bool CGameContext::SnapPickup(const CSnapContext &Context, int SnapId, const vec
 		pPickup->m_Y = (int)Pos.y;
 
 		if(Type == POWERUP_WEAPON)
-			pPickup->m_Type = SubType == WEAPON_SHOTGUN ? protocol7::PICKUP_SHOTGUN : SubType == WEAPON_GRENADE ? protocol7::PICKUP_GRENADE : protocol7::PICKUP_LASER;
+			pPickup->m_Type = SubType == WEAPON_SHOTGUN ? protocol7::PICKUP_SHOTGUN : SubType == WEAPON_GRENADE ? protocol7::PICKUP_GRENADE :
+																												  protocol7::PICKUP_LASER;
 		else if(Type == POWERUP_NINJA)
 			pPickup->m_Type = protocol7::PICKUP_NINJA;
 	}
@@ -497,17 +498,17 @@ void CGameContext::SendChatTarget(int To, const char *pText)
 }
 
 /* INFECTION MODIFICATION START ***************************************/
-void CGameContext::SendChatTarget_Localization(int To, int Category, const char* pText, ...)
+void CGameContext::SendChatTarget_Localization(int To, int Category, const char *pText, ...)
 {
 	int Start = (To < 0 ? 0 : To);
-	int End = (To < 0 ? MAX_CLIENTS : To+1);
-	
+	int End = (To < 0 ? MAX_CLIENTS : To + 1);
+
 	CNetMsg_Sv_Chat Msg;
 	Msg.m_Team = 0;
 	Msg.m_ClientId = -1;
-	
+
 	dynamic_string Buffer;
-	
+
 	va_list VarArgs;
 	va_start(VarArgs, pText);
 
@@ -519,9 +520,9 @@ void CGameContext::SendChatTarget_Localization(int To, int Category, const char*
 			Buffer.clear();
 			Buffer.append(GetChatCategoryPrefix(Category));
 			Server()->Localization()->Format_VL(Buffer, m_apPlayers[i]->GetLanguage(), pText, VarArgs);
-			
+
 			Msg.m_pMessage = Buffer.buffer();
-			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
+			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 			Sent = true;
 		}
 	}
@@ -545,17 +546,17 @@ void CGameContext::SendChatTarget_Localization(int To, int Category, const char*
 	va_end(VarArgs);
 }
 
-void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Number, const char* pText, ...)
+void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Number, const char *pText, ...)
 {
 	int Start = (To < 0 ? 0 : To);
-	int End = (To < 0 ? MAX_CLIENTS : To+1);
-	
+	int End = (To < 0 ? MAX_CLIENTS : To + 1);
+
 	CNetMsg_Sv_Chat Msg;
 	Msg.m_Team = 0;
 	Msg.m_ClientId = -1;
-	
+
 	dynamic_string Buffer;
-	
+
 	va_list VarArgs;
 	va_start(VarArgs, pText);
 
@@ -567,7 +568,7 @@ void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Numbe
 			Buffer.clear();
 			Buffer.append(GetChatCategoryPrefix(Category));
 			Server()->Localization()->Format_VLP(Buffer, m_apPlayers[i]->GetLanguage(), Number, pText, VarArgs);
-			
+
 			Msg.m_pMessage = Buffer.buffer();
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 			Sent = true;
@@ -589,38 +590,38 @@ void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Numbe
 	va_end(VarArgs);
 }
 
-void CGameContext::SendMOTD(int To, const char* pText)
+void CGameContext::SendMOTD(int To, const char *pText)
 {
 	if(m_apPlayers[To])
 	{
 		CNetMsg_Sv_Motd Msg;
-		
+
 		Msg.m_pMessage = pText;
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, To);
 	}
 }
 
-void CGameContext::SendMOTD_Localization(int To, const char* pText, ...)
+void CGameContext::SendMOTD_Localization(int To, const char *pText, ...)
 {
 	if(m_apPlayers[To])
 	{
 		dynamic_string Buffer;
-		
+
 		CNetMsg_Sv_Motd Msg;
-		
+
 		va_list VarArgs;
 		va_start(VarArgs, pText);
-		
+
 		Server()->Localization()->Format_VL(Buffer, m_apPlayers[To]->GetLanguage(), pText, VarArgs);
-	
+
 		va_end(VarArgs);
-		
+
 		Msg.m_pMessage = Buffer.buffer();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, To);
 	}
 }
 
-void CGameContext::AddBroadcast(int ClientId, const char* pText, EBroadcastPriority Priority, int LifeSpan)
+void CGameContext::AddBroadcast(int ClientId, const char *pText, EBroadcastPriority Priority, int LifeSpan)
 {
 	if(LifeSpan > 0)
 	{
@@ -675,7 +676,7 @@ void CGameContext::ReloadChangelog()
 	}
 
 	CLineReader LineReader;
-	if (!LineReader.OpenFile(m_pStorage->OpenFile(pChangelogFilename, IOFLAG_READ, IStorage::TYPE_ALL)))
+	if(!LineReader.OpenFile(m_pStorage->OpenFile(pChangelogFilename, IOFLAG_READ, IStorage::TYPE_ALL)))
 	{
 		dbg_msg("ChangeLog", "unable to open '%s'", pChangelogFilename);
 		return;
@@ -754,14 +755,14 @@ bool CGameContext::MapExists(const char *pMapName) const
 void CGameContext::SendBroadcast(int To, const char *pText, EBroadcastPriority Priority, int LifeSpan)
 {
 	int Start = (To < 0 ? 0 : To);
-	int End = (To < 0 ? MAX_CLIENTS : To+1);
-	
+	int End = (To < 0 ? MAX_CLIENTS : To + 1);
+
 	// only for server demo record
 	if(To < 0)
 	{
 		CNetMsg_Sv_Broadcast Msg;
 		Msg.m_pMessage = pText;
-		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NOSEND, -1);
+		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 	}
 
 	for(int i = Start; i < End; i++)
@@ -780,42 +781,42 @@ const char *CGameContext::GetChatCategoryPrefix(int Category)
 {
 	switch(Category)
 	{
-		case CHATCATEGORY_INFECTION:
-			return "☣ | ";
-		case CHATCATEGORY_SCORE:
-			return "★ | ";
-		case CHATCATEGORY_PLAYER:
-			return "♟ | ";
-		case CHATCATEGORY_INFECTED:
-			return "⛃ | ";
-		case CHATCATEGORY_HUMANS:
-			return "⛁ | ";
-		case CHATCATEGORY_ACCUSATION:
-			return "☹ | ";
-		default:
-			break;
+	case CHATCATEGORY_INFECTION:
+		return "☣ | ";
+	case CHATCATEGORY_SCORE:
+		return "★ | ";
+	case CHATCATEGORY_PLAYER:
+		return "♟ | ";
+	case CHATCATEGORY_INFECTED:
+		return "⛃ | ";
+	case CHATCATEGORY_HUMANS:
+		return "⛁ | ";
+	case CHATCATEGORY_ACCUSATION:
+		return "☹ | ";
+	default:
+		break;
 	}
 
 	return "";
 }
 
-void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priority, int LifeSpan, const char* pText, ...)
+void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priority, int LifeSpan, const char *pText, ...)
 {
 	int Start = (To < 0 ? 0 : To);
-	int End = (To < 0 ? MAX_CLIENTS : To+1);
-	
+	int End = (To < 0 ? MAX_CLIENTS : To + 1);
+
 	dynamic_string Buffer;
-	
+
 	va_list VarArgs;
 	va_start(VarArgs, pText);
-	
+
 	// only for server demo record
 	if(To < 0)
 	{
 		CNetMsg_Sv_Broadcast Msg;
 		Server()->Localization()->Format_VL(Buffer, Config()->m_InfDefaultLanguageCode, pText, VarArgs);
 		Msg.m_pMessage = Buffer.buffer();
-		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NOSEND, -1);
+		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 	}
 
 	for(int i = Start; i < End; i++)
@@ -827,20 +828,20 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 			AddBroadcast(i, Buffer.buffer(), Priority, LifeSpan);
 		}
 	}
-	
+
 	va_end(VarArgs);
 }
 
-void CGameContext::SendBroadcast_Localization_P(int To, EBroadcastPriority Priority, int LifeSpan, int Number, const char* pText, ...)
+void CGameContext::SendBroadcast_Localization_P(int To, EBroadcastPriority Priority, int LifeSpan, int Number, const char *pText, ...)
 {
 	int Start = (To < 0 ? 0 : To);
-	int End = (To < 0 ? MAX_CLIENTS : To+1);
-	
+	int End = (To < 0 ? MAX_CLIENTS : To + 1);
+
 	dynamic_string Buffer;
-	
+
 	va_list VarArgs;
 	va_start(VarArgs, pText);
-	
+
 	for(int i = Start; i < End; i++)
 	{
 		if(m_apPlayers[i] && !m_apPlayers[i]->IsBot())
@@ -903,10 +904,9 @@ void CGameContext::SendChat(int ChatterClientId, int Team, const char *pText, in
 		// send to the clients that did not mute chatter
 		for(int i = 0; i < MAX_CLIENTS; i++)
 		{
-			if((SpamProtectionClientId < 0 || SpamProtectionClientId >= MAX_CLIENTS)
-				|| (m_apPlayers[i] && !CGameContext::m_ClientMuted[i][SpamProtectionClientId]))
+			if((SpamProtectionClientId < 0 || SpamProtectionClientId >= MAX_CLIENTS) || (m_apPlayers[i] && !CGameContext::m_ClientMuted[i][SpamProtectionClientId]))
 			{
-				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
+				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 			}
 		}
 	}
@@ -1010,10 +1010,9 @@ void CGameContext::StartVote(const char *pDesc, const char *pCommand, const char
 	m_VoteUpdate = true;
 }
 
-
 void CGameContext::EndVote()
 {
-	if (m_VoteCloseTime == 0)
+	if(m_VoteCloseTime == 0)
 		return;
 
 	{
@@ -1139,9 +1138,9 @@ void CGameContext::SendVoteStatus(int ClientId, int Total, int Yes, int No)
 void CGameContext::AbortVoteKickOnDisconnect(int ClientId)
 {
 	if(m_VoteCloseTime && ((!str_comp_num(m_aVoteCommand, "kick ", 5) && str_toint(&m_aVoteCommand[5]) == ClientId) ||
-		(!str_comp_num(m_aVoteCommand, "set_team ", 9) && str_toint(&m_aVoteCommand[9]) == ClientId)))
+							  (!str_comp_num(m_aVoteCommand, "set_team ", 9) && str_toint(&m_aVoteCommand[9]) == ClientId)))
 		m_VoteCloseTime = -1;
-	
+
 	if(m_VoteCloseTime && m_VoteBanClientId == ClientId)
 	{
 		m_VoteCloseTime = -1;
@@ -1165,9 +1164,9 @@ void CGameContext::CheckPureTuning()
 	if(!m_pController)
 		return;
 
-	if(	str_comp(m_pController->GameType(), "DM")==0 ||
-		str_comp(m_pController->GameType(), "TDM")==0 ||
-		str_comp(m_pController->GameType(), "CTF")==0)
+	if(str_comp(m_pController->GameType(), "DM") == 0 ||
+		str_comp(m_pController->GameType(), "TDM") == 0 ||
+		str_comp(m_pController->GameType(), "CTF") == 0)
 	{
 		CTuningParams p;
 		if(mem_comp(&p, &m_Tuning, sizeof(p)) != 0)
@@ -1292,11 +1291,11 @@ bool CGameContext::OnClientDDNetVersionKnown(int ClientId)
 
 void CGameContext::OnTick()
 {
-	for(int i=0; i<MAX_CLIENTS; i++)
-	{		
+	for(int i = 0; i < MAX_CLIENTS; i++)
+	{
 		if(m_apPlayers[i])
 		{
-			//Show top10
+			// Show top10
 			if(!Server()->GetClientMemory(i, CLIENTMEMORY_TOP10))
 			{
 				if(!g_Config.m_SvMotd[0] || Server()->GetClientMemory(i, CLIENTMEMORY_ROUNDSTART_OR_MAPCHANGE))
@@ -1305,16 +1304,16 @@ void CGameContext::OnTick()
 		}
 	}
 
-	//Check for banvote
+	// Check for banvote
 	if(!m_VoteCloseTime)
 	{
-		for(int i=0; i<MAX_CLIENTS; i++)
+		for(int i = 0; i < MAX_CLIENTS; i++)
 		{
 			if(Server()->ClientShouldBeBanned(i))
 			{
 				char aDesc[VOTE_DESC_LENGTH] = {0};
 				char aCmd[VOTE_CMD_LENGTH] = {0};
-				str_format(aCmd, sizeof(aCmd), "ban %d %d Banned by vote", i, g_Config.m_SvVoteKickBantime*3);
+				str_format(aCmd, sizeof(aCmd), "ban %d %d Banned by vote", i, g_Config.m_SvVoteKickBantime * 3);
 				str_format(aDesc, sizeof(aDesc), "Ban \"%s\"", Server()->ClientName(i));
 				m_VoteBanClientId = i;
 				m_VoteType = VOTE_TYPE_KICK;
@@ -1324,11 +1323,11 @@ void CGameContext::OnTick()
 		}
 	}
 
-	//Check for mapVote
+	// Check for mapVote
 	if(!m_VoteCloseTime && m_pController->CanVote()) // there is currently no vote && its the start of a round
 	{
-		IServer::CMapVote* mapVote = Server()->GetMapVote();
-		if (mapVote)
+		IServer::CMapVote *mapVote = Server()->GetMapVote();
+		if(mapVote)
 		{
 			char aChatmsg[512] = {0};
 			str_format(aChatmsg, sizeof(aChatmsg), "Starting vote '%s'", mapVote->m_pDesc);
@@ -1336,10 +1335,10 @@ void CGameContext::OnTick()
 			StartVote(mapVote->m_pDesc, mapVote->m_pCommand, mapVote->m_pReason);
 		}
 	}
-	
+
 	// check tuning
 	CheckPureTuning();
-	
+
 	m_Collision.SetTime(m_pController->GetTime());
 	m_World.SetGameTick(Server()->Tick());
 
@@ -1351,7 +1350,7 @@ void CGameContext::OnTick()
 
 	UpdatePlayerMaps();
 
-	//if(world.paused) // make sure that the game object always updates
+	// if(world.paused) // make sure that the game object always updates
 	m_pController->Tick();
 
 	int NumActivePlayers = 0;
@@ -1364,18 +1363,18 @@ void CGameContext::OnTick()
 
 			if(m_apPlayers[i]->GetTeam() != TEAM_SPECTATORS)
 				NumActivePlayers++;
-			
+
 			Server()->RoundStatistics()->UpdatePlayer(i, m_apPlayers[i]->GetTeam() == TEAM_SPECTATORS);
-			
+
 			m_apPlayers[i]->Tick();
 			m_apPlayers[i]->PostTick();
-			
+
 			if(m_VoteLanguageTick[i] > 0)
 			{
 				if(m_VoteLanguageTick[i] == 1)
 				{
 					m_VoteLanguageTick[i] = 0;
-					
+
 					CNetMsg_Sv_VoteSet Msg;
 					Msg.m_Timeout = 0;
 					Msg.m_pDescription = "";
@@ -1391,9 +1390,9 @@ void CGameContext::OnTick()
 			}
 		}
 	}
-	
-	//Check for new broadcast
-	for(int i=0; i<MAX_CLIENTS; i++)
+
+	// Check for new broadcast
+	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if(m_apPlayers[i])
 		{
@@ -1401,28 +1400,27 @@ void CGameContext::OnTick()
 			{
 				str_copy(m_BroadcastStates[i].m_NextMessage, m_BroadcastStates[i].m_TimedMessage);
 			}
-			
-			//Send broadcast only if the message is different, or to fight auto-fading
+
+			// Send broadcast only if the message is different, or to fight auto-fading
 			if(
 				str_comp(m_BroadcastStates[i].m_PrevMessage, m_BroadcastStates[i].m_NextMessage) != 0 ||
-				m_BroadcastStates[i].m_NoChangeTick > Server()->TickSpeed()
-			)
+				m_BroadcastStates[i].m_NoChangeTick > Server()->TickSpeed())
 			{
 				CNetMsg_Sv_Broadcast Msg;
 				Msg.m_pMessage = m_BroadcastStates[i].m_NextMessage;
-				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NORECORD, i);
-				
+				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
+
 				str_copy(m_BroadcastStates[i].m_PrevMessage, m_BroadcastStates[i].m_NextMessage);
-				
+
 				m_BroadcastStates[i].m_NoChangeTick = 0;
 			}
 			else
 				m_BroadcastStates[i].m_NoChangeTick++;
-			
-			//Update broadcast state
+
+			// Update broadcast state
 			if(m_BroadcastStates[i].m_LifeSpanTick > 0)
 				m_BroadcastStates[i].m_LifeSpanTick--;
-			
+
 			if(m_BroadcastStates[i].m_LifeSpanTick <= 0)
 			{
 				m_BroadcastStates[i].m_TimedMessage[0] = 0;
@@ -1442,10 +1440,10 @@ void CGameContext::OnTick()
 			m_BroadcastStates[i].m_TimedMessage[0] = 0;
 		}
 	}
-	
-	//Send score and hit sound
-	for(int i=0; i<MAX_CLIENTS; i++)
-	{		
+
+	// Send score and hit sound
+	for(int i = 0; i < MAX_CLIENTS; i++)
+	{
 		if(m_apPlayers[i])
 		{
 			int Sound = -1;
@@ -1453,7 +1451,7 @@ void CGameContext::OnTick()
 				Sound = SOUND_HIT;
 			else if(m_aHitSoundState[i] == 2)
 				Sound = SOUND_CTF_GRAB_PL;
-			
+
 			if(Sound >= 0)
 			{
 				CClientMask Mask;
@@ -1466,16 +1464,16 @@ void CGameContext::OnTick()
 				CreateSound(m_apPlayers[i]->m_ViewPos, Sound, Mask);
 			}
 		}
-		
+
 		m_aHitSoundState[i] = 0;
 	}
-	
+
 	Server()->RoundStatistics()->UpdateNumberOfPlayers(NumActivePlayers);
-	
-/* INFECTION MODIFICATION START ***************************************/
-	//Clean old dots
+
+	/* INFECTION MODIFICATION START ***************************************/
+	// Clean old dots
 	int DotIter;
-	
+
 	DotIter = 0;
 	while(DotIter < m_LaserDots.size())
 	{
@@ -1488,7 +1486,7 @@ void CGameContext::OnTick()
 		else
 			DotIter++;
 	}
-	
+
 	DotIter = 0;
 	while(DotIter < m_HammerDots.size())
 	{
@@ -1501,7 +1499,7 @@ void CGameContext::OnTick()
 		else
 			DotIter++;
 	}
-	
+
 	DotIter = 0;
 	while(DotIter < m_LoveDots.size())
 	{
@@ -1515,7 +1513,7 @@ void CGameContext::OnTick()
 		else
 			DotIter++;
 	}
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 	// update voting
 	if(m_VoteCloseTime)
@@ -1572,9 +1570,9 @@ void CGameContext::OnTick()
 						No++;
 				}
 
-				if(Yes >= Total/2+1)
+				if(Yes >= Total / 2 + 1)
 					m_VoteEnforce = VOTE_ENFORCE_YES;
-				else if(No >= (Total+1)/2)
+				else if(No >= (Total + 1) / 2)
 					m_VoteEnforce = VOTE_ENFORCE_NO;
 			}
 
@@ -1585,7 +1583,7 @@ void CGameContext::OnTick()
 					Server()->RemoveAccusations(m_VoteBanClientId);
 					m_VoteBanClientId = -1;
 				}
-				
+
 				Server()->SetRconCid(IServer::RCON_CID_VOTE);
 				Console()->ExecuteLine(m_aVoteCommand);
 				Server()->SetRconCid(IServer::RCON_CID_SERV);
@@ -1603,8 +1601,8 @@ void CGameContext::OnTick()
 				SendChatTarget(-1, "Vote failed");
 				if(GetOptionVoteType(m_aVoteCommand) & MAP_VOTE_BITS)
 					Server()->ResetMapVotes();
-				
-				//Remove accusation if needed
+
+				// Remove accusation if needed
 				if(m_VoteBanClientId >= 0)
 				{
 					Server()->RemoveAccusations(m_VoteBanClientId);
@@ -1622,11 +1620,11 @@ void CGameContext::OnTick()
 #ifdef CONF_DEBUG
 	if(g_Config.m_DbgDummies)
 	{
-		for(int i = 0; i < g_Config.m_DbgDummies ; i++)
+		for(int i = 0; i < g_Config.m_DbgDummies; i++)
 		{
 			CNetObj_PlayerInput Input = {0};
-			Input.m_Direction = (i&1)?-1:1;
-			m_apPlayers[MAX_CLIENTS-i-1]->OnPredictedInput(&Input);
+			Input.m_Direction = (i & 1) ? -1 : 1;
+			m_apPlayers[MAX_CLIENTS - i - 1]->OnPredictedInput(&Input);
 		}
 	}
 #endif
@@ -1908,11 +1906,11 @@ void CGameContext::OnClientConnected(int ClientId, void *pData)
 	dbg_assert(!m_apPlayers[ClientId], "non-free player slot");
 	m_apPlayers[ClientId] = m_pController->CreatePlayer(ClientId, Spec, pData);
 	m_apPlayers[ClientId]->m_ClientNameLocked = NameLocked;
-	
+
 #ifdef CONF_DEBUG
 	if(g_Config.m_DbgDummies)
 	{
-		if(ClientId >= MAX_CLIENTS-g_Config.m_DbgDummies)
+		if(ClientId >= MAX_CLIENTS - g_Config.m_DbgDummies)
 			return;
 	}
 #endif
@@ -1963,7 +1961,7 @@ void CGameContext::OnClientDrop(int ClientId, EClientDropType Type, const char *
 	{
 		// remove everyone this player had muted
 		CGameContext::m_ClientMuted[ClientId][i] = false;
-		
+
 		// reset mutes for everyone that muted this player
 		CGameContext::m_ClientMuted[i][ClientId] = false;
 	}
@@ -1983,37 +1981,46 @@ CGameContext::OPTION_VOTE_TYPE CGameContext::GetOptionVoteType(const char *pVote
 {
 	char command[512] = {0};
 	int i = 0;
-	for ( ; i < 510; i++)
+	for(; i < 510; i++)
 	{
-		if (pVoteCommand[i] == 0) break;
-		if (pVoteCommand[i] == ' ') break;
+		if(pVoteCommand[i] == 0)
+			break;
+		if(pVoteCommand[i] == ' ')
+			break;
 		command[i] = pVoteCommand[i];
 	}
 	command[++i] = 0;
-	if(str_comp_nocase(command, "sv_map") == 0) return SV_MAP;
-	if(str_comp_nocase(command, "change_map") == 0) return CHANGE_MAP;
-	if(str_comp_nocase(command, "skip_map") == 0) return SKIP_MAP;
-	if(str_comp_nocase(command, "adjust sv_rounds_per_map +") == 0) return PLAY_MORE_VOTE_TYPE;
-	if(str_startswith(command, "queue_")) return QUEUED_VOTE;
+	if(str_comp_nocase(command, "sv_map") == 0)
+		return SV_MAP;
+	if(str_comp_nocase(command, "change_map") == 0)
+		return CHANGE_MAP;
+	if(str_comp_nocase(command, "skip_map") == 0)
+		return SKIP_MAP;
+	if(str_comp_nocase(command, "adjust sv_rounds_per_map +") == 0)
+		return PLAY_MORE_VOTE_TYPE;
+	if(str_startswith(command, "queue_"))
+		return QUEUED_VOTE;
 	return OTHER_OPTION_VOTE_TYPE;
 }
 
 // copies the map name inside pCommand into pMapName
-// make sure pMapName is big enough to hold the name and pCommand is null terminated 
+// make sure pMapName is big enough to hold the name and pCommand is null terminated
 // example: input pCommand = "change_map infc_newdust", output pMapName = "infc_newdust"
-void CGameContext::GetMapNameFromCommand(char* pMapName, const char *pCommand)
+void CGameContext::GetMapNameFromCommand(char *pMapName, const char *pCommand)
 {
 	bool readingMapName = false;
 	int k = 0;
-	for (int i=0 ; i<510; i++)
+	for(int i = 0; i < 510; i++)
 	{
-		if (pCommand[i] == 0) break;
-		if (pCommand[i] == ' ') 
+		if(pCommand[i] == 0)
+			break;
+		if(pCommand[i] == ' ')
 		{
 			readingMapName = true;
 			continue;
 		}
-		if (!readingMapName) continue;
+		if(!readingMapName)
+			continue;
 		pMapName[k] = pCommand[i];
 		k++;
 	}
@@ -2206,7 +2213,8 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 			if(pMsg7->m_Force)
 			{
 				str_format(s_aRawMsg, sizeof(s_aRawMsg), "force_vote \"%s\" \"%s\" \"%s\"", pMsg7->m_pType, pMsg7->m_pValue, pMsg7->m_pReason);
-				Console()->SetAccessLevel(Authed == AUTHED_ADMIN ? EAccessLevel::ADMIN : Authed == AUTHED_MOD ? EAccessLevel::MOD : EAccessLevel::HELPER);
+				Console()->SetAccessLevel(Authed == AUTHED_ADMIN ? EAccessLevel::ADMIN : Authed == AUTHED_MOD ? EAccessLevel::MOD :
+																												EAccessLevel::HELPER);
 				Console()->ExecuteLine(s_aRawMsg, ClientId, false);
 				Console()->SetAccessLevel(EAccessLevel::ADMIN);
 				return nullptr;
@@ -2247,7 +2255,7 @@ void CGameContext::CensorMessage(char *pCensoredMessage, const char *pMessage, i
 bool CGameContext::MessageTriggersBanOrKick(int FromCid, const char *pMessage)
 {
 	const char aKrx[] = "bro, check out this client: kr​xclient";
-	if (str_comp_num(pMessage, aKrx, sizeof(aKrx)) == 0)
+	if(str_comp_num(pMessage, aKrx, sizeof(aKrx)) == 0)
 	{
 		char aAddrStr[NETADDR_MAXSTRSIZE]{};
 		Server()->GetClientAddr(FromCid, aAddrStr, sizeof(aAddrStr));
@@ -2274,8 +2282,8 @@ void CGameContext::OnMessage(int MsgId, CUnpacker *pUnpacker, int ClientId)
 		return;
 
 	CPlayer *pPlayer = m_apPlayers[ClientId];
-	//HACK: DDNet Client did something wrong that we can detect
-	//Round and Score conditions are here only to prevent false-positif
+	// HACK: DDNet Client did something wrong that we can detect
+	// Round and Score conditions are here only to prevent false-positif
 	if(!pPlayer && Server()->GetClientNbRound(ClientId) == 0)
 	{
 		Server()->Kick(ClientId, "Kicked (is probably a dummy)");
@@ -2834,7 +2842,8 @@ void CGameContext::OnEmoticonNetMessage(const CNetMsg_Cl_Emoticon *pMsg, int Cli
 	// Still apply a reasonable limit: 1-2 emotes per tick
 	if(g_Config.m_SvSpamprotection && pPlayer->m_LastEmote &&
 		pPlayer->m_LastEmote + maximum(Server()->TickSpeed() * g_Config.m_SvEmoticonDelay,
-								   Server()->TickSpeed() / g_Config.m_SvSnapsPerSecond) > Server()->Tick())
+								   Server()->TickSpeed() / g_Config.m_SvSnapsPerSecond) >
+			Server()->Tick())
 		return;
 
 	CCharacter *pChr = pPlayer->GetCharacter();
@@ -3467,7 +3476,7 @@ bool CGameContext::InsertVote(int Position, const char *pDescription, const char
 		{
 			int CurrentPos = 1;
 			CVoteOptionServer *pPrevOption = m_pVoteOptionFirst;
-			while (CurrentPos < Position)
+			while(CurrentPos < Position)
 			{
 				pPrevOption = pPrevOption->m_pNext;
 				++CurrentPos;
@@ -3799,15 +3808,14 @@ void CGameContext::ConCredits(IConsole::IResult *pResult, void *pUserData)
 	CGameContext *pSelf = (CGameContext *)pUserData;
 
 	int ClientId = pResult->GetClientId();
-	const char* pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
+	const char *pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
 
 	dynamic_string Buffer;
 
 	const char aThanks[] = "guenstig werben, Defeater, Orangus, BlinderHeld, Warpaint, Serena, FakeDeath, tee_to_F_U_UP!, Denis, NanoSlime_, tria, pinkieval…";
 	const char aContributors[] = "necropotame, Stitch626, yavl, Socialdarwinist"
-	                             ", bretonium, duralakun, FluffyTee, ResamVi"
-	                             ", Kaffeine"
-	                             ;
+								 ", bretonium, duralakun, FluffyTee, ResamVi"
+								 ", Kaffeine";
 
 	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", "InfectionDust", nullptr);
 	Buffer.append("\n\n");
@@ -3834,7 +3842,7 @@ void CGameContext::ConAbout(IConsole::IResult *pResult, void *pUserData)
 void CGameContext::ConAbout(IConsole::IResult *pResult)
 {
 	int ClientId = pResult->GetClientId();
-	const char* pLanguage = m_apPlayers[ClientId]->GetLanguage();
+	const char *pLanguage = m_apPlayers[ClientId]->GetLanguage();
 
 	dynamic_string Buffer;
 	Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", GAME_VERSION, nullptr);
@@ -3856,8 +3864,7 @@ void CGameContext::ConAbout(IConsole::IResult *pResult)
 	if(pSourceUrl[0])
 	{
 		Server()->Localization()->Format_L(Buffer, pLanguage, _("Sources: {str:SourceUrl} "), "SourceUrl",
-			pSourceUrl, nullptr
-		);
+			pSourceUrl, nullptr);
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
 		Buffer.clear();
 	}
@@ -3896,13 +3903,13 @@ void CGameContext::ConAbout(IConsole::IResult *pResult)
 	Buffer.clear();
 }
 
-void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
+void CGameContext::PrivateMessage(const char *pStr, int ClientId, bool TeamChat)
 {
 	if(ProcessSpamProtection(ClientId))
 		return;
 
 	bool ArgumentFound = false;
-	const char* pArgumentIter = pStr;
+	const char *pArgumentIter = pStr;
 	while(*pArgumentIter)
 	{
 		if(*pArgumentIter != ' ')
@@ -3910,10 +3917,10 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 			ArgumentFound = true;
 			break;
 		}
-		
+
 		pArgumentIter++;
 	}
-	
+
 	if(!ArgumentFound)
 	{
 		SendChatTarget(ClientId, "Usage: /msg <username or group> <message>");
@@ -3921,14 +3928,13 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 		SendChatTarget(ClientId, "Available groups: !near, !engineer, !soldier, ...");
 		return;
 	}
-	
+
 	dynamic_string FinalMessage;
 	int TextIter = 0;
-	
-	
+
 	bool CheckDistance = false;
 	vec2 CheckDistancePos = vec2(0.0f, 0.0f);
-	
+
 	std::optional<int> CheckTeam;
 	EPlayerClass CheckClass = EPlayerClass::Invalid;
 
@@ -3941,14 +3947,14 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 		else
 			CheckTeam = TEAM_BLUE;
 	}
-	
+
 	char aNameFound[32];
 	aNameFound[0] = 0;
-	
+
 	char aChatTitle[32];
 	aChatTitle[0] = 0;
 	unsigned int c = 0;
-	for(; c<sizeof(aNameFound)-1; c++)
+	for(; c < sizeof(aNameFound) - 1; c++)
 	{
 		if(pStr[c] == ' ' || pStr[c] == 0)
 		{
@@ -4063,7 +4069,7 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 			}
 			else
 			{
-				for(int i=0; i<MAX_CLIENTS; i++)
+				for(int i = 0; i < MAX_CLIENTS; i++)
 				{
 					if(m_apPlayers[i] && str_comp(Server()->ClientName(i), aNameFound) == 0)
 					{
@@ -4074,7 +4080,7 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 				}
 			}
 		}
-		
+
 		if(aChatTitle[0] || pStr[c] == 0)
 		{
 			aNameFound[c] = 0;
@@ -4083,29 +4089,29 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 		else
 		{
 			aNameFound[c] = pStr[c];
-			aNameFound[c+1] = 0;
+			aNameFound[c + 1] = 0;
 		}
 	}
-		
+
 	if(!aChatTitle[0])
 	{
 		SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT, _("No player was found with this name"));
 		return;
 	}
-	
+
 	pStr += c;
 	while(*pStr == ' ')
 		pStr++;
-	
+
 	dynamic_string Buffer;
 	Buffer.copy(pStr);
 	Server()->Localization()->ArabicShaping(Buffer);
-	
+
 	CNetMsg_Sv_Chat Msg;
 	Msg.m_Team = (TeamChat ? 1 : 0);
 	Msg.m_ClientId = ClientId;
-	
-	for(int i=0; i<MAX_CLIENTS; i++)
+
+	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if(m_apPlayers[i] && !CGameContext::m_ClientMuted[i][ClientId])
 		{
@@ -4122,11 +4128,11 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 				}
 				if((CheckClass != EPlayerClass::Invalid) && !(m_apPlayers[i]->GetClass() == CheckClass))
 					continue;
-				
+
 				if(CheckDistance && !(m_apPlayers[i]->GetCharacter() && distance(m_apPlayers[i]->GetCharacter()->m_Pos, CheckDistancePos) < 1000.0f))
 					continue;
 			}
-			
+
 			FinalMessage.clear();
 			TextIter = 0;
 			if(i == ClientId)
@@ -4155,7 +4161,7 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 				TextIter = FinalMessage.append_at(TextIter, Buffer.buffer());
 			}
 			Msg.m_pMessage = FinalMessage.buffer();
-	
+
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, i);
 		}
 	}
@@ -4164,7 +4170,7 @@ void CGameContext::PrivateMessage(const char* pStr, int ClientId, bool TeamChat)
 void CGameContext::MutePlayer(int ClientId, char *pStr)
 {
 	const char *pName = ParseStringArgumentInplace(pStr);
-	if (pName == nullptr || pName[0] == '\0')
+	if(pName == nullptr || pName[0] == '\0')
 	{
 		SendChatTarget(ClientId, "Invalid player name");
 		return;
@@ -4234,14 +4240,14 @@ void CGameContext::ConLogout(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
 	int ClientId = pResult->GetClientId();
-	
+
 	pSelf->Server()->Logout(ClientId);
 }
 
 void CGameContext::ConHelp(IConsole::IResult *pResult, void *pUserData)
 {
 	int ClientId = pResult->GetClientId();
-	const char *pHelpPage = (pResult->NumArguments()>0) ? pResult->GetString(0) : nullptr;
+	const char *pHelpPage = (pResult->NumArguments() > 0) ? pResult->GetString(0) : nullptr;
 
 	CGameContext *pSelf = (CGameContext *)pUserData;
 	pSelf->ChatHelp(ClientId, pHelpPage);
@@ -4263,7 +4269,7 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 		{
 			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You have to use an account to play on this server."), nullptr);
 		}
-		else if (str_comp(Config()->m_SvAccounts, "enabled") == 0)
+		else if(str_comp(Config()->m_SvAccounts, "enabled") == 0)
 		{
 			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You can use an account to unlock some features on this server."), nullptr);
 		}
@@ -4292,13 +4298,12 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 	if(Buffer.empty())
 	{
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Server()->Localization()->Localize(pLanguage, _("Choose a help page with /help <page>")));
-		
+
 		Server()->Localization()->Format_L(Buffer, pLanguage, _("Available help pages: {str:PageList}"),
 			"PageList", "game, translate, msg, mute, taxi",
-			nullptr
-		);
+			nullptr);
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		
+
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", "engineer, soldier, scientist, biologist, looper, medic, hero, ninja, mercenary, sniper, whitehole");
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", "smoker, hunter, bat, boomer, ghost, spider, ghoul, slug, voodoo, undead, witch.");
 	}
@@ -4349,10 +4354,10 @@ void CGameContext::ConRules(IConsole::IResult *pResult, void *pUserData)
 void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
-	
+
 	int ClientId = pResult->GetClientId();
-	
-	const char *pLanguageCode = (pResult->NumArguments()>0) ? pResult->GetString(0) : nullptr;
+
+	const char *pLanguageCode = (pResult->NumArguments() > 0) ? pResult->GetString(0) : nullptr;
 	char aFinalLanguageCode[8];
 	aFinalLanguageCode[0] = 0;
 
@@ -4362,36 +4367,36 @@ void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 			str_copy(aFinalLanguageCode, "uk");
 		else
 		{
-			for(int i=0; i<pSelf->Server()->Localization()->m_pLanguages.size(); i++)
+			for(int i = 0; i < pSelf->Server()->Localization()->m_pLanguages.size(); i++)
 			{
 				if(str_comp_nocase(pLanguageCode, pSelf->Server()->Localization()->m_pLanguages[i]->GetFilename()) == 0)
 					str_copy(aFinalLanguageCode, pLanguageCode);
 			}
 		}
 	}
-	
+
 	if(aFinalLanguageCode[0])
 	{
 		pSelf->SetClientLanguage(ClientId, aFinalLanguageCode);
 	}
 	else
 	{
-		const char* pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
-		const char* pTxtUnknownLanguage = pSelf->Server()->Localization()->Localize(pLanguage, _("Unknown language"));
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", pTxtUnknownLanguage);	
-		
+		const char *pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
+		const char *pTxtUnknownLanguage = pSelf->Server()->Localization()->Localize(pLanguage, _("Unknown language"));
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", pTxtUnknownLanguage);
+
 		dynamic_string BufferList;
 		int BufferIter = 0;
-		for(int i=0; i<pSelf->Server()->Localization()->m_pLanguages.size(); i++)
+		for(int i = 0; i < pSelf->Server()->Localization()->m_pLanguages.size(); i++)
 		{
-			if(i>0)
+			if(i > 0)
 				BufferIter = BufferList.append_at(BufferIter, ", ");
 			BufferIter = BufferList.append_at(BufferIter, pSelf->Server()->Localization()->m_pLanguages[i]->GetFilename());
 		}
-		
+
 		dynamic_string Buffer;
 		pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Available languages: {str:ListOfLanguage}"), "ListOfLanguage", BufferList.buffer(), nullptr);
-		
+
 		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", Buffer.buffer());
 	}
 }
@@ -4400,12 +4405,12 @@ void CGameContext::ConCmdList(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
 	int ClientId = pResult->GetClientId();
-	const char* pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
-	
+	const char *pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
+
 	dynamic_string Buffer;
-	
+
 	Buffer.append("~~ ");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("List of commands")); 
+	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("List of commands"));
 	Buffer.append(" ~~\n\n");
 	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/antiping, /alwaysrandom, /customskin, /help, /about, /language", nullptr);
 	Buffer.append("\n\n");
@@ -4509,13 +4514,13 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("add_map_votes", "", CFGFLAG_SERVER, ConAddMapVotes, this, "Automatically adds voting options for all maps");
 	Console()->Register("vote", "r['yes'|'no']", CFGFLAG_SERVER, ConVote, this, "Force a vote to yes/no");
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	Console()->Register("skip_map", "", CFGFLAG_SERVER, ConSkipMap, this, "Change map to the next in the rotation");
 	Console()->Register("queue_map", "?r[map]", CFGFLAG_SERVER, ConQueueMap, this, "Set the next map");
 	Console()->Register("add_map", "?r[map]", CFGFLAG_SERVER, ConAddMap, this, "Add a map to the maps rotation list");
 
 	Console()->Register("kill_pl", "v[id]", CFGFLAG_SERVER, ConKillPlayer, this, "Kills player v and announces the kill");
-	//Chat Command
+	// Chat Command
 	Console()->Register("version", "", CFGFLAG_SERVER, ConVersion, this, "Display information about the server version and build");
 
 	Console()->Register("about", "", CFGFLAG_CHAT, ConAbout, this, "Display information about the mod");
@@ -4526,7 +4531,7 @@ void CGameContext::OnConsoleInit()
 
 	Console()->Register("reload_changelog", "?i[page]", CFGFLAG_SERVER, ConReloadChangeLog, this, "Reload the changelog file");
 
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 	Console()->Chain("sv_motd", ConchainSpecialMotdupdate, this);
 
@@ -4598,14 +4603,14 @@ void CGameContext::OnInit(const void *pPersistentData)
 
 	m_GameUuid = RandomUuid();
 
-	for(int i=0; i<MAX_CLIENTS; i++)
+	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		Server()->ResetClientMemoryAboutGame(i);
 	}
 
 	for(int i = 0; i < NUM_NETOBJTYPES; i++)
 		Server()->SnapSetStaticsize(i, m_NetObjHandler.GetObjSize(i));
-	
+
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		m_VoteLanguageTick[i] = 0;
@@ -4629,7 +4634,7 @@ void CGameContext::OnInit(const void *pPersistentData)
 	m_pController->InitSmartMapRotation();
 
 	{
-		//Open file
+		// Open file
 		char *pMapShortName = &g_Config.m_SvMap[0];
 		char MapCfgFilename[512];
 		str_format(MapCfgFilename, sizeof(MapCfgFilename), "maps/%s.cfg", pMapShortName);
@@ -4665,7 +4670,7 @@ void CGameContext::OnInit(const void *pPersistentData)
 #ifdef CONF_DEBUG
 	if(g_Config.m_DbgDummies)
 	{
-		for(int i = 0; i < g_Config.m_DbgDummies ; i++)
+		for(int i = 0; i < g_Config.m_DbgDummies; i++)
 		{
 			OnClientConnected(MAX_CLIENTS - i - 1, nullptr);
 		}
@@ -4700,16 +4705,16 @@ void CGameContext::CreateAllEntities(bool Initial)
 	{
 		char aLayerName[12];
 
-		const CMapItemGroup* pGroup = m_Layers.EntityGroup();
+		const CMapItemGroup *pGroup = m_Layers.EntityGroup();
 		for(int l = 0; l < pGroup->m_NumLayers; l++)
 		{
-			const CMapItemLayer *pLayer = m_Layers.GetLayer(pGroup->m_StartLayer+l);
+			const CMapItemLayer *pLayer = m_Layers.GetLayer(pGroup->m_StartLayer + l);
 			if(pLayer->m_Type == LAYERTYPE_QUADS)
 			{
 				const CMapItemLayerQuads *pQLayer = (const CMapItemLayerQuads *)pLayer;
 				IntsToStr(pQLayer->m_aName, std::size(pQLayer->m_aName), aLayerName, std::size(aLayerName));
 
-				const CQuad *pQuads = (const CQuad *) Kernel()->RequestInterface<IMap>()->GetDataSwapped(pQLayer->m_Data);
+				const CQuad *pQuads = (const CQuad *)Kernel()->RequestInterface<IMap>()->GetDataSwapped(pQLayer->m_Data);
 
 				for(int q = 0; q < pQLayer->m_NumQuads; q++)
 				{
@@ -4740,7 +4745,7 @@ void CGameContext::OnShutdown(const void *pPersistentData)
 		pPersistent->m_PrevGameUuid = m_GameUuid;
 	}
 
-	//reset votes.
+	// reset votes.
 	EndVote();
 
 	m_pController = nullptr;
@@ -4756,26 +4761,26 @@ void CGameContext::OnSnap(int ClientId)
 	{
 		CMsgPacker Msg(NETMSGTYPE_SV_TUNEPARAMS);
 		int *pParams = (int *)&m_Tuning;
-		for(unsigned i = 0; i < sizeof(m_Tuning)/sizeof(int); i++)
+		for(unsigned i = 0; i < sizeof(m_Tuning) / sizeof(int); i++)
 			Msg.AddInt(pParams[i]);
-		Server()->SendMsg(&Msg, MSGFLAG_RECORD|MSGFLAG_NOSEND, ClientId);
+		Server()->SendMsg(&Msg, MSGFLAG_RECORD | MSGFLAG_NOSEND, ClientId);
 	}
 
 	m_World.Snap(ClientId);
 	m_pController->Snap(ClientId);
 	m_Events.Snap(ClientId);
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	int SnappingClientVersion = GetClientVersion(ClientId);
 	CSnapContext Context(SnappingClientVersion);
-	//Snap laser dots
-	for(int i=0; i < m_LaserDots.size(); i++)
+	// Snap laser dots
+	for(int i = 0; i < m_LaserDots.size(); i++)
 	{
 		if(ClientId >= 0)
 		{
-			vec2 CheckPos = (m_LaserDots[i].m_Pos0 + m_LaserDots[i].m_Pos1)*0.5f;
-			float dx = m_apPlayers[ClientId]->m_ViewPos.x-CheckPos.x;
-			float dy = m_apPlayers[ClientId]->m_ViewPos.y-CheckPos.y;
+			vec2 CheckPos = (m_LaserDots[i].m_Pos0 + m_LaserDots[i].m_Pos1) * 0.5f;
+			float dx = m_apPlayers[ClientId]->m_ViewPos.x - CheckPos.x;
+			float dy = m_apPlayers[ClientId]->m_ViewPos.y - CheckPos.y;
 			if(absolute(dx) > 1000.0f || absolute(dy) > 800.0f)
 				continue;
 			if(distance(m_apPlayers[ClientId]->m_ViewPos, CheckPos) > 1100.0f)
@@ -4784,19 +4789,19 @@ void CGameContext::OnSnap(int ClientId)
 
 		SnapLaserObject(Context, m_LaserDots[i].m_SnapId, m_LaserDots[i].m_Pos1, m_LaserDots[i].m_Pos0, Server()->Tick());
 	}
-	for(int i=0; i < m_HammerDots.size(); i++)
+	for(int i = 0; i < m_HammerDots.size(); i++)
 	{
 		if(ClientId >= 0)
 		{
 			vec2 CheckPos = m_HammerDots[i].m_Pos;
-			float dx = m_apPlayers[ClientId]->m_ViewPos.x-CheckPos.x;
-			float dy = m_apPlayers[ClientId]->m_ViewPos.y-CheckPos.y;
+			float dx = m_apPlayers[ClientId]->m_ViewPos.x - CheckPos.x;
+			float dy = m_apPlayers[ClientId]->m_ViewPos.y - CheckPos.y;
 			if(absolute(dx) > 1000.0f || absolute(dy) > 800.0f)
 				continue;
 			if(distance(m_apPlayers[ClientId]->m_ViewPos, CheckPos) > 1100.0f)
 				continue;
 		}
-		
+
 		CNetObj_Projectile *pObj = Server()->SnapNewItem<CNetObj_Projectile>(m_HammerDots[i].m_SnapId);
 		if(pObj)
 		{
@@ -4808,13 +4813,13 @@ void CGameContext::OnSnap(int ClientId)
 			pObj->m_Type = WEAPON_HAMMER;
 		}
 	}
-	for(int i=0; i < m_LoveDots.size(); i++)
+	for(int i = 0; i < m_LoveDots.size(); i++)
 	{
 		if(ClientId >= 0)
 		{
 			vec2 CheckPos = m_LoveDots[i].m_Pos;
-			float dx = m_apPlayers[ClientId]->m_ViewPos.x-CheckPos.x;
-			float dy = m_apPlayers[ClientId]->m_ViewPos.y-CheckPos.y;
+			float dx = m_apPlayers[ClientId]->m_ViewPos.x - CheckPos.x;
+			float dy = m_apPlayers[ClientId]->m_ViewPos.y - CheckPos.y;
 			if(absolute(dx) > 1000.0f || absolute(dy) > 800.0f)
 				continue;
 			if(distance(m_apPlayers[ClientId]->m_ViewPos, CheckPos) > 1100.0f)
@@ -4830,8 +4835,8 @@ void CGameContext::OnSnap(int ClientId)
 			pObj->m_Subtype = 0;
 		}
 	}
-/* INFECTION MODIFICATION END *****************************************/
-	
+	/* INFECTION MODIFICATION END *****************************************/
+
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if(m_apPlayers[i])
@@ -4982,7 +4987,7 @@ void CGameContext::SendRecord(int ClientId)
 	CNetMsg_Sv_Record Msg;
 	CNetMsg_Sv_RecordLegacy MsgLegacy;
 	MsgLegacy.m_PlayerTimeBest = Msg.m_PlayerTimeBest = m_pController->PlayerBestRaceTime(ClientId) * 100.0f;
-	MsgLegacy.m_ServerTimeBest = Msg.m_ServerTimeBest = m_pController->ServerBestRaceTime() * 100.0f; //TODO: finish this
+	MsgLegacy.m_ServerTimeBest = Msg.m_ServerTimeBest = m_pController->ServerBestRaceTime() * 100.0f; // TODO: finish this
 	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, ClientId);
 	if(!Server()->IsSixup(ClientId) && GetClientVersion(ClientId) < VERSION_DDNET_MSG_LEGACY)
 	{
@@ -5046,7 +5051,7 @@ bool CGameContext::ProcessSpamProtection(int ClientId, bool RespectChatInitialDe
 	int Muted = 0;
 	if(Server()->GetClientSession(ClientId) && Server()->GetClientSession(ClientId)->m_MuteTick > 0)
 	{
-		Muted = Server()->GetClientSession(ClientId)->m_MuteTick/Server()->TickSpeed();
+		Muted = Server()->GetClientSession(ClientId)->m_MuteTick / Server()->TickSpeed();
 	}
 
 	if(Muted > 0)
@@ -5064,7 +5069,7 @@ void CGameContext::Whisper(int ClientId, char *pStr)
 		return;
 
 	char *pName = ParseStringArgumentInplace(pStr);
-	if (pName == nullptr || pName[0] == '\0' || pStr[0] == '\0')
+	if(pName == nullptr || pName[0] == '\0' || pStr[0] == '\0')
 	{
 		SendChatTarget(ClientId, "Invalid whisper");
 		return;

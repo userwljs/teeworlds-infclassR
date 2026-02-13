@@ -2,8 +2,8 @@
 #define ENGINE_SERVER_LUA_H
 
 #include <exception>
-#include <vector>
 #include <string>
+#include <vector>
 
 #include <engine/lua.h>
 
@@ -23,9 +23,9 @@ class CLua : public ILua
 	static CLua *ms_pStaticLua;
 
 public:
-//	static IServer *ms_pServer;
-//	static CServer *ms_pCServer;
-//	static IGameServer *ms_pGameServer;
+	//	static IServer *ms_pServer;
+	//	static CServer *ms_pCServer;
+	//	static IGameServer *ms_pGameServer;
 	static CGameContext *ms_pCGameServer;
 
 private:
@@ -55,13 +55,13 @@ public:
 
 	static void SetStaticVars(IServer *pServer, CGameContext *pGameServer);
 
-	static int HandleException(std::exception& e);
+	static int HandleException(std::exception &e);
 	static int HandleException(const char *pError);
 
 	static IServer *m_pServer;
 
 private:
-//	int LoadFolderHelper(const char *pFolder);
+	//	int LoadFolderHelper(const char *pFolder);
 
 	void RegisterLuaBindings();
 

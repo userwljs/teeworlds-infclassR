@@ -144,11 +144,12 @@ public:
 	int GetAssists() const { return m_Assists; }
 	int GetDeaths() const { return m_Deaths; }
 
-	virtual void OnCharacterHPChanged(){};
-	virtual void OnCharacterDamage(const SDamageContext &DamageContext){};
+	virtual void OnCharacterHPChanged() {};
+	virtual void OnCharacterDamage(const SDamageContext &DamageContext) {};
 
 	int GetSurvivalRespawnTick() const { return m_SurvivalRespawnTick; }
 	void SetSurvivalRespawnTick(const int Tick) { m_SurvivalRespawnTick = Tick; }
+
 public:
 	int m_MapMenuItem = -1;
 

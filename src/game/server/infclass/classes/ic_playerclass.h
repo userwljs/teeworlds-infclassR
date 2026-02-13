@@ -98,7 +98,7 @@ public:
 	virtual void OnSlimeEffect(int Owner, int Damage, float DamageInterval) = 0;
 	virtual void OnFloatingPointCollected(int Points);
 
-	virtual void GiveUpgrades(const PlayerUpgradesArray &NewUpgrades){};
+	virtual void GiveUpgrades(const PlayerUpgradesArray &NewUpgrades) {};
 
 	CGameContext *GameContext() const;
 	CGameContext *GameServer() const;

@@ -69,7 +69,7 @@ protected:
 	struct GroupItem
 	{
 		const CIcCharacter *pCharacter{};
-		icArray<const CIcCharacter*, MAX_CLIENTS> aNearbies;
+		icArray<const CIcCharacter *, MAX_CLIENTS> aNearbies;
 	};
 
 	icArray<GroupItem, MAX_CLIENTS> m_Groups;

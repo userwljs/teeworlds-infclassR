@@ -29,8 +29,7 @@ void CMedicLaser::OnFired(CIcCharacter *pCharacter, WeaponFireContext *pFireCont
 	pCharacter->GameServer()->CreateSound(pCharacter->GetPos(), SOUND_LASER_FIRE);
 }
 
-CMedicLaser::CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, EInfclassWeapon Weapon)
-	: CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, 0, Weapon)
+CMedicLaser::CMedicLaser(CGameContext *pGameContext, vec2 Pos, vec2 Direction, float StartEnergy, int Owner, EInfclassWeapon Weapon) : CIcLaser(pGameContext, Pos, Direction, StartEnergy, Owner, 0, Weapon)
 {
 }
 
@@ -72,8 +71,7 @@ bool CMedicLaser::OnCharacterHit(CIcCharacter *pHit, const vec2 &At)
 			BROADCAST_DURATION_GAMEANNOUNCE,
 			_("You need at least {int:MinimumHP} HP"),
 			"MinimumHP", &MinimumHP,
-			nullptr
-		);
+			nullptr);
 	}
 	else if(GameController()->GetInfectedCount() < MinimumInfected)
 	{
@@ -81,8 +79,7 @@ bool CMedicLaser::OnCharacterHit(CIcCharacter *pHit, const vec2 &At)
 			BROADCAST_DURATION_GAMEANNOUNCE,
 			_("Too few infected (less than {int:MinimumInfected})"),
 			"MinimumInfected", &MinimumInfected,
-			nullptr
-		);
+			nullptr);
 	}
 	else if(pHit->GetArmor() > 10)
 	{
@@ -113,8 +110,7 @@ bool CMedicLaser::OnCharacterHit(CIcCharacter *pHit, const vec2 &At)
 			_("Medic {str:MedicName} revived {str:RevivedName}"),
 			"MedicName", Server()->ClientName(pMedic->GetCid()),
 			"RevivedName", Server()->ClientName(pInfected->GetCid()),
-			nullptr
-		);
+			nullptr);
 		int ClientId = pMedic->GetCid();
 		Server()->RoundStatistics()->OnScoreEvent(ClientId, EScoreEvent::MEDIC_REVIVE, pMedic->GetPlayerClass(), Server()->ClientName(ClientId), GameServer()->Console());
 	}

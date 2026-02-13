@@ -1,17 +1,17 @@
 #if CONF_LUA
 
-#include <engine/server.h>
 #include <engine/console.h>
+#include <engine/server.h>
 #include <engine/storage.h>
 
 #include <game/server/gamecontext.h>
 
-#include "luabinding.h"
 #include "lua.h"
+#include "luabinding.h"
 
 int CLuaBinding::LuaListdirCallback(const char *name, int is_dir, int dir_type, void *user)
 {
-	LuaListdirCallbackParams *params = (LuaListdirCallbackParams*)user;
+	LuaListdirCallbackParams *params = (LuaListdirCallbackParams *)user;
 	lua_State *L = params->L;
 
 	lua_getglobal(L, params->aCallbackFunc);
@@ -60,10 +60,9 @@ int CLuaBinding::LuaStrIsNetAddr(lua_State *L)
 	int ret = net_addr_from_str(&temp, lua_tostring(L, 1)); // arg1
 	lua_pop(L, 1), // pop arg1
 
-	lua_pushboolean(L, ret == 0);
+		lua_pushboolean(L, ret == 0);
 	return 1;
 }
-
 
 int CLuaBinding::LuaPrintOverride(lua_State *L)
 {
@@ -79,14 +78,14 @@ int CLuaBinding::LuaPrintOverride(lua_State *L)
 		str_append(aMsg, lua_tostring(L, i), sizeof(aMsg));
 		str_append(aMsg, "    ", sizeof(aMsg));
 	}
-	aMsg[str_length(aMsg)-1] = '\0'; // remove the last tab character
+	aMsg[str_length(aMsg) - 1] = '\0'; // remove the last tab character
 
 	// pop all to clean up the stack
 	lua_pop(L, nargs);
 
 	CGameContext *pGameServer = CLua::ms_pCGameServer;
 	pGameServer->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "lua", aMsg);
-	//dbg_msg("lua", "%s", aMsg);
+	// dbg_msg("lua", "%s", aMsg);
 
 	return 0;
 }

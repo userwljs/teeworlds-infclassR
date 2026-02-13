@@ -35,7 +35,7 @@ public:
 
 	virtual void TryRespawn();
 	void Respawn();
-	void SetTeam(int Team, bool DoChatMsg=true);
+	void SetTeam(int Team, bool DoChatMsg = true);
 	int GetTeam() const { return m_Team; };
 	int GetCid() const { return m_ClientId; };
 	uint32_t GetUniqueCid() const { return m_UniqueClientId; }
@@ -180,7 +180,7 @@ public:
 
 	virtual void OnTuningChanged() {}
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 protected:
 	std::optional<CNetObj_PlayerInput> m_LastTarget;
 
@@ -195,7 +195,7 @@ public:
 	bool IsSpectator() const;
 
 	const char *GetLanguage() const;
-	void SetLanguage(const char* pLanguage);
+	void SetLanguage(const char *pLanguage);
 
 	void SetOriginalName(const char *pName);
 	const char *GetOriginalName() const { return m_aOriginalName; }
@@ -204,10 +204,10 @@ public:
 
 	CTuningParams m_PrevTuningParams;
 	CTuningParams m_NextTuningParams;
-	
+
 	void HandleTuningParams();
 
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 protected:
 	virtual void HandleAutoRespawn();

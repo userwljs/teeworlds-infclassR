@@ -11,7 +11,7 @@ public:
 	static int EntityId;
 
 	CFlyingPoint(CGameContext *pGameContext, vec2 Pos, int TrackedPlayer, int Points, vec2 InitialVel);
-	
+
 	void Tick() override;
 	void Snap(int SnappingClient) override;
 
@@ -19,7 +19,6 @@ private:
 	vec2 m_InitialVel;
 	float m_InitialAmount;
 	int m_Points;
-
 };
 
 #endif

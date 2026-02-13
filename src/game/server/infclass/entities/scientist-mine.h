@@ -14,7 +14,7 @@ public:
 		NUM_PARTICLES = 12,
 		NUM_IDS = NUM_SIDE + NUM_PARTICLES,
 	};
-	
+
 public:
 	static int EntityId;
 
@@ -32,7 +32,7 @@ public:
 private:
 	int m_Ids[NUM_IDS];
 	int m_ExplosionRadius{};
-	
+
 public:
 	int m_StartTick;
 };

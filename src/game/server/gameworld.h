@@ -56,7 +56,7 @@ public:
 
 	void SetGameServer(CGameContext *pGameServer);
 
-	template <typename TEntity>
+	template<typename TEntity>
 	void RegisterEntityType()
 	{
 		TEntity::EntityId = AddType();
@@ -87,7 +87,7 @@ public:
 			Number of entities found and added to the ents array.
 	*/
 	int FindEntities(vec2 Pos, float Radius, CEntity **ppEnts, int Max, int Type);
-	
+
 	/*
 		Function: closest_CEntity
 			Finds the closest CEntity of a type to a specific point.
