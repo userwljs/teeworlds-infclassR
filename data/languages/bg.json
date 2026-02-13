@@ -149,16 +149,6 @@
             "value": "{str:VictimName} беше инфектиран"
         },
         {
-            "key": "One human won the round",
-            "one": "Един човек спечели рунда",
-            "other": "{int:NumHumans} хора спечелиха рунда"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Един човек спечели рунда",
-            "other": "{int:NumHumans} хора спечелиха рунда"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Оцеляхте, +5 точки"
         },

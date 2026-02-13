@@ -525,16 +525,6 @@
             "value": "A rodada foi cancelada: Todos os humanos saíram do jogo"
         },
         {
-            "key": "One human won the round",
-            "one": "Um humano venceu a rodada",
-            "other": "{int:NumHumans} humanos venceram a rodada"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Um humano venceu a rodada",
-            "other": "{int:NumHumans} humanos venceram a rodada"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Você sobreviveu, +5 pontos"
         },
@@ -967,10 +957,6 @@
         {
             "key": "{str:PlayerName} changed their name to {str:NewName}",
             "value": "{str:PlayerName} alterou seu nome para: {str:NewName}"
-        },
-        {
-            "key": "Switch language to english?",
-            "value": "Mudar idioma para o inglês?"
         },
         {
             "key": "You can change the language of this mod using the command /language.",

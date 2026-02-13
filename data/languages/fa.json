@@ -149,16 +149,6 @@
             "value": "{str:VictimName} زامبی شد"
         },
         {
-            "key": "One human won the round",
-            "one": "{int:NumHumans} انسان ها برنده راند شدند",
-            "other": "{int:NumHumans} انسان برنده شد(ند)"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "{int:NumHumans} انسان ها برنده راند شدند",
-            "other": "{int:NumHumans} انسان برنده شد(ند)"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "شما توانستید جان سالم به در ببرید، +5 امتیاز"
         },

@@ -117,16 +117,6 @@
             "value": "{str:VictimName} Μολύνθηκε"
         },
         {
-            "key": "One human won the round",
-            "one": "Ένας άνθρωπος κέρδισε τον γύρο",
-            "other": "{int:NumHumans}  κέρδισαν τον γύρο"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Ένας άνθρωπος κέρδισε τον γύρο",
-            "other": "{int:NumHumans}  κέρδισαν τον γύρο"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Επέζησες, +5 πόντοι"
         },

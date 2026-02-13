@@ -149,24 +149,6 @@
             "value": "أصيب بالعدوى {str:VictimName}"
         },
         {
-            "key": "One human won the round",
-            "zero": "٠ بشر فاز {int:NumHumans}",
-            "one": "١ بشري فاز {int:NumHumans}",
-            "two": "٢ بشران فازا",
-            "few": "بشر فازوا في الجولة {int:NumHumans}",
-            "many": "بشر فازوا في الجولة {int:NumHumans}",
-            "other": "بشريون فازوا في الجولة {int:NumHumans}"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "zero": "٠ بشر فاز {int:NumHumans}",
-            "one": "١ بشري فاز {int:NumHumans}",
-            "two": "٢ بشران فازا",
-            "few": "بشر فازوا في الجولة {int:NumHumans}",
-            "many": "بشر فازوا في الجولة {int:NumHumans}",
-            "other": "بشريون فازوا في الجولة {int:NumHumans}"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "لقد نجوت، +٥ نقاط"
         },

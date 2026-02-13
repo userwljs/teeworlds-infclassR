@@ -225,10 +225,6 @@
             "value": "{str:PlayerName} je promenio svoje ime u {str:NewName}"
         },
         {
-            "key": "Switch language to english?",
-            "value": "Prebaciti jezik na srpski?"
-        },
-        {
             "key": "You can change the language of this mod using the command /language.",
             "value": "Možeš da promeniš jezik na ovom modu koristeći naredbu /language."
         },

@@ -105,16 +105,6 @@
             "value": "{str:VictimName}-t megfertőzték"
         },
         {
-            "key": "One human won the round",
-            "one": "Egy ember nyerte meg a játékot",
-            "other": "{int:NumHumans} ember nyerte meg játékot"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Egy ember nyerte meg a játékot",
-            "other": "{int:NumHumans} ember nyerte meg játékot"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Túlélted az inváziót, +5 pont"
         },

@@ -501,20 +501,6 @@
             "value": "Раунд отменен: все люди вышли из игры"
         },
         {
-            "key": "One human won the round",
-            "one": "{int:NumHumans} человек победил",
-            "few": "{int:NumHumans} человека победили",
-            "many": "{int:NumHumans} человек победили",
-            "other": "{int:NumHumans} человека победили"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "{int:NumHumans} человек победил",
-            "few": "{int:NumHumans} человека победили",
-            "many": "{int:NumHumans} человек победили",
-            "other": "{int:NumHumans} человека победили"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Вы выжили, +5 очков"
         },
@@ -931,10 +917,6 @@
         {
             "key": "{str:PlayerName} changed their name to {str:NewName}",
             "value": "Игрок {str:PlayerName} сменил своё имя на {str:NewName}"
-        },
-        {
-            "key": "Switch language to english?",
-            "value": "Переключить язык на русский?"
         },
         {
             "key": "You can change the language of this mod using the command /language.",

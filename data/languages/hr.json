@@ -149,18 +149,6 @@
             "value": "{str:VictimName} je zaražen"
         },
         {
-            "key": "One human won the round",
-            "one": "{int:NumHumans} čovjek je pobijedio ovu rundu",
-            "few": "{int:NumHumans} čovjeka su pobijedili ovu rundu",
-            "other": "{int:NumHumans} ljudi su pobijedili ovu rundu"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "{int:NumHumans} čovjek je pobijedio ovu rundu",
-            "few": "{int:NumHumans} čovjeka su pobijedili ovu rundu",
-            "other": "{int:NumHumans} ljudi su pobijedili ovu rundu"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Preživio si, +5 bodova"
         },

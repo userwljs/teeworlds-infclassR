@@ -225,10 +225,6 @@
             "value": "{str:PlayerName} аатын {str:NewName} диэҥҥэ уларытта"
         },
         {
-            "key": "Switch language to english?",
-            "value": "Саха тылын холбуубут?"
-        },
-        {
             "key": "You can change the language of this mod using the command /language.",
             "value": "Тылы /language команданан уларытыахха сөп."
         },

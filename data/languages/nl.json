@@ -149,16 +149,6 @@
             "value": "{str:VictimName} is geïnfecteerd"
         },
         {
-            "key": "One human won the round",
-            "one": "Eén mens won deze ronde",
-            "other": "{int:NumHumans} mensen wonnen deze ronde"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Eén mens won deze ronde",
-            "other": "{int:NumHumans} mensen wonnen deze ronde"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Je hebt het overleefd, +5 punten"
         },

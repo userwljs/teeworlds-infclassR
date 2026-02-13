@@ -109,16 +109,6 @@
             "value": "{str:VictimName} on infectoitu"
         },
         {
-            "key": "One human won the round",
-            "one": "Yksi ihminen voitti kierroksen",
-            "other": "{int:NumHumans} ihmistä voitti kierroksen"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Yksi ihminen voitti kierroksen",
-            "other": "{int:NumHumans} ihmistä voitti kierroksen"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Sinä selvisit, +5 pistettä"
         },

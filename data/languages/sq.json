@@ -97,16 +97,6 @@
             "value": "ishte i infektuar"
         },
         {
-            "key": "One human won the round",
-            "one": "Një njeri e ka fituar këtë raund",
-            "other": "Njerëzit käne fituar kët raund"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Një njeri e ka fituar këtë raund",
-            "other": "Njerëzit käne fituar kët raund"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Ju keni mbijetuar [ not sure ]"
         },

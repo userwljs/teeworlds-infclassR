@@ -759,7 +759,7 @@ bool CIcGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1
 	{
 		int SpawnX = static_cast<int>(Pos.x)/32.0f;
 		int SpawnY = static_cast<int>(Pos.y)/32.0f;
-		
+
 		if(SpawnX >= 0 && SpawnX < m_MapWidth && SpawnY >= 0 && SpawnY < m_MapHeight)
 		{
 			m_GrowingMap[SpawnY*m_MapWidth+SpawnX] = 6;
@@ -1140,10 +1140,10 @@ void CIcGameController::CreateExplosionDisk(vec2 Pos, float InnerRadius, float D
 			vec2 ForceDir(0,1);
 			float len = length(Diff);
 			len = 1-clamp((len-InnerRadius)/(DamageRadius-InnerRadius), 0.0f, 1.0f);
-			
+
 			if(len)
 				ForceDir = normalize(Diff);
-			
+
 			float DamageToDeal = 1 + ((Damage - 1) * len);
 			apEnts[i]->TakeDamage(ForceDir*Force*len, DamageToDeal, Owner, DamageType);
 		}
@@ -4404,7 +4404,7 @@ void CIcGameController::GetPlayerCounter(int ClientException, int& NumHumans, in
 {
 	NumHumans = 0;
 	NumInfected = 0;
-	
+
 	//Count type of players
 	CIcPlayerIterator<PLAYERITER_INGAME> Iter(GameServer()->m_apPlayers);
 	while(Iter.Next())
@@ -4902,7 +4902,7 @@ bool CIcGameController::IsSafeWitchCandidate(int ClientId) const
 		{
 			if(pCharNearby == pCharacter)
 				continue;
-			
+
 			if(pCharNearby->IsAlive() && pCharNearby->IsHuman())
 			{
 				return false;
@@ -5229,7 +5229,7 @@ void CIcGameController::Tick()
 
 					Server()->SetClientMemory(Iter.ClientId(), CLIENTMEMORY_SESSION_PROCESSED, true);
 				}
-				
+
 				pSession->m_Class = static_cast<int>(Iter.Player()->GetClass());
 				pSession->m_RoundId = GameServer()->m_pController->GetRoundId();
 				pSession->m_LastInfectionTime = Iter.Player()->GetInfectionTimestamp();
@@ -5678,7 +5678,7 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 	else if(NumHumans)
 	{
 		GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_HUMANS, NumHumans,
-			_P("One human won the round",
+			_P("{int:NumHumans} human won the round",
 			   "{int:NumHumans} humans won the round", NumHumans),
 			"NumHumans", &NumHumans,
 			nullptr);
@@ -7786,7 +7786,7 @@ bool CIcGameController::IsSpawnable(vec2 Pos, EZoneTele TeleZoneIndex)
 	//First check if there is a tee too close
 	CCharacter *aEnts[MAX_CLIENTS];
 	int Num = GameWorld()->FindEntities(Pos, 64, (CEntity**)aEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
-	
+
 	for(int c = 0; c < Num; ++c)
 	{
 		if(distance(aEnts[c]->m_Pos, Pos) <= 60)
@@ -8777,7 +8777,7 @@ CLASS_AVAILABILITY CIcGameController::GetPlayerClassAvailability(EPlayerClass Pl
 			return CLASS_AVAILABILITY::DISABLED;
 		}
 	}
-	
+
 	return CLASS_AVAILABILITY::AVAILABLE;
 }
 
