@@ -137,7 +137,6 @@ protected:
 	void AppendNumber(dynamic_string& Buffer, int& BufferIter, CLanguage* pLanguage, int Number);
 	void AppendPercent(dynamic_string& Buffer, int& BufferIter, CLanguage* pLanguage, double Number);
 	void AppendDuration(dynamic_string& Buffer, int& BufferIter, CLanguage* pLanguage, int Number, icu::TimeUnit::UTimeUnitFields Type);
-
 public:
 /* BEGIN EDIT *********************************************************/
 	CLocalization(class CStorage* pStorage);
@@ -171,6 +170,9 @@ public:
 	void Format_LP(dynamic_string& Buffer, const char* pLanguageCode, int Number, const char* pText, ...);
 	
 	void ArabicShaping(dynamic_string& Buffer, int BufferStart = 0);
+
+	std::string GetLangaugeNameByCode(const char* pLanguageCode);
+	CLanguage *GetLanguageByCode(const char* pLanguageCode);
 };
 
 #endif

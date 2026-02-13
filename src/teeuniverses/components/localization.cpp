@@ -383,16 +383,7 @@ bool CLocalization::PreUpdate()
 {
 	if(!m_pMainLanguage || m_Cfg_MainLanguage != m_pMainLanguage->GetFilename())
 	{
-		CLanguage* pLanguage = nullptr;
-		
-		for(int i=0; i<m_pLanguages.size(); i++)
-		{
-			if(m_Cfg_MainLanguage == m_pLanguages[i]->GetFilename())
-			{
-				pLanguage = m_pLanguages[i];
-				break;
-			}
-		}
+		CLanguage* pLanguage = GetLanguageByCode(m_Cfg_MainLanguage.buffer());
 		
 		if(m_pMainLanguage != pLanguage)
 		{
@@ -586,14 +577,8 @@ const char* CLocalization::LocalizeWithDepth(const char* pLanguageCode, const ch
 	CLanguage* pLanguage = m_pMainLanguage;
 	if(pLanguageCode)
 	{
-		for(int i=0; i<m_pLanguages.size(); i++)
-		{
-			if(str_comp(m_pLanguages[i]->GetFilename(), pLanguageCode) == 0)
-			{
-				pLanguage = m_pLanguages[i];
-				break;
-			}
-		}
+		if(auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
+			pLanguage = pFoundLanguage;
 	}
 	
 	if(!pLanguage)
@@ -621,14 +606,8 @@ const char* CLocalization::LocalizeWithDepth_P(const char* pLanguageCode, int Nu
 	CLanguage* pLanguage = m_pMainLanguage;
 	if(pLanguageCode)
 	{
-		for(int i=0; i<m_pLanguages.size(); i++)
-		{
-			if(str_comp(m_pLanguages[i]->GetFilename(), pLanguageCode) == 0)
-			{
-				pLanguage = m_pLanguages[i];
-				break;
-			}
-		}
+		if(auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
+			pLanguage = pFoundLanguage;
 	}
 	
 	if(!pLanguage)
@@ -737,14 +716,8 @@ void CLocalization::Format_V(dynamic_string& Buffer, const char* pLanguageCode, 
 	CLanguage* pLanguage = m_pMainLanguage;	
 	if(pLanguageCode)
 	{
-		for(int i=0; i<m_pLanguages.size(); i++)
-		{
-			if(str_comp(m_pLanguages[i]->GetFilename(), pLanguageCode) == 0)
-			{
-				pLanguage = m_pLanguages[i];
-				break;
-			}
-		}
+		if(auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
+			pLanguage = pFoundLanguage;
 	}
 	if(!pLanguage)
 	{
@@ -955,4 +928,29 @@ void CLocalization::ArabicShaping(dynamic_string& Buffer, int BufferStart)
 	
 	delete[] pBuf0;
 	delete[] pBuf1;
+}
+
+std::string CLocalization::GetLangaugeNameByCode(const char *pLanguageCode)
+{
+	if(const auto* pLanguage = GetLanguageByCode(pLanguageCode); pLanguage)
+	{
+		if(pLanguage->GetName()[0])
+			return std::string(pLanguage->GetName());
+	}
+	return std::string("Unknown");
+}
+
+/**
+ *
+ * @param pLanguageCode language code
+ * @return Ptr to the CLanguage obj. The returned ptr should not be held for a long time, nor should `m_pLanguages` be modified while holding it, as this may lead to a dangling pointer.
+ */
+CLocalization::CLanguage *CLocalization::GetLanguageByCode(const char *pLanguageCode)
+{
+	for(int i = 0; i < m_pLanguages.size(); i++)
+	{
+		if(str_comp(m_pLanguages[i]->GetFilename(), pLanguageCode) == 0)
+			return m_pLanguages[i];
+	}
+	return nullptr;
 }
