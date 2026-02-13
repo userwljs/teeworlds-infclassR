@@ -9,9 +9,9 @@
 #include <game/generated/server_data.h>
 
 #include <engine/shared/config.h>
+#include <game/infclass/damage_type.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/damage_context.h>
-#include <game/infclass/damage_type.h>
 #include <game/server/infclass/entities/ic_character.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
@@ -19,8 +19,7 @@
 
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassInfected, MAX_CLIENTS)
 
-CInfClassInfected::CInfClassInfected(CIcPlayer *pPlayer)
-	: CIcPlayerClass(pPlayer)
+CInfClassInfected::CInfClassInfected(CIcPlayer *pPlayer) : CIcPlayerClass(pPlayer)
 {
 	SetNormalEmote(EMOTE_ANGRY);
 }
@@ -30,7 +29,7 @@ const CInfClassInfected *CInfClassInfected::GetInstance(const CIcCharacter *pCha
 	const CIcPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
 	if(pClass && pClass->IsZombie())
 	{
-		return static_cast<const CInfClassInfected*>(pClass);
+		return static_cast<const CInfClassInfected *>(pClass);
 	}
 
 	return nullptr;
@@ -41,9 +40,9 @@ CInfClassInfected *CInfClassInfected::GetInstance(CIcCharacter *pCharacter)
 	CIcPlayerClass *pClass = pCharacter ? pCharacter->GetClass() : nullptr;
 	if(pClass && pClass->IsZombie())
 	{
-		return static_cast<CInfClassInfected*>(pClass);
+		return static_cast<CInfClassInfected *>(pClass);
 	}
-	
+
 	return nullptr;
 }
 
@@ -226,10 +225,12 @@ void CInfClassInfected::OnPlayerSnap(int SnappingClient, int InfClassVersion)
 
 bool CInfClassInfected::CanDie() const
 {
-	if ((GetPlayerClass() == EPlayerClass::Undead) && m_pCharacter->IsFrozen()) {
+	if((GetPlayerClass() == EPlayerClass::Undead) && m_pCharacter->IsFrozen())
+	{
 		return false;
 	}
-	if ((GetPlayerClass() == EPlayerClass::Voodoo) && m_VoodooAboutToDie) {
+	if((GetPlayerClass() == EPlayerClass::Voodoo) && m_VoodooAboutToDie)
+	{
 		return false;
 	}
 
@@ -265,18 +266,17 @@ void CInfClassInfected::OnCharacterTick()
 	if(GetPlayerClass() == EPlayerClass::Voodoo && m_VoodooAboutToDie)
 	{
 		// Delayed Death
-		if (m_VoodooTimeAlive > 0)
-			m_VoodooTimeAlive-=1000;
+		if(m_VoodooTimeAlive > 0)
+			m_VoodooTimeAlive -= 1000;
 		else
 			m_pCharacter->Die(&m_VoodooDeathContext);
 
 		// Display time left to live
-		int Time = m_VoodooTimeAlive/Server()->TickSpeed();
+		int Time = m_VoodooTimeAlive / Server()->TickSpeed();
 		GameServer()->SendBroadcast_Localization(GetCid(), EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 			_C("Voodoo", "Staying alive for: {int:RemainingTime}"),
 			"RemainingTime", &Time,
-			nullptr
-		);
+			nullptr);
 	}
 	if(GetPlayerClass() == EPlayerClass::Spider)
 	{
@@ -536,13 +536,13 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 
 		for(const int TargetCid : Targets)
 		{
-			if (m_pCharacter->IsInLove())
+			if(m_pCharacter->IsInLove())
 			{
 				break;
 			}
 
 			CIcCharacter *pTarget = GameController()->GetCharacter(TargetCid);
-			if (pTarget->IsSolo())
+			if(pTarget->IsSolo())
 				continue;
 
 			if(GameServer()->Collision()->IntersectLineWeapon(ProjStartPos, pTarget->GetPos()))
@@ -654,7 +654,7 @@ void CInfClassInfected::GiveClassAttributes()
 	}
 
 	m_VoodooAboutToDie = false;
-	m_VoodooTimeAlive = Server()->TickSpeed()*Config()->m_InfVoodooAliveTime;
+	m_VoodooTimeAlive = Server()->TickSpeed() * Config()->m_InfVoodooAliveTime;
 }
 
 void CInfClassInfected::BroadcastWeaponState() const
@@ -676,8 +676,7 @@ void CInfClassInfected::BroadcastWeaponState() const
 				BROADCAST_DURATION_REALTIME,
 				_C("Ghoul", "Stomach filled by {percent:FodderInStomach}"),
 				"FodderInStomach", &FodderInStomach,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 }
@@ -709,7 +708,7 @@ void CInfClassInfected::DoBoomerExplosion()
 
 	{
 		CIcCharacter *apEnts[MAX_CLIENTS];
-		int Num = GameWorld()->FindEntities(GetPos(), DamageRadius, (CEntity**)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
+		int Num = GameWorld()->FindEntities(GetPos(), DamageRadius, (CEntity **)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
 		float ClosestCharacterDistance = DamageRadius * 2;
 
 		const vec2 Pos = GetPos();
@@ -720,9 +719,9 @@ void CInfClassInfected::DoBoomerExplosion()
 				continue;
 
 			vec2 Diff = pTarget->GetPos() - Pos;
-			if (Diff.x == 0.0f && Diff.y == 0.0f)
+			if(Diff.x == 0.0f && Diff.y == 0.0f)
 				Diff.y = -0.5f;
-			vec2 ForceDir(0,1);
+			vec2 ForceDir(0, 1);
 			const float Length = length(Diff);
 			const float NormalizedLength = 1 - clamp((Length - InnerRadius) / (DamageRadius - InnerRadius), 0.0f, 1.0f);
 
@@ -833,7 +832,7 @@ CSlugSlime *CInfClassInfected::PlaceSlime(vec2 PlaceToPos, float MinDistance)
 
 bool CInfClassInfected::FindWitchSpawnPosition(vec2 &Position) const
 {
-	float Angle = atan2f(m_pCharacter->m_Input.m_TargetY, m_pCharacter->m_Input.m_TargetX);//atan2f instead of atan2
+	float Angle = atan2f(m_pCharacter->m_Input.m_TargetY, m_pCharacter->m_Input.m_TargetX); // atan2f instead of atan2
 
 	for(int i = 0; i < 32; i++)
 	{

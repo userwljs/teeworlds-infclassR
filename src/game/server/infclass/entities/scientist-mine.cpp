@@ -1,7 +1,7 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
-#include <game/server/gamecontext.h>
 #include <engine/shared/config.h>
+#include <game/server/gamecontext.h>
 
 #include <game/infclass/damage_type.h>
 #include <game/server/infclass/ic_gamecontroller.h>
@@ -9,8 +9,8 @@
 
 #include "scientist-mine.h"
 
-#include "ic_character.h"
 #include "growingexplosion.h"
+#include "ic_character.h"
 
 int CScientistMine::EntityId{};
 
@@ -21,8 +21,8 @@ CScientistMine::CScientistMine(CGameContext *pGameContext, vec2 Pos, int Owner) 
 	m_InfClassObjectType = INFCLASS_OBJECT_TYPE_SCIENTIST_MINE;
 	GameWorld()->InsertEntity(this);
 	m_StartTick = Server()->Tick();
-	
-	for(int i=0; i<NUM_IDS; i++)
+
+	for(int i = 0; i < NUM_IDS; i++)
 	{
 		m_Ids[i] = Server()->SnapNewId();
 	}
@@ -30,7 +30,7 @@ CScientistMine::CScientistMine(CGameContext *pGameContext, vec2 Pos, int Owner) 
 
 CScientistMine::~CScientistMine()
 {
-	for(int i=0; i<NUM_IDS; i++)
+	for(int i = 0; i < NUM_IDS; i++)
 	{
 		Server()->SnapFreeId(m_Ids[i]);
 	}
@@ -45,8 +45,8 @@ void CScientistMine::Explode(int DetonatedBy, vec2 Direction)
 {
 	new CGrowingExplosion(GameServer(), m_Pos, Direction, GetOwner(), m_ExplosionRadius, EDamageType::SCIENTIST_MINE);
 	GameWorld()->DestroyEntity(this);
-	
-	//Self damage
+
+	// Self damage
 	CIcCharacter *OwnerChar = GetOwnerCharacter();
 	if(OwnerChar)
 	{
@@ -94,10 +94,10 @@ void CScientistMine::Snap(int SnappingClient)
 	int NumSide = CScientistMine::NUM_SIDE;
 	if(AntiPing)
 		NumSide = std::min(6, NumSide);
-	
+
 	float AngleStep = 2.0f * pi / NumSide;
-	
-	for(int i=0; i<NumSide; i++)
+
+	for(int i = 0; i < NumSide; i++)
 	{
 		vec2 PartPosStart = m_Pos + direction(AngleStep * i) * Radius;
 		vec2 PartPosEnd = m_Pos + direction(AngleStep * (i + 1)) * Radius;

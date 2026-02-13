@@ -4,10 +4,10 @@
 #include <base/vmath.h>
 #include <engine/shared/config.h>
 #include <game/generated/protocol.h>
+#include <game/infclass/damage_type.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/classes/ic_playerclass.h>
 #include <game/server/infclass/classes/infected/infected.h>
-#include <game/infclass/damage_type.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 #include <game/server/infclass/snap_filter.h>
@@ -21,8 +21,7 @@ static const float g_BarrierRadius = 0.0;
 
 int CEngineerWall::EntityId{};
 
-CEngineerWall::CEngineerWall(CGameContext *pGameContext, vec2 Pos1, int Owner)
-	: CPlacedObject(pGameContext, EntityId, Pos1, Owner)
+CEngineerWall::CEngineerWall(CGameContext *pGameContext, vec2 Pos1, int Owner) : CPlacedObject(pGameContext, EntityId, Pos1, Owner)
 {
 	m_InfClassObjectType = INFCLASS_OBJECT_TYPE_LASER_WALL;
 	m_MaxLength = g_BarrierMaxLength;
@@ -133,7 +132,7 @@ void CEngineerWall::OnHitInfected(CIcCharacter *pCharacter)
 			return;
 		}
 
-		int LifeSpanReducer = ((Server()->TickSpeed()*Config()->m_InfBarrierTimeReduce)/100);
+		int LifeSpanReducer = ((Server()->TickSpeed() * Config()->m_InfBarrierTimeReduce) / 100);
 		m_WallFlashTicks = 10;
 
 		if(pCharacter->GetPlayerClass() == EPlayerClass::Ghoul)
@@ -142,7 +141,7 @@ void CEngineerWall::OnHitInfected(CIcCharacter *pCharacter)
 			LifeSpanReducer += Server()->TickSpeed() * 5.0f * Factor;
 		}
 
-		if (m_EndTick.has_value())
+		if(m_EndTick.has_value())
 		{
 			m_EndTick.value() -= LifeSpanReducer;
 		}

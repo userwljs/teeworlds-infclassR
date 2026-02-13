@@ -8,8 +8,8 @@
 
 #include <game/generated/server_data.h>
 
-#include <game/server/infclass/damage_context.h>
 #include <game/infclass/damage_type.h>
+#include <game/server/infclass/damage_context.h>
 #include <game/server/infclass/death_context.h>
 #include <game/server/infclass/entities/biologist-mine.h>
 #include <game/server/infclass/entities/blinding-laser.h>
@@ -38,8 +38,7 @@ static const int s_SniperPositionLockTimeLimit = 15;
 
 MACRO_ALLOC_POOL_ID_IMPL(CInfClassHuman, MAX_CLIENTS)
 
-CInfClassHuman::CInfClassHuman(CIcPlayer *pPlayer)
-	: CIcPlayerClass(pPlayer)
+CInfClassHuman::CInfClassHuman(CIcPlayer *pPlayer) : CIcPlayerClass(pPlayer)
 {
 	m_BroadcastWhiteHoleReady = -100;
 
@@ -137,7 +136,6 @@ bool CInfClassHuman::SetupSkin(const CSkinContext &Context, CWeakSkinInfo *pOutp
 
 	return true;
 }
-
 
 CAmmoParams CInfClassHuman::GetAmmoParams(int Weapon) const
 {
@@ -341,51 +339,51 @@ void CInfClassHuman::OnCharacterPreCoreTick()
 {
 	CIcPlayerClass::OnCharacterPreCoreTick();
 
-	switch (GetPlayerClass())
+	switch(GetPlayerClass())
 	{
-		case EPlayerClass::Sniper:
+	case EPlayerClass::Sniper:
+	{
+		if(m_pCharacter->PositionIsLocked())
 		{
-			if(m_pCharacter->PositionIsLocked())
+			--m_PositionLockTicksRemaining;
+			if((m_PositionLockTicksRemaining <= 0) || m_pCharacter->IsPassenger())
 			{
-				--m_PositionLockTicksRemaining;
-				if((m_PositionLockTicksRemaining <= 0) || m_pCharacter->IsPassenger())
-				{
-					m_pCharacter->UnlockPosition();
-				}
-			}
-
-			if(!m_pCharacter->PositionIsLocked())
-			{
-				if(m_pCharacter->IsGrounded())
-				{
-					m_PositionLockTicksRemaining = Server()->TickSpeed() * s_SniperPositionLockTimeLimit;
-				}
-			}
-
-			if(m_pCharacter->PositionIsLocked())
-			{
-				if(m_pCharacter->m_Input.m_Jump && !m_pCharacter->m_PrevInput.m_Jump)
-				{
-					m_pCharacter->UnlockPosition();
-				}
-				else
-				{
-					m_pCharacter->ResetMovementsInput();
-					m_PositionLockPosition = m_pCharacter->GetPos();
-				}
+				m_pCharacter->UnlockPosition();
 			}
 		}
-			break;
-		case EPlayerClass::Ninja:
+
+		if(!m_pCharacter->PositionIsLocked())
 		{
-			if(m_pCharacter->IsGrounded() && m_pCharacter->m_DartLifeSpan <= 0)
+			if(m_pCharacter->IsGrounded())
 			{
-				m_pCharacter->m_DartLeft = Config()->m_InfNinjaJump;
+				m_PositionLockTicksRemaining = Server()->TickSpeed() * s_SniperPositionLockTimeLimit;
 			}
 		}
-			break;
-		default:
-			break;
+
+		if(m_pCharacter->PositionIsLocked())
+		{
+			if(m_pCharacter->m_Input.m_Jump && !m_pCharacter->m_PrevInput.m_Jump)
+			{
+				m_pCharacter->UnlockPosition();
+			}
+			else
+			{
+				m_pCharacter->ResetMovementsInput();
+				m_PositionLockPosition = m_pCharacter->GetPos();
+			}
+		}
+	}
+	break;
+	case EPlayerClass::Ninja:
+	{
+		if(m_pCharacter->IsGrounded() && m_pCharacter->m_DartLifeSpan <= 0)
+		{
+			m_pCharacter->m_DartLeft = Config()->m_InfNinjaJump;
+		}
+	}
+	break;
+	default:
+		break;
 	}
 }
 
@@ -431,7 +429,7 @@ void CInfClassHuman::OnCharacterTick()
 			m_BonusTick++;
 		}
 
-		if(m_BonusTick > Server()->TickSpeed()*60)
+		if(m_BonusTick > Server()->TickSpeed() * 60)
 		{
 			m_BonusTick = 0;
 
@@ -891,7 +889,7 @@ void CInfClassHuman::OnGunFired(WeaponFireContext *pFireContext)
 			GetCid(),
 			ProjStartPos,
 			Direction,
-			(int)(Server()->TickSpeed()*GameServer()->Tuning()->m_GunLifetime),
+			(int)(Server()->TickSpeed() * GameServer()->Tuning()->m_GunLifetime),
 			Damage, Force, DamageType);
 	}
 
@@ -939,7 +937,7 @@ void CInfClassHuman::OnShotgunFired(WeaponFireContext *pFireContext)
 		float Speed = mix<float>(GameServer()->Tuning()->m_ShotgunSpeeddiff, 1.0f, v);
 		vec2 Direction = vec2(cosf(a), sinf(a)) * Speed;
 
-		float LifeTime = GameServer()->Tuning()->m_ShotgunLifetime + 0.1f * static_cast<float>(pFireContext->AmmoAvailable)/10.0f;
+		float LifeTime = GameServer()->Tuning()->m_ShotgunLifetime + 0.1f * static_cast<float>(pFireContext->AmmoAvailable) / 10.0f;
 
 		if(pFireContext->InfClassWeapon == EInfclassWeapon::RICOCHET_SHOTGUN)
 		{
@@ -1312,8 +1310,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				GameServer()->SendBroadcast_Localization(GetCid(),
 					EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 					_("You have a turret. Use the hammer to place it."),
-					nullptr
-					);
+					nullptr);
 			}
 			else
 			{
@@ -1322,8 +1319,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 					_("You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to place one."),
 					"NumTurrets", &Turrets,
 					"MaxTurrets", &MaxTurrets,
-					nullptr
-					);
+					nullptr);
 			}
 		}
 		else
@@ -1331,8 +1327,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("You don't have a turret to place"),
-				nullptr
-				);
+				nullptr);
 		}
 		return;
 	}
@@ -1362,8 +1357,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Laser wall: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Looper)
@@ -1371,7 +1365,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 		if(ClientVersion >= VERSION_INFC_160)
 			return;
 
-		CLooperWall* pOwnWall = nullptr;
+		CLooperWall *pOwnWall = nullptr;
 		for(TEntityPtr<CLooperWall> pWall = GameWorld()->FindFirst<CLooperWall>(); pWall; ++pWall)
 		{
 			if(pWall->GetOwner() == m_pPlayer->GetCid())
@@ -1388,8 +1382,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Looper laser wall: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Soldier)
@@ -1410,8 +1403,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				NumBombs,
 				_CP("Soldier", "{int:NumBombs} bomb left", "{int:NumBombs} bombs left", NumBombs),
 				"NumBombs", &NumBombs,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Scientist)
@@ -1438,8 +1430,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("The white hole is available!"),
-				nullptr
-			);
+				nullptr);
 		}
 		else if(NumMines > 0 && !pOwnWhiteHole)
 		{
@@ -1447,8 +1438,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME, NumMines,
 				_P("{int:NumMines} mine is active", "{int:NumMines} mines are active", NumMines),
 				"NumMines", &NumMines,
-				nullptr
-			);
+				nullptr);
 		}
 		else if(NumMines <= 0 && pOwnWhiteHole)
 		{
@@ -1457,8 +1447,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("White hole: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 		else if(NumMines > 0 && pOwnWhiteHole)
 		{
@@ -1491,8 +1480,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Biologist", "Mine activated"),
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Ninja)
@@ -1507,8 +1495,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Ninja", "Next target in {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 		else if(TargetId >= 0)
 		{
@@ -1516,21 +1503,19 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Ninja", "Target to eliminate: {str:PlayerName}"),
 				"PlayerName", Server()->ClientName(TargetId),
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Sniper)
 	{
 		if(m_pCharacter->PositionIsLocked())
 		{
-			int Seconds = 1+m_PositionLockTicksRemaining/Server()->TickSpeed();
+			int Seconds = 1 + m_PositionLockTicksRemaining / Server()->TickSpeed();
 			GameServer()->SendBroadcast_Localization(GetPlayer()->GetCid(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_C("Sniper", "Position lock: {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 	else if(GetPlayerClass() == EPlayerClass::Mercenary)
@@ -1557,7 +1542,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 	}
 	else if(GetPlayerClass() == EPlayerClass::Hero)
 	{
-		//Search for flag
+		// Search for flag
 		int CoolDown = m_pHeroFlag ? m_pHeroFlag->GetSpawnTick() - CurrentTick : 0;
 
 		if(CoolDown > 0 && (ClientVersion < VERSION_INFC_140)) // 140 introduces native timers for Hero
@@ -1567,8 +1552,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME,
 				_("Next flag in {sec:RemainingTime}"),
 				"RemainingTime", &Seconds,
-				nullptr
-			);
+				nullptr);
 		}
 	}
 }
@@ -1609,15 +1593,15 @@ void CInfClassHuman::GiveNinjaBuf()
 {
 	switch(random_int(0, 2))
 	{
-	case 0: //Velocity Buff
+	case 0: // Velocity Buff
 		m_NinjaVelocityBuff++;
 		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Sword velocity increased"), nullptr);
 		break;
-	case 1: //Strength Buff
+	case 1: // Strength Buff
 		m_NinjaExtraDamage++;
 		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Sword strength increased"), nullptr);
 		break;
-	case 2: //Ammo Buff
+	case 2: // Ammo Buff
 		m_NinjaAmmoBuff++;
 		GameServer()->SendChatTarget_Localization(GetCid(), CHATCATEGORY_SCORE, _("Grenade limit increased"), nullptr);
 		break;
@@ -1867,32 +1851,32 @@ void CInfClassHuman::PlaceScientistMine(WeaponFireContext *pFireContext)
 	CScientistMine *pIntersectMine = nullptr;
 
 	for(TEntityPtr<CScientistMine> p = GameWorld()->FindFirst<CScientistMine>(); p; ++p)
-	while(p)
-	{
-		float d = distance(p->GetPos(), ProjStartPos);
-
-		if(p->GetOwner() == GetCid())
+		while(p)
 		{
-			if(OlderMineTick > p->m_StartTick)
-			{
-				OlderMineTick = p->m_StartTick;
-				pOlderMine = p;
-			}
-			NbMine++;
+			float d = distance(p->GetPos(), ProjStartPos);
 
-			if(d < 2.0f * g_Config.m_InfMineRadius)
+			if(p->GetOwner() == GetCid())
 			{
-				if(pIntersectMine)
-					FreeSpace = false;
-				else
-					pIntersectMine = p;
+				if(OlderMineTick > p->m_StartTick)
+				{
+					OlderMineTick = p->m_StartTick;
+					pOlderMine = p;
+				}
+				NbMine++;
+
+				if(d < 2.0f * g_Config.m_InfMineRadius)
+				{
+					if(pIntersectMine)
+						FreeSpace = false;
+					else
+						pIntersectMine = p;
+				}
 			}
+			else if(d < 2.0f * g_Config.m_InfMineRadius)
+				FreeSpace = false;
+
+			p = (CScientistMine *)p->TypeNext();
 		}
-		else if(d < 2.0f * g_Config.m_InfMineRadius)
-			FreeSpace = false;
-
-		p = (CScientistMine *)p->TypeNext();
-	}
 
 	if(!FreeSpace)
 		return;

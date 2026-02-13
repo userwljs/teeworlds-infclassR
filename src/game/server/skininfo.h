@@ -20,6 +20,6 @@ public:
 	int ColorFeet = 0;
 };
 
-using SkinGetter = bool(*)(const CSkinContext &, CWeakSkinInfo *, int, int);
+using SkinGetter = bool (*)(const CSkinContext &, CWeakSkinInfo *, int, int);
 
-#endif //GAME_SERVER_SKININFO_H
+#endif // GAME_SERVER_SKININFO_H

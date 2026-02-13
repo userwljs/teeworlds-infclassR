@@ -8,10 +8,10 @@
 #include <engine/shared/config.h>
 
 const char *CTuningParams::ms_apNames[] =
-{
-	#define MACRO_TUNING_PARAM(Name, ScriptName, Value, Description) #ScriptName,
-	#include "tuning.h"
-	#undef MACRO_TUNING_PARAM
+	{
+#define MACRO_TUNING_PARAM(Name, ScriptName, Value, Description) #ScriptName,
+#include "tuning.h"
+#undef MACRO_TUNING_PARAM
 };
 
 bool CTuningParams::Set(int Index, float Value)
@@ -157,7 +157,7 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 	bool DoDeferredTick = true;
 	m_MoveRestrictions = m_pCollision->GetMoveRestrictions(m_Pos);
 
-	const CTuningParams* pTuningParams = pParams->m_pTuningParams;
+	const CTuningParams *pTuningParams = pParams->m_pTuningParams;
 	m_TriggeredEvents = 0;
 
 	// get ground state
@@ -199,12 +199,12 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 		if(m_Input.m_TargetX == 0)
 			a = atanf((float)m_Input.m_TargetY);
 		else
-			a = atanf((float)m_Input.m_TargetY/(float)m_Input.m_TargetX);
+			a = atanf((float)m_Input.m_TargetY / (float)m_Input.m_TargetX);
 
 		if(m_Input.m_TargetX < 0)
-			a = a+pi;
+			a = a + pi;
 
-		m_Angle = (int)(a*256.0f);
+		m_Angle = (int)(a * 256.0f);
 
 		// handle jump
 		if(m_Input.m_Jump)
@@ -295,11 +295,11 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 	}
 	else if(m_HookState == HOOK_FLYING)
 	{
-		vec2 NewPos = m_HookPos+m_HookDir*pTuningParams->m_HookFireSpeed;
+		vec2 NewPos = m_HookPos + m_HookDir * pTuningParams->m_HookFireSpeed;
 		if(distance(m_Pos, NewPos) > pTuningParams->m_HookLength)
 		{
 			m_HookState = HOOK_RETRACT_START;
-			NewPos = m_Pos + normalize(NewPos-m_Pos) * pTuningParams->m_HookLength;
+			NewPos = m_Pos + normalize(NewPos - m_Pos) * pTuningParams->m_HookLength;
 		}
 
 		// make sure that the hook doesn't go though the ground
@@ -324,7 +324,7 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 			for(int i = 0; i < MAX_CLIENTS; i++)
 			{
 				CCharacterCore *pCharCore = m_pWorld->m_apCharacters[i];
-				if (IsRecursePassenger(pCharCore))
+				if(IsRecursePassenger(pCharCore))
 					continue;
 				if(!pCharCore || pCharCore == this || (!(m_Super || pCharCore->m_Super) && ((m_Id != -1 && !m_pTeams->CanHook(m_Id, i)) || pCharCore->m_Solo || m_Solo)))
 					continue;
@@ -387,7 +387,7 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 		// don't do this hook routine when we are hook to a player
 		if(m_HookedPlayer == -1 && distance(m_HookPos, m_Pos) > 46.0f)
 		{
-			vec2 HookVel = normalize(m_HookPos-m_Pos)*pTuningParams->m_HookDragAccel;
+			vec2 HookVel = normalize(m_HookPos - m_Pos) * pTuningParams->m_HookDragAccel;
 			// the hook as more power to drag you up then down.
 			// this makes it easier to get on top of an platform
 			if(HookVel.y > 0)
@@ -400,7 +400,7 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 			else
 				HookVel.x *= 0.75f;
 
-			vec2 NewVel = m_Vel+HookVel;
+			vec2 NewVel = m_Vel + HookVel;
 
 			// check if we are under the legal limit for the hook
 			if(length(NewVel) < pTuningParams->m_HookDragSpeed || length(NewVel) < length(m_Vel))
@@ -432,7 +432,7 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 
 void CCharacterCore::TickDeferred(const CParams *pParams)
 {
-	const CTuningParams* pTuningParams = pParams->m_pTuningParams;
+	const CTuningParams *pTuningParams = pParams->m_pTuningParams;
 
 	if(m_pWorld)
 	{
@@ -442,8 +442,8 @@ void CCharacterCore::TickDeferred(const CParams *pParams)
 			if(!pCharCore)
 				continue;
 
-			//player *p = (player*)ent;
-			//if(pCharCore == this) // || !(p->flags&FLAG_ALIVE)
+			// player *p = (player*)ent;
+			// if(pCharCore == this) // || !(p->flags&FLAG_ALIVE)
 
 			if(pCharCore == this || (m_Id != -1 && !m_pTeams->CanHook(m_Id, i)))
 				continue; // make sure that we don't nudge our self
@@ -478,16 +478,16 @@ void CCharacterCore::TickDeferred(const CParams *pParams)
 				{
 					if(Distance > PhysicalSize() * 1.50f) // TODO: fix tweakable variable
 					{
-						float Accel = pTuningParams->m_HookDragAccel * (Distance/pTuningParams->m_HookLength);
+						float Accel = pTuningParams->m_HookDragAccel * (Distance / pTuningParams->m_HookLength);
 						float DragSpeed = pTuningParams->m_HookDragSpeed;
 
 						// add force to the hooked player
-						pCharCore->m_Vel.x = SaturatedAdd(-DragSpeed, DragSpeed, pCharCore->m_Vel.x, Accel*Dir.x*1.5f);
-						pCharCore->m_Vel.y = SaturatedAdd(-DragSpeed, DragSpeed, pCharCore->m_Vel.y, Accel*Dir.y*1.5f);
+						pCharCore->m_Vel.x = SaturatedAdd(-DragSpeed, DragSpeed, pCharCore->m_Vel.x, Accel * Dir.x * 1.5f);
+						pCharCore->m_Vel.y = SaturatedAdd(-DragSpeed, DragSpeed, pCharCore->m_Vel.y, Accel * Dir.y * 1.5f);
 
 						// add a little bit force to the guy who has the grip
-						m_Vel.x = SaturatedAdd(-DragSpeed, DragSpeed, m_Vel.x, -Accel*Dir.x*0.25f);
-						m_Vel.y = SaturatedAdd(-DragSpeed, DragSpeed, m_Vel.y, -Accel*Dir.y*0.25f);
+						m_Vel.x = SaturatedAdd(-DragSpeed, DragSpeed, m_Vel.x, -Accel * Dir.x * 0.25f);
+						m_Vel.y = SaturatedAdd(-DragSpeed, DragSpeed, m_Vel.y, -Accel * Dir.y * 0.25f);
 					}
 				}
 			}
@@ -503,11 +503,11 @@ void CCharacterCore::TickDeferred(const CParams *pParams)
 
 void CCharacterCore::Move(const CParams *pParams)
 {
-	const CTuningParams* pTuningParams = pParams->m_pTuningParams;
-	
-	float RampValue = VelocityRamp(length(m_Vel)*50, pTuningParams->m_VelrampStart, pTuningParams->m_VelrampRange, pTuningParams->m_VelrampCurvature);
+	const CTuningParams *pTuningParams = pParams->m_pTuningParams;
 
-	m_Vel.x = m_Vel.x*RampValue;
+	float RampValue = VelocityRamp(length(m_Vel) * 50, pTuningParams->m_VelrampStart, pTuningParams->m_VelrampRange, pTuningParams->m_VelrampCurvature);
+
+	m_Vel.x = m_Vel.x * RampValue;
 
 	vec2 NewPos = m_Pos;
 
@@ -536,7 +536,7 @@ void CCharacterCore::Move(const CParams *pParams)
 
 	NewPos.y += PosDiff;
 
-	m_Vel.x = m_Vel.x*(1.0f/RampValue);
+	m_Vel.x = m_Vel.x * (1.0f / RampValue);
 
 	if(m_pWorld && !pTuningParams->m_PlayerCollision)
 	{
@@ -698,13 +698,13 @@ void CCharacterCore::SetPassenger(CCharacterCore *pPassenger)
 	if(m_Passenger == pPassenger)
 		return;
 
-	if (m_Passenger)
+	if(m_Passenger)
 	{
 		m_Passenger->m_IsPassenger = false;
 		m_Passenger->m_ProbablyStucked = true;
 	}
 	m_Passenger = pPassenger;
-	if (pPassenger)
+	if(pPassenger)
 	{
 		m_Passenger->m_IsPassenger = true;
 	}

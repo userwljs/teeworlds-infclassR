@@ -3,13 +3,13 @@
 #ifndef GAME_SERVER_ENTITIES_INFC_ENTITY_H
 #define GAME_SERVER_ENTITIES_INFC_ENTITY_H
 
-#include <game/server/entity.h>
 #include <game/server/entities_filter.h>
+#include <game/server/entity.h>
 
 inline constexpr int TileSize = 32;
 inline constexpr float TileSizeF = 32.0f;
 
-template <class T, int StackCapacity>
+template<class T, int StackCapacity>
 class icArray;
 
 class CGameContext;

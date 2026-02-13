@@ -32,7 +32,7 @@ void SetFlagEnabled(int &Flags, int Flag, bool Enabled)
 CMapInfoEx *IGameController::GetMapInfo(const char *pMapName)
 {
 	auto it = s_aMapInfo.find(std::string(pMapName));
-	if (it == s_aMapInfo.end())
+	if(it == s_aMapInfo.end())
 		return nullptr;
 
 	return &it->second;
@@ -245,14 +245,14 @@ bool IGameController::OnEntity(int Index, int x, int y, int Layer, int Flags, bo
 	return false;
 }
 
-bool IGameController::OnEntity(const char* pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv)
+bool IGameController::OnEntity(const char *pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv)
 {
 	return false;
 }
 
 double IGameController::GetTime()
 {
-	return static_cast<double>(Server()->Tick() - m_RoundStartTick)/Server()->TickSpeed();
+	return static_cast<double>(Server()->Tick() - m_RoundStartTick) / Server()->TickSpeed();
 }
 
 float IGameController::PlayerBestRaceTime(int ClientId) const
@@ -411,11 +411,12 @@ const char *IGameController::GetTeamName(int Team)
 	return "spectators";
 }
 
-int IGameController::GetRoundCount() {
+int IGameController::GetRoundCount()
+{
 	return m_RoundCount;
 }
 
-bool IGameController::IsRoundEndTime() 
+bool IGameController::IsRoundEndTime()
 {
 	return m_GameOverTick > 0;
 }
@@ -432,7 +433,7 @@ void IGameController::StartRound()
 	m_ForceBalanced = false;
 	Server()->DemoRecorder_HandleAutoStart();
 	char aBuf[256];
-	str_format(aBuf, sizeof(aBuf), "start round type='%s' teamplay='%d' id='%d'", GameType(), m_GameFlags&GAMEFLAG_TEAMS, m_RoundId);
+	str_format(aBuf, sizeof(aBuf), "start round type='%s' teamplay='%d' id='%d'", GameType(), m_GameFlags & GAMEFLAG_TEAMS, m_RoundId);
 	GameServer()->Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", aBuf);
 }
 
@@ -459,7 +460,8 @@ void IGameController::GetWordFromList(char *pNextWord, const char *pList, int Li
 	int i = 0;
 	while(*pList)
 	{
-		if (IsWordSeparator(*pList)) break;
+		if(IsWordSeparator(*pList))
+			break;
 		pNextWord[i] = *pList;
 		pList++;
 		i++;
@@ -483,19 +485,19 @@ void IGameController::GetMapRotationInfo(CMapRotationInfo *pMapRotationInfo)
 	int i = 0;
 	while(*pNextMap)
 	{
-		if (IsWordSeparator(*pNextMap))
+		if(IsWordSeparator(*pNextMap))
 		{
-			if (insideWord)
+			if(insideWord)
 				insideWord = false;
 		}
 		else // current char is not a seperator
 		{
-			if (!insideWord)
+			if(!insideWord)
 			{
 				insideWord = true;
 				pMapRotationInfo->m_MapNameIndices[pMapRotationInfo->m_MapCount] = i;
 				GetWordFromList(aBuf, g_Config.m_SvMaprotation, i);
-				if (str_comp(aBuf, pCurrentMap) == 0)
+				if(str_comp(aBuf, pCurrentMap) == 0)
 					pMapRotationInfo->m_CurrentMapNumber = pMapRotationInfo->m_MapCount;
 				if(pPreviousMap[0] && str_comp(aBuf, pPreviousMap) == 0)
 					PreviousMapNumber = pMapRotationInfo->m_MapCount;
@@ -594,7 +596,7 @@ void IGameController::ConSmartMapRotationStatus()
 	}
 
 	int Index = 0;
-	for (const auto &[Name, Info] : s_aMapInfo)
+	for(const auto &[Name, Info] : s_aMapInfo)
 	{
 		if(!Info.mEnabled)
 			continue;
@@ -623,7 +625,6 @@ void IGameController::ConSmartMapRotationStatus()
 
 void IGameController::LoadMapRotationData()
 {
-
 }
 
 void IGameController::SaveMapRotationData(const char *pFileName)
@@ -647,7 +648,7 @@ void IGameController::SaveMapRotationData(const char *pFileName)
 void IGameController::PrintMapRotationData(IOHANDLE Output)
 {
 	char aBuf[256];
-	for (const auto &[Name, Info] : s_aMapInfo)
+	for(const auto &[Name, Info] : s_aMapInfo)
 	{
 		str_format(aBuf, sizeof(aBuf), "add_map_data %s %d", Info.Name(), Info.mTimestamp);
 
@@ -783,14 +784,15 @@ bool IGameController::LoadMapConfig(const char *pMapName, CMapInfo *pInfo)
 	{
 		isEndOfFile = true;
 
-		//Load one line
+		// Load one line
 		int MapInfoLineLength = 0;
 		char c;
 		while(io_read(File, &c, 1))
 		{
 			isEndOfFile = false;
 
-			if(c == '\n') break;
+			if(c == '\n')
+				break;
 			else
 			{
 				MapInfoLine[MapInfoLineLength] = c;
@@ -800,16 +802,16 @@ bool IGameController::LoadMapConfig(const char *pMapName, CMapInfo *pInfo)
 
 		MapInfoLine[MapInfoLineLength] = 0;
 
-		//Get the key
+		// Get the key
 		static const char MinPlayersKey[] = "# mapinfo: minplayers ";
 		static const char MaxPlayersKey[] = "# mapinfo: maxplayers ";
 		if(str_comp_nocase_num(MapInfoLine, MinPlayersKey, sizeof(MinPlayersKey) - 1) == 0)
 		{
-			pInfo->MinimumPlayers = str_toint(MapInfoLine+sizeof(MinPlayersKey) - 1);
+			pInfo->MinimumPlayers = str_toint(MapInfoLine + sizeof(MinPlayersKey) - 1);
 		}
 		if(str_comp_nocase_num(MapInfoLine, MaxPlayersKey, sizeof(MaxPlayersKey) - 1) == 0)
 		{
-			pInfo->MaximumPlayers = str_toint(MapInfoLine+sizeof(MaxPlayersKey) - 1);
+			pInfo->MaximumPlayers = str_toint(MapInfoLine + sizeof(MaxPlayersKey) - 1);
 		}
 	}
 
@@ -879,19 +881,19 @@ void IGameController::DefaultMapCycle()
 	CMapRotationInfo pMapRotationInfo;
 	GetMapRotationInfo(&pMapRotationInfo);
 
-	if (pMapRotationInfo.m_MapCount == 0)
+	if(pMapRotationInfo.m_MapCount == 0)
 		return;
 
 	char aBuf[256] = {0};
-	int i=0;
+	int i = 0;
 	CMapInfo Info;
-	if (g_Config.m_InfMaprotationRandom)
+	if(g_Config.m_InfMaprotationRandom)
 	{
 		// handle random maprotation
 		int RandInt;
-		for ( ; i<32; i++)
+		for(; i < 32; i++)
 		{
-			RandInt = random_int(0, pMapRotationInfo.m_MapCount-1);
+			RandInt = random_int(0, pMapRotationInfo.m_MapCount - 1);
 			GetWordFromList(aBuf, g_Config.m_SvMaprotation, pMapRotationInfo.m_MapNameIndices[RandInt]);
 			LoadMapConfig(aBuf, &Info);
 
@@ -912,12 +914,12 @@ void IGameController::DefaultMapCycle()
 	{
 		// handle normal maprotation
 		i = pMapRotationInfo.m_CurrentMapNumber + 1;
-		for ( ; i != pMapRotationInfo.m_CurrentMapNumber; i++)
+		for(; i != pMapRotationInfo.m_CurrentMapNumber; i++)
 		{
-			if (i >= pMapRotationInfo.m_MapCount)
+			if(i >= pMapRotationInfo.m_MapCount)
 			{
 				i = 0;
-				if (i == pMapRotationInfo.m_CurrentMapNumber)
+				if(i == pMapRotationInfo.m_CurrentMapNumber)
 					break;
 			}
 			GetWordFromList(aBuf, g_Config.m_SvMaprotation, pMapRotationInfo.m_MapNameIndices[i]);
@@ -933,11 +935,11 @@ void IGameController::DefaultMapCycle()
 		}
 	}
 
-	if (i == pMapRotationInfo.m_CurrentMapNumber)
+	if(i == pMapRotationInfo.m_CurrentMapNumber)
 	{
 		// couldnt find map with small enough minplayers number
 		i++;
-		if (i >= pMapRotationInfo.m_MapCount)
+		if(i >= pMapRotationInfo.m_MapCount)
 			i = 0;
 		GetWordFromList(aBuf, g_Config.m_SvMaprotation, pMapRotationInfo.m_MapNameIndices[i]);
 	}
@@ -1015,7 +1017,7 @@ void IGameController::SkipMap()
 	CycleMap(true);
 	EndRound();
 }
-	
+
 bool IGameController::CanVote()
 {
 	return true;
@@ -1032,8 +1034,8 @@ void IGameController::DoTeamBalance()
 {
 	GameServer()->Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "game", "Balancing teams");
 
-	int aT[2] = {0,0};
-	float aTeamScore[2] = {0,0};
+	int aT[2] = {0, 0};
+	float aTeamScore[2] = {0, 0};
 	float aPlayerScore[MAX_CLIENTS] = {0.0f};
 
 	// gather stats
@@ -1048,10 +1050,10 @@ void IGameController::DoTeamBalance()
 	}
 
 	// are teams unbalanced?
-	if(absolute(aT[0]-aT[1]) >= 2)
+	if(absolute(aT[0] - aT[1]) >= 2)
 	{
 		int BiggerTeam = (aT[0] > aT[1]) ? 0 : 1;
-		int NumBalance = absolute(aT[0]-aT[1]) / 2;
+		int NumBalance = absolute(aT[0] - aT[1]) / 2;
 
 		do
 		{
@@ -1063,10 +1065,10 @@ void IGameController::DoTeamBalance()
 					continue;
 
 				// remember the player who would cause lowest score-difference
-				if(GameServer()->m_apPlayers[i]->GetTeam() == BiggerTeam && (!pPlayer || absolute((aTeamScore[BiggerTeam^1]+aPlayerScore[i]) - (aTeamScore[BiggerTeam]-aPlayerScore[i])) < ScoreDiff))
+				if(GameServer()->m_apPlayers[i]->GetTeam() == BiggerTeam && (!pPlayer || absolute((aTeamScore[BiggerTeam ^ 1] + aPlayerScore[i]) - (aTeamScore[BiggerTeam] - aPlayerScore[i])) < ScoreDiff))
 				{
 					pPlayer = GameServer()->m_apPlayers[i];
-					ScoreDiff = absolute((aTeamScore[BiggerTeam^1]+aPlayerScore[i]) - (aTeamScore[BiggerTeam]-aPlayerScore[i]));
+					ScoreDiff = absolute((aTeamScore[BiggerTeam ^ 1] + aPlayerScore[i]) - (aTeamScore[BiggerTeam] - aPlayerScore[i]));
 				}
 			}
 
@@ -1074,7 +1076,7 @@ void IGameController::DoTeamBalance()
 			if(pPlayer)
 			{
 				int Temp = pPlayer->m_LastActionTick;
-				DoTeamChange(pPlayer, BiggerTeam^1);
+				DoTeamChange(pPlayer, BiggerTeam ^ 1);
 				pPlayer->m_LastActionTick = Temp;
 
 				pPlayer->Respawn();
@@ -1082,7 +1084,7 @@ void IGameController::DoTeamBalance()
 				str_format(aBuf, sizeof(aBuf), "You were moved to %s due to team balancing", GetTeamName(pPlayer->GetTeam()));
 				GameServer()->SendBroadcast(pPlayer->GetCid(), aBuf, EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE);
 			}
-		} while (--NumBalance);
+		} while(--NumBalance);
 
 		m_ForceBalanced = true;
 	}
@@ -1163,7 +1165,7 @@ void IGameController::Tick()
 	if(IsGameOver())
 	{
 		// game over.. wait for restart
-		if(Server()->Tick() > m_GameOverTick+Server()->TickSpeed()*g_Config.m_InfShowScoreTime)
+		if(Server()->Tick() > m_GameOverTick + Server()->TickSpeed() * g_Config.m_InfShowScoreTime)
 		{
 			CycleMap();
 			if(!Server()->GetMapReload())
@@ -1178,7 +1180,7 @@ void IGameController::Tick()
 		++m_RoundStartTick;
 
 	// do team-balancing
-	if(IsTeamplay() && m_UnbalancedTick != -1 && Server()->Tick() > m_UnbalancedTick+g_Config.m_SvTeambalanceTime*Server()->TickSpeed()*60)
+	if(IsTeamplay() && m_UnbalancedTick != -1 && Server()->Tick() > m_UnbalancedTick + g_Config.m_SvTeambalanceTime * Server()->TickSpeed() * 60)
 	{
 		DoTeamBalance();
 	}
@@ -1211,7 +1213,7 @@ void IGameController::Snap(int SnappingClient)
 	pGameInfoObj->m_ScoreLimit = Config()->m_SvScorelimit;
 
 	pGameInfoObj->m_RoundNum = (str_length(Config()->m_SvMaprotation) && Config()->m_SvRoundsPerMap) ? Config()->m_SvRoundsPerMap : 0;
-	pGameInfoObj->m_RoundCurrent = m_RoundCount+1;
+	pGameInfoObj->m_RoundCurrent = m_RoundCount + 1;
 
 	CNetObj_GameData *pGameData = static_cast<CNetObj_GameData *>(Server()->SnapNewItem(NETOBJTYPE_GAMEDATA, 0, sizeof(CNetObj_GameData)));
 	if(!pGameData)
@@ -1302,7 +1304,7 @@ bool IGameController::CanChangeTeam(CPlayer *pPlayer, int JoinTeam)
 {
 	int aT[2] = {0, 0};
 
-	if (!IsTeamplay() || JoinTeam == TEAM_SPECTATORS || !g_Config.m_SvTeambalanceTime)
+	if(!IsTeamplay() || JoinTeam == TEAM_SPECTATORS || !g_Config.m_SvTeambalanceTime)
 		return true;
 
 	for(int i = 0; i < MAX_CLIENTS; i++)
@@ -1314,14 +1316,14 @@ bool IGameController::CanChangeTeam(CPlayer *pPlayer, int JoinTeam)
 
 	// simulate what would happen if changed team
 	aT[JoinTeam]++;
-	if (pPlayer->GetTeam() != TEAM_SPECTATORS)
-		aT[JoinTeam^1]--;
+	if(pPlayer->GetTeam() != TEAM_SPECTATORS)
+		aT[JoinTeam ^ 1]--;
 
 	// there is a player-difference of at least 2
-	if(absolute(aT[0]-aT[1]) >= 2)
+	if(absolute(aT[0] - aT[1]) >= 2)
 	{
 		// player wants to join team with less players
-		if ((aT[0] < aT[1] && JoinTeam == TEAM_RED) || (aT[0] > aT[1] && JoinTeam == TEAM_BLUE))
+		if((aT[0] < aT[1] && JoinTeam == TEAM_RED) || (aT[0] > aT[1] && JoinTeam == TEAM_BLUE))
 			return true;
 		else
 			return false;

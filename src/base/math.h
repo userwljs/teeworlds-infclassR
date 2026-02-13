@@ -161,7 +161,7 @@ constexpr inline T in_range(T a, T upper)
 // Infclass
 bool random_prob(float f);
 int random_int(int Min, int Max);
-int random_distribution(double* pProb, double* pProb2);
+int random_distribution(double *pProb, double *pProb2);
 
 constexpr inline float sign(float f)
 {

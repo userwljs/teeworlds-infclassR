@@ -27,7 +27,7 @@ bool CIcLaser::HitTarget(vec2 From, vec2 To)
 {
 	vec2 At;
 	CIcCharacter *pOwnerChar = GameController()->GetCharacter(GetOwner());
-	icArray<const CIcCharacter*, 10> IgnoreHits;
+	icArray<const CIcCharacter *, 10> IgnoreHits;
 	CharacterFilter HitsFilter = CIcCharacter::GetExceptCharactersFilter(IgnoreHits);
 	const bool IsInfected = pOwnerChar && pOwnerChar->IsInfected();
 	CharacterFilter OnlyOtherTeamFilter = IsInfected ? CIcCharacter::GetHumansFilter() : CIcCharacter::GetInfectedFilter();
@@ -127,7 +127,7 @@ CIcLaser *CIcLaser::MakeLaser(CGameContext *pGameContext, vec2 Pos, vec2 Directi
 
 void CIcLaser::Tick()
 {
-	if(Server()->Tick() > m_EvalTick+(Server()->TickSpeed()*GameServer()->Tuning()->m_LaserBounceDelay)/1000.0f)
+	if(Server()->Tick() > m_EvalTick + (Server()->TickSpeed() * GameServer()->Tuning()->m_LaserBounceDelay) / 1000.0f)
 		DoBounce();
 }
 

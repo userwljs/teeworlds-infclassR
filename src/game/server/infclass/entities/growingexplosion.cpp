@@ -6,9 +6,9 @@
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
 
+#include <game/infclass/damage_type.h>
 #include <game/server/gamecontext.h>
 #include <game/server/infclass/classes/ic_playerclass.h>
-#include <game/infclass/damage_type.h>
 #include <game/server/infclass/entities/slug-slime.h>
 #include <game/server/infclass/ic_gamecontroller.h>
 
@@ -39,78 +39,78 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 
 	switch(DamageType)
 	{
-		case EDamageType::STUNNING_GRENADE:
-			m_ExplosionEffect = EGrowingExplosionEffect::FREEZE_INFECTED;
-			break;
-		case EDamageType::MERCENARY_GRENADE:
-			m_ExplosionEffect = EGrowingExplosionEffect::POISON_INFECTED;
-			break;
-		case EDamageType::MERCENARY_BOMB:
-			m_ExplosionEffect = EGrowingExplosionEffect::BOOM_INFECTED;
-			break;
-		case EDamageType::SCIENTIST_LASER:
-			m_ExplosionEffect = EGrowingExplosionEffect::BOOM_INFECTED;
-			break;
-		case EDamageType::SCIENTIST_MINE:
-			m_ExplosionEffect = EGrowingExplosionEffect::ELECTRIFY_INFECTED;
-			break;
-		case EDamageType::WHITE_HOLE:
-			m_ExplosionEffect = EGrowingExplosionEffect::BOOM_INFECTED;
-			break;
-		default:
-			break;
+	case EDamageType::STUNNING_GRENADE:
+		m_ExplosionEffect = EGrowingExplosionEffect::FREEZE_INFECTED;
+		break;
+	case EDamageType::MERCENARY_GRENADE:
+		m_ExplosionEffect = EGrowingExplosionEffect::POISON_INFECTED;
+		break;
+	case EDamageType::MERCENARY_BOMB:
+		m_ExplosionEffect = EGrowingExplosionEffect::BOOM_INFECTED;
+		break;
+	case EDamageType::SCIENTIST_LASER:
+		m_ExplosionEffect = EGrowingExplosionEffect::BOOM_INFECTED;
+		break;
+	case EDamageType::SCIENTIST_MINE:
+		m_ExplosionEffect = EGrowingExplosionEffect::ELECTRIFY_INFECTED;
+		break;
+	case EDamageType::WHITE_HOLE:
+		m_ExplosionEffect = EGrowingExplosionEffect::BOOM_INFECTED;
+		break;
+	default:
+		break;
 	}
 
-	m_GrowingMap_Length = (2*m_MaxGrowing+1);
+	m_GrowingMap_Length = (2 * m_MaxGrowing + 1);
 	m_GrowingMap_Size = (m_GrowingMap_Length * m_GrowingMap_Length);
 
 	m_pGrowingMap.resize(m_GrowingMap_Size);
 	m_pGrowingMapVec.resize(m_GrowingMap_Size);
 
 	m_StartTick = Server()->Tick();
-	
+
 	mem_zero(m_Hit, sizeof(m_Hit));
 
-	GameWorld()->InsertEntity(this);	
-	
+	GameWorld()->InsertEntity(this);
+
 	vec2 explosionTile = vec2(16.0f, 16.0f) + vec2(
-		static_cast<float>(static_cast<int>(round(m_Pos.x))/32)*32.0,
-		static_cast<float>(static_cast<int>(round(m_Pos.y))/32)*32.0);
-	
-	//Check is the tile is occuped, and if the direction is valide
+												  static_cast<float>(static_cast<int>(round(m_Pos.x)) / 32) * 32.0,
+												  static_cast<float>(static_cast<int>(round(m_Pos.y)) / 32) * 32.0);
+
+	// Check is the tile is occuped, and if the direction is valide
 	if(GameServer()->Collision()->CheckPoint(explosionTile) && length(Dir) <= 1.1)
 	{
 		m_SeedPos = vec2(16.0f, 16.0f) + vec2(
-		static_cast<float>(static_cast<int>(round(m_Pos.x + 32.0f*Dir.x))/32)*32.0,
-		static_cast<float>(static_cast<int>(round(m_Pos.y + 32.0f*Dir.y))/32)*32.0);
+											 static_cast<float>(static_cast<int>(round(m_Pos.x + 32.0f * Dir.x)) / 32) * 32.0,
+											 static_cast<float>(static_cast<int>(round(m_Pos.y + 32.0f * Dir.y)) / 32) * 32.0);
 	}
 	else
 	{
 		m_SeedPos = explosionTile;
 	}
-	
-	m_SeedX = static_cast<int>(round(m_SeedPos.x))/32;
-	m_SeedY = static_cast<int>(round(m_SeedPos.y))/32;
-	
-	for(int j=0; j<m_GrowingMap_Length; j++)
+
+	m_SeedX = static_cast<int>(round(m_SeedPos.x)) / 32;
+	m_SeedY = static_cast<int>(round(m_SeedPos.y)) / 32;
+
+	for(int j = 0; j < m_GrowingMap_Length; j++)
 	{
-		for(int i=0; i<m_GrowingMap_Length; i++)
+		for(int i = 0; i < m_GrowingMap_Length; i++)
 		{
-			vec2 Tile = m_SeedPos + vec2(32.0f*(i-m_MaxGrowing), 32.0f*(j-m_MaxGrowing));
-			if(GameServer()->Collision()->CheckPoint(Tile) || distance(Tile, m_SeedPos) > m_MaxGrowing*32.0f)
+			vec2 Tile = m_SeedPos + vec2(32.0f * (i - m_MaxGrowing), 32.0f * (j - m_MaxGrowing));
+			if(GameServer()->Collision()->CheckPoint(Tile) || distance(Tile, m_SeedPos) > m_MaxGrowing * 32.0f)
 			{
-				m_pGrowingMap[j*m_GrowingMap_Length+i] = UnavailableTile;
+				m_pGrowingMap[j * m_GrowingMap_Length + i] = UnavailableTile;
 			}
 			else
 			{
-				m_pGrowingMap[j*m_GrowingMap_Length+i] = AvailableForGrow;
+				m_pGrowingMap[j * m_GrowingMap_Length + i] = AvailableForGrow;
 			}
-			
-			m_pGrowingMapVec[j*m_GrowingMap_Length+i] = vec2(0.0f, 0.0f);
+
+			m_pGrowingMapVec[j * m_GrowingMap_Length + i] = vec2(0.0f, 0.0f);
 		}
 	}
-	
-	m_pGrowingMap[m_MaxGrowing*m_GrowingMap_Length+m_MaxGrowing] = Server()->Tick();
+
+	m_pGrowingMap[m_MaxGrowing * m_GrowingMap_Length + m_MaxGrowing] = Server()->Tick();
 
 	if(m_ExplosionEffect == EGrowingExplosionEffect::ELECTRIFY_INFECTED)
 	{
@@ -118,7 +118,7 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 		{
 			int DirX = Dir.x > 0 ? 1 : (Dir.x < 0 ? -1 : 0);
 			int DirY = Dir.y > 0 ? 1 : (Dir.y < 0 ? -1 : 0);
-			if (DirX * Dir.x >= DirY * Dir.y)
+			if(DirX * Dir.x >= DirY * Dir.y)
 			{
 				m_pGrowingMap[m_MaxGrowing * m_GrowingMap_Length + m_MaxGrowing + DirX] = AvailableForGrow;
 			}
@@ -147,10 +147,10 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 	{
 		//~ GameServer()->CreateHammerHit(m_SeedPos);
 
-		vec2 EndPoint = m_SeedPos + vec2(-16.0f + random_float()*32.0f, -16.0f + random_float()*32.0f);
-		m_pGrowingMapVec[m_MaxGrowing*m_GrowingMap_Length+m_MaxGrowing] = EndPoint;
+		vec2 EndPoint = m_SeedPos + vec2(-16.0f + random_float() * 32.0f, -16.0f + random_float() * 32.0f);
+		m_pGrowingMapVec[m_MaxGrowing * m_GrowingMap_Length + m_MaxGrowing] = EndPoint;
 	}
-		break;
+	break;
 	default:
 		break;
 	}
@@ -158,7 +158,8 @@ CGrowingExplosion::CGrowingExplosion(CGameContext *pGameContext, vec2 Pos, vec2 
 
 void CGrowingExplosion::Tick()
 {
-	if(m_MarkedForDestroy) return;
+	if(m_MarkedForDestroy)
+		return;
 
 	int tick = Server()->Tick();
 	//~ if((tick - m_StartTick) > Server()->TickSpeed())
@@ -167,26 +168,26 @@ void CGrowingExplosion::Tick()
 		GameWorld()->DestroyEntity(this);
 		return;
 	}
-	
+
 	bool NewTile = false;
-	
-	for(int j=0; j<m_GrowingMap_Length; j++)
+
+	for(int j = 0; j < m_GrowingMap_Length; j++)
 	{
-		for(int i=0; i<m_GrowingMap_Length; i++)
+		for(int i = 0; i < m_GrowingMap_Length; i++)
 		{
-			if(m_pGrowingMap[j*m_GrowingMap_Length+i] == AvailableForGrow)
+			if(m_pGrowingMap[j * m_GrowingMap_Length + i] == AvailableForGrow)
 			{
-				bool FromLeft = (i > 0 && m_pGrowingMap[j*m_GrowingMap_Length+i-1] < tick && m_pGrowingMap[j*m_GrowingMap_Length+i-1] >= 0);
-				bool FromRight = (i < m_GrowingMap_Length-1 && m_pGrowingMap[j*m_GrowingMap_Length+i+1] < tick && m_pGrowingMap[j*m_GrowingMap_Length+i+1] >= 0);
-				bool FromTop = (j > 0 && m_pGrowingMap[(j-1)*m_GrowingMap_Length+i] < tick && m_pGrowingMap[(j-1)*m_GrowingMap_Length+i] >= 0);
-				bool FromBottom = (j < m_GrowingMap_Length-1 && m_pGrowingMap[(j+1)*m_GrowingMap_Length+i] < tick && m_pGrowingMap[(j+1)*m_GrowingMap_Length+i] >= 0);
-				
+				bool FromLeft = (i > 0 && m_pGrowingMap[j * m_GrowingMap_Length + i - 1] < tick && m_pGrowingMap[j * m_GrowingMap_Length + i - 1] >= 0);
+				bool FromRight = (i < m_GrowingMap_Length - 1 && m_pGrowingMap[j * m_GrowingMap_Length + i + 1] < tick && m_pGrowingMap[j * m_GrowingMap_Length + i + 1] >= 0);
+				bool FromTop = (j > 0 && m_pGrowingMap[(j - 1) * m_GrowingMap_Length + i] < tick && m_pGrowingMap[(j - 1) * m_GrowingMap_Length + i] >= 0);
+				bool FromBottom = (j < m_GrowingMap_Length - 1 && m_pGrowingMap[(j + 1) * m_GrowingMap_Length + i] < tick && m_pGrowingMap[(j + 1) * m_GrowingMap_Length + i] >= 0);
+
 				if(FromLeft || FromRight || FromTop || FromBottom)
 				{
-					m_pGrowingMap[j*m_GrowingMap_Length+i] = tick;
+					m_pGrowingMap[j * m_GrowingMap_Length + i] = tick;
 					NewTile = true;
 					m_VisualizedTiles++;
-					vec2 TileCenter = m_SeedPos + vec2(32.0f*(i-m_MaxGrowing) - 16.0f + random_float()*32.0f, 32.0f*(j-m_MaxGrowing) - 16.0f + random_float()*32.0f);
+					vec2 TileCenter = m_SeedPos + vec2(32.0f * (i - m_MaxGrowing) - 16.0f + random_float() * 32.0f, 32.0f * (j - m_MaxGrowing) - 16.0f + random_float() * 32.0f);
 					switch(m_ExplosionEffect)
 					{
 					case EGrowingExplosionEffect::FREEZE_INFECTED:
@@ -222,8 +223,8 @@ void CGrowingExplosion::Tick()
 						break;
 					case EGrowingExplosionEffect::ELECTRIFY_INFECTED:
 					{
-						vec2 EndPoint = m_SeedPos + vec2(32.0f*(i-m_MaxGrowing) - 16.0f + random_float()*32.0f, 32.0f*(j-m_MaxGrowing) - 16.0f + random_float()*32.0f);
-						m_pGrowingMapVec[j*m_GrowingMap_Length+i] = EndPoint;
+						vec2 EndPoint = m_SeedPos + vec2(32.0f * (i - m_MaxGrowing) - 16.0f + random_float() * 32.0f, 32.0f * (j - m_MaxGrowing) - 16.0f + random_float() * 32.0f);
+						m_pGrowingMapVec[j * m_GrowingMap_Length + i] = EndPoint;
 
 						icArray<vec2, 4> aPossibleStartPoints;
 
@@ -256,7 +257,7 @@ void CGrowingExplosion::Tick()
 							GameServer()->CreateSound(EndPoint, SOUND_LASER_BOUNCE);
 						}
 					}
-						break;
+					break;
 					default:
 						break;
 					}
@@ -264,7 +265,7 @@ void CGrowingExplosion::Tick()
 			}
 		}
 	}
-	
+
 	if(NewTile)
 	{
 		switch(m_ExplosionEffect)
@@ -279,24 +280,24 @@ void CGrowingExplosion::Tick()
 			break;
 		}
 	}
-	
+
 	// Find other players
 	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
-		int tileX = m_MaxGrowing + static_cast<int>(round(p->m_Pos.x))/32 - m_SeedX;
-		int tileY = m_MaxGrowing + static_cast<int>(round(p->m_Pos.y))/32 - m_SeedY;
-		
+		int tileX = m_MaxGrowing + static_cast<int>(round(p->m_Pos.x)) / 32 - m_SeedX;
+		int tileY = m_MaxGrowing + static_cast<int>(round(p->m_Pos.y)) / 32 - m_SeedY;
+
 		if(tileX < 0 || tileX >= m_GrowingMap_Length || tileY < 0 || tileY >= m_GrowingMap_Length)
 			continue;
-		
+
 		if(m_Hit[p->GetCid()])
 			continue;
-		
-		int k = tileY*m_GrowingMap_Length+tileX;
+
+		int k = tileY * m_GrowingMap_Length + tileX;
 
 		if(m_pGrowingMap[k] >= 0)
 		{
-			if(tick - m_pGrowingMap[k] < Server()->TickSpeed()/4)
+			if(tick - m_pGrowingMap[k] < Server()->TickSpeed() / 4)
 			{
 				switch(m_ExplosionEffect)
 				{
@@ -338,7 +339,7 @@ void CGrowingExplosion::Tick()
 
 		if(m_pGrowingMap[k] >= 0)
 		{
-			if(tick - m_pGrowingMap[k] < Server()->TickSpeed()/4)
+			if(tick - m_pGrowingMap[k] < Server()->TickSpeed() / 4)
 			{
 				switch(m_ExplosionEffect)
 				{
@@ -392,7 +393,7 @@ void CGrowingExplosion::Tick()
 	}
 
 	// clean slug slime
-	if (m_ExplosionEffect == EGrowingExplosionEffect::FREEZE_INFECTED)
+	if(m_ExplosionEffect == EGrowingExplosionEffect::FREEZE_INFECTED)
 	{
 		for(TEntityPtr<CEntity> e = GameWorld()->FindFirst(CSlugSlime::EntityId); e; ++e)
 		{
@@ -426,17 +427,17 @@ void CGrowingExplosion::SetDamage(int Damage)
 
 int CGrowingExplosion::GetActualDamage()
 {
-	 if(m_Damage.has_value())
+	if(m_Damage.has_value())
 		return m_Damage.value();
 
-	 // Sci mine victim is typically hit on 2nd tick.
-	 // It means 5 + 20 * (6 - 2) / 6 = 5 + 13.333 = 18 dmg
-	 return 5 + 20.0f * (m_MaxGrowing - minimum(Server()->Tick() - m_StartTick, m_MaxGrowing)) / m_MaxGrowing;
+	// Sci mine victim is typically hit on 2nd tick.
+	// It means 5 + 20 * (6 - 2) / 6 = 5 + 13.333 = 18 dmg
+	return 5 + 20.0f * (m_MaxGrowing - minimum(Server()->Tick() - m_StartTick, m_MaxGrowing)) / m_MaxGrowing;
 }
 
 void CGrowingExplosion::SetTriggeredBy(int CID)
 {
-	 m_TriggeredByCid = CID;
+	m_TriggeredByCid = CID;
 }
 
 void CGrowingExplosion::ProcessMercenaryBombHit(CIcCharacter *pCharacter)
@@ -459,7 +460,7 @@ void CGrowingExplosion::ProcessMercenaryBombHit(CIcCharacter *pCharacter)
 	{
 		if(pCharacter->GetCid() == GetOwner())
 		{
-			//owner selfharm
+			// owner selfharm
 		}
 		else if(pCharacter->IsHuman())
 		{
@@ -468,14 +469,14 @@ void CGrowingExplosion::ProcessMercenaryBombHit(CIcCharacter *pCharacter)
 		}
 	}
 	vec2 Diff = pCharacter->m_Pos - GetPos();
-	vec2 ForceDir(0,1);
+	vec2 ForceDir(0, 1);
 	float l = length(Diff);
 	if(l)
 		ForceDir = normalize(Diff);
 
-	float Ratio = (l-InnerRadius)/(OuterRadius-InnerRadius);
+	float Ratio = (l - InnerRadius) / (OuterRadius - InnerRadius);
 
-	l = 1-clamp(Ratio, 0.0f, 1.0f);
+	l = 1 - clamp(Ratio, 0.0f, 1.0f);
 	float Dmg = Config()->m_InfMercBombMaxDamage * l * Power;
 	int DamageFromCid = GetOwner();
 	const vec2 Force = ForceDir * Dmg * 2;

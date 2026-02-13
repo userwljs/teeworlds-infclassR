@@ -194,18 +194,18 @@ public:
 		bool m_HasPersistentData;
 		void *m_pPersistentData;
 
-		void Reset(bool ResetScore=true);
-		
+		void Reset(bool ResetScore = true);
+
 		int m_NbRound;
-		
+
 		char m_aLanguage[16];
 		int m_WaitingTime;
 
 		bool m_Memory[NUM_CLIENTMEMORIES]{};
 		IServer::CClientSession m_Session{};
 		IServer::CClientAccusation m_Accusation{};
-		
-		//Login
+
+		// Login
 		int m_LogInstance;
 		int m_UserId;
 		char m_aUsername[MAX_NAME_LENGTH];
@@ -238,7 +238,7 @@ public:
 	IEngineMap *m_pMap;
 
 	int64_t m_GameStartTime;
-	//int m_CurrentGameTick;
+	// int m_CurrentGameTick;
 
 	enum
 	{
@@ -257,7 +257,7 @@ public:
 	char m_aShutdownReason[128];
 	void *m_pPersistentData;
 
-	//static NETADDR4 master_server;
+	// static NETADDR4 master_server;
 
 	enum
 	{
@@ -318,9 +318,9 @@ public:
 
 	void DemoRecorder_HandleAutoStart() override;
 
-	//int Tick()
+	// int Tick()
 	int64_t TickStartTime(int Tick);
-	//int TickSpeed()
+	// int TickSpeed()
 
 	int Init();
 
@@ -497,14 +497,14 @@ public:
 
 #ifdef CONF_FAMILY_UNIX
 	enum CONN_LOGGING_CMD
-		{
-			OPEN_SESSION = 1,
-			CLOSE_SESSION = 2,
-		};
+	{
+		OPEN_SESSION = 1,
+		CLOSE_SESSION = 2,
+	};
 
 	void SendConnLoggingCommand(CONN_LOGGING_CMD Cmd, const NETADDR *pAddr);
 #endif
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 public:
 	int GetClientInfclassVersion(int ClientId) const override;
 
@@ -514,18 +514,19 @@ public:
 	int GetClientNbRound(int ClientId) override;
 
 	bool IsClientLogged(int ClientId) override;
-	void Register(int ClientId, const char* pUsername, const char* pPassword, const char* pEmail) override;
-	void Login(int ClientId, const char* pUsername, const char* pPassword) override;
+	void Register(int ClientId, const char *pUsername, const char *pPassword, const char *pEmail) override;
+	void Login(int ClientId, const char *pUsername, const char *pPassword) override;
 	void Logout(int ClientId) override;
+
 private:
 	bool GenerateClientMap(const char *pMapFilePath, const char *pMapName);
-	
+
 public:
 	class CGameServerCmd
 	{
 	public:
 		virtual ~CGameServerCmd() {};
-		virtual void Execute(IGameServer* pGameServer) = 0;
+		virtual void Execute(IGameServer *pGameServer) = 0;
 	};
 
 private:
@@ -543,35 +544,34 @@ private:
 	int m_TimeShiftUnit;
 
 public:
-	void AddGameServerCmd(CGameServerCmd* pCmd);
-	
-	CRoundStatistics* RoundStatistics() override { return &m_RoundStatistics; }
+	void AddGameServerCmd(CGameServerCmd *pCmd);
+
+	CRoundStatistics *RoundStatistics() override { return &m_RoundStatistics; }
 	void ResetStatistics() override;
 
 	void OnRoundIsOver() override;
-	
+
 	void SetClientMemory(int ClientId, int Memory, bool Value = true) override;
 	void ResetClientMemoryAboutGame(int ClientId) override;
 	bool GetClientMemory(int ClientId, int Memory) override;
-	
-	IServer::CClientSession* GetClientSession(int ClientId) override;
-	
-	void AddAccusation(int From, int To, const char* pReason) override;
+
+	IServer::CClientSession *GetClientSession(int ClientId) override;
+
+	void AddAccusation(int From, int To, const char *pReason) override;
 	bool ClientShouldBeBanned(int ClientId) override;
 	void RemoveAccusations(int ClientId) override;
 
-	void AddMapVote(int From, const char* pCommand, const char* pReason, const char* pDesc) override;
+	void AddMapVote(int From, const char *pCommand, const char *pReason, const char *pDesc) override;
 	void RemoveMapVotesForId(int ClientId) override;
 	void ResetMapVotes() override;
-	IServer::CMapVote* GetMapVote() override;
+	IServer::CMapVote *GetMapVote() override;
 
 	uint32_t GetActivePlayerCount() override;
-	
-	int GetTimeShiftUnit() const override { return m_TimeShiftUnit; } //In ms
+
+	int GetTimeShiftUnit() const override { return m_TimeShiftUnit; } // In ms
 
 	const char *GetPreviousMapName() const override;
-/* INFECTION MODIFICATION END *****************************************/
-
+	/* INFECTION MODIFICATION END *****************************************/
 };
 
 extern CServer *CreateServer();

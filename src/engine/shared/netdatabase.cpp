@@ -1,18 +1,19 @@
 #include <base/math.h>
 
 #include <engine/console.h>
-#include <engine/storage.h>
 #include <engine/shared/config.h>
+#include <engine/storage.h>
 
 #include "netdatabase.h"
 
 CNetDatabase::CNetHash::CNetHash(const NETADDR *pAddr)
 {
-	if(pAddr->type==NETTYPE_IPV4)
-		m_Hash = (pAddr->ip[0]+pAddr->ip[1]+pAddr->ip[2]+pAddr->ip[3])&0xFF;
+	if(pAddr->type == NETTYPE_IPV4)
+		m_Hash = (pAddr->ip[0] + pAddr->ip[1] + pAddr->ip[2] + pAddr->ip[3]) & 0xFF;
 	else
-		m_Hash = (pAddr->ip[0]+pAddr->ip[1]+pAddr->ip[2]+pAddr->ip[3]+pAddr->ip[4]+pAddr->ip[5]+pAddr->ip[6]+pAddr->ip[7]+
-			pAddr->ip[8]+pAddr->ip[9]+pAddr->ip[10]+pAddr->ip[11]+pAddr->ip[12]+pAddr->ip[13]+pAddr->ip[14]+pAddr->ip[15])&0xFF;
+		m_Hash = (pAddr->ip[0] + pAddr->ip[1] + pAddr->ip[2] + pAddr->ip[3] + pAddr->ip[4] + pAddr->ip[5] + pAddr->ip[6] + pAddr->ip[7] +
+					 pAddr->ip[8] + pAddr->ip[9] + pAddr->ip[10] + pAddr->ip[11] + pAddr->ip[12] + pAddr->ip[13] + pAddr->ip[14] + pAddr->ip[15]) &
+				 0xFF;
 	m_HashIndex = 0;
 }
 
@@ -30,14 +31,14 @@ CNetDatabase::CNetHash::CNetHash(const CNetRange *pRange)
 
 int CNetDatabase::CNetHash::MakeHashArray(const NETADDR *pAddr, CNetHash aHash[17])
 {
-	int Length = pAddr->type==NETTYPE_IPV4 ? 4 : 16;
+	int Length = pAddr->type == NETTYPE_IPV4 ? 4 : 16;
 	aHash[0].m_Hash = 0;
 	aHash[0].m_HashIndex = 0;
 	for(int i = 1, Sum = 0; i <= Length; ++i)
 	{
-		Sum += pAddr->ip[i-1];
-		aHash[i].m_Hash = Sum&0xFF;
-		aHash[i].m_HashIndex = i%Length;
+		Sum += pAddr->ip[i - 1];
+		aHash[i].m_Hash = Sum & 0xFF;
+		aHash[i].m_HashIndex = i % Length;
 	}
 	return Length;
 }

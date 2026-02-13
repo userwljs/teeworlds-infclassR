@@ -173,7 +173,7 @@ class ColorHSLA : public color4_base<ColorHSLA>
 {
 public:
 	using color4_base::color4_base;
-	ColorHSLA(){};
+	ColorHSLA() {};
 
 	constexpr static const float DARKEST_LGT = 0.5f;
 	constexpr static const float DARKEST_LGT7 = 61.0f / 255.0f;
@@ -203,14 +203,14 @@ class ColorHSVA : public color4_base<ColorHSVA>
 {
 public:
 	using color4_base::color4_base;
-	ColorHSVA(){};
+	ColorHSVA() {};
 };
 
 class ColorRGBA : public color4_base<ColorRGBA>
 {
 public:
 	using color4_base::color4_base;
-	ColorRGBA(){};
+	ColorRGBA() {};
 };
 
 template<typename T, typename F>

@@ -4,8 +4,8 @@
 #include "engine/server.h"
 #include "entities/character.h"
 
-#include <engine/shared/config.h>
 #include <engine/server/roundstatistics.h>
+#include <engine/shared/config.h>
 
 #include <game/server/gamecontext.h>
 #include <game/server/gamecontroller.h>
@@ -90,7 +90,7 @@ void CPlayer::Reset()
 	else
 		m_FirstVoteTick = Now;
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	m_Afk = false;
 
 	m_ClientNameLocked = false;
@@ -103,22 +103,22 @@ void CPlayer::Reset()
 	m_NextTuningParams = m_PrevTuningParams;
 	m_IsInGame = false;
 	m_IsReady = false;
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 }
 
 void CPlayer::HandleAutoRespawn()
 {
-	if(!m_pCharacter && m_DieTick+Server()->TickSpeed()*3 <= Server()->Tick())
+	if(!m_pCharacter && m_DieTick + Server()->TickSpeed() * 3 <= Server()->Tick())
 		Respawn();
 }
 
 void CPlayer::Tick()
 {
 #ifdef CONF_DEBUG
-	if(!g_Config.m_DbgDummies || m_ClientId < MAX_CLIENTS-g_Config.m_DbgDummies)
+	if(!g_Config.m_DbgDummies || m_ClientId < MAX_CLIENTS - g_Config.m_DbgDummies)
 #endif
-	if(!Server()->ClientIngame(m_ClientId))
-		return;
+		if(!Server()->ClientIngame(m_ClientId))
+			return;
 
 	// do latency stuff
 	{
@@ -130,9 +130,9 @@ void CPlayer::Tick()
 			m_Latency.m_AccumMin = minimum(m_Latency.m_AccumMin, Info.m_Latency);
 		}
 		// each second
-		if(Server()->Tick()%Server()->TickSpeed() == 0)
+		if(Server()->Tick() % Server()->TickSpeed() == 0)
 		{
-			m_Latency.m_Avg = m_Latency.m_Accum/Server()->TickSpeed();
+			m_Latency.m_Avg = m_Latency.m_Accum / Server()->TickSpeed();
 			m_Latency.m_Max = m_Latency.m_AccumMax;
 			m_Latency.m_Min = m_Latency.m_AccumMin;
 			m_Latency.m_Accum = 0;
@@ -150,7 +150,7 @@ void CPlayer::Tick()
 	if(!GameServer()->m_World.m_Paused)
 	{
 		if(!m_pCharacter && m_Team == TEAM_SPECTATORS && m_SpectatorId == SPEC_FREEVIEW)
-			m_ViewPos -= vec2(clamp(m_ViewPos.x-m_LatestActivity.m_TargetX, -500.0f, 500.0f), clamp(m_ViewPos.y-m_LatestActivity.m_TargetY, -400.0f, 400.0f));
+			m_ViewPos -= vec2(clamp(m_ViewPos.x - m_LatestActivity.m_TargetX, -500.0f, 500.0f), clamp(m_ViewPos.y - m_LatestActivity.m_TargetY, -400.0f, 400.0f));
 
 		HandleAutoRespawn();
 
@@ -172,7 +172,7 @@ void CPlayer::Tick()
 		++m_LastActionTick;
 		++m_LastActionMoveTick;
 		++m_TeamChangeTick;
- 	}
+	}
 }
 
 void CPlayer::PostTick()
@@ -190,20 +190,20 @@ void CPlayer::HandleTuningParams()
 		{
 			GameServer()->SendTuningParams(GetCid(), m_NextTuningParams);
 		}
-		
+
 		m_PrevTuningParams = m_NextTuningParams;
 	}
-	
+
 	m_NextTuningParams = *GameServer()->Tuning();
 }
 
 void CPlayer::Snap(int SnappingClient)
 {
 #ifdef CONF_DEBUG
-	if(!g_Config.m_DbgDummies || m_ClientId < MAX_CLIENTS-g_Config.m_DbgDummies)
+	if(!g_Config.m_DbgDummies || m_ClientId < MAX_CLIENTS - g_Config.m_DbgDummies)
 #endif
-	if(!Server()->ClientIngame(m_ClientId))
-		return;
+		if(!Server()->ClientIngame(m_ClientId))
+			return;
 
 	int id = m_ClientId;
 	if(SnappingClient != SERVER_DEMO_CLIENT && !Server()->Translate(id, SnappingClient))
@@ -221,9 +221,9 @@ void CPlayer::Snap(int SnappingClient)
 	pPlayerInfo->m_Latency = Latency;
 	pPlayerInfo->m_Local = 0;
 	pPlayerInfo->m_ClientId = id;
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	pPlayerInfo->m_Score = PlayerInfoScore;
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 	pPlayerInfo->m_Team = m_Team;
 
 	if(m_ClientId == SnappingClient)
@@ -365,7 +365,7 @@ void CPlayer::SetTeam(int Team, bool DoChatMsg)
 	m_LastActionMoveTick = Server()->Tick();
 	m_SpectatorId = SPEC_FREEVIEW;
 	// we got to wait 0.5 secs before respawning
-	m_RespawnTick = Server()->Tick()+Server()->TickSpeed()/2;
+	m_RespawnTick = Server()->Tick() + Server()->TickSpeed() / 2;
 
 	if(Team == TEAM_SPECTATORS)
 	{
@@ -509,7 +509,7 @@ const char *CPlayer::GetLanguage() const
 	return m_aLanguage;
 }
 
-void CPlayer::SetLanguage(const char* pLanguage)
+void CPlayer::SetLanguage(const char *pLanguage)
 {
 	str_copy(m_aLanguage, pLanguage, sizeof(m_aLanguage));
 }

@@ -4,9 +4,9 @@
 #include <base/system.h>
 #include <base/vmath.h>
 
+#include <cmath>
 #include <engine/kernel.h>
 #include <engine/map.h>
-#include <cmath>
 
 #include <game/collision.h>
 #include <game/layers.h>

@@ -4,11 +4,9 @@
 
 #pragma once
 
-
 /** @file
  * This source file is processed by cmake to include the version number.
  */
-
 
 /** This version tag is automatically updated by the build process.
  * Do not edit manually!  See GeoLite2PP_version.hpp.in and CMakeLists.txt.

@@ -52,7 +52,7 @@ TEST(ICArray, ReverseItTest)
 {
 	icArray<int, 10> Array1;
 
-	for (int i = 0; i < 5; ++i)
+	for(int i = 0; i < 5; ++i)
 	{
 		Array1.Add(i);
 		EXPECT_EQ(Array1.Size(), static_cast<std::size_t>(i + 1));
@@ -69,7 +69,8 @@ TEST(ICArray, ReverseItTest)
 
 	Index -= 1;
 	EXPECT_EQ(Index, 4); // Sanity check
-	for (auto it = Array1.rbegin(); it != Array1.rend(); ++it) {
+	for(auto it = Array1.rbegin(); it != Array1.rend(); ++it)
+	{
 		EXPECT_EQ(*it, Array1.At(Index));
 		Index--;
 	}
@@ -79,13 +80,13 @@ TEST(ICArray, EraseIf)
 {
 	icArray<int, 10> Array1;
 
-	for (int i = 0; i < 5; ++i)
+	for(int i = 0; i < 5; ++i)
 	{
 		Array1.Add(i);
 		EXPECT_EQ(Array1.Size(), static_cast<std::size_t>(i + 1));
 	}
 
-	std::size_t RemovedCount = std::erase_if(Array1, [](int Value) { return Value % 2;});
+	std::size_t RemovedCount = std::erase_if(Array1, [](int Value) { return Value % 2; });
 	EXPECT_EQ(RemovedCount, 2);
 	EXPECT_EQ(Array1.Size(), 3);
 

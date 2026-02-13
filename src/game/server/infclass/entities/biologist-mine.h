@@ -20,7 +20,7 @@ public:
 		NUM_PARTICLES = 1,
 		NUM_IDS = NUM_SIDE + NUM_PARTICLES,
 	};
-	
+
 public:
 	CBiologistMine(CGameContext *pGameContext, vec2 Pos, vec2 EndPos, int Owner, int Lasers, int Damage, int Vertices = NUM_SIDE);
 	~CBiologistMine() override;

@@ -28,7 +28,7 @@ CCharacter::CCharacter(CGameWorld *pWorld, CNetObj_PlayerInput LastInput) :
 	m_Input.m_TargetX = 0;
 	m_Input.m_TargetY = -1;
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	m_MaxArmor = 10;
 
 	m_PainSoundTimer = 0;
@@ -36,7 +36,7 @@ CCharacter::CCharacter(CGameWorld *pWorld, CNetObj_PlayerInput LastInput) :
 	m_InAirTick = 0;
 	m_InWater = 0;
 	m_WaterJumpLifeSpan = 0;
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 }
 
 CCharacter::~CCharacter() = default;
@@ -52,7 +52,7 @@ int CCharacter::GetCid() const
 }
 
 void CCharacter::Reset()
-{	
+{
 	Destroy();
 }
 
@@ -91,7 +91,7 @@ bool CCharacter::Spawn(CPlayer *pPlayer, vec2 Pos)
 }
 
 void CCharacter::Destroy()
-{	
+{
 	if(m_pPlayer)
 		GameServer()->m_World.m_Core.m_apCharacters[m_pPlayer->GetCid()] = nullptr;
 	m_Alive = false;
@@ -134,43 +134,43 @@ void CCharacter::HandleWaterJump()
 		m_Core.m_TriggeredEvents &= ~COREEVENT_GROUND_JUMP;
 		m_Core.m_TriggeredEvents &= ~COREEVENT_AIR_JUMP;
 
-		if(m_Input.m_Jump && m_DartLifeSpan <= 0 && m_WaterJumpLifeSpan <=0)
+		if(m_Input.m_Jump && m_DartLifeSpan <= 0 && m_WaterJumpLifeSpan <= 0)
 		{
-			m_WaterJumpLifeSpan = Server()->TickSpeed()/2;
+			m_WaterJumpLifeSpan = Server()->TickSpeed() / 2;
 			m_DartLifeSpan = g_pData->m_Weapons.m_Ninja.m_Movetime * Server()->TickSpeed() / 1000;
 			vec2 Direction = normalize(vec2(m_LatestInput.m_TargetX, m_LatestInput.m_TargetY));
 			m_DartDir = Direction;
 			m_DartOldVelAmount = length(m_Core.m_Vel);
-			
+
 			m_Core.m_TriggeredEvents |= COREEVENT_AIR_JUMP;
 		}
 	}
-	
+
 	m_WaterJumpLifeSpan--;
-	
+
 	m_DartLifeSpan--;
-	
+
 	if(m_DartLifeSpan == 0)
 	{
 		//~ m_Core.m_Vel = m_DartDir * 5.0f;
-		m_Core.m_Vel = m_DartDir*m_DartOldVelAmount;
+		m_Core.m_Vel = m_DartDir * m_DartOldVelAmount;
 	}
-	
+
 	if(m_DartLifeSpan > 0)
 	{
 		m_Core.m_Vel = m_DartDir * 15.0f;
 		const vec2 GroundElasticity{};
 		GameServer()->Collision()->MoveBox(&m_Core.m_Pos, &m_Core.m_Vel, vec2(m_ProximityRadius, m_ProximityRadius), GroundElasticity);
 		m_Core.m_Vel = vec2(0.f, 0.f);
-	}	
+	}
 }
 
 void CCharacter::DoWeaponSwitch()
 {
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	if(m_QueuedWeapon == -1 || !m_aWeapons[m_QueuedWeapon].m_Got)
 		return;
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 	// switch Weapon
 	SetWeapon(m_QueuedWeapon);
@@ -214,7 +214,7 @@ void CCharacter::HandleWeaponSwitch()
 
 	// Direct Weapon selection
 	if(m_LatestInput.m_WantedWeapon)
-		WantedWeapon = m_Input.m_WantedWeapon-1;
+		WantedWeapon = m_Input.m_WantedWeapon - 1;
 
 	// check for insane values
 	if(WantedWeapon >= 0 && WantedWeapon < NUM_WEAPONS && WantedWeapon != m_ActiveWeapon && m_aWeapons[WantedWeapon].m_Got)
@@ -229,7 +229,7 @@ void CCharacter::FireWeapon()
 
 void CCharacter::HandleWeapons()
 {
-	//ninja
+	// ninja
 	HandleNinja();
 
 	// check reload timer
@@ -301,7 +301,7 @@ void CCharacter::GiveWeapon(EWeapon Weapon, int Ammo)
 
 void CCharacter::TakeAllWeapons()
 {
-	for (CWeaponStat &Weapon : m_aWeapons)
+	for(CWeaponStat &Weapon : m_aWeapons)
 	{
 		Weapon.m_Got = false;
 		Weapon.m_Ammo = 0;
@@ -403,25 +403,25 @@ void CCharacter::Tick()
 	PreTick();
 
 	m_Core.m_Id = GetPlayer()->GetCid();
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	PreCoreTick();
 
 	m_Core.m_Input = m_Input;
-	
+
 	CCharacterCore::CParams CoreTickParams(&m_pPlayer->m_NextTuningParams);
 	//~ CCharacterCore::CParams CoreTickParams(&GameWorld()->m_Core.m_Tuning);
 
 	if(PrivateGetPlayerClass() == EPlayerClass::Spider)
 	{
-		CoreTickParams.m_HookGrabTime = g_Config.m_InfSpiderHookTime*SERVER_TICK_SPEED;
+		CoreTickParams.m_HookGrabTime = g_Config.m_InfSpiderHookTime * SERVER_TICK_SPEED;
 	}
 	if(PrivateGetPlayerClass() == EPlayerClass::Bat)
 	{
-		CoreTickParams.m_HookGrabTime = g_Config.m_InfBatHookTime*SERVER_TICK_SPEED;
+		CoreTickParams.m_HookGrabTime = g_Config.m_InfBatHookTime * SERVER_TICK_SPEED;
 	}
 
 	CoreTickParams.m_HookMode = GetEffectiveHookMode();
-	
+
 	m_Core.Tick(true, &CoreTickParams);
 
 	HandleWaterJump();
@@ -429,7 +429,7 @@ void CCharacter::Tick()
 
 	PostCoreTick();
 
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION END *****************************************/
 
 	// Previnput
 	m_PrevInput = m_Input;
@@ -451,8 +451,8 @@ void CCharacter::TickDeferred()
 	}
 
 	CCharacterCore::CParams CoreTickParams(&m_pPlayer->m_NextTuningParams);
-	
-	//lastsentcore
+
+	// lastsentcore
 	vec2 StartPos = m_Core.m_Pos;
 	vec2 StartVel = m_Core.m_Vel;
 	bool StuckBefore = GameServer()->Collision()->TestBox(m_Core.m_Pos, vec2(28.0f, 28.0f));
@@ -506,7 +506,7 @@ void CCharacter::TickDeferred()
 		m_Core.Write(&Current);
 
 		// only allow dead reackoning for a top of 3 seconds
-		if(m_ReckoningTick+Server()->TickSpeed()*3 < Server()->Tick() || mem_comp(&Predicted, &Current, sizeof(CNetObj_Character)) != 0)
+		if(m_ReckoningTick + Server()->TickSpeed() * 3 < Server()->Tick() || mem_comp(&Predicted, &Current, sizeof(CNetObj_Character)) != 0)
 		{
 			m_ReckoningTick = Server()->Tick();
 			m_SendCore = m_Core;
@@ -591,7 +591,7 @@ void CCharacter::Die(int Killer, int Weapon)
 {
 }
 
-//TODO: Move the emote stuff to a function
+// TODO: Move the emote stuff to a function
 void CCharacter::SnapCharacter(int SnappingClient, int Id)
 {
 	CCharacterSnapContext SnapContext{
@@ -860,13 +860,13 @@ void CCharacter::LoveEffect(float Time)
 void CCharacter::HallucinationEffect()
 {
 	if(m_HallucinationTick <= 0)
-		m_HallucinationTick = Server()->TickSpeed()*5;
+		m_HallucinationTick = Server()->TickSpeed() * 5;
 }
 
 void CCharacter::SlipperyEffect()
 {
 	if(m_SlipperyTick <= 0)
-		m_SlipperyTick = Server()->TickSpeed()/2;
+		m_SlipperyTick = Server()->TickSpeed() / 2;
 }
 
 int CCharacter::GetEffectiveHookMode() const

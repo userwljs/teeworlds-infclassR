@@ -5,6 +5,6 @@
 
 #include <base/vmath.h>
 
-void GetAnimationTransform(float GlobalTime, int Env, class CLayers* pLayers, vec2& Position, float& Angle);
+void GetAnimationTransform(float GlobalTime, int Env, class CLayers *pLayers, vec2 &Position, float &Angle);
 
 #endif

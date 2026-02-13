@@ -41,10 +41,10 @@ void CLayers::Init(IMap *pMap)
 	for(int g = 0; g < NumGroups(); g++)
 	{
 		CMapItemGroup *pGroup = GetGroup(g);
-		
+
 		char aGroupName[12];
 		IntsToStr(pGroup->m_aName, std::size(pGroup->m_aName), aGroupName, std::size(aGroupName));
-		
+
 		if(str_comp(aGroupName, "#Zones") == 0)
 		{
 			m_pZoneGroup = pGroup;
@@ -84,7 +84,7 @@ void CLayers::Init(IMap *pMap)
 						m_pGameGroup->m_ClipH = 0;
 					}
 
-					//break;
+					// break;
 				}
 				if(pTilemap->m_Flags & TILESLAYERFLAG_TELE)
 				{
@@ -105,7 +105,7 @@ void CLayers::Init(IMap *pMap)
 			}
 		}
 	}
-	
+
 	if(!m_pGameLayer)
 		dbg_msg("InfClass", "CLayer::Init: no Game Layer found");
 }

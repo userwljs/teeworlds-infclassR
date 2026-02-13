@@ -5,7 +5,7 @@
 
 //~ inline int NetComp(const NETADDR *pAddr1, const NETADDR *pAddr2)
 //~ {
-	//~ return mem_comp(pAddr1, pAddr2, pAddr1->type==NETTYPE_IPV4 ? 8 : 20);
+//~ return mem_comp(pAddr1, pAddr2, pAddr1->type==NETTYPE_IPV4 ? 8 : 20);
 //~ }
 
 class CNetDatabase
@@ -24,7 +24,7 @@ public:
 	{
 	public:
 		int m_Hash;
-		int m_HashIndex;	// matching parts for ranges, 0 for addr
+		int m_HashIndex; // matching parts for ranges, 0 for addr
 
 		CNetHash() = default;
 		CNetHash(const NETADDR *pAddr);
@@ -55,7 +55,7 @@ public:
 	public:
 		typedef DATATYPE CDataType;
 		typedef INFOTYPE CInfoType;
-		
+
 	public:
 		CNode<CDataType, CInfoType> *Add(const CDataType *pData, const CInfoType *pInfo, const CNetHash *pNetHash)
 		{
@@ -84,7 +84,7 @@ public:
 			// insert it into the used list
 			if(m_pFirstUsed)
 			{
-				for(CNode<DATATYPE, INFOTYPE> *p = m_pFirstUsed; ; p = p->m_pNext)
+				for(CNode<DATATYPE, INFOTYPE> *p = m_pFirstUsed;; p = p->m_pNext)
 				{
 					if(p->m_Info.m_Expires == INFOTYPE::EXPIRES_NEVER || (pInfo->m_Expires != INFOTYPE::EXPIRES_NEVER && pInfo->m_Expires <= p->m_Info.m_Expires))
 					{
@@ -120,7 +120,7 @@ public:
 
 			return pNode;
 		}
-		
+
 		int Remove(CNode<CDataType, CInfoType> *pNode)
 		{
 			if(pNode == 0)
@@ -155,7 +155,7 @@ public:
 
 			return 0;
 		}
-		
+
 		void Update(CNode<CDataType, CInfoType> *pNode, const CInfoType *pInfo)
 		{
 			pNode->m_Info = *pInfo;
@@ -171,7 +171,7 @@ public:
 			// insert it into the used list
 			if(m_pFirstUsed)
 			{
-				for(CNode<DATATYPE, INFOTYPE> *p = m_pFirstUsed; ; p = p->m_pNext)
+				for(CNode<DATATYPE, INFOTYPE> *p = m_pFirstUsed;; p = p->m_pNext)
 				{
 					if(p->m_Info.m_Expires == INFOTYPE::EXPIRES_NEVER || (pInfo->m_Expires != INFOTYPE::EXPIRES_NEVER && pInfo->m_Expires <= p->m_Info.m_Expires))
 					{
@@ -202,7 +202,7 @@ public:
 				pNode->m_pNext = pNode->m_pPrev = 0;
 			}
 		}
-		
+
 		void Reset()
 		{
 			mem_zero(m_paaHashList, sizeof(m_paaHashList));
@@ -210,17 +210,17 @@ public:
 			m_pFirstUsed = 0;
 			m_CountUsed = 0;
 
-			for(int i = 1; i < MAX_ENTRIES-1; ++i)
+			for(int i = 1; i < MAX_ENTRIES - 1; ++i)
 			{
-				m_aBans[i].m_pNext = &m_aBans[i+1];
-				m_aBans[i].m_pPrev = &m_aBans[i-1];
+				m_aBans[i].m_pNext = &m_aBans[i + 1];
+				m_aBans[i].m_pPrev = &m_aBans[i - 1];
 			}
 
 			m_aBans[0].m_pNext = &m_aBans[1];
-			m_aBans[MAX_ENTRIES-1].m_pPrev = &m_aBans[MAX_ENTRIES-2];
+			m_aBans[MAX_ENTRIES - 1].m_pPrev = &m_aBans[MAX_ENTRIES - 2];
 			m_pFirstFree = &m_aBans[0];
 		}
-	
+
 		int Num() const { return m_CountUsed; }
 		bool IsFull() const { return m_CountUsed == MAX_ENTRIES; }
 
@@ -236,7 +236,7 @@ public:
 
 			return 0;
 		}
-		
+
 		CNode<CDataType, CInfoType> *Get(int Index) const
 		{
 			if(Index < 0 || Index >= Num())
@@ -254,7 +254,7 @@ public:
 	private:
 		enum
 		{
-			MAX_ENTRIES=1024,
+			MAX_ENTRIES = 1024,
 		};
 
 		CNode<CDataType, CInfoType> *m_paaHashList[HashCount][256];
@@ -263,35 +263,35 @@ public:
 		CNode<CDataType, CInfoType> *m_pFirstUsed;
 		int m_CountUsed;
 	};
-	
+
 public:
 	static inline int NetComp(const NETADDR *pAddr1, const NETADDR *pAddr2)
 	{
-		return mem_comp(pAddr1, pAddr2, pAddr1->type==NETTYPE_IPV4 ? 8 : 20);
+		return mem_comp(pAddr1, pAddr2, pAddr1->type == NETTYPE_IPV4 ? 8 : 20);
 	}
-	
+
 	static inline int NetComp(const CNetRange *pRange1, const CNetRange *pRange2)
 	{
 		return NetComp(&pRange1->m_LB, &pRange2->m_LB) || NetComp(&pRange1->m_UB, &pRange2->m_UB);
 	}
-	
+
 protected:
 	bool NetMatch(const NETADDR *pAddr1, const NETADDR *pAddr2) const
 	{
 		return NetComp(pAddr1, pAddr2) == 0;
 	}
-	
+
 	bool NetMatch(const CNetRange *pRange, const NETADDR *pAddr, int Start, int Length) const
 	{
 		return pRange->m_LB.type == pAddr->type && (Start == 0 || mem_comp(&pRange->m_LB.ip[0], &pAddr->ip[0], Start) == 0) &&
-			mem_comp(&pRange->m_LB.ip[Start], &pAddr->ip[Start], Length-Start) <= 0 && mem_comp(&pRange->m_UB.ip[Start], &pAddr->ip[Start], Length-Start) >= 0;
+			   mem_comp(&pRange->m_LB.ip[Start], &pAddr->ip[Start], Length - Start) <= 0 && mem_comp(&pRange->m_UB.ip[Start], &pAddr->ip[Start], Length - Start) >= 0;
 	}
-	
+
 	bool NetMatch(const CNetRange *pRange, const NETADDR *pAddr) const
 	{
-		return NetMatch(pRange, pAddr, 0, pRange->m_LB.type==NETTYPE_IPV4 ? 4 : 16);
+		return NetMatch(pRange, pAddr, 0, pRange->m_LB.type == NETTYPE_IPV4 ? 4 : 16);
 	}
-	
+
 	const char *NetToString(const NETADDR *pData, char *pBuffer, unsigned BufferSize) const
 	{
 		char aAddrStr[NETADDR_MAXSTRSIZE];

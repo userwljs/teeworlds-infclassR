@@ -12,7 +12,6 @@ public:
 
 protected:
 	bool OnCharacterHit(CIcCharacter *pHit, const vec2 &At) final;
-
 };
 
 #endif // GAME_SERVER_ENTITIES_MEDIC_LASER_H

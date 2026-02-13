@@ -3,8 +3,8 @@
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
 #include <game/server/gamecontext.h>
-#include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/events-director.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 #include "classes/humans/human.h"
 #include "classes/ic_playerclass.h"
@@ -14,9 +14,7 @@
 
 MACRO_ALLOC_POOL_ID_IMPL(CIcPlayer, MAX_CLIENTS)
 
-CIcPlayer::CIcPlayer(CIcGameController *pGameController, int UniqueClientId, int ClientId, int Team)
-	: CPlayer(pGameController->GameServer(), UniqueClientId, ClientId, Team)
-	, m_pGameController(pGameController)
+CIcPlayer::CIcPlayer(CIcGameController *pGameController, int UniqueClientId, int ClientId, int Team) : CPlayer(pGameController->GameServer(), UniqueClientId, ClientId, Team), m_pGameController(pGameController)
 {
 	m_class = EPlayerClass::Invalid;
 	m_PreferredClass = EPlayerClass::Invalid;
@@ -357,7 +355,7 @@ CIcCharacter *CIcPlayer::GetCharacter()
 
 const CIcCharacter *CIcPlayer::GetCharacter() const
 {
-	return static_cast<const CIcCharacter*>(m_pCharacter);
+	return static_cast<const CIcCharacter *>(m_pCharacter);
 }
 
 void CIcPlayer::SetCharacterClass(CIcPlayerClass *pClass)
@@ -495,7 +493,7 @@ void CIcPlayer::CloseMapMenu()
 
 bool CIcPlayer::MapMenuClickable()
 {
-	return (m_MapMenu > 0 && (m_MapMenuTick > Server()->TickSpeed()/2));
+	return (m_MapMenu > 0 && (m_MapMenuTick > Server()->TickSpeed() / 2));
 }
 
 void CIcPlayer::SetHookProtection(bool Value, bool Automatic)
@@ -554,7 +552,7 @@ void CIcPlayer::SetSpecialCameraTargetCid(int ClientId, float Duration)
 int CIcPlayer::GetSpectatingCid() const
 {
 	int TargetCid = GetSpecialCameraTargetCid();
-	if (TargetCid < 0)
+	if(TargetCid < 0)
 	{
 		TargetCid = m_SpectatorId;
 	}
@@ -564,7 +562,7 @@ int CIcPlayer::GetSpectatingCid() const
 
 float CIcPlayer::GetGhoulPercent() const
 {
-	return clamp(m_GhoulLevel/static_cast<float>(GameController()->GetGhoulStomackSize()), 0.0f, 1.0f);
+	return clamp(m_GhoulLevel / static_cast<float>(GameController()->GetGhoulStomackSize()), 0.0f, 1.0f);
 }
 
 void CIcPlayer::IncreaseGhoulLevel(int Diff)
@@ -585,7 +583,7 @@ bool CIcPlayer::RandomClassChoosen() const
 
 EPlayerClass CIcPlayer::GetPreviousInfectedClass() const
 {
-	for (int i = m_PreviousClasses.Size() - 1; i > 0; --i)
+	for(int i = m_PreviousClasses.Size() - 1; i > 0; --i)
 	{
 		EPlayerClass Class = m_PreviousClasses.At(i);
 		if(IsInfectedClass(Class))
@@ -735,7 +733,7 @@ void CIcPlayer::HandleAutoRespawn()
 		AutoSpawnInterval = 0;
 	}
 
-	if(!m_pCharacter && m_DieTick+Server()->TickSpeed() * AutoSpawnInterval <= Server()->Tick())
+	if(!m_pCharacter && m_DieTick + Server()->TickSpeed() * AutoSpawnInterval <= Server()->Tick())
 	{
 		Respawn();
 	}
@@ -767,7 +765,7 @@ bool CIcPlayer::SpecialCameraIsActive() const
 		return false;
 	}
 
-	if (IsSpectator())
+	if(IsSpectator())
 		return false;
 
 	return m_FollowTargetId.has_value();

@@ -43,5 +43,4 @@ private:
 	int m_FlashRadius{};
 	vec2 m_StartPos;
 	TAKEDAMAGEMODE m_TakeDamageMode;
-
 };

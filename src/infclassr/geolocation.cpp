@@ -4,11 +4,13 @@
 
 static Geolocation *Instance = nullptr;
 
-Geolocation::Geolocation(const char* path_to_mmdb) {
+Geolocation::Geolocation(const char *path_to_mmdb)
+{
 	db = new GeoLite2PP::DB(path_to_mmdb);
 }
 
-Geolocation::~Geolocation() {
+Geolocation::~Geolocation()
+{
 	delete db;
 	db = nullptr;
 }
@@ -36,28 +38,37 @@ void Geolocation::Shutdown()
 	Instance = nullptr;
 }
 
-int Geolocation::get_country_iso_numeric_code(std::string& ip) {
+int Geolocation::get_country_iso_numeric_code(std::string &ip)
+{
 	if(!Instance)
 	{
 		return -1;
 	}
 
-	try {
+	try
+	{
 		GeoLite2PP::MStr map_str = Instance->db->get_all_fields(ip);
 		return Instance->get_iso_numeric_code(map_str);
-	} catch (const std::invalid_argument &) {
+	}
+	catch(const std::invalid_argument &)
+	{
 		std::cout << "This ip is not valid! " << ip << std::endl;
 		return -1;
-	} catch (const std::length_error &) {
+	}
+	catch(const std::length_error &)
+	{
 		std::cout << "This ip was not found in database: " << ip << std::endl;
 		return -1;
-	} catch (...) {
+	}
+	catch(...)
+	{
 		std::cout << "Geolocation: Something went wrong." << ip << std::endl;
 		return -1;
 	}
 }
 
-int Geolocation::get_iso_numeric_code(GeoLite2PP::MStr& m) {
+int Geolocation::get_iso_numeric_code(GeoLite2PP::MStr &m)
+{
 	std::map<std::string, int> iso_numeric = {
 		{"AF", 4},
 		{"AX", 248},
@@ -307,7 +318,6 @@ int Geolocation::get_iso_numeric_code(GeoLite2PP::MStr& m) {
 		{"EH", 732},
 		{"YE", 887},
 		{"ZM", 894},
-		{"ZW", 716}
-	};
+		{"ZW", 716}};
 	return iso_numeric[m["country_iso_code"]];
 }

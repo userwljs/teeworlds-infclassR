@@ -1146,8 +1146,8 @@ void CConsole::Init()
 
 #define MACRO_CONFIG_COL(Name, ScriptName, Def, Flags, Desc) \
 	{ \
-		static CColVariableData Data = {this, &g_Config.m_##Name, static_cast<bool>((Flags)&CFGFLAG_COLLIGHT), \
-			static_cast<bool>((Flags)&CFGFLAG_COLALPHA), Def}; \
+		static CColVariableData Data = {this, &g_Config.m_##Name, static_cast<bool>((Flags) & CFGFLAG_COLLIGHT), \
+			static_cast<bool>((Flags) & CFGFLAG_COLALPHA), Def}; \
 		Register(#ScriptName, "?i", Flags, ColVariableCommand, &Data, Desc " (default: " #Def ")"); \
 	}
 
@@ -1406,12 +1406,12 @@ void CConsole::ResetServerGameSettings()
 	{ \
 		if(((Flags) & (CFGFLAG_SERVER | CFGFLAG_GAME)) == (CFGFLAG_SERVER | CFGFLAG_GAME)) \
 		{ \
-				CCommand *pCommand = FindCommand(#ScriptName, CFGFLAG_SERVER); \
-				void *pUserData = pCommand->m_pUserData; \
-				FCommandCallback pfnCallback = pCommand->m_pfnCallback; \
-				TraverseChain(&pfnCallback, &pUserData); \
-				CFloatVariableData *pData = (CFloatVariableData *)pUserData; \
-				*pData->m_pVariable = pData->m_OldValue; \
+			CCommand *pCommand = FindCommand(#ScriptName, CFGFLAG_SERVER); \
+			void *pUserData = pCommand->m_pUserData; \
+			FCommandCallback pfnCallback = pCommand->m_pfnCallback; \
+			TraverseChain(&pfnCallback, &pUserData); \
+			CFloatVariableData *pData = (CFloatVariableData *)pUserData; \
+			*pData->m_pVariable = pData->m_OldValue; \
 		} \
 	}
 

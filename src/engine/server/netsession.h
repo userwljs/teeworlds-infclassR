@@ -12,14 +12,14 @@ protected:
 	{
 		enum
 		{
-			EXPIRES_NEVER=-1,
+			EXPIRES_NEVER = -1,
 		};
 		int m_Expires;
 		SESSIONDATA m_Data;
 	};
 
 	typedef CPool<NETADDR, CSessionInfo, 1> CSessionPool;
-	
+
 	CSessionPool m_Pool;
 
 public:
@@ -29,7 +29,7 @@ public:
 	{
 		m_Pool.Reset();
 	}
-	
+
 	void Update()
 	{
 		int Now = time_timestamp();
@@ -40,10 +40,10 @@ public:
 			m_Pool.Remove(m_Pool.First());
 		}
 	}
-	
-	int AddSession(const NETADDR *pAddr, int Seconds, SESSIONDATA* pData)
+
+	int AddSession(const NETADDR *pAddr, int Seconds, SESSIONDATA *pData)
 	{
-		int Stamp = Seconds > 0 ? time_timestamp()+Seconds : CSessionPool::CInfoType::EXPIRES_NEVER;
+		int Stamp = Seconds > 0 ? time_timestamp() + Seconds : CSessionPool::CInfoType::EXPIRES_NEVER;
 
 		// set up info
 		typename CSessionPool::CInfoType Info = {0};
@@ -63,22 +63,22 @@ public:
 		pNode = m_Pool.Add(pAddr, &Info, &NetHash);
 		if(!pNode)
 			return -1;
-		
+
 		return 0;
 	}
-	
+
 	int RemoveSession(const NETADDR *pAddr)
 	{
 		CNetHash NetHash(pAddr);
 		CNode<typename CSessionPool::CDataType, typename CSessionPool::CInfoType> *pNode = m_Pool.Find(pAddr, &NetHash);
 		if(!pNode)
 			return -1;
-		
+
 		m_Pool.Remove(pNode);
 		return 0;
 	}
-	
-	SESSIONDATA* GetData(const NETADDR *pAddr) const
+
+	SESSIONDATA *GetData(const NETADDR *pAddr) const
 	{
 		CNetHash aHash[17];
 		int Length = CNetHash::MakeHashArray(pAddr, aHash);
@@ -87,10 +87,10 @@ public:
 		CNode<typename CSessionPool::CDataType, typename CSessionPool::CInfoType> *pNode = m_Pool.Find(pAddr, &aHash[Length]);
 		if(!pNode)
 			return 0;
-		
+
 		return &pNode->m_Info.m_Data;
 	}
-	
+
 	bool HasSession(const NETADDR *pAddr) const
 	{
 		CNetHash aHash[17];
@@ -100,7 +100,7 @@ public:
 		CNode<typename CSessionPool::CDataType, typename CSessionPool::CInfoType> *pNode = m_Pool.Find(pAddr, &aHash[Length]);
 		if(!pNode)
 			return false;
-		
+
 		return true;
 	}
 };

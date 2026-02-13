@@ -12,8 +12,8 @@
 #include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/infclass/ic_player.h>
 
-#include "ic_laser.h"
 #include "ic_character.h"
+#include "ic_laser.h"
 #include "plasma.h"
 
 #include <iterator> // std::size
@@ -85,7 +85,7 @@ void CTurret::Tick()
 
 		float Len2 = distance_squared(pChr->GetPos(), GetPos());
 
-		if (Len2 < HitRange2)
+		if(Len2 < HitRange2)
 			Hit(pChr);
 
 		// selfdestruction

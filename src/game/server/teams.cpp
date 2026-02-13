@@ -36,7 +36,7 @@ void CGameTeams::OnCharacterFinish(int ClientId)
 	if(pPlayer && pPlayer->IsPlaying())
 	{
 		const CCharacter *pCharacter = pPlayer->GetCharacter();
-		if (pCharacter->RaceState() != ERaceState::STARTED)
+		if(pCharacter->RaceState() != ERaceState::STARTED)
 			return;
 
 		int TimeTicks = Server()->Tick() - pCharacter->GetRaceStartTick();

@@ -9,8 +9,7 @@
 #include <game/server/infclass/ic_player.h>
 #include <game/server/teeinfo.h>
 
-CIcPlayerClass::CIcPlayerClass(CIcPlayer *pPlayer)
-	: m_pPlayer(pPlayer)
+CIcPlayerClass::CIcPlayerClass(CIcPlayer *pPlayer) : m_pPlayer(pPlayer)
 {
 	m_NormalEmote = EMOTE_NORMAL;
 }
@@ -273,7 +272,7 @@ EPlayerClass CIcPlayerClass::GetPlayerClass() const
 void CIcPlayerClass::OnPlayerClassChanged()
 {
 	UpdateSkin();
-	IsZombie() ? SetNormalEmote(EMOTE_ANGRY) : SetNormalEmote(EMOTE_NORMAL); 
+	IsZombie() ? SetNormalEmote(EMOTE_ANGRY) : SetNormalEmote(EMOTE_NORMAL);
 
 	// Enable hook protection by default for both infected and humans on class changed
 	m_pPlayer->SetHookProtection(true);
@@ -378,26 +377,26 @@ void CIcPlayerClass::OnWeaponFired(WeaponFireContext *pFireContext)
 {
 	switch(pFireContext->Weapon)
 	{
-		case WEAPON_HAMMER:
-			OnHammerFired(pFireContext);
-			break;
-		case WEAPON_GUN:
-			OnGunFired(pFireContext);
-			break;
-		case WEAPON_SHOTGUN:
-			OnShotgunFired(pFireContext);
-			break;
-		case WEAPON_GRENADE:
-			OnGrenadeFired(pFireContext);
-			break;
-		case WEAPON_LASER:
-			OnLaserFired(pFireContext);
-			break;
-		case WEAPON_NINJA:
-			OnNinjaFired(pFireContext);
-			break;
-		default:
-			break;
+	case WEAPON_HAMMER:
+		OnHammerFired(pFireContext);
+		break;
+	case WEAPON_GUN:
+		OnGunFired(pFireContext);
+		break;
+	case WEAPON_SHOTGUN:
+		OnShotgunFired(pFireContext);
+		break;
+	case WEAPON_GRENADE:
+		OnGrenadeFired(pFireContext);
+		break;
+	case WEAPON_LASER:
+		OnLaserFired(pFireContext);
+		break;
+	case WEAPON_NINJA:
+		OnNinjaFired(pFireContext);
+		break;
+	default:
+		break;
 	}
 }
 

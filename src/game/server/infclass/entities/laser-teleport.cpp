@@ -69,8 +69,7 @@ std::optional<vec2> CLaserTeleport::FindPortalPosition(CIcCharacter *pCharacter)
 	return {};
 }
 
-CLaserTeleport::CLaserTeleport(CGameContext *pGameContext, vec2 StartPos, vec2 EndPos)
-	: CIcEntity(pGameContext, EntityId)
+CLaserTeleport::CLaserTeleport(CGameContext *pGameContext, vec2 StartPos, vec2 EndPos) : CIcEntity(pGameContext, EntityId)
 {
 	m_StartPos = StartPos;
 	m_EndPos = EndPos;
@@ -80,7 +79,7 @@ CLaserTeleport::CLaserTeleport(CGameContext *pGameContext, vec2 StartPos, vec2 E
 
 void CLaserTeleport::Tick()
 {
-	if (m_LaserFired)
+	if(m_LaserFired)
 		GameWorld()->DestroyEntity(this);
 }
 

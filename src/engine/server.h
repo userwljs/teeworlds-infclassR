@@ -33,7 +33,7 @@ enum
 
 enum
 {
-	CLIENTMEMORY_LANGUAGESELECTION=0,
+	CLIENTMEMORY_LANGUAGESELECTION = 0,
 	CLIENTMEMORY_TOP10,
 	CLIENTMEMORY_MOTD,
 	CLIENTMEMORY_ROUNDSTART_OR_MAPCHANGE,
@@ -49,7 +49,7 @@ enum
 
 enum
 {
-	CHATCATEGORY_DEFAULT=0,
+	CHATCATEGORY_DEFAULT = 0,
 	CHATCATEGORY_INFECTION,
 	CHATCATEGORY_SCORE,
 	CHATCATEGORY_PLAYER,
@@ -73,7 +73,7 @@ protected:
 	int m_TickSpeed;
 
 public:
-	CLocalization* m_pLocalization{};
+	CLocalization *m_pLocalization{};
 
 public:
 	/*
@@ -89,7 +89,7 @@ public:
 		const char *m_pDDNetVersionStr;
 		const CUuid *m_pConnectionId;
 	};
-	
+
 	struct CClientSession
 	{
 		int m_RoundId;
@@ -97,7 +97,7 @@ public:
 		int m_MuteTick;
 		int m_LastInfectionTime;
 	};
-	
+
 	struct CClientAccusation
 	{
 		int m_Num;
@@ -112,8 +112,8 @@ public:
 		const char *m_pDesc; // name of the vote
 		const char *m_pReason;
 	};
-	
-	inline class CLocalization* Localization() { return m_pLocalization; }
+
+	inline class CLocalization *Localization() { return m_pLocalization; }
 
 	int Tick() const { return m_CurrentGameTick; }
 	int TickSpeed() const { return m_TickSpeed; }
@@ -342,43 +342,42 @@ public:
 
 	virtual bool IsSixup(int ClientId) const = 0;
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 	virtual int GetClientInfclassVersion(int ClientId) const = 0;
 
 	virtual int GetClientNbRound(int ClientId) = 0;
-	
-	virtual const char* GetClientLanguage(int ClientId) = 0;
-	virtual void SetClientLanguage(int ClientId, const char* pLanguage) = 0;
+
+	virtual const char *GetClientLanguage(int ClientId) = 0;
+	virtual void SetClientLanguage(int ClientId, const char *pLanguage) = 0;
 
 	virtual bool IsClientLogged(int ClientId) = 0;
-	virtual void Register(int ClientId, const char* pUsername, const char* pPassword, const char* pEmail) = 0;
-	virtual void Login(int ClientId, const char* pUsername, const char* pPassword) = 0;
+	virtual void Register(int ClientId, const char *pUsername, const char *pPassword, const char *pEmail) = 0;
+	virtual void Login(int ClientId, const char *pUsername, const char *pPassword) = 0;
 	virtual void Logout(int ClientId) = 0;
 
 public:
-	virtual class CRoundStatistics* RoundStatistics() = 0;
+	virtual class CRoundStatistics *RoundStatistics() = 0;
 	virtual void ResetStatistics() = 0;
 
 	virtual void OnRoundIsOver() = 0;
-	
+
 	virtual void SetClientMemory(int ClientId, int Memory, bool Value = true) = 0;
 	virtual void ResetClientMemoryAboutGame(int ClientId) = 0;
 	virtual bool GetClientMemory(int ClientId, int Memory) = 0;
-	virtual IServer::CClientSession* GetClientSession(int ClientId) = 0;
-	virtual void AddAccusation(int From, int To, const char* pReason) = 0;
+	virtual IServer::CClientSession *GetClientSession(int ClientId) = 0;
+	virtual void AddAccusation(int From, int To, const char *pReason) = 0;
 	virtual bool ClientShouldBeBanned(int ClientId) = 0;
 	virtual void RemoveAccusations(int ClientId) = 0;
-	virtual void AddMapVote(int From, const char* pCommand, const char* pReason, const char* pDesc) = 0;
+	virtual void AddMapVote(int From, const char *pCommand, const char *pReason, const char *pDesc) = 0;
 	virtual void RemoveMapVotesForId(int ClientId) = 0;
 	virtual void ResetMapVotes() = 0;
-	virtual CMapVote* GetMapVote() = 0;
-	
-	virtual int GetTimeShiftUnit() const = 0; //In ms
+	virtual CMapVote *GetMapVote() = 0;
+
+	virtual int GetTimeShiftUnit() const = 0; // In ms
 
 	virtual const char *GetPreviousMapName() const = 0;
 	virtual uint32_t GetActivePlayerCount() = 0;
-/* INFECTION MODIFICATION END *****************************************/
-
+	/* INFECTION MODIFICATION END *****************************************/
 };
 
 class IGameServer : public IInterface
@@ -432,13 +431,13 @@ public:
 	virtual const char *Version() const = 0;
 	virtual const char *NetVersion() const = 0;
 
-/* INFECTION MODIFICATION START ***************************************/
-	virtual void SendChatTarget(int To, const char* pText) = 0;
-	virtual void SendChatTarget_Localization(int To, int Category, const char* pText, ...) = 0;
-	virtual void SendChatTarget_Localization_P(int To, int Category, int Number, const char* pText, ...) = 0;
-	virtual void SendMOTD(int To, const char* pText) = 0;
-	virtual void SendMOTD_Localization(int To, const char* pText, ...) = 0;
-/* INFECTION MODIFICATION END *****************************************/
+	/* INFECTION MODIFICATION START ***************************************/
+	virtual void SendChatTarget(int To, const char *pText) = 0;
+	virtual void SendChatTarget_Localization(int To, int Category, const char *pText, ...) = 0;
+	virtual void SendChatTarget_Localization_P(int To, int Category, int Number, const char *pText, ...) = 0;
+	virtual void SendMOTD(int To, const char *pText) = 0;
+	virtual void SendMOTD_Localization(int To, const char *pText, ...) = 0;
+	/* INFECTION MODIFICATION END *****************************************/
 
 	// DDRace
 

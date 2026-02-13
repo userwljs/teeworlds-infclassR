@@ -17,14 +17,14 @@ bool SnapFiltersPassed(const CIcEntity *pEntity, int SnappingClient, FilterFlags
 		return Flags & EFilterFlag::Demo;
 
 	const CPlayer *pSnappingPlayer = pEntity->GameServer()->GetPlayer(SnappingClient);
-	if (!pSnappingPlayer)
+	if(!pSnappingPlayer)
 	{
 		// Assert?
 		return false;
 	}
 	if(pSnappingPlayer->GetTeam() == TEAM_SPECTATORS)
 	{
-		if ((Flags & EFilterFlag::Restricted) && g_Config.m_SvStrictSpectateMode)
+		if((Flags & EFilterFlag::Restricted) && g_Config.m_SvStrictSpectateMode)
 		{
 			return false;
 		}

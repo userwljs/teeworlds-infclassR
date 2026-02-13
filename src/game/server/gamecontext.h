@@ -5,10 +5,10 @@
 
 #include <base/tl/ic_array.h>
 
-#include <engine/server.h>
-#include <engine/storage.h>
 #include <engine/console.h>
+#include <engine/server.h>
 #include <engine/shared/memheap.h>
+#include <engine/storage.h>
 
 #include <game/collision.h>
 #include <game/layers.h>
@@ -45,7 +45,7 @@
 */
 
 #define BROADCAST_DURATION_REALTIME (0)
-#define BROADCAST_DURATION_GAMEANNOUNCE (Server()->TickSpeed()*2)
+#define BROADCAST_DURATION_GAMEANNOUNCE (Server()->TickSpeed() * 2)
 
 enum class EBroadcastPriority
 {
@@ -324,7 +324,7 @@ public:
 
 	void OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int Id) override;
 
-/* INFECTION MODIFICATION START ***************************************/
+	/* INFECTION MODIFICATION START ***************************************/
 private:
 	static void ConKillPlayer(IConsole::IResult *pResult, void *pUserData);
 
@@ -354,7 +354,7 @@ private:
 	void ConChangeLog(IConsole::IResult *pResult);
 	static void ConReloadChangeLog(IConsole::IResult *pResult, void *pUserData);
 
-	void PrivateMessage(const char* pStr, int ClientId, bool TeamChat);
+	void PrivateMessage(const char *pStr, int ClientId, bool TeamChat);
 	void Whisper(int ClientId, char *pStr);
 	void WhisperId(int ClientId, int VictimId, const char *pMessage);
 	void Converse(int ClientId, const char *pStr);
@@ -373,31 +373,31 @@ private:
 
 		MAP_VOTE_BITS = SV_MAP | CHANGE_MAP | SKIP_MAP, // Yeah, this is just '3'
 	};
-	
+
 	static OPTION_VOTE_TYPE GetOptionVoteType(const char *pVoteCommand);
-	void GetMapNameFromCommand(char* pMapName, const char *pCommand);
+	void GetMapNameFromCommand(char *pMapName, const char *pCommand);
 	char *ParseStringArgumentInplace(char *&pInput) const;
 	std::optional<int> GetClientId(const char *pName) const;
 
 public:
 	virtual void SendBroadcast(int To, const char *pText, EBroadcastPriority Priority, int LifeSpan);
-	virtual void SendBroadcast_Localization(int To, EBroadcastPriority Priority, int LifeSpan, const char* pText, ...);
-	virtual void SendBroadcast_Localization_P(int To, EBroadcastPriority Priority, int LifeSpan, int Number, const char* pText, ...);
+	virtual void SendBroadcast_Localization(int To, EBroadcastPriority Priority, int LifeSpan, const char *pText, ...);
+	virtual void SendBroadcast_Localization_P(int To, EBroadcastPriority Priority, int LifeSpan, int Number, const char *pText, ...);
 	virtual void ClearBroadcast(int To, EBroadcastPriority Priority);
-	
+
 	static const char *GetChatCategoryPrefix(int Category);
-	void SendChatTarget_Localization(int To, int Category, const char* pText, ...) override;
-	void SendChatTarget_Localization_P(int To, int Category, int Number, const char* pText, ...) override;
-	
-	void SendMOTD(int To, const char* pParam) override;
-	void SendMOTD_Localization(int To, const char* pText, ...) override;
-	
+	void SendChatTarget_Localization(int To, int Category, const char *pText, ...) override;
+	void SendChatTarget_Localization_P(int To, int Category, int Number, const char *pText, ...) override;
+
+	void SendMOTD(int To, const char *pParam) override;
+	void SendMOTD_Localization(int To, const char *pText, ...) override;
+
 	void CreateLaserDotEvent(vec2 Pos0, vec2 Pos1, int LifeSpan);
 	void CreateHammerDotEvent(vec2 Pos, int LifeSpan);
 	void CreateLoveEvent(vec2 Pos);
 	void SendHitSound(int ClientId);
 	void SendScoreSound(int ClientId);
-	void AddBroadcast(int ClientId, const char* pText, EBroadcastPriority Priority, int LifeSpan);
+	void AddBroadcast(int ClientId, const char *pText, EBroadcastPriority Priority, int LifeSpan);
 	void SetClientLanguage(int ClientId, const char *pLanguage);
 	void InitChangelog();
 	void ReloadChangelog();
@@ -406,7 +406,7 @@ public:
 	void SetPaused(bool Paused);
 
 	bool MapExists(const char *pMapName) const;
-	
+
 private:
 	int m_VoteLanguageTick[MAX_CLIENTS];
 	char m_VoteLanguage[MAX_CLIENTS][16];
@@ -414,16 +414,16 @@ private:
 	static bool m_ClientMuted[MAX_CLIENTS][MAX_CLIENTS]; // m_ClientMuted[i][j]: i muted j
 	static icArray<std::string, 256> m_aChangeLogEntries;
 	static icArray<uint32_t, 16> m_aChangeLogPageIndices;
-	
+
 	class CBroadcastState
 	{
 	public:
 		int m_NoChangeTick;
 		char m_PrevMessage[1024];
-		
+
 		EBroadcastPriority m_Priority;
 		char m_NextMessage[1024];
-		
+
 		int m_LifeSpanTick;
 		EBroadcastPriority m_TimedPriority;
 		char m_TimedMessage[1024];
@@ -431,9 +431,8 @@ private:
 
 	static void ConList(IConsole::IResult *pResult, void *pUserData);
 
-	
 	CBroadcastState m_BroadcastStates[MAX_CLIENTS];
-	
+
 	struct LaserDotState
 	{
 		vec2 m_Pos0;
@@ -442,7 +441,7 @@ private:
 		int m_SnapId;
 	};
 	array<LaserDotState> m_LaserDots;
-	
+
 	struct HammerDotState
 	{
 		vec2 m_Pos;
@@ -450,7 +449,7 @@ private:
 		int m_SnapId;
 	};
 	array<HammerDotState> m_HammerDots;
-	
+
 	struct LoveDotState
 	{
 		vec2 m_Pos;

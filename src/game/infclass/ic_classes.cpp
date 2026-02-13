@@ -1,7 +1,6 @@
 #include "ic_classes.h"
 
-namespace
-{
+namespace {
 
 enum PLAYERCLASS
 {
@@ -50,11 +49,11 @@ int toNetValue(EPlayerClass C)
 	static_assert(static_cast<int>(*(std::end(AllHumanClasses) - 1)) + HumanClassOffset < END_HUMANCLASS,
 		"Added human class requires extra code to preserve network compatibilty");
 
-	if (C == EPlayerClass::None)
+	if(C == EPlayerClass::None)
 		return PLAYERCLASS_NONE;
 
 	int Value = static_cast<int>(C);
-	if (IsInfectedClass(C))
+	if(IsInfectedClass(C))
 	{
 		constexpr int InfectedClassOffset = PLAYERCLASS_SMOKER - static_cast<int>(EPlayerClass::Smoker);
 		return Value + InfectedClassOffset;
@@ -67,7 +66,7 @@ int toNetValue(EPlayerClass C)
 
 const char *toString(EPlayerClass PlayerClass)
 {
-	switch (PlayerClass)
+	switch(PlayerClass)
 	{
 	case EPlayerClass::None:
 		return "none";

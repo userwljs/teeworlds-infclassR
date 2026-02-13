@@ -29,10 +29,9 @@ void CDoor::SetCollisions(bool Set)
 	const float Distance = length(DoorVector);
 
 	int PrevIndex = -1;
-	auto SetOncePerTile = [&](vec2 Pos)
-	{
+	auto SetOncePerTile = [&](vec2 Pos) {
 		int Index = GameServer()->Collision()->GetPureMapIndex(Pos);
-		if (Index == PrevIndex)
+		if(Index == PrevIndex)
 			return;
 
 		PrevIndex = Index;
@@ -119,7 +118,7 @@ void CDoor::Snap(int SnappingClientId)
 
 void CDoor::SetOpen(bool Open)
 {
-	if (m_Open == Open)
+	if(m_Open == Open)
 		return;
 
 	m_Open = Open;

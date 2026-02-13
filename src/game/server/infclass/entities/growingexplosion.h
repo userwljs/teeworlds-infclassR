@@ -6,8 +6,8 @@
 
 #include "ic_entity.h"
 
-#include <game/server/entity.h>
 #include <game/server/entities/character.h>
+#include <game/server/entity.h>
 
 #include <vector>
 
@@ -51,7 +51,7 @@ private:
 	EDamageType m_DamageType;
 	int m_TriggeredByCid;
 	TAKEDAMAGEMODE m_TakeDamageMode;
-	
+
 	vec2 m_SeedPos;
 	int m_SeedX;
 	int m_SeedY;

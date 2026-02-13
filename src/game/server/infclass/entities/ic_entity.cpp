@@ -16,7 +16,7 @@ CIcEntity::CIcEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, std::
 
 CIcGameController *CIcEntity::GameController() const
 {
-	return static_cast<CIcGameController*>(GameServer()->m_pController);
+	return static_cast<CIcGameController *>(GameServer()->m_pController);
 }
 
 void CIcEntity::SetOwner(int ClientId)
@@ -103,7 +103,7 @@ void CIcEntity::Tick()
 
 void CIcEntity::TickPaused()
 {
-	if (m_EndTick.has_value())
+	if(m_EndTick.has_value())
 		++m_EndTick.value();
 }
 
@@ -126,7 +126,7 @@ void CIcEntity::SetAnimatedPos(const vec2 &Pivot, const vec2 &RelPosition, int P
 
 float CIcEntity::GetLifespan() const
 {
-	if (!m_EndTick.has_value())
+	if(!m_EndTick.has_value())
 		return -1;
 
 	int RemainingTicks = m_EndTick.value_or(0) - Server()->Tick();

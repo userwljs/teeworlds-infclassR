@@ -110,8 +110,7 @@ bool dbg_assert_has_failed();
 #if defined(__cplusplus)
 [[noreturn]]
 #endif
-void
-dbg_break();
+void dbg_break();
 
 typedef std::function<void(const char *message)> DBG_ASSERT_HANDLER;
 void dbg_assert_set_handler(DBG_ASSERT_HANDLER handler);
@@ -1431,19 +1430,19 @@ int str_comp_num(const char *a, const char *b, int num);
 int str_comp_filenames(const char *a, const char *b);
 
 /*
-       Function: str_startswith_nocase
-               Checks case insensitive whether the string begins with a certain prefix.
+	   Function: str_startswith_nocase
+			   Checks case insensitive whether the string begins with a certain prefix.
 
-       Parameter:
-               str - String to check.
-               prefix - Prefix to look for.
+	   Parameter:
+			   str - String to check.
+			   prefix - Prefix to look for.
 
-       Returns:
-               A pointer to the string str after the string prefix, or 0 if
-               the string prefix isn't a prefix of the string str.
+	   Returns:
+			   A pointer to the string str after the string prefix, or 0 if
+			   the string prefix isn't a prefix of the string str.
 
-       Remarks:
-               - The strings are treated as zero-terminated strings.
+	   Remarks:
+			   - The strings are treated as zero-terminated strings.
 */
 const char *str_startswith_nocase(const char *str, const char *prefix);
 
@@ -1463,19 +1462,19 @@ const char *str_startswith_nocase(const char *str, const char *prefix);
 const char *str_startswith(const char *str, const char *prefix);
 
 /*
-       Function: str_endswith_nocase
-               Checks case insensitive whether the string ends with a certain suffix.
+	   Function: str_endswith_nocase
+			   Checks case insensitive whether the string ends with a certain suffix.
 
-       Parameter:
-               str - String to check.
-               suffix - Suffix to look for.
+	   Parameter:
+			   str - String to check.
+			   suffix - Suffix to look for.
 
-       Returns:
-               A pointer to the beginning of the suffix in the string str, or
-               0 if the string suffix isn't a suffix of the string str.
+	   Returns:
+			   A pointer to the beginning of the suffix in the string str, or
+			   0 if the string suffix isn't a suffix of the string str.
 
-       Remarks:
-               - The strings are treated as zero-terminated strings.
+	   Remarks:
+			   - The strings are treated as zero-terminated strings.
 */
 const char *str_endswith_nocase(const char *str, const char *suffix);
 
@@ -1538,7 +1537,7 @@ int str_utf8_dist_buffer(const char *a, const char *b, int *buf, int buf_len);
 		b_len - Length of the second string.
 		buf - Buffer for the function.
 		buf_len - Length of the buffer, must be at least as long as
-		          the length of both strings combined plus two.
+				  the length of both strings combined plus two.
 
 	Returns:
 		The edit distance between the both strings.
@@ -1770,7 +1769,7 @@ int str_time_float(float secs, int format, char *buffer, int buffer_size);
 
 	Parameters:
 		dst - Destination array pointer, gets increased, will point to
-		      the terminating null.
+			  the terminating null.
 		src - Source array
 		end - End of destination array
 */
@@ -2198,9 +2197,9 @@ int str_utf8_comp_nocase_num(const char *a, const char *b, int num);
 	Parameters:
 		haystack - String to search in
 		needle - String to search for
-        end - A pointer that will be set to a pointer into haystack directly behind the
-            last character where the needle was found. Will be set to nullptr if needle
-            could not be found. Optional parameter.
+		end - A pointer that will be set to a pointer into haystack directly behind the
+			last character where the needle was found. Will be set to nullptr if needle
+			could not be found. Optional parameter.
 
 	Returns:
 		A pointer into haystack where the needle was found.

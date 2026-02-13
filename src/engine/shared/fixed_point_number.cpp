@@ -27,7 +27,7 @@ const char *CFixedPointNumber::AsStr() const
 		result.ptr[0] = '.';
 		while(Fractional % 10 == 0)
 			Fractional /= 10;
-		
+
 		result = std::to_chars(&result.ptr[1], &s_aBuf[c_FixedPointStrBufferSize - 1], Fractional);
 	}
 	result.ptr[0] = '\0';

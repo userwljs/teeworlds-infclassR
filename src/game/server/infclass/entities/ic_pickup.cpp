@@ -145,7 +145,7 @@ void CIcPickup::Snap(int SnappingClient)
 {
 	if(m_SpawnTick != -1 || NetworkClipped(SnappingClient))
 		return;
-	
+
 	if(m_Type == EICPickupType::Invalid)
 		return;
 

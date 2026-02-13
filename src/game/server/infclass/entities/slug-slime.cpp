@@ -1,7 +1,7 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
-#include <game/server/gamecontext.h>
 #include <engine/shared/config.h>
+#include <game/server/gamecontext.h>
 
 #include <game/server/infclass/classes/ic_playerclass.h>
 
@@ -36,11 +36,11 @@ void CSlugSlime::Tick()
 	// Find other players
 	for(TEntityPtr<CIcCharacter> p = GameWorld()->FindFirst<CIcCharacter>(); p; ++p)
 	{
-		if (p->IsSolo())
+		if(p->IsSolo())
 			continue;
 		if(!GameServer()->Collision()->AreConnected(p->m_Pos, m_Pos, 84.0f))
 			continue; // not in reach
-		
+
 		p->GetClass()->OnSlimeEffect(GetOwner(), m_Damage, m_DamageInterval);
 	}
 
@@ -55,7 +55,7 @@ void CSlugSlime::Snap(int SnappingClient)
 {
 	// Do not snap Slime at all to prevent possible crash on owner indicator rendering
 	// (Infclass clients up to v0.1.8 can handle up to 8 indicators and CRASH on overflow
-	if constexpr (true)
+	if constexpr(true)
 		return;
 
 	if(!DoSnapForClient(SnappingClient))

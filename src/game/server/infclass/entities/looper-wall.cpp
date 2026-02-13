@@ -1,4 +1,4 @@
-//slightly modified from engineer-wall.cpp
+// slightly modified from engineer-wall.cpp
 #include <base/math.h>
 #include <base/vmath.h>
 #include <game/generated/protocol.h>
@@ -9,10 +9,10 @@
 #include <game/server/infclass/ic_player.h>
 #include <game/server/infclass/snap_filter.h>
 
+#include "ic_character.h"
+#include "looper-wall.h"
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
-#include "looper-wall.h"
-#include "ic_character.h"
 
 static const float g_BarrierMaxLength = 400.0;
 static const float g_BarrierRadius = 0.0;
@@ -143,7 +143,7 @@ void CLooperWall::Snap(int SnappingClient)
 
 	const bool AntiPing = pDestPlayer && pDestPlayer->GetAntiPingEnabled();
 	vec2 Pos2 = m_Pos2.value();
-	vec2 dirVec = vec2(m_Pos.x-Pos2.x, m_Pos.y-Pos2.y);
+	vec2 dirVec = vec2(m_Pos.x - Pos2.x, m_Pos.y - Pos2.y);
 	vec2 dirVecN = normalize(dirVec);
 	vec2 dirVecT = vec2(dirVecN.y * g_Thickness * 0.5f, -dirVecN.x * g_Thickness * 0.5f);
 
@@ -168,12 +168,12 @@ void CLooperWall::Snap(int SnappingClient)
 	// draw particles inside wall
 	if(!AntiPing)
 	{
-		vec2 startPos = vec2(Pos2.x+dirVecT.x, Pos2.y+dirVecT.y);
-		dirVecT.x = -dirVecT.x*2.0f;
-		dirVecT.y = -dirVecT.y*2.0f;
+		vec2 startPos = vec2(Pos2.x + dirVecT.x, Pos2.y + dirVecT.y);
+		dirVecT.x = -dirVecT.x * 2.0f;
+		dirVecT.y = -dirVecT.y * 2.0f;
 
 		int particleCount = length(dirVec) / g_BarrierMaxLength * static_cast<float>(NUM_PARTICLES);
-		for(int i=0; i<particleCount; i++)
+		for(int i = 0; i < particleCount; i++)
 		{
 			float fRandom1 = random_float();
 			float fRandom2 = random_float();

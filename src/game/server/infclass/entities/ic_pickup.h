@@ -30,7 +30,7 @@ public:
 	void Tick() override;
 	void TickPaused() override;
 	void Snap(int SnappingClient) override;
-	
+
 	void Spawn(float Delay = 0);
 	void SetRespawnInterval(float Seconds);
 	void SetUpgrade(const SClassUpgrade &Upgrade);

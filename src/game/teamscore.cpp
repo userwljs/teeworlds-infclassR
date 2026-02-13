@@ -48,7 +48,7 @@ bool CTeamsCore::CanCollide(int ClientId1, int ClientId2) const
 
 		return !m_aIsProtected[ClientId1] && !m_aIsProtected[ClientId2];
 	}
-	
+
 	if(m_aTeam[ClientId1] == (m_IsDDRace16 ? VANILLA_TEAM_SUPER : TEAM_SUPER) || m_aTeam[ClientId2] == (m_IsDDRace16 ? VANILLA_TEAM_SUPER : TEAM_SUPER) || ClientId1 == ClientId2)
 		return true;
 	return m_aTeam[ClientId1] == m_aTeam[ClientId2];

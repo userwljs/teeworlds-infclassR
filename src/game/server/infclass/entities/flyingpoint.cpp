@@ -8,8 +8,7 @@
 
 int CFlyingPoint::EntityId{};
 
-CFlyingPoint::CFlyingPoint(CGameContext *pGameContext, vec2 Pos, int TrackedPlayer, int Points, vec2 InitialVel)
-	: CIcEntity(pGameContext, EntityId, Pos, TrackedPlayer, 24.0f)
+CFlyingPoint::CFlyingPoint(CGameContext *pGameContext, vec2 Pos, int TrackedPlayer, int Points, vec2 InitialVel) : CIcEntity(pGameContext, EntityId, Pos, TrackedPlayer, 24.0f)
 {
 	m_InitialVel = InitialVel;
 	m_Points = Points;
@@ -31,8 +30,8 @@ void CFlyingPoint::Tick()
 		else
 		{
 			vec2 Dir = normalize(OwnerChar->GetPos() - m_Pos);
-			m_Pos += Dir*clamp(Dist, 0.0f, 16.0f) * (1.0f - m_InitialAmount) + m_InitialVel * m_InitialAmount;
-			
+			m_Pos += Dir * clamp(Dist, 0.0f, 16.0f) * (1.0f - m_InitialAmount) + m_InitialVel * m_InitialAmount;
+
 			m_InitialAmount *= 0.98f;
 		}
 	}

@@ -46,7 +46,7 @@
 #define PLATFORM_STRING "openbsd"
 #endif
 
-#if(defined(__LINUX__) || defined(__linux__) || defined(CONF_WEBASM)) && !defined(__ANDROID__)
+#if (defined(__LINUX__) || defined(__linux__) || defined(CONF_WEBASM)) && !defined(__ANDROID__)
 #define CONF_FAMILY_UNIX 1
 #define CONF_FAMILY_STRING "unix"
 #define CONF_PLATFORM_LINUX 1
