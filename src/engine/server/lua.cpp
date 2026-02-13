@@ -10,8 +10,10 @@
 #include "lua.h"
 
 #if CONF_LUA
-#include <LuaBridge/LuaBridge.h>
+// clang-format off
 #include <lua.hpp>
+#include <LuaBridge/LuaBridge.h>
+// clang-format on
 #endif
 
 IServer *CLua::m_pServer = nullptr;

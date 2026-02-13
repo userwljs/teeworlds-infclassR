@@ -2,8 +2,10 @@
 
 #if CONF_LUA
 
-#include <LuaBridge/LuaBridge.h>
+// clang-format off
 #include <lua.hpp>
+#include <LuaBridge/LuaBridge.h>
+// clang-format on
 
 int LuaErrorFunc(lua_State *L);
 
