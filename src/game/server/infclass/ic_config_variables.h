@@ -42,6 +42,7 @@ MACRO_CONFIG_INT(InfTrainingMode, inf_training_mode, 0, 0, 1, CFGFLAG_SERVER, "E
 
 MACRO_CONFIG_STR(InfEvent, inf_event, 64, "", CFGFLAG_SERVER, "Special event")
 MACRO_CONFIG_STR(InfDefaultRoundType, inf_default_round_type, 64, "", CFGFLAG_SERVER, "Default round type")
+MACRO_CONFIG_STR(InfDefaultLanguageCode, inf_default_language_code, 16, "en", CFGFLAG_SERVER, "Default language code")
 
 MACRO_CONFIG_FLOAT(HsGhostsProtection, hs_ghosts_protection, 3.5, 0, 10, CFGFLAG_SERVER, "The number of seconds of ghosts spawn protection")
 MACRO_CONFIG_FLOAT(HsDeathPenaltyTime, hs_death_penalty_time, 5.0, 0, 30, CFGFLAG_SERVER, "The number of extra 'out-of-game' seconds per ghost death")

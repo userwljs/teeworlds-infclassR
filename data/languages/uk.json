@@ -1,322 +1,158 @@
 {
     "translation": [
         {
-            "key": "10 seconds later, a few players become infected.",
-            "value": "Через 10 секунд, два гравці будуть інфікованими."
+            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
+            "value": "{str:Victim} був приглушений на {sec:Duration} ({str:Reason})"
         },
         {
-            "key": "A random class will be automatically attributed to you when round starts",
-            "value": "Випадковий клас буда виданий вам автоматично після початку раунду"
+            "key": "You have already notified that {str:PlayerName} ought to be banned",
+            "value": "Ви вже повідомляли, що {str:PlayerName} має бути забанений"
         },
         {
-            "key": "All humans affected by the explosion become infected.",
-            "value": "Всі люди які постраждали від вибуху стають зараженими."
+            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
+            "value": "{str:PlayerName} хоче {str:VictimName} забанити ({str:Reason})"
         },
         {
-            "key": "All players start as a human.",
-            "value": "Всі гравці стартують людьми."
-        },
-        {
-            "key": "An error occured during the creation of your account.",
-            "value": "З'явилась помилка при створені вашого аканту."
-        },
-        {
-            "key": "An error occured during the operation.",
-            "value": "Помилка під час дії."
-        },
-        {
-            "key": "Available help pages: {str:PageList}",
-            "value": "Доступні сторінки допомоги: {str:PageList}"
-        },
-        {
-            "key": "Available languages: {str:ListOfLanguage}",
-            "value": "Можливі мови: {str:ListOfLanguage}"
-        },
-        {
-            "key": "Based on the concept of Infection mod by Gravity",
-            "value": "Основана на концепті \"Infection mod\" від Gravity"
-        },
-        {
-            "key": "Bat can jump endlessly in the air but it cannot infect humans.",
-            "value": "Ціль заражених, інфікувати всіх людей."
-        },
-        {
-            "key": "Biologist",
-            "value": "Біолог"
-        },
-        {
-            "key": "Biologists",
-            "value": "Біолог"
-        },
-        {
-            "key": "Boomer",
-            "value": "Вибуховий"
-        },
-        {
-            "key": "Boomers",
-            "value": "Вибуховий"
-        },
-        {
-            "key": "Choose a help page with /help <page>",
-            "value": "Виберіть свою сторінку завдяки /help <page>"
-        },
-        {
-            "key": "Choose your class",
-            "value": "Виберіть свій клас"
-        },
-        {
-            "key": "Class {str:ClassName} will be automatically attributed to you when round starts",
-            "value": "Випадковий клас буда виданий вам автоматично після початку раунду"
-        },
-        {
-            "key": "Create an account on Crowdin and join the translation team:",
-            "value": "Створіть акаунт на Crowdin і приєднайтеся до команди перекладачів:"
-        },
-        {
-            "key": "Each bomb can explode {int:NumBombs} times.",
-            "one": "Кожна бомба може підірватись {int:NumBombs} раз.",
-            "few": "Кожна бомба може підірватись {int:NumBombs} раз. ",
-            "other": "Кожна бомба може підірватись {int:NumBombs} раз. "
-        },
-        {
-            "key": "Engineer",
-            "value": "Інженер"
-        },
-        {
-            "key": "Engineers",
-            "value": "Інженер"
-        },
-        {
-            "key": "Example: “/msg !medic I'm wounded!”",
-            "value": "Наприклад: «/msg !medic I'm wounded!»"
-        },
-        {
-            "key": "Example: “/mute nameless tee”",
-            "value": "Наприклад: «/msg !medic I'm wounded!»"
-        },
-        {
-            "key": "Explosive yield: {percent:BombLevel}",
-            "value": "Поле вибуху: {percent:BombLevel}"
-        },
-        {
-            "key": "Ghost",
-            "value": "Привид"
-        },
-        {
-            "key": "Ghosts",
-            "value": "Привид"
-        },
-        {
-            "key": "Ghoul",
-            "value": "Вовкулака"
-        },
-        {
-            "key": "Ghoul can infect humans and heal the infected with the hammer.",
-            "value": "Вовкулака може інфікувати людей і лікувати інфікованих молотком."
-        },
-        {
-            "key": "Ghouls",
-            "value": "Вовкулака"
-        },
-        {
-            "key": "Grenade limit increased",
-            "value": "Ліміт гранат збільшений"
-        },
-        {
-            "key": "Hero",
-            "value": "Герой"
-        },
-        {
-            "key": "Heroes",
-            "value": "Герой"
-        },
-        {
-            "key": "Hook protection disabled",
-            "value": "Захист від гака виключений"
-        },
-        {
-            "key": "Hook protection enabled",
-            "value": "Захист від гака включений"
-        },
-        {
-            "key": "How to translate the mod",
-            "value": "Як перекладати мод"
-        },
-        {
-            "key": "How to use taxi mode",
-            "value": "Як перекладати мод"
-        },
-        {
-            "key": "Hunter",
-            "value": "Мисливець"
-        },
-        {
-            "key": "Hunters",
-            "value": "Мисливець"
-        },
-        {
-            "key": "If an infected heals it, the freeze effect disappears.",
-            "value": "Якщо інфікований його лікує, він розморожує ця. "
-        },
-        {
-            "key": "If the Witch dies, it disappears and is replaced by another class.",
-            "value": "Якщо відьма гине то заміниться іншим класом заражених."
-        },
-        {
-            "key": "If your language is not available, you can help with translation (/help translate).",
-            "value": "Якщо мова не доступна, ви можете допомогти з перекладом (/help translate)."
-        },
-        {
-            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-            "value": "Гак павука (в обох режимах) наносить 1 очко пошкодження за секунду та тримати їх 2 секунди."
-        },
-        {
-            "key": "Infected won the round in {sec:RoundDuration}",
-            "value": "Заражені виграли раунд за {sec:RoundDuration}"
-        },
-        {
-            "key": "Infection is coming in {sec:RemainingTime}",
-            "value": "Наступний прапор через {sec:RemainingTime}"
-        },
-        {
-            "key": "InfectionClass is a team game between humans and the infected.",
-            "value": "InfectionClass це командна гра між людьми та зараженими. "
-        },
-        {
-            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
-            "value": "InfectionClass, Зроблений necropotame (version {str:VersionCode})"
-        },
-        {
-            "key": "It can also infect humans and heal the infected with the hammer.",
-            "value": "Привид може інфікувати людей та лікувати заражених завдяки своєму молоту. "
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Привид може інфікувати людей та лікувати заражених завдяки своєму молоту. "
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Привид може інфікувати людей та лікувати заражених завдяки своєму молоту. "
+            "key": "You have held a bonus area for one minute, +5 points",
+            "value": "Ви вдержали додаткову зону одну хвилину, +5 очок"
         },
         {
             "key": "Laser wall: {sec:RemainingTime}",
             "value": "Лазерна стіна: {sec:RemainingTime}"
         },
         {
-            "key": "List of commands",
-            "value": "Список команд"
+            "key": "Next flag in {sec:RemainingTime}",
+            "value": "Наступний прапор через {sec:RemainingTime}"
         },
         {
-            "key": "Looper laser wall: {sec:RemainingTime}",
-            "value": "Лазерна стіна: {sec:RemainingTime}"
+            "key": "You have eliminated your target, +2 points",
+            "value": "Ви знищили вашу ціль, +2 очки"
         },
         {
-            "key": "Main contributors: {str:ListOfContributors}",
-            "value": "Найбільша допомога від: {str:ListOfContributors}"
+            "key": "Sword velocity increased",
+            "value": "Швидкість катани збільшена"
         },
         {
-            "key": "Medic",
-            "value": "Лікар"
+            "key": "Sword strength increased",
+            "value": "Сила катани збільшена"
         },
         {
-            "key": "Medic also has a powerful shotgun that can knock back the infected.",
-            "value": "Він також має сильний дробовик який відштовхує інфікованих. "
+            "key": "Grenade limit increased",
+            "value": "Ліміт гранат збільшений"
         },
         {
-            "key": "Medics",
-            "value": "Лікар"
+            "key": "Choose your class",
+            "value": "Виберіть свій клас"
         },
         {
-            "key": "Mercenaries",
-            "value": "Найманець"
+            "key": "Random choice",
+            "value": "Випадковий вибір"
+        },
+        {
+            "key": "You are frozen: {sec:EffectDuration}",
+            "value": "Ви були замороженi: {sec:EffectDuration}"
+        },
+        {
+            "key": "{str:PlayerName} entered and joined the game",
+            "value": "{str:PlayerName} увійшов і приєднався до гри"
+        },
+        {
+            "key": "You have infected {str:VictimName}, +3 points",
+            "value": "Ти інфікував {str:VictimName}, +3 очок"
+        },
+        {
+            "key": "The Hero found the flag!",
+            "value": "Герой знайшов прапор!"
         },
         {
             "key": "Mercenary",
             "value": "Найманець"
         },
         {
-            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-            "one": "Також він може кидати отруйні гранати, які наносять {int:NumDamagePoints} одиницю урону.",
-            "few": "Також він може кидати отруйні гранати, які наносять {int:NumDamagePoints} одиниці урону.",
-            "other": "Також він може кидати отруйні гранати, які наносять {int:NumDamagePoints} одиниць урону."
+            "key": "Medic",
+            "value": "Лікар"
         },
         {
-            "key": "Mine activated",
-            "value": "Міна активована"
+            "key": "Hero",
+            "value": "Герой"
         },
         {
-            "key": "Mines are limited to {int:NumMines} per player at the same time.",
-            "one": "Міни обмежені до {int:NumMines} для одного гравця.",
-            "few": "Міни обмежені до {int:NumMines} для одного гравця.",
-            "other": "Міни обмежені до {int:NumMines} для одного гравця."
+            "key": "Engineer",
+            "value": "Інженер"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
-            "key": "Next flag in {sec:RemainingTime}",
-            "value": "Наступний прапор через {sec:RemainingTime}"
-        },
-        {
-            "key": "Next target in {sec:RemainingTime}",
-            "value": "Наступна ціль через {sec:RemainingTime}"
+            "key": "Soldier",
+            "value": "Солдат"
         },
         {
             "key": "Ninja",
             "value": "Ніндзя"
         },
         {
-            "key": "Ninjas",
-            "value": "Ніндзя"
+            "key": "Sniper",
+            "value": "Снайпер"
         },
         {
-            "key": "No player was found with this name",
-            "value": "Жодного гравця не знайдено з таким ім'ям"
+            "key": "Scientist",
+            "value": "Вчений"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "Залишилась 1 бомба",
-            "few": "{int:NumBombs} бомби залишилось",
-            "other": "{int:NumBombs} бомб залишилось"
+            "key": "Biologist",
+            "value": "Біолог"
+        },
+        {
+            "key": "Smoker",
+            "value": "Курець"
+        },
+        {
+            "key": "Boomer",
+            "value": "Вибуховий"
+        },
+        {
+            "key": "Hunter",
+            "value": "Мисливець"
+        },
+        {
+            "key": "Ghost",
+            "value": "Привид"
+        },
+        {
+            "key": "Spider",
+            "value": "Павук"
+        },
+        {
+            "key": "Ghoul",
+            "value": "Вовкулака"
+        },
+        {
+            "key": "Slug",
+            "value": "Слимак"
+        },
+        {
+            "key": "Witch",
+            "value": "Відьма"
+        },
+        {
+            "key": "Undead",
+            "value": "Невмирущий"
+        },
+        {
+            "key": "{str:PlayerName} joined the spectators",
+            "value": "{str:PlayerName} Приєднався до спостерігачів"
+        },
+        {
+            "key": "{str:PlayerName} joined the game",
+            "value": "{str:PlayerName} Приєднався до гри"
+        },
+        {
+            "key": "{str:VictimName} has been infected",
+            "value": "{str:VictimName}  Був заражений"
+        },
+        {
+            "key": "One human won the round",
+            "one": "{int:NumHumans} людина виграла",
+            "few": "{int:NumHumans} Людей виграло",
+            "other": "{int:NumHumans} Людей виграло"
         },
         {
             "key": "{int:NumHumans} humans won the round",
@@ -325,334 +161,60 @@
             "other": "{int:NumHumans} Людей виграло"
         },
         {
-            "key": "{int:NumMines} mines are active",
-            "one": "{int:NumMines} міна активована",
-            "few": "{int:NumMines} міни активовано",
-            "other": "{int:NumMines} мін активовано"
+            "key": "You have survived, +5 points",
+            "value": "Ти вижив, +5 очок"
         },
         {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Будь ласка заждіть 5 хвилин перед створенням нового акканту"
-        },
-        {
-            "key": "Position lock: {sec:RemainingTime}",
-            "value": "Закріплена позиція: {sec:RemainingTime}"
-        },
-        {
-            "key": "Press <F3> or <F4> to enable or disable hook protection",
-            "value": "Натисніть <F3> або <F4> за для включення або виключення захисту від хапання."
-        },
-        {
-            "key": "Random choice",
-            "value": "Випадковий вибір"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "few": "",
-            "other": ""
+            "key": "Infected won the round in {sec:RoundDuration}",
+            "value": "Заражені виграли раунд за {sec:RoundDuration}"
         },
         {
             "key": "Rules of the game",
             "value": "Правила гри"
         },
         {
-            "key": "Santa {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} Покинув гру"
-        },
-        {
-            "key": "Scientist",
-            "value": "Вчений"
-        },
-        {
-            "key": "Scientist has also grenades that teleport them.",
-            "value": "Також він має гранати, що телепортують його."
-        },
-        {
-            "key": "Scientists",
-            "value": "Вчений"
-        },
-        {
-            "key": "Slug",
-            "value": "Слимак"
-        },
-        {
-            "key": "Slug can infect humans and heal the infected with the hammer.",
-            "value": "Слимак може інфікувати людей і лікувати інфікованих молотком."
-        },
-        {
-            "key": "Slugs",
-            "value": "Слимак"
-        },
-        {
-            "key": "Smoker",
-            "value": "Курець"
-        },
-        {
-            "key": "Smokers",
-            "value": "Курець"
-        },
-        {
-            "key": "Sniper",
-            "value": "Снайпер"
-        },
-        {
-            "key": "Snipers",
-            "value": "Снайпер"
-        },
-        {
-            "key": "Soldier",
-            "value": "Солдат"
-        },
-        {
-            "key": "Soldiers",
-            "value": "Солдат"
-        },
-        {
-            "key": "Someone was infected to balance the game.",
-            "value": "Коли інфікований доторкає ця до стіни, він гине."
-        },
-        {
-            "key": "Spider",
-            "value": "Павук"
-        },
-        {
-            "key": "Spiders",
-            "value": "Павук"
-        },
-        {
-            "key": "Staying alive for: {int:RemainingTime}",
-            "value": "Закріплена позиція: {sec:RemainingTime}"
-        },
-        {
-            "key": "Stomach filled by {percent:FodderInStomach}",
-            "value": "Шлунок наповнений на {percent:FodderInStomach}"
-        },
-        {
-            "key": "Switch language to english?",
-            "value": "Змінити мову на українську?"
-        },
-        {
-            "key": "Sword strength increased",
-            "value": "Сила катани збільшена"
-        },
-        {
-            "key": "Sword velocity increased",
-            "value": "Швидкість катани збільшена"
-        },
-        {
-            "key": "Target to eliminate: {str:PlayerName}",
-            "value": "Ціль для винищення: {str:PlayerName}"
+            "key": "How to translate the mod",
+            "value": "Як перекладати мод"
         },
         {
             "key": "Targeted chat messages",
             "value": "Цільові чат-повідомлення"
         },
         {
-            "key": "Thanks to {str:ListOfContributors}",
-            "value": "Спасибі також {str:ListOfContributors}"
-        },
-        {
-            "key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
-            "value": "Біолог має дробовик зі стрибучими кулями та також може створювати пружину лазерну пастку вистрілюючи своєю лазерною гвинтівкою."
-        },
-        {
-            "key": "The Boomer explodes when it attacks.",
-            "value": "Вибуховий вибухає коли він атакує."
-        },
-        {
-            "key": "The Engineer can build walls with the hammer to block the infected.",
-            "value": "Інженер може будувати стіни завдяки своєму молоту, щоб блокувати інфікованих. "
-        },
-        {
-            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-            "value": "Він невидимий, за винятком того, якщо людина знаходиться поруч з ним, якщо він бере пошкодження або якщо він використовує свій молот."
-        },
-        {
-            "key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
-            "value": "Він може поглинати все, що вмерло біля нього, і це робить його сильнішим, швидшим, і також більш стійким."
-        },
-        {
-            "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
-            "value": "Герой не може бути вилікуваним лікарем, але він може перенести удар від інфікованого, та життя постраждає."
-        },
-        {
-            "key": "The Hero found the flag!",
-            "value": "Герой знайшов прапор!"
-        },
-        {
-            "key": "The Medic can protect humans with the hammer by giving them armor.",
-            "value": "Лікар може захищати людей надаючи їм броню завдяки його молоту."
-        },
-        {
-            "key": "The Mercenary can fly in the air using their machine gun.",
-            "value": "Найманець літає в повітрі завдяки використанню свого кулемета."
-        },
-        {
-            "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
-            "value": "Ніндзя може кидати сліпові гранати які заморожують інфікованих на три секунди."
-        },
-        {
-            "key": "The Scientist can pose floating mines with the hammer.",
-            "value": "Вчений може встановлювати плавучі міни за допомоги його молота."
-        },
-        {
-            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-            "value": "Він в змозі отруювати землю та стіни розносячи слиз, завдяки своєму молоту."
-        },
-        {
-            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
-            "value": "Снайпер може затримувати свою позицію на 15 секунд в повітрі завдяки своєму молоту."
-        },
-        {
-            "key": "The Soldier creates floating bombs with the hammer.",
-            "value": "Солдат може створити плавучі бомби завдяки його молоту."
-        },
-        {
-            "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
-            "value": "Замість смерті він замерзає на 10 секунд."
-        },
-        {
-            "key": "The class is disabled",
-            "value": "Відьма загинула"
-        },
-        {
-            "key": "The class selector will be displayed when round starts",
-            "value": "Меню вибору буде показано на початку раунду"
-        },
-        {
-            "key": "The goal for the humans is to survive until the army cleans the map.",
-            "value": "Ціль гри вижити до поки армія не очистить карту."
-        },
-        {
-            "key": "The goal for the infected is to infect all humans.",
-            "value": "Ціль заражених, інфікувати всіх людей."
-        },
-        {
-            "key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
-            "value": "Тривалість життя стіни {sec:LifeSpan}, та одна стіна на одного гравця."
-        },
-        {
-            "key": "The undead is finally dead",
-            "value": "Невмирущий нарешті загинув"
-        },
-        {
-            "key": "The witch is dead",
-            "value": "Відьма загинула"
-        },
-        {
-            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-            "one": "Його молот замінений катаною що дозволяє йому стрибати один раз до торкання землі. ",
-            "few": "Його молот замінений катаною що дозволяє йому стрибати {int:NinjaJump} раз до торкання землі. ",
-            "other": "Його молот замінений катаною що дозволяє йому стрибати {int:NinjaJump} раз до торкання землі. "
-        },
-        {
-            "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
-            "value": "Солдат може створити плавучі бомби завдяки його молоту."
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "Він може стрибати два рази в повітрі."
-        },
-        {
-            "key": "They can also jump two times in the air.",
-            "value": "Він може стрибати два рази в повітрі."
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Це ім'я вже зайнято існуючим акантом"
-        },
-        {
-            "key": "Too few infected to call the Santa",
-            "value": "Ціль заражених, інфікувати всіх людей."
-        },
-        {
-            "key": "Type “/help {str:ClassName}” for more information about your class",
-            "value": "Напишіть «/help {str:ClassName}» для інформації про ваш клас"
-        },
-        {
-            "key": "Undead",
-            "value": "Невмирущий"
-        },
-        {
-            "key": "Undead can infect humans and heal the infected with the hammer.",
-            "value": "Невмирущий може інфікувати людей та лікувати заражених завдяки своєму молоту. "
-        },
-        {
-            "key": "Undeads",
-            "value": "Невмирущий"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Невідомий клас"
-        },
-        {
-            "key": "Unknown language",
-            "value": "Невідома мова"
-        },
-        {
-            "key": "Unknowns",
-            "value": "Невідомий клас"
-        },
-        {
-            "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
-            "value": "Використовуйте молот, щоб ставити бомби та підривати їх декілька раз."
-        },
-        {
-            "key": "Use the hammer to place the bomb and explode it multiple times.",
-            "value": "Використовуйте молот, щоб ставити бомби та підривати їх декілька раз."
-        },
-        {
             "key": "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.",
             "value": "Використовуйте «/msg !<ClassName> <My Message>», щоб надіслати приватне повідомлення усім гравцям з вибраним класом."
+        },
+        {
+            "key": "Example: “/msg !medic I'm wounded!”",
+            "value": "Наприклад: «/msg !medic I'm wounded!»"
         },
         {
             "key": "Use “/msg !near” to send a private message to all players near you.",
             "value": "Використовуйте «/msg !near», щоб надіслати приватне повідомлення усім гравцям навколо себе."
         },
         {
-            "key": "Use “/mute <PlayerName>” to mute this player.",
-            "value": "Використовуйте «/msg <PlayerName> <My Message>», щоб надіслати приватне повідомлення іншому гравцю."
+            "key": "Use the hammer to place the bomb and explode it multiple times.",
+            "value": "Використовуйте молот, щоб ставити бомби та підривати їх декілька раз."
         },
         {
-            "key": "Use “/w <PlayerName> <My Message>” to send a private message to this player.",
-            "value": "Використовуйте «/msg <PlayerName> <My Message>», щоб надіслати приватне повідомлення іншому гравцю."
+            "key": "You have killed a witch, +5 points",
+            "value": "Ти вбив відьму, +5 очок"
         },
         {
-            "key": "Voodoo can infect humans and heal the infected with the hammer.",
-            "value": "Привид може інфікувати людей та лікувати заражених завдяки своєму молоту. "
+            "key": "The witch is dead",
+            "value": "Відьма загинула"
         },
         {
-            "key": "Web mode enabled",
-            "value": "Режим павутини включений "
+            "key": "The undead is finally dead",
+            "value": "Невмирущий нарешті загинув"
         },
         {
-            "key": "When an infected touches the wall, it dies.",
-            "value": "Коли інфікований доторкає ця до стіни, він гине."
+            "key": "Hook protection enabled",
+            "value": "Захист від гака включений"
         },
         {
-            "key": "White hole: {sec:RemainingTime}",
-            "value": "Лазерна стіна: {sec:RemainingTime}"
-        },
-        {
-            "key": "Witch",
-            "value": "Відьма"
-        },
-        {
-            "key": "Witch can infect humans and heal the infected with the hammer.",
-            "value": "Відьма може інфікувати людей та лікувати заражених завдяки своєму молоту. "
-        },
-        {
-            "key": "Witch {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} Покинув гру"
-        },
-        {
-            "key": "Witches",
-            "value": "Відьма"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Неправильне ім'я користувача/пароль."
+            "key": "Hook protection disabled",
+            "value": "Захист від гака виключений"
         },
         {
             "key": "You are a human: {str:ClassName}",
@@ -663,106 +225,72 @@
             "value": "Ви заражений: {str:ClassName}"
         },
         {
-            "key": "You are blinded: {sec:EffectDuration}",
-            "value": "Ви були замороженi: {sec:EffectDuration}"
-        },
-        {
-            "key": "You are frozen: {sec:EffectDuration}",
-            "value": "Ви були замороженi: {sec:EffectDuration}"
-        },
-        {
-            "key": "You are muted for {sec:Duration}",
-            "value": "Ви приглушені на {sec:Duration}"
-        },
-        {
-            "key": "You are slowed: {sec:EffectDuration}",
-            "value": "Ви були замороженi: {sec:EffectDuration}"
-        },
-        {
-            "key": "You can change the language of this mod using the command /language.",
-            "value": "Ви можете змінити мову використовуючи команду  /language"
+            "key": "Type “/help {str:ClassName}” for more information about your class",
+            "value": "Напишіть «/help {str:ClassName}» для інформації про ваш клас"
         },
         {
             "key": "You can't join the spectators right now",
             "value": "Ви не можете приєднатися до спостерігачів зараз"
         },
         {
-            "key": "You have already notified that {str:PlayerName} ought to be banned",
-            "value": "Ви вже повідомляли, що {str:PlayerName} має бути забанений"
-        },
-        {
-            "key": "You have been infected by {str:KillerName}",
-            "value": "Ви заражений: {str:ClassName}"
-        },
-        {
-            "key": "You have called the Santa once again",
-            "value": "Ти вбив відьму, +5 очок"
-        },
-        {
-            "key": "You have eliminated your target, +2 points",
-            "value": "Ви знищили вашу ціль, +2 очки"
-        },
-        {
-            "key": "You have held a bonus area for one minute, +5 points",
-            "value": "Ви вдержали додаткову зону одну хвилину, +5 очок"
-        },
-        {
-            "key": "You have infected {str:VictimName}, +3 points",
-            "value": "Ти інфікував {str:VictimName}, +3 очок"
-        },
-        {
-            "key": "You have infected {str:VictimName}, shame on you!",
-            "value": "Ти інфікував {str:VictimName}, +3 очок"
-        },
-        {
-            "key": "You have killed a witch, +5 points",
-            "value": "Ти вбив відьму, +5 очок"
-        },
-        {
-            "key": "You have killed an undead! +5 points",
-            "value": "Ти вбив відьму, +5 очок"
-        },
-        {
-            "key": "You have survived, +5 points",
-            "value": "Ти вижив, +5 очок"
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "few": "",
-            "other": ""
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Ви повинні увійти для здійснення цієї дії."
-        },
-        {
-            "key": "You must be logged to see stats",
-            "value": "Ви маєте увійти в свій аккаунт, щоб побачити свій ранг"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Ви маєте увійти в свій аккаунт, щоб побачити свою ціль"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Ви маєте увійти в свій аккаунт, щоб побачити свій ранг"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Ваш аккаунт створено та знайдено в нього."
-        },
-        {
-            "key": "{str:PlayerName} changed the class to {str:ClassName}",
-            "value": "{str:PlayerName} змінив своє ім'я на {str:NewName}"
-        },
-        {
             "key": "{str:PlayerName} changed their name to {str:NewName}",
             "value": "{str:PlayerName} змінив своє ім'я на {str:NewName}"
         },
         {
-            "key": "{str:PlayerName} entered and joined the game",
-            "value": "{str:PlayerName} увійшов і приєднався до гри"
+            "key": "You can change the language of this mod using the command /language.",
+            "value": "Ви можете змінити мову використовуючи команду  /language"
+        },
+        {
+            "key": "If your language is not available, you can help with translation (/help translate).",
+            "value": "Якщо мова не доступна, ви можете допомогти з перекладом (/help translate)."
+        },
+        {
+            "key": "InfectionClass, by necropotame (version {str:VersionCode})",
+            "value": "InfectionClass, Зроблений necropotame (version {str:VersionCode})"
+        },
+        {
+            "key": "Based on the concept of Infection mod by Gravity",
+            "value": "Основана на концепті \"Infection mod\" від Gravity"
+        },
+        {
+            "key": "Main contributors: {str:ListOfContributors}",
+            "value": "Найбільша допомога від: {str:ListOfContributors}"
+        },
+        {
+            "key": "Thanks to {str:ListOfContributors}",
+            "value": "Спасибі також {str:ListOfContributors}"
+        },
+        {
+            "key": "No player was found with this name",
+            "value": "Жодного гравця не знайдено з таким ім'ям"
+        },
+        {
+            "key": "Choose a help page with /help <page>",
+            "value": "Виберіть свою сторінку завдяки /help <page>"
+        },
+        {
+            "key": "Available help pages: {str:PageList}",
+            "value": "Доступні сторінки допомоги: {str:PageList}"
+        },
+        {
+            "key": "Unknown language",
+            "value": "Невідома мова"
+        },
+        {
+            "key": "Available languages: {str:ListOfLanguage}",
+            "value": "Можливі мови: {str:ListOfLanguage}"
+        },
+        {
+            "key": "List of commands",
+            "value": "Список команд"
+        },
+        {
+            "key": "Press <F3> or <F4> to enable or disable hook protection",
+            "value": "Натисніть <F3> або <F4> за для включення або виключення захисту від хапання."
+        },
+        {
+            "key": "You are muted for {sec:Duration}",
+            "value": "Ви приглушені на {sec:Duration}"
         },
         {
             "key": "{str:PlayerName} has been banned ({str:Reason})",
@@ -773,124 +301,12 @@
             "value": "{str:PlayerName} Був викинутий за ({str:Reason})"
         },
         {
-            "key": "{str:PlayerName} has destroyed your turret!",
-            "value": "{str:PlayerName} Покинув гру"
-        },
-        {
-            "key": "{str:PlayerName} has left the game",
-            "value": "{str:PlayerName} Покинув гру"
-        },
-        {
             "key": "{str:PlayerName} has left the game ({str:Reason})",
             "value": "{str:PlayerName} Покинув гру через ({str:Reason})"
         },
         {
-            "key": "{str:PlayerName} joined the game",
-            "value": "{str:PlayerName} Приєднався до гри"
-        },
-        {
-            "key": "{str:PlayerName} joined the spectators",
-            "value": "{str:PlayerName} Приєднався до спостерігачів"
-        },
-        {
-            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
-            "value": "{str:PlayerName} змінив своє ім'я на {str:NewName}"
-        },
-        {
-            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
-            "value": "{str:PlayerName} хоче {str:VictimName} забанити ({str:Reason})"
-        },
-        {
-            "key": "{str:VictimName} has been infected",
-            "value": "{str:VictimName}  Був заражений"
-        },
-        {
-            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
-            "value": "{str:Victim} був приглушений на {sec:Duration} ({str:Reason})"
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Кожна людина, що доторкнеться його гака в режимі павутини автоматично захоплена."
-        },
-        {
-            "key": "Bat can jump multiple times in air.",
-            "value": "Він може стрибати два рази в повітрі."
-        },
-        {
-            "key": "Bombs are limited to one per player at the same time.",
-            "value": "Бомби лімітовані для кожного гравця."
-        },
-        {
-            "key": "For any question about the translation process, please contact us on IRC ({str:IRCAddress})",
-            "value": "Для будь яких питань по перекладанню будь ласка звертайтесь до на через IRC ({str:IRCAddress})"
-        },
-        {
-            "key": "He can also inflict 1 damage point per second by hooking humans.",
-            "value": "Він також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "He can also inflict 4 damage points per second by hooking humans.",
-            "value": "Він також може заподіяти 4 очки ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "He can coil explosives with his hammer that hinder infected from harming.",
-            "value": "Він має здатність накручувати вибухові пристрої котрі перешкоджають зараженіх шкодити."
-        },
-        {
-            "key": "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero.",
-            "value": "Захоплений прапор надає 1 серце, 4 броні, та повній набір боєзапасів всім людям, крім того всі серця  та броню герою, що його знайшов."
-        },
-        {
-            "key": "She can also inflict 1 damage point per second by hooking humans.",
-            "value": "Вона також може заподіяти 1 очко ушкодження за секунду, хапаючи людей."
-        },
-        {
-            "key": "Snipers can jump two times in air.",
-            "value": "Він може стрибати два рази в повітрі."
-        },
-        {
-            "key": "The Hero has a shotgun, a laser rifle, and a grenade launcher.",
-            "value": "Герой має дробовик, лазерну гвинтівку та гранатомет."
-        },
-        {
-            "key": "The Hero must find a flag hidden in the map.",
-            "value": "Герой має знаходити прапори, що сховані на карті."
-        },
-        {
-            "key": "The Hunter can infect humans and heal infected with the hammer.",
-            "value": "Мисливець може інфікувати людей та лікувати заражених завдяки своєму молоту. "
-        },
-        {
-            "key": "The Smoker can infect humans and heal infected with the hammer.",
-            "value": "Курець може інфікувати людей та лікувати заражених завдяки своєму молоту. "
-        },
-        {
-            "key": "The Spider can infect humans and heal infected with the hammer.",
-            "value": "Павук може інфікувати людей та лікувати заражених завдяки своєму молоту. "
-        },
-        {
-            "key": "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment.",
-            "value": "Слідом за цим він перетравлює їжу і помалу повертається до свого звичайного стану, і також смерть повертає його до звичайного стану"
-        },
-        {
-            "key": "They also have a powerful rifle that deals 20 damage points in locked position, and 10–13 otherwise.",
-            "value": "Також він має сильну гвинтівку що дає 30 очок ушкодження в затриманій позиції, або 10–13 в іншому випадку."
-        },
-        {
-            "key": "Touching the slime inflicts three damage points in three seconds on a human.",
-            "value": "Доторкаючись до слизу людина отруюється на 3 секунди і втрачає 3 очки життя."
-        },
-        {
-            "key": "When an infected dies, it may respawn near the Witch.",
-            "value": "Коли заражений вмирає, можливо він поверне ця біля неї. "
-        },
-        {
-            "key": "When selecting any gun, the hook enter in web mode.",
-            "value": "При виборі жодної зброї, його гак переходить в режим павутини. "
-        },
-        {
-            "key": "You are now logged.",
-            "value": "Ви увійшли."
+            "key": "{str:PlayerName} has left the game",
+            "value": "{str:PlayerName} Покинув гру"
         }
     ]
 }

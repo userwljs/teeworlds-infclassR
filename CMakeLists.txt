@@ -1098,12 +1098,14 @@ endif()
 # Translation dev targets
 set(PO_TEMPlATE "other/po/infclass.pot")
 add_custom_target(dev-generate-pot
-  COMMAND xgettext -d infclass -o ${PO_TEMPlATE} -k_ -k_P:1,2 -k_C:1c,2 -k_CP:1c,2,3 -s --from-code=UTF-8 ${ENGINE_SERVER} ${GAME_SERVER}
+  COMMAND xgettext -d infclass -o ${PO_TEMPlATE} -k_ -k_P:1,2 -k_C:1c,2 -k_CP:1c,2,3 --from-code=UTF-8 ${ENGINE_SERVER} ${GAME_SERVER}
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
 add_custom_target(dev-update-po-files)
 
+# TODO: Unify them into one config file
+# (current: 3 files, in CMakeLists.txt, translation-python3.py and index.json)
 set(PO_LANGS
   ar
   bg
@@ -1124,8 +1126,10 @@ set(PO_LANGS
   pt
   pt-BR
   ru
+  sah
   sq
   sr-CS
+  sr-Latn
   tl
   tr
   uk
@@ -1139,7 +1143,7 @@ foreach(PO_LANG ${PO_LANGS})
     TARGET dev-update-po-files
     POST_BUILD
     # BYPRODUCTS ${PO_LANG_FILE}
-    COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --sort-output --update --backup=off --width=200 ${PO_LANG_FILE} ${PO_TEMPlATE}
+    COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --update --backup=off --width=200 ${PO_LANG_FILE} ${PO_TEMPlATE}
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
   )
 endforeach()

@@ -1,157 +1,117 @@
 {
     "translation": [
         {
-            "key": "All players start as a human.",
-            "value": "Kaikki pelaajat aloittavat ihmisenä."
+            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
+            "value": "On estetty"
         },
         {
-            "key": "An error occured during the creation of your account.",
-            "value": "Virhe tapahtui käyttäjäsi tekemisessä."
+            "key": "You have already notified that {str:PlayerName} ought to be banned",
+            "value": "Sinä valmiiksi haluat saada {str:PlayerName} \nbannit"
         },
         {
-            "key": "An error occured during the operation.",
-            "value": "Virhe tapahtui operaatiossa."
+            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
+            "value": "{str:PlayerName} haluaa {str:VictimName} bannit({str:Reason})"
         },
         {
-            "key": "Biologist",
-            "value": "Biologi"
+            "key": "You have eliminated your target, +2 points",
+            "value": "Tuhosit kohteesi, +2 pistettä"
         },
         {
-            "key": "Biologists",
-            "value": "Biologi"
+            "key": "{str:PlayerName} entered and joined the game",
+            "value": "{str:PlayerName} saapui ja liittyi peliin"
         },
         {
-            "key": "Boomer",
-            "value": "Pommi"
-        },
-        {
-            "key": "Boomers",
-            "value": "Pommi"
-        },
-        {
-            "key": "Each bomb can explode {int:NumBombs} times.",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "Engineer",
-            "value": "Insinööri"
-        },
-        {
-            "key": "Engineers",
-            "value": "Insinööri"
-        },
-        {
-            "key": "Ghost",
-            "value": "Haamu"
-        },
-        {
-            "key": "Ghosts",
-            "value": "Haamu"
-        },
-        {
-            "key": "Ghoul",
-            "value": "Aave"
-        },
-        {
-            "key": "Ghoul can infect humans and heal the infected with the hammer.",
-            "value": "Aave voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "Ghouls",
-            "value": "Aave"
-        },
-        {
-            "key": "Hero",
-            "value": "Sankari"
-        },
-        {
-            "key": "Heroes",
-            "value": "Sankari"
-        },
-        {
-            "key": "Hook protection disabled",
-            "value": "Koukun suojaus poistettu"
-        },
-        {
-            "key": "Hook protection enabled",
-            "value": "Koukun suojaus käytössä"
-        },
-        {
-            "key": "Hunter",
-            "value": "Metsästäjä"
-        },
-        {
-            "key": "Hunters",
-            "value": "Metsästäjä"
-        },
-        {
-            "key": "If your language is not available, you can help with translation (/help translate).",
-            "value": "Jos kieltäsi ei ole saatavilla, voit auttaa kääntämisessä (/help translate)."
-        },
-        {
-            "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-            "value": "Hämähäkin koukku (molemmissa tiloissa) tekee yhden vahinkopisteen sekunnissa ja voi vetää ihmisen kahdessa sekunnissa."
-        },
-        {
-            "key": "Infected won the round in {sec:RoundDuration}",
-            "value": "Infectoitu voitti kierroksen {sec:RoundDuration}"
-        },
-        {
-            "key": "It can also infect humans and heal the infected with the hammer.",
-            "value": "Haamu voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Haamu voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "Haamu voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "Medic",
-            "value": "Lääkäri"
-        },
-        {
-            "key": "Medics",
-            "value": "Lääkäri"
-        },
-        {
-            "key": "Mercenaries",
-            "value": "Palkkasoturi"
+            "key": "You have infected {str:VictimName}, +3 points",
+            "value": "Sinä infectoit {str:VictimName} +3 pistettä"
         },
         {
             "key": "Mercenary",
             "value": "Palkkasoturi"
         },
         {
-            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
-            "one": "",
-            "other": ""
+            "key": "Medic",
+            "value": "Lääkäri"
         },
         {
-            "key": "Mines are limited to {int:NumMines} per player at the same time.",
-            "one": "",
-            "other": ""
+            "key": "Hero",
+            "value": "Sankari"
         },
         {
-            "key": "Need at least {int:MinPlayers} players",
-            "one": "",
-            "other": ""
+            "key": "Engineer",
+            "value": "Insinööri"
+        },
+        {
+            "key": "Soldier",
+            "value": "Sotilas"
         },
         {
             "key": "Ninja",
             "value": "Ninja"
         },
         {
-            "key": "Ninjas",
-            "value": "Ninja"
+            "key": "Sniper",
+            "value": "Tarkka-ampuja"
         },
         {
-            "key": "{int:NumBombs} bombs left",
-            "one": "",
-            "other": ""
+            "key": "Scientist",
+            "value": "Tutkija"
+        },
+        {
+            "key": "Biologist",
+            "value": "Biologi"
+        },
+        {
+            "key": "Smoker",
+            "value": "Savuttaja"
+        },
+        {
+            "key": "Boomer",
+            "value": "Pommi"
+        },
+        {
+            "key": "Hunter",
+            "value": "Metsästäjä"
+        },
+        {
+            "key": "Ghost",
+            "value": "Haamu"
+        },
+        {
+            "key": "Spider",
+            "value": "Hämähäkki"
+        },
+        {
+            "key": "Ghoul",
+            "value": "Aave"
+        },
+        {
+            "key": "Slug",
+            "value": "Myrkyttäjä"
+        },
+        {
+            "key": "Witch",
+            "value": "Noita"
+        },
+        {
+            "key": "Undead",
+            "value": "Epäkuollut"
+        },
+        {
+            "key": "{str:PlayerName} joined the spectators",
+            "value": "{str:PlayerName} liittyi katsojiin"
+        },
+        {
+            "key": "{str:PlayerName} joined the game",
+            "value": "{str:PlayerName} liittyi peliin"
+        },
+        {
+            "key": "{str:VictimName} has been infected",
+            "value": "{str:VictimName} on infectoitu"
+        },
+        {
+            "key": "One human won the round",
+            "one": "Yksi ihminen voitti kierroksen",
+            "other": "{int:NumHumans} ihmistä voitti kierroksen"
         },
         {
             "key": "{int:NumHumans} humans won the round",
@@ -159,163 +119,28 @@
             "other": "{int:NumHumans} ihmistä voitti kierroksen"
         },
         {
-            "key": "{int:NumMines} mines are active",
-            "one": "",
-            "other": ""
+            "key": "You have survived, +5 points",
+            "value": "Sinä selvisit, +5 pistettä"
         },
         {
-            "key": "Please wait 5 minutes before creating another account",
-            "value": "Odota 5 minuuttia niin voit tehdä toisen käyttäjän"
-        },
-        {
-            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
-            "one": "",
-            "other": ""
+            "key": "Infected won the round in {sec:RoundDuration}",
+            "value": "Infectoitu voitti kierroksen {sec:RoundDuration}"
         },
         {
             "key": "Rules of the game",
             "value": "Pelin säännöt"
         },
         {
-            "key": "Santa {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} jätti pelin"
+            "key": "You have killed a witch, +5 points",
+            "value": "Sinä tapoit velhon, +5 pistettä"
         },
         {
-            "key": "Scientist",
-            "value": "Tutkija"
+            "key": "Hook protection enabled",
+            "value": "Koukun suojaus käytössä"
         },
         {
-            "key": "Scientists",
-            "value": "Tutkija"
-        },
-        {
-            "key": "Slug",
-            "value": "Myrkyttäjä"
-        },
-        {
-            "key": "Slug can infect humans and heal the infected with the hammer.",
-            "value": "Aave voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "Slugs",
-            "value": "Myrkyttäjä"
-        },
-        {
-            "key": "Smoker",
-            "value": "Savuttaja"
-        },
-        {
-            "key": "Smokers",
-            "value": "Savuttaja"
-        },
-        {
-            "key": "Sniper",
-            "value": "Tarkka-ampuja"
-        },
-        {
-            "key": "Snipers",
-            "value": "Tarkka-ampuja"
-        },
-        {
-            "key": "Soldier",
-            "value": "Sotilas"
-        },
-        {
-            "key": "Soldiers",
-            "value": "Sotilas"
-        },
-        {
-            "key": "Spider",
-            "value": "Hämähäkki"
-        },
-        {
-            "key": "Spiders",
-            "value": "Hämähäkki"
-        },
-        {
-            "key": "Switch language to english?",
-            "value": "Vaihda kieleen englanti?"
-        },
-        {
-            "key": "Target to eliminate: {str:PlayerName}",
-            "value": "Olet tartutettu: {str:ClassName}"
-        },
-        {
-            "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-            "value": "Hän on näkymätön, paitsi jos hänen lähellään on ihminen, jos hän vahingoittuu tai jos hän käyttää vasaraansa."
-        },
-        {
-            "key": "The Medic can protect humans with the hammer by giving them armor.",
-            "value": "Hämähäkki voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "The Scientist can pose floating mines with the hammer.",
-            "value": "Hämähäkki voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-            "value": "Aave voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
-            "value": "Hämähäkki voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "The Soldier creates floating bombs with the hammer.",
-            "value": "Hämähäkki voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground.",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "This username is already taken by an existing account",
-            "value": "Tämä käyttäjänimi on valmiiksi otettu"
-        },
-        {
-            "key": "Undead",
-            "value": "Epäkuollut"
-        },
-        {
-            "key": "Undead can infect humans and heal the infected with the hammer.",
-            "value": "Metsästäjä voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "Undeads",
-            "value": "Epäkuollut"
-        },
-        {
-            "key": "Unknown class",
-            "value": "Tuntematon luokka"
-        },
-        {
-            "key": "Unknowns",
-            "value": "Tuntematon luokka"
-        },
-        {
-            "key": "Voodoo can infect humans and heal the infected with the hammer.",
-            "value": "Haamu voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "Witch",
-            "value": "Noita"
-        },
-        {
-            "key": "Witch can infect humans and heal the infected with the hammer.",
-            "value": "Haamu voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "Witch {str:PlayerName} has arrived!",
-            "value": "{str:PlayerName} jätti pelin"
-        },
-        {
-            "key": "Witches",
-            "value": "Noita"
-        },
-        {
-            "key": "Wrong username/password.",
-            "value": "Väärä käyttäjänimi/salasana."
+            "key": "Hook protection disabled",
+            "value": "Koukun suojaus poistettu"
         },
         {
             "key": "You are a human: {str:ClassName}",
@@ -326,89 +151,16 @@
             "value": "Olet tartutettu: {str:ClassName}"
         },
         {
-            "key": "You are blinded: {sec:EffectDuration}",
-            "value": "Sinut on mykistetty {sec:Duration}"
-        },
-        {
-            "key": "You are muted for {sec:Duration}",
-            "value": "Sinut on mykistetty {sec:Duration}"
-        },
-        {
-            "key": "You are slowed: {sec:EffectDuration}",
-            "value": "Sinut on mykistetty {sec:Duration}"
-        },
-        {
             "key": "You can't join the spectators right now",
             "value": "Et voi liittyä katsojiin juuri nyt"
         },
         {
-            "key": "You have already notified that {str:PlayerName} ought to be banned",
-            "value": "Sinä valmiiksi haluat saada {str:PlayerName} \nbannit"
+            "key": "If your language is not available, you can help with translation (/help translate).",
+            "value": "Jos kieltäsi ei ole saatavilla, voit auttaa kääntämisessä (/help translate)."
         },
         {
-            "key": "You have been infected by {str:KillerName}",
-            "value": "Olet tartutettu: {str:ClassName}"
-        },
-        {
-            "key": "You have called the Santa once again",
-            "value": "Sinä tapoit velhon, +5 pistettä"
-        },
-        {
-            "key": "You have eliminated your target, +2 points",
-            "value": "Tuhosit kohteesi, +2 pistettä"
-        },
-        {
-            "key": "You have infected {str:VictimName}, +3 points",
-            "value": "Sinä infectoit {str:VictimName} +3 pistettä"
-        },
-        {
-            "key": "You have infected {str:VictimName}, shame on you!",
-            "value": "Sinä infectoit {str:VictimName} +3 pistettä"
-        },
-        {
-            "key": "You have killed a witch, +5 points",
-            "value": "Sinä tapoit velhon, +5 pistettä"
-        },
-        {
-            "key": "You have killed an undead! +5 points",
-            "value": "Sinä tapoit velhon, +5 pistettä"
-        },
-        {
-            "key": "You have survived, +5 points",
-            "value": "Sinä selvisit, +5 pistettä"
-        },
-        {
-            "key": "You have {int:NumTurrets} turrets available, use the Hammer to place it",
-            "one": "",
-            "other": ""
-        },
-        {
-            "key": "You must be logged for this operation",
-            "value": "Sinun pitää liittyä tähän operaatioon"
-        },
-        {
-            "key": "You must be logged to see stats",
-            "value": "Sinun pitää liittyä nähdäksesi arvon"
-        },
-        {
-            "key": "You must be logged to see your goal",
-            "value": "Sinun pitää liittyä nähdäksesi maalisi"
-        },
-        {
-            "key": "You must be logged to see your rank",
-            "value": "Sinun pitää liittyä nähdäksesi arvon"
-        },
-        {
-            "key": "Your account has been created and you are now logged.",
-            "value": "Sinun käyttäjä on tehty ja olet nyt liittynyt."
-        },
-        {
-            "key": "{str:PlayerName} changed the class to {str:ClassName}",
-            "value": "{str:PlayerName} jätti pelin ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} entered and joined the game",
-            "value": "{str:PlayerName} saapui ja liittyi peliin"
+            "key": "You are muted for {sec:Duration}",
+            "value": "Sinut on mykistetty {sec:Duration}"
         },
         {
             "key": "{str:PlayerName} has been banned ({str:Reason})",
@@ -419,64 +171,12 @@
             "value": "{str:PlayerName} on potkaisti ({str:Reason})"
         },
         {
-            "key": "{str:PlayerName} has destroyed your turret!",
-            "value": "{str:PlayerName} jätti pelin"
-        },
-        {
-            "key": "{str:PlayerName} has left the game",
-            "value": "{str:PlayerName} jätti pelin"
-        },
-        {
             "key": "{str:PlayerName} has left the game ({str:Reason})",
             "value": "{str:PlayerName} jätti pelin ({str:Reason})"
         },
         {
-            "key": "{str:PlayerName} joined the game",
-            "value": "{str:PlayerName} liittyi peliin"
-        },
-        {
-            "key": "{str:PlayerName} joined the spectators",
-            "value": "{str:PlayerName} liittyi katsojiin"
-        },
-        {
-            "key": "{str:PlayerName} wants to start the vote '{str:VoteName}'",
-            "value": "{str:PlayerName} jätti pelin ({str:Reason})"
-        },
-        {
-            "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
-            "value": "{str:PlayerName} haluaa {str:VictimName} bannit({str:Reason})"
-        },
-        {
-            "key": "{str:VictimName} has been infected",
-            "value": "{str:VictimName} on infectoitu"
-        },
-        {
-            "key": "{str:Victim} has been muted for {sec:Duration} ({str:Reason})",
-            "value": "On estetty"
-        },
-        {
-            "key": "Any human that touch a hook in web mode is automatically grabbed.",
-            "value": "Verkkotilassa oleva koukku tarttuu itsestään siihen osuvaan ihmiseen."
-        },
-        {
-            "key": "The Hunter can infect humans and heal infected with the hammer.",
-            "value": "Metsästäjä voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "The Smoker can infect humans and heal infected with the hammer.",
-            "value": "Hämähäkki voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "The Spider can infect humans and heal infected with the hammer.",
-            "value": "Hämähäkki voi tartuttaa ihmisiä ja parantaa tarttuneita vasarallaan."
-        },
-        {
-            "key": "When selecting any gun, the hook enter in web mode.",
-            "value": "Kun valitset jonkin pyssyn, hänen koukkunsa menee verkkotilaan."
-        },
-        {
-            "key": "You are now logged.",
-            "value": "Nyt olet liittynyt."
+            "key": "{str:PlayerName} has left the game",
+            "value": "{str:PlayerName} jätti pelin"
         }
     ]
 }

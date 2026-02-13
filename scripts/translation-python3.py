@@ -23,12 +23,21 @@ def convert_po_to_json(language: "Language"):
             target_dict = {"translation": []}
             translations = target_dict["translation"]
             for entry in po:
+                if entry.fuzzy or entry.obsolete:
+                    continue
                 if entry.msgstr:
                     target_entry = {"key": entry.msgid, "value": entry.msgstr}
                 elif entry.msgstr_plural.keys():
                     target_entry = {"key": entry.msgid_plural}
                     for i in sorted(entry.msgstr_plural.keys()):
-                        target_entry[plurals[i]] = entry.msgstr_plural[i]
+                        if entry.msgstr_plural[i]:
+                            target_entry[plurals[i]] = entry.msgstr_plural[i]
+                    if len(target_entry) <= 1:
+                        continue
+                    if entry.msgid:
+                        one_entry = target_entry.copy()
+                        one_entry["key"] = entry.msgid
+                        translations.append(one_entry)
                 else:
                     continue
                 translations.append(target_entry)
@@ -63,11 +72,14 @@ LANGUAGES: List[Language] = [
     Language("pt-BR", ["one"]),
     Language("ru", ["one", "few", "many"]),
     Language("sah", []),
+    Language("sq", ["one"]),
+    Language("sr-CS", ["one", "few"]),
     Language("sr-Latn", ["one", "few"]),
     Language("tl", ["one"]),
     Language("tr", ["one"]),
     Language("uk", ["one", "few"]),
     Language("zh-CN", []),
+    Language("zh-TW", []),
 ]
 
 for language in LANGUAGES:
