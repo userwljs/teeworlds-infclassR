@@ -3676,7 +3676,7 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 	if(NumHumans)
 	{
 		GameServer()->SendChatTarget_Localization_P(-1, CHATCATEGORY_HUMANS, NumHumans,
-			_P("One human won the round",
+			_P("{int:NumHumans} human won the round",
 				"{int:NumHumans} humans won the round", NumHumans),
 			"NumHumans", &NumHumans,
 			nullptr);
