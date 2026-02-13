@@ -149,16 +149,6 @@
             "value": "{str:VictimName} foi infectado"
         },
         {
-            "key": "One human won the round",
-            "one": "Um humano ganhou a partida",
-            "other": "{int:NumHumans} humanos ganharam a partida"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Um humano ganhou a partida",
-            "other": "{int:NumHumans} humanos ganharam a partida"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Você sobreviveu, +5 pontos"
         },

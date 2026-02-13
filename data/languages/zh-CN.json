@@ -370,7 +370,7 @@
         },
         {
             "key": "Witch can spawn the infected through narrow walls.",
-            "value": "女巫能让感染者透过窄墙出生"
+            "value": "女巫能让感染者透过窄墙出生。"
         },
         {
             "key": "Undead can be removed from a game by throwing it into kill tiles or reviving it as a Medic.",
@@ -729,7 +729,7 @@
             "value": "回合取消：所有人类离开了游戏"
         },
         {
-            "key": "One human won the round",
+            "key": "{int:NumHumans} human won the round",
             "other": "{int:NumHumans} 名人类获得本轮胜利"
         },
         {
@@ -854,7 +854,7 @@
         },
         {
             "key": "Use “/mute <PlayerName>” to mute this player.",
-            "value": "使用 “/mute <玩家名>” 来屏蔽这个玩家的消息"
+            "value": "使用 “/mute <玩家名>” 来屏蔽这个玩家的消息。"
         },
         {
             "key": "Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects.",

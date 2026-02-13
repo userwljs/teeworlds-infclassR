@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: infectiondust\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 12:32+0800\n"
+"POT-Creation-Date: 2026-02-13 14:28+0800\n"
 "PO-Revision-Date: 2022-08-14 19:54\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
@@ -781,7 +781,8 @@ msgid "The round canceled: All humans have left the game"
 msgstr "Раунд отменен: все люди вышли из игры"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3679
-msgid "One human won the round"
+#, fuzzy
+msgid "{int:NumHumans} human won the round"
 msgid_plural "{int:NumHumans} humans won the round"
 msgstr[0] "{int:NumHumans} человек победил"
 msgstr[1] "{int:NumHumans} человека победили"

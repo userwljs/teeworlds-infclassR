@@ -109,14 +109,6 @@
             "value": "{str:VictimName} は感染した"
         },
         {
-            "key": "One human won the round",
-            "other": "{int:NumHumans} 人が生き残った！"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "other": "{int:NumHumans} 人が生き残った！"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "最後まで生き残った！ +5ポイント"
         },

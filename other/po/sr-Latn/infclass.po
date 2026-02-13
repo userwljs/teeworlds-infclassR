@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 12:32+0800\n"
+"POT-Creation-Date: 2026-02-13 14:28+0800\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Gao Zimu <gaozimu_0502@163.com>\n"
 "Language-Team: \n"
@@ -807,7 +807,7 @@ msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3679
 #, fuzzy
-msgid "One human won the round"
+msgid "{int:NumHumans} human won the round"
 msgid_plural "{int:NumHumans} humans won the round"
 msgstr[0] "Jedan čovek je pobedio ovu rundu"
 msgstr[1] "Jedan čovek je pobedio ovu rundu"

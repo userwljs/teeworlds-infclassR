@@ -149,18 +149,6 @@
             "value": "{str:VictimName}  Був заражений"
         },
         {
-            "key": "One human won the round",
-            "one": "{int:NumHumans} людина виграла",
-            "few": "{int:NumHumans} Людей виграло",
-            "other": "{int:NumHumans} Людей виграло"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "{int:NumHumans} людина виграла",
-            "few": "{int:NumHumans} Людей виграло",
-            "other": "{int:NumHumans} Людей виграло"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Ти вижив, +5 очок"
         },

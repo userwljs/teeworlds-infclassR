@@ -525,16 +525,6 @@
             "value": "Runde abgebrochen: Alle Überlebenden haben das Spiel verlassen"
         },
         {
-            "key": "One human won the round",
-            "one": "Ein Überlebender hat die Runde gewonnen.",
-            "other": "{int:NumHumans} Überlebende haben die Runde gewonnen."
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Ein Überlebender hat die Runde gewonnen.",
-            "other": "{int:NumHumans} Überlebende haben die Runde gewonnen."
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Du hast überlebt, +5 Punkte"
         },

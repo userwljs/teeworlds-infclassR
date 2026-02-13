@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: infectiondust\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 12:32+0800\n"
-"PO-Revision-Date: 2026-02-13 14:20+0800\n"
+"POT-Creation-Date: 2026-02-13 14:28+0800\n"
+"PO-Revision-Date: 2026-02-13 14:29+0800\n"
 "Last-Translator: Gao Zimu <gaozimu_0502@163.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -391,7 +391,7 @@ msgstr "巫毒者可以在灵魂状态解冻一名不死族。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:139
 msgid "Witch can spawn the infected through narrow walls."
-msgstr "女巫能让感染者透过窄墙出生"
+msgstr "女巫能让感染者透过窄墙出生。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:140
 msgid "Undead can be removed from a game by throwing it into kill tiles or reviving it as a Medic."
@@ -754,7 +754,7 @@ msgid "The round canceled: All humans have left the game"
 msgstr "回合取消：所有人类离开了游戏"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3679
-msgid "One human won the round"
+msgid "{int:NumHumans} human won the round"
 msgid_plural "{int:NumHumans} humans won the round"
 msgstr[0] "{int:NumHumans} 名人类获得本轮胜利"
 
@@ -873,7 +873,7 @@ msgstr "永久禁言玩家"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:4495
 msgid "Use “/mute <PlayerName>” to mute this player."
-msgstr "使用 “/mute <玩家名>” 来屏蔽这个玩家的消息"
+msgstr "使用 “/mute <玩家名>” 来屏蔽这个玩家的消息。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:4497
 msgid "Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects."

@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: teeuniverse\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-13 12:32+0800\n"
+"POT-Creation-Date: 2026-02-13 14:28+0800\n"
 "PO-Revision-Date: 2017-07-31 15:23-0400\n"
 "Last-Translator: necropotame <necropotame@gmail.com>\n"
 "Language-Team: Polish\n"
@@ -808,7 +808,8 @@ msgid "The round canceled: All humans have left the game"
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3679
-msgid "One human won the round"
+#, fuzzy
+msgid "{int:NumHumans} human won the round"
 msgid_plural "{int:NumHumans} humans won the round"
 msgstr[0] "Jeden człowiek wygrał rundę"
 msgstr[1] "{int:NumHumans} Ludzie wygrali rundę"

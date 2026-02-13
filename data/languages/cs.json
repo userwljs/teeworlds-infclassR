@@ -117,18 +117,6 @@
             "value": "{str:VictimName} byl nakažen"
         },
         {
-            "key": "One human won the round",
-            "one": "Vyhrál jeden človek",
-            "few": "{int:NumHumans} lidé vyhráli",
-            "other": "{int:NumHumans} lidé vyhráli"
-        },
-        {
-            "key": "{int:NumHumans} humans won the round",
-            "one": "Vyhrál jeden človek",
-            "few": "{int:NumHumans} lidé vyhráli",
-            "other": "{int:NumHumans} lidé vyhráli"
-        },
-        {
             "key": "You have survived, +5 points",
             "value": "Přežil jsi, +5 bodů"
         },
