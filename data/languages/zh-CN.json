@@ -6,7 +6,7 @@
         },
         {
             "key": "You have already notified that {str:PlayerName} ought to be banned",
-            "value": "你已动议封禁 {str:PlayerName}。"
+            "value": "你已提议封禁 {str:PlayerName}"
         },
         {
             "key": "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})",
@@ -22,11 +22,11 @@
         },
         {
             "key": "White hole found, adjusting scientific parameters...",
-            "value": "已获得白洞，正在调整科学参数..."
+            "value": "已获得白洞，正在调整科学参数……"
         },
         {
             "key": "You have held a bonus area for one minute, +5 points",
-            "value": "在奖励地区呆一分钟就会增加 5 分。"
+            "value": "你在奖励区域待了一分钟，+5 分"
         },
         {
             "key": "You need at least {int:MinHp} HP to revive a zombie",
@@ -46,19 +46,23 @@
         },
         {
             "key": "The bomb is fully upgraded.\nThere is nothing to do with the laser.",
-            "value": "炸弹当量已经满了\n激光已经无法升级"
+            "value": "炸弹已经完全充能。\n激光没有用了。"
         },
         {
             "key": "Use the hammer to place a bomb and\nthen use the laser to upgrade it",
             "value": "使用锤子放置炸弹, 可用激光升级它"
         },
         {
+            "key": "The turrets are not allowed by the game rules (at least right now).",
+            "value": "游戏规则不允许使用炮塔（至少现在是这样）。"
+        },
+        {
             "key": "You have a turret. Use the hammer to place it.",
-            "value": "你有一个炮塔, 使用锤子放置它"
+            "value": "你有一个炮塔。使用锤子放置它。"
         },
         {
             "key": "You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to place one.",
-            "value": "你有 {int:NumTurrets}/{int:MaxTurrets}个炮塔, 可使用锤子放置一个"
+            "value": "你有 {int:NumTurrets} 个炮塔（最多 {int:MaxTurrets} 个），用锤子放置一个。"
         },
         {
             "key": "You don't have a turret to place",
@@ -71,6 +75,14 @@
         {
             "key": "Looper laser wall: {sec:RemainingTime}",
             "value": "环形师激光墙：{sec:RemainingTime}"
+        },
+        {
+            "key": "{int:NumBombs} bomb left",
+            "other": "炸弹剩余 {int:NumBombs} 个"
+        },
+        {
+            "key": "{int:NumBombs} bombs left",
+            "other": "炸弹剩余 {int:NumBombs} 个"
         },
         {
             "key": "The white hole is available!",
@@ -110,7 +122,7 @@
         },
         {
             "key": "You have eliminated your target, +2 points",
-            "value": "你除掉了目标，+ 2 分"
+            "value": "你除掉了目标，+2 分"
         },
         {
             "key": "Sword velocity increased",
@@ -123,6 +135,14 @@
         {
             "key": "Grenade limit increased",
             "value": "榴弹限量已增加"
+        },
+        {
+            "key": "Placed a turret, {int:TurretsNumber} turret left",
+            "other": "放置了炮塔，剩余 {int:TurretsNumber} 个"
+        },
+        {
+            "key": "Placed a turret, {int:TurretsNumber} turrets left",
+            "other": "放置了炮塔，剩余 {int:TurretsNumber} 个"
         },
         {
             "key": "The white hole is ready, use the laser rifle to disrupt space-time",
@@ -146,11 +166,15 @@
         },
         {
             "key": "Stomach filled by {percent:FodderInStomach}",
-            "value": "营养：{percent:FodderInStomach}"
+            "value": "饱食度：{percent:FodderInStomach}"
+        },
+        {
+            "key": "You are sleeping: {sec:EffectDuration}",
+            "value": "你陷入了昏睡：{sec:EffectDuration}"
         },
         {
             "key": "You are blinded: {sec:EffectDuration}",
-            "value": "你失明了: {sec:EffectDuration}"
+            "value": "你失明了：{sec:EffectDuration}"
         },
         {
             "key": "Choose your class",
@@ -166,11 +190,11 @@
         },
         {
             "key": "Need at least {int:MinPlayers} player",
-            "other": "至少需要 {int:MinPlayers} 玩家"
+            "other": "至少需要 {int:MinPlayers} 名玩家"
         },
         {
             "key": "Need at least {int:MinPlayers} players",
-            "other": "至少需要 {int:MinPlayers} 玩家"
+            "other": "至少需要 {int:MinPlayers} 名玩家"
         },
         {
             "key": "The class limit exceeded",
@@ -185,16 +209,32 @@
             "value": "你被减速了：{sec:EffectDuration}"
         },
         {
+            "key": "You are in Solo mode",
+            "value": "你正处于单人模式"
+        },
+        {
+            "key": "You are in Solo mode for {sec:EffectDuration}",
+            "value": "你正处于单人模式：{sec:EffectDuration}"
+        },
+        {
+            "key": "The target is too strong, the tranquilizer won't work",
+            "value": "目标太强大，镇静无法起效"
+        },
+        {
             "key": "You need at least {int:MinimumHP} HP",
-            "value": "你至少需要 {int:MinimumHP}点血量"
+            "value": "你至少需要 {int:MinimumHP} 点血或盾"
         },
         {
             "key": "Too few infected (less than {int:MinimumInfected})",
-            "value": "感染者太少了（小于 {int:MinimumInfected}个）"
+            "value": "感染者太少了（少于 {int:MinimumInfected} 个）"
+        },
+        {
+            "key": "The target is too strong, the cure won't work",
+            "value": "目标太强大，治疗无法起效"
         },
         {
             "key": "Medic {str:MedicName} revived {str:RevivedName}",
-            "value": "医疗兵 {str:MedicName} 治疗了 {str:RevivedName}"
+            "value": "医生 {str:MedicName} 治疗了 {str:RevivedName}"
         },
         {
             "key": "You destroyed {str:PlayerName}'s turret!",
@@ -205,8 +245,140 @@
             "value": "{str:PlayerName} 摧毁了你的炮塔！"
         },
         {
+            "key": "Taxi prevents ammo regeneration for all passengers.",
+            "value": "开车会让所有乘客的弹药停止恢复。"
+        },
+        {
+            "key": "Choosing a random class grants full armor.",
+            "value": "选择随机职业会获得满盾。"
+        },
+        {
+            "key": "You can toggle hook protection by pressing f3 (\"Vote yes\" keybind).",
+            "value": "你能通过按 F3（“赞成投票”键）来切换钩子保护。"
+        },
+        {
+            "key": "Mercenary can reduce ammo usage during flight by tapping instead of holding down the \"fire\" button.",
+            "value": "雇佣兵能通过连续短暂按下开火键代替长按来节省弹药。"
+        },
+        {
+            "key": "Mercenary's grenades prevent zombies from healing.",
+            "value": "雇佣兵的榴弹会阻止感染者回血。"
+        },
+        {
+            "key": "Medic can heal Heroes using the grenade launcher.",
+            "value": "医生能用榴弹发射器治疗英雄。"
+        },
+        {
+            "key": "Medic and Biologist can use hammer to instantly kill an infected.",
+            "value": "医生和生物学家可以用锤子来瞬间击杀一个感染者。"
+        },
+        {
+            "key": "Hero can stand still for a short time to be pointed towards the flag.",
+            "value": "英雄能静止不动一段时间，来获得一个指向旗子的点。"
+        },
+        {
+            "key": "Hero's turrets are great for detecting Ghosts.",
+            "value": "英雄炮塔对于发现幽灵很有用。"
+        },
+        {
+            "key": "Hero's flags fully restore ammo to all humans",
+            "value": "英雄旗子能回满所有人类的弹药"
+        },
+        {
+            "key": "Soldier's bombs can hit through walls.",
+            "value": "士兵炸弹能透过墙壁造成伤害。"
+        },
+        {
+            "key": "Ninja's slash deals 9 damage by default. One more pistol shot will kill an infected with no armor.",
+            "value": "忍者的斩击默认造成 9 点伤害。再用手枪射击一次就能击杀没有盾的感染者。"
+        },
+        {
+            "key": "Ninja with a single strength upgrade can kill an armorless infected with a single slash.",
+            "value": "具有强度升级的忍者用一次斩击就能击杀没有盾的感染者。"
+        },
+        {
+            "key": "Ninja doesn't need to directly kill their target. An assist with a laser blind or grenade stun will still grant the rewards.",
+            "value": "忍者不一定需要直接击杀目标。通过激光致盲或者榴弹冰冻协助队友击杀目标仍能获得奖励。"
+        },
+        {
+            "key": "Ninja heals slightly on a target kill.",
+            "value": "忍者在击杀目标时会回一点血。"
+        },
+        {
+            "key": "Sniper deals double as much damage in locked position.",
+            "value": "狙击手在位置锁定时会造成双倍伤害。"
+        },
+        {
+            "key": "Scientist can use Taxi to teleport his teammates into safety.",
+            "value": "科学家能开车来把队友送到安全的地方。"
+        },
+        {
+            "key": "Scientist can get a white hole after {int:Kills} kill.",
+            "other": "科学家能在 {int:Kills} 个击杀后获得白洞。"
+        },
+        {
+            "key": "Scientist can get a white hole after {int:Kills} kills.",
+            "other": "科学家能在 {int:Kills} 个击杀后获得白洞。"
+        },
+        {
+            "key": "Scientist can rocket jump with the laser rifle.",
+            "value": "科学家可以用激光枪进行榴弹跳。"
+        },
+        {
+            "key": "Biologist's hammer can stop poison effect on teammates. Look for heart icons.",
+            "value": "生物学家的锤子能解除队友的中毒状态。注意心的图标。"
+        },
+        {
+            "key": "Biologist's bouncy shotgun can be used to hit the infected around corners.",
+            "value": "生物学家的弹跳霰弹枪能用来攻击角落里的感染者。"
+        },
+        {
+            "key": "Smoker heals by hooking humans.",
+            "value": "吸烟者可以通过勾人类回血。"
+        },
+        {
+            "key": "Boomer can infect through narrow walls.",
+            "value": "爆炸者能透过窄墙造成感染。"
+        },
+        {
+            "key": "Hunter receives no knockback from Medic's shotgun.",
+            "value": "猎人不会被医生霰弹枪击退。"
+        },
+        {
+            "key": "Bat can heal by hitting humans.",
+            "value": "蝙蝠能通过锤人类回血。"
+        },
+        {
+            "key": "Spider doesn't need to be in Web mode to automatically grab any humans touching its hook.",
+            "value": "蜘蛛不需要处于网状模式就能自动抓住碰到钩子的人类。"
+        },
+        {
+            "key": "Spider can be hooked and transported by teammates to extend its hook trap.",
+            "value": "蜘蛛能被队友钩住并移动来增长它的钩子陷阱。"
+        },
+        {
+            "key": "Slug can heal itself and allies over time up to {int:MaxHP} HP with its slime.",
+            "value": "鼻涕虫和它的队友能站在黏液里来回血（最多 {int:MaxHP} 点）。"
+        },
+        {
+            "key": "Slug can hold down the \"fire\" button to automatically spread slime. The hammer swings won't hurt humans this way though.",
+            "value": "鼻涕虫能长按开火键来自动散播黏液。这种情况下锤子不会锤到人类。"
+        },
+        {
+            "key": "Voodoo can unfreeze an Undead while in Spirit mode.",
+            "value": "巫毒者可以在灵魂状态解冻一名不死族。"
+        },
+        {
+            "key": "Witch can spawn the infected through narrow walls.",
+            "value": "女巫能让感染者透过窄墙出生"
+        },
+        {
+            "key": "Undead can be removed from a game by throwing it into kill tiles or reviving it as a Medic.",
+            "value": "通过把不死族扔进刺里或者作为医生治疗它可以消灭一个不死族。"
+        },
+        {
             "key": "The game is not balanced. Infection is coming.",
-            "value": "游戏不平衡, 正在感染"
+            "value": "游戏不平衡。感染即将到来。"
         },
         {
             "key": "{str:PlayerName} entered and joined the game",
@@ -226,11 +398,11 @@
         },
         {
             "key": "Join our Matrix room: {str:Url}",
-            "value": "加入我们的Matrix房间: {str:Url}"
+            "value": "加入我们的 Matrix 房间：{str:Url}"
         },
         {
             "key": "You have infected {str:VictimName}, shame on you!",
-            "value": "你使 {str:VictimName} 被感染了, 你感到羞愧"
+            "value": "你使 {str:VictimName} 被感染了，你真可耻！"
         },
         {
             "key": "You have been infected by {str:KillerName}",
@@ -250,7 +422,7 @@
         },
         {
             "key": "Medic",
-            "value": "医疗兵"
+            "value": "医生"
         },
         {
             "key": "Hero",
@@ -334,7 +506,7 @@
         },
         {
             "key": "Medics",
-            "value": "医疗兵"
+            "value": "医生"
         },
         {
             "key": "Heroes",
@@ -413,8 +585,28 @@
             "value": "不死族"
         },
         {
+            "key": "Unknown",
+            "value": "未知"
+        },
+        {
+            "key": "Unable to set preferred class: Invalid class name",
+            "value": "无法设置首选职业：无效的职业名称"
+        },
+        {
+            "key": "A random class will be automatically attributed to you when round starts",
+            "value": "回合开始时会自动选择随机职业"
+        },
+        {
+            "key": "The class selector will be displayed when round starts",
+            "value": "职业选择器会在回合开始前显示"
+        },
+        {
+            "key": "Class {str:ClassName} will be automatically attributed to you when round starts",
+            "value": "回合开始时会自动选择“{str:ClassName}”职业"
+        },
+        {
             "key": "The command is not available (enabled only in training mode)",
-            "value": "命令不可用(仅在练习模式中启用)"
+            "value": "命令不可用（仅在练习模式中启用）"
         },
         {
             "key": "{str:PlayerName} changed the class to {str:ClassName}",
@@ -439,6 +631,14 @@
         {
             "key": "Unable to load the position: the character state is not valid",
             "value": "无法加载坐标: 玩家状态无效"
+        },
+        {
+            "key": "The witch is not available in this round",
+            "value": "女巫在此回合不可用"
+        },
+        {
+            "key": "The Santa is not available in this round",
+            "value": "圣诞老人在此回合不可用"
         },
         {
             "key": "The Santa is already here",
@@ -466,7 +666,7 @@
         },
         {
             "key": "You have called the Santa once again",
-            "value": "你再次呼叫了圣诞老人"
+            "value": "你重复呼叫了圣诞老人"
         },
         {
             "key": "You can't call witch twice",
@@ -482,7 +682,7 @@
         },
         {
             "key": "Santa ({int:Callers}/{int:RequiredCallers})",
-            "value": "请求圣诞老人 ({int:Callers}/{int:RequiredCallers})"
+            "value": "召唤圣诞老人 （{int:Callers}/{int:RequiredCallers}）"
         },
         {
             "key": "Witch ({int:Callers}/{int:RequiredCallers})",
@@ -490,11 +690,11 @@
         },
         {
             "key": "Santa {str:PlayerName} has arrived!",
-            "value": "圣诞老人{str:PlayerName}已经到达"
+            "value": "圣诞老人 {str:PlayerName} 已经到达！"
         },
         {
             "key": "Witch {str:PlayerName} has arrived!",
-            "value": "女巫 {str:PlayerName} 已经到达"
+            "value": "女巫 {str:PlayerName} 已经到达！"
         },
         {
             "key": "{str:PlayerName} joined the spectators",
@@ -506,11 +706,11 @@
         },
         {
             "key": "Play more on this map",
-            "value": "在地图上玩更多内容"
+            "value": "继续在该地图上游玩"
         },
         {
             "key": "The last round",
-            "value": "最后一轮"
+            "value": "最后一回合"
         },
         {
             "key": "{str:VictimName} has been infected",
@@ -518,15 +718,15 @@
         },
         {
             "key": "Someone was infected to balance the game.",
-            "value": "为了平衡游戏有人被感染了"
+            "value": "为了平衡游戏有人被感染了。"
         },
         {
             "key": "The round canceled: All infected have left the game",
-            "value": "回合取消, 所有感染者离开了游戏"
+            "value": "回合取消：所有感染者离开了游戏"
         },
         {
             "key": "The round canceled: All humans have left the game",
-            "value": "回合取消, 所有人类离开了游戏"
+            "value": "回合取消：所有人类离开了游戏"
         },
         {
             "key": "One human won the round",
@@ -546,7 +746,31 @@
         },
         {
             "key": "Infection is coming in {sec:RemainingTime}",
-            "value": "感染将在{sec:RemainingTime}后到来"
+            "value": "感染将在 {sec:RemainingTime} 后到来"
+        },
+        {
+            "key": "You have to wait until the survival is over",
+            "value": "你必须等到生存结束"
+        },
+        {
+            "key": "The survival is over. You have failed to survive a single wave.",
+            "value": "生存已结束。你没能活过一波。"
+        },
+        {
+            "key": "The survival is over after {int:NumWaves} wave.",
+            "other": "生存在 {int:NumWaves} 波后结束了。"
+        },
+        {
+            "key": "The survival is over after {int:NumWaves} waves.",
+            "other": "生存在 {int:NumWaves} 波后结束了。"
+        },
+        {
+            "key": "The survival is over. You have survived!",
+            "value": "生存已结束。你活下来了！"
+        },
+        {
+            "key": "The survival is over. You have survived the final wave!",
+            "value": "生存已结束。你活过了最后一波！"
         },
         {
             "key": "Rules of the game",
@@ -554,11 +778,11 @@
         },
         {
             "key": "InfectionClass is a team game between humans and the infected.",
-            "value": "InfectionClass(感染模式) 是一个人类与感染者间的团队游戏"
+            "value": "InfectionClass（感染模式）是一个人类与感染者间的团队游戏。"
         },
         {
             "key": "All players start as a human.",
-            "value": "所有玩家一开始都是人类"
+            "value": "所有玩家一开始都是人类。"
         },
         {
             "key": "10 seconds later, a few players become infected.",
@@ -566,7 +790,7 @@
         },
         {
             "key": "The goal for the humans is to survive until the army cleans the map.",
-            "value": "人类的目标时生存到援军清理地图"
+            "value": "人类的目标是生存到援军清理地图。"
         },
         {
             "key": "The goal for the infected is to infect all humans.",
@@ -593,8 +817,16 @@
             "value": "白洞把感染者拉进其中心。"
         },
         {
+            "key": "Receive it by killing at least {int:NumKills} infected as a Scientist.",
+            "other": "科学家通过杀死至少 {int:NumKills} 个感染者来获得它。"
+        },
+        {
+            "key": "Receive it by killing at least {int:NumKills} of the infected as a Scientist.",
+            "other": "科学家通过杀死至少 {int:NumKills} 个感染者来获得它。"
+        },
+        {
             "key": "Use the laser rifle to place it.",
-            "value": "用激光放置它"
+            "value": "用激光枪放置它。"
         },
         {
             "key": "Targeted chat messages",
@@ -602,7 +834,7 @@
         },
         {
             "key": "Use “/w <PlayerName> <My Message>” to send a private message to this player.",
-            "value": "使用 \"/w <玩家名> <消息>\" 给这个玩家发送私聊"
+            "value": "使用 “/w <玩家名> <消息>”给这个玩家发送私聊。"
         },
         {
             "key": "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.",
@@ -622,11 +854,11 @@
         },
         {
             "key": "Use “/mute <PlayerName>” to mute this player.",
-            "value": "使用 \"/mute <玩家名>\"来单方面禁言这个玩家"
+            "value": "使用 “/mute <玩家名>” 来屏蔽这个玩家的消息"
         },
         {
             "key": "Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects.",
-            "value": "与客户端的禁言不同的是, 如果更换地图禁言仍然生效"
+            "value": "与客户端屏蔽不同，此效果将在地图切换后持续生效，并在您或被屏蔽玩家断开连接时失效。"
         },
         {
             "key": "Example: “/mute nameless tee”",
@@ -634,19 +866,19 @@
         },
         {
             "key": "How to use taxi mode",
-            "value": "怎么开车"
+            "value": "如何开车"
         },
         {
             "key": "Two or more humans can form a taxi.",
-            "value": "两个或更多的人类可以组成一辆车"
+            "value": "两个或更多的人类可以组成一辆车。"
         },
         {
             "key": "In order to use it, both humans have to disable hook protection (usually, with F3). The human being hooked becomes the driver.",
-            "value": "为了开车, 两个人都必须取消勾子保护(一般按F3), 然后被勾的人将成为司机"
+            "value": "为了开车，两个人都必须取消钩子保护（一般按 F3），然后被勾的人将成为司机。"
         },
         {
             "key": "To get off the taxi, jump. To drop off your passengers, enable hook protection (usually, with F3).",
-            "value": "若要离开车，请跳跃。要从乘客身上下车，可启用钩子保护（通常使用F3）。"
+            "value": "若要离开车，请跳跃。要从乘客身上下来，可启用钩子保护（通常使用 F3）。"
         },
         {
             "key": "Fast round",
@@ -654,23 +886,35 @@
         },
         {
             "key": "In the fast rounds *more* humans become infected initially, the spawning rate is increased and the round time limit is decreased. White hole is also disabled.",
-            "value": "在极速回合里, 更多的人类会被感染, 重生速度会增加, 回合时间缩短, 白洞被禁用"
+            "value": "在快速回合里，更多的人类会被感染，重生速度会增加，回合时间缩短。白洞被禁用。"
         },
         {
             "key": "The Mercenary can fly in the air using their machine gun.",
-            "value": "雇佣兵可以用手枪飞行"
+            "value": "雇佣兵可以用手枪飞行。"
         },
         {
             "key": "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle.",
-            "value": "他可以用锤子制造炸弹, 炸弹可以通过锤子或者激光枪提升当量"
+            "value": "他可以用锤子制造强大的炸弹。用锤子或者激光枪可以给炸弹充能。"
+        },
+        {
+            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage point and prevent the infected from healing.",
+            "other": "雇佣兵可以发射毒气弹，使感染者中毒，造成 {int:NumDamagePoints} 点伤害并阻止感染者回血。"
+        },
+        {
+            "key": "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing.",
+            "other": "雇佣兵可以发射毒气弹，使感染者中毒，造成 {int:NumDamagePoints} 点伤害并阻止感染者回血。"
         },
         {
             "key": "The Medic can protect humans with the hammer by giving them armor.",
-            "value": "医疗兵可以用他的锤子为其他人类增加护甲。"
+            "value": "医生可以用他的锤子为其他人类增加盾。"
         },
         {
             "key": "Grenades with medicine give armor to everybody in their range, including Heroes and the Medic themself.",
-            "value": "医疗兵的榴弹可以给在范围里的每个人盾, 包括英雄和医疗兵自己"
+            "value": "医生的榴弹可以给在范围里的每个人盾，包括英雄和医生自己。"
+        },
+        {
+            "key": "Tranqulizer rifle makes the infected fall asleep for {sec:Duration}.",
+            "value": "镇静激光让感染者陷入 {sec:Duration} 沉眠。"
         },
         {
             "key": "Laser rifle revives the infected, but at the cost of 17 hp and armor.",
@@ -678,7 +922,7 @@
         },
         {
             "key": "Medic also has a powerful shotgun that can knock back the infected.",
-            "value": "医疗兵的霰弹枪可以击退感染者"
+            "value": "医生的霰弹枪可以击退感染者。"
         },
         {
             "key": "The Hero has all standard weapons.",
@@ -686,23 +930,23 @@
         },
         {
             "key": "The Hero has to find a flag only visible to them. Stand still to be pointed towards it.",
-            "value": "英雄只能找到属于他自己的旗帜, 静止不动一会可以产生一个指向旗子的点"
+            "value": "英雄需要找到只有他可见的旗子。静止不动一段时间，来获得一个指向旗子的点。"
         },
         {
             "key": "The flag gifts a health point, {int:NumArmorGift} armor and full ammo to all humans.",
-            "value": "旗帜会给所有人类一格血量, {int:NumArmorGift}点护盾, 以及满弹药"
+            "value": "旗帜会给所有人类一颗心，{int:NumArmorGift} 点盾，并回满弹药。"
         },
         {
             "key": "It fully heals the Hero and it can grant a turret which you can place down with the hammer.",
-            "value": "它可以治疗英雄, 并使英雄得到一个用锤子放置的炮塔"
+            "value": "它会回满英雄的血，并使英雄得到一个可用锤子放置的炮塔。"
         },
         {
             "key": "The gift to all humans is only applied when the flag is surrounded by hearts and armor.",
-            "value": "只有被心和护盾包裹的旗帜, 才可以为所有人类加成"
+            "value": "只有被心和盾包裹的旗帜，才可以为所有人类加成。"
         },
         {
             "key": "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected.",
-            "value": "英雄不能被医疗兵治疗, 但是可以承受一次感染者的攻击"
+            "value": "英雄不能被医生治疗，但是可以承受一次感染者的攻击而不死。"
         },
         {
             "key": "The Engineer can build walls with the hammer to block the infected.",
@@ -710,7 +954,7 @@
         },
         {
             "key": "When an infected touches the wall, it dies.",
-            "value": "当感染者碰到激光墙时， 他会死亡！"
+            "value": "当感染者碰到激光墙时， 它会死亡。"
         },
         {
             "key": "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time.",
@@ -718,7 +962,15 @@
         },
         {
             "key": "The Soldier creates floating bombs with the hammer.",
-            "value": "士兵可以用锤子摆放炸弹"
+            "value": "士兵可以用锤子放置炸弹。"
+        },
+        {
+            "key": "Each bomb can explode {int:NumBombs} time.",
+            "other": "炸弹可以爆炸 {int:NumBombs} 次。"
+        },
+        {
+            "key": "Each bomb can explode {int:NumBombs} times.",
+            "other": "炸弹可以爆炸 {int:NumBombs} 次。"
         },
         {
             "key": "Use the hammer to place the bomb and explode it multiple times.",
@@ -726,7 +978,7 @@
         },
         {
             "key": "The Ninja can throw flash grenades that can freeze the infected for three seconds.",
-            "value": "忍者可以用闪光弹冻结感染者3秒"
+            "value": "忍者可以用闪光榴弹冻结感染者 3 秒。"
         },
         {
             "key": "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} time before touching the ground.",
@@ -742,11 +994,15 @@
         },
         {
             "key": "Ninja gets special targets. For killing a target, extra points and abilities are awarded.",
-            "value": "忍者会得到一个目标, 当他杀死目标, 会获得升级和额外的分数"
+            "value": "忍者会得到特殊的目标。当他杀死目标，会获得升级和额外的分数。"
         },
         {
             "key": "The Sniper can lock the position in mid-air for 15 seconds with the hammer.",
             "value": "狙击手可以用锤子在空中锁定自己位置15秒。"
+        },
+        {
+            "key": "The locked position increases the Sniper's rifle damage from usual 10-13 to 30 damage points.",
+            "value": "位置锁定将狙击手的激光枪伤害从通常的 10-13 点增加到 20 点。"
         },
         {
             "key": "They can also jump two times in the air.",
@@ -754,7 +1010,15 @@
         },
         {
             "key": "The Scientist can pose floating mines with the hammer.",
-            "value": "科学家可以用锤子放置地雷"
+            "value": "科学家可以用锤子放置地雷。"
+        },
+        {
+            "key": "Mines are limited to {int:NumMines} per player at the same time.",
+            "other": "每个玩家同时可放置最多 {int:NumMines} 个地雷。"
+        },
+        {
+            "key": "Mines are limited to {int:NumMines} per player at the same time.",
+            "other": "每个玩家同时可放置最多 {int:NumMines} 个地雷。"
         },
         {
             "key": "Scientist has also grenades that teleport them.",
@@ -762,11 +1026,15 @@
         },
         {
             "key": "A lucky Scientist devoted to killing can get a white hole that sucks the infected in which can be placed with the laser rifle.",
-            "value": "幸运的科学家会在杀死感染者时得到白洞, 白洞可用激光枪放置"
+            "value": "幸运的科学家会在杀死感染者时得到白洞，白洞可用激光枪放置，会吸住感染者。"
         },
         {
             "key": "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle.",
             "value": "生物学家可以用霰弹枪射出跳弹，也可以用激光枪设置激光陷阱。"
+        },
+        {
+            "key": "They are also immune to continuous poison effect, and can stop it on teammates with the Hammer.",
+            "value": "他们不会受到持续的毒伤害，并且能用锤子解除队友的中毒状态。"
         },
         {
             "key": "The Looper has a laser wall that slows down the infected and a low-range laser rifle with a high fire rate.",
@@ -774,7 +1042,7 @@
         },
         {
             "key": "They can also jump two times in the air.",
-            "value": "他可以三段跳"
+            "value": "他可以三段跳。"
         },
         {
             "key": "Smoker has a powerful hook that hurts humans and sucks their blood, restoring the Smoker's health.",
@@ -782,7 +1050,7 @@
         },
         {
             "key": "It can also infect humans and heal the infected with the hammer.",
-            "value": "他可以用锤子感染人类或治疗感染"
+            "value": "它可以用锤子感染人类或治疗感染者。"
         },
         {
             "key": "The Boomer explodes when it attacks.",
@@ -790,79 +1058,87 @@
         },
         {
             "key": "All humans affected by the explosion become infected.",
-            "value": "人类会被爆炸感染"
+            "value": "人类会被爆炸感染。"
         },
         {
             "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "他可以勾住人类并每秒造成1点伤害"
+            "value": "它可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "The Hunter can jump two times in the air and has some resistance to knock-backs.",
-            "value": "猎人可以三段跳, 并且抗击退"
+            "value": "猎人可以三段跳，并且有击退抗性。"
         },
         {
             "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "他可以用锤子感染人类或治疗感染"
+            "value": "它可以用锤子感染人类或治疗感染者。"
         },
         {
             "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "他可以勾住人类并每秒造成1点伤害"
+            "value": "它可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "Bat can jump endlessly in the air but it cannot infect humans.",
-            "value": "蝙蝠能够在空中无限跳跃. 但是不能直接感染人类"
+            "value": "蝙蝠能够在空中无限跳跃，但是不能直接感染人类。"
+        },
+        {
+            "key": "Instead, it can hammer humans to steal their health and heal itself.",
+            "value": "相反，他可以锤人类来窃取人类的血量并且回血。"
         },
         {
             "key": "The hammer is also useful for healing the infected.",
-            "value": "锤子可以治疗感染者"
+            "value": "锤子可以治疗感染者。"
+        },
+        {
+            "key": "It can also inflict 1 damage point per second by hooking humans.",
+            "value": "他可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
-            "value": "幽灵在旁边无人类时不可见, 除非造成伤害或者使用锤子"
+            "value": "幽灵在旁边无人类时会隐形，除非受到伤害或者使用锤子。"
         },
         {
             "key": "It can infect humans and heal the infected with the hammer.",
-            "value": "他可以用锤子感染人类或治疗感染"
+            "value": "它可以用锤子感染人类或治疗感染者。"
         },
         {
             "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "他可以勾住人类并每秒造成1点伤害"
+            "value": "它可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "The Spider has a web hook that automatically grabs any human touching it.",
-            "value": "蜘蛛有网状勾子, 可以抓住碰到勾子的人类"
+            "value": "蜘蛛有网状钩子，可以抓住碰到钩子的人类。"
         },
         {
             "key": "The web hook mode can be toggled by switching the weapon.",
-            "value": "通过切换武器可以切换钩子模式"
+            "value": "通过切换武器可以切换钩子模式。"
         },
         {
             "key": "In both modes the hook inflicts 1 damage point per second and can grab a human for longer.",
-            "value": "在两种模式里勾子可以给人类造成每秒1点伤害, 并且可长时间勾住人类"
+            "value": "在两种模式里钩子都可以给人类每秒造成 1 点伤害，并且可长时间勾住人类。"
         },
         {
             "key": "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant.",
-            "value": "食尸鬼可以吞食他附近已经死亡的感染者，并会使他更快，更壮，更强！"
+            "value": "食尸鬼可以吞食它附近已经死亡的感染者，使它更快，更壮，更强。"
         },
         {
             "key": "It digests the fodder over time, going back to the normal state. Some nourishment is also lost on death.",
-            "value": "他会逐渐消耗营养直到回到初始形态, 死亡会失去部分营养"
+            "value": "它会逐渐消耗饱食度直到回到初始状态，死亡会失去部分饱食度。"
         },
         {
             "key": "Ghoul can infect humans and heal the infected with the hammer.",
-            "value": "食尸鬼可以用锤子感染人类或治疗感染"
+            "value": "食尸鬼可以用锤子感染人类或治疗感染者。"
         },
         {
             "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "他可以勾住人类并每秒造成1点伤害"
+            "value": "它可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "The Slug can make the ground and walls toxic by spreading slime with the hammer.",
-            "value": "鼻涕虫可以用锤子向地面和墙壁放置粘液"
+            "value": "鼻涕虫可以用锤子向地面和墙壁散播粘液，让它们变得有毒。"
         },
         {
             "key": "The slime heals the infected and deals damage to humans.",
-            "value": "粘液可以治疗感染者并对人类造成伤害"
+            "value": "粘液会治疗感染者并对人类造成伤害。"
         },
         {
             "key": "Slug can infect humans and heal the infected with the hammer.",
@@ -870,23 +1146,23 @@
         },
         {
             "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "他可以勾住人类并每秒造成1点伤害"
+            "value": "它可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "The Voodoo does not die immediately when killed but instead enters Spirit mode for a short time.",
-            "value": "巫毒者不会在被杀死时立刻死亡而是进入短暂的巫毒状态"
+            "value": "巫毒者不会在被杀死时立刻死亡，而是进入短暂的灵魂状态。"
         },
         {
             "key": "While in Spirit mode it cannot be killed. When the time is up it finally dies.",
-            "value": "在巫毒状态下无法被击杀, 当时间结束才会死亡"
+            "value": "在灵魂状态下无法被击杀。当时间结束它才会死亡。"
         },
         {
             "key": "Voodoo can infect humans and heal the infected with the hammer.",
-            "value": "巫毒者可以用锤子感染人类或治疗感染"
+            "value": "巫毒者可以用锤子感染人类或治疗感染者。"
         },
         {
             "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "他可以勾住人类并每秒造成1点伤害"
+            "value": "它可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "The Witch can provide a spawn point for the infected.",
@@ -894,15 +1170,15 @@
         },
         {
             "key": "If the Witch dies, it disappears and is replaced by another class.",
-            "value": "如果女巫死了, 她会消失并转变角色"
+            "value": "如果女巫死了，它会消失并转变职业。"
         },
         {
             "key": "Witch can infect humans and heal the infected with the hammer.",
-            "value": "女巫可以用锤子感染人类或治疗感染"
+            "value": "女巫可以用锤子感染人类或治疗感染者。"
         },
         {
             "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "她可以勾住人类并每秒造成1点伤害"
+            "value": "它可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds.",
@@ -910,7 +1186,7 @@
         },
         {
             "key": "If an infected heals it, the freeze effect disappears.",
-            "value": "如果一个感染击中了他, 冻结效果会消失"
+            "value": "如果一个感染者锤它，冻结效果会消失。"
         },
         {
             "key": "Undead can infect humans and heal the infected with the hammer.",
@@ -918,7 +1194,7 @@
         },
         {
             "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "他可以勾住人类并每秒造成1点伤害"
+            "value": "它可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "You have killed a witch, +5 points",
@@ -969,20 +1245,24 @@
             "value": "{str:PlayerName} 已改名为 {str:NewName}"
         },
         {
+            "key": "Switch language to {str:LangName}?",
+            "value": "切换语言到{str:LangName}吗？"
+        },
+        {
             "key": "You can change the language of this mod using the command /language.",
             "value": "你可以使用命令 /language 切换此 mod 的语言。"
         },
         {
             "key": "If your language is not available, you can help with translation (/help translate).",
-            "value": "如果您的语言还不可用，您可以帮助翻译 (详见 /help translate)。"
+            "value": "如果您的语言还不可用，您可以帮助翻译（详见 /help translate）。"
         },
         {
             "key": "InfectionClass, by necropotame (version {str:VersionCode})",
-            "value": "InfectionClass (感染模式)，作者： necropotame (版本 {str:VersionCode})"
+            "value": "InfectionClass（感染模式），作者： necropotame（版本 {str:VersionCode}）"
         },
         {
             "key": "Based on the concept of Infection mod by Gravity",
-            "value": "基于 Gravity 所做的原始感染模式 (Infection) mod"
+            "value": "基于 Gravity 所做的原始感染模式（Infection）mod"
         },
         {
             "key": "Main contributors: {str:ListOfContributors}",
@@ -994,15 +1274,15 @@
         },
         {
             "key": "Server version from {str:ServerCompileDate} ",
-            "value": "服务器构建日期: {str:ServerCompileDate} "
+            "value": "服务器构建日期：{str:ServerCompileDate} "
         },
         {
             "key": "Sources: {str:SourceUrl} ",
-            "value": "源代码: {str:SourceUrl} "
+            "value": "源代码：{str:SourceUrl} "
         },
         {
             "key": "Discord: {str:Url}",
-            "value": "Discord: {str:Url}"
+            "value": "Discord：{str:Url}"
         },
         {
             "key": "Telegram: {str:Url}",
@@ -1010,7 +1290,7 @@
         },
         {
             "key": "Matrix room: {str:Url}",
-            "value": "Matrix房间: {str:Url}"
+            "value": "Matrix 房间: {str:Url}"
         },
         {
             "key": "Translation project: {str:Url}",
@@ -1026,7 +1306,7 @@
         },
         {
             "key": "Choose a help page with /help <page>",
-            "value": "使用 /help <page> 查看帮助。"
+            "value": "使用 /help <page> 查看帮助页"
         },
         {
             "key": "Available help pages: {str:PageList}",
@@ -1066,23 +1346,23 @@
         },
         {
             "key": "Warning: {sec:RemainingTime} until a move to spec for inactivity",
-            "value": "警告: 将在 {sec:RemainingTime} 后因挂机移动到旁观"
+            "value": "警告：将在 {sec:RemainingTime} 后因挂机移动到旁观"
         },
         {
             "key": "Warning: {sec:RemainingTime} until a kick for inactivity",
-            "value": "警告: 将在 {sec:RemainingTime} 后因挂机踢出"
+            "value": "警告：将在 {sec:RemainingTime} 后因挂机被踢出"
         },
         {
             "key": "{str:PlayerName} has been banned ({str:Reason})",
-            "value": "{str:PlayerName} 被封禁 ({str:Reason})"
+            "value": "{str:PlayerName} 被封禁了（{str:Reason}）"
         },
         {
             "key": "{str:PlayerName} has been kicked ({str:Reason})",
-            "value": "{str:PlayerName} 被踢出服务器 ({str:Reason})"
+            "value": "{str:PlayerName} 被踢出了服务器（{str:Reason}）"
         },
         {
             "key": "{str:PlayerName} has left the game ({str:Reason})",
-            "value": "{str:PlayerName} 离开游戏 ({str:Reason})"
+            "value": "{str:PlayerName} 离开游戏（{str:Reason}）"
         },
         {
             "key": "{str:PlayerName} has left the game",
