@@ -290,7 +290,8 @@ void CIcGameController::OnPlayerConnect(CPlayer *pPlayer)
 	{
 		GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_PLAYER, _("{str:PlayerName} entered and joined the game"), "PlayerName", Server()->ClientName(ClientId), nullptr);
 
-		GameServer()->SendChatTarget(ClientId, "InfectionClass Mod. Version: " GAME_VERSION);
+		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT,
+			_("InfectionClass Mod. Version: {str:VerStr}"), "VerStr", GAME_VERSION, nullptr);
 		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_DEFAULT,
 			_("See also: /help, /changelog, /about"), nullptr);
 
@@ -1923,20 +1924,21 @@ void CIcGameController::ConStartFunRound(IConsole::IResult *pResult, void *pUser
 	if(pSelf->m_FunRoundConfigurations.empty())
 	{
 		int ClientId = pResult->GetClientId();
-		const char *pErrorMessage = "Unable to start fun round: rounds configuration is empty";
+		const char *pErrorMessage = _("Unable to start fun round: rounds configuration is empty");
 		if(ClientId >= 0)
 		{
 			pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", pErrorMessage);
 		}
 		else
 		{
-			pSelf->GameServer()->SendChatTarget(-1, pErrorMessage);
+			pSelf->GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, pErrorMessage, nullptr);
 		}
 		return;
 	}
 	if(pSelf->m_FunRoundsPassed >= g_Config.m_FunRoundLimit)
 	{
-		pSelf->GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "Unable to start fun round: limit per map reached");
+		pSelf->GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
+			_("Unable to start fun round: limit per map reached"), nullptr);
 		return;
 	}
 

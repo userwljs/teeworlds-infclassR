@@ -233,7 +233,7 @@ public:
 	};
 
 	// network
-	void CallVote(int ClientId, const char *aDesc, const char *aCmd, const char *pReason, const char *aChatmsg);
+	void CallVote(int ClientId, const char *aDesc, const char *aCmd, const char *pReason);
 	void SendChatTarget(int To, const char *pText) override;
 	void SendChat(int ClientId, int Team, const char *pText, int SpamProtectionClientId = -1);
 	void SendEmoticon(int ClientId, int Emoticon);
