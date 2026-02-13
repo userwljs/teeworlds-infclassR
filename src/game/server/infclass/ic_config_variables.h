@@ -36,6 +36,7 @@ MACRO_CONFIG_INT(InfTrainingMode, inf_training_mode, 0, 0, 1, CFGFLAG_SERVER, "E
 
 MACRO_CONFIG_STR(InfEvent, inf_event, 64, "", CFGFLAG_SERVER, "Special event")
 MACRO_CONFIG_STR(InfDefaultRoundType, inf_default_round_type, 64, "", CFGFLAG_SERVER, "Default round type")
+MACRO_CONFIG_STR(InfDefaultLanguageCode, inf_default_language_code, 16, "en", CFGFLAG_SERVER, "Default language code")
 
 MACRO_CONFIG_INT(InfMinPlayers, inf_min_players, 2, 0, 64, CFGFLAG_SERVER, "Minimum number of players to start the round")
 MACRO_CONFIG_INT(InfTeamBalanceSeconds, inf_teambalance_seconds, 10, 0, 1000, CFGFLAG_SERVER, "How many seconds to wait before autobalancing teams")

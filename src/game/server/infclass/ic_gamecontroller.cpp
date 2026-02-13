@@ -2670,7 +2670,7 @@ void CIcGameController::SendHintMessage()
 		Msg.m_Team = 0;
 		Msg.m_ClientId = -1;
 
-		PrepareBufferForLanguage("en");
+		PrepareBufferForLanguage(Config()->m_InfDefaultLanguageCode);
 		Msg.m_pMessage = Buffer.buffer();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, SERVER_DEMO_CLIENT);
 

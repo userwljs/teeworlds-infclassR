@@ -522,7 +522,7 @@ void CGameContext::SendChatTarget_Localization(int To, int Category, const char*
 		// one message for record
 		dynamic_string tmpBuf;
 		tmpBuf.copy(Buffer);
-		Server()->Localization()->Format_VL(tmpBuf, "en", pText, VarArgs);
+		Server()->Localization()->Format_VL(tmpBuf, Config()->m_InfDefaultLanguageCode, pText, VarArgs);
 		Msg.m_pMessage = tmpBuf.buffer();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 
@@ -570,7 +570,7 @@ void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Numbe
 		// one message for record
 		dynamic_string tmpBuf;
 		tmpBuf.copy(Buffer);
-		Server()->Localization()->Format_VLP(tmpBuf, "en", Number, pText, VarArgs);
+		Server()->Localization()->Format_VLP(tmpBuf, Config()->m_InfDefaultLanguageCode, Number, pText, VarArgs);
 		Msg.m_pMessage = tmpBuf.buffer();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 	}
@@ -802,7 +802,7 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 	if(To < 0)
 	{
 		CNetMsg_Sv_Broadcast Msg;
-		Server()->Localization()->Format_VL(Buffer, "en", pText, VarArgs);
+		Server()->Localization()->Format_VL(Buffer, Config()->m_InfDefaultLanguageCode, pText, VarArgs);
 		Msg.m_pMessage = Buffer.buffer();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL|MSGFLAG_NOSEND, -1);
 	}
@@ -1365,7 +1365,7 @@ void CGameContext::OnTick()
 					Msg.m_pReason = "";
 					Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, i);
 
-					str_copy(m_VoteLanguage[i], "en");
+					str_copy(m_VoteLanguage[i], Config()->m_InfDefaultLanguageCode);
 				}
 				else
 				{
@@ -2857,7 +2857,7 @@ void CGameContext::OnStartInfoNetMessage(const CNetMsg_Cl_StartInfo *pMsg, int C
 		const char *const pLangFromClient = CLocalization::LanguageCodeByCountryCode(pMsg->m_Country);
 		const char *const pLangForIp = CLocalization::LanguageCodeByCountryCode(LocatedCountry);
 
-		const char *const pDefaultLang = "en";
+		const auto pDefaultLang = Config()->m_InfDefaultLanguageCode;
 		const char *pLangForVote = "";
 
 		if(pLangFromClient[0] && (str_comp(pLangFromClient, pDefaultLang) != 0))
@@ -4508,7 +4508,7 @@ void CGameContext::OnInit(const void *pPersistentData)
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		m_VoteLanguageTick[i] = 0;
-		str_copy(m_VoteLanguage[i], "en");
+		str_copy(m_VoteLanguage[i], Config()->m_InfDefaultLanguageCode);
 	}
 
 	m_Layers.Init(Kernel());
