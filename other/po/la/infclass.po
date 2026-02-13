@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: teeuniverse\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-02-12 15:01+0800\n"
+"POT-Creation-Date: 2026-02-13 12:32+0800\n"
 "PO-Revision-Date: 2017-07-31 15:23-0400\n"
 "Last-Translator: necropotame <necropotame@gmail.com>\n"
 "Language-Team: Latin\n"
@@ -20,58 +20,58 @@ msgstr ""
 msgid "{str:Victim} has been muted for {sec:Duration} ({str:Reason})"
 msgstr "{str:Victim} lingua praecisa est ad {sec:Duration} ({str:Reason})"
 
-#: src/engine/server/server.cpp:4195
+#: src/engine/server/server.cpp:4191
 msgid "You have already notified that {str:PlayerName} ought to be banned"
 msgstr "Iam denuntiavisti {str:PlayerName} esse proiectum"
 
-#: src/engine/server/server.cpp:4210
+#: src/engine/server/server.cpp:4206
 msgid "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})"
 msgstr "{str:PlayerName} {str:VictimName} proiectum esse postulavit ({str:Reason})"
 
-#: src/engine/server/server.cpp:4278
+#: src/engine/server/server.cpp:4272
 msgid "You have already voted to change this map"
 msgstr ""
 
-#: src/engine/server/server.cpp:4290
+#: src/engine/server/server.cpp:4284
 #, fuzzy
 msgid "{str:PlayerName} wants to start the vote '{str:VoteName}'"
 msgstr "{str:PlayerName} nomen innovavit {str:NewName}"
 
-#: src/game/server/infclass/classes/humans/human.cpp:263
+#: src/game/server/infclass/classes/humans/human.cpp:261
 msgid "White hole found, adjusting scientific parameters..."
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:439
+#: src/game/server/infclass/classes/humans/human.cpp:437
 msgid "You have held a bonus area for one minute, +5 points"
 msgstr "Zonae seorsae unam minutam immoratus es, +5 copiae"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1230
+#: src/game/server/infclass/classes/humans/human.cpp:1228
 msgid "You need at least {int:MinHp} HP to revive a zombie"
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1238
+#: src/game/server/infclass/classes/humans/human.cpp:1236
 msgid "Too few zombies to revive anyone (less than {int:MinZombies})"
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1264
+#: src/game/server/infclass/classes/humans/human.cpp:1262
 msgctxt "Mercenary"
 msgid "Use the laser to upgrade the bomb"
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1268 src/game/server/infclass/classes/humans/human.cpp:1553
+#: src/game/server/infclass/classes/humans/human.cpp:1266 src/game/server/infclass/classes/humans/human.cpp:1538
 #, fuzzy
 msgctxt "Mercenary"
 msgid "Explosive yield: {percent:BombLevel}"
 msgstr "Vis displosiva: {percent:BombLevel}"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1280
+#: src/game/server/infclass/classes/humans/human.cpp:1278
 msgctxt "Mercenary"
 msgid ""
 "The bomb is fully upgraded.\n"
 "There is nothing to do with the laser."
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1289
+#: src/game/server/infclass/classes/humans/human.cpp:1287
 #, fuzzy
 msgctxt "Mercenary"
 msgid ""
@@ -79,115 +79,115 @@ msgid ""
 "then use the laser to upgrade it"
 msgstr "Malleo utere, ut bombam interponas inardescasque pluriens."
 
-#: src/game/server/infclass/classes/humans/human.cpp:1304
+#: src/game/server/infclass/classes/humans/human.cpp:1302
 msgid "The turrets are not allowed by the game rules (at least right now)."
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1314
+#: src/game/server/infclass/classes/humans/human.cpp:1312
 msgid "You have a turret. Use the hammer to place it."
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1322
+#: src/game/server/infclass/classes/humans/human.cpp:1319
 msgid "You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to place one."
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1333
+#: src/game/server/infclass/classes/humans/human.cpp:1329
 msgid "You don't have a turret to place"
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1363
+#: src/game/server/infclass/classes/humans/human.cpp:1358
 msgid "Laser wall: {sec:RemainingTime}"
 msgstr "Vallum lasericum: {sec:RemainingTime}"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1389
+#: src/game/server/infclass/classes/humans/human.cpp:1383
 #, fuzzy
 msgid "Looper laser wall: {sec:RemainingTime}"
 msgstr "Vallum lasericum: {sec:RemainingTime}"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1411
+#: src/game/server/infclass/classes/humans/human.cpp:1404
 msgctxt "Soldier"
 msgid "{int:NumBombs} bomb left"
 msgid_plural "{int:NumBombs} bombs left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1440
+#: src/game/server/infclass/classes/humans/human.cpp:1432
 msgid "The white hole is available!"
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1448 src/game/server/infclass/classes/humans/human.cpp:1468
+#: src/game/server/infclass/classes/humans/human.cpp:1439 src/game/server/infclass/classes/humans/human.cpp:1457
 #, fuzzy
 msgid "{int:NumMines} mine is active"
 msgid_plural "{int:NumMines} mines are active"
 msgstr[0] "Una mina reliqua"
 msgstr[1] "{int:NumMines} minae reliquae"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1458 src/game/server/infclass/classes/humans/human.cpp:1473
+#: src/game/server/infclass/classes/humans/human.cpp:1448 src/game/server/infclass/classes/humans/human.cpp:1462
 #, fuzzy
 msgid "White hole: {sec:RemainingTime}"
 msgstr "Vallum lasericum: {sec:RemainingTime}"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1493
+#: src/game/server/infclass/classes/humans/human.cpp:1482
 #, fuzzy
 msgctxt "Biologist"
 msgid "Mine activated"
 msgstr "Mina posita"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1508
+#: src/game/server/infclass/classes/humans/human.cpp:1496
 #, fuzzy
 msgctxt "Ninja"
 msgid "Next target in {sec:RemainingTime}"
 msgstr "Scopus sequens post {sec:RemainingTime}"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1517
+#: src/game/server/infclass/classes/humans/human.cpp:1504
 #, fuzzy
 msgctxt "Ninja"
 msgid "Target to eliminate: {str:PlayerName}"
 msgstr "Scopus tollendus: {str:PlayerName}"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1530
+#: src/game/server/infclass/classes/humans/human.cpp:1516
 #, fuzzy
 msgctxt "Sniper"
 msgid "Position lock: {sec:RemainingTime}"
 msgstr "Claustrum positionis: {sec:RemainingTime}"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1568
+#: src/game/server/infclass/classes/humans/human.cpp:1553
 msgid "Next flag in {sec:RemainingTime}"
 msgstr "Vexillum sequens post {sec:RemainingTime}"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1593
+#: src/game/server/infclass/classes/humans/human.cpp:1577
 msgid "You have eliminated your target, +2 points"
 msgstr "Scopum sustulisti, +2 copiae"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1614
+#: src/game/server/infclass/classes/humans/human.cpp:1598
 msgid "Sword velocity increased"
 msgstr "Velocitas ensis aucta"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1618
+#: src/game/server/infclass/classes/humans/human.cpp:1602
 msgid "Sword strength increased"
 msgstr "Vis ensis aucta"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1622
+#: src/game/server/infclass/classes/humans/human.cpp:1606
 msgid "Grenade limit increased"
 msgstr "Limes granatarius auctus"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1933
+#: src/game/server/infclass/classes/humans/human.cpp:1917
 msgid "Placed a turret, {int:TurretsNumber} turret left"
 msgid_plural "Placed a turret, {int:TurretsNumber} turrets left"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:2057
+#: src/game/server/infclass/classes/humans/human.cpp:2041
 msgid "The white hole is ready, use the laser rifle to disrupt space-time"
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:2110
+#: src/game/server/infclass/classes/humans/human.cpp:2094
 msgid "You have {int:NumTurrets} turret available, use the Hammer to place it"
 msgid_plural "You have {int:NumTurrets} turrets available, use the Hammer to place it"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/game/server/infclass/classes/infected/infected.cpp:276
+#: src/game/server/infclass/classes/infected/infected.cpp:277
 #, fuzzy
 msgctxt "Voodoo"
 msgid "Staying alive for: {int:RemainingTime}"
@@ -257,23 +257,23 @@ msgstr "Nunc conscriptus es."
 msgid "You are in Solo mode for {sec:EffectDuration}"
 msgstr "Gelatus es: {sec:EffectDuration}"
 
-#: src/game/server/infclass/entities/medic-laser.cpp:56
+#: src/game/server/infclass/entities/medic-laser.cpp:55
 msgid "The target is too strong, the tranquilizer won't work"
 msgstr ""
 
-#: src/game/server/infclass/entities/medic-laser.cpp:73
+#: src/game/server/infclass/entities/medic-laser.cpp:72
 msgid "You need at least {int:MinimumHP} HP"
 msgstr ""
 
-#: src/game/server/infclass/entities/medic-laser.cpp:82
+#: src/game/server/infclass/entities/medic-laser.cpp:80
 msgid "Too few infected (less than {int:MinimumInfected})"
 msgstr ""
 
-#: src/game/server/infclass/entities/medic-laser.cpp:91
+#: src/game/server/infclass/entities/medic-laser.cpp:88
 msgid "The target is too strong, the cure won't work"
 msgstr ""
 
-#: src/game/server/infclass/entities/medic-laser.cpp:113
+#: src/game/server/infclass/entities/medic-laser.cpp:110
 msgid "Medic {str:MedicName} revived {str:RevivedName}"
 msgstr ""
 
@@ -286,549 +286,549 @@ msgstr ""
 msgid "{str:PlayerName} has destroyed your turret!"
 msgstr "{str:PlayerName} pugnam reliquit"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:101
+#: src/game/server/infclass/ic_gamecontroller.cpp:100
 msgid "Taxi prevents ammo regeneration for all passengers."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:102
+#: src/game/server/infclass/ic_gamecontroller.cpp:101
 msgid "Choosing a random class grants full armor."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:103
+#: src/game/server/infclass/ic_gamecontroller.cpp:102
 msgid "You can toggle hook protection by pressing f3 (\"Vote yes\" keybind)."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:104
+#: src/game/server/infclass/ic_gamecontroller.cpp:103
 msgid "Mercenary can reduce ammo usage during flight by tapping instead of holding down the \"fire\" button."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:105
+#: src/game/server/infclass/ic_gamecontroller.cpp:104
 msgid "Mercenary's grenades prevent zombies from healing."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:106
+#: src/game/server/infclass/ic_gamecontroller.cpp:105
 msgid "Medic can heal Heroes using the grenade launcher."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:107
+#: src/game/server/infclass/ic_gamecontroller.cpp:106
 msgid "Medic and Biologist can use hammer to instantly kill an infected."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:108
+#: src/game/server/infclass/ic_gamecontroller.cpp:107
 msgid "Hero can stand still for a short time to be pointed towards the flag."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:109
+#: src/game/server/infclass/ic_gamecontroller.cpp:108
 msgid "Hero's turrets are great for detecting Ghosts."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:110
+#: src/game/server/infclass/ic_gamecontroller.cpp:109
 msgid "Hero's flags fully restore ammo to all humans"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:111
+#: src/game/server/infclass/ic_gamecontroller.cpp:110
 msgid "Soldier's bombs can hit through walls."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:112
+#: src/game/server/infclass/ic_gamecontroller.cpp:111
 msgid "Ninja's slash deals 9 damage by default. One more pistol shot will kill an infected with no armor."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:113
+#: src/game/server/infclass/ic_gamecontroller.cpp:112
 msgid "Ninja with a single strength upgrade can kill an armorless infected with a single slash."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:114
+#: src/game/server/infclass/ic_gamecontroller.cpp:113
 msgid "Ninja doesn't need to directly kill their target. An assist with a laser blind or grenade stun will still grant the rewards."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:115
+#: src/game/server/infclass/ic_gamecontroller.cpp:114
 msgid "Ninja heals slightly on a target kill."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:116
+#: src/game/server/infclass/ic_gamecontroller.cpp:115
 msgid "Sniper deals double as much damage in locked position."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:117
+#: src/game/server/infclass/ic_gamecontroller.cpp:116
 msgid "Scientist can use Taxi to teleport his teammates into safety."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:119
+#: src/game/server/infclass/ic_gamecontroller.cpp:118
 msgid "Scientist can get a white hole after {int:Kills} kill."
 msgid_plural "Scientist can get a white hole after {int:Kills} kills."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:124
+#: src/game/server/infclass/ic_gamecontroller.cpp:123
 #, fuzzy
 msgid "Scientist can rocket jump with the laser rifle."
 msgstr "Scientista malleo minas pendentes interponere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:125
+#: src/game/server/infclass/ic_gamecontroller.cpp:124
 msgid "Biologist's hammer can stop poison effect on teammates. Look for heart icons."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:126
+#: src/game/server/infclass/ic_gamecontroller.cpp:125
 msgid "Biologist's bouncy shotgun can be used to hit the infected around corners."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:127
+#: src/game/server/infclass/ic_gamecontroller.cpp:126
 msgid "Smoker heals by hooking humans."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:128
+#: src/game/server/infclass/ic_gamecontroller.cpp:127
 msgid "Boomer can infect through narrow walls."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:129
+#: src/game/server/infclass/ic_gamecontroller.cpp:128
 msgid "Hunter receives no knockback from Medic's shotgun."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:130
+#: src/game/server/infclass/ic_gamecontroller.cpp:129
 msgid "Bat can heal by hitting humans."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:131
+#: src/game/server/infclass/ic_gamecontroller.cpp:130
 msgid "Spider doesn't need to be in Web mode to automatically grab any humans touching its hook."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:132
+#: src/game/server/infclass/ic_gamecontroller.cpp:131
 msgid "Spider can be hooked and transported by teammates to extend its hook trap."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:134
+#: src/game/server/infclass/ic_gamecontroller.cpp:133
 msgid "Slug can heal itself and allies over time up to {int:MaxHP} HP with its slime."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:138
+#: src/game/server/infclass/ic_gamecontroller.cpp:137
 msgid "Slug can hold down the \"fire\" button to automatically spread slime. The hammer swings won't hurt humans this way though."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:139
+#: src/game/server/infclass/ic_gamecontroller.cpp:138
 #, fuzzy
 msgid "Voodoo can unfreeze an Undead while in Spirit mode."
 msgstr "Larua malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:140
+#: src/game/server/infclass/ic_gamecontroller.cpp:139
 #, fuzzy
 msgid "Witch can spawn the infected through narrow walls."
 msgstr "Malefica malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:141
+#: src/game/server/infclass/ic_gamecontroller.cpp:140
 msgid "Undead can be removed from a game by throwing it into kill tiles or reviving it as a Medic."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:263
+#: src/game/server/infclass/ic_gamecontroller.cpp:262
 msgid "The game is not balanced. Infection is coming."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:292
+#: src/game/server/infclass/ic_gamecontroller.cpp:291
 msgid "{str:PlayerName} entered and joined the game"
 msgstr "{str:PlayerName} intravit accessitque"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:296
+#: src/game/server/infclass/ic_gamecontroller.cpp:295
 msgid "See also: /help, /changelog, /about"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:301
+#: src/game/server/infclass/ic_gamecontroller.cpp:300
 msgid "Join our Discord server: {str:Url}"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:307
+#: src/game/server/infclass/ic_gamecontroller.cpp:306
 msgid "Join our Telegram: {str:Url}"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:313
+#: src/game/server/infclass/ic_gamecontroller.cpp:312
 msgid "Join our Matrix room: {str:Url}"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:424
+#: src/game/server/infclass/ic_gamecontroller.cpp:422
 #, fuzzy
 msgid "You have infected {str:VictimName}, shame on you!"
 msgstr "Infecisti {str:VictimName}, +3 copiae"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:439
+#: src/game/server/infclass/ic_gamecontroller.cpp:437
 #, fuzzy
 msgid "You have been infected by {str:KillerName}"
 msgstr "Infectus es: {str:ClassName}"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:443
+#: src/game/server/infclass/ic_gamecontroller.cpp:441
 msgid "You have infected {str:VictimName}, +3 points"
 msgstr "Infecisti {str:VictimName}, +3 copiae"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:469
+#: src/game/server/infclass/ic_gamecontroller.cpp:466
 msgid "The Hero found the flag!"
 msgstr "Heros vexillum invenit!"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1234
+#: src/game/server/infclass/ic_gamecontroller.cpp:1233
 msgid "Mercenary"
 msgstr "Mercennarius"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1236
+#: src/game/server/infclass/ic_gamecontroller.cpp:1235
 msgid "Medic"
 msgstr "Medicus"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1238
+#: src/game/server/infclass/ic_gamecontroller.cpp:1237
 msgid "Hero"
 msgstr "Heros"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1240
+#: src/game/server/infclass/ic_gamecontroller.cpp:1239
 msgid "Engineer"
 msgstr "Clavicarius"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1242
+#: src/game/server/infclass/ic_gamecontroller.cpp:1241
 msgid "Soldier"
 msgstr "Miles"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1244
+#: src/game/server/infclass/ic_gamecontroller.cpp:1243
 msgid "Ninja"
 msgstr "Ninja"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1246
+#: src/game/server/infclass/ic_gamecontroller.cpp:1245
 msgid "Sniper"
 msgstr "Sniper"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1248
+#: src/game/server/infclass/ic_gamecontroller.cpp:1247
 msgid "Scientist"
 msgstr "Scientista"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1250
+#: src/game/server/infclass/ic_gamecontroller.cpp:1249
 msgid "Biologist"
 msgstr "Biologista"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1252
+#: src/game/server/infclass/ic_gamecontroller.cpp:1251
 msgid "Looper"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1255
+#: src/game/server/infclass/ic_gamecontroller.cpp:1254
 msgid "Smoker"
 msgstr "Fumigator"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1257
+#: src/game/server/infclass/ic_gamecontroller.cpp:1256
 msgid "Boomer"
 msgstr "Boomer"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1259
+#: src/game/server/infclass/ic_gamecontroller.cpp:1258
 msgid "Hunter"
 msgstr "Venator"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1261
+#: src/game/server/infclass/ic_gamecontroller.cpp:1260
 msgid "Bat"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1263
+#: src/game/server/infclass/ic_gamecontroller.cpp:1262
 msgid "Ghost"
 msgstr "Larua"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1265
+#: src/game/server/infclass/ic_gamecontroller.cpp:1264
 msgid "Spider"
 msgstr "Aranea"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1267
+#: src/game/server/infclass/ic_gamecontroller.cpp:1266
 msgid "Ghoul"
 msgstr "Ġūl"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1269
+#: src/game/server/infclass/ic_gamecontroller.cpp:1268
 msgid "Slug"
 msgstr "Limax"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1271
+#: src/game/server/infclass/ic_gamecontroller.cpp:1270
 msgid "Voodoo"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1273
+#: src/game/server/infclass/ic_gamecontroller.cpp:1272
 msgid "Witch"
 msgstr "Malefica"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1275
+#: src/game/server/infclass/ic_gamecontroller.cpp:1274
 msgid "Undead"
 msgstr "Immortalis"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1335
+#: src/game/server/infclass/ic_gamecontroller.cpp:1334
 #, fuzzy
 msgid "Mercenaries"
 msgstr "Mercennarius"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1337
+#: src/game/server/infclass/ic_gamecontroller.cpp:1336
 #, fuzzy
 msgid "Medics"
 msgstr "Medicus"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1339
+#: src/game/server/infclass/ic_gamecontroller.cpp:1338
 #, fuzzy
 msgid "Heroes"
 msgstr "Heros"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1341
+#: src/game/server/infclass/ic_gamecontroller.cpp:1340
 #, fuzzy
 msgid "Engineers"
 msgstr "Clavicarius"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1343
+#: src/game/server/infclass/ic_gamecontroller.cpp:1342
 #, fuzzy
 msgid "Soldiers"
 msgstr "Miles"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1345
+#: src/game/server/infclass/ic_gamecontroller.cpp:1344
 #, fuzzy
 msgid "Ninjas"
 msgstr "Ninja"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1347
+#: src/game/server/infclass/ic_gamecontroller.cpp:1346
 #, fuzzy
 msgid "Snipers"
 msgstr "Sniper"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1349
+#: src/game/server/infclass/ic_gamecontroller.cpp:1348
 #, fuzzy
 msgid "Scientists"
 msgstr "Scientista"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1351
+#: src/game/server/infclass/ic_gamecontroller.cpp:1350
 #, fuzzy
 msgid "Biologists"
 msgstr "Biologista"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1353
+#: src/game/server/infclass/ic_gamecontroller.cpp:1352
 msgid "Loopers"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1356
+#: src/game/server/infclass/ic_gamecontroller.cpp:1355
 #, fuzzy
 msgid "Smokers"
 msgstr "Fumigator"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1358
+#: src/game/server/infclass/ic_gamecontroller.cpp:1357
 #, fuzzy
 msgid "Boomers"
 msgstr "Boomer"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1360
+#: src/game/server/infclass/ic_gamecontroller.cpp:1359
 #, fuzzy
 msgid "Hunters"
 msgstr "Venator"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1362
+#: src/game/server/infclass/ic_gamecontroller.cpp:1361
 msgid "Bats"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1364
+#: src/game/server/infclass/ic_gamecontroller.cpp:1363
 #, fuzzy
 msgid "Ghosts"
 msgstr "Larua"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1366
+#: src/game/server/infclass/ic_gamecontroller.cpp:1365
 #, fuzzy
 msgid "Spiders"
 msgstr "Aranea"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1368
+#: src/game/server/infclass/ic_gamecontroller.cpp:1367
 #, fuzzy
 msgid "Ghouls"
 msgstr "Ġūl"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1370
+#: src/game/server/infclass/ic_gamecontroller.cpp:1369
 #, fuzzy
 msgid "Slugs"
 msgstr "Limax"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1372
+#: src/game/server/infclass/ic_gamecontroller.cpp:1371
 msgid "Voodoos"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1374
+#: src/game/server/infclass/ic_gamecontroller.cpp:1373
 #, fuzzy
 msgid "Witches"
 msgstr "Malefica"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1376
+#: src/game/server/infclass/ic_gamecontroller.cpp:1375
 #, fuzzy
 msgid "Undeads"
 msgstr "Immortalis"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1383
+#: src/game/server/infclass/ic_gamecontroller.cpp:1382
 #, fuzzy
 msgid "Unknown"
 msgstr "Classis incognita"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1730
+#: src/game/server/infclass/ic_gamecontroller.cpp:1729
 msgid "Unable to set preferred class: Invalid class name"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1755
+#: src/game/server/infclass/ic_gamecontroller.cpp:1754
 #, fuzzy
 msgid "A random class will be automatically attributed to you when round starts"
 msgstr "Classis fortuita tibi assignatur, quum ludus incipit"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1760
+#: src/game/server/infclass/ic_gamecontroller.cpp:1759
 #, fuzzy
 msgid "The class selector will be displayed when round starts"
 msgstr "Selector classis praebebitur, quum ludus incipit"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1768
+#: src/game/server/infclass/ic_gamecontroller.cpp:1767
 #, fuzzy
 msgid "Class {str:ClassName} will be automatically attributed to you when round starts"
 msgstr "Classis fortuita tibi assignatur, quum ludus incipit"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1799 src/game/server/infclass/ic_gamecontroller.cpp:2132 src/game/server/infclass/ic_gamecontroller.cpp:2177
+#: src/game/server/infclass/ic_gamecontroller.cpp:1798 src/game/server/infclass/ic_gamecontroller.cpp:2131 src/game/server/infclass/ic_gamecontroller.cpp:2176
 msgid "The command is not available (enabled only in training mode)"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1816
+#: src/game/server/infclass/ic_gamecontroller.cpp:1815
 #, fuzzy
 msgid "{str:PlayerName} changed the class to {str:ClassName}"
 msgstr "{str:PlayerName} nomen innovavit {str:NewName}"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2139
+#: src/game/server/infclass/ic_gamecontroller.cpp:2138
 msgid "Unable to save the position: you have no character to save its position"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2145
+#: src/game/server/infclass/ic_gamecontroller.cpp:2144
 msgid "Unable to save the position: the character state is not valid"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2151
+#: src/game/server/infclass/ic_gamecontroller.cpp:2150
 msgid "Unable to save the position: the character does not stand on the ground"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2184
+#: src/game/server/infclass/ic_gamecontroller.cpp:2183
 msgid "Unable to load the position: you have no character to load its position"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2190
+#: src/game/server/infclass/ic_gamecontroller.cpp:2189
 msgid "Unable to load the position: the character state is not valid"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2341
+#: src/game/server/infclass/ic_gamecontroller.cpp:2340
 msgid "The witch is not available in this round"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2344
+#: src/game/server/infclass/ic_gamecontroller.cpp:2343
 msgid "The Santa is not available in this round"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2362 src/game/server/infclass/ic_gamecontroller.cpp:2465
+#: src/game/server/infclass/ic_gamecontroller.cpp:2361 src/game/server/infclass/ic_gamecontroller.cpp:2464
 msgid "The Santa is already here"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2366 src/game/server/infclass/ic_gamecontroller.cpp:2470
+#: src/game/server/infclass/ic_gamecontroller.cpp:2365 src/game/server/infclass/ic_gamecontroller.cpp:2469
 msgid "All witches are already here"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2378
+#: src/game/server/infclass/ic_gamecontroller.cpp:2377
 msgid "Too few players to call the Santa"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2382
+#: src/game/server/infclass/ic_gamecontroller.cpp:2381
 msgid "Too few players to call a witch"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2389
+#: src/game/server/infclass/ic_gamecontroller.cpp:2388
 #, fuzzy
 msgid "Too few infected to call the Santa"
 msgstr "Finis infectorum est inficere homines omnes."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2393
+#: src/game/server/infclass/ic_gamecontroller.cpp:2392
 msgid "Too few infected to call a witch"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2406
+#: src/game/server/infclass/ic_gamecontroller.cpp:2405
 #, fuzzy
 msgid "You have called the Santa once again"
 msgstr "Maleficam necavisti, +5 copiae"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2410
+#: src/game/server/infclass/ic_gamecontroller.cpp:2409
 msgid "You can't call witch twice"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2423
+#: src/game/server/infclass/ic_gamecontroller.cpp:2422
 msgid "{str:PlayerName} is calling for Santa! (1/{int:RequiredCallers}) To call the Santa write: /santa"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2431
+#: src/game/server/infclass/ic_gamecontroller.cpp:2430
 msgid "{str:PlayerName} is calling for Witch! (1/{int:RequiredCallers}) To call witch write: /witch"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2441
+#: src/game/server/infclass/ic_gamecontroller.cpp:2440
 msgid "Santa ({int:Callers}/{int:RequiredCallers})"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2449
+#: src/game/server/infclass/ic_gamecontroller.cpp:2448
 msgid "Witch ({int:Callers}/{int:RequiredCallers})"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2478
+#: src/game/server/infclass/ic_gamecontroller.cpp:2477
 #, fuzzy
 msgid "Santa {str:PlayerName} has arrived!"
 msgstr "{str:PlayerName} pugnam reliquit"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2485
+#: src/game/server/infclass/ic_gamecontroller.cpp:2484
 #, fuzzy
 msgid "Witch {str:PlayerName} has arrived!"
 msgstr "{str:PlayerName} pugnam reliquit"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2914
+#: src/game/server/infclass/ic_gamecontroller.cpp:2911
 msgid "{str:PlayerName} joined the spectators"
 msgstr "{str:PlayerName} ad spectatores accessit"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2918
+#: src/game/server/infclass/ic_gamecontroller.cpp:2915
 msgid "{str:PlayerName} joined the game"
 msgstr "{str:PlayerName} ad ludum accessit"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3489
+#: src/game/server/infclass/ic_gamecontroller.cpp:3490
 msgid "Play more on this map"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3492
+#: src/game/server/infclass/ic_gamecontroller.cpp:3493
 msgid "The last round"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3606
+#: src/game/server/infclass/ic_gamecontroller.cpp:3607
 msgid "{str:VictimName} has been infected"
 msgstr "{str:VictimName} infectus est"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3625
+#: src/game/server/infclass/ic_gamecontroller.cpp:3626
 #, fuzzy
 msgid "Someone was infected to balance the game."
 msgstr "Quum infectus vallum tangit, tum moritur."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3663
+#: src/game/server/infclass/ic_gamecontroller.cpp:3664
 msgid "The round canceled: All infected have left the game"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3666
+#: src/game/server/infclass/ic_gamecontroller.cpp:3667
 msgid "The round canceled: All humans have left the game"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3678
+#: src/game/server/infclass/ic_gamecontroller.cpp:3679
 msgid "One human won the round"
 msgid_plural "{int:NumHumans} humans won the round"
 msgstr[0] "Homo unicus pugnam evicit"
 msgstr[1] "{int:NumHumans} Homines pugnam evicere"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3694
+#: src/game/server/infclass/ic_gamecontroller.cpp:3695
 msgid "You have survived, +5 points"
 msgstr "Pugnae superes, +5 copiae"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3703
+#: src/game/server/infclass/ic_gamecontroller.cpp:3704
 msgid "Infected won the round in {sec:RoundDuration}"
 msgstr "Infecti evicere per {sec:RoundDuration}"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3719
+#: src/game/server/infclass/ic_gamecontroller.cpp:3720
 #, fuzzy
 msgid "Infection is coming in {sec:RemainingTime}"
 msgstr "Vexillum sequens post {sec:RemainingTime}"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3836
+#: src/game/server/infclass/ic_gamecontroller.cpp:3837
 msgid "You have to wait until the survival is over"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4158
+#: src/game/server/infclass/ic_gamecontroller.cpp:4159
 msgid "The survival is over. You have failed to survive a single wave."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4165
+#: src/game/server/infclass/ic_gamecontroller.cpp:4166
 msgid "The survival is over after {int:NumWaves} wave."
 msgid_plural "The survival is over after {int:NumWaves} waves."
 msgstr[0] ""
@@ -1097,38 +1097,38 @@ msgid_plural "Their hammer is replaced with a katana, allowing them to dash {int
 msgstr[0] "Malleus eius katana permutatus. Quo in manus pervenit, ut insultet semel, antequam solum contingit."
 msgstr[1] "Malleus eius katana permutatus. Quo in manus pervenit, ut insultet {int:NinjaJump} temporibus, antequam solum contingit."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4652
+#: src/game/server/infclass/ic_gamecontroller.cpp:4653
 msgid "They also have a laser rifle that blinds the target for a short period of time."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4653
+#: src/game/server/infclass/ic_gamecontroller.cpp:4654
 msgid "Ninja gets special targets. For killing a target, extra points and abilities are awarded."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4657
+#: src/game/server/infclass/ic_gamecontroller.cpp:4658
 #, fuzzy
 msgctxt "Sniper"
 msgid "The Sniper can lock the position in mid-air for 15 seconds with the hammer."
 msgstr "Sniper malleo positionem 15 secundas claudere in aere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4659
+#: src/game/server/infclass/ic_gamecontroller.cpp:4660
 msgctxt "Sniper"
 msgid "The locked position increases the Sniper's rifle damage from usual 10-13 to 30 damage points."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4661
+#: src/game/server/infclass/ic_gamecontroller.cpp:4662
 #, fuzzy
 msgctxt "Sniper"
 msgid "They can also jump two times in the air."
 msgstr "Bis in aere exsilere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4664
+#: src/game/server/infclass/ic_gamecontroller.cpp:4665
 #, fuzzy
 msgctxt "Scientist"
 msgid "The Scientist can pose floating mines with the hammer."
 msgstr "Scientista malleo minas pendentes interponere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4667
+#: src/game/server/infclass/ic_gamecontroller.cpp:4668
 #, fuzzy
 msgctxt "Scientist"
 msgid "Mines are limited to {int:NumMines} per player at the same time."
@@ -1136,403 +1136,403 @@ msgid_plural "Mines are limited to {int:NumMines} per player at the same time."
 msgstr[0] "Minae terminatae sunt, ut una arenario quoicumque quandocumque exstet."
 msgstr[1] "Minae terminatae sunt, ut {int:NumMines} arenario quoicumque quandocumque exstent."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4670
+#: src/game/server/infclass/ic_gamecontroller.cpp:4671
 #, fuzzy
 msgctxt "Scientist"
 msgid "Scientist has also grenades that teleport them."
 msgstr "Etiam granatas quae eum teleportant habet."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4671
+#: src/game/server/infclass/ic_gamecontroller.cpp:4672
 msgctxt "Scientist"
 msgid "A lucky Scientist devoted to killing can get a white hole that sucks the infected in which can be placed with the laser rifle."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4675
+#: src/game/server/infclass/ic_gamecontroller.cpp:4676
 #, fuzzy
 msgctxt "Biologist"
 msgid "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle."
 msgstr "Biologus sclopetum dispergens cum missilibus reflectentibus habet laqueumque sclopeto laserico struere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4677
+#: src/game/server/infclass/ic_gamecontroller.cpp:4678
 msgctxt "Biologist"
 msgid "They are also immune to continuous poison effect, and can stop it on teammates with the Hammer."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4681
+#: src/game/server/infclass/ic_gamecontroller.cpp:4682
 msgctxt "Looper"
 msgid "The Looper has a laser wall that slows down the infected and a low-range laser rifle with a high fire rate."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4683
+#: src/game/server/infclass/ic_gamecontroller.cpp:4684
 #, fuzzy
 msgctxt "Looper"
 msgid "They can also jump two times in the air."
 msgstr "Bis in aere exsilere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4686
+#: src/game/server/infclass/ic_gamecontroller.cpp:4687
 msgctxt "Smoker"
 msgid "Smoker has a powerful hook that hurts humans and sucks their blood, restoring the Smoker's health."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4688
+#: src/game/server/infclass/ic_gamecontroller.cpp:4689
 #, fuzzy
 msgctxt "Smoker"
 msgid "It can also infect humans and heal the infected with the hammer."
 msgstr "Larua malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4691
+#: src/game/server/infclass/ic_gamecontroller.cpp:4692
 #, fuzzy
 msgctxt "Boomer"
 msgid "The Boomer explodes when it attacks."
 msgstr "Boomer explodit, quum oppugnat."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4692
+#: src/game/server/infclass/ic_gamecontroller.cpp:4693
 #, fuzzy
 msgctxt "Boomer"
 msgid "All humans affected by the explosion become infected."
 msgstr "Homines toti explosione affecti inficiuntur."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4693
+#: src/game/server/infclass/ic_gamecontroller.cpp:4694
 #, fuzzy
 msgctxt "Boomer"
 msgid "It can also inflict 1 damage point per second by hooking humans."
 msgstr "Plagam 1 quoque per secundam unco infligere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4696
+#: src/game/server/infclass/ic_gamecontroller.cpp:4697
 msgctxt "Hunter"
 msgid "The Hunter can jump two times in the air and has some resistance to knock-backs."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4698
+#: src/game/server/infclass/ic_gamecontroller.cpp:4699
 #, fuzzy
 msgctxt "Hunter"
 msgid "It can infect humans and heal the infected with the hammer."
 msgstr "Larua malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4699
+#: src/game/server/infclass/ic_gamecontroller.cpp:4700
 #, fuzzy
 msgctxt "Hunter"
 msgid "It can also inflict 1 damage point per second by hooking humans."
 msgstr "Plagam 1 quoque per secundam unco infligere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4702
+#: src/game/server/infclass/ic_gamecontroller.cpp:4703
 #, fuzzy
 msgctxt "Bat"
 msgid "Bat can jump endlessly in the air but it cannot infect humans."
 msgstr "Finis infectorum est inficere homines omnes."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4703
+#: src/game/server/infclass/ic_gamecontroller.cpp:4704
 msgctxt "Bat"
 msgid "Instead, it can hammer humans to steal their health and heal itself."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4704
+#: src/game/server/infclass/ic_gamecontroller.cpp:4705
 msgctxt "Bat"
 msgid "The hammer is also useful for healing the infected."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4705
+#: src/game/server/infclass/ic_gamecontroller.cpp:4706
 #, fuzzy
 msgctxt "Bat"
 msgid "It can also inflict 1 damage point per second by hooking humans."
 msgstr "Plagam 1 quoque per secundam unco infligere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4708
+#: src/game/server/infclass/ic_gamecontroller.cpp:4709
 #, fuzzy
 msgctxt "Ghost"
 msgid "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer."
 msgstr "Latens est, donec homo proxumus sit, pugnam experiatur aut malleo utatur."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4710
+#: src/game/server/infclass/ic_gamecontroller.cpp:4711
 #, fuzzy
 msgctxt "Ghost"
 msgid "It can infect humans and heal the infected with the hammer."
 msgstr "Larua malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4711
+#: src/game/server/infclass/ic_gamecontroller.cpp:4712
 #, fuzzy
 msgctxt "Ghost"
 msgid "It can also inflict 1 damage point per second by hooking humans."
 msgstr "Plagam 1 quoque per secundam unco infligere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4714
+#: src/game/server/infclass/ic_gamecontroller.cpp:4715
 msgctxt "Spider"
 msgid "The Spider has a web hook that automatically grabs any human touching it."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4715
+#: src/game/server/infclass/ic_gamecontroller.cpp:4716
 msgctxt "Spider"
 msgid "The web hook mode can be toggled by switching the weapon."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4716
+#: src/game/server/infclass/ic_gamecontroller.cpp:4717
 #, fuzzy
 msgctxt "Spider"
 msgid "In both modes the hook inflicts 1 damage point per second and can grab a human for longer."
 msgstr "Uncus araneus (in modos ambobus) plagam 1 infligit et hominem secundas 2 tenet."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4720
+#: src/game/server/infclass/ic_gamecontroller.cpp:4721
 #, fuzzy
 msgctxt "Ghoul"
 msgid "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant."
 msgstr "Omnia circa eum mortua devorare potest, quo fortior, celerior firmiorque fiat."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4722
+#: src/game/server/infclass/ic_gamecontroller.cpp:4723
 msgctxt "Ghoul"
 msgid "It digests the fodder over time, going back to the normal state. Some nourishment is also lost on death."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4724
+#: src/game/server/infclass/ic_gamecontroller.cpp:4725
 #, fuzzy
 msgctxt "Ghoul"
 msgid "Ghoul can infect humans and heal the infected with the hammer."
 msgstr "Ġūl malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4725
+#: src/game/server/infclass/ic_gamecontroller.cpp:4726
 #, fuzzy
 msgctxt "Ghoul"
 msgid "It can also inflict 1 damage point per second by hooking humans."
 msgstr "Plagam 1 quoque per secundam unco infligere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4728
+#: src/game/server/infclass/ic_gamecontroller.cpp:4729
 #, fuzzy
 msgctxt "Slug"
 msgid "The Slug can make the ground and walls toxic by spreading slime with the hammer."
 msgstr "Solum parietesque veneniferos malleo mucum reddendo potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4729
+#: src/game/server/infclass/ic_gamecontroller.cpp:4730
 msgctxt "Slug"
 msgid "The slime heals the infected and deals damage to humans."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4730
+#: src/game/server/infclass/ic_gamecontroller.cpp:4731
 #, fuzzy
 msgctxt "Slug"
 msgid "Slug can infect humans and heal the infected with the hammer."
 msgstr "Limax malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4731
+#: src/game/server/infclass/ic_gamecontroller.cpp:4732
 #, fuzzy
 msgctxt "Slug"
 msgid "It can also inflict 1 damage point per second by hooking humans."
 msgstr "Plagam 1 quoque per secundam unco infligere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4734
+#: src/game/server/infclass/ic_gamecontroller.cpp:4735
 msgctxt "Voodoo"
 msgid "The Voodoo does not die immediately when killed but instead enters Spirit mode for a short time."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4736
+#: src/game/server/infclass/ic_gamecontroller.cpp:4737
 msgctxt "Voodoo"
 msgid "While in Spirit mode it cannot be killed. When the time is up it finally dies."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4737
+#: src/game/server/infclass/ic_gamecontroller.cpp:4738
 #, fuzzy
 msgctxt "Voodoo"
 msgid "Voodoo can infect humans and heal the infected with the hammer."
 msgstr "Larua malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4738
+#: src/game/server/infclass/ic_gamecontroller.cpp:4739
 #, fuzzy
 msgctxt "Voodoo"
 msgid "It can also inflict 1 damage point per second by hooking humans."
 msgstr "Plagam 1 quoque per secundam unco infligere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4741
+#: src/game/server/infclass/ic_gamecontroller.cpp:4742
 msgctxt "Witch"
 msgid "The Witch can provide a spawn point for the infected."
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4742
+#: src/game/server/infclass/ic_gamecontroller.cpp:4743
 #, fuzzy
 msgctxt "Witch"
 msgid "If the Witch dies, it disappears and is replaced by another class."
 msgstr "Malefica mortua decedit commutaturque infecto classis alius."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4743
+#: src/game/server/infclass/ic_gamecontroller.cpp:4744
 #, fuzzy
 msgctxt "Witch"
 msgid "Witch can infect humans and heal the infected with the hammer."
 msgstr "Malefica malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4744
+#: src/game/server/infclass/ic_gamecontroller.cpp:4745
 #, fuzzy
 msgctxt "Witch"
 msgid "It can also inflict 1 damage point per second by hooking humans."
 msgstr "Plagam 1 quoque per secundam unco infligere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4747
+#: src/game/server/infclass/ic_gamecontroller.cpp:4748
 #, fuzzy
 msgctxt "Undead"
 msgid "The Undead cannot die. Instead of dying, it gets frozen for 10 seconds."
 msgstr "Pro morte secundas 10 gelatur."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4748
+#: src/game/server/infclass/ic_gamecontroller.cpp:4749
 #, fuzzy
 msgctxt "Undead"
 msgid "If an infected heals it, the freeze effect disappears."
 msgstr "Quando infectus eum sanat, effectus gelationis decedit."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4749
+#: src/game/server/infclass/ic_gamecontroller.cpp:4750
 #, fuzzy
 msgctxt "Undead"
 msgid "Undead can infect humans and heal the infected with the hammer."
 msgstr "Immortalis malleo homines inficere infectosque sanare potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4750
+#: src/game/server/infclass/ic_gamecontroller.cpp:4751
 #, fuzzy
 msgctxt "Undead"
 msgid "It can also inflict 1 damage point per second by hooking humans."
 msgstr "Plagam 1 quoque per secundam unco infligere potest."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4899
+#: src/game/server/infclass/ic_gamecontroller.cpp:4900
 msgid "You have killed a witch, +5 points"
 msgstr "Maleficam necavisti, +5 copiae"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:4903
+#: src/game/server/infclass/ic_gamecontroller.cpp:4904
 #, fuzzy
 msgid "You have killed an undead! +5 points"
 msgstr "Maleficam necavisti, +5 copiae"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:5025
+#: src/game/server/infclass/ic_gamecontroller.cpp:5026
 msgid "The witch is dead"
 msgstr "Malefica mortua est"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:5030
+#: src/game/server/infclass/ic_gamecontroller.cpp:5031
 msgid "The undead is finally dead"
 msgstr "Immortalis tandem mortuus est"
 
-#: src/game/server/infclass/ic_player.cpp:267
+#: src/game/server/infclass/ic_player.cpp:265
 msgid "Self kill attempt prevented. Trigger self kill again to confirm."
 msgstr ""
 
-#: src/game/server/infclass/ic_player.cpp:510
+#: src/game/server/infclass/ic_player.cpp:508
 msgid "Hook protection enabled"
 msgstr "Protectio contra captionem instructa"
 
-#: src/game/server/infclass/ic_player.cpp:512
+#: src/game/server/infclass/ic_player.cpp:510
 msgid "Hook protection disabled"
 msgstr "Protectio contra captionem secessa"
 
-#: src/game/server/infclass/ic_player.cpp:802
+#: src/game/server/infclass/ic_player.cpp:800
 msgid "You are a human: {str:ClassName}"
 msgstr "Homo es: {str:ClassName}"
 
-#: src/game/server/infclass/ic_player.cpp:805
+#: src/game/server/infclass/ic_player.cpp:803
 msgid "You are an infected: {str:ClassName}"
 msgstr "Infectus es: {str:ClassName}"
 
-#: src/game/server/infclass/ic_player.cpp:811
+#: src/game/server/infclass/ic_player.cpp:809
 msgid "Type “/help {str:ClassName}” for more information about your class"
 msgstr "Scribe »/help {str:ClassName}« pro informationibus pluribus"
 
-#: src/game/server/gamecontext.cpp:2692
+#: src/game/server/gamecontext.cpp:2700
 msgid "You can't join the spectators right now"
 msgstr "Nondum ad spectatores accedere potes"
 
-#: src/game/server/gamecontext.cpp:2753
+#: src/game/server/gamecontext.cpp:2761
 msgid "{str:PlayerName} changed their name to {str:NewName}"
 msgstr "{str:PlayerName} nomen innovavit {str:NewName}"
 
-#: src/game/server/gamecontext.cpp:2878
+#: src/game/server/gamecontext.cpp:2889
 #, fuzzy
-msgid "Switch language to english?"
+msgid "Switch language to {str:LangName}?"
 msgstr "Linguam in latinam commutare?"
 
-#: src/game/server/gamecontext.cpp:2884
+#: src/game/server/gamecontext.cpp:2896
 msgid "You can change the language of this mod using the command /language."
 msgstr "Linguam modificationis iusso /language permutare licet."
 
-#: src/game/server/gamecontext.cpp:2885
+#: src/game/server/gamecontext.cpp:2897
 msgid "If your language is not available, you can help with translation (/help translate)."
 msgstr "Si lingua tua non in promptu est, tibi traductioni subvenire licet (/help translate)."
 
-#: src/game/server/gamecontext.cpp:3747 src/game/server/gamecontext.cpp:3775
+#: src/game/server/gamecontext.cpp:3758 src/game/server/gamecontext.cpp:3786
 msgid "InfectionClass, by necropotame (version {str:VersionCode})"
 msgstr "InfectionClass, auctoris necropotame (version {str:VersionCode})"
 
-#: src/game/server/gamecontext.cpp:3749
+#: src/game/server/gamecontext.cpp:3760
 msgid "Based on the concept of Infection mod by Gravity"
 msgstr "Constat in conceptu modificationis Infection, auctoris Gravity"
 
-#: src/game/server/gamecontext.cpp:3751
+#: src/game/server/gamecontext.cpp:3762
 msgid "Main contributors: {str:ListOfContributors}"
 msgstr "Contributores praecipui: {str:ListOfContributors}"
 
-#: src/game/server/gamecontext.cpp:3753
+#: src/game/server/gamecontext.cpp:3764
 msgid "Thanks to {str:ListOfContributors}"
 msgstr "Grates {str:ListOfContributors}"
 
-#: src/game/server/gamecontext.cpp:3779
+#: src/game/server/gamecontext.cpp:3790
 msgid "Server version from {str:ServerCompileDate} "
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3793
+#: src/game/server/gamecontext.cpp:3804
 msgid "Sources: {str:SourceUrl} "
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3802
+#: src/game/server/gamecontext.cpp:3812
 msgid "Discord: {str:Url}"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3809
+#: src/game/server/gamecontext.cpp:3819
 msgid "Telegram: {str:Url}"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3816
+#: src/game/server/gamecontext.cpp:3826
 msgid "Matrix room: {str:Url}"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3823
+#: src/game/server/gamecontext.cpp:3833
 msgid "Translation project: {str:Url}"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3829
+#: src/game/server/gamecontext.cpp:3839
 msgid "See also: /credits"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4027
+#: src/game/server/gamecontext.cpp:4036
 msgid "No player was found with this name"
 msgstr "Arenarius huius nominis non repertus est."
 
-#: src/game/server/gamecontext.cpp:4200
+#: src/game/server/gamecontext.cpp:4209
 msgid "Choose a help page with /help <page>"
 msgstr "Paginam auxiliarem iusso »/help <pagina>« eligas"
 
-#: src/game/server/gamecontext.cpp:4202
+#: src/game/server/gamecontext.cpp:4211
 msgid "Available help pages: {str:PageList}"
 msgstr "Paginae auxiliares promptae: {str:PageList}"
 
-#: src/game/server/gamecontext.cpp:4286
+#: src/game/server/gamecontext.cpp:4294
 msgid "Unknown language"
 msgstr "Lingua incognita"
 
-#: src/game/server/gamecontext.cpp:4299
+#: src/game/server/gamecontext.cpp:4307
 msgid "Available languages: {str:ListOfLanguage}"
 msgstr "Paginae auxiliares promptae: {str:ListOfLanguage}"
 
-#: src/game/server/gamecontext.cpp:4314
+#: src/game/server/gamecontext.cpp:4322
 msgid "List of commands"
 msgstr "Tabula iussorum"
 
-#: src/game/server/gamecontext.cpp:4322
+#: src/game/server/gamecontext.cpp:4330
 msgid "Press <F3> or <F4> to enable or disable hook protection"
 msgstr "Preme <F3> aut <F4> ad instructionem protectionis contra captionem"
 
-#: src/game/server/gamecontext.cpp:4339
+#: src/game/server/gamecontext.cpp:4347
 msgid "ChangeLog is not provided"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4351
+#: src/game/server/gamecontext.cpp:4359
 msgid "ChangeLog page {int:PageNumber} is not available"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4372
+#: src/game/server/gamecontext.cpp:4380
 msgid "(page {int:PageNumber}/{int:PagesInTotal}, see /changelog {int:NextPage})"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4932
+#: src/game/server/gamecontext.cpp:4940
 msgid "You are muted for {sec:Duration}"
 msgstr "Lingua tibi praecisa est ad {sec:Duration}"
 

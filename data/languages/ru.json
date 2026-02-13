@@ -933,10 +933,6 @@
             "value": "Игрок {str:PlayerName} сменил своё имя на {str:NewName}"
         },
         {
-            "key": "Switch language to english?",
-            "value": "Переключить язык на русский?"
-        },
-        {
             "key": "You can change the language of this mod using the command /language.",
             "value": "Вы можете изменить язык используя команду /language."
         },

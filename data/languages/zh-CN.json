@@ -969,10 +969,6 @@
             "value": "{str:PlayerName} 已改名为 {str:NewName}"
         },
         {
-            "key": "Switch language to english?",
-            "value": "切换到中文吗？"
-        },
-        {
             "key": "You can change the language of this mod using the command /language.",
             "value": "你可以使用命令 /language 切换此 mod 的语言。"
         },

@@ -969,10 +969,6 @@
             "value": "{str:PlayerName} hat sich zu {str:NewName} umbenannt"
         },
         {
-            "key": "Switch language to english?",
-            "value": "Sprache auf Deutsch umändern?"
-        },
-        {
             "key": "You can change the language of this mod using the command /language.",
             "value": "Du kannst die Sprache dieser Mod vermittels des Befehls /language wechseln."
         },
