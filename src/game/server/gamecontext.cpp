@@ -21,6 +21,7 @@
 #include <game/server/player.h>
 
 #include <algorithm>
+#include <ranges>
 
 extern IGameController *CreateInfclassModController(CGameContext *pGameServer);
 
@@ -4303,9 +4304,9 @@ void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 			str_copy(aFinalLanguageCode, "uk");
 		else
 		{
-			for(int i = 0; i < pSelf->Server()->Localization()->m_pLanguages.size(); i++)
+			for(const auto &Key : pSelf->Server()->Localization()->m_pLanguages | std::views::keys)
 			{
-				if(str_comp_nocase(pLanguageCode, pSelf->Server()->Localization()->m_pLanguages[i]->GetFilename()) == 0)
+				if(str_comp_nocase(pLanguageCode, Key.c_str()) == 0)
 					str_copy(aFinalLanguageCode, pLanguageCode);
 			}
 		}
@@ -4323,11 +4324,13 @@ void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 
 		dynamic_string BufferList;
 		int BufferIter = 0;
-		for(int i = 0; i < pSelf->Server()->Localization()->m_pLanguages.size(); i++)
+		int i = 0;
+		for(const auto &Key : pSelf->Server()->Localization()->m_pLanguages | std::views::keys)
 		{
 			if(i > 0)
 				BufferIter = BufferList.append_at(BufferIter, ", ");
-			BufferIter = BufferList.append_at(BufferIter, pSelf->Server()->Localization()->m_pLanguages[i]->GetFilename());
+			BufferIter = BufferList.append_at(BufferIter, Key.c_str());
+			i++;
 		}
 
 		dynamic_string Buffer;
@@ -4499,11 +4502,13 @@ void CGameContext::RegisterChatCommands()
 	{
 		dynamic_string BufferList;
 		int BufferIter = 0;
-		for(int i = 0; i < Server()->Localization()->m_pLanguages.size(); i++)
+		int i = 0;
+		for(const auto &Key : Server()->Localization()->m_pLanguages | std::views::keys)
 		{
-			if(i)
+			if(i > 0)
 				BufferIter = BufferList.append_at(BufferIter, "|");
-			BufferIter = BufferList.append_at(BufferIter, Server()->Localization()->m_pLanguages[i]->GetFilename());
+			BufferIter = BufferList.append_at(BufferIter, Key.c_str());
+			i++;
 		}
 		if(!BufferList.empty())
 		{

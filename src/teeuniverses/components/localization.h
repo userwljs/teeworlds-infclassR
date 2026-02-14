@@ -1,17 +1,31 @@
 #ifndef __SHARED_LOCALIZATION__
 #define __SHARED_LOCALIZATION__
 
-/* BEGIN EDIT *********************************************************/
-#include <teeuniverses/tl/hashtable.h>
 #define CStorage IStorage
-/* END EDIT ***********************************************************/
 
-#include <unicode/numfmt.h>
+#include "teeuniverses/system/string.h"
+
+#include <string>
+#include <string_view>
 #include <unicode/tmutfmt.h>
 #include <unicode/ucnv.h>
 #include <unicode/upluralrules.h>
+#include <unordered_map>
 
-#include <stdarg.h>
+struct StringTransparentHasher
+{
+	using is_transparent = void;
+	size_t operator()(const std::string &Key) const { return std::hash<std::string>{}(Key); };
+	size_t operator()(const std::string_view Key) const { return std::hash<std::string_view>{}(Key); };
+	size_t operator()(const char *Key) const { return std::hash<std::string_view>{}(Key); };
+};
+
+template<typename T>
+using StringHashMap = std::unordered_map<
+	std::string,
+	T,
+	StringTransparentHasher,
+	std::equal_to<>>;
 
 struct CLocalizableString
 {
@@ -36,7 +50,7 @@ class CLocalization
 {
 private:
 	class CStorage *m_pStorage;
-	inline class CStorage *Storage() { return m_pStorage; }
+	inline class CStorage *Storage() const { return m_pStorage; }
 	/* END EDIT ***********************************************************/
 public:
 	enum
@@ -49,12 +63,6 @@ public:
 		PLURALTYPE_MANY,
 		PLURALTYPE_OTHER,
 		NUM_PLURALTYPES,
-	};
-
-	class IListener
-	{
-	public:
-		virtual void OnLocalizationModified() = 0;
 	};
 
 	static const char *LanguageCodeByCountryCode(int country);
@@ -74,7 +82,7 @@ public:
 					m_apVersions[i] = nullptr;
 			}
 
-			void Free()
+			~CEntry()
 			{
 				for(int i = 0; i < NUM_PLURALTYPES; i++)
 					if(m_apVersions[i])
@@ -89,7 +97,7 @@ public:
 		bool m_Loaded;
 		int m_Direction;
 
-		hashtable<CEntry, 128> m_Translations;
+		StringHashMap<CEntry> m_Translations;
 
 	public:
 		UPluralRules *m_pPluralRules;
@@ -108,7 +116,7 @@ public:
 		inline int GetWritingDirection() const { return m_Direction; }
 		inline void SetWritingDirection(int Direction) { m_Direction = Direction; }
 		inline bool IsLoaded() const { return m_Loaded; }
-		bool Load(CLocalization *pLocalization, class CStorage *pStorage);
+		bool Load(CStorage *pStorage);
 		const char *Localize(const char *pKey) const;
 		const char *Localize_P(int Number, const char *pText) const;
 	};
@@ -121,40 +129,31 @@ public:
 	};
 
 protected:
-	CLanguage *m_pMainLanguage;
-	array<IListener *> m_pListeners;
-	bool m_UpdateListeners;
-
 	UConverter *m_pUtf8Converter;
 
 public:
-	array<CLanguage *> m_pLanguages;
-	fixed_string128 m_Cfg_MainLanguage;
+	StringHashMap<CLanguage> m_pLanguages;
 
 protected:
 	const char *LocalizeWithDepth(const char *pLanguageCode, const char *pText, int Depth);
 	const char *LocalizeWithDepth_P(const char *pLanguageCode, int Number, const char *pText, int Depth);
 
-	void AppendNumber(dynamic_string &Buffer, int &BufferIter, CLanguage *pLanguage, int Number);
-	void AppendPercent(dynamic_string &Buffer, int &BufferIter, CLanguage *pLanguage, double Number);
-	void AppendDuration(dynamic_string &Buffer, int &BufferIter, CLanguage *pLanguage, int Number, icu::TimeUnit::UTimeUnitFields Type);
+	void AppendNumber(dynamic_string &Buffer, int &BufferIter, const CLanguage *pLanguage, int Number) const;
+	void AppendPercent(dynamic_string &Buffer, int &BufferIter, const CLanguage *pLanguage, double Number) const;
+	void AppendDuration(dynamic_string &Buffer, int &BufferIter, const CLanguage *pLanguage, int Number, icu::TimeUnit::UTimeUnitFields Type) const;
 
 public:
 	/* BEGIN EDIT *********************************************************/
-	CLocalization(class CStorage *pStorage);
+	explicit CLocalization(class CStorage *pStorage);
 	/* END EDIT ***********************************************************/
-	virtual ~CLocalization();
+	~CLocalization();
 
-	virtual bool InitConfig(int argc, const char **argv);
 	/* BEGIN EDIT *********************************************************/
 	/* END EDIT ***********************************************************/
-	virtual bool Init();
-	virtual bool PreUpdate();
+	bool Init();
 
-	void AddListener(IListener *pListener);
-	void RemoveListener(IListener *pListener);
-
-	inline bool GetWritingDirection() const { return (!m_pMainLanguage ? DIRECTION_LTR : m_pMainLanguage->GetWritingDirection()); }
+	// inline bool GetWritingDirection() const { return (!m_pMainLanguage ? DIRECTION_LTR : m_pMainLanguage->GetWritingDirection()); }
+	static bool GetWritingDirection() { return DIRECTION_LTR; }
 
 	// localize
 	const char *Localize(const char *pLanguageCode, const char *pText);
@@ -171,7 +170,7 @@ public:
 	void Format_VLP(dynamic_string &Buffer, const char *pLanguageCode, int Number, const char *pText, va_list VarArgs);
 	void Format_LP(dynamic_string &Buffer, const char *pLanguageCode, int Number, const char *pText, ...);
 
-	void ArabicShaping(dynamic_string &Buffer, int BufferStart = 0);
+	void ArabicShaping(dynamic_string &Buffer, int BufferStart = 0) const;
 
 	std::string GetLangaugeNameByCode(const char *pLanguageCode);
 	CLanguage *GetLanguageByCode(const char *pLanguageCode);

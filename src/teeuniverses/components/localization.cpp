@@ -1,13 +1,13 @@
 #include "localization.h"
 
-/* BEGIN EDIT *********************************************************/
 #include <engine/external/json-parser/json.h>
 #include <engine/storage.h>
 #include <unicode/ubidi.h>
 #include <unicode/ushape.h>
-/* END EDIT ***********************************************************/
 
 /* LANGUAGE ***********************************************************/
+
+auto MainLanguage = "en";
 
 CLocalization::CLanguage::CLanguage() :
 	m_Loaded(false),
@@ -84,15 +84,6 @@ CLocalization::CLanguage::CLanguage(const char *pName, const char *pFilename, co
 
 CLocalization::CLanguage::~CLanguage()
 {
-	hashtable<CEntry, 128>::iterator Iter = m_Translations.begin();
-	while(Iter != m_Translations.end())
-	{
-		if(Iter.data())
-			Iter.data()->Free();
-
-		++Iter;
-	}
-
 	if(m_pNumberFormater)
 		unum_close(m_pNumberFormater);
 
@@ -106,22 +97,26 @@ CLocalization::CLanguage::~CLanguage()
 		delete m_pTimeUnitFormater;
 }
 
-/* BEGIN EDIT *********************************************************/
-bool CLocalization::CLanguage::Load(CLocalization *pLocalization, CStorage *pStorage)
-/* END EDIT ***********************************************************/
+bool CLocalization::CLanguage::Load(CStorage *pStorage)
 {
+	if(str_comp(GetFilename(), MainLanguage) == 0)
+	{
+		m_Loaded = true;
+		return true;
+	}
+
 	// read file data into buffer
 	char aBuf[256];
 	str_format(aBuf, sizeof(aBuf), "languages/%s.json", m_aFilename);
 
-	IOHANDLE File = pStorage->OpenFile(aBuf, IOFLAG_READ, CStorage::TYPE_ALL);
+	const IOHANDLE File = pStorage->OpenFile(aBuf, IOFLAG_READ, CStorage::TYPE_ALL);
 	if(!File)
 		return false;
 
 	// load the file as a string
-	int FileSize = (int)io_length(File);
-	int FileDataSize = FileSize + 1;
-	char *pFileData = new char[FileDataSize];
+	const int FileSize = static_cast<int>(io_length(File));
+	const int FileDataSize = FileSize + 1;
+	const auto pFileData = new char[FileDataSize];
 	io_read(File, pFileData, FileSize);
 	pFileData[FileSize] = 0;
 	io_close(File);
@@ -139,77 +134,75 @@ bool CLocalization::CLanguage::Load(CLocalization *pLocalization, CStorage *pSto
 	}
 
 	dynamic_string Buffer;
-	int Length;
 
 	// extract data
 	const json_value &rStart = (*pJsonData)["translation"];
 	if(rStart.type == json_array)
 	{
+		int Length;
 		for(unsigned i = 0; i < rStart.u.array.length; ++i)
 		{
 			const char *pKey = rStart[i]["key"];
 			if(pKey && pKey[0])
 			{
-				CEntry *pEntry = m_Translations.set(pKey);
+				auto &Entry = m_Translations.try_emplace(pKey).first->second;
 
 				const char *pSingular = rStart[i]["value"];
 				if(pSingular && pSingular[0])
 				{
 					Length = str_length(pSingular) + 1;
-					pEntry->m_apVersions[PLURALTYPE_NONE] = new char[Length];
-					str_copy(pEntry->m_apVersions[PLURALTYPE_NONE], pSingular, Length);
+					Entry.m_apVersions[PLURALTYPE_NONE] = new char[Length];
+					str_copy(Entry.m_apVersions[PLURALTYPE_NONE], pSingular, Length);
 				}
 				else
 				{
-					const char *pPlural;
-
 					// Zero
-					pPlural = rStart[i]["zero"];
-					if(pPlural)
+					const char *pPlural = rStart[i]["zero"];
+					if(pPlural && pPlural[0])
 					{
 						Length = str_length(pPlural) + 1;
-						pEntry->m_apVersions[PLURALTYPE_ZERO] = new char[Length];
-						str_copy(pEntry->m_apVersions[PLURALTYPE_ZERO], pPlural, Length);
+						Entry.m_apVersions[PLURALTYPE_ZERO] = new char[Length];
+						str_copy(Entry.m_apVersions[PLURALTYPE_ZERO], pPlural, Length);
 					}
 					// One
 					pPlural = rStart[i]["one"];
-					if(pPlural)
+					if(pPlural && pPlural[0])
 					{
 						Length = str_length(pPlural) + 1;
-						pEntry->m_apVersions[PLURALTYPE_ONE] = new char[Length];
-						str_copy(pEntry->m_apVersions[PLURALTYPE_ONE], pPlural, Length);
+						Entry.m_apVersions[PLURALTYPE_ONE] = new char[Length];
+						str_copy(Entry.m_apVersions[PLURALTYPE_ONE], pPlural, Length);
 					}
 					// Two
 					pPlural = rStart[i]["two"];
-					if(pPlural)
+					if(pPlural && pPlural[0])
 					{
 						Length = str_length(pPlural) + 1;
-						pEntry->m_apVersions[PLURALTYPE_TWO] = new char[Length];
-						str_copy(pEntry->m_apVersions[PLURALTYPE_TWO], pPlural, Length);
+						Entry.m_apVersions[PLURALTYPE_TWO] = new char[Length];
+						str_copy(Entry.m_apVersions[PLURALTYPE_TWO], pPlural, Length);
 					}
 					// Few
 					pPlural = rStart[i]["few"];
-					if(pPlural)
+					if(pPlural && pPlural[0])
 					{
 						Length = str_length(pPlural) + 1;
-						pEntry->m_apVersions[PLURALTYPE_FEW] = new char[Length];
-						str_copy(pEntry->m_apVersions[PLURALTYPE_FEW], pPlural, Length);
+						Entry.m_apVersions[PLURALTYPE_FEW] = new char[Length];
+						str_copy(Entry.m_apVersions[PLURALTYPE_FEW], pPlural, Length);
 					}
 					// Many
 					pPlural = rStart[i]["many"];
-					if(pPlural)
+					if(pPlural && pPlural[0])
 					{
 						Length = str_length(pPlural) + 1;
-						pEntry->m_apVersions[PLURALTYPE_MANY] = new char[Length];
-						str_copy(pEntry->m_apVersions[PLURALTYPE_MANY], pPlural, Length);
+						Entry.m_apVersions[PLURALTYPE_MANY] = new char[Length];
+						str_copy(Entry.m_apVersions[PLURALTYPE_MANY], pPlural, Length);
 					}
 					// Other
 					pPlural = rStart[i]["other"];
-					if(pPlural)
+					if(pPlural && pPlural[0])
 					{
 						Length = str_length(pPlural) + 1;
-						pEntry->m_apVersions[PLURALTYPE_OTHER] = new char[Length];
-						str_copy(pEntry->m_apVersions[PLURALTYPE_OTHER], pPlural, Length);
+						Entry.m_apVersions[PLURALTYPE_OTHER] = new char[Length];
+						str_copy(Entry.m_apVersions[PLURALTYPE_OTHER], pPlural, Length);
 					}
 				}
 			}
@@ -227,17 +220,23 @@ bool CLocalization::CLanguage::Load(CLocalization *pLocalization, CStorage *pSto
 
 const char *CLocalization::CLanguage::Localize(const char *pText) const
 {
-	const CEntry *pEntry = m_Translations.get(pText);
-	if(!pEntry)
+	if(str_comp(GetFilename(), MainLanguage) == 0)
+		return pText;
+
+	const auto &Entry = m_Translations.find(pText);
+	if(Entry == m_Translations.end())
 		return nullptr;
 
-	return pEntry->m_apVersions[PLURALTYPE_NONE];
+	return Entry->second.m_apVersions[PLURALTYPE_NONE];
 }
 
 const char *CLocalization::CLanguage::Localize_P(int Number, const char *pText) const
 {
-	const CEntry *pEntry = m_Translations.get(pText);
-	if(!pEntry)
+	if(str_comp(GetFilename(), MainLanguage) == 0)
+		return pText;
+
+	const auto &Entry = m_Translations.find(pText);
+	if(Entry == m_Translations.end())
 		return nullptr;
 
 	UChar aPluralKeyWord[6];
@@ -265,38 +264,20 @@ const char *CLocalization::CLanguage::Localize_P(int Number, const char *pText) 
 			PluralCode = PLURALTYPE_ONE;
 	}
 
-	return pEntry->m_apVersions[PluralCode];
+	return Entry->second.m_apVersions[PluralCode];
 }
 
-/* LOCALIZATION *******************************************************/
-
-/* BEGIN EDIT *********************************************************/
 CLocalization::CLocalization(class CStorage *pStorage) :
 	m_pStorage(pStorage),
-	m_pMainLanguage(nullptr),
 	m_pUtf8Converter(nullptr)
 {
 }
-/* END EDIT ***********************************************************/
 
 CLocalization::~CLocalization()
 {
-	for(int i = 0; i < m_pLanguages.size(); i++)
-		delete m_pLanguages[i];
-
 	if(m_pUtf8Converter)
 		ucnv_close(m_pUtf8Converter);
 }
-
-/* BEGIN EDIT *********************************************************/
-bool CLocalization::InitConfig(int argc, const char **argv)
-{
-	m_Cfg_MainLanguage.copy("en");
-
-	return true;
-}
-
-/* END EDIT ***********************************************************/
 
 bool CLocalization::Init()
 {
@@ -309,17 +290,17 @@ bool CLocalization::Init()
 	}
 
 	// read file data into buffer
-	const char *pFilename = "languages/index.json";
-	IOHANDLE File = Storage()->OpenFile(pFilename, IOFLAG_READ, CStorage::TYPE_ALL);
+	const auto pFilename = "languages/index.json";
+	const IOHANDLE File = Storage()->OpenFile(pFilename, IOFLAG_READ, CStorage::TYPE_ALL);
 	if(!File)
 	{
 		dbg_msg("Localization", "can't open languages/index.json");
 		return true; // return true because it's not a critical error
 	}
 
-	int FileSize = (int)io_length(File);
-	int FileDataSize = FileSize + 1;
-	char *pFileData = new char[FileDataSize];
+	const int FileSize = static_cast<int>(io_length(File));
+	const int FileDataSize = FileSize + 1;
+	const auto pFileData = new char[FileDataSize];
 	io_read(File, pFileData, FileSize);
 	pFileData[FileSize] = 0;
 	io_close(File);
@@ -336,62 +317,26 @@ bool CLocalization::Init()
 	}
 
 	// extract data
-	m_pMainLanguage = nullptr;
 	const json_value &rStart = (*pJsonData)["language indices"];
 	if(rStart.type == json_array)
 	{
 		for(unsigned i = 0; i < rStart.u.array.length; ++i)
 		{
-			CLanguage *&pLanguage = m_pLanguages.increment();
-			pLanguage = new CLanguage((const char *)rStart[i]["name"], (const char *)rStart[i]["file"], (const char *)rStart[i]["parent"]);
+			auto &Language = m_pLanguages.try_emplace(
+											 static_cast<const char *>(rStart[i]["file"]),
+											 static_cast<const char *>(rStart[i]["name"]),
+											 static_cast<const char *>(rStart[i]["file"]),
+											 static_cast<const char *>(rStart[i]["parent"]))
+								 .first->second;
 
-			if((const char *)rStart[i]["direction"] && str_comp((const char *)rStart[i]["direction"], "rtl") == 0)
-				pLanguage->SetWritingDirection(DIRECTION_RTL);
-
-			if(m_Cfg_MainLanguage == pLanguage->GetFilename())
-			{
-				pLanguage->Load(this, Storage());
-
-				m_pMainLanguage = pLanguage;
-			}
+			if(static_cast<const char *>(rStart[i]["direction"]) && str_comp((const char *)rStart[i]["direction"], "rtl") == 0)
+				Language.SetWritingDirection(DIRECTION_RTL);
 		}
 	}
 
 	// clean up
 	json_value_free(pJsonData);
 	delete[] pFileData;
-
-	return true;
-}
-
-void CLocalization::AddListener(IListener *pListener)
-{
-	m_pListeners.increment() = pListener;
-}
-
-void CLocalization::RemoveListener(IListener *pListener)
-{
-	for(int i = 0; i < m_pListeners.size(); i++)
-	{
-		if(m_pListeners[i] == pListener)
-			m_pListeners.remove_index(i);
-	}
-}
-
-bool CLocalization::PreUpdate()
-{
-	if(!m_pMainLanguage || m_Cfg_MainLanguage != m_pMainLanguage->GetFilename())
-	{
-		CLanguage *pLanguage = GetLanguageByCode(m_Cfg_MainLanguage.buffer());
-
-		if(m_pMainLanguage != pLanguage)
-		{
-			m_pMainLanguage = pLanguage;
-
-			for(int i = 0; i < m_pListeners.size(); i++)
-				m_pListeners[i]->OnLocalizationModified();
-		}
-	}
 
 	return true;
 }
@@ -552,11 +497,11 @@ const char *CLocalization::LanguageCodeByCountryCode(int CountryCode)
 	case 840: // United States of America
 		return "en";
 	default:
-		return "en";
+		return MainLanguage;
 	}
 }
 
-const char *CLocalization::FallbackLanguageForIpCountryCode(int Country)
+const char *CLocalization::FallbackLanguageForIpCountryCode(const int Country)
 {
 	switch(Country)
 	{
@@ -572,9 +517,9 @@ const char *CLocalization::FallbackLanguageForIpCountryCode(int Country)
 	}
 }
 
-const char *CLocalization::LocalizeWithDepth(const char *pLanguageCode, const char *pText, int Depth)
+const char *CLocalization::LocalizeWithDepth(const char *pLanguageCode, const char *pText, const int Depth)
 {
-	CLanguage *pLanguage = m_pMainLanguage;
+	CLanguage *pLanguage = GetLanguageByCode(MainLanguage);
 	if(pLanguageCode)
 	{
 		if(auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
@@ -585,10 +530,9 @@ const char *CLocalization::LocalizeWithDepth(const char *pLanguageCode, const ch
 		return pText;
 
 	if(!pLanguage->IsLoaded())
-		pLanguage->Load(this, Storage());
+		pLanguage->Load(Storage());
 
-	const char *pResult = pLanguage->Localize(pText);
-	if(pResult)
+	if(const char *pResult = pLanguage->Localize(pText))
 		return pResult;
 	else if(pLanguage->GetParentFilename()[0] && Depth < 4)
 		return LocalizeWithDepth(pLanguage->GetParentFilename(), pText, Depth + 1);
@@ -596,14 +540,23 @@ const char *CLocalization::LocalizeWithDepth(const char *pLanguageCode, const ch
 		return pText;
 }
 
+/**
+ *
+ * @param pLanguageCode language code
+ * @param pText source string
+ * @return Ptr to the translated string.
+ * The returned ptr should not be held for a long time,
+ * nor should items be inserted into 'm_pLanguages' while holding it,
+ * as this may lead to a dangling pointer.
+ */
 const char *CLocalization::Localize(const char *pLanguageCode, const char *pText)
 {
 	return LocalizeWithDepth(pLanguageCode, pText, 0);
 }
 
-const char *CLocalization::LocalizeWithDepth_P(const char *pLanguageCode, int Number, const char *pText, int Depth)
+const char *CLocalization::LocalizeWithDepth_P(const char *pLanguageCode, const int Number, const char *pText, const int Depth)
 {
-	CLanguage *pLanguage = m_pMainLanguage;
+	CLanguage *pLanguage = GetLanguageByCode(MainLanguage);
 	if(pLanguageCode)
 	{
 		if(auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
@@ -614,10 +567,9 @@ const char *CLocalization::LocalizeWithDepth_P(const char *pLanguageCode, int Nu
 		return pText;
 
 	if(!pLanguage->IsLoaded())
-		pLanguage->Load(this, Storage());
+		pLanguage->Load(Storage());
 
-	const char *pResult = pLanguage->Localize_P(Number, pText);
-	if(pResult)
+	if(const char *pResult = pLanguage->Localize_P(Number, pText))
 		return pResult;
 	else if(pLanguage->GetParentFilename()[0] && Depth < 4)
 		return LocalizeWithDepth_P(pLanguage->GetParentFilename(), Number, pText, Depth + 1);
@@ -630,7 +582,7 @@ const char *CLocalization::Localize_P(const char *pLanguageCode, int Number, con
 	return LocalizeWithDepth_P(pLanguageCode, Number, pText, 0);
 }
 
-void CLocalization::AppendNumber(dynamic_string &Buffer, int &BufferIter, CLanguage *pLanguage, int Number)
+void CLocalization::AppendNumber(dynamic_string &Buffer, int &BufferIter, const CLanguage *pLanguage, const int Number) const
 {
 	UChar aBufUtf16[128];
 
@@ -641,13 +593,13 @@ void CLocalization::AppendNumber(dynamic_string &Buffer, int &BufferIter, CLangu
 	else
 	{
 		// Update buffer size
-		int SrcLength = u_strlen(aBufUtf16);
-		int NeededSize = UCNV_GET_MAX_BYTES_FOR_STRING(SrcLength, ucnv_getMaxCharSize(m_pUtf8Converter));
+		const int SrcLength = u_strlen(aBufUtf16);
+		const int NeededSize = UCNV_GET_MAX_BYTES_FOR_STRING(SrcLength, ucnv_getMaxCharSize(m_pUtf8Converter));
 
 		while(Buffer.maxsize() - BufferIter <= NeededSize)
 			Buffer.resize_buffer(Buffer.maxsize() * 2);
 
-		int Length = ucnv_fromUChars(m_pUtf8Converter, Buffer.buffer() + BufferIter, Buffer.maxsize() - BufferIter, aBufUtf16, SrcLength, &Status);
+		const int Length = ucnv_fromUChars(m_pUtf8Converter, Buffer.buffer() + BufferIter, Buffer.maxsize() - BufferIter, aBufUtf16, SrcLength, &Status);
 		if(U_FAILURE(Status))
 			BufferIter = Buffer.append_at(BufferIter, "_NUMBER_");
 		else
@@ -655,7 +607,7 @@ void CLocalization::AppendNumber(dynamic_string &Buffer, int &BufferIter, CLangu
 	}
 }
 
-void CLocalization::AppendPercent(dynamic_string &Buffer, int &BufferIter, CLanguage *pLanguage, double Number)
+void CLocalization::AppendPercent(dynamic_string &Buffer, int &BufferIter, const CLanguage *pLanguage, const double Number) const
 {
 	UChar aBufUtf16[128];
 
@@ -666,13 +618,13 @@ void CLocalization::AppendPercent(dynamic_string &Buffer, int &BufferIter, CLang
 	else
 	{
 		// Update buffer size
-		int SrcLength = u_strlen(aBufUtf16);
-		int NeededSize = UCNV_GET_MAX_BYTES_FOR_STRING(SrcLength, ucnv_getMaxCharSize(m_pUtf8Converter));
+		const int SrcLength = u_strlen(aBufUtf16);
+		const int NeededSize = UCNV_GET_MAX_BYTES_FOR_STRING(SrcLength, ucnv_getMaxCharSize(m_pUtf8Converter));
 
 		while(Buffer.maxsize() - BufferIter <= NeededSize)
 			Buffer.resize_buffer(Buffer.maxsize() * 2);
 
-		int Length = ucnv_fromUChars(m_pUtf8Converter, Buffer.buffer() + BufferIter, Buffer.maxsize() - BufferIter, aBufUtf16, SrcLength, &Status);
+		const int Length = ucnv_fromUChars(m_pUtf8Converter, Buffer.buffer() + BufferIter, Buffer.maxsize() - BufferIter, aBufUtf16, SrcLength, &Status);
 		if(U_FAILURE(Status))
 			BufferIter = Buffer.append_at(BufferIter, "_PERCENT_");
 		else
@@ -680,12 +632,12 @@ void CLocalization::AppendPercent(dynamic_string &Buffer, int &BufferIter, CLang
 	}
 }
 
-void CLocalization::AppendDuration(dynamic_string &Buffer, int &BufferIter, CLanguage *pLanguage, int Number, icu::TimeUnit::UTimeUnitFields Type)
+void CLocalization::AppendDuration(dynamic_string &Buffer, int &BufferIter, const CLanguage *pLanguage, int Number, icu::TimeUnit::UTimeUnitFields Type) const
 {
 	UErrorCode Status = U_ZERO_ERROR;
 	icu::UnicodeString BufUTF16;
 
-	icu::TimeUnitAmount *pAmount = new icu::TimeUnitAmount((double)Number, Type, Status);
+	const auto pAmount = new icu::TimeUnitAmount(static_cast<double>(Number), Type, Status);
 	icu::Formattable Formattable;
 	Formattable.adoptObject(pAmount);
 	pLanguage->m_pTimeUnitFormater->format(Formattable, BufUTF16, Status);
@@ -694,15 +646,15 @@ void CLocalization::AppendDuration(dynamic_string &Buffer, int &BufferIter, CLan
 		BufferIter = Buffer.append_at(BufferIter, "_DURATION_");
 	else
 	{
-		int SrcLength = BufUTF16.length();
+		const int SrcLength = BufUTF16.length();
 
-		int NeededSize = UCNV_GET_MAX_BYTES_FOR_STRING(SrcLength, ucnv_getMaxCharSize(m_pUtf8Converter));
+		const int NeededSize = UCNV_GET_MAX_BYTES_FOR_STRING(SrcLength, ucnv_getMaxCharSize(m_pUtf8Converter));
 
 		while(Buffer.maxsize() - BufferIter <= NeededSize)
 			Buffer.resize_buffer(Buffer.maxsize() * 2);
 
 		Status = U_ZERO_ERROR;
-		int Length = ucnv_fromUChars(m_pUtf8Converter, Buffer.buffer() + BufferIter, Buffer.maxsize() - BufferIter, BufUTF16.getBuffer(), SrcLength, &Status);
+		const int Length = ucnv_fromUChars(m_pUtf8Converter, Buffer.buffer() + BufferIter, Buffer.maxsize() - BufferIter, BufUTF16.getBuffer(), SrcLength, &Status);
 
 		if(U_FAILURE(Status))
 			BufferIter = Buffer.append_at(BufferIter, "_DURATION_");
@@ -713,7 +665,7 @@ void CLocalization::AppendDuration(dynamic_string &Buffer, int &BufferIter, CLan
 
 void CLocalization::Format_V(dynamic_string &Buffer, const char *pLanguageCode, const char *pText, va_list VarArgs)
 {
-	CLanguage *pLanguage = m_pMainLanguage;
+	const CLanguage *pLanguage = GetLanguageByCode(MainLanguage);
 	if(pLanguageCode)
 	{
 		if(auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
@@ -731,11 +683,10 @@ void CLocalization::Format_V(dynamic_string &Buffer, const char *pLanguageCode, 
 	int Iter = 0;
 	int Start = Iter;
 	int ParamTypeStart = -1;
-	int ParamTypeLength = 0;
 	int ParamNameStart = -1;
 	int ParamNameLength = 0;
 
-	int BufferStart = Buffer.length();
+	const int BufferStart = Buffer.length();
 	int BufferIter = BufferStart;
 
 	while(pText[Iter])
@@ -762,23 +713,23 @@ void CLocalization::Format_V(dynamic_string &Buffer, const char *pLanguageCode, 
 						// Get argument type
 						if(str_comp_num("str:", pText + ParamTypeStart, 4) == 0)
 						{
-							BufferIter = Buffer.append_at(BufferIter, (const char *)pVarArgValue);
+							BufferIter = Buffer.append_at(BufferIter, static_cast<const char *>(pVarArgValue));
 						}
 						else if(str_comp_num("int:", pText + ParamTypeStart, 4) == 0)
 						{
-							int Number = *((const int *)pVarArgValue);
+							const int Number = *static_cast<const int *>(pVarArgValue);
 							AppendNumber(Buffer, BufferIter, pLanguage, Number);
 						}
 						else if(str_comp_num("percent:", pText + ParamTypeStart, 4) == 0)
 						{
-							float Number = (*((const float *)pVarArgValue));
+							const float Number = (*static_cast<const float *>(pVarArgValue));
 							AppendPercent(Buffer, BufferIter, pLanguage, Number);
 						}
 						else if(str_comp_num("sec:", pText + ParamTypeStart, 4) == 0)
 						{
-							int Duration = *((const int *)pVarArgValue);
-							int Minutes = Duration / 60;
-							int Seconds = Duration - Minutes * 60;
+							const int Duration = *static_cast<const int *>(pVarArgValue);
+							const int Minutes = Duration / 60;
+							const int Seconds = Duration - Minutes * 60;
 							if(Minutes > 0)
 							{
 								AppendDuration(Buffer, BufferIter, pLanguage, Minutes, icu::TimeUnit::UTIMEUNIT_MINUTE);
@@ -820,8 +771,6 @@ void CLocalization::Format_V(dynamic_string &Buffer, const char *pLanguageCode, 
 				ParamTypeStart = -1;
 				ParamNameStart = -1;
 			}
-			else
-				ParamTypeLength++;
 		}
 		else
 		{
@@ -839,10 +788,10 @@ void CLocalization::Format_V(dynamic_string &Buffer, const char *pLanguageCode, 
 
 	if(Iter > 0 && ParamTypeStart == -1 && ParamNameStart == -1)
 	{
-		BufferIter = Buffer.append_at_num(BufferIter, pText + Start, Iter - Start);
+		Buffer.append_at_num(BufferIter, pText + Start, Iter - Start);
 	}
 
-	if(pLanguage && pLanguage->GetWritingDirection() == DIRECTION_RTL)
+	if(pLanguage->GetWritingDirection() == DIRECTION_RTL)
 		ArabicShaping(Buffer, BufferStart);
 }
 
@@ -890,14 +839,14 @@ void CLocalization::Format_LP(dynamic_string &Buffer, const char *pLanguageCode,
 	va_end(VarArgs);
 }
 
-void CLocalization::ArabicShaping(dynamic_string &Buffer, int BufferStart)
+void CLocalization::ArabicShaping(dynamic_string &Buffer, int BufferStart) const
 {
 	UErrorCode Status = U_ZERO_ERROR;
 
-	int Length = (Buffer.length() - BufferStart + 1);
-	int LengthUTF16 = Length * 2;
-	UChar *pBuf0 = new UChar[LengthUTF16];
-	UChar *pBuf1 = new UChar[LengthUTF16];
+	const int Length = (Buffer.length() - BufferStart + 1);
+	const int LengthUTF16 = Length * 2;
+	const auto pBuf0 = new UChar[LengthUTF16];
+	const auto pBuf1 = new UChar[LengthUTF16];
 
 	ucnv_toUChars(m_pUtf8Converter, pBuf0, LengthUTF16, Buffer.buffer() + BufferStart, Length, &Status);
 
@@ -917,8 +866,8 @@ void CLocalization::ArabicShaping(dynamic_string &Buffer, int BufferStart)
 			U_SHAPE_LAMALEF_RESIZE,
 		&Status);
 
-	int ShapedLength = u_strlen(pBuf0);
-	int NeededSize = UCNV_GET_MAX_BYTES_FOR_STRING(ShapedLength, ucnv_getMaxCharSize(m_pUtf8Converter));
+	const int ShapedLength = u_strlen(pBuf0);
+	const int NeededSize = UCNV_GET_MAX_BYTES_FOR_STRING(ShapedLength, ucnv_getMaxCharSize(m_pUtf8Converter));
 
 	while(Buffer.maxsize() - BufferStart <= NeededSize)
 		Buffer.resize_buffer(Buffer.maxsize() * 2);
@@ -940,16 +889,15 @@ std::string CLocalization::GetLangaugeNameByCode(const char *pLanguageCode)
 }
 
 /**
- *
  * @param pLanguageCode language code
- * @return Ptr to the CLanguage obj. The returned ptr should not be held for a long time, nor should `m_pLanguages` be modified while holding it, as this may lead to a dangling pointer.
+ * @return Ptr to the CLanguage obj.
+ * The returned ptr should not be held for a long time,
+ * nor should items be inserted into 'm_pLanguages' while holding it,
+ * as this may lead to a dangling pointer.
  */
 CLocalization::CLanguage *CLocalization::GetLanguageByCode(const char *pLanguageCode)
 {
-	for(int i = 0; i < m_pLanguages.size(); i++)
-	{
-		if(str_comp(m_pLanguages[i]->GetFilename(), pLanguageCode) == 0)
-			return m_pLanguages[i];
-	}
+	if(const auto LanguageIter = m_pLanguages.find(pLanguageCode); LanguageIter != m_pLanguages.end())
+		return &LanguageIter->second;
 	return nullptr;
 }
