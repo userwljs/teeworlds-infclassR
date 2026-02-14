@@ -45,6 +45,7 @@ enum class ERoundType
 	Normal,
 	Fun,
 	Fast,
+	// TODO: Remove this in the default branch
 	Survival,
 	Count,
 	Invalid = Count,

@@ -3040,6 +3040,7 @@ void CIcGameController::SendKillMessage(int Victim, const DeathContext &Context)
 
 void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Context)
 {
+	// TODO: Remove this in the default branch
 	if(GetRoundType() != ERoundType::Survival)
 		return;
 
@@ -3074,19 +3075,19 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 		switch(Context.DamageType)
 		{
 		case EDamageType::MERCENARY_BOMB:
-			PossibleMessages.Add(("{str:PlayerName} got to know their bomb too closely."));
-			PossibleMessages.Add(("{str:PlayerName} rode the blast wave for the last time."));
+			PossibleMessages.Add(_("{str:PlayerName} got to know their bomb too closely."));
+			PossibleMessages.Add(_("{str:PlayerName} rode the blast wave for the last time."));
 			break;
 		case EDamageType::BOOMER_EXPLOSION:
-			PossibleMessages.Add(("{str:PlayerName} was exploded by {str:Killer}."));
-			PossibleMessages.Add(("{str:PlayerName} was eliminated by {str:Killer}."));
-			PossibleMessages.Add(("{str:PlayerName} met a boomer."));
+			PossibleMessages.Add(_("{str:PlayerName} was exploded by {str:Killer}."));
+			PossibleMessages.Add(_("{str:PlayerName} was eliminated by {str:Killer}."));
+			PossibleMessages.Add(_("{str:PlayerName} met a boomer."));
 			break;
 		case EDamageType::SLUG_SLIME:
-			PossibleMessages.Add(("{str:PlayerName} had no aid against {str:Killer}."));
+			PossibleMessages.Add(_("{str:PlayerName} had no aid against {str:Killer}."));
 			break;
 		case EDamageType::SCIENTIST_MINE:
-			PossibleMessages.Add(("{str:PlayerName} was electrified by {str:Killer}."));
+			PossibleMessages.Add(_("{str:PlayerName} was electrified by {str:Killer}."));
 			break;
 		case EDamageType::DRYING_HOOK:
 			if(pVictimCharacter->Core()->m_AttachedPlayers.size() >= 2)
@@ -3108,8 +3109,8 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 				if(Stretchers >= 2)
 				{
 					PossibleMessages.Clear();
-					PossibleMessages.Add(("{str:PlayerName} did a stretching exercise."));
-					PossibleMessages.Add(("{str:PlayerName} was torn apart."));
+					PossibleMessages.Add(_("{str:PlayerName} did a stretching exercise."));
+					PossibleMessages.Add(_("{str:PlayerName} was torn apart."));
 				}
 				break;
 			}
@@ -3123,14 +3124,14 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 		case EPlayerClass::Smoker:
 			if(Context.DamageType == EDamageType::DRYING_HOOK)
 			{
-				PossibleMessages.Add(("{str:PlayerName} was drained by {str:Killer}."));
+				PossibleMessages.Add(_("{str:PlayerName} was drained by {str:Killer}."));
 			}
 			break;
 		case EPlayerClass::Ghost:
-			PossibleMessages.Add(("{str:PlayerName} was surprised by {str:Killer}."));
+			PossibleMessages.Add(_("{str:PlayerName} was surprised by {str:Killer}."));
 			break;
 		case EPlayerClass::Bat:
-			PossibleMessages.Add(("{str:PlayerName} was bitten by {str:Killer}."));
+			PossibleMessages.Add(_("{str:PlayerName} was bitten by {str:Killer}."));
 			break;
 		default:
 			break;
@@ -3138,20 +3139,20 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 
 		if(pVictimCharacter->GetAttackTick() + TickSpeed * 1.25f < Tick)
 		{
-			PossibleMessages.Add("{str:PlayerName} kinda gave up.");
+			PossibleMessages.Add(_("{str:PlayerName} kinda gave up."));
 		}
 		else if(pVictimCharacter->GetLastNoAmmoSoundTick() + Server()->TickSpeed() * 0.6 < Tick)
 		{
-			PossibleMessages.Add("{str:PlayerName} had no ammo to kill them all.");
-			PossibleMessages.Add("{str:PlayerName} forgot to reload timely.");
+			PossibleMessages.Add(_("{str:PlayerName} had no ammo to kill them all."));
+			PossibleMessages.Add(_("{str:PlayerName} forgot to reload timely."));
 		}
 
 		const char *apPlayerKilledByMessages[] = {
-			"{str:PlayerName} was destroyed by {str:Killer}.",
-			"{str:PlayerName} was slain by {str:Killer}.",
-			"{str:PlayerName} was decapitated by {str:Killer}.",
-			"{str:PlayerName} was chopped up by {str:Killer}.",
-			"{str:PlayerName} was removed from this world by {str:Killer}.",
+			_("{str:PlayerName} was destroyed by {str:Killer}."),
+			_("{str:PlayerName} was slain by {str:Killer}."),
+			_("{str:PlayerName} was decapitated by {str:Killer}."),
+			_("{str:PlayerName} was chopped up by {str:Killer}."),
+			_("{str:PlayerName} was removed from this world by {str:Killer}."),
 		};
 
 		if(PossibleMessages.IsEmpty())
@@ -3202,12 +3203,12 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 		};
 		if(BadTiles.Contains(Context.DamageType))
 		{
-			PossibleMessages.Add(("{str:PlayerName} made a wrong step."));
-			PossibleMessages.Add(("{str:PlayerName} went where they shouldn't."));
+			PossibleMessages.Add(_("{str:PlayerName} made a wrong step."));
+			PossibleMessages.Add(_("{str:PlayerName} went where they shouldn't."));
 		}
 
 		const char *apPlayerDeathMessages[] = {
-			"{str:PlayerName} didn't survive in this round.",
+			_("{str:PlayerName} didn't survive in this round."),
 		};
 
 		if(PossibleMessages.IsEmpty())
