@@ -103,7 +103,7 @@ public:
 	bool GetClassHelpPage(dynamic_string *pOutput, const char *pLanguage, EPlayerClass PlayerClass) const;
 
 	bool OnEntity(const char *pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv) override;
-	void HandleCharacterTiles(CIcCharacter *pCharacter);
+	void HandleCharacterTiles(CIcCharacter *pCharacter) const;
 	void HandleLastHookers();
 
 	bool CanSeeDetails(int Who, int Whom) const;
@@ -120,7 +120,7 @@ public:
 
 	void CreateExplosion(const vec2 &Pos, int Owner, EDamageType DamageType, float DamageFactor = 1.0f);
 	void CreateExplosionDisk(vec2 Pos, float InnerRadius, float DamageRadius, int Damage, float Force, int Owner, EDamageType DamageType);
-	void CreateExplosionDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner);
+	void CreateExplosionDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner) const;
 
 	void SendHammerDot(const vec2 &Pos, int SnapId);
 	void SendServerParams(int ClientId) const;
@@ -128,7 +128,7 @@ public:
 	int OnCharacterDeath(CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;
 	void OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext);
 	void OnIcCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context);
-	void OnClassChooserRequested(CIcCharacter *pCharacter);
+	void OnClassChooserRequested(CIcCharacter *pCharacter) const;
 	void CheckRoundFailed();
 	float GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const override;
 	void DoWincheck() override;
@@ -161,7 +161,7 @@ public:
 	bool SetPlayerClassEnabled(EPlayerClass PlayerClass, bool Enabled);
 	bool ResetPlayerClassEnabled(EPlayerClass PlayerClass);
 	void ResetPlayerClassesEnablement();
-	bool SetPlayerClassProbability(EPlayerClass PlayerClass, int Probability);
+	bool SetPlayerClassProbability(EPlayerClass PlayerClass, int Probability) const;
 
 	uint32_t GetMinPlayersForClass(EPlayerClass PlayerClass) const;
 	uint32_t GetClassPlayerLimit(EPlayerClass PlayerClass) const;
@@ -190,7 +190,7 @@ public:
 	bool CanVote() override;
 
 	void OnPlayerVoteCommand(int ClientId, int Vote) override;
-	void OnPlayerClassChanged(CIcPlayer *pPlayer);
+	void OnPlayerClassChanged(const CIcPlayer *pPlayer);
 
 	void OnPlayerConnect(CPlayer *pPlayer) override;
 	void OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType Type, const char *pReason) override;
