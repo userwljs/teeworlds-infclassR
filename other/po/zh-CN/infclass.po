@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: infectiondust\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-02-14 19:10+0800\n"
-"PO-Revision-Date: 2026-02-13 14:29+0800\n"
+"PO-Revision-Date: 2026-02-14 19:50+0800\n"
 "Last-Translator: Gao Zimu <gaozimu_0502@163.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -59,7 +59,8 @@ msgctxt "Mercenary"
 msgid "Use the laser to upgrade the bomb"
 msgstr "用激光升级炸弹"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1266 src/game/server/infclass/classes/humans/human.cpp:1538
+#: src/game/server/infclass/classes/humans/human.cpp:1266
+#: src/game/server/infclass/classes/humans/human.cpp:1538
 msgctxt "Mercenary"
 msgid "Explosive yield: {percent:BombLevel}"
 msgstr "爆炸当量： {percent:BombLevel}"
@@ -114,12 +115,14 @@ msgstr[0] "炸弹剩余 {int:NumBombs} 个"
 msgid "The white hole is available!"
 msgstr "白洞已就绪！"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1439 src/game/server/infclass/classes/humans/human.cpp:1457
+#: src/game/server/infclass/classes/humans/human.cpp:1439
+#: src/game/server/infclass/classes/humans/human.cpp:1457
 msgid "{int:NumMines} mine is active"
 msgid_plural "{int:NumMines} mines are active"
 msgstr[0] "地雷已激活 {int:NumMines} 个"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1448 src/game/server/infclass/classes/humans/human.cpp:1462
+#: src/game/server/infclass/classes/humans/human.cpp:1448
+#: src/game/server/infclass/classes/humans/human.cpp:1462
 msgid "White hole: {sec:RemainingTime}"
 msgstr "白洞：{sec:RemainingTime}"
 
@@ -403,9 +406,8 @@ msgid "{str:PlayerName} entered and joined the game"
 msgstr "{str:PlayerName} 连接并加入游戏"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:293
-#, fuzzy
 msgid "InfectionClass Mod. Version: {str:VerStr}"
-msgstr "InfectionClass（感染模式），作者： necropotame（版本 {str:VersionCode}）"
+msgstr "InfectionClass（感染模式）Mod。版本：{str:VerStr}"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:295
 msgid "See also: /help, /changelog, /about"
@@ -627,7 +629,9 @@ msgstr "职业选择器会在回合开始前显示"
 msgid "Class {str:ClassName} will be automatically attributed to you when round starts"
 msgstr "回合开始时会自动选择“{str:ClassName}”职业"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1769 src/game/server/infclass/ic_gamecontroller.cpp:2102 src/game/server/infclass/ic_gamecontroller.cpp:2147
+#: src/game/server/infclass/ic_gamecontroller.cpp:1769
+#: src/game/server/infclass/ic_gamecontroller.cpp:2102
+#: src/game/server/infclass/ic_gamecontroller.cpp:2147
 msgid "The command is not available (enabled only in training mode)"
 msgstr "命令不可用（仅在练习模式中启用）"
 
@@ -637,11 +641,11 @@ msgstr "{str:PlayerName} 修改职业为 {str:ClassName}"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1896
 msgid "Unable to start fun round: rounds configuration is empty"
-msgstr ""
+msgstr "无法开始有趣的回合：回合配置是空的"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1910
 msgid "Unable to start fun round: limit per map reached"
-msgstr ""
+msgstr "无法开始有趣的回合：已达到单张地图的最大限制"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:2109
 msgid "Unable to save the position: you have no character to save its position"
@@ -671,11 +675,13 @@ msgstr "女巫在此回合不可用"
 msgid "The Santa is not available in this round"
 msgstr "圣诞老人在此回合不可用"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2332 src/game/server/infclass/ic_gamecontroller.cpp:2435
+#: src/game/server/infclass/ic_gamecontroller.cpp:2332
+#: src/game/server/infclass/ic_gamecontroller.cpp:2435
 msgid "The Santa is already here"
 msgstr "圣诞老人已经在这里"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2336 src/game/server/infclass/ic_gamecontroller.cpp:2440
+#: src/game/server/infclass/ic_gamecontroller.cpp:2336
+#: src/game/server/infclass/ic_gamecontroller.cpp:2440
 msgid "All witches are already here"
 msgstr "所有女巫已经在这里了"
 
@@ -736,119 +742,96 @@ msgid "{str:PlayerName} joined the game"
 msgstr "{str:PlayerName} 加入游戏"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3078
-#, fuzzy
 msgid "{str:PlayerName} got to know their bomb too closely."
-msgstr "{str:PlayerName} 加入游戏"
+msgstr "{str:PlayerName} 与他的炸弹亲密接触了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3079
-#, fuzzy
 msgid "{str:PlayerName} rode the blast wave for the last time."
-msgstr "{str:PlayerName} 离开游戏"
+msgstr "{str:PlayerName} 再也没有感受冲击波的机会了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3082
-#, fuzzy
 msgid "{str:PlayerName} was exploded by {str:Killer}."
-msgstr "{str:PlayerName} 被封禁了（{str:Reason}）"
+msgstr "{str:PlayerName} 被 {str:Killer} 炸飞了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3083
-#, fuzzy
 msgid "{str:PlayerName} was eliminated by {str:Killer}."
-msgstr "{str:PlayerName} 被封禁了（{str:Reason}）"
+msgstr "{str:PlayerName} 被 {str:Killer} 消灭了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3084
-#, fuzzy
 msgid "{str:PlayerName} met a boomer."
-msgstr "{str:PlayerName} 加入游戏"
+msgstr "{str:PlayerName} 邂逅了爆炸者。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3087
-#, fuzzy
 msgid "{str:PlayerName} had no aid against {str:Killer}."
-msgstr "{str:PlayerName} 被封禁了（{str:Reason}）"
+msgstr "{str:PlayerName} 无力抵抗 {str:Killer}。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3090
-#, fuzzy
 msgid "{str:PlayerName} was electrified by {str:Killer}."
-msgstr "{str:PlayerName} 被踢出了服务器（{str:Reason}）"
+msgstr "{str:PlayerName} 被 {str:Killer} 电焦了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3112
-#, fuzzy
 msgid "{str:PlayerName} did a stretching exercise."
-msgstr "{str:PlayerName} 加入旁观者"
+msgstr "{str:PlayerName} 做了个拉伸运动。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3113
-#, fuzzy
 msgid "{str:PlayerName} was torn apart."
-msgstr "{str:PlayerName} 离开游戏"
+msgstr "{str:PlayerName} 被撕碎了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3127
-#, fuzzy
 msgid "{str:PlayerName} was drained by {str:Killer}."
-msgstr "{str:PlayerName} 被封禁了（{str:Reason}）"
+msgstr "{str:PlayerName} 被 {str:Killer} 吸干了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3131
-#, fuzzy
 msgid "{str:PlayerName} was surprised by {str:Killer}."
-msgstr "{str:PlayerName} 摧毁了你的炮塔！"
+msgstr "{str:PlayerName} 被 {str:Killer} 吓死了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3134
-#, fuzzy
 msgid "{str:PlayerName} was bitten by {str:Killer}."
-msgstr "{str:PlayerName} 被封禁了（{str:Reason}）"
+msgstr "{str:PlayerName} 被 {str:Killer} 咬了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3142
-#, fuzzy
 msgid "{str:PlayerName} kinda gave up."
-msgstr "{str:PlayerName} 加入游戏"
+msgstr "{str:PlayerName} 选择了放弃。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3146
-#, fuzzy
 msgid "{str:PlayerName} had no ammo to kill them all."
-msgstr "{str:PlayerName} 离开游戏"
+msgstr "{str:PlayerName} 的子弹不够把它们全部杀光。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3147
-#, fuzzy
 msgid "{str:PlayerName} forgot to reload timely."
-msgstr "{str:PlayerName} 离开游戏"
+msgstr "{str:PlayerName} 忘了及时装弹。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3151
-#, fuzzy
 msgid "{str:PlayerName} was destroyed by {str:Killer}."
-msgstr "{str:PlayerName} 摧毁了你的炮塔！"
+msgstr "{str:PlayerName} 被 {str:Killer} 摧毁了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3152
-#, fuzzy
 msgid "{str:PlayerName} was slain by {str:Killer}."
-msgstr "{str:PlayerName} 被封禁了（{str:Reason}）"
+msgstr "{str:PlayerName} 命丧 {str:Killer} 之手。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3153
-#, fuzzy
 msgid "{str:PlayerName} was decapitated by {str:Killer}."
-msgstr "{str:PlayerName} 摧毁了你的炮塔！"
+msgstr "{str:Killer} 让 {str:PlayerName} 的头摆脱了脖子的束缚。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3154
-#, fuzzy
 msgid "{str:PlayerName} was chopped up by {str:Killer}."
-msgstr "{str:PlayerName} 离开游戏（{str:Reason}）"
+msgstr "{str:PlayerName} 被 {str:Killer} 剁碎了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3155
-#, fuzzy
 msgid "{str:PlayerName} was removed from this world by {str:Killer}."
-msgstr "{str:PlayerName} 离开游戏（{str:Reason}）"
+msgstr "{str:PlayerName} 被 {str:Killer} 从这个世界上移除了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3206
-#, fuzzy
 msgid "{str:PlayerName} made a wrong step."
-msgstr "{str:PlayerName} 离开游戏"
+msgstr "{str:PlayerName} 踩空了。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3207
-#, fuzzy
 msgid "{str:PlayerName} went where they shouldn't."
-msgstr "{str:PlayerName} 连接并加入游戏"
+msgstr "{str:PlayerName} 去了不该去的地方，通往黄泉。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3211
-#, fuzzy
 msgid "{str:PlayerName} didn't survive in this round."
-msgstr "{str:PlayerName} 连接并加入游戏"
+msgstr "{str:PlayerName} 这回合没活下来。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3456
 msgid "Play more on this map"
@@ -1252,7 +1235,7 @@ msgstr "蝙蝠能够在空中无限跳跃，但是不能直接感染人类。"
 #: src/game/server/infclass/ic_gamecontroller.cpp:4666
 msgctxt "Bat"
 msgid "Instead, it can hammer humans to steal their health and heal itself."
-msgstr "相反，他可以锤人类来窃取人类的血量并且回血。"
+msgstr "相反，它可以锤人类来窃取人类的血量并且回血。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:4667
 msgctxt "Bat"
@@ -1262,7 +1245,7 @@ msgstr "锤子可以治疗感染者。"
 #: src/game/server/infclass/ic_gamecontroller.cpp:4668
 msgctxt "Bat"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "他可以勾住人类，每秒造成 1 点伤害。"
+msgstr "它可以勾住人类，每秒造成 1 点伤害。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:4671
 msgctxt "Ghost"
@@ -1436,94 +1419,91 @@ msgstr "键入“/help {str:ClassName}”获取当前职业的更多信息"
 
 #: src/game/server/gamecontext.cpp:1315
 msgid "Starting vote '{str:Desc}'"
-msgstr ""
+msgstr "正在开始投票 “{str:Desc}”"
 
 #: src/game/server/gamecontext.cpp:1572
 msgid "Vote passed"
-msgstr ""
+msgstr "投票通过"
 
 #: src/game/server/gamecontext.cpp:1582
 msgid "Vote failed"
-msgstr ""
+msgstr "投票否决"
 
 #: src/game/server/gamecontext.cpp:1838
 msgid "This server has an initial chat delay, you will need to wait {int:Sec} seconds before talking."
-msgstr ""
+msgstr "此服务器设置了初始聊天延迟，你在 {int:Sec} 秒后才能进行聊天。"
 
 #: src/game/server/gamecontext.cpp:2458
 msgid "Invalid client id to kick"
-msgstr ""
+msgstr "被踢出的客户端 ID 无效"
 
 #: src/game/server/gamecontext.cpp:2464
 msgid "You can't kick yourself"
-msgstr ""
+msgstr "你不能踢出你自己"
 
 #: src/game/server/gamecontext.cpp:2470
 msgid "Unable to kick a server-side bot"
-msgstr ""
+msgstr "无法踢出服务端机器人"
 
 #: src/game/server/gamecontext.cpp:2476
 msgid "You can't kick admins"
-msgstr ""
+msgstr "你不能踢出管理员"
 
 #: src/game/server/gamecontext.cpp:2478
 msgid "'{str:CallerName}' called for vote to kick you"
-msgstr ""
+msgstr "“{str:CallerName}” 想要发起投票踢出你"
 
 #: src/game/server/gamecontext.cpp:2491
 msgid "Spectators aren't allowed to start a vote."
-msgstr ""
+msgstr "旁观者不被允许开始投票。"
 
 #: src/game/server/gamecontext.cpp:2506
 msgid "Invalid option"
-msgstr ""
+msgstr "无效的选项"
 
 #: src/game/server/gamecontext.cpp:2520
 msgid "Server is already on map {str:MapName}"
-msgstr ""
+msgstr "服务器的地图已经是 {str:MapName} 了"
 
 #: src/game/server/gamecontext.cpp:2531
 msgid "Each map must be played at least {int:Rounds} rounds before calling a map vote"
-msgstr ""
+msgstr "每个地图必需玩至少  {int:Rounds} 回合才能投票换图"
 
 #: src/game/server/gamecontext.cpp:2540 src/game/server/gamecontext.cpp:2559
-#, fuzzy
 msgid "'{str:CallerName}' called vote to change server option '{str:VoteName}' ({str:Reason})"
-msgstr "{str:PlayerName} 离开游戏（{str:Reason}）"
+msgstr "“{str:CallerName}” 发起投票更改服务器选项 “{str:VoteName}”（{str:Reason}）"
 
 #: src/game/server/gamecontext.cpp:2553
 msgid "Votes are only allowed when the round start."
-msgstr ""
+msgstr "投票只在回合开始前允许。"
 
 #: src/game/server/gamecontext.cpp:2585
 msgid "'{str:VoteName}' isn't an option on this server"
-msgstr ""
+msgstr "“{str:VoteName}” 不是服务器选项"
 
 #: src/game/server/gamecontext.cpp:2591
-#, fuzzy
 msgid "'{str:CallerName}' called vote to change server option '{str:VoteName}'"
-msgstr "{str:PlayerName} 提议开始投票 '{str:VoteName}'"
+msgstr "“{str:CallerName}” 发起投票更改服务器选项 “{str:VoteName}”"
 
 #: src/game/server/gamecontext.cpp:2605
 msgid "Server does not allow voting to move players to spectators"
-msgstr ""
+msgstr "服务器不允许移动玩家到旁观位"
 
 #: src/game/server/gamecontext.cpp:2613
 msgid "Invalid client id to move"
-msgstr ""
+msgstr "无效的客户端 ID"
 
 #: src/game/server/gamecontext.cpp:2619
 msgid "You can't move yourself"
-msgstr ""
+msgstr "你不能将你自己移动到旁观位"
 
 #: src/game/server/gamecontext.cpp:2625
 msgid "Unable to move a server-side bot to spectators"
-msgstr ""
+msgstr "无法将服务端机器人移动到旁观位"
 
 #: src/game/server/gamecontext.cpp:2634
-#, fuzzy
 msgid "'{str:CallerName}' called for vote to move '{str:SpectateName}' to spectators ({str:Reason})"
-msgstr "{str:PlayerName} 提议封禁 {str:VictimName} ({str:Reason})"
+msgstr "“{str:CallerName}” 发起投票将 “{str:SpectateName}” 移动到旁观位（{str:Reason}）"
 
 #: src/game/server/gamecontext.cpp:2716
 msgid "You can't join the spectators right now"
@@ -1531,7 +1511,7 @@ msgstr "你现在还不能进入旁观模式"
 
 #: src/game/server/gamecontext.cpp:2753
 msgid "Invalid spectator id used"
-msgstr ""
+msgstr "无效的旁观者 ID"
 
 #: src/game/server/gamecontext.cpp:2778
 msgid "{str:PlayerName} changed their name to {str:NewName}"
@@ -1551,29 +1531,27 @@ msgstr "如果您的语言还不可用，您可以帮助翻译（详见 /help tr
 
 #: src/game/server/gamecontext.cpp:3004
 msgid "You will now see all tees on this server, no matter the distance"
-msgstr ""
+msgstr "你现在能看到服务器上的所有 Tee，无论距离"
 
 #: src/game/server/gamecontext.cpp:3007
 msgid "You will no longer see all tees on this server"
-msgstr ""
+msgstr "你不再能看到服务器上的所有 Tee"
 
 #: src/game/server/gamecontext.cpp:3340
 msgid "All players were moved to the {str:TeamName}"
-msgstr ""
+msgstr "所有玩家被移动到了 {str:TeamName}"
 
 #: src/game/server/gamecontext.cpp:3593
 msgid "authorized player forced server option '{str:VoteName}' ({str:Reason})"
-msgstr ""
+msgstr "已认证的玩家强制更改了服务器选项 “{str:VoteName}”（{str:Reason}）"
 
 #: src/game/server/gamecontext.cpp:3640
-#, fuzzy
 msgid "'{str:PlayerName}' was moved to spectator ({str:Reason})"
-msgstr "{str:PlayerName} 离开游戏（{str:Reason}）"
+msgstr "“{str:PlayerName}”  被移动到了旁观位（{str:Reason}）"
 
 #: src/game/server/gamecontext.cpp:3712
-#, fuzzy
 msgid "admin forced vote {str:VoteName}"
-msgstr "{str:PlayerName} 提议开始投票 '{str:VoteName}'"
+msgstr "管理员进行了强制投票 {str:VoteName}"
 
 #: src/game/server/gamecontext.cpp:3780 src/game/server/gamecontext.cpp:3808
 msgid "InfectionClass, by necropotame (version {str:VersionCode})"
@@ -1621,15 +1599,15 @@ msgstr "另见：/credits"
 
 #: src/game/server/gamecontext.cpp:3887
 msgid "Usage: /msg <username or group> <message>"
-msgstr ""
+msgstr "使用方法：/msg <玩家或群组名> <内容>"
 
 #: src/game/server/gamecontext.cpp:3889
 msgid "Send a private message to a player or a group of players"
-msgstr ""
+msgstr "向一名玩家或玩家群组发送私信"
 
 #: src/game/server/gamecontext.cpp:3891
 msgid "Available groups: !near, !engineer, !soldier, ..."
-msgstr ""
+msgstr "可用的群组：!near、!engineer、!soldier……"
 
 #: src/game/server/gamecontext.cpp:4061
 msgid "No player was found with this name"
@@ -1637,21 +1615,19 @@ msgstr "没有找到这个名字的玩家"
 
 #: src/game/server/gamecontext.cpp:4139
 msgid "Invalid player name"
-msgstr ""
+msgstr "无效的玩家名"
 
 #: src/game/server/gamecontext.cpp:4148 src/game/server/gamecontext.cpp:4997
-#, fuzzy
 msgid "No player with name \"{str:PlayerName}\" found"
-msgstr "消除目标︰{str:PlayerName}"
+msgstr "没有找到叫 “{str:PlayerName}” 的玩家"
 
 #: src/game/server/gamecontext.cpp:4158
-#, fuzzy
 msgid "Player muted. Mute will persist until you or the muted player disconnects."
-msgstr "与客户端屏蔽不同，此效果将在地图切换后持续生效，并在您或被屏蔽玩家断开连接时失效。"
+msgstr "已屏蔽玩家。屏蔽将持续到你或者被屏蔽的玩家断开连接。"
 
 #: src/game/server/gamecontext.cpp:4163
 msgid "Player unmuted. You can see their messages again."
-msgstr ""
+msgstr "已解除屏蔽玩家。你能看到他们的消息了。"
 
 #: src/game/server/gamecontext.cpp:4237
 msgid "Choose a help page with /help <page>"
@@ -1691,31 +1667,31 @@ msgstr "({int:PageNumber}/{int:PagesInTotal}， 下一页查看 /changelog {int:
 
 #: src/game/server/gamecontext.cpp:4972
 msgid "You are muted for {sec:Duration}"
-msgstr "你被禁言了{sec:Duration}"
+msgstr "你被禁言了 {sec:Duration}"
 
 #: src/game/server/gamecontext.cpp:4988
 msgid "Invalid whisper"
-msgstr ""
+msgstr "无效的私信"
 
 #: src/game/server/gamecontext.cpp:5094
 msgid "You do not have an ongoing conversation. Whisper to someone to start one"
-msgstr ""
+msgstr "你没有正在进行的对话。向某人发送私信来开始一个"
 
 #: src/game/server/gamecontext.cpp:5124
 msgid "You can only vote after logging in."
-msgstr ""
+msgstr "你需要登录才能投票。"
 
 #: src/game/server/gamecontext.cpp:5135
 msgid "Wait for current vote to end before calling a new one."
-msgstr ""
+msgstr "当前投票结束才能开始新投票。"
 
 #: src/game/server/gamecontext.cpp:5147
 msgid "You must wait {int:TimeLeftSeconds} seconds before making another vote."
-msgstr ""
+msgstr "你需要等 {int:TimeLeftSeconds}  秒才能开始另一个投票。"
 
 #: src/game/server/gamecontext.cpp:5161
 msgid "There's a {int:Delay} second delay between map-votes, please wait {int:WaitTime} seconds."
-msgstr ""
+msgstr "在换图投票之间有 {int:Delay} 秒的间隔，请等 {int:WaitTime} 秒。"
 
 #: src/game/server/gamecontroller.cpp:208
 msgctxt "Inactive kick broadcast message"
