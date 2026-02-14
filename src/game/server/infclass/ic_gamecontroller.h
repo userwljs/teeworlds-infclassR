@@ -55,6 +55,7 @@ enum class ERoundType
 	Normal,
 	Fun,
 	Fast,
+	// TODO: Remove this in the default branch
 	Survival,
 	HideAndSeek,
 	Count,
@@ -134,7 +135,7 @@ public:
 	bool GetClassHelpPage(dynamic_string *pOutput, const char *pLanguage, EPlayerClass PlayerClass) const;
 
 	bool OnEntity(const char *pName, vec2 Pivot, vec2 P0, vec2 P1, vec2 P2, vec2 P3, int PosEnv) override;
-	void HandleCharacterTiles(CIcCharacter *pCharacter);
+	void HandleCharacterTiles(CIcCharacter *pCharacter) const;
 	void HandleLastHookers();
 
 	float GetSecondsElapsed() const;
@@ -154,7 +155,7 @@ public:
 
 	void CreateExplosion(const vec2 &Pos, int Owner, EDamageType DamageType, float DamageFactor = 1.0f);
 	void CreateExplosionDisk(vec2 Pos, float InnerRadius, float DamageRadius, int Damage, float Force, int Owner, EDamageType DamageType);
-	void CreateExplosionDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner);
+	void CreateExplosionDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner) const;
 	void CreateDeathEffectDiskGfx(vec2 Pos, float InnerRadius, float DamageRadius, int Owner);
 
 	void SendHammerDot(const vec2 &Pos, int SnapId);
@@ -164,8 +165,7 @@ public:
 	void OnIcCharacterDeath(CIcCharacter *pVictim, DeathContext *pContext);
 	void OnIcCharacterSpawned(CIcCharacter *pCharacter, const SpawnContext &Context);
 	void OnCharacterBackFromDead(CIcCharacter *pCharacter);
-	void OnClassChooserRequested(CIcCharacter *pCharacter);
-
+	void OnClassChooserRequested(CIcCharacter *pCharacter) const;
 	void CheckRoundFailed();
 	float GetMaxInactiveTimeSeconds(const CPlayer *pPlayer) const override;
 	void DoWincheck() override;
@@ -198,7 +198,7 @@ public:
 	bool SetPlayerClassEnabled(EPlayerClass PlayerClass, bool Enabled);
 	bool ResetPlayerClassEnabled(EPlayerClass PlayerClass);
 	void ResetPlayerClassesEnablement();
-	bool SetPlayerClassProbability(EPlayerClass PlayerClass, int Probability);
+	bool SetPlayerClassProbability(EPlayerClass PlayerClass, int Probability) const;
 
 	uint32_t GetMinPlayersForClass(EPlayerClass PlayerClass) const;
 	uint32_t GetClassPlayerLimit(EPlayerClass PlayerClass) const;

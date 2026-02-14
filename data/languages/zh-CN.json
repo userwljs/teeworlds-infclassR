@@ -385,6 +385,10 @@
             "value": "{str:PlayerName} 连接并加入游戏"
         },
         {
+            "key": "InfectionClass Mod. Version: {str:VerStr}",
+            "value": "InfectionClass（感染模式）Mod。版本：{str:VerStr}"
+        },
+        {
             "key": "See also: /help, /changelog, /about",
             "value": "另见：/help、/changelog、/about"
         },
@@ -613,6 +617,14 @@
             "value": "{str:PlayerName} 修改职业为 {str:ClassName}"
         },
         {
+            "key": "Unable to start fun round: rounds configuration is empty",
+            "value": "无法开始有趣的回合：回合配置是空的"
+        },
+        {
+            "key": "Unable to start fun round: limit per map reached",
+            "value": "无法开始有趣的回合：已达到单张地图的最大限制"
+        },
+        {
             "key": "Unable to save the position: you have no character to save its position",
             "value": "无法保存坐标: 你没有角色来保存位置"
         },
@@ -703,6 +715,98 @@
         {
             "key": "{str:PlayerName} joined the game",
             "value": "{str:PlayerName} 加入游戏"
+        },
+        {
+            "key": "{str:PlayerName} got to know their bomb too closely.",
+            "value": "{str:PlayerName} 与他的炸弹亲密接触了。"
+        },
+        {
+            "key": "{str:PlayerName} rode the blast wave for the last time.",
+            "value": "{str:PlayerName} 再也没有感受冲击波的机会了。"
+        },
+        {
+            "key": "{str:PlayerName} was exploded by {str:Killer}.",
+            "value": "{str:PlayerName} 被 {str:Killer} 炸飞了。"
+        },
+        {
+            "key": "{str:PlayerName} was eliminated by {str:Killer}.",
+            "value": "{str:PlayerName} 被 {str:Killer} 消灭了。"
+        },
+        {
+            "key": "{str:PlayerName} met a boomer.",
+            "value": "{str:PlayerName} 邂逅了爆炸者。"
+        },
+        {
+            "key": "{str:PlayerName} had no aid against {str:Killer}.",
+            "value": "{str:PlayerName} 无力抵抗 {str:Killer}。"
+        },
+        {
+            "key": "{str:PlayerName} was electrified by {str:Killer}.",
+            "value": "{str:PlayerName} 被 {str:Killer} 电焦了。"
+        },
+        {
+            "key": "{str:PlayerName} did a stretching exercise.",
+            "value": "{str:PlayerName} 做了个拉伸运动。"
+        },
+        {
+            "key": "{str:PlayerName} was torn apart.",
+            "value": "{str:PlayerName} 被撕碎了。"
+        },
+        {
+            "key": "{str:PlayerName} was drained by {str:Killer}.",
+            "value": "{str:PlayerName} 被 {str:Killer} 吸干了。"
+        },
+        {
+            "key": "{str:PlayerName} was surprised by {str:Killer}.",
+            "value": "{str:PlayerName} 被 {str:Killer} 吓死了。"
+        },
+        {
+            "key": "{str:PlayerName} was bitten by {str:Killer}.",
+            "value": "{str:PlayerName} 被 {str:Killer} 咬了。"
+        },
+        {
+            "key": "{str:PlayerName} kinda gave up.",
+            "value": "{str:PlayerName} 选择了放弃。"
+        },
+        {
+            "key": "{str:PlayerName} had no ammo to kill them all.",
+            "value": "{str:PlayerName} 的子弹不够把它们全部杀光。"
+        },
+        {
+            "key": "{str:PlayerName} forgot to reload timely.",
+            "value": "{str:PlayerName} 忘了及时装弹。"
+        },
+        {
+            "key": "{str:PlayerName} was destroyed by {str:Killer}.",
+            "value": "{str:PlayerName} 被 {str:Killer} 摧毁了。"
+        },
+        {
+            "key": "{str:PlayerName} was slain by {str:Killer}.",
+            "value": "{str:PlayerName} 命丧 {str:Killer} 之手。"
+        },
+        {
+            "key": "{str:PlayerName} was decapitated by {str:Killer}.",
+            "value": "{str:Killer} 让 {str:PlayerName} 的头摆脱了脖子的束缚。"
+        },
+        {
+            "key": "{str:PlayerName} was chopped up by {str:Killer}.",
+            "value": "{str:PlayerName} 被 {str:Killer} 剁碎了。"
+        },
+        {
+            "key": "{str:PlayerName} was removed from this world by {str:Killer}.",
+            "value": "{str:PlayerName} 被 {str:Killer} 从这个世界上移除了。"
+        },
+        {
+            "key": "{str:PlayerName} made a wrong step.",
+            "value": "{str:PlayerName} 踩空了。"
+        },
+        {
+            "key": "{str:PlayerName} went where they shouldn't.",
+            "value": "{str:PlayerName} 去了不该去的地方，通往黄泉。"
+        },
+        {
+            "key": "{str:PlayerName} didn't survive in this round.",
+            "value": "{str:PlayerName} 这回合没活下来。"
         },
         {
             "key": "Play more on this map",
@@ -1082,7 +1186,7 @@
         },
         {
             "key": "Instead, it can hammer humans to steal their health and heal itself.",
-            "value": "相反，他可以锤人类来窃取人类的血量并且回血。"
+            "value": "相反，它可以锤人类来窃取人类的血量并且回血。"
         },
         {
             "key": "The hammer is also useful for healing the infected.",
@@ -1090,7 +1194,7 @@
         },
         {
             "key": "It can also inflict 1 damage point per second by hooking humans.",
-            "value": "他可以勾住人类，每秒造成 1 点伤害。"
+            "value": "它可以勾住人类，每秒造成 1 点伤害。"
         },
         {
             "key": "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer.",
@@ -1237,8 +1341,100 @@
             "value": "键入“/help {str:ClassName}”获取当前职业的更多信息"
         },
         {
+            "key": "Starting vote '{str:Desc}'",
+            "value": "正在开始投票 “{str:Desc}”"
+        },
+        {
+            "key": "Vote passed",
+            "value": "投票通过"
+        },
+        {
+            "key": "Vote failed",
+            "value": "投票否决"
+        },
+        {
+            "key": "This server has an initial chat delay, you will need to wait {int:Sec} seconds before talking.",
+            "value": "此服务器设置了初始聊天延迟，你在 {int:Sec} 秒后才能进行聊天。"
+        },
+        {
+            "key": "Invalid client id to kick",
+            "value": "被踢出的客户端 ID 无效"
+        },
+        {
+            "key": "You can't kick yourself",
+            "value": "你不能踢出你自己"
+        },
+        {
+            "key": "Unable to kick a server-side bot",
+            "value": "无法踢出服务端机器人"
+        },
+        {
+            "key": "You can't kick admins",
+            "value": "你不能踢出管理员"
+        },
+        {
+            "key": "'{str:CallerName}' called for vote to kick you",
+            "value": "“{str:CallerName}” 想要发起投票踢出你"
+        },
+        {
+            "key": "Spectators aren't allowed to start a vote.",
+            "value": "旁观者不被允许开始投票。"
+        },
+        {
+            "key": "Invalid option",
+            "value": "无效的选项"
+        },
+        {
+            "key": "Server is already on map {str:MapName}",
+            "value": "服务器的地图已经是 {str:MapName} 了"
+        },
+        {
+            "key": "Each map must be played at least {int:Rounds} rounds before calling a map vote",
+            "value": "每个地图必需玩至少  {int:Rounds} 回合才能投票换图"
+        },
+        {
+            "key": "'{str:CallerName}' called vote to change server option '{str:VoteName}' ({str:Reason})",
+            "value": "“{str:CallerName}” 发起投票更改服务器选项 “{str:VoteName}”（{str:Reason}）"
+        },
+        {
+            "key": "Votes are only allowed when the round start.",
+            "value": "投票只在回合开始前允许。"
+        },
+        {
+            "key": "'{str:VoteName}' isn't an option on this server",
+            "value": "“{str:VoteName}” 不是服务器选项"
+        },
+        {
+            "key": "'{str:CallerName}' called vote to change server option '{str:VoteName}'",
+            "value": "“{str:CallerName}” 发起投票更改服务器选项 “{str:VoteName}”"
+        },
+        {
+            "key": "Server does not allow voting to move players to spectators",
+            "value": "服务器不允许移动玩家到旁观位"
+        },
+        {
+            "key": "Invalid client id to move",
+            "value": "无效的客户端 ID"
+        },
+        {
+            "key": "You can't move yourself",
+            "value": "你不能将你自己移动到旁观位"
+        },
+        {
+            "key": "Unable to move a server-side bot to spectators",
+            "value": "无法将服务端机器人移动到旁观位"
+        },
+        {
+            "key": "'{str:CallerName}' called for vote to move '{str:SpectateName}' to spectators ({str:Reason})",
+            "value": "“{str:CallerName}” 发起投票将 “{str:SpectateName}” 移动到旁观位（{str:Reason}）"
+        },
+        {
             "key": "You can't join the spectators right now",
             "value": "你现在还不能进入旁观模式"
+        },
+        {
+            "key": "Invalid spectator id used",
+            "value": "无效的旁观者 ID"
         },
         {
             "key": "{str:PlayerName} changed their name to {str:NewName}",
@@ -1255,6 +1451,30 @@
         {
             "key": "If your language is not available, you can help with translation (/help translate).",
             "value": "如果您的语言还不可用，您可以帮助翻译（详见 /help translate）。"
+        },
+        {
+            "key": "You will now see all tees on this server, no matter the distance",
+            "value": "你现在能看到服务器上的所有 Tee，无论距离"
+        },
+        {
+            "key": "You will no longer see all tees on this server",
+            "value": "你不再能看到服务器上的所有 Tee"
+        },
+        {
+            "key": "All players were moved to the {str:TeamName}",
+            "value": "所有玩家被移动到了 {str:TeamName}"
+        },
+        {
+            "key": "authorized player forced server option '{str:VoteName}' ({str:Reason})",
+            "value": "已认证的玩家强制更改了服务器选项 “{str:VoteName}”（{str:Reason}）"
+        },
+        {
+            "key": "'{str:PlayerName}' was moved to spectator ({str:Reason})",
+            "value": "“{str:PlayerName}”  被移动到了旁观位（{str:Reason}）"
+        },
+        {
+            "key": "admin forced vote {str:VoteName}",
+            "value": "管理员进行了强制投票 {str:VoteName}"
         },
         {
             "key": "InfectionClass, by necropotame (version {str:VersionCode})",
@@ -1301,8 +1521,36 @@
             "value": "另见：/credits"
         },
         {
+            "key": "Usage: /msg <username or group> <message>",
+            "value": "使用方法：/msg <玩家或群组名> <内容>"
+        },
+        {
+            "key": "Send a private message to a player or a group of players",
+            "value": "向一名玩家或玩家群组发送私信"
+        },
+        {
+            "key": "Available groups: !near, !engineer, !soldier, ...",
+            "value": "可用的群组：!near、!engineer、!soldier……"
+        },
+        {
             "key": "No player was found with this name",
             "value": "没有找到这个名字的玩家"
+        },
+        {
+            "key": "Invalid player name",
+            "value": "无效的玩家名"
+        },
+        {
+            "key": "No player with name \"{str:PlayerName}\" found",
+            "value": "没有找到叫 “{str:PlayerName}” 的玩家"
+        },
+        {
+            "key": "Player muted. Mute will persist until you or the muted player disconnects.",
+            "value": "已屏蔽玩家。屏蔽将持续到你或者被屏蔽的玩家断开连接。"
+        },
+        {
+            "key": "Player unmuted. You can see their messages again.",
+            "value": "已解除屏蔽玩家。你能看到他们的消息了。"
         },
         {
             "key": "Choose a help page with /help <page>",
@@ -1342,7 +1590,31 @@
         },
         {
             "key": "You are muted for {sec:Duration}",
-            "value": "你被禁言了{sec:Duration}"
+            "value": "你被禁言了 {sec:Duration}"
+        },
+        {
+            "key": "Invalid whisper",
+            "value": "无效的私信"
+        },
+        {
+            "key": "You do not have an ongoing conversation. Whisper to someone to start one",
+            "value": "你没有正在进行的对话。向某人发送私信来开始一个"
+        },
+        {
+            "key": "You can only vote after logging in.",
+            "value": "你需要登录才能投票。"
+        },
+        {
+            "key": "Wait for current vote to end before calling a new one.",
+            "value": "当前投票结束才能开始新投票。"
+        },
+        {
+            "key": "You must wait {int:TimeLeftSeconds} seconds before making another vote.",
+            "value": "你需要等 {int:TimeLeftSeconds}  秒才能开始另一个投票。"
+        },
+        {
+            "key": "There's a {int:Delay} second delay between map-votes, please wait {int:WaitTime} seconds.",
+            "value": "在换图投票之间有 {int:Delay} 秒的间隔，请等 {int:WaitTime} 秒。"
         },
         {
             "key": "Warning: {sec:RemainingTime} until a move to spec for inactivity",
