@@ -4530,7 +4530,6 @@ std::optional<int> CIcGameController::GetClientIdByName(const char *pName) const
 
 void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Context)
 {
-	// TODO: Remove this in the default branch
 	if(GetRoundType() != ERoundType::Survival)
 		return;
 
