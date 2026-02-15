@@ -495,7 +495,7 @@ void CGameContext::SendChatTarget_Localization(int To, int Category, const char 
 	Msg.m_Team = 0;
 	Msg.m_ClientId = -1;
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	va_list VarArgs;
 	va_start(VarArgs, pText);
@@ -507,9 +507,9 @@ void CGameContext::SendChatTarget_Localization(int To, int Category, const char 
 		{
 			Buffer.clear();
 			Buffer.append(GetChatCategoryPrefix(Category));
-			Server()->Localization()->Format_VL(Buffer, m_apPlayers[i]->GetLanguage(), pText, VarArgs);
+			Buffer.append(Server()->Localization()->Format_VL(m_apPlayers[i]->GetLanguage(), pText, VarArgs));
 
-			Msg.m_pMessage = Buffer.buffer();
+			Msg.m_pMessage = Buffer.c_str();
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 			Sent = true;
 		}
@@ -520,10 +520,10 @@ void CGameContext::SendChatTarget_Localization(int To, int Category, const char 
 		Buffer.clear();
 		Buffer.append(GetChatCategoryPrefix(Category));
 		// one message for record
-		dynamic_string tmpBuf;
-		tmpBuf.copy(Buffer);
-		Server()->Localization()->Format_VL(tmpBuf, Config()->m_InfDefaultLanguageCode, pText, VarArgs);
-		Msg.m_pMessage = tmpBuf.buffer();
+		std::string tmpBuf;
+		tmpBuf.append(Buffer);
+		tmpBuf.append(Server()->Localization()->Format_VL(Config()->m_InfDefaultLanguageCode, pText, VarArgs));
+		Msg.m_pMessage = tmpBuf.c_str();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 
 		char aBuf[256];
@@ -543,7 +543,7 @@ void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Numbe
 	Msg.m_Team = 0;
 	Msg.m_ClientId = -1;
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	va_list VarArgs;
 	va_start(VarArgs, pText);
@@ -555,9 +555,9 @@ void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Numbe
 		{
 			Buffer.clear();
 			Buffer.append(GetChatCategoryPrefix(Category));
-			Server()->Localization()->Format_VLP(Buffer, m_apPlayers[i]->GetLanguage(), Number, pText, VarArgs);
+			Buffer.append(Server()->Localization()->Format_VLP(m_apPlayers[i]->GetLanguage(), Number, pText, VarArgs));
 
-			Msg.m_pMessage = Buffer.buffer();
+			Msg.m_pMessage = Buffer.c_str();
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 			Sent = true;
 		}
@@ -568,10 +568,10 @@ void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Numbe
 		Buffer.clear();
 		Buffer.append(GetChatCategoryPrefix(Category));
 		// one message for record
-		dynamic_string tmpBuf;
-		tmpBuf.copy(Buffer);
-		Server()->Localization()->Format_VLP(tmpBuf, Config()->m_InfDefaultLanguageCode, Number, pText, VarArgs);
-		Msg.m_pMessage = tmpBuf.buffer();
+		std::string tmpBuf;
+		tmpBuf.append(Buffer);
+		tmpBuf.append(Server()->Localization()->Format_VLP(Config()->m_InfDefaultLanguageCode, Number, pText, VarArgs));
+		Msg.m_pMessage = tmpBuf.c_str();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 	}
 
@@ -593,18 +593,18 @@ void CGameContext::SendMOTD_Localization(int To, const char *pText, ...)
 {
 	if(m_apPlayers[To])
 	{
-		dynamic_string Buffer;
+		std::string Buffer;
 
 		CNetMsg_Sv_Motd Msg;
 
 		va_list VarArgs;
 		va_start(VarArgs, pText);
 
-		Server()->Localization()->Format_VL(Buffer, m_apPlayers[To]->GetLanguage(), pText, VarArgs);
+		Buffer.append(Server()->Localization()->Format_VL(m_apPlayers[To]->GetLanguage(), pText, VarArgs));
 
 		va_end(VarArgs);
 
-		Msg.m_pMessage = Buffer.buffer();
+		Msg.m_pMessage = Buffer.c_str();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, To);
 	}
 }
@@ -793,7 +793,7 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 	int Start = (To < 0 ? 0 : To);
 	int End = (To < 0 ? MAX_CLIENTS : To + 1);
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	va_list VarArgs;
 	va_start(VarArgs, pText);
@@ -802,8 +802,8 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 	if(To < 0)
 	{
 		CNetMsg_Sv_Broadcast Msg;
-		Server()->Localization()->Format_VL(Buffer, Config()->m_InfDefaultLanguageCode, pText, VarArgs);
-		Msg.m_pMessage = Buffer.buffer();
+		Buffer.append(Server()->Localization()->Format_VL(Config()->m_InfDefaultLanguageCode, pText, VarArgs));
+		Msg.m_pMessage = Buffer.c_str();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 	}
 
@@ -812,8 +812,8 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 		if(m_apPlayers[i] && !m_apPlayers[i]->IsBot())
 		{
 			Buffer.clear();
-			Server()->Localization()->Format_VL(Buffer, m_apPlayers[i]->GetLanguage(), pText, VarArgs);
-			AddBroadcast(i, Buffer.buffer(), Priority, LifeSpan);
+			Buffer.append(Server()->Localization()->Format_VL(m_apPlayers[i]->GetLanguage(), pText, VarArgs));
+			AddBroadcast(i, Buffer.c_str(), Priority, LifeSpan);
 		}
 	}
 
@@ -825,7 +825,7 @@ void CGameContext::SendBroadcast_Localization_P(int To, EBroadcastPriority Prior
 	int Start = (To < 0 ? 0 : To);
 	int End = (To < 0 ? MAX_CLIENTS : To + 1);
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	va_list VarArgs;
 	va_start(VarArgs, pText);
@@ -834,8 +834,8 @@ void CGameContext::SendBroadcast_Localization_P(int To, EBroadcastPriority Prior
 	{
 		if(m_apPlayers[i] && !m_apPlayers[i]->IsBot())
 		{
-			Server()->Localization()->Format_VLP(Buffer, m_apPlayers[i]->GetLanguage(), Number, pText, VarArgs);
-			AddBroadcast(i, Buffer.buffer(), Priority, LifeSpan);
+			Buffer.append(Server()->Localization()->Format_VLP(m_apPlayers[i]->GetLanguage(), Number, pText, VarArgs));
+			AddBroadcast(i, Buffer.c_str(), Priority, LifeSpan);
 		}
 	}
 
@@ -2419,10 +2419,10 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 	else
 	{
 		// Inverse order and add ligature for arabic
-		dynamic_string Buffer;
-		Buffer.copy(pMsg->m_pMessage);
+		std::string Buffer;
+		Buffer.append(pMsg->m_pMessage);
 		Server()->Localization()->ArabicShaping(Buffer);
-		SendChat(ClientId, Team, Buffer.buffer(), ClientId);
+		SendChat(ClientId, Team, Buffer.c_str(), ClientId);
 	}
 	/* INFECTION MODIFICATION END *****************************************/
 }
@@ -2880,31 +2880,30 @@ void CGameContext::OnStartInfoNetMessage(const CNetMsg_Cl_StartInfo *pMsg, int C
 		int LocatedCountry = -1;
 #endif // CONF_GEOLOCATION
 
-		const char *const pLangFromClient = CLocalization::LanguageCodeByCountryCode(pMsg->m_Country);
-		const char *const pLangForIp = CLocalization::LanguageCodeByCountryCode(LocatedCountry);
+		const auto LangFromClient = CLocalization::LanguageCodeByCountryCode(pMsg->m_Country);
+		const auto LangForIp = CLocalization::LanguageCodeByCountryCode(LocatedCountry);
 
 		const auto pDefaultLang = Config()->m_InfDefaultLanguageCode;
-		const char *pLangForVote = "";
+		std::string LangForVote;
 
-		if(pLangFromClient[0] && (str_comp(pLangFromClient, pDefaultLang) != 0))
-			pLangForVote = pLangFromClient;
-		else if(pLangForIp[0] && (str_comp(pLangForIp, pDefaultLang) != 0))
-			pLangForVote = pLangForIp;
+		if(!LangFromClient.empty() && LangFromClient != pDefaultLang)
+			LangForVote = LangFromClient;
+		else if(!LangForIp.empty() && LangForIp != pDefaultLang)
+			LangForVote = LangForIp;
 
-		dbg_msg("lang", "init_language ClientId=%d, lang from flag: \"%s\", lang for IP: \"%s\"", ClientId, pLangFromClient, pLangForIp);
+		dbg_msg("lang", "init_language ClientId=%d, lang from flag: \"%s\", lang for IP: \"%s\"", ClientId, LangFromClient.data(), LangForIp.data());
 
 		SetClientLanguage(ClientId, pDefaultLang);
 
-		if(pLangForVote[0])
+		if(!LangForVote.empty())
 		{
 			CNetMsg_Sv_VoteSet Msg;
 			Msg.m_Timeout = 10;
 			Msg.m_pReason = "";
-			str_copy(m_VoteLanguage[ClientId], pLangForVote);
-			const auto LangName = Server()->Localization()->GetLangaugeNameByCode(pLangForVote);
-			dynamic_string Buffer;
-			Server()->Localization()->Format_L(Buffer, m_VoteLanguage[ClientId], _("Switch language to {str:LangName}?"), "LangName", LangName.c_str());
-			Msg.m_pDescription = Buffer.buffer();
+			str_copy(m_VoteLanguage[ClientId], LangForVote.c_str());
+			const auto LangName = Server()->Localization()->GetLangaugeNameByCode(LangForVote);
+			const auto Buffer = Server()->Localization()->Format_L(m_VoteLanguage[ClientId], "Switch language to {str:LangName}?", _("LangName"), LangName.c_str());
+			Msg.m_pDescription = Buffer.c_str();
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, ClientId);
 			m_VoteLanguageTick[ClientId] = 10 * Server()->TickSpeed();
 		}
@@ -3770,22 +3769,22 @@ void CGameContext::ConCredits(IConsole::IResult *pResult, void *pUserData)
 	int ClientId = pResult->GetClientId();
 	const char *pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	const char aThanks[] = "guenstig werben, Defeater, Orangus, BlinderHeld, Warpaint, Serena, FakeDeath, tee_to_F_U_UP!, Denis, NanoSlime_, tria, pinkieval…";
 	const char aContributors[] = "necropotame, Stitch626, yavl, Socialdarwinist"
 								 ", bretonium, duralakun, FluffyTee, ResamVi"
 								 ", Kaffeine";
 
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", "InfectionDust", nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "InfectionClass, by necropotame (version {str:VersionCode})", _("VersionCode"), "InfectionDust", nullptr));
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Based on the concept of Infection mod by Gravity"), nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "Based on the concept of Infection mod by Gravity", _(nullptr)));
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Main contributors: {str:ListOfContributors}"), "ListOfContributors", aContributors, nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "Main contributors: {str:ListOfContributors}", _("ListOfContributors"), aContributors, nullptr));
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Thanks to {str:ListOfContributors}"), "ListOfContributors", aThanks, nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "Thanks to {str:ListOfContributors}", _("ListOfContributors"), aThanks, nullptr));
 	Buffer.append("\n\n");
-	pSelf->SendMOTD(ClientId, Buffer.buffer());
+	pSelf->SendMOTD(ClientId, Buffer.c_str());
 }
 
 void CGameContext::ConInfo(IConsole::IResult *pResult, void *pUserData)
@@ -3804,14 +3803,12 @@ void CGameContext::ConAbout(IConsole::IResult *pResult)
 	int ClientId = pResult->GetClientId();
 	const char *pLanguage = m_apPlayers[ClientId]->GetLanguage();
 
-	dynamic_string Buffer;
-	Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", GAME_VERSION, nullptr);
-	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-	Buffer.clear();
+	std::string Buffer;
+	Buffer = Server()->Localization()->Format_L(pLanguage, "InfectionClass, by necropotame (version {str:VersionCode})", _("VersionCode"), GAME_VERSION, nullptr);
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 
-	Server()->Localization()->Format_L(Buffer, pLanguage, _("Server version from {str:ServerCompileDate} "), "ServerCompileDate", LAST_COMPILE_DATE, nullptr);
-	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-	Buffer.clear();
+	Buffer = Server()->Localization()->Format_L(pLanguage, "Server version from {str:ServerCompileDate} ", _("ServerCompileDate"), LAST_COMPILE_DATE, nullptr);
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 
 	if(GIT_SHORTREV_HASH)
 	{
@@ -3823,43 +3820,38 @@ void CGameContext::ConAbout(IConsole::IResult *pResult)
 	const char *pSourceUrl = Config()->m_AboutSourceUrl;
 	if(pSourceUrl[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Sources: {str:SourceUrl} "), "SourceUrl",
-			pSourceUrl, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Sources: {str:SourceUrl} ", _("SourceUrl"), pSourceUrl,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 
 	if(Config()->m_AboutContactsDiscord[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Discord: {str:Url}"), "Url",
-			Config()->m_AboutContactsDiscord, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Discord: {str:Url}", _("Url"), Config()->m_AboutContactsDiscord,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 	if(Config()->m_AboutContactsTelegram[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Telegram: {str:Url}"), "Url",
-			Config()->m_AboutContactsTelegram, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Telegram: {str:Url}", _("Url"), Config()->m_AboutContactsTelegram,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 	if(Config()->m_AboutContactsMatrix[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Matrix room: {str:Url}"), "Url",
-			Config()->m_AboutContactsMatrix, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Matrix room: {str:Url}", _("Url"), Config()->m_AboutContactsMatrix,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 	if(Config()->m_AboutTranslationUrl[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Translation project: {str:Url}"), "Url",
-			Config()->m_AboutTranslationUrl, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Translation project: {str:Url}", _("Url"), Config()->m_AboutTranslationUrl,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 
-	Server()->Localization()->Format_L(Buffer, pLanguage, _("See also: /credits"), nullptr);
-	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
+	Buffer = Server()->Localization()->Format_L(pLanguage, "See also: /credits", _(nullptr));
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	Buffer.clear();
 }
 
@@ -4066,8 +4058,8 @@ void CGameContext::PrivateMessage(const char *pStr, int ClientId, bool TeamChat)
 	while(*pStr == ' ')
 		pStr++;
 
-	dynamic_string Buffer;
-	Buffer.copy(pStr);
+	std::string Buffer;
+	Buffer.append(pStr);
 	Server()->Localization()->ArabicShaping(Buffer);
 
 	CNetMsg_Sv_Chat Msg;
@@ -4113,7 +4105,7 @@ void CGameContext::PrivateMessage(const char *pStr, int ClientId, bool TeamChat)
 					TextIter = FinalMessage.append_at(TextIter, aChatTitle);
 					TextIter = FinalMessage.append_at(TextIter, "): ");
 				}
-				TextIter = FinalMessage.append_at(TextIter, Buffer.buffer());
+				TextIter = FinalMessage.append_at(TextIter, Buffer.c_str());
 			}
 			else
 			{
@@ -4121,7 +4113,7 @@ void CGameContext::PrivateMessage(const char *pStr, int ClientId, bool TeamChat)
 				TextIter = FinalMessage.append_at(TextIter, " (");
 				TextIter = FinalMessage.append_at(TextIter, aChatTitle);
 				TextIter = FinalMessage.append_at(TextIter, "): ");
-				TextIter = FinalMessage.append_at(TextIter, Buffer.buffer());
+				TextIter = FinalMessage.append_at(TextIter, Buffer.c_str());
 			}
 			Msg.m_pMessage = FinalMessage.buffer();
 
@@ -4234,12 +4226,10 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 
 	if(Buffer.empty())
 	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Server()->Localization()->Localize(pLanguage, _("Choose a help page with /help <page>")));
+		const std::string Hint(Server()->Localization()->Localize(pLanguage, _("Choose a help page with /help <page>")));
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Hint.c_str());
 
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Available help pages: {str:PageList}"),
-			"PageList", "game, translate, msg, mute, taxi",
-			nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Server()->Localization()->Format_L(pLanguage, "Available help pages: {str:PageList}", _("PageList"), "game, translate, msg, mute, taxi", nullptr).c_str());
 
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", "engineer, soldier, scientist, biologist, looper, medic, hero, ninja, mercenary, sniper, whitehole");
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", "smoker, hunter, bat, boomer, ghost, spider, ghoul, slug, voodoo, undead, witch.");
@@ -4319,8 +4309,8 @@ void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 	else
 	{
 		const char *pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
-		const char *pTxtUnknownLanguage = pSelf->Server()->Localization()->Localize(pLanguage, _("Unknown language"));
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", pTxtUnknownLanguage);
+		const std::string TxtUnknownLanguage(pSelf->Server()->Localization()->Localize(pLanguage, _("Unknown language")));
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", TxtUnknownLanguage.c_str());
 
 		dynamic_string BufferList;
 		int BufferIter = 0;
@@ -4333,10 +4323,9 @@ void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 			i++;
 		}
 
-		dynamic_string Buffer;
-		pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Available languages: {str:ListOfLanguage}"), "ListOfLanguage", BufferList.buffer(), nullptr);
+		const auto Buffer = pSelf->Server()->Localization()->Format_L(pLanguage, "Available languages: {str:ListOfLanguage}", _("ListOfLanguage"), BufferList.buffer(), nullptr);
 
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", Buffer.buffer());
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", Buffer.c_str());
 	}
 }
 
@@ -4346,20 +4335,20 @@ void CGameContext::ConCmdList(IConsole::IResult *pResult, void *pUserData)
 	int ClientId = pResult->GetClientId();
 	const char *pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	Buffer.append("~~ ");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("List of commands"));
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "List of commands").c_str());
 	Buffer.append(" ~~\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/antiping, /alwaysrandom, /customskin, /help, /about, /language", nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/antiping, /alwaysrandom, /customskin, /help, /about, /language", nullptr).c_str());
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/msg, /mute", nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/msg, /mute", nullptr).c_str());
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/changelog", nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/changelog", nullptr).c_str());
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Press <F3> or <F4> to enable or disable hook protection"), nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "Press <F3> or <F4> to enable or disable hook protection", _(nullptr)).c_str());
 
-	pSelf->SendMOTD(ClientId, Buffer.buffer());
+	pSelf->SendMOTD(ClientId, Buffer.c_str());
 }
 
 void CGameContext::ConChangeLog(IConsole::IResult *pResult, void *pUserData)
