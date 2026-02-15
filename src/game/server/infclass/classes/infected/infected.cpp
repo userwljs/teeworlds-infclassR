@@ -565,13 +565,8 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 				}
 				else
 				{
-					if(GameController()->GetRoundType() != ERoundType::Survival)
-					{
-						if(pTarget->Heal(4, GetCid()))
-						{
-							m_pCharacter->Heal(1);
-						}
-					}
+					if(pTarget->Heal(4, GetCid()))
+						m_pCharacter->Heal(1);
 
 					if(!pTarget->GetPlayer()->HookProtectionEnabled())
 					{
@@ -601,10 +596,7 @@ void CInfClassInfected::OnHammerFired(WeaponFireContext *pFireContext)
 					Damage = Config()->m_InfBatDamage;
 					DamageType = EDamageType::BITE;
 
-					if(GameController()->GetRoundType() != ERoundType::Survival)
-					{
-						m_pCharacter->Heal(Config()->m_InfBatLifeSteal);
-					}
+					m_pCharacter->Heal(Config()->m_InfBatLifeSteal);
 				}
 
 				pTarget->TakeDamage(Force, Damage, GetCid(), DamageType);
@@ -683,29 +675,12 @@ void CInfClassInfected::BroadcastWeaponState() const
 
 void CInfClassInfected::DoBoomerExplosion()
 {
-	float InnerRadius = 60.0f;
-	float DamageRadius = 80.5f;
-	int Damage = 14;
-	float Force = GameController()->GetWeaponForce(EInfclassWeapon::BOOMER_EXPLOSION);
-
-	bool SlimeExplosion = false;
-	if(GameController()->GetRoundType() == ERoundType::Survival)
-	{
-		SlimeExplosion = true;
-		Damage = 10;
-	}
-
-	if(SlimeExplosion)
-	{
-		DamageRadius = 200.0f;
-		Force *= 0.5f;
-	}
+	constexpr float InnerRadius = 60.0f;
+	constexpr float DamageRadius = 80.5f;
+	constexpr int Damage = 14;
+	const float Force = GameController()->GetWeaponForce(EInfclassWeapon::BOOMER_EXPLOSION);
 
 	CIcCharacter *pBestBFTarget = nullptr;
-
-	const int SlimeDamage = Config()->m_InfSlimePoisonDamage;
-	const float SlimeDamageInterval = Config()->m_InfSlimePoisonInterval;
-
 	{
 		CIcCharacter *apEnts[MAX_CLIENTS];
 		int Num = GameWorld()->FindEntities(GetPos(), DamageRadius, (CEntity **)apEnts, MAX_CLIENTS, CGameWorld::ENTTYPE_CHARACTER);
@@ -729,11 +704,6 @@ void CInfClassInfected::DoBoomerExplosion()
 				ForceDir = normalize(Diff);
 
 			float DamageToDeal = 1 + ((Damage - 1) * NormalizedLength);
-			if(SlimeExplosion)
-			{
-				pTarget->GetClass()->OnSlimeEffect(GetCid(), SlimeDamage, SlimeDamageInterval);
-				DamageToDeal = 0;
-			}
 			pTarget->TakeDamage(ForceDir * Force * NormalizedLength, DamageToDeal, GetCid(), EDamageType::BOOMER_EXPLOSION);
 			if(pTarget->IsInfected())
 			{

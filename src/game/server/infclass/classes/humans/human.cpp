@@ -603,7 +603,7 @@ void CInfClassHuman::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext
 	case EPlayerClass::Mercenary:
 		if(!Assisted)
 		{
-			const int Bonus = GameController()->GetRoundType() == ERoundType::Survival ? 1 : 3;
+			constexpr int Bonus = 3;
 			m_pCharacter->AddAmmo(WEAPON_LASER, Bonus);
 		}
 		break;
@@ -835,12 +835,7 @@ void CInfClassHuman::OnHammerFired(WeaponFireContext *pFireContext)
 			float BaseForce = GameController()->GetWeaponForce(pFireContext->InfClassWeapon);
 			vec2 Force = vec2(0.f, -1.f) + normalize(Dir + vec2(0.f, -1.1f)) * BaseForce;
 
-			int Damage = 20;
-			if(GameController()->GetRoundType() == ERoundType::Survival)
-			{
-				Damage = 5;
-			}
-
+			constexpr float Damage = 20;
 			pTarget->TakeDamage(Force, Damage, GetCid(), EDamageType::HAMMER);
 		}
 		else
@@ -1141,17 +1136,6 @@ void CInfClassHuman::GiveClassAttributes()
 		m_pCharacter->GiveWeapon(WEAPON_GRENADE, -1);
 		m_pCharacter->GiveWeapon(WEAPON_LASER, -1);
 		m_pCharacter->SetActiveWeapon(WEAPON_HAMMER);
-		if(GameController()->GetRoundType() == ERoundType::Survival)
-		{
-			// Increase the velocity
-			m_NinjaVelocityBuff = 1;
-
-			// Set the total damage to 10
-			m_NinjaExtraDamage = 1;
-
-			// Give two extra grenades
-			m_NinjaAmmoBuff = 2;
-		}
 		break;
 	case EPlayerClass::None:
 		m_pCharacter->GiveWeapon(WEAPON_HAMMER, -1);
@@ -1620,8 +1604,7 @@ void CInfClassHuman::SnapHero(int SnappingClient)
 
 	if(m_pHeroFlag && m_pHeroFlag->IsAvailable() && Config()->m_InfHeroFlagIndicator)
 	{
-		const float FlagIndicatorTime = GameController()->GetRoundType() == ERoundType::Survival ? 1 : Config()->m_InfHeroFlagIndicatorTime;
-		int TickLimit = m_pPlayer->m_LastActionMoveTick + FlagIndicatorTime * Server()->TickSpeed();
+		int TickLimit = m_pPlayer->m_LastActionMoveTick + Config()->m_InfHeroFlagIndicatorTime * Server()->TickSpeed();
 		TickLimit = maximum(TickLimit, m_pHeroFlag->GetSpawnTick());
 
 		if(CurrentTick > TickLimit)
@@ -1789,11 +1772,7 @@ void CInfClassHuman::PlaceLooperWall(WeaponFireContext *pFireContext)
 		if(pFireContext->FireAccepted)
 		{
 			pExistingWall->SetSecondPosition(GetPos());
-			float LifeSpanFactor = 1.0f;
-			if(GameController()->GetRoundType() == ERoundType::Survival)
-			{
-				LifeSpanFactor *= 0.5f;
-			}
+			constexpr float LifeSpanFactor = 1.0f;
 			pExistingWall->SetLifespan(Config()->m_InfLooperBarrierLifeSpan * LifeSpanFactor);
 			GameServer()->CreateSound(GetPos(), SOUND_LASER_FIRE);
 		}

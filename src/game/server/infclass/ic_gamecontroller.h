@@ -45,8 +45,6 @@ enum class ERoundType
 	Normal,
 	Fun,
 	Fast,
-	// TODO: Remove this in the default branch
-	Survival,
 	Count,
 	Invalid = Count,
 };
@@ -238,16 +236,11 @@ public:
 	void StartFunRound();
 	void EndFunRound();
 
-	void StartSurvivalRound();
-	void EndSurvivalRound();
-
 	void EnsureFinalExplosionIsStarted();
 	void StartFinalExplosion();
 	void ProgressFinalExplosion();
 	void ResetFinalExplosion();
 	void SaveRoundRules();
-	void StartSurvivalGame();
-	void EndSurvivalGame();
 
 	int GetRoundStartTick() const { return m_RoundStartTick; }
 	int GetRoundTick() const;
@@ -348,7 +341,6 @@ public:
 	int InfectedBonusArmor() const;
 
 	void SendKillMessage(int Victim, const DeathContext &Context);
-	void OnKillOrInfection(int Victim, const DeathContext &Context);
 
 protected:
 	void RoundTickBeforeInitialInfection();
@@ -388,29 +380,6 @@ private:
 	int GetClientIdForNewWitch() const;
 	bool IsSafeWitchCandidate(int ClientId) const;
 	ClientsArray m_WitchCallers;
-
-	struct PlayerScore
-	{
-		char aPlayerName[MAX_NAME_LENGTH];
-		int Kills;
-		int ClientId;
-	};
-
-	struct
-	{
-		uint32_t Wave = 0;
-		uint32_t Kills = 0;
-		icArray<PlayerScore, MAX_CLIENTS> Scores;
-		icArray<int, MAX_CLIENTS> SurvivedPlayers;
-		icArray<int, MAX_CLIENTS> KilledPlayers;
-	} m_SurvivalState;
-	int m_BestSurvivalScore = 0;
-	const char *m_LastUsedKillMessage = nullptr;
-
-	bool m_AllowSurvivalAutostart = false;
-
-	PlayerScore *GetSurvivalPlayerScore(int ClientId);
-	PlayerScore *EnsureSurvivalPlayerScore(int ClientId);
 
 private:
 	int m_ZoneHandle_icDamage;

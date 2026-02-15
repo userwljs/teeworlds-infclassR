@@ -55,18 +55,8 @@ void CIcPlayer::TryRespawn()
 
 int CIcPlayer::GetScore(int SnappingClient) const
 {
-	if(GetTeam() == TEAM_SPECTATORS)
-	{
-	}
-	else
-	{
-		if(GameController()->GetRoundType() == ERoundType::Survival)
-		{
-			return m_Kills;
-		}
-
+	if(GetTeam() != TEAM_SPECTATORS)
 		return Server()->RoundStatistics()->PlayerScore(m_ClientId);
-	}
 
 	return CPlayer::GetScore(SnappingClient);
 }
@@ -726,17 +716,9 @@ const char *CIcPlayer::GetClan(int SnappingClient) const
 
 void CIcPlayer::HandleAutoRespawn()
 {
-	float AutoSpawnInterval = 3;
-
-	if(GameController()->GetRoundType() == ERoundType::Survival && IsInfected())
-	{
-		AutoSpawnInterval = 0;
-	}
-
+	constexpr float AutoSpawnInterval = 3;
 	if(!m_pCharacter && m_DieTick + Server()->TickSpeed() * AutoSpawnInterval <= Server()->Tick())
-	{
 		Respawn();
-	}
 }
 
 void CIcPlayer::UpdateSpectatorPos()

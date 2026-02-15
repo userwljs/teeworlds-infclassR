@@ -208,12 +208,7 @@ void CLooperWall::OnHitInfected(CIcCharacter *pCharacter)
 
 	if(m_EndTick.has_value())
 	{
-		int LifeSpanReducer = Server()->TickSpeed() * Reduction * AddedDuration / FullEffectDuration;
-
-		if(GameController()->GetRoundType() == ERoundType::Survival)
-		{
-			LifeSpanReducer = LifeSpanReducer / 3.0f;
-		}
+		const int LifeSpanReducer = Server()->TickSpeed() * Reduction * AddedDuration / FullEffectDuration;
 
 		m_EndTick.value() -= LifeSpanReducer;
 	}
