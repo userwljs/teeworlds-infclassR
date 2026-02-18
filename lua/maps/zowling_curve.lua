@@ -359,7 +359,7 @@ function Zowling_give_scores2()
         return
     end
     Zowling_global_score = Zowling_global_score +
-    (Zowling_chars_on_2nd_floor * 3 + Zowling_chars_on_finish * 10) / players_number.Infected
+        (Zowling_chars_on_2nd_floor * 3 + Zowling_chars_on_finish * 10) / players_number.Infected
 
     ---@param character CInfClassCharacter
     local function give_bonus(character)

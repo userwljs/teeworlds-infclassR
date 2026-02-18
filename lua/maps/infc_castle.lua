@@ -1,10 +1,12 @@
 -- TODO: Clean this file
 
 -- Snippet for LSP:
--- local infclass = require("library.Infclass")
--- local Game = infclass.Game
--- local Config = infclass.Config
--- require("runtime.base")
+if false then
+    infclass = require("library.Infclass")
+    Game = infclass.Game
+    Config = infclass.Config
+    require("runtime.base")
+end
 
 Submod.SurvivalGame = "survival"
 active_submod = Submod.SurvivalGame

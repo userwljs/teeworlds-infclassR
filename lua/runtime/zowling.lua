@@ -1,7 +1,9 @@
 -- Snippet for LSP:
---local infclass = require("library.Infclass")
---local Game = infclass.Game
---local Config = infclass.Config
+if false then
+    infclass = require("library.Infclass")
+    Game = infclass.Game
+    Config = infclass.Config
+end
 
 require("runtime.animations")
 
@@ -42,7 +44,7 @@ function for_each_infected_character(callback)
         return true
     end
 
-    for i = 0,63 do
+    for i = 0, 63 do
         local character = Game.Controller:GetCharacter(i)
         if acceptable(character) then
             callback(character)
@@ -228,8 +230,8 @@ function Zowling_on_world_reset()
     end
 
     local wall = Game.Controller:AddLaserWall()
-    wall.Position = vec2(17.5 * 32, 10* 32)
-    wall.SecondPosition = vec2(17.5 * 32, 16* 32)
+    wall.Position = vec2(17.5 * 32, 10 * 32)
+    wall.SecondPosition = vec2(17.5 * 32, 16 * 32)
 end
 
 function Zowling_on_character_spawned(player_id, spawn_type)
@@ -272,7 +274,7 @@ function Zowling_init()
 end
 
 function Zowling_on_shutdown()
-    for key,value in pairs(OldConfig) do
+    for key, value in pairs(OldConfig) do
         Config[key] = value
     end
 

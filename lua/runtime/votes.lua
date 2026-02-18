@@ -70,9 +70,9 @@ function Votes_add_vote(description, command, conditions)
 end
 
 function Votes_update_votes()
-    for i,vote_descriptor in ipairs(scripted_votes) do
+    for i, vote_descriptor in ipairs(scripted_votes) do
         local allowed = true
-        for j,condition_cb in ipairs(vote_descriptor.conditions) do
+        for j, condition_cb in ipairs(vote_descriptor.conditions) do
             if not condition_cb(vote_descriptor) then
                 allowed = false
             end
@@ -86,14 +86,15 @@ function Votes_update_votes()
 end
 
 function setup_default_votes()
-    Votes_add_vote("Queue fun round", "queue_fun_round", {Votes_fun_round_condition})
+    Votes_add_vote("Queue fun round", "queue_fun_round", { Votes_fun_round_condition })
 end
 
 function setup_zowling_votes()
     ---@param map_name string
     ---@param map string
     local add_zowling_map_vote = function(map_name, map)
-        Votes_add_vote("Play 'Zowling' on a " .. map_name .. " map", "sv_map ".. map, {Votes_not_the_same_map, Votes_zowling_condition})
+        Votes_add_vote("Play 'Zowling' on a " .. map_name .. " map", "sv_map " .. map,
+            { Votes_not_the_same_map, Votes_zowling_condition })
     end
 
     add_zowling_map_vote("plain", "zowling_plain")
@@ -101,8 +102,9 @@ function setup_zowling_votes()
 end
 
 function setup_submods_votes()
-    Votes_add_vote("Go back to normal game", "exec normalize.cfg", {Votes_submod_is_custom})
-    Votes_add_vote(string.format("Play survival game (max %d players)", Votes.survival_game_max_active_players), "exec survivals/survival_game.cfg", {Votes_survival_game_condition})
+    Votes_add_vote("Go back to normal game", "exec normalize.cfg", { Votes_submod_is_custom })
+    Votes_add_vote(string.format("Play survival game (max %d players)", Votes.survival_game_max_active_players),
+        "exec survivals/survival_game.cfg", { Votes_survival_game_condition })
     setup_zowling_votes()
 end
 

@@ -96,13 +96,13 @@ function add_piercing_door(player_id)
 end
 
 function open_all_doors()
-    for i,door in ipairs(runtime_context.doors) do
+    for i, door in ipairs(runtime_context.doors) do
         door:SetOpen(true)
     end
 end
 
 function close_all_doors()
-    for i,door in ipairs(runtime_context.doors) do
+    for i, door in ipairs(runtime_context.doors) do
         door:SetOpen(false)
     end
 end
@@ -112,7 +112,7 @@ function remove_this_door(player_id)
 end
 
 function remove_all_doors()
-    for i,door in ipairs(runtime_context.doors) do
+    for i, door in ipairs(runtime_context.doors) do
         door:Destroy()
     end
 
@@ -120,7 +120,7 @@ function remove_all_doors()
 end
 
 function for_each_player(callback)
-    for i = 0,63 do
+    for i = 0, 63 do
         local player = Game.Controller:GetPlayer(i)
         if player ~= nil then
             callback(player)
@@ -142,7 +142,7 @@ function for_each_human_character(callback)
         return true
     end
 
-    for i = 0,63 do
+    for i = 0, 63 do
         local character = Game.Controller:GetCharacter(i)
         if acceptable(character) then
             callback(character)

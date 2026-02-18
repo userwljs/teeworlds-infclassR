@@ -1,7 +1,10 @@
 -- Snippet for LSP:
-local infclass = require("library.Infclass")
-local Game = infclass.Game
-local Config = infclass.Config
+if false then
+    infclass = require("library.Infclass")
+    Game = infclass.Game
+    Config = infclass.Config
+end
+
 require("runtime.base")
 
 local EPlayerClass = {}
@@ -69,12 +72,12 @@ end
 function Survival:apply_difficulty()
     Survival.default_tweaks = nil
     if Survival.difficulty_level <= 4 then
-        Survival.default_tweaks = {ETweaks.WeakHook}
+        Survival.default_tweaks = { ETweaks.WeakHook }
     end
 
-    local infected_lives = {1, 2, 3, 3, 4, 5, 6, 7, 10, 12}
-    local spawn_delays   = {7, 7, 7, 6, 6, 6, 5, 4, 2, 1}
-    Config.inf_bot_lives = infected_lives[Survival.difficulty_level]
+    local infected_lives                        = { 1, 2, 3, 3, 4, 5, 6, 7, 10, 12 }
+    local spawn_delays                          = { 7, 7, 7, 6, 6, 6, 5, 4, 2, 1 }
+    Config.inf_bot_lives                        = infected_lives[Survival.difficulty_level]
     Config.inf_survival_infected_spawning_delay = spawn_delays[Survival.difficulty_level]
 
     if Survival.difficulty_level <= 3 then
@@ -110,53 +113,53 @@ function SurvivalBats:SetupWave1()
     local wave = 1
     local bot_conf = nil
 
-    local bats_n = {4, 6, 8, 10, 12, 16, 16, 16, 16}
-    for i = 1,bats_n[Survival.difficulty_level] do
+    local bats_n = { 4, 6, 8, 10, 12, 16, 16, 16, 16 }
+    for i = 1, bats_n[Survival.difficulty_level] do
         bot_conf = Survival:add_normal_infected(wave, EPlayerClass.Bat)
         Survival:add_tweak(bot_conf, ETweaks.WeakHook)
     end
 
-    for i = 1,2 do
+    for i = 1, 2 do
         bot_conf = Survival:add_normal_infected(wave, EPlayerClass.Bat)
         bot_conf.SpawnSecond = 10
         Survival:add_tweak(bot_conf, ETweaks.WeakHook)
     end
 
-    for i = 1,2 do
+    for i = 1, 2 do
         bot_conf = Survival:add_normal_infected(wave, EPlayerClass.Bat)
         bot_conf.SpawnSecond = 20
         Survival:add_tweak(bot_conf, ETweaks.WeakHook)
     end
 
     --- level        1,   2,   3,   4,   5,   6,   7,   8,   9,  10
-    local boss_hp = {80, 120, 180, 240, 240, 240, 240, 280, 280, 320}
+    local boss_hp = { 80, 120, 180, 240, 240, 240, 240, 280, 280, 320 }
     bot_conf = Survival:add_boss_infected(wave, EPlayerClass.Bat)
     bot_conf.SpawnSecond = 30
     bot_conf.HP = boss_hp[survival_difficulty_level]
     bot_conf.DropLevel = 1
     Survival:add_tweak(bot_conf, ETweaks.NoHook)
 
-    for i = 1,2 do
+    for i = 1, 2 do
         bot_conf = Survival:add_normal_infected(wave, EPlayerClass.Bat)
         bot_conf.SpawnSecond = 45
     end
 
-    for i = 1,2 do
+    for i = 1, 2 do
         bot_conf = Survival:add_normal_infected(wave, EPlayerClass.Bat)
         bot_conf.SpawnSecond = 50
     end
 
-    for i = 1,4 do
+    for i = 1, 4 do
         bot_conf = Survival:add_normal_infected(wave, EPlayerClass.Bat)
         bot_conf.SpawnSecond = 60
     end
 
-    for i = 1,6 do
+    for i = 1, 6 do
         bot_conf = Survival:add_normal_infected(wave, EPlayerClass.Bat)
         bot_conf.SpawnSecond = 75
     end
 
-    for i = 1,2 do
+    for i = 1, 2 do
         bot_conf = Survival:add_normal_infected(wave, EPlayerClass.Bat)
         bot_conf.SpawnSecond = 80
     end
@@ -178,14 +181,17 @@ function Survival:start_round(base_difficulty, hp_multiplier)
     Game.Controller:PrepareSurvival()
     Game.Controller:QueueRound("survival")
     Game.Controller:DoWarmup(3)
-    Game.Context:SendChatTarget(-1, string.format("Starting survival round (difficulty %d, max players %d)", Survival.difficulty_level, Survival.max_players))
+    Game.Context:SendChatTarget(-1,
+        string.format("Starting survival round (difficulty %d, max players %d)", Survival.difficulty_level,
+            Survival.max_players))
 end
 
 function Survival:setup_votes()
     local vote_index = 0
     local hp_multiplier = 1
-    for i = 1,6 do
-        local vote_name = string.format("Start survival (level %d, %d players max)", i, Survival:get_max_players_for_difficulty(i, hp_multiplier))
+    for i = 1, 6 do
+        local vote_name = string.format("Start survival (level %d, %d players max)", i,
+            Survival:get_max_players_for_difficulty(i, hp_multiplier))
         local vote_command = string.format("lua Survival:start_round(%d, %d)", i, hp_multiplier)
         Game.Context:RemoveVote(vote_command)
         Game.Context:InsertVote(vote_index, vote_name, vote_command)
