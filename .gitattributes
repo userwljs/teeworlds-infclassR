@@ -1,0 +1,5 @@
+# .pot files should be maintained separately in each branch
+*.pot merge=ours
+
+[attr]POFILE merge=merge-po-files
+*.po POFILE
