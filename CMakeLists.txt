@@ -1042,7 +1042,7 @@ endif()
 # Translation dev targets
 set(PO_TEMPlATE "other/po/infclass.pot")
 add_custom_target(dev-generate-pot
-  COMMAND xgettext -d infclass -o ${PO_TEMPlATE} -k_ -k_P:1,2 -k_C:1c,2 -k_CP:1c,2,3 --from-code=UTF-8 ${ENGINE_SERVER} ${GAME_SERVER}
+        COMMAND xgettext --sort-by-file -d infclass -o ${PO_TEMPlATE} -k_ -k_P:1,2 -k_C:1c,2 -k_CP:1c,2,3 --from-code=UTF-8 ${ENGINE_SERVER} ${GAME_SERVER}
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
@@ -1087,7 +1087,7 @@ foreach(PO_LANG ${PO_LANGS})
     TARGET dev-update-po-files
     POST_BUILD
     # BYPRODUCTS ${PO_LANG_FILE}
-    COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --update --backup=off --width=200 ${PO_LANG_FILE} ${PO_TEMPlATE}
+          COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --sort-by-file --update --backup=off --width=200 ${PO_LANG_FILE} ${PO_TEMPlATE}
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
   )
 endforeach()

@@ -31,7 +31,7 @@
 # Formatting flags to be be used to produce merged .po files
 # This can be set to match project needs for the .po files.
 # NOTE: $MSGCAT_FINAL_FLAGS will be passed to msgcat without quotation
-MSGCAT_FINAL_FLAGS=""
+MSGCAT_FINAL_FLAGS="--sort-by-file"
 
 # Verbosity level:
 # 0: Silent except for real errors
