@@ -12,6 +12,7 @@
 
 #include "kernel.h"
 #include "message.h"
+
 #include <engine/shared/protocol.h>
 #include <game/generated/protocol.h>
 #include <game/generated/protocol7.h>
@@ -458,6 +459,7 @@ public:
 	 * @param i The client id.
 	 */
 	virtual void OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int Id) = 0;
+	virtual const std::string *GetRandomMap() const = 0;
 };
 
 extern IGameServer *CreateGameServer();

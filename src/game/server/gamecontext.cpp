@@ -110,6 +110,7 @@ void CGameContext::Construct(int Resetting)
 	m_NumVoteOptions = 0;
 	m_LastMapVote = 0;
 	m_VoteBanClientId = -1;
+	ResetDefaultMaps();
 
 	if(Resetting == NO_RESET)
 	{
@@ -3204,73 +3205,13 @@ void CGameContext::ConQueueMap(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConAddMap(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
+	auto *pSelf = static_cast<CGameContext *>(pUserData);
 
 	if(pResult->NumArguments() != 1)
 		return;
 
 	const char *pMapName = pResult->GetString(0);
-	if(!str_utf8_check(pMapName))
-	{
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid (non UTF-8) filename");
-		return;
-	}
-
-	{
-		const char *pMapInList = pSelf->Config()->m_SvMaprotation;
-		const int Length = str_length(pMapName);
-		while(pMapInList)
-		{
-			pMapInList = str_find(pMapInList, pMapName);
-
-			if(pMapInList)
-			{
-				pMapInList += Length;
-				const char nextC = pMapInList[0];
-				if((nextC == 0) || IGameController::IsWordSeparator(nextC))
-				{
-					pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "The map is already in the rotation list");
-					return;
-				}
-			}
-		}
-	}
-
-	char aBuf[256];
-	if(!pSelf->MapExists(pMapName))
-	{
-		str_format(aBuf, sizeof(aBuf), "Unable to find map %s", pMapName);
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-
-		return;
-	}
-
-	char *pData = g_Config.m_SvMaprotation;
-	int MaxSize = sizeof(g_Config.m_SvMaprotation);
-	int i = 0;
-	for(i = 0; i < MaxSize; ++i)
-	{
-		if(pData[i] == 0)
-			break;
-	}
-	if(i + 1 + str_length(pMapName) >= MaxSize)
-	{
-		// Overflow
-		return;
-	}
-	pData[i] = ' ';
-	++i;
-	str_copy(pData + i, pMapName, MaxSize - i);
-
-	{
-		str_format(aBuf, sizeof(aBuf), "Map %s added to the rotation list", pMapName);
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-	}
-
-	if(pSelf->m_pController)
-	{
-		pSelf->m_pController->OnMapAdded(pMapName);
-	}
+	pSelf->AddMap(pMapName);
 }
 
 void CGameContext::ConRemoveMap(IConsole::IResult *pResult, void *pUserData)
@@ -3281,50 +3222,118 @@ void CGameContext::ConRemoveMap(IConsole::IResult *pResult, void *pUserData)
 		return;
 
 	const char *pMapName = pResult->GetString(0);
-	if(!str_utf8_check(pMapName))
+	pSelf->RemoveMap(pMapName);
+}
+
+void CGameContext::ConClearMaps(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CGameContext *>(pUserData);
+
+	if(pSelf->m_pController)
 	{
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid (non UTF-8) filename");
+		for(auto &MapName : pSelf->m_MapRotationList)
+			pSelf->m_pController->OnMapRemoved(MapName.c_str());
+	}
+
+	pSelf->m_MapRotationList.clear();
+
+	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "All maps in the rotation list have been removed");
+}
+
+void CGameContext::AddMap(const std::string_view MapName)
+{
+	constexpr size_t MaxNameLength = 127;
+	std::string StringMapName(MapName);
+
+	if(!str_utf8_check(StringMapName.c_str()))
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid (non UTF-8) filename");
 		return;
 	}
 
-	char *pResultMapInList = nullptr;
-	int Length = str_length(pMapName);
-	{
-		const char *pMapInList = pSelf->Config()->m_SvMaprotation;
-		while(pMapInList)
-		{
-			pMapInList = str_find(pMapInList, pMapName);
+	string_strip(StringMapName);
 
-			if(pMapInList)
-			{
-				pMapInList += Length;
-				const char nextC = pMapInList[0];
-				if((nextC == 0) || IGameController::IsWordSeparator(nextC))
-				{
-					pResultMapInList = const_cast<char *>(pMapInList - Length);
-					break;
-				}
-			}
-		}
-		if(!pResultMapInList)
-		{
-			pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "The map is not in the rotation list");
-			return;
-		}
-	}
-	while(IGameController::IsWordSeparator(*(pResultMapInList + Length)))
-		Length++;
-	const int TailLen = str_length(pResultMapInList + Length);
-	memmove(pResultMapInList, pResultMapInList + Length, TailLen + 1);
-
+	if(StringMapName.empty())
 	{
-		char aBuf[256];
-		str_format(aBuf, sizeof(aBuf), "Map %s has been removed from the rotation list", pMapName);
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+		const auto Msg = std::format("Invalid (empty) filename: {}", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
 	}
 
-	if(pSelf->m_pController)
-		pSelf->m_pController->OnMapRemoved(pMapName);
+	if(StringMapName.size() > MaxNameLength)
+	{
+		const auto Msg = std::format("The map name {} is too long (max 127 bytes)", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	if(std::ranges::find(m_MapRotationList, StringMapName) != m_MapRotationList.end())
+	{
+		const auto Msg = std::format("The map {} is already in the rotation list", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	if(!MapExists(StringMapName.data()))
+	{
+		const auto Msg = std::format("Unable to find map {}", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	m_MapRotationList.push_back(StringMapName);
+
+	{
+		const auto Msg = std::format("Map {} added to the rotation list", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+	}
+
+	if(m_pController)
+		m_pController->OnMapAdded(StringMapName.data());
+}
+
+void CGameContext::RemoveMap(const std::string_view MapName)
+{
+	std::string StringMapName(MapName);
+
+	if(!str_utf8_check(StringMapName.c_str()))
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid (non UTF-8) filename");
+		return;
+	}
+
+	string_strip(StringMapName);
+
+	if(StringMapName.empty())
+	{
+		const auto Msg = std::format("Invalid (empty) filename: {}", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	if(std::ranges::find(m_MapRotationList, StringMapName) == m_MapRotationList.end())
+	{
+		const auto Msg = std::format("The map {} is not in the rotation list", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	std::erase(m_MapRotationList, StringMapName);
+
+	{
+		const auto Msg = std::format("Map {} has been removed from the rotation list", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+	}
+
+	if(m_pController)
+		m_pController->OnMapRemoved(StringMapName.data());
+}
+
+const std::string *CGameContext::GetRandomMap() const
+{
+	if(m_MapRotationList.size() == 0)
+		return nullptr;
+	return &m_MapRotationList[random_int(0, m_MapRotationList.size() - 1)];
 }
 
 void CGameContext::ConRestart(IConsole::IResult *pResult, void *pUserData)
@@ -4498,6 +4507,7 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("queue_map", "?r[map]", CFGFLAG_SERVER, ConQueueMap, this, "Set the next map");
 	Console()->Register("add_map", "?r[map]", CFGFLAG_SERVER, ConAddMap, this, "Add a map to the maps rotation list");
 	Console()->Register("remove_map", "?r[map]", CFGFLAG_SERVER, ConRemoveMap, this, "Remove a map from the maps rotation list");
+	Console()->Register("clear_maps", "", CFGFLAG_SERVER, ConClearMaps, this, "Remove all maps from the maps rotation list");
 
 	Console()->Register("kill_pl", "v[id]", CFGFLAG_SERVER, ConKillPlayer, this, "Kills player v and announces the kill");
 	// Chat Command
@@ -5284,4 +5294,23 @@ void CGameContext::OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int Id)
 		aJsonSkin,
 		JsonBool(m_apPlayers[Id]->IsAfk()),
 		m_apPlayers[Id]->GetTeam());
+}
+
+void CGameContext::ResetDefaultMaps()
+{
+	m_MapRotationList.clear();
+	m_MapRotationList.emplace_back("infc_lunaroutpost");
+	m_MapRotationList.emplace_back("infc_skull");
+	m_MapRotationList.emplace_back("infc_warehouse");
+	m_MapRotationList.emplace_back("infc_damascus");
+	m_MapRotationList.emplace_back("infc_eidalfitr");
+	m_MapRotationList.emplace_back("infc_newdust");
+	m_MapRotationList.emplace_back("infc_hardcorepit");
+	m_MapRotationList.emplace_back("infc_normandie");
+	m_MapRotationList.emplace_back("infc_deathdealer");
+	m_MapRotationList.emplace_back("infc_bamboo3");
+	m_MapRotationList.emplace_back("infc_halfdust");
+	m_MapRotationList.emplace_back("infc_warehouse2");
+	m_MapRotationList.emplace_back("infc_malinalli_k9f");
+	m_MapRotationList.emplace_back("infc_canyon");
 }

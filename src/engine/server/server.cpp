@@ -2864,8 +2864,6 @@ int CServer::LoadMap(const char *pMapName)
 	return 1;
 }
 
-static bool IsSeparator(char c) { return c == ';' || c == ' ' || c == ',' || c == '\t'; }
-
 void CServer::InitInterfaces()
 {
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
@@ -2905,60 +2903,9 @@ int CServer::Run()
 	InitPersistentData();
 
 	// Choose a random map from the rotation
-	if(!str_length(g_Config.m_SvMap) && str_length(g_Config.m_SvMaprotation))
+	if(const auto *pMapName = GameServer()->GetRandomMap(); !str_length(g_Config.m_SvMap) && pMapName)
 	{
-		int nbMaps = 0;
-		{
-			const char *pNextMap = g_Config.m_SvMaprotation;
-
-			// Skip initial separator
-			while(*pNextMap && IsSeparator(*pNextMap))
-				pNextMap++;
-
-			while(*pNextMap)
-			{
-				while(*pNextMap && !IsSeparator(*pNextMap))
-					pNextMap++;
-				while(*pNextMap && IsSeparator(*pNextMap))
-					pNextMap++;
-
-				nbMaps++;
-			}
-		}
-
-		int MapPos = random_int(0, nbMaps - 1);
-		char aBuf[512] = {0};
-
-		{
-			int MapPosIter = 0;
-			const char *pNextMap = g_Config.m_SvMaprotation;
-
-			// Skip initial separator
-			while(*pNextMap && IsSeparator(*pNextMap))
-				pNextMap++;
-
-			while(*pNextMap)
-			{
-				if(MapPosIter == MapPos)
-				{
-					int MapNameLength = 0;
-					while(pNextMap[MapNameLength] && !IsSeparator(pNextMap[MapNameLength]))
-						MapNameLength++;
-					mem_copy(aBuf, pNextMap, MapNameLength);
-					aBuf[MapNameLength] = 0;
-					break;
-				}
-
-				while(*pNextMap && !IsSeparator(*pNextMap))
-					pNextMap++;
-				while(*pNextMap && IsSeparator(*pNextMap))
-					pNextMap++;
-
-				MapPosIter++;
-			}
-		}
-
-		str_copy(g_Config.m_SvMap, aBuf, sizeof(g_Config.m_SvMap));
+		str_copy(g_Config.m_SvMap, pMapName->data(), sizeof(g_Config.m_SvMap));
 	}
 
 	// load map

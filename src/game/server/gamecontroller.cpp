@@ -13,7 +13,9 @@
 #include "gamecontext.h"
 #include "gamecontroller.h"
 
+#include <assert.h>
 #include <map>
+#include <ranges>
 
 static std::map<std::string, CMapInfoEx> s_aMapInfo;
 
@@ -471,40 +473,20 @@ void IGameController::GetWordFromList(char *pNextWord, const char *pList, int Li
 
 void IGameController::GetMapRotationInfo(CMapRotationInfo *pMapRotationInfo)
 {
-	pMapRotationInfo->m_MapCount = 0;
-
-	if(!str_length(g_Config.m_SvMaprotation))
+	if(!GameServer()->m_MapRotationList.size())
 		return;
 
 	int PreviousMapNumber = -1;
-	const char *pNextMap = g_Config.m_SvMaprotation;
 	const char *pCurrentMap = g_Config.m_SvMap;
 	const char *pPreviousMap = Server()->GetPreviousMapName();
-	bool insideWord = false;
-	char aBuf[128];
 	int i = 0;
-	while(*pNextMap)
+	for(auto &MapName : GameServer()->m_MapRotationList)
 	{
-		if(IsWordSeparator(*pNextMap))
-		{
-			if(insideWord)
-				insideWord = false;
-		}
-		else // current char is not a seperator
-		{
-			if(!insideWord)
-			{
-				insideWord = true;
-				pMapRotationInfo->m_MapNameIndices[pMapRotationInfo->m_MapCount] = i;
-				GetWordFromList(aBuf, g_Config.m_SvMaprotation, i);
-				if(str_comp(aBuf, pCurrentMap) == 0)
-					pMapRotationInfo->m_CurrentMapNumber = pMapRotationInfo->m_MapCount;
-				if(pPreviousMap[0] && str_comp(aBuf, pPreviousMap) == 0)
-					PreviousMapNumber = pMapRotationInfo->m_MapCount;
-				pMapRotationInfo->m_MapCount++;
-			}
-		}
-		pNextMap++;
+		if(MapName == pCurrentMap)
+			pMapRotationInfo->m_CurrentMapNumber = i;
+		if(pPreviousMap[0] && MapName == pPreviousMap)
+			PreviousMapNumber = i;
+
 		i++;
 	}
 	if(pMapRotationInfo->m_CurrentMapNumber < 0)
@@ -523,35 +505,17 @@ void IGameController::GetMapRotationInfo(CMapRotationInfo *pMapRotationInfo)
 void IGameController::SyncSmartMapRotationData()
 {
 	// Disable all maps
-	for(auto &[Name, Info] : s_aMapInfo)
+	for(auto &Info : s_aMapInfo | std::views::values)
 	{
 		Info.mEnabled = false;
 	}
 
-	const char *pMapRotation = Config()->m_SvMaprotation;
-	const char *pNextMap = pMapRotation;
-	char aMapNameBuffer[64];
-	while(*pNextMap)
+	for(auto &MapName : GameServer()->m_MapRotationList)
 	{
-		int WordLen = 0;
-		while(pNextMap[WordLen] && !IGameController::IsWordSeparator(pNextMap[WordLen]))
-		{
-			aMapNameBuffer[WordLen] = pNextMap[WordLen];
-			WordLen++;
-		}
-		aMapNameBuffer[WordLen] = 0;
-
-		CMapInfoEx *pInfo = GetMapInfo(aMapNameBuffer);
-		if(pInfo)
-		{
+		if(auto *pInfo = GetMapInfo(MapName.c_str()))
 			pInfo->mEnabled = true;
-		}
 		else
-		{
-			OnMapAdded(aMapNameBuffer);
-		}
-
-		pNextMap += WordLen + 1;
+			OnMapAdded(MapName.c_str());
 	}
 }
 
@@ -871,7 +835,7 @@ void IGameController::CycleMap(bool Forced)
 		return;
 	}
 
-	if(!str_length(g_Config.m_SvMaprotation))
+	if(!GameServer()->m_MapRotationList.size())
 		return;
 
 	if(Config()->m_InfSmartMapRotation)
@@ -891,21 +855,21 @@ void IGameController::DefaultMapCycle()
 	CMapRotationInfo pMapRotationInfo;
 	GetMapRotationInfo(&pMapRotationInfo);
 
-	if(pMapRotationInfo.m_MapCount == 0)
+	if(GameServer()->m_MapRotationList.size() == 0)
 		return;
 
-	char aBuf[256] = {0};
+	const std::string *MapName = nullptr;
 	int i = 0;
 	CMapInfo Info;
 	if(g_Config.m_InfMaprotationRandom)
 	{
 		// handle random maprotation
-		int RandInt;
+		int RandInt = 0;
 		for(; i < 32; i++)
 		{
-			RandInt = random_int(0, pMapRotationInfo.m_MapCount - 1);
-			GetWordFromList(aBuf, g_Config.m_SvMaprotation, pMapRotationInfo.m_MapNameIndices[RandInt]);
-			LoadMapConfig(aBuf, &Info);
+			RandInt = random_int(0, GameServer()->m_MapRotationList.size() - 1);
+			MapName = &GameServer()->m_MapRotationList[RandInt];
+			LoadMapConfig(MapName->c_str(), &Info);
 
 			if(Info.MaximumPlayers && (PlayerCount > Info.MaximumPlayers))
 				continue;
@@ -926,14 +890,14 @@ void IGameController::DefaultMapCycle()
 		i = pMapRotationInfo.m_CurrentMapNumber + 1;
 		for(; i != pMapRotationInfo.m_CurrentMapNumber; i++)
 		{
-			if(i >= pMapRotationInfo.m_MapCount)
+			if(i >= GameServer()->m_MapRotationList.size())
 			{
 				i = 0;
 				if(i == pMapRotationInfo.m_CurrentMapNumber)
 					break;
 			}
-			GetWordFromList(aBuf, g_Config.m_SvMaprotation, pMapRotationInfo.m_MapNameIndices[i]);
-			LoadMapConfig(aBuf, &Info);
+			MapName = &GameServer()->m_MapRotationList[i];
+			LoadMapConfig(MapName->c_str(), &Info);
 
 			if(Info.MaximumPlayers && (PlayerCount > Info.MaximumPlayers))
 				continue;
@@ -947,14 +911,15 @@ void IGameController::DefaultMapCycle()
 
 	if(i == pMapRotationInfo.m_CurrentMapNumber)
 	{
-		// couldnt find map with small enough minplayers number
+		// couldn't find map with small enough min players number
 		i++;
-		if(i >= pMapRotationInfo.m_MapCount)
+		if(i >= GameServer()->m_MapRotationList.size())
 			i = 0;
-		GetWordFromList(aBuf, g_Config.m_SvMaprotation, pMapRotationInfo.m_MapNameIndices[i]);
+		MapName = &GameServer()->m_MapRotationList[i];
 	}
 
-	RotateMapTo(aBuf);
+	assert(MapName);
+	RotateMapTo(MapName->c_str());
 }
 
 void IGameController::SmartMapCycle()
@@ -1222,7 +1187,7 @@ void IGameController::Snap(int SnappingClient)
 
 	pGameInfoObj->m_ScoreLimit = Config()->m_SvScorelimit;
 
-	pGameInfoObj->m_RoundNum = (str_length(Config()->m_SvMaprotation) && Config()->m_SvRoundsPerMap) ? Config()->m_SvRoundsPerMap : 0;
+	pGameInfoObj->m_RoundNum = (GameServer()->m_MapRotationList.size() && Config()->m_SvRoundsPerMap) ? Config()->m_SvRoundsPerMap : 0;
 	pGameInfoObj->m_RoundCurrent = m_RoundCount + 1;
 
 	CNetObj_GameData *pGameData = static_cast<CNetObj_GameData *>(Server()->SnapNewItem(NETOBJTYPE_GAMEDATA, 0, sizeof(CNetObj_GameData)));
