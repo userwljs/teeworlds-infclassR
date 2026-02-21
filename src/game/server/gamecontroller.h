@@ -51,6 +51,7 @@ public:
 
 	CMapInfoEx *AddMapInfo(const char *pMapName);
 	void OnMapAdded(const char *pMapName);
+	void OnMapRemoved(const char *pMapName);
 	void InitSmartMapRotation();
 	void SyncSmartMapRotationData();
 	void ConSmartMapRotationStatus();

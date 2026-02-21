@@ -3273,6 +3273,60 @@ void CGameContext::ConAddMap(IConsole::IResult *pResult, void *pUserData)
 	}
 }
 
+void CGameContext::ConRemoveMap(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CGameContext *>(pUserData);
+
+	if(pResult->NumArguments() != 1)
+		return;
+
+	const char *pMapName = pResult->GetString(0);
+	if(!str_utf8_check(pMapName))
+	{
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid (non UTF-8) filename");
+		return;
+	}
+
+	char *pResultMapInList = nullptr;
+	int Length = str_length(pMapName);
+	{
+		const char *pMapInList = pSelf->Config()->m_SvMaprotation;
+		while(pMapInList)
+		{
+			pMapInList = str_find(pMapInList, pMapName);
+
+			if(pMapInList)
+			{
+				pMapInList += Length;
+				const char nextC = pMapInList[0];
+				if((nextC == 0) || IGameController::IsWordSeparator(nextC))
+				{
+					pResultMapInList = const_cast<char *>(pMapInList - Length);
+					break;
+				}
+			}
+		}
+		if(!pResultMapInList)
+		{
+			pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "The map is not in the rotation list");
+			return;
+		}
+	}
+	while(IGameController::IsWordSeparator(*(pResultMapInList + Length)))
+		Length++;
+	const int TailLen = str_length(pResultMapInList + Length);
+	memmove(pResultMapInList, pResultMapInList + Length, TailLen + 1);
+
+	{
+		char aBuf[256];
+		str_format(aBuf, sizeof(aBuf), "Map %s has been removed from the rotation list", pMapName);
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+	}
+
+	if(pSelf->m_pController)
+		pSelf->m_pController->OnMapRemoved(pMapName);
+}
+
 void CGameContext::ConRestart(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = (CGameContext *)pUserData;
@@ -4443,6 +4497,7 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("skip_map", "", CFGFLAG_SERVER, ConSkipMap, this, "Change map to the next in the rotation");
 	Console()->Register("queue_map", "?r[map]", CFGFLAG_SERVER, ConQueueMap, this, "Set the next map");
 	Console()->Register("add_map", "?r[map]", CFGFLAG_SERVER, ConAddMap, this, "Add a map to the maps rotation list");
+	Console()->Register("remove_map", "?r[map]", CFGFLAG_SERVER, ConRemoveMap, this, "Remove a map from the maps rotation list");
 
 	Console()->Register("kill_pl", "v[id]", CFGFLAG_SERVER, ConKillPlayer, this, "Kills player v and announces the kill");
 	// Chat Command

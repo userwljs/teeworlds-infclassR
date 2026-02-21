@@ -94,6 +94,7 @@ class CGameContext : public IGameServer
 	static void ConSkipMap(IConsole::IResult *pResult, void *pUserData);
 	static void ConQueueMap(IConsole::IResult *pResult, void *pUserData);
 	static void ConAddMap(IConsole::IResult *pResult, void *pUserData);
+	static void ConRemoveMap(IConsole::IResult *pResult, void *pUserData);
 	static void ConRestart(IConsole::IResult *pResult, void *pUserData);
 	static void ConBroadcast(IConsole::IResult *pResult, void *pUserData);
 	static void ConSay(IConsole::IResult *pResult, void *pUserData);

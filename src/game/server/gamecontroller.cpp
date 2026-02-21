@@ -507,11 +507,16 @@ void IGameController::GetMapRotationInfo(CMapRotationInfo *pMapRotationInfo)
 		pNextMap++;
 		i++;
 	}
-	if((pMapRotationInfo->m_CurrentMapNumber < 0) && (PreviousMapNumber >= 0))
+	if(pMapRotationInfo->m_CurrentMapNumber < 0)
 	{
-		// The current map not found in the list (probably because this map is a custom one)
-		// Try to restore the rotation using the name of the previous map
-		pMapRotationInfo->m_CurrentMapNumber = PreviousMapNumber;
+		if(PreviousMapNumber >= 0)
+		{
+			// The current map not found in the list (probably because this map is a custom one)
+			// Try to restore the rotation using the name of the previous map
+			pMapRotationInfo->m_CurrentMapNumber = PreviousMapNumber;
+		}
+		else
+			pMapRotationInfo->m_CurrentMapNumber = 0;
 	}
 }
 
@@ -755,6 +760,11 @@ void IGameController::OnMapAdded(const char *pMapName)
 
 	pInfo->mEnabled = true;
 	LoadMapConfig(pMapName, pInfo);
+}
+
+void IGameController::OnMapRemoved(const char *pMapName)
+{
+	s_aMapInfo.erase(std::string(pMapName));
 }
 
 void IGameController::InitSmartMapRotation()
