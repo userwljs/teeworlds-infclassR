@@ -388,7 +388,7 @@ public:
 	virtual void OnInit(const void *pPersistentData) = 0;
 	virtual void OnConsoleInit() = 0;
 	virtual void OnMapChange(char *pNewMapName, int MapNameSize) = 0;
-	virtual void OnShutdown(const void *pPersistentData) = 0;
+	virtual void OnShutdown(void *pPersistentData) = 0;
 
 	virtual void OnTick() = 0;
 	virtual void OnPreSnap() = 0;

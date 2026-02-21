@@ -255,7 +255,7 @@ public:
 	void OnConsoleInit() override;
 	void RegisterChatCommands();
 	void OnMapChange(char *pNewMapName, int MapNameSize) override;
-	void OnShutdown(const void *pPersistentData) override;
+	void OnShutdown(void *pPersistentData) override;
 
 	void OnTick() override;
 	void OnPreSnap() override;
