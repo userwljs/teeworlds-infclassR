@@ -1139,27 +1139,27 @@ const char *CIcGameController::GetClassDisplayNameForKilledBy(EPlayerClass Playe
 	{
 		// Only the infected classes are used for now; do not add others to keep the translations smaller
 	case EPlayerClass::Smoker:
-		return _C_NOOP("For 'Killed by <>'", "a Smoker");
+		return _("a Smoker");
 	case EPlayerClass::Boomer:
-		return _C_NOOP("For 'Killed by <>'", "a Boomer");
+		return _("a Boomer");
 	case EPlayerClass::Hunter:
-		return _C_NOOP("For 'Killed by <>'", "a Hunter");
+		return _("a Hunter");
 	case EPlayerClass::Bat:
-		return _C_NOOP("For 'Killed by <>'", "a Bat");
+		return _("a Bat");
 	case EPlayerClass::Ghost:
-		return _C_NOOP("For 'Killed by <>'", "a Ghost");
+		return _("a Ghost");
 	case EPlayerClass::Spider:
-		return _C_NOOP("For 'Killed by <>'", "a Spider");
+		return _("a Spider");
 	case EPlayerClass::Ghoul:
-		return _C_NOOP("For 'Killed by <>'", "a Ghoul");
+		return _("a Ghoul");
 	case EPlayerClass::Slug:
-		return _C_NOOP("For 'Killed by <>'", "a Slug");
+		return _("a Slug");
 	case EPlayerClass::Voodoo:
-		return _C_NOOP("For 'Killed by <>'", "a Voodoo");
+		return _("a Voodoo");
 	case EPlayerClass::Witch:
-		return _C_NOOP("For 'Killed by <>'", "a Witch");
+		return _("a Witch");
 	case EPlayerClass::Undead:
-		return _C_NOOP("For 'Killed by <>'", "an Undead");
+		return _("an Undead");
 
 	default:
 		return pDefaultText ? pDefaultText : "Unknown";
