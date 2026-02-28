@@ -261,6 +261,7 @@ void CLua::RegisterLuaBindings()
 		.addFunction("Respawn", &CPlayer::Respawn)
 		.addFunction("SetTeam", &CPlayer::SetTeam)
 		.addFunction("KillCharacter", &CPlayer::KillCharacter)
+		.addFunction("IsBot", &CPlayer::IsBot)
 
 		// attributes
 		.addProperty("Team", &CPlayer::GetTeam)
