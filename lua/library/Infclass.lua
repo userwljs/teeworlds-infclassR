@@ -6,7 +6,7 @@ local infclass = {}
 ---@class vec2
 ---@field x number
 ---@field y number
-local vec2 = {}
+vec2 = {}
 
 ---@return number
 function vec2:Length() end
