@@ -4041,7 +4041,9 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 		}
 		else
 		{
-			AddLine(_C("Medic", "Laser rifle revives the infected, but at the cost of 17 hp and armor."));
+			AddLine(
+				_C("Medic", "Laser rifle revives the infected, but at the cost of {int:Damage} hp and armor."),
+				"Damage", &g_Config.m_InfRevivalDamage);
 		}
 		AddLine(_C("Medic", "Medic also has a powerful shotgun that can knock back the infected."));
 		break;
