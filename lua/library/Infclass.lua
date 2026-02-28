@@ -1,6 +1,5 @@
 ---@meta
 local Config = require("config")
-local Consts = require("consts")
 
 local infclass = {}
 
@@ -625,7 +624,5 @@ local SurvivalGameConfiguration = {}
 function SurvivalGameConfiguration:Reset() end
 
 Game.Controller = CIcGameController
-
-infclass.Consts = Consts
 
 return infclass
