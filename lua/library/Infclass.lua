@@ -29,6 +29,30 @@ function ArrayVec2:At(index) end
 ---@field Infected number
 ---@field Spectators number
 
+--- Constructor: `CClientMask(number)` or `CClientMask(string)`
+---
+--- Example: `CClientMask(0)` creates a CClientMask with all bits set to false
+---@class CClientMask
+local CClientMask = {}
+
+--- Set all bits to true
+function CClientMask:SetAll() end
+
+--- Set all bits to false
+function CClientMask:UnsetAll() end
+
+--- Set the bit at position `pos` to the value `value`
+---@param pos number
+---@param value boolean
+function CClientMask:Set(pos, value) end
+
+---@param pos number
+---@return boolean
+function CClientMask:At(pos) end
+
+---@return number
+function CClientMask:Size() end
+
 ---@class CPlayer
 ---@field Team number
 ---@field CID number
@@ -376,26 +400,32 @@ function Context:EndVote() end
 ---@param pos vec2
 ---@param angel_mod number
 ---@param amount number
-function Context:CreateDamageInd(pos, angel_mod, amount) end
+---@param mask? CClientMask
+function Context:CreateDamageInd(pos, angel_mod, amount, mask) end
 
 ---@param pos vec2
 ---@param owner number
 ---@param weapon number Consts.KillWeapon
-function Context:CreateExplosion(pos, owner, weapon) end
+---@param mask? CClientMask
+function Context:CreateExplosion(pos, owner, weapon, mask) end
 
 ---@param pos vec2
-function Context:CreateHammerHit(pos) end
+---@param mask? CClientMask
+function Context:CreateHammerHit(pos, mask) end
 
 ---@param pos vec2
-function Context:CreatePlayerSpawn(pos) end
+---@param mask? CClientMask
+function Context:CreatePlayerSpawn(pos, mask) end
 
 ---@param pos vec2
 ---@param who number
-function Context:CreateDeath(pos, who) end
+---@param mask? CClientMask
+function Context:CreateDeath(pos, who, mask) end
 
 ---@param pos vec2
 ---@param sound number Consts.Sound
-function Context:CreateSound(pos, sound) end
+---@param mask? CClientMask
+function Context:CreateSound(pos, sound, mask) end
 
 ---@param sound number Consts.Sound
 ---@param target? number @default -1

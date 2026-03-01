@@ -101,6 +101,93 @@ void GameContext_SendBroadcast_Lua(CGameContext *pGameContext, int To, const cha
 	pGameContext->SendBroadcast(To, pText, static_cast<EBroadcastPriority>(Priority), LifeSpan * SERVER_TICK_SPEED);
 }
 
+void GameContext_CreateDamageInd_Lua(
+	CGameContext *pSelf,
+	vec2 Pos,
+	float AngleMod,
+	int Amount,
+	std::optional<CClientMask> optMask)
+{
+	if(optMask)
+		pSelf->CreateDamageInd(Pos, AngleMod, Amount, *optMask);
+	else
+		pSelf->CreateDamageInd(Pos, AngleMod, Amount);
+}
+
+void GameContext_CreateExplosion_Lua(
+	CGameContext *pSelf,
+	vec2 Pos,
+	int Owner,
+	int Weapon,
+	std::optional<CClientMask> optMask)
+{
+	if(optMask)
+		pSelf->CreateExplosion(Pos, Owner, Weapon, *optMask);
+	else
+		pSelf->CreateExplosion(Pos, Owner, Weapon);
+}
+
+void GameContext_CreateHammerHit_Lua(
+	CGameContext *pSelf,
+	vec2 Pos,
+	std::optional<CClientMask> optMask)
+{
+	if(optMask)
+		pSelf->CreateHammerHit(Pos, *optMask);
+	else
+		pSelf->CreateHammerHit(Pos);
+}
+
+void GameContext_CreatePlayerSpawn_Lua(
+	CGameContext *pSelf,
+	vec2 Pos,
+	std::optional<CClientMask> optMask)
+{
+	if(optMask)
+		pSelf->CreatePlayerSpawn(Pos, *optMask);
+	else
+		pSelf->CreatePlayerSpawn(Pos);
+}
+
+void GameContext_CreateDeath_Lua(
+	CGameContext *pSelf,
+	vec2 Pos,
+	int Who,
+	std::optional<CClientMask> optMask)
+{
+	if(optMask)
+		pSelf->CreateDeath(Pos, Who, *optMask);
+	else
+		pSelf->CreateDeath(Pos, Who);
+}
+
+void GameContext_CreateSound_Lua(
+	CGameContext *pSelf,
+	vec2 Pos,
+	int Sound,
+	std::optional<CClientMask> optMask)
+{
+	if(optMask)
+		pSelf->CreateSound(Pos, Sound, *optMask);
+	else
+		pSelf->CreateSound(Pos, Sound);
+}
+
+void ClientMask_SetAll_Lua(CClientMask *pClientMask)
+{
+	pClientMask->set();
+}
+
+void ClientMask_UnsetAll_Lua(CClientMask *pClientMask)
+{
+	pClientMask->reset();
+}
+
+void ClientMask_Set_Lua(CClientMask *pClientMask, const size_t Pos, const bool Value)
+{
+	pClientMask->set(Pos, Value);
+}
+
 void CLua::RegisterLuaBindings()
 {
 	lua_State *L = GetLuaState();
@@ -218,6 +305,16 @@ void CLua::RegisterLuaBindings()
 		.addFunction("At", &VectorAt_Lua<vec2>)
 		.endClass()
 
+		.beginClass<CClientMask>("CClientMask")
+		.addConstructor<void (*)(size_t)>()
+		.addConstructor<void (*)(const std::string &)>()
+		.addFunction("SetAll", &ClientMask_SetAll_Lua)
+		.addFunction("UnsetAll", &ClientMask_UnsetAll_Lua)
+		.addFunction("Set", &ClientMask_Set_Lua)
+		.addFunction("At", &CClientMask::test)
+		.addFunction("Size", &CClientMask::size)
+		.endClass()
+
 		// Game:Players(ID).Character
 		.beginClass<CCharacter>("CCharacter")
 		.addProperty("CID", &CCharacter::GetCid)
@@ -299,12 +396,12 @@ void CLua::RegisterLuaBindings()
 		.addFunction("StartVote", &CGameContext::StartVote)
 		.addFunction("EndVote", &CGameContext::EndVote)
 
-		.addFunction("CreateDamageInd", &CGameContext::CreateDamageInd)
-		.addFunction("CreateExplosion", &CGameContext::CreateExplosion)
-		.addFunction("CreateHammerHit", &CGameContext::CreateHammerHit)
-		.addFunction("CreatePlayerSpawn", &CGameContext::CreatePlayerSpawn)
-		.addFunction("CreateDeath", &CGameContext::CreateDeath)
-		.addFunction("CreateSound", &CGameContext::CreateSound)
+		.addFunction("CreateDamageInd", &GameContext_CreateDamageInd_Lua)
+		.addFunction("CreateExplosion", &GameContext_CreateExplosion_Lua)
+		.addFunction("CreateHammerHit", &GameContext_CreateHammerHit_Lua)
+		.addFunction("CreatePlayerSpawn", &GameContext_CreatePlayerSpawn_Lua)
+		.addFunction("CreateDeath", &GameContext_CreateDeath_Lua)
+		.addFunction("CreateSound", &GameContext_CreateSound_Lua)
 		.addFunction("CreateSoundGlobal", &CGameContext::CreateSoundGlobal)
 
 		.addFunction("SendChatTarget", &CGameContext::SendChatTarget)
