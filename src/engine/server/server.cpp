@@ -473,7 +473,7 @@ bool CServer::SetClientNameImpl(int ClientId, const char *pNameRequest, bool Set
 			{
 				str_format(aBuf, sizeof(aBuf), "%s (your name is banned)", pType);
 			}
-			Ban(ClientId, -1, aBuf);
+			Ban(ClientId, g_Config.m_SvNameBanDuration, aBuf);
 		}
 		return false;
 	}
