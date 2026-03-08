@@ -457,9 +457,9 @@ bool CServer::SetClientNameImpl(int ClientId, const char *pNameRequest, bool Set
 	{
 		if(m_aClients[ClientId].m_State == CClient::STATE_READY && Set)
 		{
-			const char *pType = false ? "Kicked" : "Banned";
+			const bool DoKick = g_Config.m_SvNameBanBehavior == 1;
+			const char *pType = DoKick ? "Kicked" : "Banned";
 			char aBuf[256];
-			// Kick(ClientId, aBuf);
 
 			char aAddrStr[NETADDR_MAXSTRSIZE];
 			net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), false);
@@ -473,7 +473,10 @@ bool CServer::SetClientNameImpl(int ClientId, const char *pNameRequest, bool Set
 			{
 				str_format(aBuf, sizeof(aBuf), "%s (your name is banned)", pType);
 			}
-			Ban(ClientId, g_Config.m_SvNameBanDuration, aBuf);
+			if(DoKick)
+				Kick(ClientId, aBuf);
+			else
+				Ban(ClientId, g_Config.m_SvNameBanDuration, aBuf);
 		}
 		return false;
 	}
