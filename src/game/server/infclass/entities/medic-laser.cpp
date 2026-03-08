@@ -101,7 +101,9 @@ bool CMedicLaser::OnCharacterHit(CIcCharacter *pHit, const vec2 &At)
 		pInfected->Unfreeze();
 		pInfected->ResetBlindness();
 		pInfected->CancelSlowMotion();
-		pInfected->SetHealthArmor(1, 0);
+		const int RevivedHp = Config()->m_InfMedicRevivedHp;
+		pInfected->SetHealthArmor(clamp(RevivedHp, 1, 10),
+			maximum(RevivedHp - 10, 0));
 		const float ReviverHelperDuration = 45;
 		pInfected->AddHelper(pMedic->GetCid(), ReviverHelperDuration);
 		pMedic->TakeDamage(vec2(0.f, 0.f), Config()->m_InfRevivalDamage * 2, GetOwner(), EDamageType::MEDIC_REVIVAL);

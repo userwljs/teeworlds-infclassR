@@ -96,6 +96,8 @@ class CGameContext : public IGameServer
 	static void ConSkipMap(IConsole::IResult *pResult, void *pUserData);
 	static void ConQueueMap(IConsole::IResult *pResult, void *pUserData);
 	static void ConAddMap(IConsole::IResult *pResult, void *pUserData);
+	static void ConRemoveMap(IConsole::IResult *pResult, void *pUserData);
+	static void ConClearMaps(IConsole::IResult *pResult, void *pUserData);
 	static void ConRestart(IConsole::IResult *pResult, void *pUserData);
 	static void ConBroadcast(IConsole::IResult *pResult, void *pUserData);
 	static void ConSay(IConsole::IResult *pResult, void *pUserData);
@@ -258,7 +260,7 @@ public:
 	void OnConsoleInit() override;
 	void RegisterChatCommands();
 	void OnMapChange(char *pNewMapName, int MapNameSize) override;
-	void OnShutdown(const void *pPersistentData) override;
+	void OnShutdown(void *pPersistentData) override;
 
 	void OnTick() override;
 	void OnPreSnap() override;
@@ -328,6 +330,7 @@ public:
 	bool RateLimitPlayerMapVote(int ClientId);
 
 	void OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int Id) override;
+	std::vector<std::string> m_MapRotationList;
 
 	/* INFECTION MODIFICATION START ***************************************/
 private:
@@ -411,6 +414,10 @@ public:
 	void SetPaused(bool Paused);
 
 	bool MapExists(const char *pMapName) const;
+	const std::string *GetRandomMap() const override;
+
+	void AddMap(std::string_view MapName);
+	void RemoveMap(std::string_view MapName);
 
 private:
 	int m_VoteLanguageTick[MAX_CLIENTS];
@@ -464,6 +471,7 @@ private:
 	array<LoveDotState> m_LoveDots;
 
 	int m_aHitSoundState[MAX_CLIENTS]; // 1 for hit, 2 for kill (no sounds must be sent)
+	void ResetDefaultMaps();
 
 public:
 	void SendRecord(int ClientId);

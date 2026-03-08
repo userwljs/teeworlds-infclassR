@@ -1552,18 +1552,16 @@ void CInfClassHuman::BroadcastWeaponState() const
 
 			if(Load < m_MercBombs)
 			{
-				dynamic_string Line1;
-				Server()->Localization()->Format_L(Line1, GetPlayer()->GetLanguage(),
-					_C("Mercenary", "Use the laser to upgrade the bomb"), nullptr);
+				auto Line1 = Server()->Localization()->Format_L(GetPlayer()->GetLanguage(), "Use the laser to upgrade the bomb",
+					_C("Mercenary", nullptr));
 
-				dynamic_string Line2;
-				Server()->Localization()->Format_L(Line2, GetPlayer()->GetLanguage(),
-					_C("Mercenary", "Explosive yield: {percent:BombLevel}"), "BombLevel", &BombLevel, nullptr);
+				const auto Line2 = Server()->Localization()->Format_L(GetPlayer()->GetLanguage(), "Explosive yield: {percent:BombLevel}",
+					_C("Mercenary", "BombLevel"), &BombLevel, nullptr);
 
 				Line1.append("\n");
 				Line1.append(Line2);
 
-				GameServer()->AddBroadcast(GetPlayer()->GetCid(), Line1.buffer(),
+				GameServer()->AddBroadcast(GetPlayer()->GetCid(), Line1.c_str(),
 					EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME);
 			}
 			else
@@ -1770,17 +1768,15 @@ void CInfClassHuman::BroadcastWeaponState() const
 		else if(NumMines > 0 && pOwnWhiteHole)
 		{
 			int Seconds = 1 + pOwnWhiteHole->GetLifespan();
-			dynamic_string Buffer;
-			Server()->Localization()->Format_LP(Buffer, GetPlayer()->GetLanguage(), NumMines,
-				_P("{int:NumMines} mine is active", "{int:NumMines} mines are active", NumMines),
-				"NumMines", &NumMines,
-				nullptr);
+			std::string Buffer;
+			Buffer.append(Server()->Localization()->Format_LP(GetPlayer()->GetLanguage(), NumMines, _P("{int:NumMines} mine is active", "{int:NumMines} mines are active", NumMines),
+				"NumMines",
+				&NumMines, nullptr));
 			Buffer.append("\n");
-			Server()->Localization()->Format_L(Buffer, GetPlayer()->GetLanguage(),
-				_("White hole: {sec:RemainingTime}"),
-				"RemainingTime", &Seconds,
-				nullptr);
-			GameServer()->SendBroadcast(GetCid(), Buffer.buffer(),
+			Buffer.append(Server()->Localization()->Format_L(GetPlayer()->GetLanguage(), "White hole: {sec:RemainingTime}",
+				_("RemainingTime"),
+				&Seconds, nullptr));
+			GameServer()->SendBroadcast(GetCid(), Buffer.c_str(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME);
 		}
 	}

@@ -112,6 +112,7 @@ void CGameContext::Construct(int Resetting)
 	m_NumVoteOptions = 0;
 	m_LastMapVote = 0;
 	m_VoteBanClientId = -1;
+	ResetDefaultMaps();
 
 	if(Resetting == NO_RESET)
 	{
@@ -218,13 +219,13 @@ void CGameContext::CreateDamageInd(vec2 Pos, float Angle, int Amount, CClientMas
 	float e = a + pi / 3;
 	for(int i = 0; i < Amount; i++)
 	{
-		float f = mix(s, e, float(i + 1) / float(Amount + 2));
-		CNetEvent_DamageInd *pEvent = (CNetEvent_DamageInd *)m_Events.Create(NETEVENTTYPE_DAMAGEIND, sizeof(CNetEvent_DamageInd), Mask);
+		float f = mix(s, e, static_cast<float>(i + 1) / static_cast<float>(Amount + 2));
+		CNetEvent_DamageInd *pEvent = static_cast<CNetEvent_DamageInd *>(m_Events.Create(NETEVENTTYPE_DAMAGEIND, sizeof(CNetEvent_DamageInd), Mask));
 		if(pEvent)
 		{
-			pEvent->m_X = (int)Pos.x;
-			pEvent->m_Y = (int)Pos.y;
-			pEvent->m_Angle = (int)(f * 256.0f);
+			pEvent->m_X = static_cast<int>(Pos.x);
+			pEvent->m_Y = static_cast<int>(Pos.y);
+			pEvent->m_Angle = static_cast<int>(f * 256.0f);
 		}
 	}
 }
@@ -232,11 +233,11 @@ void CGameContext::CreateDamageInd(vec2 Pos, float Angle, int Amount, CClientMas
 void CGameContext::CreateHammerHit(vec2 Pos, CClientMask Mask)
 {
 	// create the event
-	CNetEvent_HammerHit *pEvent = (CNetEvent_HammerHit *)m_Events.Create(NETEVENTTYPE_HAMMERHIT, sizeof(CNetEvent_HammerHit), Mask);
+	CNetEvent_HammerHit *pEvent = static_cast<CNetEvent_HammerHit *>(m_Events.Create(NETEVENTTYPE_HAMMERHIT, sizeof(CNetEvent_HammerHit), Mask));
 	if(pEvent)
 	{
-		pEvent->m_X = (int)Pos.x;
-		pEvent->m_Y = (int)Pos.y;
+		pEvent->m_X = static_cast<int>(Pos.x);
+		pEvent->m_Y = static_cast<int>(Pos.y);
 	}
 }
 
@@ -274,11 +275,11 @@ void CGameContext::CreateLoveEvent(vec2 Pos)
 void CGameContext::CreateExplosion(vec2 Pos, int Owner, int Weapon, CClientMask Mask)
 {
 	// create the event
-	CNetEvent_Explosion *pEvent = (CNetEvent_Explosion *)m_Events.Create(NETEVENTTYPE_EXPLOSION, sizeof(CNetEvent_Explosion), Mask);
+	CNetEvent_Explosion *pEvent = static_cast<CNetEvent_Explosion *>(m_Events.Create(NETEVENTTYPE_EXPLOSION, sizeof(CNetEvent_Explosion), Mask));
 	if(pEvent)
 	{
-		pEvent->m_X = (int)Pos.x;
-		pEvent->m_Y = (int)Pos.y;
+		pEvent->m_X = static_cast<int>(Pos.x);
+		pEvent->m_Y = static_cast<int>(Pos.y);
 	}
 }
 
@@ -297,22 +298,22 @@ void create_smoke(vec2 Pos)
 void CGameContext::CreatePlayerSpawn(vec2 Pos, CClientMask Mask)
 {
 	// create the event
-	CNetEvent_Spawn *ev = (CNetEvent_Spawn *)m_Events.Create(NETEVENTTYPE_SPAWN, sizeof(CNetEvent_Spawn), Mask);
+	CNetEvent_Spawn *ev = static_cast<CNetEvent_Spawn *>(m_Events.Create(NETEVENTTYPE_SPAWN, sizeof(CNetEvent_Spawn), Mask));
 	if(ev)
 	{
-		ev->m_X = (int)Pos.x;
-		ev->m_Y = (int)Pos.y;
+		ev->m_X = static_cast<int>(Pos.x);
+		ev->m_Y = static_cast<int>(Pos.y);
 	}
 }
 
 void CGameContext::CreateDeath(vec2 Pos, int ClientId, CClientMask Mask)
 {
 	// create the event
-	CNetEvent_Death *pEvent = (CNetEvent_Death *)m_Events.Create(NETEVENTTYPE_DEATH, sizeof(CNetEvent_Death), Mask);
+	CNetEvent_Death *pEvent = static_cast<CNetEvent_Death *>(m_Events.Create(NETEVENTTYPE_DEATH, sizeof(CNetEvent_Death), Mask));
 	if(pEvent)
 	{
-		pEvent->m_X = (int)Pos.x;
-		pEvent->m_Y = (int)Pos.y;
+		pEvent->m_X = static_cast<int>(Pos.x);
+		pEvent->m_Y = static_cast<int>(Pos.y);
 		pEvent->m_ClientId = ClientId;
 	}
 }
@@ -322,8 +323,8 @@ void CGameContext::CreateFinishEffect(vec2 Pos, CClientMask Mask)
 	CNetEvent_Finish *pEvent = m_Events.Create<CNetEvent_Finish>(Mask);
 	if(pEvent)
 	{
-		pEvent->m_X = (int)Pos.x;
-		pEvent->m_Y = (int)Pos.y;
+		pEvent->m_X = static_cast<int>(Pos.x);
+		pEvent->m_Y = static_cast<int>(Pos.y);
 	}
 }
 
@@ -333,11 +334,11 @@ void CGameContext::CreateSound(vec2 Pos, int Sound, CClientMask Mask)
 		return;
 
 	// create a sound
-	CNetEvent_SoundWorld *pEvent = (CNetEvent_SoundWorld *)m_Events.Create(NETEVENTTYPE_SOUNDWORLD, sizeof(CNetEvent_SoundWorld), Mask);
+	CNetEvent_SoundWorld *pEvent = static_cast<CNetEvent_SoundWorld *>(m_Events.Create(NETEVENTTYPE_SOUNDWORLD, sizeof(CNetEvent_SoundWorld), Mask));
 	if(pEvent)
 	{
-		pEvent->m_X = (int)Pos.x;
-		pEvent->m_Y = (int)Pos.y;
+		pEvent->m_X = static_cast<int>(Pos.x);
+		pEvent->m_Y = static_cast<int>(Pos.y);
 		pEvent->m_SoundId = Sound;
 	}
 }
@@ -370,10 +371,10 @@ bool CGameContext::SnapLaserObject(const CSnapContext &Context, int SnapId, cons
 		if(!pObj)
 			return false;
 
-		pObj->m_ToX = (int)To.x;
-		pObj->m_ToY = (int)To.y;
-		pObj->m_FromX = (int)From.x;
-		pObj->m_FromY = (int)From.y;
+		pObj->m_ToX = static_cast<int>(To.x);
+		pObj->m_ToY = static_cast<int>(To.y);
+		pObj->m_FromX = static_cast<int>(From.x);
+		pObj->m_FromY = static_cast<int>(From.y);
 		pObj->m_StartTick = StartTick;
 		pObj->m_Owner = Owner;
 		pObj->m_Type = LaserType;
@@ -386,10 +387,10 @@ bool CGameContext::SnapLaserObject(const CSnapContext &Context, int SnapId, cons
 		if(!pObj)
 			return false;
 
-		pObj->m_X = (int)To.x;
-		pObj->m_Y = (int)To.y;
-		pObj->m_FromX = (int)From.x;
-		pObj->m_FromY = (int)From.y;
+		pObj->m_X = static_cast<int>(To.x);
+		pObj->m_Y = static_cast<int>(To.y);
+		pObj->m_FromX = static_cast<int>(From.x);
+		pObj->m_FromY = static_cast<int>(From.y);
 		pObj->m_StartTick = StartTick;
 	}
 
@@ -404,8 +405,8 @@ bool CGameContext::SnapPickup(const CSnapContext &Context, int SnapId, const vec
 		if(!pPickup)
 			return false;
 
-		pPickup->m_X = (int)Pos.x;
-		pPickup->m_Y = (int)Pos.y;
+		pPickup->m_X = static_cast<int>(Pos.x);
+		pPickup->m_Y = static_cast<int>(Pos.y);
 
 		if(Type == POWERUP_WEAPON)
 			pPickup->m_Type = SubType == WEAPON_SHOTGUN ? protocol7::PICKUP_SHOTGUN : SubType == WEAPON_GRENADE ? protocol7::PICKUP_GRENADE :
@@ -419,8 +420,8 @@ bool CGameContext::SnapPickup(const CSnapContext &Context, int SnapId, const vec
 		if(!pPickup)
 			return false;
 
-		pPickup->m_X = (int)Pos.x;
-		pPickup->m_Y = (int)Pos.y;
+		pPickup->m_X = static_cast<int>(Pos.x);
+		pPickup->m_Y = static_cast<int>(Pos.y);
 		pPickup->m_Type = Type;
 		pPickup->m_Subtype = SubType;
 		pPickup->m_SwitchNumber = SwitchNumber;
@@ -431,8 +432,8 @@ bool CGameContext::SnapPickup(const CSnapContext &Context, int SnapId, const vec
 		if(!pPickup)
 			return false;
 
-		pPickup->m_X = (int)Pos.x;
-		pPickup->m_Y = (int)Pos.y;
+		pPickup->m_X = static_cast<int>(Pos.x);
+		pPickup->m_Y = static_cast<int>(Pos.y);
 
 		pPickup->m_Type = Type;
 		if(Context.GetClientVersion() < VERSION_DDNET_WEAPON_SHIELDS)
@@ -506,7 +507,7 @@ void CGameContext::SendChatTarget_Localization(int To, int Category, const char 
 	Msg.m_Team = 0;
 	Msg.m_ClientId = -1;
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	va_list VarArgs;
 	va_start(VarArgs, pText);
@@ -518,9 +519,9 @@ void CGameContext::SendChatTarget_Localization(int To, int Category, const char 
 		{
 			Buffer.clear();
 			Buffer.append(GetChatCategoryPrefix(Category));
-			Server()->Localization()->Format_VL(Buffer, m_apPlayers[i]->GetLanguage(), pText, VarArgs);
+			Buffer.append(Server()->Localization()->Format_VL(m_apPlayers[i]->GetLanguage(), pText, VarArgs));
 
-			Msg.m_pMessage = Buffer.buffer();
+			Msg.m_pMessage = Buffer.c_str();
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 			Sent = true;
 		}
@@ -531,10 +532,10 @@ void CGameContext::SendChatTarget_Localization(int To, int Category, const char 
 		Buffer.clear();
 		Buffer.append(GetChatCategoryPrefix(Category));
 		// one message for record
-		dynamic_string tmpBuf;
-		tmpBuf.copy(Buffer);
-		Server()->Localization()->Format_VL(tmpBuf, Config()->m_InfDefaultLanguageCode, pText, VarArgs);
-		Msg.m_pMessage = tmpBuf.buffer();
+		std::string tmpBuf;
+		tmpBuf.append(Buffer);
+		tmpBuf.append(Server()->Localization()->Format_VL(Config()->m_InfDefaultLanguageCode, pText, VarArgs));
+		Msg.m_pMessage = tmpBuf.c_str();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 
 		char aBuf[256];
@@ -554,7 +555,7 @@ void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Numbe
 	Msg.m_Team = 0;
 	Msg.m_ClientId = -1;
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	va_list VarArgs;
 	va_start(VarArgs, pText);
@@ -566,9 +567,9 @@ void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Numbe
 		{
 			Buffer.clear();
 			Buffer.append(GetChatCategoryPrefix(Category));
-			Server()->Localization()->Format_VLP(Buffer, m_apPlayers[i]->GetLanguage(), Number, pText, VarArgs);
+			Buffer.append(Server()->Localization()->Format_VLP(m_apPlayers[i]->GetLanguage(), Number, pText, VarArgs));
 
-			Msg.m_pMessage = Buffer.buffer();
+			Msg.m_pMessage = Buffer.c_str();
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 			Sent = true;
 		}
@@ -579,10 +580,10 @@ void CGameContext::SendChatTarget_Localization_P(int To, int Category, int Numbe
 		Buffer.clear();
 		Buffer.append(GetChatCategoryPrefix(Category));
 		// one message for record
-		dynamic_string tmpBuf;
-		tmpBuf.copy(Buffer);
-		Server()->Localization()->Format_VLP(tmpBuf, Config()->m_InfDefaultLanguageCode, Number, pText, VarArgs);
-		Msg.m_pMessage = tmpBuf.buffer();
+		std::string tmpBuf;
+		tmpBuf.append(Buffer);
+		tmpBuf.append(Server()->Localization()->Format_VLP(Config()->m_InfDefaultLanguageCode, Number, pText, VarArgs));
+		Msg.m_pMessage = tmpBuf.c_str();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 	}
 
@@ -604,18 +605,18 @@ void CGameContext::SendMOTD_Localization(int To, const char *pText, ...)
 {
 	if(m_apPlayers[To])
 	{
-		dynamic_string Buffer;
+		std::string Buffer;
 
 		CNetMsg_Sv_Motd Msg;
 
 		va_list VarArgs;
 		va_start(VarArgs, pText);
 
-		Server()->Localization()->Format_VL(Buffer, m_apPlayers[To]->GetLanguage(), pText, VarArgs);
+		Buffer.append(Server()->Localization()->Format_VL(m_apPlayers[To]->GetLanguage(), pText, VarArgs));
 
 		va_end(VarArgs);
 
-		Msg.m_pMessage = Buffer.buffer();
+		Msg.m_pMessage = Buffer.c_str();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, To);
 	}
 }
@@ -804,7 +805,7 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 	int Start = (To < 0 ? 0 : To);
 	int End = (To < 0 ? MAX_CLIENTS : To + 1);
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	va_list VarArgs;
 	va_start(VarArgs, pText);
@@ -813,8 +814,8 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 	if(To < 0)
 	{
 		CNetMsg_Sv_Broadcast Msg;
-		Server()->Localization()->Format_VL(Buffer, Config()->m_InfDefaultLanguageCode, pText, VarArgs);
-		Msg.m_pMessage = Buffer.buffer();
+		Buffer.append(Server()->Localization()->Format_VL(Config()->m_InfDefaultLanguageCode, pText, VarArgs));
+		Msg.m_pMessage = Buffer.c_str();
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 	}
 
@@ -823,8 +824,8 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 		if(m_apPlayers[i] && !m_apPlayers[i]->IsBot())
 		{
 			Buffer.clear();
-			Server()->Localization()->Format_VL(Buffer, m_apPlayers[i]->GetLanguage(), pText, VarArgs);
-			AddBroadcast(i, Buffer.buffer(), Priority, LifeSpan);
+			Buffer.append(Server()->Localization()->Format_VL(m_apPlayers[i]->GetLanguage(), pText, VarArgs));
+			AddBroadcast(i, Buffer.c_str(), Priority, LifeSpan);
 		}
 	}
 
@@ -836,7 +837,7 @@ void CGameContext::SendBroadcast_Localization_P(int To, EBroadcastPriority Prior
 	int Start = (To < 0 ? 0 : To);
 	int End = (To < 0 ? MAX_CLIENTS : To + 1);
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	va_list VarArgs;
 	va_start(VarArgs, pText);
@@ -845,8 +846,8 @@ void CGameContext::SendBroadcast_Localization_P(int To, EBroadcastPriority Prior
 	{
 		if(m_apPlayers[i] && !m_apPlayers[i]->IsBot())
 		{
-			Server()->Localization()->Format_VLP(Buffer, m_apPlayers[i]->GetLanguage(), Number, pText, VarArgs);
-			AddBroadcast(i, Buffer.buffer(), Priority, LifeSpan);
+			Buffer.append(Server()->Localization()->Format_VLP(m_apPlayers[i]->GetLanguage(), Number, pText, VarArgs));
+			AddBroadcast(i, Buffer.c_str(), Priority, LifeSpan);
 		}
 	}
 
@@ -1120,8 +1121,8 @@ void CGameContext::SendVoteStatus(int ClientId, int Total, int Yes, int No)
 
 	if(Total > VANILLA_MAX_CLIENTS && m_apPlayers[ClientId] && m_apPlayers[ClientId]->GetClientVersion() <= VERSION_DDRACE)
 	{
-		Yes = (Yes * VANILLA_MAX_CLIENTS) / (float)Total;
-		No = (No * VANILLA_MAX_CLIENTS) / (float)Total;
+		Yes = (Yes * VANILLA_MAX_CLIENTS) / static_cast<float>(Total);
+		No = (No * VANILLA_MAX_CLIENTS) / static_cast<float>(Total);
 		Total = VANILLA_MAX_CLIENTS;
 	}
 
@@ -1198,7 +1199,7 @@ void CGameContext::SendTuningParams(int ClientId)
 void CGameContext::SendTuningParams(int ClientId, const CTuningParams &params)
 {
 	CMsgPacker Msg(NETMSGTYPE_SV_TUNEPARAMS);
-	const int *pParams = (const int *)&params;
+	const int *pParams = reinterpret_cast<const int *>(&params);
 
 	for(unsigned i = 0; i < sizeof(m_Tuning) / sizeof(int); i++)
 	{
@@ -1631,7 +1632,7 @@ void CGameContext::OnTick()
 // Server hooks
 void CGameContext::OnClientPrepareInput(int ClientId, void *pInput)
 {
-	auto *pPlayerInput = (CNetObj_PlayerInput *)pInput;
+	auto *pPlayerInput = static_cast<CNetObj_PlayerInput *>(pInput);
 	if(Server()->IsSixup(ClientId))
 		pPlayerInput->m_PlayerFlags = PlayerFlags_SevenToSix(pPlayerInput->m_PlayerFlags);
 }
@@ -1639,9 +1640,9 @@ void CGameContext::OnClientPrepareInput(int ClientId, void *pInput)
 void CGameContext::OnClientDirectInput(int ClientId, void *pInput)
 {
 	if(!m_World.m_Paused)
-		m_apPlayers[ClientId]->OnDirectInput((CNetObj_PlayerInput *)pInput);
+		m_apPlayers[ClientId]->OnDirectInput(static_cast<CNetObj_PlayerInput *>(pInput));
 
-	int Flags = ((CNetObj_PlayerInput *)pInput)->m_PlayerFlags;
+	int Flags = static_cast<CNetObj_PlayerInput *>(pInput)->m_PlayerFlags;
 	if((Flags & 256) || (Flags & 512))
 	{
 		Server()->Kick(ClientId, "please update your client or use DDNet client");
@@ -1655,7 +1656,7 @@ void CGameContext::OnClientPredictedInput(int ClientId, void *pInput)
 		return;
 
 	// set to last sent input when no new input has been sent
-	const CNetObj_PlayerInput *pApplyInput = (CNetObj_PlayerInput *)pInput;
+	const CNetObj_PlayerInput *pApplyInput = static_cast<CNetObj_PlayerInput *>(pInput);
 	if(pApplyInput == nullptr)
 	{
 		pApplyInput = &m_aLastPlayerInput[ClientId];
@@ -1672,7 +1673,7 @@ void CGameContext::OnClientPredictedEarlyInput(int ClientId, void *pInput)
 		return;
 
 	// set to last sent input when no new input has been sent
-	CNetObj_PlayerInput *pApplyInput = (CNetObj_PlayerInput *)pInput;
+	CNetObj_PlayerInput *pApplyInput = static_cast<CNetObj_PlayerInput *>(pInput);
 	if(pApplyInput == nullptr)
 	{
 		pApplyInput = &m_aLastPlayerInput[ClientId];
@@ -1860,7 +1861,7 @@ void CGameContext::OnClientEnter(int ClientId)
 
 bool CGameContext::OnClientDataPersist(int ClientId, void *pData)
 {
-	CPersistentClientData *pPersistent = (CPersistentClientData *)pData;
+	CPersistentClientData *pPersistent = static_cast<CPersistentClientData *>(pData);
 	const CPlayer *pPlayer = m_apPlayers[ClientId];
 	if(!pPlayer)
 	{
@@ -1875,7 +1876,7 @@ bool CGameContext::OnClientDataPersist(int ClientId, void *pData)
 
 void CGameContext::OnClientConnected(int ClientId, void *pData)
 {
-	CPersistentClientData *pPersistentData = (CPersistentClientData *)pData;
+	CPersistentClientData *pPersistentData = static_cast<CPersistentClientData *>(pData);
 	bool Spec = false;
 	bool NameLocked = false;
 	if(pPersistentData)
@@ -2105,9 +2106,9 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 
 		if(*pMsgId == protocol7::NETMSGTYPE_CL_SAY)
 		{
-			protocol7::CNetMsg_Cl_Say *pMsg7 = (protocol7::CNetMsg_Cl_Say *)pRawMsg;
+			protocol7::CNetMsg_Cl_Say *pMsg7 = static_cast<protocol7::CNetMsg_Cl_Say *>(pRawMsg);
 			// Should probably use a placement new to start the lifetime of the object to avoid future weirdness
-			::CNetMsg_Cl_Say *pMsg = (::CNetMsg_Cl_Say *)s_aRawMsg;
+			::CNetMsg_Cl_Say *pMsg = reinterpret_cast<::CNetMsg_Cl_Say *>(s_aRawMsg);
 
 			if(pMsg7->m_Mode == protocol7::CHAT_WHISPER)
 			{
@@ -2127,8 +2128,8 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 		}
 		else if(*pMsgId == protocol7::NETMSGTYPE_CL_STARTINFO)
 		{
-			protocol7::CNetMsg_Cl_StartInfo *pMsg7 = (protocol7::CNetMsg_Cl_StartInfo *)pRawMsg;
-			::CNetMsg_Cl_StartInfo *pMsg = (::CNetMsg_Cl_StartInfo *)s_aRawMsg;
+			protocol7::CNetMsg_Cl_StartInfo *pMsg7 = static_cast<protocol7::CNetMsg_Cl_StartInfo *>(pRawMsg);
+			::CNetMsg_Cl_StartInfo *pMsg = reinterpret_cast<::CNetMsg_Cl_StartInfo *>(s_aRawMsg);
 
 			pMsg->m_pName = pMsg7->m_pName;
 			pMsg->m_pClan = pMsg7->m_pClan;
@@ -2147,7 +2148,7 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 		}
 		else if(*pMsgId == protocol7::NETMSGTYPE_CL_SKINCHANGE)
 		{
-			protocol7::CNetMsg_Cl_SkinChange *pMsg = (protocol7::CNetMsg_Cl_SkinChange *)pRawMsg;
+			protocol7::CNetMsg_Cl_SkinChange *pMsg = static_cast<protocol7::CNetMsg_Cl_SkinChange *>(pRawMsg);
 			if(g_Config.m_SvSpamprotection && pPlayer->m_LastChangeInfo &&
 				pPlayer->m_LastChangeInfo + Server()->TickSpeed() * g_Config.m_SvInfoChangeDelay > Server()->Tick())
 				return nullptr;
@@ -2173,8 +2174,8 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 		}
 		else if(*pMsgId == protocol7::NETMSGTYPE_CL_SETSPECTATORMODE)
 		{
-			protocol7::CNetMsg_Cl_SetSpectatorMode *pMsg7 = (protocol7::CNetMsg_Cl_SetSpectatorMode *)pRawMsg;
-			::CNetMsg_Cl_SetSpectatorMode *pMsg = (::CNetMsg_Cl_SetSpectatorMode *)s_aRawMsg;
+			protocol7::CNetMsg_Cl_SetSpectatorMode *pMsg7 = static_cast<protocol7::CNetMsg_Cl_SetSpectatorMode *>(pRawMsg);
+			::CNetMsg_Cl_SetSpectatorMode *pMsg = reinterpret_cast<::CNetMsg_Cl_SetSpectatorMode *>(s_aRawMsg);
 
 			if(pMsg7->m_SpecMode == protocol7::SPEC_FREEVIEW)
 				pMsg->m_SpectatorId = SPEC_FREEVIEW;
@@ -2185,15 +2186,15 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 		}
 		else if(*pMsgId == protocol7::NETMSGTYPE_CL_SETTEAM)
 		{
-			protocol7::CNetMsg_Cl_SetTeam *pMsg7 = (protocol7::CNetMsg_Cl_SetTeam *)pRawMsg;
-			::CNetMsg_Cl_SetTeam *pMsg = (::CNetMsg_Cl_SetTeam *)s_aRawMsg;
+			protocol7::CNetMsg_Cl_SetTeam *pMsg7 = static_cast<protocol7::CNetMsg_Cl_SetTeam *>(pRawMsg);
+			::CNetMsg_Cl_SetTeam *pMsg = reinterpret_cast<::CNetMsg_Cl_SetTeam *>(s_aRawMsg);
 
 			pMsg->m_Team = pMsg7->m_Team;
 		}
 		else if(*pMsgId == protocol7::NETMSGTYPE_CL_COMMAND)
 		{
-			protocol7::CNetMsg_Cl_Command *pMsg7 = (protocol7::CNetMsg_Cl_Command *)pRawMsg;
-			::CNetMsg_Cl_Say *pMsg = (::CNetMsg_Cl_Say *)s_aRawMsg;
+			protocol7::CNetMsg_Cl_Command *pMsg7 = static_cast<protocol7::CNetMsg_Cl_Command *>(pRawMsg);
+			::CNetMsg_Cl_Say *pMsg = reinterpret_cast<::CNetMsg_Cl_Say *>(s_aRawMsg);
 
 			str_format(s_aRawMsg + sizeof(*pMsg), sizeof(s_aRawMsg) - sizeof(*pMsg), "/%s %s", pMsg7->m_pName, pMsg7->m_pArguments);
 			pMsg->m_pMessage = s_aRawMsg + sizeof(*pMsg);
@@ -2204,8 +2205,8 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 		}
 		else if(*pMsgId == protocol7::NETMSGTYPE_CL_CALLVOTE)
 		{
-			protocol7::CNetMsg_Cl_CallVote *pMsg7 = (protocol7::CNetMsg_Cl_CallVote *)pRawMsg;
-			::CNetMsg_Cl_CallVote *pMsg = (::CNetMsg_Cl_CallVote *)s_aRawMsg;
+			protocol7::CNetMsg_Cl_CallVote *pMsg7 = static_cast<protocol7::CNetMsg_Cl_CallVote *>(pRawMsg);
+			::CNetMsg_Cl_CallVote *pMsg = reinterpret_cast<::CNetMsg_Cl_CallVote *>(s_aRawMsg);
 
 			int Authed = Server()->GetAuthedState(ClientId);
 			if(pMsg7->m_Force)
@@ -2224,15 +2225,15 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 		}
 		else if(*pMsgId == protocol7::NETMSGTYPE_CL_EMOTICON)
 		{
-			protocol7::CNetMsg_Cl_Emoticon *pMsg7 = (protocol7::CNetMsg_Cl_Emoticon *)pRawMsg;
-			::CNetMsg_Cl_Emoticon *pMsg = (::CNetMsg_Cl_Emoticon *)s_aRawMsg;
+			protocol7::CNetMsg_Cl_Emoticon *pMsg7 = static_cast<protocol7::CNetMsg_Cl_Emoticon *>(pRawMsg);
+			::CNetMsg_Cl_Emoticon *pMsg = reinterpret_cast<::CNetMsg_Cl_Emoticon *>(s_aRawMsg);
 
 			pMsg->m_Emoticon = pMsg7->m_Emoticon;
 		}
 		else if(*pMsgId == protocol7::NETMSGTYPE_CL_VOTE)
 		{
-			protocol7::CNetMsg_Cl_Vote *pMsg7 = (protocol7::CNetMsg_Cl_Vote *)pRawMsg;
-			::CNetMsg_Cl_Vote *pMsg = (::CNetMsg_Cl_Vote *)s_aRawMsg;
+			protocol7::CNetMsg_Cl_Vote *pMsg7 = static_cast<protocol7::CNetMsg_Cl_Vote *>(pRawMsg);
+			::CNetMsg_Cl_Vote *pMsg = reinterpret_cast<::CNetMsg_Cl_Vote *>(s_aRawMsg);
 
 			pMsg->m_Vote = pMsg7->m_Vote;
 		}
@@ -2458,10 +2459,10 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 	else
 	{
 		// Inverse order and add ligature for arabic
-		dynamic_string Buffer;
-		Buffer.copy(pMsg->m_pMessage);
+		std::string Buffer;
+		Buffer.append(pMsg->m_pMessage);
 		Server()->Localization()->ArabicShaping(Buffer);
-		SendChat(ClientId, Team, Buffer.buffer(), ClientId);
+		SendChat(ClientId, Team, Buffer.c_str(), ClientId);
 	}
 	/* INFECTION MODIFICATION END *****************************************/
 }
@@ -2942,31 +2943,30 @@ void CGameContext::OnStartInfoNetMessage(const CNetMsg_Cl_StartInfo *pMsg, int C
 		int LocatedCountry = -1;
 #endif // CONF_GEOLOCATION
 
-		const char *const pLangFromClient = CLocalization::LanguageCodeByCountryCode(pMsg->m_Country);
-		const char *const pLangForIp = CLocalization::LanguageCodeByCountryCode(LocatedCountry);
+		const auto LangFromClient = CLocalization::LanguageCodeByCountryCode(pMsg->m_Country);
+		const auto LangForIp = CLocalization::LanguageCodeByCountryCode(LocatedCountry);
 
 		const auto pDefaultLang = Config()->m_InfDefaultLanguageCode;
-		const char *pLangForVote = "";
+		std::string LangForVote;
 
-		if(pLangFromClient[0] && (str_comp(pLangFromClient, pDefaultLang) != 0))
-			pLangForVote = pLangFromClient;
-		else if(pLangForIp[0] && (str_comp(pLangForIp, pDefaultLang) != 0))
-			pLangForVote = pLangForIp;
+		if(!LangFromClient.empty() && LangFromClient != pDefaultLang)
+			LangForVote = LangFromClient;
+		else if(!LangForIp.empty() && LangForIp != pDefaultLang)
+			LangForVote = LangForIp;
 
-		dbg_msg("lang", "init_language ClientId=%d, lang from flag: \"%s\", lang for IP: \"%s\"", ClientId, pLangFromClient, pLangForIp);
+		dbg_msg("lang", "init_language ClientId=%d, lang from flag: \"%s\", lang for IP: \"%s\"", ClientId, LangFromClient.data(), LangForIp.data());
 
 		SetClientLanguage(ClientId, pDefaultLang);
 
-		if(pLangForVote[0])
+		if(!LangForVote.empty())
 		{
 			CNetMsg_Sv_VoteSet Msg;
 			Msg.m_Timeout = 10;
 			Msg.m_pReason = "";
-			str_copy(m_VoteLanguage[ClientId], pLangForVote);
-			const auto LangName = Server()->Localization()->GetLangaugeNameByCode(pLangForVote);
-			dynamic_string Buffer;
-			Server()->Localization()->Format_L(Buffer, m_VoteLanguage[ClientId], _("Switch language to {str:LangName}?"), "LangName", LangName.c_str());
-			Msg.m_pDescription = Buffer.buffer();
+			str_copy(m_VoteLanguage[ClientId], LangForVote.c_str());
+			const auto LangName = Server()->Localization()->GetLangaugeNameByCode(LangForVote);
+			const auto Buffer = Server()->Localization()->Format_L(m_VoteLanguage[ClientId], "Switch language to {str:LangName}?", _("LangName"), LangName.c_str());
+			Msg.m_pDescription = Buffer.c_str();
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, ClientId);
 			m_VoteLanguageTick[ClientId] = 10 * Server()->TickSpeed();
 		}
@@ -3010,7 +3010,7 @@ void CGameContext::ConMute(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConShowOthers(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	if(!CheckClientId(pResult->m_ClientId))
 		return;
 
@@ -3033,7 +3033,7 @@ void CGameContext::ConShowOthers(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConShowAll(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	if(!CheckClientId(pResult->m_ClientId))
 		return;
 
@@ -3051,7 +3051,7 @@ void CGameContext::ConShowAll(IConsole::IResult *pResult, void *pUserData)
 
 	if(pResult->NumArguments())
 	{
-		if(pPlayer->m_ShowAll == (bool)pResult->GetInteger(0))
+		if(pPlayer->m_ShowAll == static_cast<bool>(pResult->GetInteger(0)))
 			return;
 
 		pPlayer->m_ShowAll = pResult->GetInteger(0);
@@ -3071,7 +3071,7 @@ void CGameContext::ConShowAll(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConTimeout(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	if(!CheckClientId(pResult->m_ClientId))
 		return;
 
@@ -3115,7 +3115,7 @@ void CGameContext::ConTimeout(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConMe(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	if(!CheckClientId(pResult->m_ClientId))
 		return;
 
@@ -3135,7 +3135,7 @@ void CGameContext::ConMe(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConWhisper(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pThis = (CGameContext *)pUserData;
+	CGameContext *pThis = static_cast<CGameContext *>(pUserData);
 
 	const char *pStrClientId = pResult->GetString(0);
 	const char *pText = pResult->GetString(1);
@@ -3166,7 +3166,7 @@ void CGameContext::ConWhisper(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConTuneParam(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	const char *pParamName = pResult->GetString(0);
 	float NewValue = pResult->GetFloat(1);
 
@@ -3183,7 +3183,7 @@ void CGameContext::ConTuneParam(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConToggleTuneParam(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	const char *pParamName = pResult->GetString(0);
 	float OldValue;
 
@@ -3207,7 +3207,7 @@ void CGameContext::ConToggleTuneParam(IConsole::IResult *pResult, void *pUserDat
 
 void CGameContext::ConTuneReset(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	CTuningParams TuningParams;
 	*pSelf->Tuning() = TuningParams;
 	//~ pSelf->SendTuningParams(-1);
@@ -3216,7 +3216,7 @@ void CGameContext::ConTuneReset(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConTuneDump(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	char aBuf[256];
 	for(int i = 0; i < CTuningParams::Num(); i++)
 	{
@@ -3229,25 +3229,25 @@ void CGameContext::ConTuneDump(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConPause(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	pSelf->SetPaused(!pSelf->IsPaused());
 }
 
 void CGameContext::ConChangeMap(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	pSelf->m_pController->ChangeMap(pResult->NumArguments() ? pResult->GetString(0) : "");
 }
 
 void CGameContext::ConSkipMap(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	pSelf->m_pController->SkipMap();
 }
 
 void CGameContext::ConQueueMap(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 
 	const char *pMapName = pResult->GetString(0);
 
@@ -3267,78 +3267,140 @@ void CGameContext::ConQueueMap(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConAddMap(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	auto *pSelf = static_cast<CGameContext *>(pUserData);
 
 	if(pResult->NumArguments() != 1)
 		return;
 
 	const char *pMapName = pResult->GetString(0);
-	if(!str_utf8_check(pMapName))
-	{
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid (non UTF-8) filename");
+	pSelf->AddMap(pMapName);
+}
+
+void CGameContext::ConRemoveMap(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CGameContext *>(pUserData);
+
+	if(pResult->NumArguments() != 1)
 		return;
-	}
 
-	{
-		const char *pMapInList = pSelf->Config()->m_SvMaprotation;
-		const int Length = str_length(pMapName);
-		while(pMapInList)
-		{
-			pMapInList = str_find(pMapInList, pMapName);
+	const char *pMapName = pResult->GetString(0);
+	pSelf->RemoveMap(pMapName);
+}
 
-			if(pMapInList)
-			{
-				pMapInList += Length;
-				const char nextC = pMapInList[0];
-				if((nextC == 0) || IGameController::IsWordSeparator(nextC))
-				{
-					pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "The map is already in the rotation list");
-					return;
-				}
-			}
-		}
-	}
-
-	char aBuf[256];
-	if(!pSelf->MapExists(pMapName))
-	{
-		str_format(aBuf, sizeof(aBuf), "Unable to find map %s", pMapName);
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-
-		return;
-	}
-
-	char *pData = g_Config.m_SvMaprotation;
-	int MaxSize = sizeof(g_Config.m_SvMaprotation);
-	int i = 0;
-	for(i = 0; i < MaxSize; ++i)
-	{
-		if(pData[i] == 0)
-			break;
-	}
-	if(i + 1 + str_length(pMapName) >= MaxSize)
-	{
-		// Overflow
-		return;
-	}
-	pData[i] = ' ';
-	++i;
-	str_copy(pData + i, pMapName, MaxSize - i);
-
-	{
-		str_format(aBuf, sizeof(aBuf), "Map %s added to the rotation list", pMapName);
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-	}
+void CGameContext::ConClearMaps(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CGameContext *>(pUserData);
 
 	if(pSelf->m_pController)
 	{
-		pSelf->m_pController->OnMapAdded(pMapName);
+		for(auto &MapName : pSelf->m_MapRotationList)
+			pSelf->m_pController->OnMapRemoved(MapName.c_str());
 	}
+
+	pSelf->m_MapRotationList.clear();
+
+	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "All maps in the rotation list have been removed");
+}
+
+void CGameContext::AddMap(const std::string_view MapName)
+{
+	constexpr size_t MaxNameLength = 127;
+	std::string StringMapName(MapName);
+
+	if(!str_utf8_check(StringMapName.c_str()))
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid (non UTF-8) filename");
+		return;
+	}
+
+	string_strip(StringMapName);
+
+	if(StringMapName.empty())
+	{
+		const auto Msg = std::format("Invalid (empty) filename: {}", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	if(StringMapName.size() > MaxNameLength)
+	{
+		const auto Msg = std::format("The map name {} is too long (max 127 bytes)", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	if(std::ranges::find(m_MapRotationList, StringMapName) != m_MapRotationList.end())
+	{
+		const auto Msg = std::format("The map {} is already in the rotation list", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	if(!MapExists(StringMapName.data()))
+	{
+		const auto Msg = std::format("Unable to find map {}", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	m_MapRotationList.push_back(StringMapName);
+
+	{
+		const auto Msg = std::format("Map {} added to the rotation list", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+	}
+
+	if(m_pController)
+		m_pController->OnMapAdded(StringMapName.data());
+}
+
+void CGameContext::RemoveMap(const std::string_view MapName)
+{
+	std::string StringMapName(MapName);
+
+	if(!str_utf8_check(StringMapName.c_str()))
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid (non UTF-8) filename");
+		return;
+	}
+
+	string_strip(StringMapName);
+
+	if(StringMapName.empty())
+	{
+		const auto Msg = std::format("Invalid (empty) filename: {}", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	if(std::ranges::find(m_MapRotationList, StringMapName) == m_MapRotationList.end())
+	{
+		const auto Msg = std::format("The map {} is not in the rotation list", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+		return;
+	}
+
+	std::erase(m_MapRotationList, StringMapName);
+
+	{
+		const auto Msg = std::format("Map {} has been removed from the rotation list", StringMapName);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
+	}
+
+	if(m_pController)
+		m_pController->OnMapRemoved(StringMapName.data());
+}
+
+const std::string *CGameContext::GetRandomMap() const
+{
+	if(m_MapRotationList.size() == 0)
+		return nullptr;
+	return &m_MapRotationList[random_int(0, m_MapRotationList.size() - 1)];
 }
 
 void CGameContext::ConRestart(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	if(pResult->NumArguments())
 		pSelf->m_pController->DoWarmup(pResult->GetInteger(0));
 	else
@@ -3347,7 +3409,7 @@ void CGameContext::ConRestart(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConBroadcast(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 
 	char aBuf[1024];
 	str_copy(aBuf, pResult->GetString(0));
@@ -3372,14 +3434,14 @@ void CGameContext::ConBroadcast(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConSay(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	pSelf->SendChat(-1, CGameContext::CHAT_ALL, pResult->GetString(0));
 }
 
 void CGameContext::ConSetTeam(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
-	int ClientId = clamp(pResult->GetInteger(0), 0, (int)MAX_CLIENTS - 1);
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
+	int ClientId = clamp(pResult->GetInteger(0), 0, static_cast<int>(MAX_CLIENTS) - 1);
 	int Team = clamp(pResult->GetInteger(1), -1, 1);
 	int Delay = pResult->NumArguments() > 2 ? pResult->GetInteger(2) : 0;
 	if(!pSelf->m_apPlayers[ClientId])
@@ -3395,7 +3457,7 @@ void CGameContext::ConSetTeam(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConSetTeamAll(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	int Team = clamp(pResult->GetInteger(0), -1, 1);
 
 	pSelf->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
@@ -3409,7 +3471,7 @@ void CGameContext::ConSetTeamAll(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConInsertVote(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	int Index = pResult->GetInteger(0);
 	const char *pDescription = pResult->GetString(1);
 	const char *pCommand = pResult->GetString(2);
@@ -3419,7 +3481,7 @@ void CGameContext::ConInsertVote(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConAddVote(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	const char *pDescription = pResult->GetString(0);
 	const char *pCommand = pResult->GetString(1);
 
@@ -3472,7 +3534,7 @@ bool CGameContext::InsertVote(int Position, const char *pDescription, const char
 	// add the option
 	int Len = str_length(pCommand);
 
-	pOption = (CVoteOptionServer *)m_pVoteOptionHeap->Allocate(sizeof(CVoteOptionServer) + Len, alignof(CVoteOptionServer));
+	pOption = static_cast<CVoteOptionServer *>(m_pVoteOptionHeap->Allocate(sizeof(CVoteOptionServer) + Len, alignof(CVoteOptionServer)));
 	if(Position == m_NumVoteOptions)
 	{
 		// Append
@@ -3545,7 +3607,7 @@ void CGameContext::AddVote(const char *pDescription, const char *pCommand)
 
 void CGameContext::ConRemoveVote(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	const char *pDescription = pResult->GetString(0);
 	pSelf->RemoveVote(pDescription);
 }
@@ -3597,7 +3659,7 @@ void CGameContext::RemoveVote(const char *pVoteOption)
 
 		// copy option
 		int Len = str_length(pSrc->m_aCommand);
-		CVoteOptionServer *pDst = (CVoteOptionServer *)pVoteOptionHeap->Allocate(sizeof(CVoteOptionServer) + Len);
+		CVoteOptionServer *pDst = static_cast<CVoteOptionServer *>(pVoteOptionHeap->Allocate(sizeof(CVoteOptionServer) + Len));
 		pDst->m_pNext = nullptr;
 		pDst->m_pPrev = pVoteOptionLast;
 		if(pDst->m_pPrev)
@@ -3638,7 +3700,7 @@ void CGameContext::ClearVotes()
 
 void CGameContext::ConForceVote(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	const char *pType = pResult->GetString(0);
 	const char *pValue = pResult->GetString(1);
 	const char *pReason = pResult->NumArguments() > 2 && pResult->GetString(2)[0] ? pResult->GetString(2) : "No reason given";
@@ -3709,7 +3771,7 @@ void CGameContext::ConForceVote(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConClearVotes(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	pSelf->ClearVotes();
 }
 
@@ -3722,7 +3784,7 @@ struct CMapNameItem
 
 void CGameContext::ConAddMapVotes(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 
 	std::vector<CMapNameItem> vMapList;
 	pSelf->Storage()->ListDirectory(IStorage::TYPE_ALL, "maps", MapScan, &vMapList);
@@ -3759,7 +3821,7 @@ int CGameContext::MapScan(const char *pName, int IsDir, int DirType, void *pUser
 
 void CGameContext::ConVote(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 
 	// check if there is a vote running
 	if(!pSelf->m_VoteCloseTime)
@@ -3784,7 +3846,7 @@ void CGameContext::ConchainSpecialMotdupdate(IConsole::IResult *pResult, void *p
 	{
 		CNetMsg_Sv_Motd Msg;
 		Msg.m_pMessage = g_Config.m_SvMotd;
-		CGameContext *pSelf = (CGameContext *)pUserData;
+		CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 		for(int i = 0; i < MAX_CLIENTS; ++i)
 			if(pSelf->m_apPlayers[i])
 				pSelf->Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, i);
@@ -3797,7 +3859,7 @@ void CGameContext::ConchainSyncMapRotation(IConsole::IResult *pResult, void *pUs
 
 	if(pResult->NumArguments())
 	{
-		CGameContext *pSelf = (CGameContext *)pUserData;
+		CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 		if(pSelf->m_pController)
 		{
 			pSelf->m_pController->SyncSmartMapRotationData();
@@ -3809,7 +3871,7 @@ void CGameContext::ConchainSyncMapRotation(IConsole::IResult *pResult, void *pUs
 
 void CGameContext::ConVersion(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 
 	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp",
 		"InfectionClass Mod. Version: " GAME_VERSION);
@@ -3827,27 +3889,27 @@ void CGameContext::ConVersion(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConCredits(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 
 	int ClientId = pResult->GetClientId();
 	const char *pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	const char aThanks[] = "guenstig werben, Defeater, Orangus, BlinderHeld, Warpaint, Serena, FakeDeath, tee_to_F_U_UP!, Denis, NanoSlime_, tria, pinkieval…";
 	const char aContributors[] = "necropotame, Stitch626, yavl, Socialdarwinist"
 								 ", bretonium, duralakun, FluffyTee, ResamVi"
 								 ", Kaffeine";
 
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", "InfectionDust", nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "InfectionClass, by necropotame (version {str:VersionCode})", _("VersionCode"), "InfectionDust", nullptr));
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Based on the concept of Infection mod by Gravity"), nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "Based on the concept of Infection mod by Gravity", _(nullptr)));
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Main contributors: {str:ListOfContributors}"), "ListOfContributors", aContributors, nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "Main contributors: {str:ListOfContributors}", _("ListOfContributors"), aContributors, nullptr));
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Thanks to {str:ListOfContributors}"), "ListOfContributors", aThanks, nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "Thanks to {str:ListOfContributors}", _("ListOfContributors"), aThanks, nullptr));
 	Buffer.append("\n\n");
-	pSelf->SendMOTD(ClientId, Buffer.buffer());
+	pSelf->SendMOTD(ClientId, Buffer.c_str());
 }
 
 void CGameContext::ConInfo(IConsole::IResult *pResult, void *pUserData)
@@ -3857,7 +3919,7 @@ void CGameContext::ConInfo(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConAbout(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	pSelf->ConAbout(pResult);
 }
 
@@ -3866,14 +3928,12 @@ void CGameContext::ConAbout(IConsole::IResult *pResult)
 	int ClientId = pResult->GetClientId();
 	const char *pLanguage = m_apPlayers[ClientId]->GetLanguage();
 
-	dynamic_string Buffer;
-	Server()->Localization()->Format_L(Buffer, pLanguage, _("InfectionClass, by necropotame (version {str:VersionCode})"), "VersionCode", GAME_VERSION, nullptr);
-	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-	Buffer.clear();
+	std::string Buffer;
+	Buffer = Server()->Localization()->Format_L(pLanguage, "InfectionClass, by necropotame (version {str:VersionCode})", _("VersionCode"), GAME_VERSION, nullptr);
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 
-	Server()->Localization()->Format_L(Buffer, pLanguage, _("Server version from {str:ServerCompileDate} "), "ServerCompileDate", LAST_COMPILE_DATE, nullptr);
-	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-	Buffer.clear();
+	Buffer = Server()->Localization()->Format_L(pLanguage, "Server version from {str:ServerCompileDate} ", _("ServerCompileDate"), LAST_COMPILE_DATE, nullptr);
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 
 	if(GIT_SHORTREV_HASH)
 	{
@@ -3885,43 +3945,38 @@ void CGameContext::ConAbout(IConsole::IResult *pResult)
 	const char *pSourceUrl = Config()->m_AboutSourceUrl;
 	if(pSourceUrl[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Sources: {str:SourceUrl} "), "SourceUrl",
-			pSourceUrl, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Sources: {str:SourceUrl} ", _("SourceUrl"), pSourceUrl,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 
 	if(Config()->m_AboutContactsDiscord[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Discord: {str:Url}"), "Url",
-			Config()->m_AboutContactsDiscord, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Discord: {str:Url}", _("Url"), Config()->m_AboutContactsDiscord,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 	if(Config()->m_AboutContactsTelegram[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Telegram: {str:Url}"), "Url",
-			Config()->m_AboutContactsTelegram, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Telegram: {str:Url}", _("Url"), Config()->m_AboutContactsTelegram,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 	if(Config()->m_AboutContactsMatrix[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Matrix room: {str:Url}"), "Url",
-			Config()->m_AboutContactsMatrix, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Matrix room: {str:Url}", _("Url"), Config()->m_AboutContactsMatrix,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 	if(Config()->m_AboutTranslationUrl[0])
 	{
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Translation project: {str:Url}"), "Url",
-			Config()->m_AboutTranslationUrl, nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
-		Buffer.clear();
+		Buffer = Server()->Localization()->Format_L(pLanguage, "Translation project: {str:Url}", _("Url"), Config()->m_AboutTranslationUrl,
+			nullptr);
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	}
 
-	Server()->Localization()->Format_L(Buffer, pLanguage, _("See also: /credits"), nullptr);
-	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
+	Buffer = Server()->Localization()->Format_L(pLanguage, "See also: /credits", _(nullptr));
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.c_str());
 	Buffer.clear();
 }
 
@@ -4128,8 +4183,8 @@ void CGameContext::PrivateMessage(const char *pStr, int ClientId, bool TeamChat)
 	while(*pStr == ' ')
 		pStr++;
 
-	dynamic_string Buffer;
-	Buffer.copy(pStr);
+	std::string Buffer;
+	Buffer.append(pStr);
 	Server()->Localization()->ArabicShaping(Buffer);
 
 	CNetMsg_Sv_Chat Msg;
@@ -4175,7 +4230,7 @@ void CGameContext::PrivateMessage(const char *pStr, int ClientId, bool TeamChat)
 					TextIter = FinalMessage.append_at(TextIter, aChatTitle);
 					TextIter = FinalMessage.append_at(TextIter, "): ");
 				}
-				TextIter = FinalMessage.append_at(TextIter, Buffer.buffer());
+				TextIter = FinalMessage.append_at(TextIter, Buffer.c_str());
 			}
 			else
 			{
@@ -4183,7 +4238,7 @@ void CGameContext::PrivateMessage(const char *pStr, int ClientId, bool TeamChat)
 				TextIter = FinalMessage.append_at(TextIter, " (");
 				TextIter = FinalMessage.append_at(TextIter, aChatTitle);
 				TextIter = FinalMessage.append_at(TextIter, "): ");
-				TextIter = FinalMessage.append_at(TextIter, Buffer.buffer());
+				TextIter = FinalMessage.append_at(TextIter, Buffer.c_str());
 			}
 			Msg.m_pMessage = FinalMessage.buffer();
 
@@ -4246,7 +4301,7 @@ void CGameContext::InitGeolocation()
 
 void CGameContext::ConRegister(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	int ClientId = pResult->GetClientId();
 	const char *pLogin = pResult->GetString(0);
 	const char *pPassword = pResult->GetString(1);
@@ -4256,7 +4311,7 @@ void CGameContext::ConRegister(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConLogin(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	int ClientId = pResult->GetClientId();
 	const char *pLogin = pResult->GetString(0);
 	const char *pPassword = pResult->GetString(1);
@@ -4266,7 +4321,7 @@ void CGameContext::ConLogin(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConLogout(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	int ClientId = pResult->GetClientId();
 
 	pSelf->Server()->Logout(ClientId);
@@ -4277,7 +4332,7 @@ void CGameContext::ConHelp(IConsole::IResult *pResult, void *pUserData)
 	int ClientId = pResult->GetClientId();
 	const char *pHelpPage = (pResult->NumArguments() > 0) ? pResult->GetString(0) : nullptr;
 
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	pSelf->ChatHelp(ClientId, pHelpPage);
 }
 
@@ -4325,12 +4380,10 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 
 	if(Buffer.empty())
 	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Server()->Localization()->Localize(pLanguage, _("Choose a help page with /help <page>")));
+		const std::string Hint(Server()->Localization()->Localize(pLanguage, _("Choose a help page with /help <page>")));
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Hint.c_str());
 
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Available help pages: {str:PageList}"),
-			"PageList", "game, translate, msg, mute, taxi",
-			nullptr);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Buffer.buffer());
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", Server()->Localization()->Format_L(pLanguage, "Available help pages: {str:PageList}", _("PageList"), "game, translate, msg, mute, taxi", nullptr).c_str());
 
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", "engineer, soldier, scientist, biologist, looper, medic, hero, ninja, mercenary, sniper, whitehole");
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chatresp", "smoker, hunter, bat, boomer, ghost, spider, ghoul, slug, voodoo, undead, witch.");
@@ -4343,7 +4396,7 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 
 void CGameContext::ConRules(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	bool Printed = false;
 	if(g_Config.m_SvDDRaceRules)
 	{
@@ -4381,7 +4434,7 @@ void CGameContext::ConRules(IConsole::IResult *pResult, void *pUserData)
 
 void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 
 	int ClientId = pResult->GetClientId();
 
@@ -4410,8 +4463,8 @@ void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 	else
 	{
 		const char *pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
-		const char *pTxtUnknownLanguage = pSelf->Server()->Localization()->Localize(pLanguage, _("Unknown language"));
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", pTxtUnknownLanguage);
+		const std::string TxtUnknownLanguage(pSelf->Server()->Localization()->Localize(pLanguage, _("Unknown language")));
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", TxtUnknownLanguage.c_str());
 
 		dynamic_string BufferList;
 		int BufferIter = 0;
@@ -4424,40 +4477,39 @@ void CGameContext::ConLanguage(IConsole::IResult *pResult, void *pUserData)
 			i++;
 		}
 
-		dynamic_string Buffer;
-		pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Available languages: {str:ListOfLanguage}"), "ListOfLanguage", BufferList.buffer(), nullptr);
+		const auto Buffer = pSelf->Server()->Localization()->Format_L(pLanguage, "Available languages: {str:ListOfLanguage}", _("ListOfLanguage"), BufferList.buffer(), nullptr);
 
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", Buffer.buffer());
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "language", Buffer.c_str());
 	}
 }
 
 void CGameContext::ConCmdList(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	int ClientId = pResult->GetClientId();
 	const char *pLanguage = pSelf->m_apPlayers[ClientId]->GetLanguage();
 
-	dynamic_string Buffer;
+	std::string Buffer;
 
 	Buffer.append("~~ ");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("List of commands"));
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "List of commands").c_str());
 	Buffer.append(" ~~\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/antiping, /alwaysrandom, /customskin, /help, /about, /language", nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/antiping, /alwaysrandom, /customskin, /help, /about, /language", nullptr).c_str());
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/msg, /mute", nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/msg, /mute", nullptr).c_str());
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/changelog", nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/changelog", nullptr).c_str());
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, "/register, /login, /logout", nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/register, /login, /logout", nullptr).c_str());
 	Buffer.append("\n\n");
-	pSelf->Server()->Localization()->Format_L(Buffer, pLanguage, _("Press <F3> or <F4> to enable or disable hook protection"), nullptr);
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "Press <F3> or <F4> to enable or disable hook protection", _(nullptr)).c_str());
 
-	pSelf->SendMOTD(ClientId, Buffer.buffer());
+	pSelf->SendMOTD(ClientId, Buffer.c_str());
 }
 
 void CGameContext::ConChangeLog(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	pSelf->ConChangeLog(pResult);
 }
 
@@ -4510,7 +4562,7 @@ void CGameContext::ConChangeLog(IConsole::IResult *pResult)
 
 void CGameContext::ConReloadChangeLog(IConsole::IResult *pResult, void *pUserData)
 {
-	CGameContext *pSelf = (CGameContext *)pUserData;
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
 	pSelf->ReloadChangelog();
 }
 
@@ -4548,6 +4600,8 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("skip_map", "", CFGFLAG_SERVER, ConSkipMap, this, "Change map to the next in the rotation");
 	Console()->Register("queue_map", "?r[map]", CFGFLAG_SERVER, ConQueueMap, this, "Set the next map");
 	Console()->Register("add_map", "?r[map]", CFGFLAG_SERVER, ConAddMap, this, "Add a map to the maps rotation list");
+	Console()->Register("remove_map", "?r[map]", CFGFLAG_SERVER, ConRemoveMap, this, "Remove a map from the maps rotation list");
+	Console()->Register("clear_maps", "", CFGFLAG_SERVER, ConClearMaps, this, "Remove all maps from the maps rotation list");
 
 	Console()->Register("kill_pl", "v[id]", CFGFLAG_SERVER, ConKillPlayer, this, "Kills player v and announces the kill");
 	// Chat Command
@@ -4620,7 +4674,7 @@ void CGameContext::RegisterChatCommands()
 
 void CGameContext::OnInit(const void *pPersistentData)
 {
-	[[maybe_unused]] const CPersistentData *pPersistent = (const CPersistentData *)pPersistentData;
+	[[maybe_unused]] const CPersistentData *pPersistent = static_cast<const CPersistentData *>(pPersistentData);
 
 	m_pServer = Kernel()->RequestInterface<IServer>();
 	m_pLua = Kernel()->RequestInterface<ILua>();
@@ -4743,10 +4797,10 @@ void CGameContext::CreateAllEntities(bool Initial)
 			const CMapItemLayer *pLayer = m_Layers.GetLayer(pGroup->m_StartLayer + l);
 			if(pLayer->m_Type == LAYERTYPE_QUADS)
 			{
-				const CMapItemLayerQuads *pQLayer = (const CMapItemLayerQuads *)pLayer;
+				const CMapItemLayerQuads *pQLayer = reinterpret_cast<const CMapItemLayerQuads *>(pLayer);
 				IntsToStr(pQLayer->m_aName, std::size(pQLayer->m_aName), aLayerName, std::size(aLayerName));
 
-				const CQuad *pQuads = (const CQuad *)Kernel()->RequestInterface<IMap>()->GetDataSwapped(pQLayer->m_Data);
+				const CQuad *pQuads = static_cast<const CQuad *>(Kernel()->RequestInterface<IMap>()->GetDataSwapped(pQLayer->m_Data));
 
 				for(int q = 0; q < pQLayer->m_NumQuads; q++)
 				{
@@ -4766,11 +4820,11 @@ void CGameContext::OnMapChange(char *pNewMapName, int MapNameSize)
 {
 }
 
-void CGameContext::OnShutdown(const void *pPersistentData)
+void CGameContext::OnShutdown(void *pPersistentData)
 {
 	m_pController->OnShutdown();
 
-	CPersistentData *pPersistent = (CPersistentData *)pPersistentData;
+	auto *pPersistent = static_cast<CPersistentData *>(pPersistentData);
 
 	if(pPersistent)
 	{
@@ -4792,7 +4846,7 @@ void CGameContext::OnSnap(int ClientId)
 	if(Server()->IsRecording(ClientId > -1 ? ClientId : MAX_CLIENTS) && mem_comp(&StandardTuning, &m_Tuning, sizeof(CTuningParams)) != 0)
 	{
 		CMsgPacker Msg(NETMSGTYPE_SV_TUNEPARAMS);
-		int *pParams = (int *)&m_Tuning;
+		int *pParams = reinterpret_cast<int *>(&m_Tuning);
 		for(unsigned i = 0; i < sizeof(m_Tuning) / sizeof(int); i++)
 			Msg.AddInt(pParams[i]);
 		Server()->SendMsg(&Msg, MSGFLAG_RECORD | MSGFLAG_NOSEND, ClientId);
@@ -4837,8 +4891,8 @@ void CGameContext::OnSnap(int ClientId)
 		CNetObj_Projectile *pObj = Server()->SnapNewItem<CNetObj_Projectile>(m_HammerDots[i].m_SnapId);
 		if(pObj)
 		{
-			pObj->m_X = (int)m_HammerDots[i].m_Pos.x;
-			pObj->m_Y = (int)m_HammerDots[i].m_Pos.y;
+			pObj->m_X = static_cast<int>(m_HammerDots[i].m_Pos.x);
+			pObj->m_Y = static_cast<int>(m_HammerDots[i].m_Pos.y);
 			pObj->m_VelX = 0;
 			pObj->m_VelY = 0;
 			pObj->m_StartTick = Server()->Tick();
@@ -4861,8 +4915,8 @@ void CGameContext::OnSnap(int ClientId)
 		CNetObj_Pickup *pObj = Server()->SnapNewItem<CNetObj_Pickup>(m_LoveDots[i].m_SnapId);
 		if(pObj)
 		{
-			pObj->m_X = (int)m_LoveDots[i].m_Pos.x;
-			pObj->m_Y = (int)m_LoveDots[i].m_Pos.y;
+			pObj->m_X = static_cast<int>(m_LoveDots[i].m_Pos.x);
+			pObj->m_Y = static_cast<int>(m_LoveDots[i].m_Pos.y);
 			pObj->m_Type = POWERUP_HEALTH;
 			pObj->m_Subtype = 0;
 		}
@@ -5035,14 +5089,14 @@ void CGameContext::SendFinish(int ClientId, float Time, float PreviousBestTime)
 	{
 		CNetMsg_Sv_DDRaceTime Msg;
 		CNetMsg_Sv_DDRaceTimeLegacy MsgLegacy;
-		MsgLegacy.m_Time = Msg.m_Time = (int)(Time * 100.0f);
+		MsgLegacy.m_Time = Msg.m_Time = static_cast<int>(Time * 100.0f);
 		MsgLegacy.m_Check = Msg.m_Check = 0;
 		MsgLegacy.m_Finish = Msg.m_Finish = 1;
 
 		if(PreviousBestTime)
 		{
 			float Diff100 = (Time - PreviousBestTime) * 100;
-			MsgLegacy.m_Check = Msg.m_Check = (int)Diff100;
+			MsgLegacy.m_Check = Msg.m_Check = static_cast<int>(Diff100);
 		}
 		if(VERSION_DDRACE <= ClientVersion)
 		{
@@ -5372,4 +5426,23 @@ void CGameContext::OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int Id)
 		aJsonSkin,
 		JsonBool(m_apPlayers[Id]->IsAfk()),
 		m_apPlayers[Id]->GetTeam());
+}
+
+void CGameContext::ResetDefaultMaps()
+{
+	m_MapRotationList.clear();
+	m_MapRotationList.emplace_back("infc_lunaroutpost");
+	m_MapRotationList.emplace_back("infc_skull");
+	m_MapRotationList.emplace_back("infc_warehouse");
+	m_MapRotationList.emplace_back("infc_damascus");
+	m_MapRotationList.emplace_back("infc_eidalfitr");
+	m_MapRotationList.emplace_back("infc_newdust");
+	m_MapRotationList.emplace_back("infc_hardcorepit");
+	m_MapRotationList.emplace_back("infc_normandie");
+	m_MapRotationList.emplace_back("infc_deathdealer");
+	m_MapRotationList.emplace_back("infc_bamboo3");
+	m_MapRotationList.emplace_back("infc_halfdust");
+	m_MapRotationList.emplace_back("infc_warehouse2");
+	m_MapRotationList.emplace_back("infc_malinalli_k9f");
+	m_MapRotationList.emplace_back("infc_canyon");
 }

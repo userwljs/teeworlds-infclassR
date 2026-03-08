@@ -142,6 +142,9 @@ MACRO_CONFIG_INT(SvSuggestMoreRounds, sv_suggest_more_rounds, 0, 0, 100, CFGFLAG
 MACRO_CONFIG_STR(SvChangeLogFile, sv_changelog_file, 128, "ChangeLog.txt", CFGFLAG_SERVER, "File with changelog entities")
 MACRO_CONFIG_INT(SvChangeLogMaxLinesPerPage, sv_changelog_lines_page, 6, 1, 64, CFGFLAG_SERVER, "File with changelog entities")
 
+MACRO_CONFIG_INT(SvNameBanDuration, sv_name_ban_duration, 86400, 0, 1000000, CFGFLAG_SERVER, "The ban duration (in seconds, 0 for permanent) applied when a player is banned for a name ban")
+MACRO_CONFIG_INT(SvNameBanBehavior, sv_name_ban_behavior, 0, 0, 1, CFGFLAG_SERVER, "What to do when player name is forbidden (0 = banning, 1 = kicking)")
+
 #include "game/server/infclass/ic_config_variables.h"
 
 #endif

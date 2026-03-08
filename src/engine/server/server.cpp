@@ -177,13 +177,16 @@ int CServerBan::BanExt(T *pBanPool, const typename T::CDataType *pData, int Seco
 			if(i == Server()->m_RconClientId || Server()->m_aClients[i].m_State == CServer::CClient::STATE_EMPTY)
 				continue;
 
+			if(!NetMatch(pData, Server()->m_NetServer.ClientAddr(i)))
+				continue;
+
 			if(Server()->m_aClients[i].m_IsBot)
 			{
 				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "net_ban", "ban error (unable to ban a server-side bot)");
 				return -1;
 			}
 
-			if(Server()->m_aClients[i].m_Authed >= Server()->m_RconAuthLevel && NetMatch(pData, Server()->m_NetServer.ClientAddr(i)))
+			if(Server()->m_aClients[i].m_Authed >= Server()->m_RconAuthLevel)
 			{
 				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "net_ban", "ban error (command denied)");
 				return -1;
@@ -635,22 +638,26 @@ bool CServer::SetClientNameImpl(int ClientId, const char *pNameRequest, bool Set
 	{
 		if(m_aClients[ClientId].m_State == CClient::STATE_READY && Set)
 		{
+			const bool DoKick = g_Config.m_SvNameBanBehavior == 1;
+			const char *pType = DoKick ? "Kicked" : "Banned";
 			char aBuf[256];
-			if(pBanned->m_aReason[0])
-			{
-				str_format(aBuf, sizeof(aBuf), "Kicked (your name is banned: %s)", pBanned->m_aReason);
-			}
-			else
-			{
-				str_copy(aBuf, "Kicked (your name is banned)");
-			}
-			// Kick(ClientId, aBuf);
 
 			char aAddrStr[NETADDR_MAXSTRSIZE];
 			net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), false);
 			str_format(aBuf, sizeof(aBuf), "client ip=%s banned for using name '%s'", aAddrStr, aTrimmedName);
 			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "name_ban", aBuf);
-			Ban(ClientId, -1, "");
+			if(pBanned->m_aReason[0])
+			{
+				str_format(aBuf, sizeof(aBuf), "%s (your name is banned: %s)", pType, pBanned->m_aReason);
+			}
+			else
+			{
+				str_format(aBuf, sizeof(aBuf), "%s (your name is banned)", pType);
+			}
+			if(DoKick)
+				Kick(ClientId, aBuf);
+			else
+				Ban(ClientId, g_Config.m_SvNameBanDuration, aBuf);
 		}
 		return false;
 	}
@@ -3002,8 +3009,6 @@ int CServer::LoadMap(const char *pMapName)
 	return 1;
 }
 
-static bool IsSeparator(char c) { return c == ';' || c == ' ' || c == ',' || c == '\t'; }
-
 void CServer::InitInterfaces()
 {
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
@@ -3043,60 +3048,9 @@ int CServer::Run()
 	InitPersistentData();
 
 	// Choose a random map from the rotation
-	if(!str_length(g_Config.m_SvMap) && str_length(g_Config.m_SvMaprotation))
+	if(const auto *pMapName = GameServer()->GetRandomMap(); !str_length(g_Config.m_SvMap) && pMapName)
 	{
-		int nbMaps = 0;
-		{
-			const char *pNextMap = g_Config.m_SvMaprotation;
-
-			// Skip initial separator
-			while(*pNextMap && IsSeparator(*pNextMap))
-				pNextMap++;
-
-			while(*pNextMap)
-			{
-				while(*pNextMap && !IsSeparator(*pNextMap))
-					pNextMap++;
-				while(*pNextMap && IsSeparator(*pNextMap))
-					pNextMap++;
-
-				nbMaps++;
-			}
-		}
-
-		int MapPos = random_int(0, nbMaps - 1);
-		char aBuf[512] = {0};
-
-		{
-			int MapPosIter = 0;
-			const char *pNextMap = g_Config.m_SvMaprotation;
-
-			// Skip initial separator
-			while(*pNextMap && IsSeparator(*pNextMap))
-				pNextMap++;
-
-			while(*pNextMap)
-			{
-				if(MapPosIter == MapPos)
-				{
-					int MapNameLength = 0;
-					while(pNextMap[MapNameLength] && !IsSeparator(pNextMap[MapNameLength]))
-						MapNameLength++;
-					mem_copy(aBuf, pNextMap, MapNameLength);
-					aBuf[MapNameLength] = 0;
-					break;
-				}
-
-				while(*pNextMap && !IsSeparator(*pNextMap))
-					pNextMap++;
-				while(*pNextMap && IsSeparator(*pNextMap))
-					pNextMap++;
-
-				MapPosIter++;
-			}
-		}
-
-		str_copy(g_Config.m_SvMap, aBuf, sizeof(g_Config.m_SvMap));
+		str_copy(g_Config.m_SvMap, pMapName->data(), sizeof(g_Config.m_SvMap));
 	}
 
 	// load map

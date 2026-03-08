@@ -846,14 +846,14 @@ void CIcPlayer::SendClassIntro()
 	if(!IsBot() && (Class != EPlayerClass::None) && (Class != EPlayerClass::Invalid))
 	{
 		const char *pClassName = CIcGameController::GetClassDisplayName(Class);
-		const char *pTranslated = Server()->Localization()->Localize(GetLanguage(), pClassName);
+		const std::string Translated(Server()->Localization()->Localize(GetLanguage(), pClassName));
 
 		if(IsHuman())
 			GameServer()->SendBroadcast_Localization(GetCid(), EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
-				_("You are a human: {str:ClassName}"), "ClassName", pTranslated, nullptr);
+				_("You are a human: {str:ClassName}"), "ClassName", Translated.c_str(), nullptr);
 		else
 			GameServer()->SendBroadcast_Localization(GetCid(), EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
-				_("You are an infected: {str:ClassName}"), "ClassName", pTranslated, nullptr);
+				_("You are an infected: {str:ClassName}"), "ClassName", Translated.c_str(), nullptr);
 
 		int Index = static_cast<int>(Class);
 		if(!m_aKnownClasses[Index])

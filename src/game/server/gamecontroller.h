@@ -53,6 +53,7 @@ public:
 
 	CMapInfoEx *AddMapInfo(const char *pMapName);
 	void OnMapAdded(const char *pMapName);
+	void OnMapRemoved(const char *pMapName);
 	void InitSmartMapRotation();
 	void SyncSmartMapRotationData();
 	void ConSmartMapRotationStatus();
@@ -182,9 +183,6 @@ public:
 
 	struct CMapRotationInfo
 	{
-		static const int MAX_MAPS = 256;
-		int m_MapNameIndices[MAX_MAPS]; // saves Indices where mapNames start inside of g_Config.m_SvMaprotation
-		int m_MapCount = 0; // how many maps are in rotation
 		int m_CurrentMapNumber = -1; // at what place the current map is, from 0 to (m_MapCount-1)
 	};
 	void GetMapRotationInfo(CMapRotationInfo *pMapRotationInfo);

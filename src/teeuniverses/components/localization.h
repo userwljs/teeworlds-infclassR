@@ -8,7 +8,6 @@
 #include <string>
 #include <string_view>
 #include <unicode/tmutfmt.h>
-#include <unicode/ucnv.h>
 #include <unicode/upluralrules.h>
 #include <unordered_map>
 
@@ -41,7 +40,6 @@ struct CLocalizableString
 #define _(TEXT) TEXT
 #define _P(TEXT_SINGULAR, TEXT_PLURAL, NUMBER) (NUMBER == 1 ? TEXT_SINGULAR : TEXT_PLURAL)
 #define _C(CONTEXT, TEXT) TEXT
-#define _C_NOOP(CONTEXT, TEXT) TEXT
 #define _CP(CONTEXT, TEXT_SINGULAR, TEXT_PLURAL, NUMBER) (NUMBER == 1 ? TEXT_SINGULAR : TEXT_PLURAL)
 /* END EDIT ***********************************************************/
 
@@ -65,8 +63,8 @@ public:
 		NUM_PLURALTYPES,
 	};
 
-	static const char *LanguageCodeByCountryCode(int country);
-	static const char *FallbackLanguageForIpCountryCode(int Country);
+	static std::string_view LanguageCodeByCountryCode(int country);
+	static std::string_view FallbackLanguageForIpCountryCode(int Country);
 
 	class CLanguage
 	{
@@ -74,19 +72,12 @@ public:
 		class CEntry
 		{
 		public:
-			char *m_apVersions[NUM_PLURALTYPES];
+			std::optional<std::string> m_apVersions[NUM_PLURALTYPES];
 
 			CEntry()
 			{
 				for(int i = 0; i < NUM_PLURALTYPES; i++)
-					m_apVersions[i] = nullptr;
-			}
-
-			~CEntry()
-			{
-				for(int i = 0; i < NUM_PLURALTYPES; i++)
-					if(m_apVersions[i])
-						delete[] m_apVersions[i];
+					m_apVersions[i] = std::nullopt;
 			}
 		};
 
@@ -105,7 +96,6 @@ public:
 		UNumberFormat *m_pPercentFormater;
 		icu::TimeUnitFormat *m_pTimeUnitFormater;
 
-	public:
 		CLanguage();
 		CLanguage(const char *pName, const char *pFilename, const char *pParentFilename);
 		~CLanguage();
@@ -117,8 +107,8 @@ public:
 		inline void SetWritingDirection(int Direction) { m_Direction = Direction; }
 		inline bool IsLoaded() const { return m_Loaded; }
 		bool Load(CStorage *pStorage);
-		const char *Localize(const char *pKey) const;
-		const char *Localize_P(int Number, const char *pText) const;
+		[[nodiscard]] std::optional<std::string_view> Localize(std::string_view Text) const;
+		std::optional<std::string_view> Localize_P(int Number, std::string_view Text) const;
 	};
 
 	enum
@@ -127,26 +117,20 @@ public:
 		DIRECTION_RTL,
 		NUM_DIRECTIONS,
 	};
-
-protected:
-	UConverter *m_pUtf8Converter;
-
-public:
 	StringHashMap<CLanguage> m_pLanguages;
 
 protected:
-	const char *LocalizeWithDepth(const char *pLanguageCode, const char *pText, int Depth);
-	const char *LocalizeWithDepth_P(const char *pLanguageCode, int Number, const char *pText, int Depth);
+	std::string_view LocalizeWithDepth(std::string_view LanguageCode, std::string_view Text, int Depth);
+	[[nodiscard]] std::string_view LocalizeWithDepth_P(std::string_view LanguageCode, int Number, std::string_view Text, int Depth);
 
-	void AppendNumber(dynamic_string &Buffer, int &BufferIter, const CLanguage *pLanguage, int Number) const;
-	void AppendPercent(dynamic_string &Buffer, int &BufferIter, const CLanguage *pLanguage, double Number) const;
-	void AppendDuration(dynamic_string &Buffer, int &BufferIter, const CLanguage *pLanguage, int Number, icu::TimeUnit::UTimeUnitFields Type) const;
+	static void AppendNumber(std::string &Buffer, const CLanguage *pLanguage, int Number);
+	static void AppendPercent(std::string &Buffer, const CLanguage *pLanguage, double Number);
+	static void AppendDuration(std::string &Buffer, const CLanguage *pLanguage, int Number, icu::TimeUnit::UTimeUnitFields Type);
 
 public:
 	/* BEGIN EDIT *********************************************************/
 	explicit CLocalization(class CStorage *pStorage);
 	/* END EDIT ***********************************************************/
-	~CLocalization();
 
 	/* BEGIN EDIT *********************************************************/
 	/* END EDIT ***********************************************************/
@@ -156,24 +140,24 @@ public:
 	static bool GetWritingDirection() { return DIRECTION_LTR; }
 
 	// localize
-	const char *Localize(const char *pLanguageCode, const char *pText);
+	[[nodiscard]] std::string_view Localize(std::string_view LanguageCode, std::string_view Text);
 	// localize and find the appropriate plural form based on Number
-	const char *Localize_P(const char *pLanguageCode, int Number, const char *pText);
+	[[nodiscard]] std::string_view Localize_P(std::string_view LanguageCode, int Number, std::string_view Text);
 
 	// format
-	void Format_V(dynamic_string &Buffer, const char *pLanguageCode, const char *pText, va_list VarArgs);
-	void Format(dynamic_string &Buffer, const char *pLanguageCode, const char *pText, ...);
+	[[nodiscard]] std::string Format_V(std::string_view LanguageCode, std::string_view Text, va_list VarArgs);
+	[[nodiscard]] std::string Format(std::string_view LanguageCode, const char *Text, ...);
 	// localize, format
-	void Format_VL(dynamic_string &Buffer, const char *pLanguageCode, const char *pText, va_list VarArgs);
-	void Format_L(dynamic_string &Buffer, const char *pLanguageCode, const char *pText, ...);
+	[[nodiscard]] std::string Format_VL(std::string_view LanguageCode, std::string_view Text, va_list VarArgs);
+	[[nodiscard]] std::string Format_L(std::string_view LanguageCode, std::string_view Text, ...);
 	// localize, find the appropriate plural form based on Number and format
-	void Format_VLP(dynamic_string &Buffer, const char *pLanguageCode, int Number, const char *pText, va_list VarArgs);
-	void Format_LP(dynamic_string &Buffer, const char *pLanguageCode, int Number, const char *pText, ...);
+	[[nodiscard]] std::string Format_VLP(std::string_view LanguageCode, int Number, std::string_view Text, va_list VarArgs);
+	[[nodiscard]] std::string Format_LP(std::string_view LanguageCode, int Number, std::string_view Text, ...);
 
-	void ArabicShaping(dynamic_string &Buffer, int BufferStart = 0) const;
+	static void ArabicShaping(std::string &Buffer);
 
-	std::string GetLangaugeNameByCode(const char *pLanguageCode);
-	CLanguage *GetLanguageByCode(const char *pLanguageCode);
+	[[nodiscard]] std::string GetLangaugeNameByCode(std::string_view LanguageCode);
+	[[nodiscard]] CLanguage *GetLanguageByCode(std::string_view LanguageCode);
 };
 
 #endif

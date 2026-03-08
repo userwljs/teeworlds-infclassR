@@ -2909,4 +2909,6 @@ struct std::hash<NETADDR>
 	size_t operator()(const NETADDR &Addr) const noexcept;
 };
 
+void string_strip(std::string &s);
+
 #endif

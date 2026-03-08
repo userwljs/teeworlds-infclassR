@@ -5053,3 +5053,14 @@ size_t std::hash<NETADDR>::operator()(const NETADDR &Addr) const noexcept
 {
 	return std::hash<std::string_view>{}(std::string_view((const char *)&Addr, sizeof(Addr)));
 }
+
+void string_strip(std::string &s)
+{
+	const auto start = s.find_first_not_of(" \t\r\n");
+	const auto end = s.find_last_not_of(" \t\r\n");
+
+	if(start == std::string::npos)
+		s.clear();
+	else
+		s = s.substr(start, end - start + 1);
+}

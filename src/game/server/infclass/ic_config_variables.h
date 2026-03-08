@@ -150,6 +150,7 @@ MACRO_CONFIG_INT(InfEnableTranquilizerRifle, inf_enable_tranquilizer_rifle, 1, 0
 MACRO_CONFIG_FLOAT(InfTranquilizerDose, inf_tranquilizer_dose, 4.0, 1.0, 30.0, CFGFLAG_SERVER, "Tranquilier dose per rifle shot (effect duration)")
 MACRO_CONFIG_INT(InfRevivalDamage, inf_revival_damage, 17, 0, 100, CFGFLAG_SERVER, "The number of total HP taken from the medic")
 MACRO_CONFIG_INT(InfRevivalMinInfected, inf_revival_min_infected, 5, 1, 100, CFGFLAG_SERVER, "The minimum number of infected to allow revival")
+MACRO_CONFIG_INT(InfMedicRevivedHp, inf_medic_revived_hp, 1, 1, 1000, CFGFLAG_SERVER, "The HP a player receives when revived by a Medic")
 
 MACRO_CONFIG_INT(InfTileDamage, inf_tile_damage, 5, 1, 100, CFGFLAG_SERVER, "The damage points of a 'damage' tile")
 
