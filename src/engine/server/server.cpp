@@ -457,22 +457,23 @@ bool CServer::SetClientNameImpl(int ClientId, const char *pNameRequest, bool Set
 	{
 		if(m_aClients[ClientId].m_State == CClient::STATE_READY && Set)
 		{
+			const char *pType = false ? "Kicked" : "Banned";
 			char aBuf[256];
-			if(pBanned->m_aReason[0])
-			{
-				str_format(aBuf, sizeof(aBuf), "Kicked (your name is banned: %s)", pBanned->m_aReason);
-			}
-			else
-			{
-				str_copy(aBuf, "Kicked (your name is banned)");
-			}
 			// Kick(ClientId, aBuf);
 
 			char aAddrStr[NETADDR_MAXSTRSIZE];
 			net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), false);
 			str_format(aBuf, sizeof(aBuf), "client ip=%s banned for using name '%s'", aAddrStr, aTrimmedName);
 			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "name_ban", aBuf);
-			Ban(ClientId, -1, "");
+			if(pBanned->m_aReason[0])
+			{
+				str_format(aBuf, sizeof(aBuf), "%s (your name is banned: %s)", pType, pBanned->m_aReason);
+			}
+			else
+			{
+				str_format(aBuf, sizeof(aBuf), "%s (your name is banned)", pType);
+			}
+			Ban(ClientId, -1, aBuf);
 		}
 		return false;
 	}
