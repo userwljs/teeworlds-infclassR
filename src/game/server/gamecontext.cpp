@@ -4345,32 +4345,32 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 	if(pHelpPage && ((str_comp_nocase(pHelpPage, "accounts") == 0) || (str_comp_nocase(pHelpPage, "registration") == 0)))
 	{
 		Buffer.append("~~ ");
-		Server()->Localization()->Format_L(Buffer, pLanguage, _("Accounts"), nullptr);
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, _("Accounts"), nullptr).c_str());
 		Buffer.append(" ~~\n\n");
 		bool AccountsDisabled{};
 		if(str_comp(Config()->m_SvAccounts, "mandatory") == 0)
 		{
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You have to use an account to play on this server."), nullptr);
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "You have to use an account to play on this server."), nullptr).c_str());
 		}
 		else if(str_comp(Config()->m_SvAccounts, "enabled") == 0)
 		{
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You can use an account to unlock some features on this server."), nullptr);
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "You can use an account to unlock some features on this server."), nullptr).c_str());
 		}
 		else
 		{
 			AccountsDisabled = true;
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Account system is currently disabled."), nullptr);
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "Account system is currently disabled."), nullptr).c_str());
 		}
 		if(!AccountsDisabled)
 		{
 			Buffer.append("\n\n");
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "You can use RCON interface or chat commands to register and log in."), nullptr);
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "You can use RCON interface or chat commands to register and log in."), nullptr).c_str());
 			Buffer.append("\n\n");
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use `/register` without arguments to start registration via RCON."), nullptr);
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "Use `/register` without arguments to start registration via RCON."), nullptr).c_str());
 			Buffer.append("\n\n");
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use `/register <username> <password>` to register via chat commands."), nullptr);
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "Use `/register <username> <password>` to register via chat commands."), nullptr).c_str());
 			Buffer.append("\n\n");
-			Server()->Localization()->Format_L(Buffer, pLanguage, _C("Accounts", "Use RCON or `/login <username> <password>` to login into an existing account."), nullptr);
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "Use RCON or `/login <username> <password>` to login into an existing account."), nullptr).c_str());
 		}
 	}
 	else
