@@ -4389,7 +4389,7 @@ void CIcGameController::GetPlayerCounter(int ClientException, int &NumHumans, in
 int CIcGameController::GetMinimumInfectedForPlayers(int PlayersNumber) const
 {
 	if(m_RoundMinimumInfected.has_value())
-		return maximum(1, m_RoundMinimumInfected.value());
+		return m_RoundMinimumInfected.value();
 
 	if(GetRoundType() == ERoundType::Fast)
 	{
@@ -4423,7 +4423,7 @@ int CIcGameController::GetMinimumInfectedForPlayers(int PlayersNumber) const
 		NumFirstInfected = InitialPlayersLimit;
 	}
 
-	return maximum(1, NumFirstInfected);
+	return NumFirstInfected;
 }
 
 int CIcGameController::InfectedBonusArmor() const
