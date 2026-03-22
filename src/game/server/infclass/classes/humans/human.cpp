@@ -1241,11 +1241,11 @@ void CInfClassHuman::BroadcastWeaponState() const
 
 			if(BombLevel < 1.0)
 			{
-				auto Line1 = Server()->Localization()->Format_L(GetPlayer()->GetLanguage(), "Use the laser to upgrade the bomb",
-					_C("Mercenary", nullptr));
+				auto Line1 = Server()->Localization()->Format_L(GetPlayer()->GetLanguage(), _C("Mercenary", "Use the laser to upgrade the bomb"),
+					nullptr);
 
-				const auto Line2 = Server()->Localization()->Format_L(GetPlayer()->GetLanguage(), "Explosive yield: {percent:BombLevel}",
-					_C("Mercenary", "BombLevel"), &BombLevel, nullptr);
+				const auto Line2 = Server()->Localization()->Format_L(GetPlayer()->GetLanguage(), _C("Mercenary", "Explosive yield: {percent:BombLevel}"),
+					"BombLevel", &BombLevel, nullptr);
 
 				Line1.append("\n");
 				Line1.append(Line2);
@@ -1440,7 +1440,7 @@ void CInfClassHuman::BroadcastWeaponState() const
 				&NumMines, nullptr));
 			Buffer.append("\n");
 			Buffer.append(Server()->Localization()->Format_L(GetPlayer()->GetLanguage(), "White hole: {sec:RemainingTime}",
-				_("RemainingTime"),
+				"RemainingTime",
 				&Seconds, nullptr));
 			GameServer()->SendBroadcast(GetCid(), Buffer.c_str(),
 				EBroadcastPriority::WEAPONSTATE, BROADCAST_DURATION_REALTIME);
