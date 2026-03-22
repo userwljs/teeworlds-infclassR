@@ -19,7 +19,8 @@ RUN apt update && apt install -y \
     ninja-build \
     libmaxminddb-dev \
     git \
-    ca-certificates
+    ca-certificates \
+    python3-polib
 
 RUN mkdir -p /build-stage/dist /build-stage/build /build-stage/source
 
