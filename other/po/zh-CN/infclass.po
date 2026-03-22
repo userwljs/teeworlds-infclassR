@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: infectiondust\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-03-22 15:45+0800\n"
-"PO-Revision-Date: 2026-02-14 19:50+0800\n"
+"PO-Revision-Date: 2026-03-22 15:47+0800\n"
 "Last-Translator: Gao Zimu <gaozimu_0502@163.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -290,7 +290,7 @@ msgstr "你在奖励区域待了一分钟，+5 分"
 
 #: src/game/server/infclass/classes/humans/human.cpp:1212
 msgid "You need at least {int:MinHp} HP to revive a zombie"
-msgstr "你需要至少 {int:MinHp} 点血量才能治疗一个感染者"
+msgstr "你需要至少 {int:MinHp} 点血才能治疗一个感染者"
 
 #: src/game/server/infclass/classes/humans/human.cpp:1220
 msgid "Too few zombies to revive anyone (less than {int:MinZombies})"
@@ -301,7 +301,8 @@ msgctxt "Mercenary"
 msgid "Use the laser to upgrade the bomb"
 msgstr "用激光升级炸弹"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1247 src/game/server/infclass/classes/humans/human.cpp:1518
+#: src/game/server/infclass/classes/humans/human.cpp:1247
+#: src/game/server/infclass/classes/humans/human.cpp:1518
 msgctxt "Mercenary"
 msgid "Explosive yield: {percent:BombLevel}"
 msgstr "爆炸当量： {percent:BombLevel}"
@@ -356,7 +357,8 @@ msgstr[0] "炸弹剩余 {int:NumBombs} 个"
 msgid "The white hole is available!"
 msgstr "白洞已就绪！"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1421 src/game/server/infclass/classes/humans/human.cpp:1438
+#: src/game/server/infclass/classes/humans/human.cpp:1421
+#: src/game/server/infclass/classes/humans/human.cpp:1438
 msgid "{int:NumMines} mine is active"
 msgid_plural "{int:NumMines} mines are active"
 msgstr[0] "地雷已激活 {int:NumMines} 个"
@@ -485,7 +487,7 @@ msgstr "目标太强大，镇静无法起效"
 
 #: src/game/server/infclass/entities/medic-laser.cpp:72
 msgid "You need at least {int:MinimumHP} HP"
-msgstr "你至少需要 {int:MinimumHP} 点血或盾"
+msgstr "你至少需要 {int:MinimumHP} 点血"
 
 #: src/game/server/infclass/entities/medic-laser.cpp:80
 msgid "Too few infected (less than {int:MinimumInfected})"
@@ -765,58 +767,48 @@ msgid "Undead"
 msgstr "不死族"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1142
-#, fuzzy
 msgid "a Smoker"
-msgstr "吸烟者"
+msgstr "一名吸烟者"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1144
-#, fuzzy
 msgid "a Boomer"
-msgstr "爆炸者"
+msgstr "一名爆炸者"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1146
-#, fuzzy
 msgid "a Hunter"
-msgstr "猎人"
+msgstr "一名猎人"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1148
 msgid "a Bat"
-msgstr ""
+msgstr "一名蝙蝠"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1150
-#, fuzzy
 msgid "a Ghost"
-msgstr "幽灵"
+msgstr "一名幽灵"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1152
-#, fuzzy
 msgid "a Spider"
-msgstr "蜘蛛"
+msgstr "一名蜘蛛"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1154
-#, fuzzy
 msgid "a Ghoul"
-msgstr "食尸鬼"
+msgstr "一名食尸鬼"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1156
-#, fuzzy
 msgid "a Slug"
-msgstr "鼻涕虫"
+msgstr "一名鼻涕虫"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1158
-#, fuzzy
 msgid "a Voodoo"
-msgstr "巫毒者"
+msgstr "一名巫毒者"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1160
-#, fuzzy
 msgid "a Witch"
-msgstr "女巫"
+msgstr "一名女巫"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1162
-#, fuzzy
 msgid "an Undead"
-msgstr "不死族"
+msgstr "一名不死族"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1183
 msgid "Mercenaries"
@@ -922,7 +914,9 @@ msgstr "职业选择器会在回合开始前显示"
 msgid "Class {str:ClassName} will be automatically attributed to you when round starts"
 msgstr "回合开始时会自动选择“{str:ClassName}”职业"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1632 src/game/server/infclass/ic_gamecontroller.cpp:1965 src/game/server/infclass/ic_gamecontroller.cpp:2010
+#: src/game/server/infclass/ic_gamecontroller.cpp:1632
+#: src/game/server/infclass/ic_gamecontroller.cpp:1965
+#: src/game/server/infclass/ic_gamecontroller.cpp:2010
 msgid "The command is not available (enabled only in training mode)"
 msgstr "命令不可用（仅在练习模式中启用）"
 
@@ -958,11 +952,13 @@ msgstr "无法加载坐标: 你没有角色来加载位置"
 msgid "Unable to load the position: the character state is not valid"
 msgstr "无法加载坐标: 玩家状态无效"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2175 src/game/server/infclass/ic_gamecontroller.cpp:2278
+#: src/game/server/infclass/ic_gamecontroller.cpp:2175
+#: src/game/server/infclass/ic_gamecontroller.cpp:2278
 msgid "The Santa is already here"
 msgstr "圣诞老人已经在这里"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2179 src/game/server/infclass/ic_gamecontroller.cpp:2283
+#: src/game/server/infclass/ic_gamecontroller.cpp:2179
+#: src/game/server/infclass/ic_gamecontroller.cpp:2283
 msgid "All witches are already here"
 msgstr "所有女巫已经在这里了"
 
@@ -1111,10 +1107,9 @@ msgid "Tranqulizer rifle makes the infected fall asleep for {sec:Duration}."
 msgstr "镇静激光让感染者陷入 {sec:Duration} 沉眠。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:4045
-#, fuzzy
 msgctxt "Medic"
 msgid "Laser rifle revives the infected, but at the cost of {int:Damage} hp and armor."
-msgstr "激光枪可以治疗感染者，但需要 17 生命或护甲。"
+msgstr "激光枪可以治疗感染者，但需要以 {int:Damage} 点血为代价。"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:4048
 msgctxt "Medic"
