@@ -1,5 +1,49 @@
 # Changelog
 
+## InfclassR v1.7.0 - 2026-03-29
+
+### I18N / L10N
+- Fixed some languages not being configured (b164b92251a217619bb6f0e4fc04fb9fc9f728cf)
+- Fixed i18n for the singular forms not working (dda6b621d373c2313355852ec0a2e1f93fe6a355)
+- Fixed fuzzy, obsolete or untranslated entries being present ingame (4a0daaa45a250ad05f38d4621e65b93a0a613de8)
+- Removed invalid language references (12640e475d38b85dd823a4ac11b7729b365a5d9a, b164b92251a217619bb6f0e4fc04fb9fc9f728cf):
+  - sr
+  - sr-Cyrl
+  - bs
+  - fil
+  - sk
+- Added the missing .po files for some languages (b164b92251a217619bb6f0e4fc04fb9fc9f728cf):
+  - sah
+  - sr-Latn
+- Adjusted gettext options (83e6fce10ef1cc9d149f4ffeac9111e36c44fb54, 8dc55ee0a30d836e1919792728fec8f34c9b8bf9)
+- Added server configuration `inf_default_language_code` (067ef9505166a8779f6efa32fc008c3392aac1fa)
+- Made the server ask to switch language to English by default (aab3414e5e226231ada85e8501cb9606fc9866c7)
+- Replaced `Switch language to English?` with `Switch language to {str:LangName}?` (875766763a2cfaaf8ddeb4e92197fbbe43bc14e4)
+  - Fixed this hint incorrectly displaying as "Switch language to English?" instead of "Switch language to <Target Language Name>?" when this entry is untranslated
+  - Fixed translators may be confused by this
+- Made more strings localizable
+- Updated the zh-CN translation
+- Removed `data/languages` folder in VCS (files in it are essentially build artifacts, so they should not be included in VCS), and introduced a CMake target instead (da2de7b4163ed31628ef550a7ab7d73c1c84882e)
+- Used glob instead of an explicit list of languages while updating .po files (da2de7b4163ed31628ef550a7ab7d73c1c84882e)
+- Removed the `_C_NOOP()` mark because it wasn't and couldn't be processed properly
+- Added Git merge drivers for gettext files (54672c25641b135467a5ae332ca8293438940427)
+
+### Name bans
+- Fixed the reason not being shown (8b10e7f7dfa9953a993136d0df76ea379e344805)
+- Added `sv_name_ban_duration` (d70e2f4dd8a383b34afd4bfdc6cc7f193ce9312a)
+- Added `sv_name_ban_behavior` (63ddaae56d958bb1674b8b51889f74fd29b4e075)
+
+### Ingame
+- Fixed `fast` round type not working when player count is equal to 2 (58ff3b0de5713a150f1ef41dc02a23bd72599718, 7d72338289fb8839f48333313b290f24e9132062)
+- Fixed the reviving cost in `/help medic` not syncing with the server config (7e23cc19aa14d4faac6c2b7c2d241e1c9fa2bb05)
+- Allowed the hook coll line (87b195f6fc697c7406759e455bb3b9748e3b8730)
+
+### Others
+- Fixed endless loop in some cases when the map rotation list is edited in game (7fd1d2bf143aec9c538ffae2c652c494e938c68d)
+- Fixed `ban` command not working when a bot is present, although the player to be banned is not a bot (0ebf3ee0bba8aacd69b133959982f2cc8bee0cb5)
+- Added `inf_medic_revived_hp` (d551d978d0f045376d0d7d3660ae181ee19eebf6)
+- Removed `sv_maprotation`, added `remove_map` and `clear_maps` instead (609fa969875dd65e1427ddbc714e7361f3fdd1ef, 7fd1d2bf143aec9c538ffae2c652c494e938c68d)
+
 ## InfclassR v1.6.0 - 2026-02-11
 
 ### Balance
