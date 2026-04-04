@@ -1,3 +1,9 @@
+InfclassR v1.7.0
+- Fixed `fast` round type not working when player count is equal to 2
+- Fixed the reviving cost in `/help medic` not syncing with the server config
+- Fixed some internationalizaiton bugs
+- Allowed the hook coll line
+
 InfclassR v1.6.0
 - Ninja now gains 1HP per killed infected
 - Removed Ninja +4HP gain on target killed

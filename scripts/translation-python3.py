@@ -2,10 +2,27 @@
 
 import json
 import os
+import sys
 from dataclasses import dataclass
 from typing import List
 
-import polib
+try:
+    import polib
+except ModuleNotFoundError:
+    print(
+        "The Python library 'polib' is required and can be installed via the 'python3-polib' or 'python-polib' package."
+    )
+    sys.exit(1)
+
+if len(sys.argv) != 3:
+    print(f"Expected 2 arguments, got {len(sys.argv) - 1}")
+    sys.exit(1)
+
+PO_LANG_DIR = sys.argv[1]
+TARGET_DIR = os.path.join(sys.argv[2], "data/languages")
+
+if not os.path.exists(TARGET_DIR):
+    os.makedirs(TARGET_DIR)
 
 
 def convert_po_to_json(language: "Language"):
@@ -13,13 +30,13 @@ def convert_po_to_json(language: "Language"):
     plurals = language.plurals.copy()
     plurals.append("other")
 
-    po_file_name = f"other/po/{language_code}/infclass.po"
+    po_file_name = os.path.join(PO_LANG_DIR, f"{language_code}/infclass.po")
     if os.path.isfile(po_file_name):
-        json_file_name = f"data/languages/{language_code}.json"
+        json_file_name = os.path.join(TARGET_DIR, f"{language_code}.json")
 
         po = polib.pofile(po_file_name)
 
-        with open(json_file_name, "w") as f:
+        with open(json_file_name, "w", encoding="utf-8") as f:
             target_dict = {"translation": []}
             translations = target_dict["translation"]
             for entry in po:
@@ -42,7 +59,7 @@ def convert_po_to_json(language: "Language"):
                     continue
                 translations.append(target_entry)
 
-            json.dump(target_dict, f, ensure_ascii=False, indent=4)
+            json.dump(target_dict, f, ensure_ascii=False)
 
 
 @dataclass
@@ -51,36 +68,29 @@ class Language:
     plurals: List[str]
 
 
-LANGUAGES: List[Language] = [
-    Language("ar", ["zero", "one", "two", "few", "many"]),
-    Language("bg", ["one"]),
-    Language("cs", ["one", "few"]),
-    Language("de", ["one"]),
-    Language("el", ["one"]),
-    Language("es", ["one"]),
-    Language("fa", ["one"]),
-    Language("fi", ["one"]),
-    Language("fr", ["one"]),
-    Language("hr", ["one", "few"]),
-    Language("hu", ["one"]),
-    Language("it", ["one"]),
-    Language("ja", []),
-    Language("la", ["one"]),
-    Language("nl", ["one"]),
-    Language("pl", ["one", "few", "many"]),
-    Language("pt", ["one"]),
-    Language("pt-BR", ["one"]),
-    Language("ru", ["one", "few", "many"]),
-    Language("sah", []),
-    Language("sq", ["one"]),
-    Language("sr-CS", ["one", "few"]),
-    Language("sr-Latn", ["one", "few"]),
-    Language("tl", ["one"]),
-    Language("tr", ["one"]),
-    Language("uk", ["one", "few"]),
-    Language("zh-CN", []),
-    Language("zh-TW", []),
-]
+languages: List[Language] = []
+output_index = []
 
-for language in LANGUAGES:
+with open(os.path.join(PO_LANG_DIR, "index.json"), encoding="utf-8") as f:
+    index = json.load(f)
+
+for lang_index in index["languages"]:
+    output_lang_index = {}
+    output_lang_index["file"] = lang_index["file"]
+    output_lang_index["name"] = lang_index["name"]
+    if "parent" in lang_index:
+        output_lang_index["parent"] = lang_index["parent"]
+    if "direction" in lang_index:
+        output_lang_index["direction"] = lang_index["direction"]
+    output_index.append(output_lang_index)
+
+    if lang_index["file"] == "en":
+        continue
+
+    languages.append(Language(lang_index["file"], lang_index["plurals"]))
+
+with open(os.path.join(TARGET_DIR, "index.json"), "w", encoding="utf-8") as f:
+    json.dump({"language indices": output_index}, f, ensure_ascii=False)
+
+for language in languages:
     convert_po_to_json(language)

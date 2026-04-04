@@ -20,7 +20,8 @@ RUN apt update && apt install -y \
     libmaxminddb-dev \
     libluajit-5.1-dev \
     git \
-    ca-certificates
+    ca-certificates \
+    python3-polib
 
 RUN mkdir -p /build-stage/dist /build-stage/build /build-stage/source
 

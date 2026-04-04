@@ -2,9 +2,9 @@
 
 cmake_minimum_required(VERSION 3.15...3.29)
 project(InfclassR
-    VERSION 1.6.0
+    VERSION 1.7.0
 )
-set(VERSION_SUFFIX "a3")
+set(VERSION_SUFFIX "")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -1094,7 +1094,8 @@ if(TOOLS)
 endif()
 
 # Translation dev targets
-set(PO_TEMPlATE "other/po/infclass.pot")
+set(PO_LANG_DIR "${CMAKE_SOURCE_DIR}/other/po")
+set(PO_TEMPlATE "${PO_LANG_DIR}/infclass.pot")
 add_custom_target(dev-generate-pot
         COMMAND xgettext --sort-by-file -d infclass -o ${PO_TEMPlATE} -k_ -k_P:1,2 -k_C:1c,2 -k_CP:1c,2,3 --from-code=UTF-8 ${ENGINE_SERVER} ${GAME_SERVER}
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -1102,57 +1103,19 @@ add_custom_target(dev-generate-pot
 
 add_custom_target(dev-update-po-files)
 
-# TODO: Unify them into one config file
-# (current: 3 files, in CMakeLists.txt, translation-python3.py and index.json)
-set(PO_LANGS
-  ar
-  bg
-  cs
-  de
-  el
-  es
-  fa
-  fi
-  fr
-  hr
-  hu
-  it
-  ja
-  la
-  nl
-  pl
-  pt
-  pt-BR
-  ru
-  sah
-  sq
-  sr-CS
-  sr-Latn
-  tl
-  tr
-  uk
-  zh-CN
-  zh-TW
-)
+file(GLOB_RECURSE PO_LANGS
+  CONFIGURE_DEPENDS
+  "${PO_LANG_DIR}/*/infclass.po")
 
 foreach(PO_LANG ${PO_LANGS})
-  set(PO_LANG_FILE "${CMAKE_CURRENT_SOURCE_DIR}/other/po/${PO_LANG}/infclass.po")
   add_custom_command(
     TARGET dev-update-po-files
     POST_BUILD
     # BYPRODUCTS ${PO_LANG_FILE}
-          COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --sort-by-file --update --backup=off --width=200 ${PO_LANG_FILE} ${PO_TEMPlATE}
+          COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --sort-by-file --update --backup=off --width=200 ${PO_LANG} ${PO_TEMPlATE}
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
   )
 endforeach()
-
-add_custom_target(dev-update-json-files)
-add_custom_command(
-  TARGET dev-update-json-files
-  POST_BUILD
-  COMMAND ${Python3_EXECUTABLE} scripts/translation-python3.py
-  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-)
 
 #add_library(server-shared STATIC ${SERVER_SRC})
 
@@ -1210,6 +1173,20 @@ target_link_libraries(game-server engine-shared)
 target_link_libraries(game-server game-shared)
 target_link_libraries(game-server ICU::i18n)
 target_link_libraries(game-server ICU::uc)
+
+file(GLOB_RECURSE PO_LANG_FILES
+        CONFIGURE_DEPENDS
+        ${PO_LANG_DIR}/*
+)
+
+add_custom_target(lang-json
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/translation-python3.py
+        ${PO_LANG_DIR}
+        ${CMAKE_BINARY_DIR}
+        DEPENDS ${PO_LANG_FILES}
+)
+
+add_dependencies(game-server lang-json)
 
 if(TARGET_OS AND TARGET_OS STREQUAL "mac")
   set(SERVER_LAUNCHER_SRC src/osxlaunch/server.mm)
@@ -1282,6 +1259,12 @@ install(
   DESTINATION
     "data"
   ${DATA_INSTALL_EXCLUDES}
+)
+install(
+  DIRECTORY
+    "${CMAKE_BINARY_DIR}/data/languages/"
+  DESTINATION
+    "data/languages"
 )
 install(
   TARGETS

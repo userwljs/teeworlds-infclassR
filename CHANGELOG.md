@@ -1,8 +1,52 @@
 # Changelog
 
+## InfclassR v1.7.0 - 2026-03-29
+
+### I18N / L10N
+- Fixed some languages not being configured (b164b92251a217619bb6f0e4fc04fb9fc9f728cf)
+- Fixed i18n for the singular forms not working (dda6b621d373c2313355852ec0a2e1f93fe6a355)
+- Fixed fuzzy, obsolete or untranslated entries being present ingame (4a0daaa45a250ad05f38d4621e65b93a0a613de8)
+- Removed invalid language references (12640e475d38b85dd823a4ac11b7729b365a5d9a, b164b92251a217619bb6f0e4fc04fb9fc9f728cf):
+  - sr
+  - sr-Cyrl
+  - bs
+  - fil
+  - sk
+- Added the missing .po files for some languages (b164b92251a217619bb6f0e4fc04fb9fc9f728cf):
+  - sah
+  - sr-Latn
+- Adjusted gettext options (83e6fce10ef1cc9d149f4ffeac9111e36c44fb54, 8dc55ee0a30d836e1919792728fec8f34c9b8bf9)
+- Added server configuration `inf_default_language_code` (067ef9505166a8779f6efa32fc008c3392aac1fa)
+- Made the server ask to switch language to English by default (aab3414e5e226231ada85e8501cb9606fc9866c7)
+- Replaced `Switch language to English?` with `Switch language to {str:LangName}?` (875766763a2cfaaf8ddeb4e92197fbbe43bc14e4)
+  - Fixed this hint incorrectly displaying as "Switch language to English?" instead of "Switch language to <Target Language Name>?" when this entry is untranslated
+  - Fixed translators may be confused by this
+- Made more strings localizable
+- Updated the zh-CN translation
+- Removed `data/languages` folder in VCS (files in it are essentially build artifacts, so they should not be included in VCS), and introduced a CMake target instead (da2de7b4163ed31628ef550a7ab7d73c1c84882e)
+- Used glob instead of an explicit list of languages while updating .po files (da2de7b4163ed31628ef550a7ab7d73c1c84882e)
+- Removed the `_C_NOOP()` mark because it wasn't and couldn't be processed properly
+- Added Git merge drivers for gettext files (54672c25641b135467a5ae332ca8293438940427)
+
+### Name bans
+- Fixed the reason not being shown (8b10e7f7dfa9953a993136d0df76ea379e344805)
+- Added `sv_name_ban_duration` (d70e2f4dd8a383b34afd4bfdc6cc7f193ce9312a)
+- Added `sv_name_ban_behavior` (63ddaae56d958bb1674b8b51889f74fd29b4e075)
+
+### Ingame
+- Fixed `fast` round type not working when player count is equal to 2 (58ff3b0de5713a150f1ef41dc02a23bd72599718, 7d72338289fb8839f48333313b290f24e9132062)
+- Fixed the reviving cost in `/help medic` not syncing with the server config (7e23cc19aa14d4faac6c2b7c2d241e1c9fa2bb05)
+- Allowed the hook coll line (87b195f6fc697c7406759e455bb3b9748e3b8730)
+
+### Others
+- Fixed endless loop in some cases when the map rotation list is edited in game (7fd1d2bf143aec9c538ffae2c652c494e938c68d)
+- Fixed `ban` command not working when a bot is present, although the player to be banned is not a bot (0ebf3ee0bba8aacd69b133959982f2cc8bee0cb5)
+- Added `inf_medic_revived_hp` (d551d978d0f045376d0d7d3660ae181ee19eebf6)
+- Removed `sv_maprotation`, added `remove_map` and `clear_maps` instead (609fa969875dd65e1427ddbc714e7361f3fdd1ef, 7fd1d2bf143aec9c538ffae2c652c494e938c68d)
+
 ## InfclassR v1.6.0 - 2026-02-11
 
-Balance:
+### Balance
 - Medic shotgun force changed from 10 to 6
 - Medic rifle now reloads twice as fast if the laser didn't hit any target
 - Medic revival rifle replaced with tranquilizer rifle which puts the hit infected into sleep for 4 seconds
@@ -10,7 +54,7 @@ Balance:
   - Added score for healing with Grenades
   - Healing with hammer now gives 0.1 score points per HP restored (gave 1 point per complete healing)
 
-Fixes:
+### Fixes
 - Fixed `/mute` command was not listed in chat commands (e.g. for autocompletion)
 - Fixed `/mute` didn't work with quotes (e.g. `/mute "nameless tee"` now works as expected)
 - Fixed Merc Bomb hit radius for the upgrading laser was almost twice bigger than it should be
@@ -20,7 +64,7 @@ Fixes:
 - Made the anti-ping for players without a class no longer predict hammers
 - Fixed some chat commands also registered as server commands (the `mute` server command is now working again)
 
-Maintenance:
+### Maintenance
 - Implemented floating-point config variable type
 - Added `inf_enable_tranquilizer_rifle` (use `0` to re-enable Medic's revival)
 - Added `inf_tranquilizer_dose` (Tranquilier dose per rifle shot (effect duration))
@@ -35,7 +79,7 @@ Maintenance:
 - Replaced `sv_high_bandwith` with `sv_snaps_per_second`
 - Added Dockerfile
 
-Others:
+### Others
 - Implemented vanilla maps support
   - Classes menu is disabled
   - `TILE_DEATH` mapped to `ZONE_DAMAGE_DEATH`
@@ -43,41 +87,41 @@ Others:
 - The base (unmodded) game now works more or less
 
 ## InfclassR v1.5.3 - 2024-08-27
-Hotfix:
+### Hotfix
 - Fixed infected player could fire as human during the tick of infection
 
 ## InfclassR v1.5.2 - 2024-08-23
 
-Fixes:
+### Fixes
 - Increased SnapID timeout to fix occasional objects teleportations on
   ID reused before the clients actually removed them.
 - Fixed Medic snapping (could receive a Heart icon intended for Biologist)
 
-Maintenance:
+### Maintenance
 - Adjusted the default server rules
 - Fixed some compiler warnings
 
 ## InfclassR v1.5.1 - 2024-07-13
 
-General:
+### General
 - Implemented tracking of taxi passengers kills caused by the driver hooked to death tiles
 - Soldier Bomb explosion now prevented for 140ms after the bomb placed (workaround for 'double click' issue)
 
-Balance:
+### Balance
 - Slime poisoning damage reduces from 5 to 3
 - Slime poisoning interval increased from 1.0 to 1.5 sec
 
-Maps:
+### Maps
 - Updated `infc_warehouse`: the hidden path is now visible
 
-Maintenance:
+### Maintenance
 - Added logging of vote start/stop
 - Fixed server messages logging
 - Fixed server registration for OpenSSL-enabled builds
 
 ## InfclassR v1.5.0 - 2024-03-22
 
-General:
+### General
 - Added 'timeout code' support
 - Implemented DDNet masterserver registration
 - Enabled DDRace HUD
@@ -121,7 +165,7 @@ General:
 - Medic now see Hero healing icons if grenade launcher is active
 - Hammer hit events now suppressed if the character is 'in love'
 
-Balance:
+### Balance
 - Bat's hook lifestealing replaced with hammer lifestealing (+2 HP per hit)
 - Medic now gets a grenade on enemy killed
 - Scientists now get the superweapon after 15 kills
@@ -146,7 +190,7 @@ Balance:
 - New same-round infection now restores the previous infected class
 - `inf_shock_wave_affect_humans` now disabled by default (frustrating)
 
-Fixes:
+### Fixes
 - Fixed Hero flag indicator on the class picked
 - Fixed 'undead is finally dead' on player left the game
 - Fixed spawn protection
@@ -170,13 +214,13 @@ Fixes:
 - Fixed missing HP restore sound in infection zone
 - Fixed Ghost kept invisible on hit and some actions
 
-Maps:
+### Maps
 - Updated `infc_canyon` (tech update simplifying the quads geometry)
 - Fixed `infc_half_provence` borders
 - Added infection zones highlight to `infc_sewers`
 - Added infc_headquarter_winter by Pointer
 
-Maintenance:
+### Maintenance
 - Added 'pingex' capability support from DDNet
 - Added `kill_pl` command from DDNet
 - Added `set_hook_protection`, `set_invincible` commands
@@ -204,7 +248,7 @@ Maintenance:
 
 ## InfclassR v1.4.0 - 2022-03-13
 
-General:
+### General
 - New blinding laser is given to Ninja
 - Merc bombs are now fully deterministic
 - Merc grenades now disable healing for the infected
@@ -246,7 +290,7 @@ General:
 - Fixed zones tesselation
 - Fixed laser clipping
 
-Server-side features for Infclass Client:
+### Server-side features for Infclass Client
 - Implemented damage type
 - Implemented kill assistance
 - Implemented infclass object info
@@ -254,12 +298,12 @@ Server-side features for Infclass Client:
 - Added FORCED_TO_SPECTATE camera mode
 - Boomer camera now follows BFed target
 
-Maps:
+### Maps
 - Added infc_half_provence
 - Fixed some small graphics issues on some maps
 - infc_hardcorepit timelimit reduced from 2 minutes to 90 seconds
 
-Maintenance:
+### Maintenance
 - Added 'sv_timelimit_in_seconds' conf variable
 - Added 'sv_info_change_delay' (the same as in DDNet)
 - Added 'inf_inactive_humans_kick_time'
@@ -278,20 +322,20 @@ Maintenance:
 
 ## InfclassR v1.3.1 - 2021-12-09
 
-General:
+### General
 - Improved Taxi responsiveness
 - Merc laser now collides only with the owner bomb
 - Returned the notorious 'whoosh' sound effect for "vs witches" fun rounds
 - Slug slime effect reworked to appear approximately 4x less times (should improve the performance).
 - Added missing NetworkClipping to a number of 'traps' (biologist mine, looper wall, scientist mine, turret, white hole)
 
-Maintenance:
+### Maintenance
 - Fixed a crash on a new round if a Voodoo finished the previous round on a death tile
 - CMake: Add missing CONF_DEBUG processing
 
 ## InfclassR v1.3.0 - 2021-11-27
 
-General:
+### General
 - Added initial support for the Entities View (Infclass game tiles converted to DDNet tiles)
 - Added a broadcast message to Class Menu on a disabled class hovered (suggested by ipoopi)
 - Added a message on an infected hooked human to inf zone
@@ -346,13 +390,13 @@ General:
 - Fixed '/alwaysrandom 1' armor bonus (big thanks to breton)
 - Fixed died passenger still spawns on the taxi driver
 
-Maps:
+### Maps
 - infc_headquarter: The graphics cleaned up (no gamelayer changes)
 - infc_k9f_small: Removed an invisible hookable tile on the bottom left
 - infc_floatingislands: Updated to a remapped version (by FluffyTee), fixed flags position
 - infc_warehouse2: Fixed the bottom 'death' tiles
 
-Maintenance:
+### Maintenance
 - Added `sci` shortcut for the Scientist class
 - Added `inf_last_enforcer_time_ms` variable to adjust the causality
 - Added `sv_changelog_file`
@@ -379,17 +423,17 @@ Maintenance:
 
 ## InfclassR v1.2.1 - 2021-07-14
 
-General:
+### General
 - Medics grenade now makes the targets happy only if they're actually healed
 - Fixed looper color in class menu
 - Fixed compatibility with teeworlds-0.6.5 (from DDNet)
 
-Maps:
+### Maps
 - infc_skull: Added green background to the infection zone
 - infc_warehouse: Updated the infection zones highlight
 - infc_damascus: Slightly optimized for better client performance
 
-Maintenance:
+### Maintenance
 - Added `sv_suggest_more_rounds`
 - Added `sv_vote_time` (from DDNet)
 - Added `sv_vote_delay` (from DDNet)
@@ -404,7 +448,7 @@ Maintenance:
 
 ## InfclassR v1.2.0 - 2021-03-10
 
-Changes since [yavl](https://github.com/yavl/teeworlds-infclassR) fork:
+### Changes since [yavl](https://github.com/yavl/teeworlds-infclassR) fork
 
 - Fixed looper grenades regeneration on hero found a flag (https://github.com/yavl/teeworlds-infclassR/issues/155)
 - Count hooker as a killer if the weapon is World (https://github.com/bretonium/my-infclass-server/pull/2)
@@ -418,13 +462,13 @@ Changes since [yavl](https://github.com/yavl/teeworlds-infclassR) fork:
 - Fixed hero could use a hammer as a usual weapon
 - Fixed hero still having a hammer after the last turret placed
 
-Changes since [breton](https://github.com/bretonium/my-infclass-server) fork:
+### Changes since [breton](https://github.com/bretonium/my-infclass-server) fork
 
 - Applied the fix for scientist kills counter (https://github.com/yavl/teeworlds-infclassR/pull/151)
 - Added maps: infc_headquarter, infc_floatingislands, infc_canyon, infc_k9f_small
 - Imported Turrets for Hero class (https://github.com/yavl/teeworlds-infclassR/pull/79)
 
-Changes since both forks:
+### Changes since both forks
 
 - Send kill message on a player infected himself (fixes https://github.com/necropotame/teeworlds-infclass/issues/166)
 - Restore both health and armor for a lonely zombie (in infection zone)
@@ -446,19 +490,19 @@ Changes since both forks:
 - Merc (poisoning) grenades explosion does not consume extra ammo anymore
 - Fixed NOAMMO sound for merc and medic grenade launchers
 
-Improvements for Fun Rounds:
+### Improvements for Fun Rounds
 - The player class is now set immediately (without a menu)
 - Mercs now have no rifle (the weapon does nothing during fun rounds)
 - The fun round now can be configured via console or specified on a per-map basis
 
-Maps:
+### Maps
 - Added infc_headquarter (by Armadillo)
 - Added infc_floatingislands (v2 by FluffyTee)
 - Added infc_canyon (by ipoopi)
 - Added infc_k9f_small (by FluffyTee)
 - Some minor changes to a few maps (adjusted limits, minplayers, bonus zone moved on `infc_spacelab`, infection zone colored red on some other maps)
 
-Maintenance:
+### Maintenance
 - Added a reset.cfg file called on map reload
 - Allow a simpler syntax for start_special_fun_round
 - Added `inf_first_infected_limit` variable to override the number of initially infected players (used for some maps)

@@ -1,0 +1,178 @@
+{
+  "languages": [
+    {
+      "file": "en",
+      "name": "English"
+    },
+    {
+      "file": "ar",
+      "name": "العربية",
+      "parent": "en",
+      "direction": "rtl",
+      "plurals": ["zero", "one", "two", "few", "many"]
+    },
+    {
+      "file": "bg",
+      "name": "Български",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "cs",
+      "name": "Čeština",
+      "parent": "en",
+      "plurals": ["one", "few"]
+    },
+    {
+      "file": "de",
+      "name": "Deutsch",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "el",
+      "name": "ελληνικά",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "es",
+      "name": "Español",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "fa",
+      "name": "فارسی",
+      "parent": "en",
+      "direction": "rtl",
+      "plurals": ["one"]
+    },
+    {
+      "file": "fi",
+      "name": "suomi",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "fr",
+      "name": "Français",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "hr",
+      "name": "Hrvatski",
+      "parent": "en",
+      "plurals": ["one", "few"]
+    },
+    {
+      "file": "hu",
+      "name": "magyar",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "it",
+      "name": "Italiano",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "ja",
+      "name": "日本語",
+      "parent": "en",
+      "plurals": []
+    },
+    {
+      "file": "la",
+      "name": "Latine",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "nl",
+      "name": "Nederlands",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "pl",
+      "name": "Polszczyzna",
+      "parent": "en",
+      "plurals": ["one", "few", "many"]
+    },
+    {
+      "file": "pt",
+      "name": "Português",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "pt-BR",
+      "name": "Português (Brasil)",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "ru",
+      "name": "Русский",
+      "parent": "en",
+      "plurals": ["one", "few", "many"]
+    },
+    {
+      "file": "sah",
+      "name": "Саха",
+      "parent": "ru",
+      "plurals": []
+    },
+    {
+      "file": "sq",
+      "name": "Shqip",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "sr-CS",
+      "name": "Српски",
+      "parent": "sr-Latn",
+      "plurals": ["one", "few"]
+    },
+    {
+      "file": "sr-Latn",
+      "name": "Srpski latinicom",
+      "parent": "hr",
+      "plurals": ["one", "few"]
+    },
+    {
+      "file": "tl",
+      "name": "Tagalog",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "tr",
+      "name": "Türkçe",
+      "parent": "en",
+      "plurals": ["one"]
+    },
+    {
+      "file": "uk",
+      "name": "Українська",
+      "parent": "ru",
+      "plurals": ["one", "few"]
+    },
+    {
+      "file": "zh-CN",
+      "name": "简体中文",
+      "parent": "en",
+      "plurals": []
+    },
+    {
+      "file": "zh-TW",
+      "name": "繁體中文",
+      "parent": "zh-CN",
+      "plurals": []
+    }
+  ]
+}

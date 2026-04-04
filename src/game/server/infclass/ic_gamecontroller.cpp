@@ -6791,42 +6791,42 @@ void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const
 	if(!pHelpPage || str_comp_nocase(pHelpPage, "game") == 0)
 	{
 		Buffer.append("~~ ");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Rules of the game", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Rules of the game", nullptr).c_str());
 		Buffer.append(" ~~\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "InfectionClass is a team game between humans and the infected.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "InfectionClass is a team game between humans and the infected.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "All players start as a human.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "All players start as a human.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "10 seconds later, a few players become infected.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "10 seconds later, a few players become infected.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "The goal for the humans is to survive until the army cleans the map.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "The goal for the humans is to survive until the army cleans the map.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "The goal for the infected is to infect all humans.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "The goal for the infected is to infect all humans.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "See also `/help pages`", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "See also `/help pages`", nullptr).c_str());
 	}
 	else if(str_comp_nocase(pHelpPage, "translate") == 0)
 	{
 		Buffer.append("~~ ");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "How to translate the mod", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "How to translate the mod", nullptr).c_str());
 		Buffer.append(" ~~\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Create an account on Crowdin and join the translation team:", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Create an account on Crowdin and join the translation team:", nullptr).c_str());
 		Buffer.append("\n\n");
 		Buffer.append(Server()->Localization()->Format_L(pLanguage, Config()->m_AboutTranslationUrl, nullptr).c_str());
 	}
 	else if(str_comp_nocase(pHelpPage, "whitehole") == 0)
 	{
 		Buffer.append("~~ ");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "White hole", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "White hole", nullptr).c_str());
 		Buffer.append(" ~~\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "White hole pulls the infected into its center.", _C("White hole", nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("White hole", "White hole pulls the infected into its center."), nullptr).c_str());
 		Buffer.append("\n\n");
 		Buffer.append(Server()->Localization()->Format_LP(pLanguage, g_Config.m_InfWhiteHoleMinimalKills, _CP("White hole", "Receive it by killing at least {int:NumKills} infected as a Scientist.", "Receive it by killing at least {int:NumKills} of the infected as a Scientist.", g_Config.m_InfWhiteHoleMinimalKills),
 												  "NumKills",
 												  &g_Config.m_InfWhiteHoleMinimalKills, nullptr)
 				.c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Use the laser rifle to place it.", _C("White hole", nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("White hole", "Use the laser rifle to place it."), nullptr).c_str());
 	}
 	else if(str_comp_nocase(pHelpPage, "msg") == 0)
 	{
@@ -6834,13 +6834,13 @@ void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const
 		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Targeted chat messages").c_str());
 		Buffer.append(" ~~\n\n");
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Use “/w <PlayerName> <My Message>” to send a private message to this player.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Use “/w <PlayerName> <My Message>” to send a private message to this player.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Example: “/msg !medic I'm wounded!”", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Example: “/msg !medic I'm wounded!”", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Use “/msg !near” to send a private message to all players near you.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Use “/msg !near” to send a private message to all players near you.", nullptr).c_str());
 	}
 	else if(str_comp_nocase(pHelpPage, "mute") == 0)
 	{
@@ -6848,33 +6848,33 @@ void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const
 		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Persistent player mute").c_str());
 		Buffer.append(" ~~\n\n");
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Use “/mute <PlayerName>” to mute this player.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Use “/mute <PlayerName>” to mute this player.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Unlike a client mute this will persist between map changes and wears off when either you or the muted player disconnects.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Example: “/mute nameless tee”", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Example: “/mute nameless tee”", nullptr).c_str());
 		Buffer.append("\n\n");
 	}
 	else if(str_comp_nocase(pHelpPage, "taxi") == 0)
 	{
 		Buffer.append("~~ ");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "How to use taxi mode", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "How to use taxi mode", nullptr).c_str());
 		Buffer.append(" ~~\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Two or more humans can form a taxi.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Two or more humans can form a taxi.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "In order to use it, both humans have to disable hook protection (usually, with F3). The human being hooked becomes the driver.", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "In order to use it, both humans have to disable hook protection (usually, with F3). The human being hooked becomes the driver.", nullptr).c_str());
 		Buffer.append("\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "To get off the taxi, jump. To drop off your passengers, enable hook protection (usually, with F3).", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "To get off the taxi, jump. To drop off your passengers, enable hook protection (usually, with F3).", nullptr).c_str());
 	}
 	else if(str_comp_nocase(pHelpPage, "fast_round") == 0)
 	{
 		Buffer.append("~~ ");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Fast round", _(nullptr)).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Fast round", nullptr).c_str());
 		Buffer.append(" ~~\n\n");
 		Buffer.append(Server()->Localization()->Format_L(pLanguage, "In the fast rounds *more* humans become infected initially, "
 																	"the spawning rate is increased and the round time limit is decreased. "
 																	"White hole is also disabled.",
-												  _(nullptr))
+												  nullptr)
 				.c_str());
 	}
 	else
