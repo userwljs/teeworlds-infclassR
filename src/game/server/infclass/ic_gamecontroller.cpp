@@ -7114,8 +7114,8 @@ bool CIcGameController::GetClassHelpPage(dynamic_string *pOutput, const char *pL
 		AddLine(_C("Tank", "On the other hand, the movement speed and the hook lenght are reduced."));
 		break;
 	case EPlayerClass::Spitter:
-		AddLine(_C("Spitter", "The Tank has a damage resistance and a stunning hammer with increased range and force."));
-		AddLine(_C("Spitter", "On the other hand, the movement speed and the hook lenght are reduced."));
+		AddLine(_C("Spitter", "The Spitter has a grenade launcher that can shoot slime."));
+		AddLine(_C("Spitter", "The slime heals the infected and deals damage to humans."));
 		break;
 	}
 
