@@ -301,6 +301,9 @@ function CIcCharacter:MakeBlind(duration, from) end
 function CIcCharacter:ResetBlindness() end
 
 ---@return boolean
+function CIcCharacter:IsBlind() end
+
+---@return boolean
 function CIcCharacter:IsFrozen() end
 
 function CIcCharacter:Unfreeze() end
