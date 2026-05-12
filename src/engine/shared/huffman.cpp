@@ -113,9 +113,6 @@ void CHuffman::Init()
 			pNode = &m_aNodes[pNode->m_aLeafs[Bits & 1]];
 			Bits >>= 1;
 
-			if(!pNode)
-				break;
-
 			if(pNode->m_NumBits)
 			{
 				m_apDecodeLut[i] = pNode;
