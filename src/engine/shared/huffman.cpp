@@ -26,17 +26,17 @@ public:
 	int m_Frequency;
 };
 
-bool CompareNodesByFrequencyDesc(const CHuffmanConstructNode *pNode1, const CHuffmanConstructNode *pNode2)
+static bool CompareNodesByFrequencyDesc(const CHuffmanConstructNode *pNode1, const CHuffmanConstructNode *pNode2)
 {
 	return pNode2->m_Frequency < pNode1->m_Frequency;
 }
 
-void CHuffman::Setbits_r(CNode *pNode, int Bits, unsigned Depth)
+void CHuffman::SetBitsRecursive(CNode *pNode, int Bits, unsigned Depth)
 {
 	if(pNode->m_aLeafs[1] != 0xffff)
-		Setbits_r(&m_aNodes[pNode->m_aLeafs[1]], Bits | (1 << Depth), Depth + 1);
+		SetBitsRecursive(&m_aNodes[pNode->m_aLeafs[1]], Bits | (1 << Depth), Depth + 1);
 	if(pNode->m_aLeafs[0] != 0xffff)
-		Setbits_r(&m_aNodes[pNode->m_aLeafs[0]], Bits, Depth + 1);
+		SetBitsRecursive(&m_aNodes[pNode->m_aLeafs[0]], Bits, Depth + 1);
 
 	if(pNode->m_NumBits)
 	{
@@ -88,7 +88,7 @@ void CHuffman::ConstructTree(const unsigned *pFrequencies)
 	m_pStartNode = &m_aNodes[m_NumNodes - 1];
 
 	// build symbol bits
-	Setbits_r(m_pStartNode, 0, 0);
+	SetBitsRecursive(m_pStartNode, 0, 0);
 }
 
 void CHuffman::Init()
