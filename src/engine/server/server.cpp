@@ -52,6 +52,7 @@
 #include "databases/connection.h"
 #include "databases/connection_pool.h"
 #include "register.h"
+#include <climits>
 
 #include <cinttypes>
 
