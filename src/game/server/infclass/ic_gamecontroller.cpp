@@ -9120,6 +9120,18 @@ void CIcGameController::SendSkin7(int ClientId, int To)
 		Msg.m_apSkinPartNames[1] = "stripe";
 		Msg.m_aSkinPartColors[4] = 1383225;
 		break;
+	case EPlayerClass::Tank:
+		Msg.m_aSkinPartColors[0] = 2686767;
+		Msg.m_apSkinPartNames[0] = "spiky";
+		Msg.m_aSkinPartColors[1] = 1093205782;
+		Msg.m_apSkinPartNames[1] = "cammo1";
+		break;
+	case EPlayerClass::Spitter:
+		Msg.m_apSkinPartNames[0] = "kitty";
+		Msg.m_aSkinPartColors[1] = 4282053228;
+		Msg.m_apSkinPartNames[1] = "whisker";
+		Msg.m_aSkinPartColors[4] = 6387018;
+		break;
 
 	default:
 		break;

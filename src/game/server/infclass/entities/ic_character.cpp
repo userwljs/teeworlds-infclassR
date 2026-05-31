@@ -2033,6 +2033,9 @@ void CIcCharacter::HandleMapMenu()
 				{
 				case CLASS_AVAILABILITY::AVAILABLE:
 					break;
+				case CLASS_AVAILABILITY::PICKED_PREVIOUSLY:
+					str_format(Reason, sizeof(Reason), "You can't pick the same class again");
+					break;
 				case CLASS_AVAILABILITY::DISABLED:
 					str_format(Reason, sizeof(Reason), "The class is disabled");
 					break;
