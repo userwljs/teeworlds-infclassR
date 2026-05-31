@@ -1,5 +1,9 @@
 # Changelog
 
+## InfclassR v1.8.1 - 2026-05-31
+
+- Fixed bots being counted as players in 0.7
+
 ## InfclassR v1.8.0 - 2026-05-31
 
 - Added Teeworlds v0.7 support by Pointer (414ce2752be3aa8e71b7deab2a89bccfb2204d1a)

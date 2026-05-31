@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 3.15...3.29)
 project(InfclassR
-        VERSION 1.8.0
+        VERSION 1.8.1
 )
 set(VERSION_SUFFIX "")
 
