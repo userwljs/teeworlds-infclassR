@@ -64,7 +64,7 @@ bool CIcPlayer::TryRespawnNear(CIcPlayer *pTargetPlayer)
 	if(!pTargetCharacter)
 		return false;
 
-	SetTeam(TEAM_RED);
+	GameController()->DoTeamChange(this, TEAM_RED, false);
 	SpawnContext Context;
 	m_Spawning = false;
 	Context.SpawnPos = pTargetCharacter->GetPos();
