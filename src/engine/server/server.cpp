@@ -2363,6 +2363,9 @@ void CServer::CacheServerInfoSixup(CCache *pCache, bool SendClients)
 	{
 		if(m_aClients[i].m_State != CClient::STATE_EMPTY)
 		{
+			if(ClientIsBot(i))
+				continue;
+
 			if(GameServer()->IsClientPlayer(i))
 				PlayerCount++;
 
