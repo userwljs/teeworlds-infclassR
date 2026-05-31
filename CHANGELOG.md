@@ -1,5 +1,9 @@
 # Changelog
 
+## InfclassR v1.8.2 - 2026-05-31
+
+- Fixed bots being counted as players in 0.7, again
+
 ## InfclassR v1.8.1 - 2026-05-31
 
 - Fixed bots being counted as players in 0.7
