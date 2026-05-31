@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: infectiondust\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-05-31 14:01+0800\n"
-"PO-Revision-Date: 2026-03-22 15:47+0800\n"
+"PO-Revision-Date: 2026-05-31 14:14+0800\n"
 "Last-Translator: Gao Zimu <gaozimu_0502@163.com>\n"
 "Language-Team: Chinese Simplified\n"
 "Language: zh_CN\n"
@@ -301,7 +301,8 @@ msgctxt "Mercenary"
 msgid "Use the laser to upgrade the bomb"
 msgstr "用激光升级炸弹"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1236 src/game/server/infclass/classes/humans/human.cpp:1513
+#: src/game/server/infclass/classes/humans/human.cpp:1236
+#: src/game/server/infclass/classes/humans/human.cpp:1513
 msgctxt "Mercenary"
 msgid "Explosive yield: {percent:BombLevel}"
 msgstr "爆炸当量： {percent:BombLevel}"
@@ -356,7 +357,8 @@ msgstr[0] "炸弹剩余 {int:NumBombs} 个"
 msgid "The white hole is available!"
 msgstr "白洞已就绪！"
 
-#: src/game/server/infclass/classes/humans/human.cpp:1416 src/game/server/infclass/classes/humans/human.cpp:1433
+#: src/game/server/infclass/classes/humans/human.cpp:1416
+#: src/game/server/infclass/classes/humans/human.cpp:1433
 msgid "{int:NumMines} mine is active"
 msgid_plural "{int:NumMines} mines are active"
 msgstr[0] "地雷已激活 {int:NumMines} 个"
@@ -464,7 +466,6 @@ msgid "The class limit exceeded"
 msgstr "已超出职业限制"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1962
-#, fuzzy
 msgctxt "mapmenu"
 msgid "Choose your class"
 msgstr "选择你的职业"
@@ -918,7 +919,9 @@ msgstr "职业选择器会在回合开始前显示"
 msgid "Class {str:ClassName} will be automatically attributed to you when round starts"
 msgstr "回合开始时会自动选择“{str:ClassName}”职业"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1727 src/game/server/infclass/ic_gamecontroller.cpp:2060 src/game/server/infclass/ic_gamecontroller.cpp:2105
+#: src/game/server/infclass/ic_gamecontroller.cpp:1727
+#: src/game/server/infclass/ic_gamecontroller.cpp:2060
+#: src/game/server/infclass/ic_gamecontroller.cpp:2105
 msgid "The command is not available (enabled only in training mode)"
 msgstr "命令不可用（仅在练习模式中启用）"
 
@@ -954,11 +957,13 @@ msgstr "无法加载坐标: 你没有角色来加载位置"
 msgid "Unable to load the position: the character state is not valid"
 msgstr "无法加载坐标: 玩家状态无效"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2270 src/game/server/infclass/ic_gamecontroller.cpp:2373
+#: src/game/server/infclass/ic_gamecontroller.cpp:2270
+#: src/game/server/infclass/ic_gamecontroller.cpp:2373
 msgid "The Santa is already here"
 msgstr "圣诞老人已经在这里"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2274 src/game/server/infclass/ic_gamecontroller.cpp:2378
+#: src/game/server/infclass/ic_gamecontroller.cpp:2274
+#: src/game/server/infclass/ic_gamecontroller.cpp:2378
 msgid "All witches are already here"
 msgstr "所有女巫已经在这里了"
 
