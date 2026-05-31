@@ -413,6 +413,10 @@ bool CGameContext::SnapPickup(const CSnapContext &Context, int SnapId, const vec
 																												  protocol7::PICKUP_LASER;
 		else if(Type == POWERUP_NINJA)
 			pPickup->m_Type = protocol7::PICKUP_NINJA;
+		else if(Type == POWERUP_HEALTH)
+			pPickup->m_Type = protocol7::PICKUP_HEALTH;
+		else if(Type == POWERUP_ARMOR)
+			pPickup->m_Type = protocol7::PICKUP_ARMOR;
 	}
 	else if(Context.GetClientVersion() >= VERSION_DDNET_ENTITY_NETOBJS)
 	{
@@ -806,7 +810,6 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 	int End = (To < 0 ? MAX_CLIENTS : To + 1);
 
 	std::string Buffer;
-
 	va_list VarArgs;
 	va_start(VarArgs, pText);
 
@@ -819,6 +822,9 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 		Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NOSEND, -1);
 	}
 
+	if(Server()->Localization()->m_ArgNumberColor[0] == '\0') // set broadcast number color if not set manually, to a default value (yellow-ish)
+		str_copy(Server()->Localization()->m_ArgNumberColor, "^992");
+
 	for(int i = Start; i < End; i++)
 	{
 		if(m_apPlayers[i] && !m_apPlayers[i]->IsBot())
@@ -828,6 +834,8 @@ void CGameContext::SendBroadcast_Localization(int To, EBroadcastPriority Priorit
 			AddBroadcast(i, Buffer.c_str(), Priority, LifeSpan);
 		}
 	}
+// reset broadcast number color
+	str_copy(Server()->Localization()->m_ArgNumberColor, "\0");
 
 	va_end(VarArgs);
 }
@@ -841,6 +849,8 @@ void CGameContext::SendBroadcast_Localization_P(int To, EBroadcastPriority Prior
 
 	va_list VarArgs;
 	va_start(VarArgs, pText);
+if(Server()->Localization()->m_ArgNumberColor[0] == '\0') // set broadcast number color if not set manually, to a default value (yellow-ish)
+		str_copy(Server()->Localization()->m_ArgNumberColor, "^992");
 
 	for(int i = Start; i < End; i++)
 	{
@@ -850,6 +860,9 @@ void CGameContext::SendBroadcast_Localization_P(int To, EBroadcastPriority Prior
 			AddBroadcast(i, Buffer.c_str(), Priority, LifeSpan);
 		}
 	}
+
+	// reset broadcast number color
+	str_copy(Server()->Localization()->m_ArgNumberColor, "\0");
 
 	va_end(VarArgs);
 }
@@ -1406,9 +1419,37 @@ void CGameContext::OnTick()
 				m_BroadcastStates[i].m_NoChangeTick > Server()->TickSpeed())
 			{
 				CNetMsg_Sv_Broadcast Msg;
-				Msg.m_pMessage = m_BroadcastStates[i].m_NextMessage;
+				if(!Server()->IsSixup(i))
+				{
+					// filter out colored broacast substring (^rgb) for non-0.7 clients
+					char aBuf[1024] = "";
+					int indexAbuf = 0;
+					int index = 0;
+					while(m_BroadcastStates[i].m_NextMessage[index] != '\0')
+					{
+						if(m_BroadcastStates[i].m_NextMessage[index] == '^' && m_BroadcastStates[i].m_NextMessage[index + 1] != '\0' && m_BroadcastStates[i].m_NextMessage[index + 2] != '\0' && m_BroadcastStates[i].m_NextMessage[index + 3] != '\0')
+						{
+							index++;
+							index++;
+							index++;
+							index++;
+						}
+						else
+						{
+							aBuf[indexAbuf] = m_BroadcastStates[i].m_NextMessage[index];
+							indexAbuf++;
+							index++;
+						}
+					}
+					aBuf[indexAbuf] = '\0';
+					Msg.m_pMessage = aBuf;
+					str_copy(m_BroadcastStates[i].m_NextMessage, aBuf, sizeof(m_BroadcastStates[i].m_NextMessage));
+				}
+				else
+				{
+					Msg.m_pMessage = m_BroadcastStates[i].m_NextMessage;
+				}
 				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
-
 				str_copy(m_BroadcastStates[i].m_PrevMessage, m_BroadcastStates[i].m_NextMessage);
 
 				m_BroadcastStates[i].m_NoChangeTick = 0;
@@ -1965,6 +2006,12 @@ void CGameContext::OnClientDrop(int ClientId, EClientDropType Type, const char *
 		CGameContext::m_ClientMuted[i][ClientId] = false;
 	}
 
+	protocol7::CNetMsg_Sv_ClientDrop Msg;
+	Msg.m_ClientId = ClientId;
+	Msg.m_pReason = pReason;
+	Msg.m_Silent = true;
+	Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, -1);
+
 	Server()->ExpireServerInfo();
 }
 
@@ -2148,6 +2195,8 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 		}
 		else if(*pMsgId == protocol7::NETMSGTYPE_CL_SKINCHANGE)
 		{
+			return nullptr; // in infclass players do not set their own skins, so we skip this part of the code
+
 			protocol7::CNetMsg_Cl_SkinChange *pMsg = static_cast<protocol7::CNetMsg_Cl_SkinChange *>(pRawMsg);
 			if(g_Config.m_SvSpamprotection && pPlayer->m_LastChangeInfo &&
 				pPlayer->m_LastChangeInfo + Server()->TickSpeed() * g_Config.m_SvInfoChangeDelay > Server()->Tick())
@@ -3899,7 +3948,9 @@ void CGameContext::ConCredits(IConsole::IResult *pResult, void *pUserData)
 	const char aThanks[] = "guenstig werben, Defeater, Orangus, BlinderHeld, Warpaint, Serena, FakeDeath, tee_to_F_U_UP!, Denis, NanoSlime_, tria, pinkieval…";
 	const char aContributors[] = "necropotame, Stitch626, yavl, Socialdarwinist"
 								 ", bretonium, duralakun, FluffyTee, ResamVi"
-								 ", Kaffeine";
+								 ", Kaffeine"
+								 ", Pointer"
+								 ", userwljs";
 
 	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "InfectionClass, by necropotame (version {str:VersionCode})", "VersionCode", "InfectionDust", nullptr));
 	Buffer.append("\n\n");
@@ -4858,7 +4909,7 @@ void CGameContext::OnSnap(int ClientId)
 
 	/* INFECTION MODIFICATION START ***************************************/
 	int SnappingClientVersion = GetClientVersion(ClientId);
-	CSnapContext Context(SnappingClientVersion);
+	CSnapContext Context(SnappingClientVersion, Server()->IsSixup(ClientId));
 	// Snap laser dots
 	for(int i = 0; i < m_LaserDots.size(); i++)
 	{
@@ -4912,14 +4963,7 @@ void CGameContext::OnSnap(int ClientId)
 				continue;
 		}
 
-		CNetObj_Pickup *pObj = Server()->SnapNewItem<CNetObj_Pickup>(m_LoveDots[i].m_SnapId);
-		if(pObj)
-		{
-			pObj->m_X = static_cast<int>(m_LoveDots[i].m_Pos.x);
-			pObj->m_Y = static_cast<int>(m_LoveDots[i].m_Pos.y);
-			pObj->m_Type = POWERUP_HEALTH;
-			pObj->m_Subtype = 0;
-		}
+		SnapPickup(Context, m_LoveDots[i].m_SnapId, m_LoveDots[i].m_Pos, POWERUP_HEALTH, 0);
 	}
 	/* INFECTION MODIFICATION END *****************************************/
 

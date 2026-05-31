@@ -16,6 +16,11 @@ msgstr ""
 "X-Crowdin-Language: es-ES\n"
 "X-Crowdin-File: infclasspot.po\n"
 
+#, fuzzy
+msgctxt "mapmenu"
+msgid "Choose your class"
+msgstr "Selecciona tu clase"
+
 #: src/engine/server/server.cpp:345
 msgid "Account {str:Username} is already used by ClientId {int:ClientId})"
 msgstr ""
@@ -59,7 +64,9 @@ msgstr "Se produjo un error en el curso de la creación de tu cuenta."
 
 #: src/engine/server/server.cpp:749
 msgid "{str:Victim} has been muted for {sec:Duration} ({str:Reason})"
-msgstr "Los mensajes de {str:Victim} se han apagado para {sec:Duration} ({str:Reason})"
+msgstr ""
+"Los mensajes de {str:Victim} se han apagado para {sec:Duration} "
+"({str:Reason})"
 
 #: src/engine/server/server.cpp:4347
 msgid "The registration is currently disabled on the server"
@@ -137,7 +144,9 @@ msgid "Vote failed"
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:1856
-msgid "This server has an initial chat delay, you will need to wait {int:Sec} seconds before talking."
+msgid ""
+"This server has an initial chat delay, you will need to wait {int:Sec} "
+"seconds before talking."
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:2498
@@ -173,12 +182,16 @@ msgid "Server is already on map {str:MapName}"
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:2571
-msgid "Each map must be played at least {int:Rounds} rounds before calling a map vote"
+msgid ""
+"Each map must be played at least {int:Rounds} rounds before calling a map "
+"vote"
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:2580 src/game/server/gamecontext.cpp:2599
 #, fuzzy
-msgid "'{str:CallerName}' called vote to change server option '{str:VoteName}' ({str:Reason})"
+msgid ""
+"'{str:CallerName}' called vote to change server option '{str:VoteName}' "
+"({str:Reason})"
 msgstr "{str:PlayerName} ha salido del juego ({str:Reason})"
 
 #: src/game/server/gamecontext.cpp:2593
@@ -212,7 +225,9 @@ msgstr ""
 
 #: src/game/server/gamecontext.cpp:2674
 #, fuzzy
-msgid "'{str:CallerName}' called for vote to move '{str:SpectateName}' to spectators ({str:Reason})"
+msgid ""
+"'{str:CallerName}' called for vote to move '{str:SpectateName}' to "
+"spectators ({str:Reason})"
 msgstr "{str:PlayerName} pide que {str:VictimName} sea baneado ({str:Reason})"
 
 #: src/game/server/gamecontext.cpp:2759
@@ -237,8 +252,11 @@ msgid "You can change the language of this mod using the command /language."
 msgstr "Puedes cambiar la lengua del mod usando el comando /language."
 
 #: src/game/server/gamecontext.cpp:2976
-msgid "If your language is not available, you can help with translation (/help translate)."
-msgstr "Si tu idioma no es disponible, puedes ayudar traduciendo (/help translate)."
+msgid ""
+"If your language is not available, you can help with translation (/help "
+"translate)."
+msgstr ""
+"Si tu idioma no es disponible, puedes ayudar traduciendo (/help translate)."
 
 #: src/game/server/gamecontext.cpp:3066
 msgid "You will now see all tees on this server, no matter the distance"
@@ -292,7 +310,8 @@ msgid "No player with name \"{str:PlayerName}\" found"
 msgstr "Objetivo de eliminación {str:PlayerName}"
 
 #: src/game/server/gamecontext.cpp:4275
-msgid "Player muted. Mute will persist until you or the muted player disconnects."
+msgid ""
+"Player muted. Mute will persist until you or the muted player disconnects."
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:4280
@@ -335,7 +354,8 @@ msgstr ""
 
 #: src/game/server/gamecontext.cpp:4373
 msgctxt "Accounts"
-msgid "Use RCON or `/login <username> <password>` to login into an existing account."
+msgid ""
+"Use RCON or `/login <username> <password>` to login into an existing account."
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:4383
@@ -355,7 +375,8 @@ msgid "ChangeLog page {int:PageNumber} is not available"
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:4555
-msgid "(page {int:PageNumber}/{int:PagesInTotal}, see /changelog {int:NextPage})"
+msgid ""
+"(page {int:PageNumber}/{int:PagesInTotal}, see /changelog {int:NextPage})"
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:5145
@@ -371,7 +392,8 @@ msgid "You have to log in to chat or join the game"
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:5280
-msgid "You do not have an ongoing conversation. Whisper to someone to start one"
+msgid ""
+"You do not have an ongoing conversation. Whisper to someone to start one"
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:5310
@@ -387,7 +409,9 @@ msgid "You must wait {int:TimeLeftSeconds} seconds before making another vote."
 msgstr ""
 
 #: src/game/server/gamecontext.cpp:5347
-msgid "There's a {int:Delay} second delay between map-votes, please wait {int:WaitTime} seconds."
+msgid ""
+"There's a {int:Delay} second delay between map-votes, please wait "
+"{int:WaitTime} seconds."
 msgstr ""
 
 #: src/game/server/gamecontroller.cpp:210
@@ -437,7 +461,8 @@ msgctxt "Mercenary"
 msgid "Use the laser to upgrade the bomb"
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1558 src/game/server/infclass/classes/humans/human.cpp:1854
+#: src/game/server/infclass/classes/humans/human.cpp:1558
+#: src/game/server/infclass/classes/humans/human.cpp:1854
 #, fuzzy
 msgctxt "Mercenary"
 msgid "Explosive yield: {percent:BombLevel}"
@@ -467,7 +492,9 @@ msgid "You have a turret. Use the hammer to place it."
 msgstr ""
 
 #: src/game/server/infclass/classes/humans/human.cpp:1612
-msgid "You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to place one."
+msgid ""
+"You have {int:NumTurrets} of {int:MaxTurrets} turrets. Use the hammer to "
+"place one."
 msgstr ""
 
 #: src/game/server/infclass/classes/humans/human.cpp:1622
@@ -504,7 +531,8 @@ msgstr[1] ""
 msgid "The white hole is available!"
 msgstr ""
 
-#: src/game/server/infclass/classes/humans/human.cpp:1755 src/game/server/infclass/classes/humans/human.cpp:1772
+#: src/game/server/infclass/classes/humans/human.cpp:1755
+#: src/game/server/infclass/classes/humans/human.cpp:1772
 #, fuzzy
 msgid "{int:NumMines} mine is active"
 msgid_plural "{int:NumMines} mines are active"
@@ -572,13 +600,15 @@ msgstr ""
 
 #: src/game/server/infclass/classes/humans/human.cpp:2511
 msgid "Now you can revive {int:Num} teammate! Use /revive s[player name]."
-msgid_plural "Now you can revive {int:Num} teammates! Use /revive s[player name]."
+msgid_plural ""
+"Now you can revive {int:Num} teammates! Use /revive s[player name]."
 msgstr[0] ""
 msgstr[1] ""
 
 #: src/game/server/infclass/classes/humans/human.cpp:2531
 msgid "You have {int:NumTurrets} turret available, use the Hammer to place it"
-msgid_plural "You have {int:NumTurrets} turrets available, use the Hammer to place it"
+msgid_plural ""
+"You have {int:NumTurrets} turrets available, use the Hammer to place it"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -635,7 +665,9 @@ msgid "The healing grenade launcher replaced with new Medi Hose"
 msgstr ""
 
 #: src/game/server/infclass/classes/humans/human.cpp:2643
-msgid "From now on, each flag will give you an extra turret and extra HP for the teammates"
+msgid ""
+"From now on, each flag will give you an extra turret and extra HP for the "
+"teammates"
 msgstr ""
 
 #: src/game/server/infclass/classes/humans/human.cpp:2644
@@ -735,7 +767,9 @@ msgid "Your wall's time has increased to 45 seconds."
 msgstr ""
 
 #: src/game/server/infclass/classes/humans/human.cpp:2755
-msgid "When the Infected hit your wall, the duration reduction of your wall is decreased by 75%"
+msgid ""
+"When the Infected hit your wall, the duration reduction of your wall is "
+"decreased by 75%"
 msgstr ""
 
 #: src/game/server/infclass/classes/humans/human.cpp:2780
@@ -870,7 +904,9 @@ msgid "You can toggle hook protection by pressing f3 (\"Vote yes\" keybind)."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:125
-msgid "Mercenary can reduce ammo usage during flight by tapping instead of holding down the \"fire\" button."
+msgid ""
+"Mercenary can reduce ammo usage during flight by tapping instead of holding "
+"down the \"fire\" button."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:126
@@ -902,15 +938,21 @@ msgid "Soldier's bombs can hit through walls."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:133
-msgid "Ninja's slash deals 9 damage by default. One more pistol shot will kill an infected with no armor."
+msgid ""
+"Ninja's slash deals 9 damage by default. One more pistol shot will kill an "
+"infected with no armor."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:134
-msgid "Ninja with a single strength upgrade can kill an armorless infected with a single slash."
+msgid ""
+"Ninja with a single strength upgrade can kill an armorless infected with a "
+"single slash."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:135
-msgid "Ninja doesn't need to directly kill their target. An assist with a laser blind or grenade stun will still grant the rewards."
+msgid ""
+"Ninja doesn't need to directly kill their target. An assist with a laser "
+"blind or grenade stun will still grant the rewards."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:136
@@ -937,11 +979,13 @@ msgid "Scientist can rocket jump with the laser rifle."
 msgstr "El científico puede poner minas flotantes con su martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:146
-msgid "Biologist's hammer can stop poison effect on teammates. Look for heart icons."
+msgid ""
+"Biologist's hammer can stop poison effect on teammates. Look for heart icons."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:147
-msgid "Biologist's bouncy shotgun can be used to hit the infected around corners."
+msgid ""
+"Biologist's bouncy shotgun can be used to hit the infected around corners."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:148
@@ -961,33 +1005,45 @@ msgid "Bat can heal by hitting humans."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:152
-msgid "Spider doesn't need to be in Web mode to automatically grab any humans touching its hook."
+msgid ""
+"Spider doesn't need to be in Web mode to automatically grab any humans "
+"touching its hook."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:153
-msgid "Spider can be hooked and transported by teammates to extend its hook trap."
+msgid ""
+"Spider can be hooked and transported by teammates to extend its hook trap."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:155
-msgid "Slug can heal itself and allies over time up to {int:MaxHP} HP with its slime."
+msgid ""
+"Slug can heal itself and allies over time up to {int:MaxHP} HP with its "
+"slime."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:159
-msgid "Slug can hold down the \"fire\" button to automatically spread slime. The hammer swings won't hurt humans this way though."
+msgid ""
+"Slug can hold down the \"fire\" button to automatically spread slime. The "
+"hammer swings won't hurt humans this way though."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:160
 #, fuzzy
 msgid "Voodoo can unfreeze an Undead while in Spirit mode."
-msgstr "El Fantasma puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"El Fantasma puede infectar a humanos y curar a otros infectados con su "
+"martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:161
 #, fuzzy
 msgid "Witch can spawn the infected through narrow walls."
-msgstr "La Bruja puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"La Bruja puede infectar a humanos y curar a otros infectados con su martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:162
-msgid "Undead can be removed from a game by throwing it into kill tiles or reviving it as a Medic."
+msgid ""
+"Undead can be removed from a game by throwing it into kill tiles or reviving "
+"it as a Medic."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:443
@@ -1055,7 +1111,9 @@ msgid "The infected can now spawn at a Control Point"
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:736
-msgid "The control point gives a bonus to all humans every {sec:GlobalEffectInterval}"
+msgid ""
+"The control point gives a bonus to all humans every "
+"{sec:GlobalEffectInterval}"
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:1505
@@ -1389,7 +1447,8 @@ msgstr ""
 msgid "Unknown"
 msgstr "Cláse desconocida"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:1967 src/game/server/infclass/ic_gamecontroller.cpp:2948
+#: src/game/server/infclass/ic_gamecontroller.cpp:1967
+#: src/game/server/infclass/ic_gamecontroller.cpp:2948
 msgid "The survival is already triggered"
 msgstr ""
 
@@ -1399,8 +1458,10 @@ msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:2118
 #, fuzzy
-msgid "A random class will be automatically attributed to you when round starts"
-msgstr "Una clase aleatoria te será asignada automáticamente al comenzar la ronda"
+msgid ""
+"A random class will be automatically attributed to you when round starts"
+msgstr ""
+"Una clase aleatoria te será asignada automáticamente al comenzar la ronda"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:2123
 #, fuzzy
@@ -1409,10 +1470,15 @@ msgstr "El selector de clases se mostrará al comenzar la ronda"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:2131
 #, fuzzy
-msgid "Class {str:ClassName} will be automatically attributed to you when round starts"
-msgstr "Una clase aleatoria te será asignada automáticamente al comenzar la ronda"
+msgid ""
+"Class {str:ClassName} will be automatically attributed to you when round "
+"starts"
+msgstr ""
+"Una clase aleatoria te será asignada automáticamente al comenzar la ronda"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:2496 src/game/server/infclass/ic_gamecontroller.cpp:3267 src/game/server/infclass/ic_gamecontroller.cpp:3312
+#: src/game/server/infclass/ic_gamecontroller.cpp:2496
+#: src/game/server/infclass/ic_gamecontroller.cpp:3267
+#: src/game/server/infclass/ic_gamecontroller.cpp:3312
 msgid "The command is not available (enabled only in training mode)"
 msgstr ""
 
@@ -1478,11 +1544,13 @@ msgstr ""
 msgid "The Santa is not available in this round"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3580 src/game/server/infclass/ic_gamecontroller.cpp:3683
+#: src/game/server/infclass/ic_gamecontroller.cpp:3580
+#: src/game/server/infclass/ic_gamecontroller.cpp:3683
 msgid "The Santa is already here"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:3584 src/game/server/infclass/ic_gamecontroller.cpp:3688
+#: src/game/server/infclass/ic_gamecontroller.cpp:3584
+#: src/game/server/infclass/ic_gamecontroller.cpp:3688
 msgid "All witches are already here"
 msgstr ""
 
@@ -1513,11 +1581,15 @@ msgid "You can't call witch twice"
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3641
-msgid "{str:PlayerName} is calling for Santa! (1/{int:RequiredCallers}) To call the Santa write: /santa"
+msgid ""
+"{str:PlayerName} is calling for Santa! (1/{int:RequiredCallers}) To call the "
+"Santa write: /santa"
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3649
-msgid "{str:PlayerName} is calling for Witch! (1/{int:RequiredCallers}) To call witch write: /witch"
+msgid ""
+"{str:PlayerName} is calling for Witch! (1/{int:RequiredCallers}) To call "
+"witch write: /witch"
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3659
@@ -1543,8 +1615,12 @@ msgid "Unable to start the game: too many players!"
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:3978
-msgid "The team has {int:ActivePlayers} active players but only {int:MaxPlayers} player allowed."
-msgid_plural "The team has {int:ActivePlayers} active players but only {int:MaxPlayers} players allowed."
+msgid ""
+"The team has {int:ActivePlayers} active players but only {int:MaxPlayers} "
+"player allowed."
+msgid_plural ""
+"The team has {int:ActivePlayers} active players but only {int:MaxPlayers} "
+"players allowed."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1794,7 +1870,8 @@ msgstr ""
 msgid "Only {int:MaxPlayers} active players are allowed"
 msgstr ""
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:6219 src/game/server/infclass/ic_gamecontroller.cpp:6222
+#: src/game/server/infclass/ic_gamecontroller.cpp:6219
+#: src/game/server/infclass/ic_gamecontroller.cpp:6222
 msgid "Hide and Seek round!"
 msgstr ""
 
@@ -1837,7 +1914,8 @@ msgstr ""
 #: src/game/server/infclass/ic_gamecontroller.cpp:6824
 msgctxt "White hole"
 msgid "Receive it by killing at least {int:NumKills} infected as a Scientist."
-msgid_plural "Receive it by killing at least {int:NumKills} of the infected as a Scientist."
+msgid_plural ""
+"Receive it by killing at least {int:NumKills} of the infected as a Scientist."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1855,26 +1933,38 @@ msgstr "El mercenario vuela usando su metralleta."
 #: src/game/server/infclass/ic_gamecontroller.cpp:6945
 #, fuzzy
 msgctxt "Mercenary"
-msgid "They can also create a powerful bomb with their hammer that can be charged by hitting it or with a laser rifle."
+msgid ""
+"They can also create a powerful bomb with their hammer that can be charged "
+"by hitting it or with a laser rifle."
 msgstr "El Soldado puede colocar bombas flotantes con su martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6949
 #, fuzzy
 msgctxt "Mercenary"
-msgid "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage point and prevent the infected from healing."
-msgid_plural "Mercenary can also throw poison grenades that deal {int:NumDamagePoints} damage points and prevent the infected from healing."
-msgstr[0] "Él también puede lanzar granadas de ponzoña que infligen un punto de daño."
-msgstr[1] "Él también puede lanzar granadas de ponzoña que infligen {int:NumDamagePoints} puntos de daño."
+msgid ""
+"Mercenary can also throw poison grenades that deal {int:NumDamagePoints} "
+"damage point and prevent the infected from healing."
+msgid_plural ""
+"Mercenary can also throw poison grenades that deal {int:NumDamagePoints} "
+"damage points and prevent the infected from healing."
+msgstr[0] ""
+"Él también puede lanzar granadas de ponzoña que infligen un punto de daño."
+msgstr[1] ""
+"Él también puede lanzar granadas de ponzoña que infligen "
+"{int:NumDamagePoints} puntos de daño."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6957
 #, fuzzy
 msgctxt "Medic"
 msgid "The Medic can protect humans with the hammer by giving them armor."
-msgstr "El Médico puede proteger a los humanos con su martillo dándoles armadura."
+msgstr ""
+"El Médico puede proteger a los humanos con su martillo dándoles armadura."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6958
 msgctxt "Medic"
-msgid "Grenades with medicine give armor to everybody in their range, including Heroes and the Medic themself."
+msgid ""
+"Grenades with medicine give armor to everybody in their range, including "
+"Heroes and the Medic themself."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6963
@@ -1884,14 +1974,18 @@ msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6968
 msgctxt "Medic"
-msgid "Laser rifle revives the infected, but at the cost of {int:Damage} hp and armor."
+msgid ""
+"Laser rifle revives the infected, but at the cost of {int:Damage} hp and "
+"armor."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6971
 #, fuzzy
 msgctxt "Medic"
 msgid "Medic also has a powerful shotgun that can knock back the infected."
-msgstr "También posee una poderosa escopeta capaz de hacer retroceder a los infectados."
+msgstr ""
+"También posee una poderosa escopeta capaz de hacer retroceder a los "
+"infectados."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6974
 msgctxt "Hero"
@@ -1900,40 +1994,55 @@ msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6975
 msgctxt "Hero"
-msgid "The Hero has to find a flag only visible to them. Stand still to be pointed towards it."
+msgid ""
+"The Hero has to find a flag only visible to them. Stand still to be pointed "
+"towards it."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6976
 msgctxt "Hero"
-msgid "The flag gifts a health point, {int:NumArmorGift} armor and full ammo to all humans."
+msgid ""
+"The flag gifts a health point, {int:NumArmorGift} armor and full ammo to all "
+"humans."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6978
 msgctxt "Hero"
-msgid "It fully heals the Hero and it can grant a turret which you can place down with the hammer."
+msgid ""
+"It fully heals the Hero and it can grant a turret which you can place down "
+"with the hammer."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6979
 msgctxt "Hero"
-msgid "The gift to all humans is only applied when the flag is surrounded by hearts and armor."
+msgid ""
+"The gift to all humans is only applied when the flag is surrounded by hearts "
+"and armor."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6980
 #, fuzzy
 msgctxt "Hero"
-msgid "The Hero cannot be healed by a Medic, but it can withstand a hit from an infected."
-msgstr "El Héroe no puede ser sanado por un médico, mas es capaz de resistir un trompazo de un infectado, si su vida y armadura bastan."
+msgid ""
+"The Hero cannot be healed by a Medic, but it can withstand a hit from an "
+"infected."
+msgstr ""
+"El Héroe no puede ser sanado por un médico, mas es capaz de resistir un "
+"trompazo de un infectado, si su vida y armadura bastan."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6981
 msgctxt "Hero"
-msgid "The Hero can refresh the position of the flag by /rflag in survival mode."
+msgid ""
+"The Hero can refresh the position of the flag by /rflag in survival mode."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6984
 #, fuzzy
 msgctxt "Engineer"
 msgid "The Engineer can build walls with the hammer to block the infected."
-msgstr "El Ingeniero puede crear barreras con su martillo para bloquear el paso de los infectados."
+msgstr ""
+"El Ingeniero puede crear barreras con su martillo para bloquear el paso de "
+"los infectados."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6985
 #, fuzzy
@@ -1944,8 +2053,12 @@ msgstr "Cuando un infectado toca la barrera, este muere."
 #: src/game/server/infclass/ic_gamecontroller.cpp:6986
 #, fuzzy
 msgctxt "Engineer"
-msgid "The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per player at the same time."
-msgstr "La duración de una barrera es de {sec:LifeSpan}, y sólo puede haber una barrera por jugador al mismo tiempo."
+msgid ""
+"The lifespan of a wall is {sec:LifeSpan}, and walls are limited to one per "
+"player at the same time."
+msgstr ""
+"La duración de una barrera es de {sec:LifeSpan}, y sólo puede haber una "
+"barrera por jugador al mismo tiempo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:6991
 #, fuzzy
@@ -1968,34 +2081,55 @@ msgstr "Usa el martillo para colocar una bomba y explotarla varias veces."
 #: src/game/server/infclass/ic_gamecontroller.cpp:7001
 #, fuzzy
 msgctxt "Ninja"
-msgid "The Ninja can throw flash grenades that can freeze the infected for three seconds."
-msgstr "El Ninja puede lanzar granadas destello, las cuales pueden congelar a infectados durante tres segundos."
+msgid ""
+"The Ninja can throw flash grenades that can freeze the infected for three "
+"seconds."
+msgstr ""
+"El Ninja puede lanzar granadas destello, las cuales pueden congelar a "
+"infectados durante tres segundos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7006
 #, fuzzy
 msgctxt "Ninja"
-msgid "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} time before touching the ground."
-msgid_plural "Their hammer is replaced with a katana, allowing them to dash {int:NinjaJump} times before touching the ground."
-msgstr[0] "Su martillo ha sido reemplazado por una katana, permitiéndole saltar una vez antes de tocar el suelo."
-msgstr[1] "Su martillo ha sido reemplazado por una katana, permitiéndole saltar {int:NinjaJump} veces antes de tocar el suelo."
+msgid ""
+"Their hammer is replaced with a katana, allowing them to dash "
+"{int:NinjaJump} time before touching the ground."
+msgid_plural ""
+"Their hammer is replaced with a katana, allowing them to dash "
+"{int:NinjaJump} times before touching the ground."
+msgstr[0] ""
+"Su martillo ha sido reemplazado por una katana, permitiéndole saltar una vez "
+"antes de tocar el suelo."
+msgstr[1] ""
+"Su martillo ha sido reemplazado por una katana, permitiéndole saltar "
+"{int:NinjaJump} veces antes de tocar el suelo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7012
-msgid "They also have a laser rifle that blinds the target for a short period of time."
+msgid ""
+"They also have a laser rifle that blinds the target for a short period of "
+"time."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7013
-msgid "Ninja gets special targets. For killing a target, extra points and abilities are awarded."
+msgid ""
+"Ninja gets special targets. For killing a target, extra points and abilities "
+"are awarded."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7017
 #, fuzzy
 msgctxt "Sniper"
-msgid "The Sniper can lock the position in mid-air for 15 seconds with the hammer."
-msgstr "El francotirador puede bloquear su posición en el aire por 15 segundos con su martillo."
+msgid ""
+"The Sniper can lock the position in mid-air for 15 seconds with the hammer."
+msgstr ""
+"El francotirador puede bloquear su posición en el aire por 15 segundos con "
+"su martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7019
 msgctxt "Sniper"
-msgid "The locked position increases the Sniper's rifle damage from usual 10-13 to 30 damage points."
+msgid ""
+"The locked position increases the Sniper's rifle damage from usual 10-13 to "
+"30 damage points."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7021
@@ -2016,7 +2150,8 @@ msgctxt "Scientist"
 msgid "Mines are limited to {int:NumMines} per player at the same time."
 msgid_plural "Mines are limited to {int:NumMines} per player at the same time."
 msgstr[0] "Las minas están limitadas a una por jugador al mismo tiempo."
-msgstr[1] "Las minas están limitadas a {int:NumMines} por jugador al mismo tiempo."
+msgstr[1] ""
+"Las minas están limitadas a {int:NumMines} por jugador al mismo tiempo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7030
 #, fuzzy
@@ -2026,23 +2161,33 @@ msgstr "El también tiene granadas que lo teletransportan."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7031
 msgctxt "Scientist"
-msgid "A lucky Scientist devoted to killing can get a white hole that sucks the infected in which can be placed with the laser rifle."
+msgid ""
+"A lucky Scientist devoted to killing can get a white hole that sucks the "
+"infected in which can be placed with the laser rifle."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7035
 #, fuzzy
 msgctxt "Biologist"
-msgid "The Biologist has a shotgun with bouncing bullets and can create a spring laser trap by shooting with the laser rifle."
-msgstr "El biólogo tiene una escopeta con bolas rebotandas y puede erigir trampas láser con su fúsil."
+msgid ""
+"The Biologist has a shotgun with bouncing bullets and can create a spring "
+"laser trap by shooting with the laser rifle."
+msgstr ""
+"El biólogo tiene una escopeta con bolas rebotandas y puede erigir trampas "
+"láser con su fúsil."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7037
 msgctxt "Biologist"
-msgid "They are also immune to continuous poison effect, and can stop it on teammates with the Hammer."
+msgid ""
+"They are also immune to continuous poison effect, and can stop it on "
+"teammates with the Hammer."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7041
 msgctxt "Looper"
-msgid "The Looper has a laser wall that slows down the infected and a low-range laser rifle with a high fire rate."
+msgid ""
+"The Looper has a laser wall that slows down the infected and a low-range "
+"laser rifle with a high fire rate."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7043
@@ -2053,14 +2198,18 @@ msgstr "Puede saltar dos veces en el aire."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7046
 msgctxt "Smoker"
-msgid "Smoker has a powerful hook that hurts humans and sucks their blood, restoring the Smoker's health."
+msgid ""
+"Smoker has a powerful hook that hurts humans and sucks their blood, "
+"restoring the Smoker's health."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7048
 #, fuzzy
 msgctxt "Smoker"
 msgid "It can also infect humans and heal the infected with the hammer."
-msgstr "El Fantasma puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"El Fantasma puede infectar a humanos y curar a otros infectados con su "
+"martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7051
 #, fuzzy
@@ -2078,24 +2227,30 @@ msgstr "Todos los humanos afectados por la explosión son infectados."
 #, fuzzy
 msgctxt "Boomer"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+msgstr ""
+"También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7056
 msgctxt "Hunter"
-msgid "The Hunter can jump two times in the air and has some resistance to knock-backs."
+msgid ""
+"The Hunter can jump two times in the air and has some resistance to knock-"
+"backs."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7058
 #, fuzzy
 msgctxt "Hunter"
 msgid "It can infect humans and heal the infected with the hammer."
-msgstr "El Fantasma puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"El Fantasma puede infectar a humanos y curar a otros infectados con su "
+"martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7059
 #, fuzzy
 msgctxt "Hunter"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+msgstr ""
+"También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7062
 #, fuzzy
@@ -2117,29 +2272,38 @@ msgstr ""
 #, fuzzy
 msgctxt "Bat"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+msgstr ""
+"También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7068
 #, fuzzy
 msgctxt "Ghost"
-msgid "The Ghost is invisible until a human comes nearby, it takes damage, or it uses the hammer."
-msgstr "Él es invisible, excepto si un humano esta cerca de él, si le infligen daño o si usa su martillo."
+msgid ""
+"The Ghost is invisible until a human comes nearby, it takes damage, or it "
+"uses the hammer."
+msgstr ""
+"Él es invisible, excepto si un humano esta cerca de él, si le infligen daño "
+"o si usa su martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7070
 #, fuzzy
 msgctxt "Ghost"
 msgid "It can infect humans and heal the infected with the hammer."
-msgstr "El Fantasma puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"El Fantasma puede infectar a humanos y curar a otros infectados con su "
+"martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7071
 #, fuzzy
 msgctxt "Ghost"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+msgstr ""
+"También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7074
 msgctxt "Spider"
-msgid "The Spider has a web hook that automatically grabs any human touching it."
+msgid ""
+"The Spider has a web hook that automatically grabs any human touching it."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7075
@@ -2150,37 +2314,52 @@ msgstr ""
 #: src/game/server/infclass/ic_gamecontroller.cpp:7076
 #, fuzzy
 msgctxt "Spider"
-msgid "In both modes the hook inflicts 1 damage point per second and can grab a human for longer."
-msgstr "El gancho de la araña (en ambos modos) inflinge 1 punto de daño por segundo y puede agarrar a un humano durante 2 segundos."
+msgid ""
+"In both modes the hook inflicts 1 damage point per second and can grab a "
+"human for longer."
+msgstr ""
+"El gancho de la araña (en ambos modos) inflinge 1 punto de daño por segundo "
+"y puede agarrar a un humano durante 2 segundos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7080
 #, fuzzy
 msgctxt "Ghoul"
-msgid "The Ghoul can devour anything that has died nearby, which makes it stronger, faster and more resistant."
-msgstr "Puede devorar todo que ha muerto cerca de él, lo que lo hace más vigoroso, más rápido y más resistente."
+msgid ""
+"The Ghoul can devour anything that has died nearby, which makes it stronger, "
+"faster and more resistant."
+msgstr ""
+"Puede devorar todo que ha muerto cerca de él, lo que lo hace más vigoroso, "
+"más rápido y más resistente."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7082
 msgctxt "Ghoul"
-msgid "It digests the fodder over time, going back to the normal state. Some nourishment is also lost on death."
+msgid ""
+"It digests the fodder over time, going back to the normal state. Some "
+"nourishment is also lost on death."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7084
 #, fuzzy
 msgctxt "Ghoul"
 msgid "Ghoul can infect humans and heal the infected with the hammer."
-msgstr "El Gul puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"El Gul puede infectar a humanos y curar a otros infectados con su martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7085
 #, fuzzy
 msgctxt "Ghoul"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+msgstr ""
+"También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7088
 #, fuzzy
 msgctxt "Slug"
-msgid "The Slug can make the ground and walls toxic by spreading slime with the hammer."
-msgstr "Puede hacer dañino el suelo y las paredes difundiendo limo con su martillo."
+msgid ""
+"The Slug can make the ground and walls toxic by spreading slime with the "
+"hammer."
+msgstr ""
+"Puede hacer dañino el suelo y las paredes difundiendo limo con su martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7089
 msgctxt "Slug"
@@ -2191,35 +2370,45 @@ msgstr ""
 #, fuzzy
 msgctxt "Slug"
 msgid "Slug can infect humans and heal the infected with the hammer."
-msgstr "El Limaco puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"El Limaco puede infectar a humanos y curar a otros infectados con su "
+"martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7091
 #, fuzzy
 msgctxt "Slug"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+msgstr ""
+"También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7094
 msgctxt "Voodoo"
-msgid "The Voodoo does not die immediately when killed but instead enters Spirit mode for a short time."
+msgid ""
+"The Voodoo does not die immediately when killed but instead enters Spirit "
+"mode for a short time."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7096
 msgctxt "Voodoo"
-msgid "While in Spirit mode it cannot be killed. When the time is up it finally dies."
+msgid ""
+"While in Spirit mode it cannot be killed. When the time is up it finally "
+"dies."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7097
 #, fuzzy
 msgctxt "Voodoo"
 msgid "Voodoo can infect humans and heal the infected with the hammer."
-msgstr "El Fantasma puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"El Fantasma puede infectar a humanos y curar a otros infectados con su "
+"martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7098
 #, fuzzy
 msgctxt "Voodoo"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+msgstr ""
+"También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7101
 msgctxt "Witch"
@@ -2230,19 +2419,23 @@ msgstr ""
 #, fuzzy
 msgctxt "Witch"
 msgid "If the Witch dies, it disappears and is replaced by another class."
-msgstr "Si la Bruja muere, esta desaparece y es reemplazada por otra clase de infectado."
+msgstr ""
+"Si la Bruja muere, esta desaparece y es reemplazada por otra clase de "
+"infectado."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7103
 #, fuzzy
 msgctxt "Witch"
 msgid "Witch can infect humans and heal the infected with the hammer."
-msgstr "La Bruja puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"La Bruja puede infectar a humanos y curar a otros infectados con su martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7104
 #, fuzzy
 msgctxt "Witch"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+msgstr ""
+"También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7107
 #, fuzzy
@@ -2260,17 +2453,22 @@ msgstr "Si un infectado lo cura, el efecto de congelación desaparece."
 #, fuzzy
 msgctxt "Undead"
 msgid "Undead can infect humans and heal the infected with the hammer."
-msgstr "El Muerto viviente puede infectar a humanos y curar a otros infectados con su martillo."
+msgstr ""
+"El Muerto viviente puede infectar a humanos y curar a otros infectados con "
+"su martillo."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7110
 #, fuzzy
 msgctxt "Undead"
 msgid "It can also inflict 1 damage point per second by hooking humans."
-msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+msgstr ""
+"También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7113
 msgctxt "Tank"
-msgid "The Tank has a damage resistance and a stunning hammer with increased range and force."
+msgid ""
+"The Tank has a damage resistance and a stunning hammer with increased range "
+"and force."
 msgstr ""
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:7114
@@ -2348,8 +2546,16 @@ msgstr "Escribe «/help {str:ClassName}» para más información sobre tu clase"
 #~ msgid "All players start as a human."
 #~ msgstr "Todos los jugadores comienzan como humanos."
 
+#~ msgid "An error occured during the creation of your account."
+#~ msgstr "Se produjo un error en el curso de la creación de tu cuenta."
+
+#~ msgid "An error occured during the operation."
+#~ msgstr "Se produjo un error en el curso de esa operación."
+
 #~ msgid "Any human that touch a hook in web mode is automatically grabbed."
-#~ msgstr "Cualquier humano que toque el gancho en modo telaraña es automáticamente agarrado."
+#~ msgstr ""
+#~ "Cualquier humano que toque el gancho en modo telaraña es automáticamente "
+#~ "agarrado."
 
 #~ msgid "Available help pages: {str:PageList}"
 #~ msgstr "Páginas de ayuda disponibles: {str:PageList}"
@@ -2378,17 +2584,26 @@ msgstr "Escribe «/help {str:ClassName}» para más información sobre tu clase"
 #~ msgid "Example: “/mute nameless tee”"
 #~ msgstr "Ejemplo: «¡Estoy herido!»"
 
-#~ msgid "For any question about the translation process, please contact us on IRC ({str:IRCAddress})"
-#~ msgstr "Para cualquier pregunta sobre el procedimiento de traducción, nos contacta por IRC ({str:IRCAddress})"
+#~ msgid ""
+#~ "For any question about the translation process, please contact us on IRC "
+#~ "({str:IRCAddress})"
+#~ msgstr ""
+#~ "Para cualquier pregunta sobre el procedimiento de traducción, nos "
+#~ "contacta por IRC ({str:IRCAddress})"
 
 #~ msgid "He can also inflict 1 damage point per second by hooking humans."
-#~ msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+#~ msgstr ""
+#~ "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #~ msgid "He can also inflict 4 damage points per second by hooking humans."
-#~ msgstr "También puede infligir 4 puntos de daño por segundo al enganchar a humanos."
+#~ msgstr ""
+#~ "También puede infligir 4 puntos de daño por segundo al enganchar a "
+#~ "humanos."
 
-#~ msgid "He can coil explosives with his hammer that hinder infected from harming."
-#~ msgstr "Puede embobinar artilugios explosivos que impiden a los infectados dañar."
+#~ msgid ""
+#~ "He can coil explosives with his hammer that hinder infected from harming."
+#~ msgstr ""
+#~ "Puede embobinar artilugios explosivos que impiden a los infectados dañar."
 
 #~ msgid "How to translate the mod"
 #~ msgstr "Como traducir el mod"
@@ -2406,8 +2621,11 @@ msgstr "Escribe «/help {str:ClassName}» para más información sobre tu clase"
 
 #, fuzzy
 #~ msgctxt "Bat"
-#~ msgid "It can also inflict 1 damage point per second by hooking humans, which sucks their blood, restoring the Bat's health."
-#~ msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+#~ msgid ""
+#~ "It can also inflict 1 damage point per second by hooking humans, which "
+#~ "sucks their blood, restoring the Bat's health."
+#~ msgstr ""
+#~ "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #~ msgid "List of commands"
 #~ msgstr "Lista de comandos"
@@ -2415,8 +2633,13 @@ msgstr "Escribe «/help {str:ClassName}» para más información sobre tu clase"
 #~ msgid "Main contributors: {str:ListOfContributors}"
 #~ msgstr "Contribuidores fundamentales: {str:ListOfContributors}"
 
-#~ msgid "Once taken, the flag gives 1 health point, 4 armor points, and full ammo to all humans, furthermore full health and armor to the hero."
-#~ msgstr "A la vez que recoge la bandera, ella le distribue un punto de salud y cuatro puntos de armadura a cado uno de los humanos, les rellena la munición, y el Héroe es sanado completamente."
+#~ msgid ""
+#~ "Once taken, the flag gives 1 health point, 4 armor points, and full ammo "
+#~ "to all humans, furthermore full health and armor to the hero."
+#~ msgstr ""
+#~ "A la vez que recoge la bandera, ella le distribue un punto de salud y "
+#~ "cuatro puntos de armadura a cado uno de los humanos, les rellena la "
+#~ "munición, y el Héroe es sanado completamente."
 
 #, fuzzy
 #~ msgctxt "Soldier"
@@ -2428,8 +2651,12 @@ msgstr "Escribe «/help {str:ClassName}» para más información sobre tu clase"
 #~ msgid "Press <F3> or <F4> to enable or disable hook protection"
 #~ msgstr "Pulsa <F3> o <F4> para activar o desactivar la protección de gancho"
 
+#~ msgid "Rules of the game"
+#~ msgstr "Reglas del juego"
+
 #~ msgid "She can also inflict 1 damage point per second by hooking humans."
-#~ msgstr "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
+#~ msgstr ""
+#~ "También puede infligir 1 punto de daño por segundo al enganchar a humanos."
 
 #, fuzzy
 #~ msgid "Snipers can jump two times in air."
@@ -2450,46 +2677,85 @@ msgstr "Escribe «/help {str:ClassName}» para más información sobre tu clase"
 
 #, fuzzy
 #~ msgid "The Hunter can infect humans and heal infected with the hammer."
-#~ msgstr "El Cazador puede infectar a humanos y curar a otros infectados con su martillo."
+#~ msgstr ""
+#~ "El Cazador puede infectar a humanos y curar a otros infectados con su "
+#~ "martillo."
 
 #, fuzzy
 #~ msgid "The Smoker can infect humans and heal infected with the hammer."
-#~ msgstr "El Smoker puede infectar a humanos y curar a otros infectados con su martillo."
+#~ msgstr ""
+#~ "El Smoker puede infectar a humanos y curar a otros infectados con su "
+#~ "martillo."
 
 #, fuzzy
 #~ msgid "The Spider can infect humans and heal infected with the hammer."
-#~ msgstr "La Araña puede infectar a humanos y curar a otros infectados con su martillo."
+#~ msgstr ""
+#~ "La Araña puede infectar a humanos y curar a otros infectados con su "
+#~ "martillo."
 
 #, fuzzy
 #~ msgid "The goal for the humans is to survive until the army cleans the map."
-#~ msgstr "El objetivo de los humanos es sobrevivir hasta que el ejército limpie el mapa."
-
-#~ msgid "Thereupon he digests his fodder bit by bit going back to his normal state, and besides, death bereaves him of his nourishment."
-#~ msgstr "Seguidamente digiere su forraje poco a poco volviendo a su estado normal, y aparte de eso le quita alimento el fallecer."
+#~ msgstr ""
+#~ "El objetivo de los humanos es sobrevivir hasta que el ejército limpie el "
+#~ "mapa."
 
 #, fuzzy
-#~ msgid "They also have a powerful rifle that deals 20 damage points in locked position, and 10–13 otherwise."
-#~ msgstr "Él tiene también un rifle potente que inflige 30 puntos de daño cuando está bloqueado en una posición y 10–13 en otros casos."
+#~ msgid "The goal for the infected is to infect all humans."
+#~ msgstr ""
+#~ "El objetivo de los infectados es el de infectar a todos los humanos."
 
-#~ msgid "Touching the slime inflicts three damage points in three seconds on a human."
-#~ msgstr "Tocar el limo inflige tres puntos de daño en tres segundos a un humano."
+#~ msgid ""
+#~ "Thereupon he digests his fodder bit by bit going back to his normal "
+#~ "state, and besides, death bereaves him of his nourishment."
+#~ msgstr ""
+#~ "Seguidamente digiere su forraje poco a poco volviendo a su estado normal, "
+#~ "y aparte de eso le quita alimento el fallecer."
+
+#, fuzzy
+#~ msgid ""
+#~ "They also have a powerful rifle that deals 20 damage points in locked "
+#~ "position, and 10–13 otherwise."
+#~ msgstr ""
+#~ "Él tiene también un rifle potente que inflige 30 puntos de daño cuando "
+#~ "está bloqueado en una posición y 10–13 en otros casos."
+
+#~ msgid "This username is already taken by an existing account"
+#~ msgstr "Este nombre de usuario ya está cogido por una cuenta existente"
+
+#~ msgid ""
+#~ "Touching the slime inflicts three damage points in three seconds on a "
+#~ "human."
+#~ msgstr ""
+#~ "Tocar el limo inflige tres puntos de daño en tres segundos a un humano."
 
 #~ msgid "Unknown class"
 #~ msgstr "Cláse desconocida"
 
-#~ msgid "Use “/msg !<ClassName> <My Message>” to send a private message to all players with a specific class."
-#~ msgstr "Usa «/msg <Nombre de jugador> <Mi mensaje>» para hacer llegar un mensaje dirigido a los jugadores de una clase específica."
+#~ msgid ""
+#~ "Use “/msg !<ClassName> <My Message>” to send a private message to all "
+#~ "players with a specific class."
+#~ msgstr ""
+#~ "Usa «/msg <Nombre de jugador> <Mi mensaje>» para hacer llegar un mensaje "
+#~ "dirigido a los jugadores de una clase específica."
 
 #~ msgid "Use “/msg !near” to send a private message to all players near you."
-#~ msgstr "Usa «/msg !near» para hacer llegar un mensaje dirigido a los jugadores en tu proximidad."
+#~ msgstr ""
+#~ "Usa «/msg !near» para hacer llegar un mensaje dirigido a los jugadores en "
+#~ "tu proximidad."
 
 #, fuzzy
 #~ msgid "Use “/mute <PlayerName>” to mute this player."
-#~ msgstr "Usa «/msg <Nombre de jugador> <Mi mensaje>» para hacer llegar un mensaje privado a un jugador específico."
+#~ msgstr ""
+#~ "Usa «/msg <Nombre de jugador> <Mi mensaje>» para hacer llegar un mensaje "
+#~ "privado a un jugador específico."
 
 #, fuzzy
-#~ msgid "Use “/w <PlayerName> <My Message>” to send a private message to this player."
-#~ msgstr "Usa «/msg <Nombre de jugador> <Mi mensaje>» para hacer llegar un mensaje privado a un jugador específico."
+#~ msgid ""
+#~ "Use “/w <PlayerName> <My Message>” to send a private message to this "
+#~ "player."
+#~ msgstr ""
+#~ "Usa «/msg <Nombre de jugador> <Mi mensaje>» para hacer llegar un mensaje "
+#~ "privado a un jugador específico."
 
 #, fuzzy
 #~ msgid "When an infected dies, it may respawn near the Witch."
@@ -2497,10 +2763,16 @@ msgstr "Escribe «/help {str:ClassName}» para más información sobre tu clase"
 
 #, fuzzy
 #~ msgid "When selecting any gun, the hook enter in web mode."
-#~ msgstr "Con la selección de cualquier arma el gancho entra en modo telaraña."
+#~ msgstr ""
+#~ "Con la selección de cualquier arma el gancho entra en modo telaraña."
+
+#~ msgid "Wrong username/password."
+#~ msgstr "Nombre de usuario erróneo/Contraseña errónea"
 
 #~ msgid "You must be logged for this operation"
-#~ msgstr "Es menester que estés conectado con tu cuenta para llevar a cabo esa operación."
+#~ msgstr ""
+#~ "Es menester que estés conectado con tu cuenta para llevar a cabo esa "
+#~ "operación."
 
 #, fuzzy
 #~ msgid "You must be logged to see stats"

@@ -513,6 +513,8 @@ void CIcPlayer::UpdateSkin()
 	const CWeakSkinInfo SkinInfo = GetSkinInfo(SERVER_DEMO_CLIENT);
 	m_TeeInfos = CTeeInfo(SkinInfo.pSkinName, SkinInfo.UseCustomColor, SkinInfo.ColorBody, SkinInfo.ColorFeet);
 	m_TeeInfos.ToSixup();
+
+	GameController()->SendSkin7(GetCid());
 }
 
 void CIcPlayer::StartInfection(int InfectiousPlayerCid, INFECTION_TYPE InfectionType)
@@ -542,6 +544,10 @@ void CIcPlayer::CloseMapMenu()
 {
 	m_MapMenu = 0;
 	m_MapMenuTick = -1;
+
+	if (Server()->IsSixup(GetCid())) {
+		GameServer()->SendMOTD(GetCid(), "");
+	}
 }
 
 bool CIcPlayer::MapMenuClickable()
@@ -846,14 +852,19 @@ void CIcPlayer::SendClassIntro()
 	if(!IsBot() && (Class != EPlayerClass::None) && (Class != EPlayerClass::Invalid))
 	{
 		const char *pClassName = CIcGameController::GetClassDisplayName(Class);
-		const std::string Translated(Server()->Localization()->Localize(GetLanguage(), pClassName));
+		const std::string TranslatedClassName(Server()->Localization()->Localize(GetLanguage(), pClassName));
+		char pTranslated[64];
+		if(IsHuman())
+			str_format(pTranslated, sizeof(pTranslated), "^578%s", TranslatedClassName.c_str());
+		else
+			str_format(pTranslated, sizeof(pTranslated), "^592%s", TranslatedClassName.c_str());
 
 		if(IsHuman())
 			GameServer()->SendBroadcast_Localization(GetCid(), EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
-				_("You are a human: {str:ClassName}"), "ClassName", Translated.c_str(), nullptr);
+				_("You are a human: {str:ClassName}"), "ClassName", pClassName, nullptr);
 		else
 			GameServer()->SendBroadcast_Localization(GetCid(), EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
-				_("You are an infected: {str:ClassName}"), "ClassName", Translated.c_str(), nullptr);
+				_("You are an infected: {str:ClassName}"), "ClassName", pClassName, nullptr);
 
 		int Index = static_cast<int>(Class);
 		if(!m_aKnownClasses[Index])
