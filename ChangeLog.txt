@@ -1,3 +1,6 @@
+InfclassR v1.8.0
+- Added Teeworlds v0.7 support by Pointer
+
 InfclassR v1.7.0
 - Fixed `fast` round type not working when player count is equal to 2
 - Fixed the reviving cost in `/help medic` not syncing with the server config

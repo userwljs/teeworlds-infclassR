@@ -1,5 +1,9 @@
 # Changelog
 
+## InfclassR v1.8.0 - 2026-05-31
+
+- Added Teeworlds v0.7 support by Pointer (414ce2752be3aa8e71b7deab2a89bccfb2204d1a)
+
 ## InfclassR v1.7.0 - 2026-03-29
 
 ### I18N / L10N
