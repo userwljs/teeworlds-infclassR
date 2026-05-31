@@ -3886,7 +3886,9 @@ void CGameContext::ConCredits(IConsole::IResult *pResult, void *pUserData)
 	const char aThanks[] = "guenstig werben, Defeater, Orangus, BlinderHeld, Warpaint, Serena, FakeDeath, tee_to_F_U_UP!, Denis, NanoSlime_, tria, pinkieval…";
 	const char aContributors[] = "necropotame, Stitch626, yavl, Socialdarwinist"
 								 ", bretonium, duralakun, FluffyTee, ResamVi"
-								 ", Kaffeine";
+								 ", Kaffeine"
+								 ", Pointer"
+								 ", userwljs";
 
 	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "InfectionClass, by necropotame (version {str:VersionCode})", "VersionCode", "InfectionDust", nullptr));
 	Buffer.append("\n\n");
