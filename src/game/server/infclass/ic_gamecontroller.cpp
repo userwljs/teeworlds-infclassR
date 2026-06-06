@@ -2655,12 +2655,14 @@ bool CIcGameController::ReviveNear(const int RevivedPlayerId, const int TargetPl
 	if(!(pRevivedPlayer && pTargetPlayer) || pRevivedPlayer->IsBot())
 		return false;
 
+	const auto Class = pRevivedPlayer->IsInfected() || pRevivedPlayer->GetClass() == EPlayerClass::None ?
+						   ChooseHumanClass(pRevivedPlayer) :
+						   pRevivedPlayer->GetClass();
 	const auto Ok = pRevivedPlayer->TryRespawnNear(pTargetPlayer);
 
 	if(Ok && GetRoundType() == ERoundType::Survival)
 	{
-		if(pRevivedPlayer->IsInfected() || pRevivedPlayer->GetClass() == EPlayerClass::None)
-			pRevivedPlayer->SetClass(ChooseHumanClass(pRevivedPlayer));
+		pRevivedPlayer->SetClass(Class);
 		if(m_SurvivalState.KilledPlayers.Contains(pRevivedPlayer->GetCid()))
 			m_SurvivalState.KilledPlayers.RemoveOne(pRevivedPlayer->GetCid());
 	}
