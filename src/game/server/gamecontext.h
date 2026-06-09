@@ -16,7 +16,6 @@
 
 #include <teeuniverses/components/localization.h>
 
-#include "chat_filter.h"
 #include "eventhandler.h"
 #include "gameworld.h"
 
@@ -476,8 +475,6 @@ private:
 
 	int m_aHitSoundState[MAX_CLIENTS]; // 1 for hit, 2 for kill (no sounds must be sent)
 	void ResetDefaultMaps();
-
-	CChatFilter m_ChatFilter;
 
 public:
 	void SendRecord(int ClientId);
