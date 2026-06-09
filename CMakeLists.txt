@@ -498,6 +498,8 @@ endif()
 ########################################################################
 
 file(COPY data DESTINATION .)
+file(COPY other/3rd-party-licenses DESTINATION .)
+file(COPY license.txt DESTINATION .)
 
 ########################################################################
 # CODE GENERATION
@@ -1198,6 +1200,18 @@ install(
   DESTINATION
     "data"
   ${DATA_INSTALL_EXCLUDES}
+)
+install(
+        DIRECTORY
+        "other/3rd-party-licenses/"
+        DESTINATION
+        "3rd-party-licenses"
+)
+install(
+        FILES
+        "license.txt"
+        DESTINATION
+        "."
 )
 install(
   DIRECTORY
