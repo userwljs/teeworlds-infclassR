@@ -13,6 +13,7 @@
 #include "kernel.h"
 #include "message.h"
 
+#include "game/server/chat_filter.h"
 #include <engine/shared/protocol.h>
 #include <game/generated/protocol.h>
 #include <game/generated/protocol7.h>
@@ -75,6 +76,8 @@ protected:
 
 public:
 	CLocalization *m_pLocalization{};
+
+	CChatFilter m_ChatFilter;
 
 public:
 	/*
