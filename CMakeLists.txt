@@ -482,6 +482,10 @@ add_library(json EXCLUDE_FROM_ALL OBJECT ${DEP_JSON_SRC})
 set_glob(DEP_MD5_SRC GLOB src/engine/external/md5 md5.c md5.h)
 add_library(md5 EXCLUDE_FROM_ALL OBJECT ${DEP_MD5_SRC})
 
+set_glob(DEP_AHO_CORASICK_SRC GLOB src/engine/external/aho_corasick aho_corasick.hpp)
+add_library(aho_corasick INTERFACE)
+target_sources(aho_corasick INTERFACE ${DEP_AHO_CORASICK_SRC})
+
 list(APPEND TARGETS_DEP json md5)
 set(DEP_JSON $<TARGET_OBJECTS:json>)
 set(DEP_MD5)
@@ -817,6 +821,7 @@ target_link_libraries(game-shared PUBLIC
   ZLIB::ZLIB
   ICU::i18n
   ICU::uc
+        aho_corasick
 )
 
 include_directories(SYSTEM
@@ -859,6 +864,8 @@ set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
 
 set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   alloc.h
+        chat_filter.cpp
+        chat_filter.h
   ddracecommands.cpp
   entities/character.cpp
   entities/character.h

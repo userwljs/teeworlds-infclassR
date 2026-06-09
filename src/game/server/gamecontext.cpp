@@ -2,6 +2,8 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.				*/
 #include "gamecontext.h"
 
+#include "base/tl/ic_enum.h"
+
 #include <base/logger.h>
 #include <base/math.h>
 #include <engine/console.h>
@@ -861,7 +863,7 @@ if(Server()->Localization()->m_ArgNumberColor[0] == '\0') // set broadcast numbe
 void CGameContext::SendChat(int ChatterClientId, int Team, const char *pText, int SpamProtectionClientId)
 {
 	if(SpamProtectionClientId >= 0 && SpamProtectionClientId < MAX_CLIENTS)
-		if(ProcessSpamProtection(SpamProtectionClientId))
+		if(ProcessChatFilter(pText, SpamProtectionClientId) || ProcessSpamProtection(SpamProtectionClientId))
 			return;
 
 	char aBuf[256], aText[256];
@@ -2144,7 +2146,7 @@ void *CGameContext::PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientI
 			{
 				if(!CheckClientId2(pMsg7->m_Target) || !Server()->ClientIngame(pMsg7->m_Target))
 					return nullptr;
-				if(ProcessSpamProtection(ClientId))
+				if(ProcessChatFilter(pMsg7->m_pMessage, ClientId) || ProcessSpamProtection(ClientId))
 					return nullptr;
 
 				WhisperId(ClientId, pMsg7->m_Target, pMsg7->m_pMessage);
@@ -3385,6 +3387,36 @@ const std::string *CGameContext::GetRandomMap() const
 	return &m_MapRotationList[random_int(0, m_MapRotationList.size() - 1)];
 }
 
+void CGameContext::ConFilterChat(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CGameContext *>(pUserData);
+	if(pResult->NumArguments() > 3 || pResult->NumArguments() < 2)
+		return;
+	int BanSeconds = 0;
+	const auto Behavior = fromString<CChatFilter::HitBehavior>(pResult->GetString(1));
+	if(Behavior == CChatFilter::HitBehavior::NONE || Behavior == CChatFilter::HitBehavior::INVALID)
+	{
+		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "filter_chat", "Invalid behavior");
+		return;
+	}
+	if(Behavior == CChatFilter::HitBehavior::BAN)
+	{
+		if(pResult->NumArguments() != 3)
+		{
+			pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "filter_chat", "Too few arguments");
+			return;
+		}
+		BanSeconds = pResult->GetInteger(2) * 60;
+	}
+	pSelf->m_ChatFilter.SetChatFilter(pResult->GetString(0), Behavior, BanSeconds, pSelf->Console());
+}
+
+void CGameContext::ConChatFilters(IConsole::IResult *pResult, void *pUserData)
+{
+	auto *pSelf = static_cast<CGameContext *>(pUserData);
+	pSelf->m_ChatFilter.ListChatFilters(pSelf->Console());
+}
+
 void CGameContext::ConRestart(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
@@ -3971,7 +4003,7 @@ void CGameContext::ConAbout(IConsole::IResult *pResult)
 
 void CGameContext::PrivateMessage(const char *pStr, int ClientId, bool TeamChat)
 {
-	if(ProcessSpamProtection(ClientId))
+	if(ProcessChatFilter(pStr, ClientId) || ProcessSpamProtection(ClientId))
 		return;
 
 	bool ArgumentFound = false;
@@ -4561,6 +4593,9 @@ void CGameContext::OnConsoleInit()
 	Console()->Register("clear_maps", "", CFGFLAG_SERVER, ConClearMaps, this, "Remove all maps from the maps rotation list");
 
 	Console()->Register("kill_pl", "v[id]", CFGFLAG_SERVER, ConKillPlayer, this, "Kills player v and announces the kill");
+
+	Console()->Register("filter_chat", "s[word] s['filter'|'kick'|'ban'] ?i[ban minutes]", CFGFLAG_SERVER, ConFilterChat, this, "Prohibit a word in chat");
+	Console()->Register("chat_filters", "", CFGFLAG_SERVER, ConChatFilters, this, "List all prohitbited words");
 	// Chat Command
 	Console()->Register("version", "", CFGFLAG_SERVER, ConVersion, this, "Display information about the server version and build");
 
@@ -5050,6 +5085,37 @@ void CGameContext::SendFinish(int ClientId, float Time, float PreviousBestTime)
 	Server()->SendPackMsg(&RaceFinishMsg, MSGFLAG_VITAL | MSGFLAG_NORECORD, -1);
 }
 
+bool CGameContext::ProcessChatFilter(const char *pMessage, const int ClientId)
+{
+	auto [Behavior, BanSeconds, vWordsHit] = m_ChatFilter.CheckMessage(pMessage);
+	auto Msg = std::format("The message '{}' from {} contains prohibited content: ", pMessage, ClientId);
+	for(size_t i = 0; i < vWordsHit.size(); i++)
+	{
+		if(i != 0)
+			Msg.append(", ");
+		Msg.append(vWordsHit[i]);
+	}
+	switch(Behavior)
+	{
+	case CChatFilter::HitBehavior::NONE:
+		return false;
+	case CChatFilter::HitBehavior::FILTER:
+		SendChatTarget_Localization(ClientId, CHATCATEGORY_ACCUSATION, _("This message contains prohibited content."));
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "filter_chat", Msg.c_str());
+		return true;
+	case CChatFilter::HitBehavior::KICK:
+		Server()->Kick(ClientId, "Sending prohibited content in chat");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "filter_chat", Msg.c_str());
+		return true;
+	case CChatFilter::HitBehavior::BAN:
+		Server()->Ban(ClientId, BanSeconds, "Sending prohibited content in chat");
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "filter_chat", Msg.c_str());
+		return true;
+	default:
+		return false;
+	}
+}
+
 bool CGameContext::ProcessSpamProtection(int ClientId, bool RespectChatInitialDelay)
 {
 	if(!m_apPlayers[ClientId])
@@ -5076,7 +5142,7 @@ bool CGameContext::ProcessSpamProtection(int ClientId, bool RespectChatInitialDe
 
 void CGameContext::Whisper(int ClientId, char *pStr)
 {
-	if(ProcessSpamProtection(ClientId))
+	if(ProcessChatFilter(pStr, ClientId) || ProcessSpamProtection(ClientId))
 		return;
 
 	char *pName = ParseStringArgumentInplace(pStr);

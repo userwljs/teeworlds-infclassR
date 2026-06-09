@@ -16,6 +16,7 @@
 
 #include <teeuniverses/components/localization.h>
 
+#include "chat_filter.h"
 #include "eventhandler.h"
 #include "gameworld.h"
 
@@ -96,6 +97,8 @@ class CGameContext : public IGameServer
 	static void ConAddMap(IConsole::IResult *pResult, void *pUserData);
 	static void ConRemoveMap(IConsole::IResult *pResult, void *pUserData);
 	static void ConClearMaps(IConsole::IResult *pResult, void *pUserData);
+	static void ConFilterChat(IConsole::IResult *pResult, void *pUserData);
+	static void ConChatFilters(IConsole::IResult *pResult, void *pUserData);
 	static void ConRestart(IConsole::IResult *pResult, void *pUserData);
 	static void ConBroadcast(IConsole::IResult *pResult, void *pUserData);
 	static void ConSay(IConsole::IResult *pResult, void *pUserData);
@@ -304,6 +307,7 @@ public:
 	const char *GameType() const override;
 	const char *Version() const override;
 	const char *NetVersion() const override;
+	bool ProcessChatFilter(const char *pMessage, int ClientId);
 
 	// DDRace
 	void OnPreTickTeehistorian() override;
@@ -467,6 +471,8 @@ private:
 
 	int m_aHitSoundState[MAX_CLIENTS]; // 1 for hit, 2 for kill (no sounds must be sent)
 	void ResetDefaultMaps();
+
+	CChatFilter m_ChatFilter;
 
 public:
 	void SendRecord(int ClientId);
