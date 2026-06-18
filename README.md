@@ -52,7 +52,6 @@ You also need a build toolchain, such as GCC and Ninja, or MSVC. The compiler mu
 
 ## Configuration options
 
-- `USE_CONAN` - only ever tried for Win64 builds
 - `GEOLOCATION` - enables IP-based geolocation which is useful to suggest a language on a client connected
 
 ## Building
