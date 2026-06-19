@@ -3398,6 +3398,8 @@ void CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 	{
 		if((pThis->m_aClients[i].m_State != CClient::STATE_EMPTY) && !pThis->m_aClients[i].m_IsBot)
 		{
+			if(pResult->GetString(0)[0] && str_comp(pResult->GetString(0), pThis->ClientName(i)) != 0)
+				continue;
 			const char *pAddrStr = pThis->ClientAddrString(i, true);
 			if(pThis->m_aClients[i].m_State == CClient::STATE_INGAME)
 			{
