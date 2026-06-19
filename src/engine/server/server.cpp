@@ -167,7 +167,7 @@ int CServerBan::BanExt(T *pBanPool, const typename T::CDataType *pData, int Seco
 	if(Server()->m_RconClientId >= 0 && Server()->m_RconClientId < MAX_CLIENTS &&
 		Server()->m_aClients[Server()->m_RconClientId].m_State != CServer::CClient::STATE_EMPTY)
 	{
-		if(NetMatch(pData, Server()->m_NetServer.ClientAddr(Server()->m_RconClientId)))
+		if(NetMatch(pData, Server()->ClientAddr(Server()->m_RconClientId)))
 		{
 			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "net_ban", "ban error (you can't ban yourself)");
 			return -1;
@@ -178,7 +178,7 @@ int CServerBan::BanExt(T *pBanPool, const typename T::CDataType *pData, int Seco
 			if(i == Server()->m_RconClientId || Server()->m_aClients[i].m_State == CServer::CClient::STATE_EMPTY)
 				continue;
 
-			if(!NetMatch(pData, Server()->m_NetServer.ClientAddr(i)))
+			if(!NetMatch(pData, Server()->ClientAddr(i)))
 				continue;
 
 			if(Server()->m_aClients[i].m_IsBot)
@@ -201,7 +201,7 @@ int CServerBan::BanExt(T *pBanPool, const typename T::CDataType *pData, int Seco
 			if(Server()->m_aClients[i].m_State == CServer::CClient::STATE_EMPTY)
 				continue;
 
-			if(Server()->m_aClients[i].m_Authed != AUTHED_NO && NetMatch(pData, Server()->m_NetServer.ClientAddr(i)))
+			if(Server()->m_aClients[i].m_Authed != AUTHED_NO && NetMatch(pData, Server()->ClientAddr(i)))
 			{
 				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "net_ban", "ban error (command denied)");
 				return -1;
@@ -220,7 +220,7 @@ int CServerBan::BanExt(T *pBanPool, const typename T::CDataType *pData, int Seco
 		if(Server()->m_aClients[i].m_State == CServer::CClient::STATE_EMPTY)
 			continue;
 
-		if(NetMatch(&Data, Server()->m_NetServer.ClientAddr(i)))
+		if(NetMatch(&Data, Server()->ClientAddr(i)))
 		{
 			CNetHash NetHash(&Data);
 			char aBuf[256];
@@ -260,7 +260,7 @@ void CServerBan::ConBanExt(IConsole::IResult *pResult, void *pUser)
 		if(ClientId < 0 || ClientId >= MAX_CLIENTS || pThis->Server()->m_aClients[ClientId].m_State == CServer::CClient::STATE_EMPTY)
 			pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "net_ban", "ban error (invalid client id)");
 		else
-			pThis->BanAddr(pThis->Server()->m_NetServer.ClientAddr(ClientId), Minutes * 60, pReason);
+			pThis->BanAddr(pThis->Server()->ClientAddr(ClientId), Minutes * 60, pReason);
 	}
 	else
 		ConBan(pResult, pUser);
@@ -462,9 +462,7 @@ bool CServer::SetClientNameImpl(int ClientId, const char *pNameRequest, bool Set
 			const char *pType = DoKick ? "Kicked" : "Banned";
 			char aBuf[256];
 
-			char aAddrStr[NETADDR_MAXSTRSIZE];
-			net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), false);
-			str_format(aBuf, sizeof(aBuf), "client ip=%s banned for using name '%s'", aAddrStr, aTrimmedName);
+			str_format(aBuf, sizeof(aBuf), "client ip=%s banned for using name '%s'", ClientAddrString(ClientId, false), aTrimmedName);
 			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "name_ban", aBuf);
 			if(pBanned->m_aReason[0])
 			{
@@ -732,10 +730,18 @@ void CServer::SetClientDDNetVersion(int ClientId, int DDNetVersion)
 	}
 }
 
-void CServer::GetClientAddr(int ClientId, char *pAddrStr, int Size) const
+const NETADDR *CServer::ClientAddr(int ClientId) const
 {
-	if(ClientId >= 0 && ClientId < MAX_CLIENTS && m_aClients[ClientId].m_State == CClient::STATE_INGAME)
-		net_addr_str(m_NetServer.ClientAddr(ClientId), pAddrStr, Size, false);
+	dbg_assert(ClientId >= 0 && ClientId < MAX_CLIENTS, "ClientId is not valid");
+	dbg_assert(m_aClients[ClientId].m_State != CServer::CClient::STATE_EMPTY, "Client slot is empty");
+	return m_NetServer.ClientAddr(ClientId);
+}
+
+const std::array<char, NETADDR_MAXSTRSIZE> &CServer::ClientAddrStringImpl(int ClientId, bool IncludePort) const
+{
+	dbg_assert(ClientId >= 0 && ClientId < MAX_CLIENTS, "ClientId is not valid");
+	dbg_assert(m_aClients[ClientId].m_State != CServer::CClient::STATE_EMPTY, "Client slot is empty");
+	return m_NetServer.ClientAddrString(ClientId, IncludePort);
 }
 
 const char *CServer::ClientName(int ClientId) const
@@ -810,12 +816,12 @@ int CServer::ClientCount() const
 
 int CServer::DistinctClientCount() const
 {
-	NETADDR aAddresses[MAX_CLIENTS];
+	const NETADDR *apAddresses[MAX_CLIENTS];
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if(m_aClients[i].m_State != CClient::STATE_EMPTY)
 		{
-			GetClientAddr(i, &aAddresses[i]);
+			apAddresses[i] = ClientAddr(i);
 		}
 	}
 
@@ -828,7 +834,7 @@ int CServer::DistinctClientCount() const
 			ClientCount++;
 			for(int j = 0; j < i; j++)
 			{
-				if(!net_addr_comp_noport(&aAddresses[i], &aAddresses[j]))
+				if(!net_addr_comp_noport(apAddresses[i], apAddresses[j]))
 				{
 					ClientCount--;
 					break;
@@ -1141,21 +1147,21 @@ int CServer::ClientRejoinCallback(int ClientId, void *pUser)
 	pThis->m_aClients[ClientId].Reset();
 
 	// Getback session about the client
-	IServer::CClientSession *pSession = pThis->m_NetSession.GetData(pThis->m_NetServer.ClientAddr(ClientId));
+	IServer::CClientSession *pSession = pThis->m_NetSession.GetData(pThis->ClientAddr(ClientId));
 	if(pSession)
 	{
 		dbg_msg("infclass", "session found for the client %d. Round id = %d, class id = %d", ClientId, pSession->m_RoundId, pSession->m_Class);
 		pThis->m_aClients[ClientId].m_Session = *pSession;
-		pThis->m_NetSession.RemoveSession(pThis->m_NetServer.ClientAddr(ClientId));
+		pThis->m_NetSession.RemoveSession(pThis->ClientAddr(ClientId));
 	}
 
 	// Getback accusation about the client
-	IServer::CClientAccusation *pAccusation = pThis->m_NetAccusation.GetData(pThis->m_NetServer.ClientAddr(ClientId));
+	IServer::CClientAccusation *pAccusation = pThis->m_NetAccusation.GetData(pThis->ClientAddr(ClientId));
 	if(pAccusation)
 	{
 		dbg_msg("infclass", "%d accusation(s) found for the client %d", pAccusation->m_Num, ClientId);
 		pThis->m_aClients[ClientId].m_Accusation = *pAccusation;
-		pThis->m_NetAccusation.RemoveSession(pThis->m_NetServer.ClientAddr(ClientId));
+		pThis->m_NetAccusation.RemoveSession(pThis->ClientAddr(ClientId));
 	}
 
 	pThis->SendMap(ClientId);
@@ -1233,21 +1239,21 @@ int CServer::NewClientCallback(int ClientId, void *pUser, bool Sixup)
 	pThis->m_aClients[ClientId].m_Sixup = Sixup;
 
 	// Getback session about the client
-	IServer::CClientSession *pSession = pThis->m_NetSession.GetData(pThis->m_NetServer.ClientAddr(ClientId));
+	IServer::CClientSession *pSession = pThis->m_NetSession.GetData(pThis->ClientAddr(ClientId));
 	if(pSession)
 	{
 		dbg_msg("infclass", "session found for the client %d. Round id = %d, class id = %d", ClientId, pSession->m_RoundId, pSession->m_Class);
 		pThis->m_aClients[ClientId].m_Session = *pSession;
-		pThis->m_NetSession.RemoveSession(pThis->m_NetServer.ClientAddr(ClientId));
+		pThis->m_NetSession.RemoveSession(pThis->ClientAddr(ClientId));
 	}
 
 	// Getback accusation about the client
-	IServer::CClientAccusation *pAccusation = pThis->m_NetAccusation.GetData(pThis->m_NetServer.ClientAddr(ClientId));
+	IServer::CClientAccusation *pAccusation = pThis->m_NetAccusation.GetData(pThis->ClientAddr(ClientId));
 	if(pAccusation)
 	{
 		dbg_msg("infclass", "%d accusation(s) found for the client %d", pAccusation->m_Num, ClientId);
 		pThis->m_aClients[ClientId].m_Accusation = *pAccusation;
-		pThis->m_NetAccusation.RemoveSession(pThis->m_NetServer.ClientAddr(ClientId));
+		pThis->m_NetAccusation.RemoveSession(pThis->ClientAddr(ClientId));
 	}
 
 	return 0;
@@ -1263,15 +1269,13 @@ int CServer::DelClientCallback(int ClientId, EClientDropType Type, const char *p
 	const bool isBot = pThis->m_aClients[ClientId].m_IsBot;
 	pThis->m_aClients[ClientId].m_Quitting = true;
 
-	char aAddrStr[NETADDR_MAXSTRSIZE];
-
 	// remove map votes for the dropped client
 	pThis->RemoveMapVotesForId(ClientId);
 
-	net_addr_str(pThis->m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), true);
 	char aBuf[256];
-	str_format(aBuf, sizeof(aBuf), "client dropped. cid=%d addr=<{%s}> reason='%s'", ClientId, aAddrStr, pReason);
+	str_format(aBuf, sizeof(aBuf), "client dropped. cid=%d addr=<{%s}> reason='%s'", ClientId, pThis->ClientAddrString(ClientId, true), pReason);
 	pThis->Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "server", aBuf);
+	const NETADDR ClientAddr = *(pThis->ClientAddr(ClientId));
 
 	// notify the mod about the drop
 	if(pThis->m_aClients[ClientId].m_State >= CClient::STATE_READY && pThis->m_aClients[ClientId].m_WaitingTime <= 0)
@@ -1300,11 +1304,11 @@ int CServer::DelClientCallback(int ClientId, EClientDropType Type, const char *p
 		return 0;
 
 	// Keep information about client for 10 minutes
-	pThis->m_NetSession.AddSession(pThis->m_NetServer.ClientAddr(ClientId), 10 * 60, &pThis->m_aClients[ClientId].m_Session);
+	pThis->m_NetSession.AddSession(&ClientAddr, 10 * 60, &pThis->m_aClients[ClientId].m_Session);
 	dbg_msg("infclass", "session created for the client %d", ClientId);
 
 	// Keep accusation for 30 minutes
-	pThis->m_NetAccusation.AddSession(pThis->m_NetServer.ClientAddr(ClientId), 30 * 60, &pThis->m_aClients[ClientId].m_Accusation);
+	pThis->m_NetAccusation.AddSession(&ClientAddr, 30 * 60, &pThis->m_aClients[ClientId].m_Accusation);
 	dbg_msg("infclass", "accusation created for the client %d", ClientId);
 
 	return 0;
@@ -1771,11 +1775,8 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 		{
 			if((pPacket->m_Flags & NET_CHUNKFLAG_VITAL) != 0 && (m_aClients[ClientId].m_State == CClient::STATE_CONNECTING))
 			{
-				char aAddrStr[NETADDR_MAXSTRSIZE];
-				net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), true);
-
 				char aBuf[256];
-				str_format(aBuf, sizeof(aBuf), "player is ready. ClientId=%d addr=<{%s}> secure=%s", ClientId, aAddrStr, m_NetServer.HasSecurityToken(ClientId) ? "yes" : "no");
+				str_format(aBuf, sizeof(aBuf), "player is ready. ClientId=%d addr=<{%s}> secure=%s", ClientId, ClientAddrString(ClientId, true), m_NetServer.HasSecurityToken(ClientId) ? "yes" : "no");
 				Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "server", aBuf);
 				m_aClients[ClientId].m_State = CClient::STATE_READY;
 				m_aClients[ClientId].m_WaitingTime = TickSpeed() * g_Config.m_InfConWaitingTime;
@@ -1785,11 +1786,8 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 		{
 			if((pPacket->m_Flags & NET_CHUNKFLAG_VITAL) != 0 && m_aClients[ClientId].m_State == CClient::STATE_READY && GameServer()->IsClientReady(ClientId))
 			{
-				char aAddrStr[NETADDR_MAXSTRSIZE];
-				net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), true);
-
 				char aBuf[256];
-				str_format(aBuf, sizeof(aBuf), "player has entered the game. ClientId=%d addr=%s", ClientId, aAddrStr);
+				str_format(aBuf, sizeof(aBuf), "player has entered the game. ClientId=%d addr=%s", ClientId, ClientAddrString(ClientId, true));
 				Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 				m_aClients[ClientId].m_State = CClient::STATE_INGAME;
 
@@ -1797,7 +1795,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				{
 					if(!IsSixup(ClientId))
 					{
-						SendServerInfo(m_NetServer.ClientAddr(ClientId), -1, SERVERINFO_EXTENDED, false);
+						SendServerInfo(ClientAddr(ClientId), -1, SERVERINFO_EXTENDED, false);
 					}
 					else
 					{
@@ -2016,7 +2014,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					if(!g_Config.m_SvRconBantime)
 						m_NetServer.Drop(ClientId, EClientDropType::Kick, "Too many remote console authentication tries");
 					else
-						m_ServerBan.BanAddr(m_NetServer.ClientAddr(ClientId), g_Config.m_SvRconBantime * 60, "Too many remote console authentication tries");
+						m_ServerBan.BanAddr(ClientAddr(ClientId), g_Config.m_SvRconBantime * 60, "Too many remote console authentication tries");
 				}
 			}
 			else
@@ -2631,7 +2629,7 @@ void CServer::UpdateServerInfo(bool Resend)
 			if(m_aClients[i].m_State != CClient::STATE_EMPTY)
 			{
 				if(!IsSixup(i))
-					SendServerInfo(m_NetServer.ClientAddr(i), -1, SERVERINFO_INGAME, false);
+					SendServerInfo(ClientAddr(i), -1, SERVERINFO_INGAME, false);
 				else
 				{
 					CMsgPacker Msg(protocol7::NETMSG_SERVERINFO, true, true);
@@ -3132,7 +3130,7 @@ int CServer::Run()
 							{
 								if(!IsSixup(ClientId))
 								{
-									SendServerInfo(m_NetServer.ClientAddr(ClientId), -1, SERVERINFO_EXTENDED, false);
+									SendServerInfo(ClientAddr(ClientId), -1, SERVERINFO_EXTENDED, false);
 								}
 								else
 								{
@@ -3393,7 +3391,6 @@ void CServer::ConStatusExtended(IConsole::IResult *pResult, void *pUser)
 void CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 {
 	char aBuf[1024];
-	char aAddrStr[NETADDR_MAXSTRSIZE];
 	CServer *pThis = static_cast<CServer *>(pUser);
 
 	/* INFECTION MODIFICATION START ***************************************/
@@ -3401,7 +3398,7 @@ void CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 	{
 		if((pThis->m_aClients[i].m_State != CClient::STATE_EMPTY) && !pThis->m_aClients[i].m_IsBot)
 		{
-			net_addr_str(pThis->m_NetServer.ClientAddr(i), aAddrStr, sizeof(aAddrStr), true);
+			const char *pAddrStr = pThis->ClientAddrString(i, true);
 			if(pThis->m_aClients[i].m_State == CClient::STATE_INGAME)
 			{
 				// Add some padding to make the command more readable
@@ -3421,13 +3418,13 @@ void CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 					pThis->m_NetServer.HasSecurityToken(i),
 					pThis->IsClientLogged(i),
 					AuthLevel,
-					aAddrStr,
+					pAddrStr,
 					pThis->m_aClients[i].m_Sixup ? "0.7:" : "",
 					pThis->m_aClients[i].m_DDNetVersion,
 					pThis->m_aClients[i].m_InfClassVersion);
 			}
 			else
-				str_format(aBuf, sizeof(aBuf), "id=%d addr=%s connecting", i, aAddrStr);
+				str_format(aBuf, sizeof(aBuf), "id=%d addr=%s connecting", i, pAddrStr);
 			pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", aBuf);
 		}
 	}
@@ -3960,14 +3957,6 @@ CServer *CreateServer() { return new CServer(); }
 
 // DDRace
 
-void CServer::GetClientAddr(int ClientId, NETADDR *pAddr) const
-{
-	if(ClientId >= 0 && ClientId < MAX_CLIENTS && m_aClients[ClientId].m_State == CClient::STATE_INGAME)
-	{
-		*pAddr = *m_NetServer.ClientAddr(ClientId);
-	}
-}
-
 const char *CServer::GetAnnouncementLine(char const *pFileName)
 {
 	if(str_comp(pFileName, m_aAnnouncementFile) != 0)
@@ -4024,10 +4013,7 @@ const char *CServer::GetClientLanguage(int ClientId)
 
 void CServer::SetClientLanguage(int ClientId, const char *pLanguage)
 {
-	char aAddrStr[NETADDR_MAXSTRSIZE];
-	net_addr_str(m_NetServer.ClientAddr(ClientId), aAddrStr, sizeof(aAddrStr), true);
-
-	dbg_msg("lang", "set_language ClientId=%d lang=%s addr=%s", ClientId, pLanguage, aAddrStr);
+	dbg_msg("lang", "set_language ClientId=%d lang=%s addr=%s", ClientId, pLanguage, ClientAddrString(ClientId, true));
 	str_copy(m_aClients[ClientId].m_aLanguage, pLanguage, sizeof(m_aClients[ClientId].m_aLanguage));
 }
 
@@ -4066,7 +4052,7 @@ void CServer::Logout(int ClientId)
 
 void CServer::Ban(int ClientId, int Seconds, const char *pReason)
 {
-	m_ServerBan.BanAddr(m_NetServer.ClientAddr(ClientId), Seconds, pReason);
+	m_ServerBan.BanAddr(ClientAddr(ClientId), Seconds, pReason);
 }
 
 void CServer::OnRoundIsOver()
@@ -4143,7 +4129,7 @@ void CServer::AddAccusation(int From, int To, const char *pReason)
 		return;
 
 	// Check if "From" already accusate "To"
-	NETADDR FromAddr = *m_NetServer.ClientAddr(From);
+	NETADDR FromAddr = *ClientAddr(From);
 	FromAddr.port = 0;
 	for(int i = 0; i < m_aClients[To].m_Accusation.m_Num; i++)
 	{
@@ -4191,7 +4177,7 @@ void CServer::RemoveAccusations(int ClientId)
 
 void CServer::AddMapVote(int From, const char *pCommand, const char *pReason, const char *pDesc)
 {
-	NETADDR FromAddr = *m_NetServer.ClientAddr(From);
+	NETADDR FromAddr = *ClientAddr(From);
 	int Index = -1;
 	for(int i = 0; i < m_MapVotesCounter; i++)
 	{
@@ -4252,7 +4238,7 @@ void CServer::AddMapVote(int From, const char *pCommand, const char *pReason, co
 
 void CServer::RemoveMapVotesForId(int ClientId)
 {
-	NETADDR Addr = *m_NetServer.ClientAddr(ClientId);
+	NETADDR Addr = *ClientAddr(ClientId);
 	for(int i = 0; i < m_MapVotesCounter; i++)
 	{
 		for(int k = 0; k < m_MapVotes[i].m_Num; k++)

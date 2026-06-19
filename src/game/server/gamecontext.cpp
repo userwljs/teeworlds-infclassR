@@ -1555,10 +1555,10 @@ void CGameContext::OnTick()
 			if(m_VoteUpdate)
 			{
 				// count votes
-				char aaBuf[MAX_CLIENTS][NETADDR_MAXSTRSIZE] = {{0}};
+				const NETADDR *apAddresses[MAX_CLIENTS];
 				for(int i = 0; i < MAX_CLIENTS; i++)
 					if(m_apPlayers[i])
-						Server()->GetClientAddr(i, aaBuf[i], NETADDR_MAXSTRSIZE);
+						apAddresses[i] = Server()->ClientAddr(i);
 				bool aVoteChecked[MAX_CLIENTS] = {0};
 				for(int i = 0; i < MAX_CLIENTS; i++)
 				{
@@ -1577,7 +1577,7 @@ void CGameContext::OnTick()
 					// check for more players with the same ip (only use the vote of the one who voted first)
 					for(int j = i + 1; j < MAX_CLIENTS; j++)
 					{
-						if(!m_apPlayers[j] || aVoteChecked[j] || str_comp(aaBuf[j], aaBuf[i]) != 0)
+						if(!m_apPlayers[j] || aVoteChecked[j] || net_addr_comp_noport(apAddresses[j], apAddresses[i]) != 0)
 							continue;
 
 						aVoteChecked[j] = true;
@@ -2920,9 +2920,7 @@ void CGameContext::OnStartInfoNetMessage(const CNetMsg_Cl_StartInfo *pMsg, int C
 	if(!Server()->GetClientMemory(ClientId, CLIENTMEMORY_LANGUAGESELECTION))
 	{
 #ifdef CONF_GEOLOCATION
-		char aAddrStr[NETADDR_MAXSTRSIZE]{};
-		Server()->GetClientAddr(ClientId, aAddrStr, sizeof(aAddrStr));
-		std::string ip(aAddrStr);
+		std::string ip(Server()->ClientAddrString(ClientId, false));
 
 		int LocatedCountry = Geolocation::get_country_iso_numeric_code(ip);
 #ifdef CONF_FORCE_COUNTRY_BY_IP
@@ -3071,10 +3069,8 @@ void CGameContext::ConTimeout(IConsole::IResult *pResult, void *pUserData)
 
 	const char *pTimeout = pResult->NumArguments() > 0 ? pResult->GetString(0) : pPlayer->m_aTimeoutCode;
 	const char *pClientName = pSelf->Server()->ClientName(ClientId);
-	char aAddress[NETADDR_MAXSTRSIZE];
-	pSelf->Server()->GetClientAddr(ClientId, &aAddress[0], sizeof(aAddress));
 
-	dbg_msg("timeout", "Used with code %s by (#%02i) '%s' (id=%s)", pTimeout, ClientId, pClientName, aAddress);
+	dbg_msg("timeout", "Used with code %s by (#%02i) '%s' (id=%s)", pTimeout, ClientId, pClientName, pSelf->Server()->ClientAddrString(ClientId, false));
 
 	if(!pSelf->Server()->IsSixup(ClientId))
 	{
@@ -3765,9 +3761,7 @@ void CGameContext::ConForceVote(IConsole::IResult *pResult, void *pUserData)
 		}
 		else
 		{
-			char aAddrStr[NETADDR_MAXSTRSIZE] = {0};
-			pSelf->Server()->GetClientAddr(KickId, aAddrStr, sizeof(aAddrStr));
-			str_format(aBuf, sizeof(aBuf), "ban %s %d %s", aAddrStr, g_Config.m_SvVoteKickBantime, pReason);
+			str_format(aBuf, sizeof(aBuf), "ban %s %d %s", pSelf->Server()->ClientAddrString(KickId, false), g_Config.m_SvVoteKickBantime, pReason);
 			pSelf->Console()->ExecuteLine(aBuf);
 		}
 	}

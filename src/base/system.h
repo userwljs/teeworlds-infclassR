@@ -2082,14 +2082,6 @@ int net_socket_read_wait(NETSOCKET sock, int time);
  */
 void swap_endian(void *data, unsigned elem_size, unsigned num);
 
-typedef struct
-{
-	uint64_t sent_packets;
-	uint64_t sent_bytes;
-	uint64_t recv_packets;
-	uint64_t recv_bytes;
-} NETSTATS;
-
 void net_stats(NETSTATS *stats);
 
 int str_toint(const char *str);
@@ -2485,34 +2477,6 @@ void cmdline_fix(int *argc, const char ***argv);
  */
 void cmdline_free(int argc, const char **argv);
 
-#if defined(CONF_FAMILY_WINDOWS)
-/**
- * A handle for a process.
- *
- * @ingroup Shell
- */
-typedef void *PROCESS;
-/**
- * A handle that denotes an invalid process.
- *
- * @ingroup Shell
- */
-constexpr PROCESS INVALID_PROCESS = nullptr;
-#else
-/**
- * A handle for a process.
- *
- * @ingroup Shell
- */
-typedef pid_t PROCESS;
-/**
- * A handle that denotes an invalid process.
- *
- * @ingroup Shell
- */
-constexpr PROCESS INVALID_PROCESS = 0;
-#endif
-
 /**
  * Determines the initial window state when using @link shell_execute @endlink
  * to execute a process.
@@ -2902,12 +2866,6 @@ bool shell_unregister_application(const char *executable, bool *updated);
  */
 void shell_update();
 #endif
-
-template<>
-struct std::hash<NETADDR>
-{
-	size_t operator()(const NETADDR &Addr) const noexcept;
-};
 
 void string_strip(std::string &s);
 
