@@ -1427,13 +1427,9 @@ void CGameContext::OnTick()
 						}
 					}
 					aBuf[indexAbuf] = '\0';
-					Msg.m_pMessage = aBuf;
 					str_copy(m_BroadcastStates[i].m_NextMessage, aBuf, sizeof(m_BroadcastStates[i].m_NextMessage));
 				}
-				else
-				{
-					Msg.m_pMessage = m_BroadcastStates[i].m_NextMessage;
-				}
+				Msg.m_pMessage = m_BroadcastStates[i].m_NextMessage;
 				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 				str_copy(m_BroadcastStates[i].m_PrevMessage, m_BroadcastStates[i].m_NextMessage);
 
