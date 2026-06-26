@@ -336,7 +336,8 @@ public:
 	void GetMapInfo(char *pMapName, int MapNameSize, int *pMapSize, SHA256_DIGEST *pMapSha256, int *pMapCrc) override;
 	bool GetClientInfo(int ClientId, CClientInfo *pInfo) const override;
 	void SetClientDDNetVersion(int ClientId, int DDNetVersion) override;
-	void GetClientAddr(int ClientId, char *pAddrStr, int Size) const override;
+	const NETADDR *ClientAddr(int ClientId) const override;
+	const std::array<char, NETADDR_MAXSTRSIZE> &ClientAddrStringImpl(int ClientId, bool IncludePort) const override;
 	const char *ClientName(int ClientId) const override;
 	const char *ClientClan(int ClientId) const override;
 	int ClientCountry(int ClientId) const override;
@@ -482,7 +483,6 @@ public:
 
 	// DDRace
 
-	void GetClientAddr(int ClientId, NETADDR *pAddr) const override;
 	int m_aPrevStates[MAX_CLIENTS];
 	const char *GetAnnouncementLine(char const *pFileName) override;
 

@@ -44,14 +44,6 @@ set(AUTO_DEPENDENCIES_DEFAULT OFF)
 find_package(MaxMindDB QUIET)
 set(GEOLOCATION_DEFAULT ${MaxMindDB_FOUND})
 
-set(USE_CONAN_DEFAULT FALSE)
-
-set(CONAN_SUPPORTED_PLATFORMS Linux Windows Darwin)
-if(TARGET_OS STREQUAL "windows")
-  set(USE_CONAN_DEFAULT TRUE)
-endif()
-
-option(USE_CONAN "Use Conan for dependencies" ${USE_CONAN_DEFAULT})
 option(USE_LUA "Use Lua scripting engine" ON)
 option(GEOLOCATION "Enable geolocation support" ${GEOLOCATION_DEFAULT})
 option(MYSQL "Enable mysql support" OFF)
@@ -78,43 +70,6 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MT")
   endif()
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
-endif()
-
-if(USE_CONAN)
-  set(CONAN_DEPS_DIR "${CMAKE_BINARY_DIR}/conan-deps")
-  list(PREPEND CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_LIST_DIR}/cmake/conan-modules"
-    "${CONAN_DEPS_DIR}"
-    "${CMAKE_BINARY_DIR}"
-  )
-  list(PREPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
-
-  include(cmake/conan.cmake)
-
-  conan_cmake_configure(
-    REQUIRES
-      libpng/1.6.39
-      icu/72.1
-      zlib/1.2.13
-      sqlite3/3.41.2
-      libcurl/7.88.1
-    OPTIONS
-      libcurl:with_ssl=False
-      libcurl:with_smb=False
-      libcurl:with_pop3=False
-      libcurl:with_smtp=False
-    GENERATORS cmake_find_package
-  )
-
-  conan_cmake_autodetect(settings)
-
-  conan_cmake_install(
-    PATH_OR_REFERENCE .
-    BUILD missing
-    REMOTE conancenter
-    SETTINGS ${settings}
-    INSTALL_FOLDER "${CONAN_DEPS_DIR}"
-  )
 endif()
 
 configure_file(src/game/version.h.in ${PROJECT_BINARY_DIR}/src/game/version.h @ONLY)
@@ -652,9 +607,9 @@ set(BASE
   src/base/types.h
   src/base/unicode/confusables.cpp
   src/base/unicode/confusables.h
-  src/base/unicode/confusables_data.h
+  src/base/unicode/confusables_data.cpp
   src/base/unicode/tolower.cpp
-  src/base/unicode/tolower.h
+  src/base/unicode/tolower_data.cpp
   src/base/unicode/tolower_data.h
   src/base/vmath.h
 )

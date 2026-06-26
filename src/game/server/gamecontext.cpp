@@ -1444,13 +1444,9 @@ void CGameContext::OnTick()
 						}
 					}
 					aBuf[indexAbuf] = '\0';
-					Msg.m_pMessage = aBuf;
 					str_copy(m_BroadcastStates[i].m_NextMessage, aBuf, sizeof(m_BroadcastStates[i].m_NextMessage));
 				}
-				else
-				{
-					Msg.m_pMessage = m_BroadcastStates[i].m_NextMessage;
-				}
+				Msg.m_pMessage = m_BroadcastStates[i].m_NextMessage;
 				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 				str_copy(m_BroadcastStates[i].m_PrevMessage, m_BroadcastStates[i].m_NextMessage);
 
@@ -1572,10 +1568,10 @@ void CGameContext::OnTick()
 			if(m_VoteUpdate)
 			{
 				// count votes
-				char aaBuf[MAX_CLIENTS][NETADDR_MAXSTRSIZE] = {{0}};
+				const NETADDR *apAddresses[MAX_CLIENTS];
 				for(int i = 0; i < MAX_CLIENTS; i++)
 					if(m_apPlayers[i])
-						Server()->GetClientAddr(i, aaBuf[i], NETADDR_MAXSTRSIZE);
+						apAddresses[i] = Server()->ClientAddr(i);
 				bool aVoteChecked[MAX_CLIENTS] = {0};
 				for(int i = 0; i < MAX_CLIENTS; i++)
 				{
@@ -1594,7 +1590,7 @@ void CGameContext::OnTick()
 					// check for more players with the same ip (only use the vote of the one who voted first)
 					for(int j = i + 1; j < MAX_CLIENTS; j++)
 					{
-						if(!m_apPlayers[j] || aVoteChecked[j] || str_comp(aaBuf[j], aaBuf[i]) != 0)
+						if(!m_apPlayers[j] || aVoteChecked[j] || net_addr_comp_noport(apAddresses[j], apAddresses[i]) != 0)
 							continue;
 
 						aVoteChecked[j] = true;
@@ -2307,14 +2303,11 @@ bool CGameContext::MessageTriggersBanOrKick(int FromCid, const char *pMessage)
 	const char aKrx[] = "bro, check out this client: kr​xclient";
 	if(str_comp_num(pMessage, aKrx, sizeof(aKrx)) == 0)
 	{
-		char aAddrStr[NETADDR_MAXSTRSIZE]{};
-		Server()->GetClientAddr(FromCid, aAddrStr, sizeof(aAddrStr));
-
 		const CPlayer *pPlayer = GetPlayer(FromCid);
 		const char *pTimeout = pPlayer->m_aTimeoutCode[0] ? pPlayer->m_aTimeoutCode : "<none>";
 
 		char aBuf[256];
-		str_format(aBuf, sizeof(aBuf), "Auto ban IP '%s' to get rid of client '%s' (%d) with timeout code '%s' for message '%s'", aAddrStr, Server()->ClientName(FromCid), FromCid, pTimeout, pMessage);
+		str_format(aBuf, sizeof(aBuf), "Auto ban IP '%s' to get rid of client '%s' (%d) with timeout code '%s' for message '%s'", Server()->ClientAddrString(FromCid, false), Server()->ClientName(FromCid), FromCid, pTimeout, pMessage);
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 
 		Server()->Ban(FromCid, 1000 * 60, "krx");
@@ -2982,9 +2975,7 @@ void CGameContext::OnStartInfoNetMessage(const CNetMsg_Cl_StartInfo *pMsg, int C
 	if(!Server()->GetClientMemory(ClientId, CLIENTMEMORY_LANGUAGESELECTION))
 	{
 #ifdef CONF_GEOLOCATION
-		char aAddrStr[NETADDR_MAXSTRSIZE]{};
-		Server()->GetClientAddr(ClientId, aAddrStr, sizeof(aAddrStr));
-		std::string ip(aAddrStr);
+		std::string ip(Server()->ClientAddrString(ClientId, false));
 
 		int LocatedCountry = Geolocation::get_country_iso_numeric_code(ip);
 #ifdef CONF_FORCE_COUNTRY_BY_IP
@@ -3133,10 +3124,8 @@ void CGameContext::ConTimeout(IConsole::IResult *pResult, void *pUserData)
 
 	const char *pTimeout = pResult->NumArguments() > 0 ? pResult->GetString(0) : pPlayer->m_aTimeoutCode;
 	const char *pClientName = pSelf->Server()->ClientName(ClientId);
-	char aAddress[NETADDR_MAXSTRSIZE];
-	pSelf->Server()->GetClientAddr(ClientId, &aAddress[0], sizeof(aAddress));
 
-	dbg_msg("timeout", "Used with code %s by (#%02i) '%s' (id=%s)", pTimeout, ClientId, pClientName, aAddress);
+	dbg_msg("timeout", "Used with code %s by (#%02i) '%s' (id=%s)", pTimeout, ClientId, pClientName, pSelf->Server()->ClientAddrString(ClientId, false));
 
 	if(!pSelf->Server()->IsSixup(ClientId))
 	{
@@ -3827,9 +3816,7 @@ void CGameContext::ConForceVote(IConsole::IResult *pResult, void *pUserData)
 		}
 		else
 		{
-			char aAddrStr[NETADDR_MAXSTRSIZE] = {0};
-			pSelf->Server()->GetClientAddr(KickId, aAddrStr, sizeof(aAddrStr));
-			str_format(aBuf, sizeof(aBuf), "ban %s %d %s", aAddrStr, g_Config.m_SvVoteKickBantime, pReason);
+			str_format(aBuf, sizeof(aBuf), "ban %s %d %s", pSelf->Server()->ClientAddrString(KickId, false), g_Config.m_SvVoteKickBantime, pReason);
 			pSelf->Console()->ExecuteLine(aBuf);
 		}
 	}

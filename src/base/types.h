@@ -1,7 +1,15 @@
 #ifndef BASE_TYPES_H
 #define BASE_TYPES_H
 
+#include <cstdint>
 #include <ctime>
+#include <functional>
+
+#include <base/detect.h>
+
+#if defined(CONF_FAMILY_UNIX)
+#include <sys/types.h> // pid_t
+#endif
 
 enum class TRISTATE
 {
@@ -60,6 +68,53 @@ typedef struct NETADDR
 	unsigned short port;
 
 	bool operator==(const NETADDR &other) const;
-	bool operator!=(const NETADDR &other) const { return !(*this == other); }
+	bool operator!=(const NETADDR &other) const;
+	bool operator<(const NETADDR &other) const;
 } NETADDR;
+
+template<>
+struct std::hash<NETADDR>
+{
+	size_t operator()(const NETADDR &Addr) const noexcept;
+};
+
+/**
+ * @ingroup Network-General
+ */
+typedef struct
+{
+	uint64_t sent_packets;
+	uint64_t sent_bytes;
+	uint64_t recv_packets;
+	uint64_t recv_bytes;
+} NETSTATS;
+
+#if defined(CONF_FAMILY_WINDOWS)
+/**
+ * A handle for a process.
+ *
+ * @ingroup Process
+ */
+typedef void *PROCESS;
+/**
+ * A handle that denotes an invalid process.
+ *
+ * @ingroup Process
+ */
+constexpr PROCESS INVALID_PROCESS = nullptr; // NOLINT(misc-misplaced-const)
+#else
+/**
+ * A handle for a process.
+ *
+ * @ingroup Process
+ */
+typedef pid_t PROCESS;
+/**
+ * A handle that denotes an invalid process.
+ *
+ * @ingroup Process
+ */
+constexpr PROCESS INVALID_PROCESS = 0;
+#endif
+
 #endif // BASE_TYPES_H

@@ -1048,6 +1048,21 @@ bool NETADDR::operator==(const NETADDR &other) const
 	return net_addr_comp(this, &other) == 0;
 }
 
+bool NETADDR::operator!=(const NETADDR &other) const
+{
+	return net_addr_comp(this, &other) != 0;
+}
+
+bool NETADDR::operator<(const NETADDR &other) const
+{
+	return net_addr_comp(this, &other) < 0;
+}
+
+size_t std::hash<NETADDR>::operator()(const NETADDR &Addr) const noexcept
+{
+	return std::hash<std::string_view>{}(std::string_view((const char *)&Addr, sizeof(Addr)));
+}
+
 int net_addr_comp_noport(const NETADDR *a, const NETADDR *b)
 {
 	NETADDR ta = *a, tb = *b;
@@ -3674,8 +3689,8 @@ int str_utf8_comp_nocase(const char *a, const char *b)
 
 	while(*a && *b)
 	{
-		code_a = str_utf8_tolower(str_utf8_decode(&a));
-		code_b = str_utf8_tolower(str_utf8_decode(&b));
+		code_a = str_utf8_tolower_codepoint(str_utf8_decode(&a));
+		code_b = str_utf8_tolower_codepoint(str_utf8_decode(&b));
 
 		if(code_a != code_b)
 			return code_a - code_b;
@@ -3694,8 +3709,8 @@ int str_utf8_comp_nocase_num(const char *a, const char *b, int num)
 
 	while(*a && *b)
 	{
-		code_a = str_utf8_tolower(str_utf8_decode(&a));
-		code_b = str_utf8_tolower(str_utf8_decode(&b));
+		code_a = str_utf8_tolower_codepoint(str_utf8_decode(&a));
+		code_b = str_utf8_tolower_codepoint(str_utf8_decode(&b));
 
 		if(code_a != code_b)
 			return code_a - code_b;
@@ -3715,7 +3730,7 @@ const char *str_utf8_find_nocase(const char *haystack, const char *needle, const
 		const char *b = needle;
 		const char *a_next = a;
 		const char *b_next = b;
-		while(*a && *b && str_utf8_tolower(str_utf8_decode(&a_next)) == str_utf8_tolower(str_utf8_decode(&b_next)))
+		while(*a && *b && str_utf8_tolower_codepoint(str_utf8_decode(&a_next)) == str_utf8_tolower_codepoint(str_utf8_decode(&b_next)))
 		{
 			a = a_next;
 			b = b_next;
@@ -5048,11 +5063,6 @@ void shell_update()
 	SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, nullptr, nullptr);
 }
 #endif
-
-size_t std::hash<NETADDR>::operator()(const NETADDR &Addr) const noexcept
-{
-	return std::hash<std::string_view>{}(std::string_view((const char *)&Addr, sizeof(Addr)));
-}
 
 void string_strip(std::string &s)
 {

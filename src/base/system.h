@@ -2082,14 +2082,6 @@ int net_socket_read_wait(NETSOCKET sock, int time);
  */
 void swap_endian(void *data, unsigned elem_size, unsigned num);
 
-typedef struct
-{
-	uint64_t sent_packets;
-	uint64_t sent_bytes;
-	uint64_t recv_packets;
-	uint64_t recv_bytes;
-} NETSTATS;
-
 void net_stats(NETSTATS *stats);
 
 int str_toint(const char *str);
@@ -2147,17 +2139,16 @@ int str_utf8_to_skeleton(const char *str, int *buf, int buf_len);
 */
 int str_utf8_comp_confusable(const char *str1, const char *str2);
 
-/*
-	Function: str_utf8_tolower
-		Converts the given Unicode codepoint to lowercase (locale insensitive).
-
-	Parameters:
-		code - Unicode codepoint to convert.
-
-	Returns:
-		Lowercase codepoint
-*/
-int str_utf8_tolower(int code);
+/**
+ * Converts the given Unicode codepoint to lowercase (locale insensitive).
+ *
+ * @ingroup Strings
+ *
+ * @param code Unicode codepoint to convert.
+ *
+ * @return Lowercase codepoint, or the original codepoint if there is no lowercase version.
+ */
+int str_utf8_tolower_codepoint(int code);
 
 /*
 	Function: str_utf8_comp_nocase
@@ -2484,34 +2475,6 @@ void cmdline_fix(int *argc, const char ***argv);
  * @param argv The argv obtained from `cmdline_fix`.
  */
 void cmdline_free(int argc, const char **argv);
-
-#if defined(CONF_FAMILY_WINDOWS)
-/**
- * A handle for a process.
- *
- * @ingroup Shell
- */
-typedef void *PROCESS;
-/**
- * A handle that denotes an invalid process.
- *
- * @ingroup Shell
- */
-constexpr PROCESS INVALID_PROCESS = nullptr;
-#else
-/**
- * A handle for a process.
- *
- * @ingroup Shell
- */
-typedef pid_t PROCESS;
-/**
- * A handle that denotes an invalid process.
- *
- * @ingroup Shell
- */
-constexpr PROCESS INVALID_PROCESS = 0;
-#endif
 
 /**
  * Determines the initial window state when using @link shell_execute @endlink
@@ -2902,12 +2865,6 @@ bool shell_unregister_application(const char *executable, bool *updated);
  */
 void shell_update();
 #endif
-
-template<>
-struct std::hash<NETADDR>
-{
-	size_t operator()(const NETADDR &Addr) const noexcept;
-};
 
 void string_strip(std::string &s);
 
