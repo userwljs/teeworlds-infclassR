@@ -112,7 +112,6 @@ void CGameContext::Construct(int Resetting)
 	m_NumVoteOptions = 0;
 	m_LastMapVote = 0;
 	m_VoteBanClientId = -1;
-	ResetDefaultMaps();
 
 	if(Resetting == NO_RESET)
 	{
@@ -4719,6 +4718,8 @@ void CGameContext::OnInit(const void *pPersistentData)
 		}
 	}
 #endif
+
+	ResetDefaultMaps();
 }
 
 void CGameContext::CreateAllEntities(bool Initial)
@@ -5399,18 +5400,19 @@ void CGameContext::OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int Id)
 void CGameContext::ResetDefaultMaps()
 {
 	m_MapRotationList.clear();
-	m_MapRotationList.emplace_back("infc_lunaroutpost");
-	m_MapRotationList.emplace_back("infc_skull");
-	m_MapRotationList.emplace_back("infc_warehouse");
-	m_MapRotationList.emplace_back("infc_damascus");
-	m_MapRotationList.emplace_back("infc_eidalfitr");
-	m_MapRotationList.emplace_back("infc_newdust");
-	m_MapRotationList.emplace_back("infc_hardcorepit");
-	m_MapRotationList.emplace_back("infc_normandie");
-	m_MapRotationList.emplace_back("infc_deathdealer");
-	m_MapRotationList.emplace_back("infc_bamboo3");
-	m_MapRotationList.emplace_back("infc_halfdust");
-	m_MapRotationList.emplace_back("infc_warehouse2");
-	m_MapRotationList.emplace_back("infc_malinalli_k9f");
-	m_MapRotationList.emplace_back("infc_canyon");
+	std::vector<CMapNameItem> vMapList;
+	Storage()->ListDirectory(IStorage::TYPE_ALL, "maps", [](const char* pName, int IsDir,
+	                                                        int DirType,
+	                                                        void* pUserData) -> int
+	{
+		if(!str_startswith(pName, "infc_"))
+			return 0;
+		MapScan(pName, IsDir, DirType, pUserData);
+		return 0;
+	}, &vMapList);
+	std::sort(vMapList.begin(), vMapList.end());
+	for(const auto& [aName] : vMapList)
+	{
+		m_MapRotationList.emplace_back(aName);
+	}
 }
