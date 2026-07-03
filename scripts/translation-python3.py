@@ -59,7 +59,7 @@ def convert_po_to_json(language: "Language"):
                     continue
                 translations.append(target_entry)
 
-            json.dump(target_dict, f, ensure_ascii=False)
+            json.dump(target_dict, f, ensure_ascii=False, separators=(",", ":"))
 
 
 @dataclass
@@ -90,7 +90,7 @@ for lang_index in index["languages"]:
     languages.append(Language(lang_index["file"], lang_index["plurals"]))
 
 with open(os.path.join(TARGET_DIR, "index.json"), "w", encoding="utf-8") as f:
-    json.dump({"language indices": output_index}, f, ensure_ascii=False)
+    json.dump({"language indices": output_index}, f, ensure_ascii=False, separators=(",", ":"))
 
 for language in languages:
     convert_po_to_json(language)
