@@ -277,7 +277,6 @@ public:
 
 	void *PreProcessMsg(int *pMsgId, CUnpacker *pUnpacker, int ClientId);
 	void CensorMessage(char *pCensoredMessage, const char *pMessage, int Size);
-	bool MessageTriggersBanOrKick(int FromCid, const char *pMessage);
 	void OnMessage(int MsgId, CUnpacker *pUnpacker, int ClientId) override;
 	void OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, const CUnpacker *pUnpacker);
 	void OnCallVoteNetMessage(const CNetMsg_Cl_CallVote *pMsg, int ClientId);
