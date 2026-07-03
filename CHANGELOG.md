@@ -1,5 +1,21 @@
 # Changelog
 
+## InfclassR v1.9.0 - TBD
+
+### BREAKING CHANGE
+The user directory (`$USERDIR`) where InfClassR stores some persistent data has been changed.
+
+|          | Windows                                        | GNU/Linux and others                                                               | MacOS                                                                                          | Haiku                                                                  |
+|----------|------------------------------------------------|------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| Previous | `%APPDATA%/DDNet`<br/>or `%APPDATA%/Teeworlds` | `$HOME/.local/share/ddnet`<br/>or `$XDG_DATA_HOME/ddnet`<br/>or `$HOME/.teeworlds` | `$HOME/Library/Application Support/DDNet`<br/>or `$HOME/Library/Application Support/Teeworlds` | `$HOME/config/settings/DDNet`<br/>or `$HOME/config/settings/Teeworlds` |
+| Now      | `%APPDATA%/InfClassR`                          | `$HOME/.local/share/infclassr`<br/>or `$XDG_DATA_HOME/infclassr`                   | `$HOME/Library/Application Support/InfClassR`                                                  | `$HOME/config/settings/InfClassR`                                      |
+
+You must move InfClassR's files (if any) from the previous to the new directory. Common files to move include:
+- SQLite files including `<sv_sqlite_file>`, `<sv_sqlite_file>-wal` and `<sv_sqlite_file>-shm` (<sv_sqlite_file> defaults to `infclass-server.sqlite`, check your server config)
+- Auto-recorded demos
+- Saved ban list file
+- Log file (defaults to `infclassr.log`, check your server config)
+
 ## InfclassR v1.8.2 - 2026-05-31
 
 - Fixed bots being counted as players in 0.7, again
