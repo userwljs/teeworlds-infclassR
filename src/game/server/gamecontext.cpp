@@ -18,6 +18,7 @@
 #include <game/gamecore.h>
 #include <game/version.h>
 
+#include <game/server/chat_filter.h>
 #include <game/server/entities/character.h>
 #include <game/server/gamecontroller.h>
 #include <game/server/player.h>
@@ -3399,13 +3400,13 @@ void CGameContext::ConFilterChat(IConsole::IResult *pResult, void *pUserData)
 		}
 		BanSeconds = pResult->GetInteger(2) * 60;
 	}
-	pSelf->Server()->m_ChatFilter.SetChatFilter(pResult->GetString(0), Behavior, BanSeconds, pSelf->Console());
+	pSelf->Server()->m_pChatFilter->SetChatFilter(pResult->GetString(0), Behavior, BanSeconds, pSelf->Console());
 }
 
 void CGameContext::ConChatFilters(IConsole::IResult *pResult, void *pUserData)
 {
 	auto *pSelf = static_cast<CGameContext *>(pUserData);
-	pSelf->Server()->m_ChatFilter.ListChatFilters(pSelf->Console());
+	pSelf->Server()->m_pChatFilter->ListChatFilters(pSelf->Console());
 }
 
 void CGameContext::ConRestart(IConsole::IResult *pResult, void *pUserData)
@@ -5078,7 +5079,7 @@ void CGameContext::SendFinish(int ClientId, float Time, float PreviousBestTime)
 
 bool CGameContext::ProcessChatFilter(const char *pMessage, const int ClientId)
 {
-	auto [Behavior, BanSeconds, vWordsHit] = Server()->m_ChatFilter.CheckMessage(pMessage);
+	auto [Behavior, BanSeconds, vWordsHit] = Server()->m_pChatFilter->CheckMessage(pMessage);
 	auto Msg = std::format("The message '{}' from {} contains prohibited content: ", pMessage, ClientId);
 	for(size_t i = 0; i < vWordsHit.size(); i++)
 	{
