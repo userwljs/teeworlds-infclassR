@@ -38,6 +38,7 @@ apt install -y \
 - libcurl (needed to register the server in DDNet)
 - sqlite (needed for accounts)
 - zlib (needed to read the map files)
+- LuaJIT
 - python3-polib (needed for building)
 
 You also need a build toolchain, such as GCC and Ninja, or MSVC. The compiler must support C++20.
