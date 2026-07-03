@@ -300,7 +300,7 @@ PlayerUpgradesArray GetUpgrades(EPlayerClass PlayerClass, int UpgradeLevel)
 		case 2:
 			return {EUpgradeType::NinjaFlashGrenadeArea};
 		case 3:
-			return {EUpgradeType::NinjaSlashCombo};
+			return {EUpgradeType::NinjaMoreSlashCombo};
 		default:
 			break;
 		}
@@ -808,6 +808,20 @@ void CInfClassHuman::OnKilledCharacter(CIcCharacter *pVictim, const DeathContext
 		if(Context.DamageType == EDamageType::NINJA)
 		{
 			m_pCharacter->Heal(1);
+			if(GameController()->GetRoundType() == ERoundType::Survival && Server()->Tick() >= m_NinjaLastComboGainTick + Server()->TickSpeed() * 0.5f)
+			{
+				m_NinjaLastComboGainTick = Server()->Tick();
+				m_pCharacter->m_DartLeft = clamp(m_pCharacter->m_DartLeft + 1, 0, Config()->m_InfNinjaJump);
+				if(m_pCharacter->GetReloadTimer() > Server()->TickSpeed() * 0.1f)
+				{
+					m_pCharacter->SetReloadDuration(0.1f);
+					m_NinjaComboLeft = clamp(m_NinjaComboLeft + 1, 0, HasUpgrade(EUpgradeType::NinjaMoreSlashCombo) ? 4 : 2);
+				}
+				else
+				{
+					m_NinjaComboLeft = clamp(m_NinjaComboLeft + 2, 0, HasUpgrade(EUpgradeType::NinjaMoreSlashCombo) ? 4 : 2);
+				}
+			}
 		}
 		break;
 	case EPlayerClass::Medic:
@@ -2016,14 +2030,10 @@ void CInfClassHuman::ActivateNinja(WeaponFireContext *pFireContext)
 			GameWorld()->ReleaseHooked(GetCid());
 		}
 
-		if(HasUpgrade(EUpgradeType::NinjaSlashCombo))
+		if(m_NinjaComboLeft > 0 && pFireContext->ReloadInterval > 0.1f)
 		{
-			const float Reload = pFireContext->ReloadInterval;
-			if(Server()->Tick() > m_NinjaComboFirstTick + Reload * 2 * Server()->TickSpeed())
-			{
-				m_NinjaComboFirstTick = Server()->Tick();
-				pFireContext->ReloadInterval = 0.1f;
-			}
+			pFireContext->ReloadInterval = 0.1f;
+			m_NinjaComboLeft -= 1;
 		}
 	}
 }
@@ -2670,8 +2680,8 @@ void CInfClassHuman::GiveUpgrades(const PlayerUpgradesArray &NewUpgrades)
 			AddWeaponMessageIfNothingYet();
 			AddMessage(_("Flash grenade area increased to 150%"));
 			break;
-		case EUpgradeType::NinjaSlashCombo:
-			AddMessage(_("Now you can do two slashes in a combo!"));
+		case EUpgradeType::NinjaMoreSlashCombo:
+			AddMessage(_("Now you can accumulate two more combo slashes!"));
 			break;
 		case EUpgradeType::SniperLaserRegenReload:
 			AddWeaponMessageIfNothingYet();

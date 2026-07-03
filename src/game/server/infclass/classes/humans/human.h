@@ -143,6 +143,8 @@ private:
 	int m_NinjaExtraDamage = 0;
 	int m_NinjaAmmoBuff = 0;
 	int m_NinjaComboFirstTick = 0;
+	int m_NinjaComboLeft = 0;
+	int m_NinjaLastComboGainTick = 0;
 	icArray<CEntity *, 24> m_apHitObjects;
 	bool m_HasWhiteHole = false;
 	int m_InvisibilityStartTick{};

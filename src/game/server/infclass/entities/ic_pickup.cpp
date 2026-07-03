@@ -86,7 +86,7 @@ SClassUpgrade GetUpgradeInfo(const PlayerUpgradesArray &Upgrades)
 			break;
 
 		case EUpgradeType::NinjaSlashBreaksHooks:
-		case EUpgradeType::NinjaSlashCombo:
+		case EUpgradeType::NinjaMoreSlashCombo:
 			UpgradeInfo.AddPickup(POWERUP_WEAPON, WEAPON_NINJA);
 			break;
 		case EUpgradeType::NinjaFlashGrenadeArea:

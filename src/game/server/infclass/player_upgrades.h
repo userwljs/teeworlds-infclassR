@@ -16,7 +16,7 @@ enum class EUpgradeType
 	HeroArmor,
 	NinjaSlashBreaksHooks,
 	NinjaFlashGrenadeArea,
-	NinjaSlashCombo,
+	NinjaMoreSlashCombo,
 	SniperLaserRegenReload,
 	SniperLaserRange,
 	SniperLaserPiercing,
