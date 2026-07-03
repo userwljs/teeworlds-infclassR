@@ -268,19 +268,9 @@ public:
 		// on Android. The user data is stored within a folder "user" in the external storage.
 		str_copy(m_aUserdir, "user");
 #else
-		char aFallbackUserdir[IO_MAX_PATH_LENGTH];
-		if(fs_storage_path("DDNet", m_aUserdir, sizeof(m_aUserdir)))
+		if(fs_storage_path("InfClassR", m_aUserdir, sizeof(m_aUserdir)))
 		{
 			log_error("storage", "could not determine user directory");
-		}
-		if(fs_storage_path("Teeworlds", aFallbackUserdir, sizeof(aFallbackUserdir)))
-		{
-			log_error("storage", "could not determine fallback user directory");
-		}
-
-		if((m_aUserdir[0] == '\0' || !fs_is_dir(m_aUserdir)) && aFallbackUserdir[0] != '\0' && fs_is_dir(aFallbackUserdir))
-		{
-			str_copy(m_aUserdir, aFallbackUserdir);
 		}
 #endif
 	}

@@ -1,5 +1,33 @@
 # Changelog
 
+## InfclassR v1.9.0 - 2026-07-03
+
+### BREAKING CHANGE
+The user directory (`$USERDIR`) where InfClassR stores some persistent data has been changed.
+
+|          | Windows                                        | GNU/Linux and others                                                               | macOS                                                                                          | Haiku                                                                  |
+|----------|------------------------------------------------|------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------|------------------------------------------------------------------------|
+| Previous | `%APPDATA%/DDNet`<br/>or `%APPDATA%/Teeworlds` | `$HOME/.local/share/ddnet`<br/>or `$XDG_DATA_HOME/ddnet`<br/>or `$HOME/.teeworlds` | `$HOME/Library/Application Support/DDNet`<br/>or `$HOME/Library/Application Support/Teeworlds` | `$HOME/config/settings/DDNet`<br/>or `$HOME/config/settings/Teeworlds` |
+| Now      | `%APPDATA%/InfClassR`                          | `$HOME/.local/share/infclassr`<br/>or `$XDG_DATA_HOME/infclassr`                   | `$HOME/Library/Application Support/InfClassR`                                                  | `$HOME/config/settings/InfClassR`                                      |
+
+You must move InfClassR's files (if any) from the previous to the new directory. Common files to move include:
+- SQLite database files (defaults to `infclass-server.sqlite`, check your server config `sv_sqlite_file`), along with its `-wal` and `-shm` companions
+- Auto-recorded demos
+- Saved ban list file
+- Log file (defaults to `infclassr.log`, check your server config)
+
+### General
+- Added chat filters (command `filter_chat` and `chat_filters`)
+- Changed Ninja skin for 0.7 clients
+- Made the server auto scan maps of which names start with `infc_` instead of hard-coded map list
+- Aligned config default values with autoexec.cfg
+
+### Fixes
+- Fixed stack-use-after-scope while filtering out broadcast color for non-0.7 clients
+
+### Maintenance
+- Upgraded the Unicode character data used for chat filtering and name bans to version 17.0.0
+
 ## InfclassR v1.8.2 - 2026-05-31
 
 - Fixed bots being counted as players in 0.7, again

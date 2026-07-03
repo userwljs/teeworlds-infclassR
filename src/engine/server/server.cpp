@@ -45,6 +45,7 @@
 /* INFECTION MODIFICATION START ***************************************/
 #include <engine/server/mapconverter.h>
 #include <game/server/infclass/events-director.h>
+#include <game/server/chat_filter.h>
 
 #include <teeuniverses/components/localization.h>
 /* INFECTION MODIFICATION END *****************************************/
@@ -550,6 +551,8 @@ CServer::CServer()
 	m_pRegister = nullptr;
 
 	m_aErrorShutdownReason[0] = 0;
+
+	m_pChatFilter = std::make_unique<CChatFilter>();
 
 	Init();
 }

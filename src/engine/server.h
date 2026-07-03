@@ -4,6 +4,7 @@
 #define ENGINE_SERVER_H
 
 #include <array>
+#include <memory>
 #include <optional>
 #include <type_traits>
 
@@ -14,11 +15,12 @@
 #include "kernel.h"
 #include "message.h"
 
-#include "game/server/chat_filter.h"
 #include <engine/shared/protocol.h>
 #include <game/generated/protocol.h>
 #include <game/generated/protocol7.h>
 #include <game/generated/protocolglue.h>
+
+class CChatFilter;
 
 class CLocalization;
 
@@ -77,7 +79,7 @@ protected:
 public:
 	CLocalization *m_pLocalization{};
 
-	CChatFilter m_ChatFilter;
+	std::unique_ptr<CChatFilter> m_pChatFilter;
 
 public:
 	/*

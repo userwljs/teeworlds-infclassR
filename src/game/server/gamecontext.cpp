@@ -20,6 +20,7 @@
 #include <game/gamecore.h>
 #include <game/version.h>
 
+#include <game/server/chat_filter.h>
 #include <game/server/entities/character.h>
 #include <game/server/gamecontroller.h>
 #include <game/server/player.h>
@@ -114,7 +115,6 @@ void CGameContext::Construct(int Resetting)
 	m_NumVoteOptions = 0;
 	m_LastMapVote = 0;
 	m_VoteBanClientId = -1;
-	ResetDefaultMaps();
 
 	if(Resetting == NO_RESET)
 	{
@@ -3459,13 +3459,13 @@ void CGameContext::ConFilterChat(IConsole::IResult *pResult, void *pUserData)
 		}
 		BanSeconds = pResult->GetInteger(2) * 60;
 	}
-	pSelf->Server()->m_ChatFilter.SetChatFilter(pResult->GetString(0), Behavior, BanSeconds, pSelf->Console());
+	pSelf->Server()->m_pChatFilter->SetChatFilter(pResult->GetString(0), Behavior, BanSeconds, pSelf->Console());
 }
 
 void CGameContext::ConChatFilters(IConsole::IResult *pResult, void *pUserData)
 {
 	auto *pSelf = static_cast<CGameContext *>(pUserData);
-	pSelf->Server()->m_ChatFilter.ListChatFilters(pSelf->Console());
+	pSelf->Server()->m_pChatFilter->ListChatFilters(pSelf->Console());
 }
 
 void CGameContext::ConRestart(IConsole::IResult *pResult, void *pUserData)
@@ -4835,6 +4835,8 @@ void CGameContext::OnInit(const void *pPersistentData)
 		}
 	}
 #endif
+
+	ResetDefaultMaps();
 }
 
 void CGameContext::CreateAllEntities(bool Initial)
@@ -5193,7 +5195,7 @@ void CGameContext::SendFinish(int ClientId, float Time, float PreviousBestTime)
 
 bool CGameContext::ProcessChatFilter(const char *pMessage, const int ClientId)
 {
-	auto [Behavior, BanSeconds, vWordsHit] = Server()->m_ChatFilter.CheckMessage(pMessage);
+	auto [Behavior, BanSeconds, vWordsHit] = Server()->m_pChatFilter->CheckMessage(pMessage);
 	auto Msg = std::format("The message '{}' from {} contains prohibited content: ", pMessage, ClientId);
 	for(size_t i = 0; i < vWordsHit.size(); i++)
 	{
@@ -5528,18 +5530,19 @@ void CGameContext::OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int Id)
 void CGameContext::ResetDefaultMaps()
 {
 	m_MapRotationList.clear();
-	m_MapRotationList.emplace_back("infc_lunaroutpost");
-	m_MapRotationList.emplace_back("infc_skull");
-	m_MapRotationList.emplace_back("infc_warehouse");
-	m_MapRotationList.emplace_back("infc_damascus");
-	m_MapRotationList.emplace_back("infc_eidalfitr");
-	m_MapRotationList.emplace_back("infc_newdust");
-	m_MapRotationList.emplace_back("infc_hardcorepit");
-	m_MapRotationList.emplace_back("infc_normandie");
-	m_MapRotationList.emplace_back("infc_deathdealer");
-	m_MapRotationList.emplace_back("infc_bamboo3");
-	m_MapRotationList.emplace_back("infc_halfdust");
-	m_MapRotationList.emplace_back("infc_warehouse2");
-	m_MapRotationList.emplace_back("infc_malinalli_k9f");
-	m_MapRotationList.emplace_back("infc_canyon");
+	std::vector<CMapNameItem> vMapList;
+	Storage()->ListDirectory(IStorage::TYPE_ALL, "maps", [](const char* pName, int IsDir,
+	                                                        int DirType,
+	                                                        void* pUserData) -> int
+	{
+		if(!str_startswith(pName, "infc_"))
+			return 0;
+		MapScan(pName, IsDir, DirType, pUserData);
+		return 0;
+	}, &vMapList);
+	std::sort(vMapList.begin(), vMapList.end());
+	for(const auto& [aName] : vMapList)
+	{
+		m_MapRotationList.emplace_back(aName);
+	}
 }

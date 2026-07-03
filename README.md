@@ -3,14 +3,11 @@
 Infection Mod with a class system for TeeWorlds, originally developed by
 [necropotame](https://github.com/necropotame/teeworlds-infclass).
 
-This version is based on [breton's fork](https://github.com/bretonium/my-infclass-server)
-but also integrates latter [Yavl's fork](https://github.com/yavl/teeworlds-infclassR)
-features such as Hero Turret. See the [ChangeLog](https://github.com/userwljs/teeworlds-infclassR/blob/production/CHANGELOG.md#infclassr-v120---2021-03-10)
+This version is based on [Kaffeine's fork](https://github.com/infclass/teeworlds-infclassR).
+See the [ChangeLog](https://github.com/userwljs/teeworlds-infclassR/blob/production/CHANGELOG.md#infclassr-v120---2021-03-10)
 for details.
 
 # Building
-
-It is recommended to use [infclass-scripts](https://github.com/infclass/infclass-scripts) to build the server for GNU/Linux.
 
 ## Dependencies
 Installing on Debian / Ubuntu:
@@ -39,7 +36,7 @@ apt install -y \
 - ICU (needed to support server-side translations)
 - libpng (needed for the classes menu)
 - libcurl (needed to register the server in DDNet)
-- sqlite (required by pieces of DDNet engine but not actually used)
+- sqlite (needed for accounts)
 - zlib (needed to read the map files)
 - python3-polib (needed for building)
 

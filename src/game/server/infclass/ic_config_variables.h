@@ -51,15 +51,14 @@ MACRO_CONFIG_INT(HsMedicsLimit, hs_medics_limit, 2, 0, 64, CFGFLAG_SERVER, "The 
 
 MACRO_CONFIG_INT(InfMinPlayers, inf_min_players, 2, 0, 64, CFGFLAG_SERVER, "Minimum number of players to start the round")
 MACRO_CONFIG_INT(InfTeamBalanceSeconds, inf_teambalance_seconds, 10, 0, 1000, CFGFLAG_SERVER, "How many seconds to wait before autobalancing teams")
-MACRO_CONFIG_INT(InfChallenge, inf_challenge, 0, 0, 1, CFGFLAG_SERVER, "Enable challenges")
 MACRO_CONFIG_INT(InfAccusationThreshold, inf_accusation_threshold, 4, 1, 8, CFGFLAG_SERVER, "Number of accusations needed to start a banvote")
 MACRO_CONFIG_INT(InfLeaverBanTime, inf_leaver_ban_time, 5, 0, 180, CFGFLAG_SERVER, "How long an infected gets banned (in minutes), when leaving and leaving causes a human to get infected")
-MACRO_CONFIG_INT(InfShowScoreTime, inf_show_score_time, 3, 0, 12, CFGFLAG_SERVER, "Number of seconds the score will be shown at the end of a round")
+MACRO_CONFIG_INT(InfShowScoreTime, inf_show_score_time, 6, 0, 12, CFGFLAG_SERVER, "Number of seconds the score will be shown at the end of a round")
 MACRO_CONFIG_INT(InfMaprotationRandom, inf_maprotation_random, 0, 0, 1, CFGFLAG_SERVER, "When enabled, next map in rotation will be chosen randomly")
 MACRO_CONFIG_INT(InfFirstInfectedLimit, inf_first_infected_limit, 0, 0, 64, CFGFLAG_SERVER, "The number of initially infected players")
 MACRO_CONFIG_INT(InfMinRoundsForMapVote, inf_min_rounds_map_vote, 0, 0, 100, CFGFLAG_SERVER, "Minimum number of rounds before a new map can be voted")
-MACRO_CONFIG_INT(InfMinPlayerPercentForMapVote, inf_min_player_percent_map_vote, 30, 0, 200, CFGFLAG_SERVER, "Minimum percentage of players that are needed to start a map vote")
-MACRO_CONFIG_INT(InfMinPlayerNumberForMapVote, inf_min_player_number_map_vote, 1, 1, 32, CFGFLAG_SERVER, "Minimum number of players that are needed to start a map vote")
+MACRO_CONFIG_INT(InfMinPlayerPercentForMapVote, inf_min_player_percent_map_vote, 25, 0, 200, CFGFLAG_SERVER, "Minimum percentage of players that are needed to start a map vote")
+MACRO_CONFIG_INT(InfMinPlayerNumberForMapVote, inf_min_player_number_map_vote, 6, 1, 32, CFGFLAG_SERVER, "Minimum number of players that are needed to start a map vote")
 MACRO_CONFIG_INT(InfConWaitingTime, inf_con_waiting_time, 1, 0, 60, CFGFLAG_SERVER, "Number of seconds to wait before enter the game")
 MACRO_CONFIG_INT(InfShockwaveAffectHumans, inf_shock_wave_affect_humans, 0, 0, 1, CFGFLAG_SERVER, "Explosion shockwave affect humans")
 MACRO_CONFIG_INT(InfSpawnProtectionTime, inf_spawn_protection_time, 2000, 0, 60000, CFGFLAG_SERVER, "Time zombies stay invincible while spawning")
@@ -100,12 +99,12 @@ MACRO_CONFIG_INT(InfSlimeHealRate, inf_slime_heal_rate, 2, 0, 10000, CFGFLAG_SER
 MACRO_CONFIG_INT(InfSlimeMaxHeal, inf_slime_max_heal, 12, 0, 100, CFGFLAG_SERVER, "The maximum total HP that can be gained from Slug Slime (reasonable max value is 20)")
 MACRO_CONFIG_INT(InfInfzoneHealRate, inf_infzone_heal_rate, 3, 0, 10000, CFGFLAG_SERVER, "Infection zone heals infected for X hearts every second")
 MACRO_CONFIG_FLOAT(InfSleeperTakeDamageRatio, inf_sleeper_take_damage_ratio, 1.0, 1, 4, CFGFLAG_SERVER, "The ratio of damage taken by a sleeping tee (1.0 to 4.0)")
-MACRO_CONFIG_INT(InfScientistTpSelfharm, inf_scientist_tp_selfharm, 0, 0, 10000, CFGFLAG_SERVER, "Self damage on each teleportation")
+MACRO_CONFIG_INT(InfScientistTpSelfharm, inf_scientist_tp_selfharm, 1, 0, 10000, CFGFLAG_SERVER, "Self damage on each teleportation")
 MACRO_CONFIG_INT(InfSciPortalLifespan, inf_sci_portal_lifespan, 40, 0, 10000, CFGFLAG_SERVER, "aaa")
 MACRO_CONFIG_INT(InfBatAirjumpLimit, inf_bat_airjump_limit, 10000, 0, 10000, CFGFLAG_SERVER, "Max number of extra airjumps")
-MACRO_CONFIG_INT(InfBatDamage, inf_bat_damage, 3, 0, 10000, CFGFLAG_SERVER, "Damage taken by bat")
+MACRO_CONFIG_INT(InfBatDamage, inf_bat_damage, 2, 0, 10000, CFGFLAG_SERVER, "Damage taken by bat")
 MACRO_CONFIG_INT(InfBatLifeSteal, inf_bat_life_steal, 2, 0, 10000, CFGFLAG_SERVER, "Amount of HP given to a bat per hammer hit")
-MACRO_CONFIG_INT(InfBatHookTime, inf_bat_hook_time, 5, 1, 10000, CFGFLAG_SERVER, "For how long bat will be able to hook humans (in seconds)")
+MACRO_CONFIG_INT(InfBatHookTime, inf_bat_hook_time, 3, 1, 10000, CFGFLAG_SERVER, "For how long bat will be able to hook humans (in seconds)")
 MACRO_CONFIG_INT(InfSpiderHookTime, inf_spider_hook_time, 3, 1, 10000, CFGFLAG_SERVER, "For how long spiders will be able to hook humans (in seconds)")
 MACRO_CONFIG_INT(InfSpiderWebHookLength, inf_spider_web_hook_length, 600, 0, 10000, CFGFLAG_SERVER, "The maximum length of spider web hook")
 MACRO_CONFIG_INT(InfSmokerHookDamage, inf_smoker_hook_damage, 2, 1, 10000, CFGFLAG_SERVER, "Damage taken by smoker (hook)")
@@ -142,7 +141,7 @@ MACRO_CONFIG_INT(InfEnableHero, inf_enable_hero, 1, 0, 1, CFGFLAG_SERVER, "Makes
 
 MACRO_CONFIG_INT(InfEnableFollowingCamera, inf_enable_following_camera, 1, 0, 1, CFGFLAG_SERVER, "Enable the camera following a teammate in some cases (bf, kill, etc)")
 
-MACRO_CONFIG_INT(InfMinPlayersForEngineer, inf_min_players_for_engineer, 0, 0, 100, CFGFLAG_SERVER, "Minimum number of players that are needed to enable Engineer class")
+MACRO_CONFIG_INT(InfMinPlayersForEngineer, inf_min_players_for_engineer, 8, 0, 100, CFGFLAG_SERVER, "Minimum number of players that are needed to enable Engineer class")
 MACRO_CONFIG_INT(InfProbaSpawnNearWitch, inf_proba_spawn_near_witch, 66, 0, 100, CFGFLAG_SERVER, "Probability for an infected to spawn near a witch")
 
 MACRO_CONFIG_INT(InfEnableTranquilizerRifle, inf_enable_tranquilizer_rifle, 1, 0, 1, CFGFLAG_SERVER, "Replace revival laser with tranquilizer rifle (for medic)")
@@ -179,13 +178,13 @@ MACRO_CONFIG_INT(InfControlPointVisualRadius, inf_cp_visual_radius, 48 + 64, 32,
 MACRO_CONFIG_INT(InfControlPointGlobalInterval, inf_cp_global_effect_interval, 20, 1, 100, CFGFLAG_SERVER, "Control Point global effect rate (1HP every N seconds)")
 
 // Turret
-MACRO_CONFIG_INT(InfMinPlayersForTurrets, inf_min_players_for_turrets, 3, 0, 100, CFGFLAG_SERVER, "Minimum number of players that are needed to enable turrets")
+MACRO_CONFIG_INT(InfMinPlayersForTurrets, inf_min_players_for_turrets, 8, 0, 100, CFGFLAG_SERVER, "Minimum number of players that are needed to enable turrets")
 MACRO_CONFIG_INT(InfTurretEnable, inf_turret_enable, 1, 0, 1, CFGFLAG_SERVER, "If turrets are available")
 MACRO_CONFIG_INT(InfTurretGive, inf_turret_give, 1, 0, 1000, CFGFLAG_SERVER, "Gives hero extra turrets")
 
 MACRO_CONFIG_INT(InfTurretDuration, inf_turret_duration, 30, 0, 100, CFGFLAG_SERVER, "turret life span")
 MACRO_CONFIG_INT(InfTurretSelfDestructDmg, inf_turret_self_destruct_dmg, 15, 0, 20, CFGFLAG_SERVER, "damage taken by zombie if turret is destroyed")
-MACRO_CONFIG_INT(InfTurretRadarRange, inf_turret_radar_range, 800, 0, 1000, CFGFLAG_SERVER, "turret radar range")
+MACRO_CONFIG_INT(InfTurretRadarRange, inf_turret_radar_range, 700, 0, 1000, CFGFLAG_SERVER, "turret radar range")
 MACRO_CONFIG_INT(InfTurretEnableLaser, inf_turret_enable_laser, 1, 0, 1, CFGFLAG_SERVER, "enable turret laser ammunition")
 MACRO_CONFIG_INT(InfTurretEnablePlasma, inf_turret_enable_plasma, 0, 0, 1, CFGFLAG_SERVER, "enable turret plasma ammunition")
 MACRO_CONFIG_INT(InfTurretPlasmaReloadDuration, inf_turret_plasma_reload_duration, 3, 0, 10, CFGFLAG_SERVER, "plasma ammo reload duration")
@@ -195,14 +194,14 @@ MACRO_CONFIG_INT(InfTurretWarmUpDuration, inf_turret_warm_up_duration, 1, 0, 10,
 MACRO_CONFIG_INT(InfTurretDmgFactor, inf_turret_dmg_factor, 9, 0, 10, CFGFLAG_SERVER, "how much damage a plasma turret does, 10 == grenade explosion")
 MACRO_CONFIG_INT(InfTurretDmgHealthLaser, inf_turret_dmg_health_laser, 3, 0, 100, CFGFLAG_SERVER, "how much damage in life points a laser turret does")
 MACRO_CONFIG_INT(InfTurretAmmunition, inf_turret_ammunition, 3, 0, 10, CFGFLAG_SERVER, "number of projectiles per multi-shot (not per zombie)")
-MACRO_CONFIG_INT(InfTurretMaxPerPlayer, inf_turret_max_per_player, 3, 0, 10, CFGFLAG_SERVER, "maximal number of turrets per player")
+MACRO_CONFIG_INT(InfTurretMaxPerPlayer, inf_turret_max_per_player, 2, 0, 10, CFGFLAG_SERVER, "maximal number of turrets per player")
 
 MACRO_CONFIG_FLOAT(InfBlindnessDuration, inf_blindness_duration, 2.5, 0, 100, CFGFLAG_SERVER, "The duration of blindness in seconds")
 
 // SuperWeapons
 MACRO_CONFIG_INT(InfMinPlayersForWhiteHole, inf_min_players_for_white_hole, 8, 0, 30, CFGFLAG_SERVER, "Minimal number of players that are needed to enable white hole")
 MACRO_CONFIG_INT(InfWhiteHoleMinimalKills, inf_white_hole_minimal_kills, 15, 0, 30, CFGFLAG_SERVER, "Minimal number of kills before white hole become available")
-MACRO_CONFIG_INT(InfWhiteHoleProbability, inf_white_hole_probability, 20, 0, 100, CFGFLAG_SERVER, "Probability of super weapon being available after MinimalKill requirement")
+MACRO_CONFIG_INT(InfWhiteHoleProbability, inf_white_hole_probability, 100, 0, 100, CFGFLAG_SERVER, "Probability of super weapon being available after MinimalKill requirement")
 MACRO_CONFIG_INT(InfWhiteHoleLifeSpan, inf_white_hole_life_span, 20, 0, 100, CFGFLAG_SERVER, "White hole life span")
 MACRO_CONFIG_INT(InfWhiteHoleRadius, inf_white_hole_radius, 430, 0, 500, CFGFLAG_SERVER, "Radius of white holes")
 MACRO_CONFIG_INT(InfWhiteHoleAffectsHumans, inf_white_hole_affects_humans, 0, 0, 1, CFGFLAG_SERVER, "Makes white holes suck in humans")
