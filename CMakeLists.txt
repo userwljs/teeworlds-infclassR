@@ -780,6 +780,7 @@ target_link_libraries(engine-shared PUBLIC
   CURL::libcurl
   ZLIB::ZLIB
   ${CMAKE_THREAD_LIBS_INIT}
+  ${PLATFORM_LIBS}
 )
 
 if(CRYPTO_FOUND)
