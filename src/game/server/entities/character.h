@@ -66,7 +66,9 @@ public:
 	void OnPredictedInput(const CNetObj_PlayerInput *pNewInput);
 	void OnDirectInput(const CNetObj_PlayerInput *pNewInput);
 	void ReleaseHook();
+	static void ReleaseHookImpl(CCharacterCore *pCore);
 	void ResetHook();
+	static void ResetHookImpl(CCharacterCore *pCore);
 	void ResetInput();
 	virtual void FireWeapon();
 
@@ -183,7 +185,6 @@ protected:
 	void HandleTiles(int MapIndex);
 	void HandleTeleports(int MapIndex);
 	void DDRaceInit();
-	void HandleSkippableTiles(int Index);
 
 public:
 	CGameTeams *Teams() { return m_pTeams; }
@@ -203,6 +204,10 @@ public:
 	void SetTeleCheckpoint(int CP);
 
 	void TeleportToTeleId(int TeleNumber, int TeleType);
+	static void TeleportToTeleIdImpl(int TeleNumber, int TeleType, const CCollision *pCollision, CGameWorld *pGameWorld,
+	                                 CCharacterCore *pCore, const CPlayer *pPlayer, bool PrintLog);
+	static void HandleSkippableTiles(int Index, const CCollision *pCollision, CCharacterCore *pCharacterCore,
+	                                 int MoveRestrictions);
 
 protected:
 	struct CCharacterSnapContext

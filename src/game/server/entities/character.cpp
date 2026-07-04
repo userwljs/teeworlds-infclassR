@@ -365,15 +365,25 @@ void CCharacter::OnDirectInput(const CNetObj_PlayerInput *pNewInput)
 
 void CCharacter::ReleaseHook()
 {
-	m_Core.SetHookedPlayer(-1);
-	m_Core.m_HookState = HOOK_RETRACTED;
-	m_Core.m_TriggeredEvents |= COREEVENT_HOOK_RETRACT;
+	ReleaseHookImpl(&m_Core);
+}
+
+void CCharacter::ReleaseHookImpl(CCharacterCore *pCore)
+{
+	pCore->SetHookedPlayer(-1);
+	pCore->m_HookState = HOOK_RETRACTED;
+	pCore->m_TriggeredEvents |= COREEVENT_HOOK_RETRACT;
 }
 
 void CCharacter::ResetHook()
 {
-	ReleaseHook();
-	m_Core.m_HookPos = m_Core.m_Pos;
+	ResetHookImpl(&m_Core);
+}
+
+void CCharacter::ResetHookImpl(CCharacterCore *pCore)
+{
+	ReleaseHookImpl(pCore);
+	pCore->m_HookPos = pCore->m_Pos;
 }
 
 void CCharacter::ResetInput()
@@ -751,12 +761,22 @@ void CCharacter::SetTeleCheckpoint(int CP)
 
 void CCharacter::TeleportToTeleId(int TeleNumber, int TeleType)
 {
+	TeleportToTeleIdImpl(TeleNumber, TeleType, GameServer()->Collision(), GameWorld(), &m_Core, GetPlayer(), true);
+}
+
+void CCharacter::TeleportToTeleIdImpl(int TeleNumber, int TeleType, const CCollision* pCollision,
+                                      CGameWorld* pGameWorld, CCharacterCore* pCore, const CPlayer* pPlayer, bool
+                                      PrintLog)
+{
 	const std::vector<vec2> &Outs = TeleType == TILE_TELECHECKOUT ?
-										GameServer()->Collision()->TeleCheckOuts(TeleNumber) :
-										GameServer()->Collision()->TeleOuts(TeleNumber);
+										pCollision->TeleCheckOuts(TeleNumber) :
+										pCollision->TeleOuts(TeleNumber);
 	if(Outs.empty())
 	{
-		dbg_msg("character", "No tele out for tele number: %d, type %d", TeleNumber, TeleType);
+		if(PrintLog)
+		{
+			dbg_msg("character", "No tele out for tele number: %d, type %d", TeleNumber, TeleType);
+		}
 		return;
 	}
 
@@ -767,20 +787,26 @@ void CCharacter::TeleportToTeleId(int TeleNumber, int TeleType)
 	case TILE_TELECHECKOUT:
 		break;
 	default:
-		dbg_msg("character", "Unsupported tele type: %d", TeleType);
+		if(PrintLog)
+		{
+			dbg_msg("character", "Unsupported tele type: %d", TeleType);
+		}
 		return;
 	}
 
 	int DestTeleNumber = random_int(0, Outs.size() - 1);
 	vec2 DestPosition = Outs.at(DestTeleNumber);
-	m_Core.m_Pos = DestPosition;
+	pCore->m_Pos = DestPosition;
 	if((TeleType == TILE_TELEINEVIL) || (TeleType == TILE_TELECHECKOUT))
 	{
-		m_Core.m_Vel = vec2(0, 0);
-		GameWorld()->ReleaseHooked(GetPlayer()->GetCid());
+		pCore->m_Vel = vec2(0, 0);
+		if(pGameWorld && pPlayer)
+		{
+			pGameWorld->ReleaseHooked(pPlayer->GetCid());
+		}
 	}
 
-	ResetHook();
+	ResetHookImpl(pCore);
 }
 
 int CCharacter::Team()
@@ -788,7 +814,8 @@ int CCharacter::Team()
 	return Teams()->m_Core.Team(m_pPlayer->GetCid());
 }
 
-void CCharacter::HandleSkippableTiles(int Index)
+void CCharacter::HandleSkippableTiles(int Index, const CCollision *pCollision, CCharacterCore *pCharacterCore,
+                                      int MoveRestrictions)
 {
 #if 0
 	if(GameLayerClipped(m_Pos))
@@ -802,15 +829,15 @@ void CCharacter::HandleSkippableTiles(int Index)
 		return;
 
 	// handle speedup tiles
-	if(GameServer()->Collision()->IsSpeedup(Index))
+	if(pCollision->IsSpeedup(Index))
 	{
-		vec2 Direction, TempVel = m_Core.m_Vel;
+		vec2 Direction, TempVel = pCharacterCore->m_Vel;
 		int Force, MaxSpeed = 0;
 		float TeeAngle, SpeederAngle, DiffAngle, SpeedLeft, TeeSpeed;
-		GameServer()->Collision()->GetSpeedup(Index, &Direction, &Force, &MaxSpeed);
+		pCollision->GetSpeedup(Index, &Direction, &Force, &MaxSpeed);
 		if(Force == 255 && MaxSpeed)
 		{
-			m_Core.m_Vel = Direction * (MaxSpeed / 5);
+			pCharacterCore->m_Vel = Direction * (MaxSpeed / 5);
 		}
 		else
 		{
@@ -856,7 +883,7 @@ void CCharacter::HandleSkippableTiles(int Index)
 			else
 				TempVel += Direction * Force;
 
-			m_Core.m_Vel = ClampVel(m_MoveRestrictions, TempVel);
+			pCharacterCore->m_Vel = ClampVel(MoveRestrictions, TempVel);
 		}
 	}
 }
@@ -933,7 +960,7 @@ void CCharacter::PostCoreTick()
 	}
 
 	int CurrentIndex = GameServer()->Collision()->GetMapIndex(m_Pos);
-	HandleSkippableTiles(CurrentIndex);
+	HandleSkippableTiles(CurrentIndex, GameServer()->Collision(), &m_Core, m_MoveRestrictions);
 	HandleTiles(CurrentIndex);
 }
 
