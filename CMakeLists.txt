@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 3.15...3.29)
 project(InfclassR
-        VERSION 1.9.0
+  VERSION 1.9.0
 )
 set(VERSION_SUFFIX "")
 
@@ -798,7 +798,7 @@ target_link_libraries(game-shared PUBLIC
   ZLIB::ZLIB
   ICU::i18n
   ICU::uc
-        aho_corasick
+  aho_corasick
 )
 
 include_directories(SYSTEM
@@ -851,8 +851,8 @@ set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
 
 set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   alloc.h
-        chat_filter.cpp
-        chat_filter.h
+  chat_filter.cpp
+  chat_filter.h
   ddracecommands.cpp
   entities/character.cpp
   entities/character.h
@@ -1062,7 +1062,7 @@ endif()
 set(PO_LANG_DIR "${CMAKE_SOURCE_DIR}/other/po")
 set(PO_TEMPlATE "${PO_LANG_DIR}/infclass.pot")
 add_custom_target(dev-generate-pot
-        COMMAND xgettext --sort-by-file -d infclass -o ${PO_TEMPlATE} -k_ -k_P:1,2 -k_C:1c,2 -k_CP:1c,2,3 --from-code=UTF-8 ${ENGINE_SERVER} ${GAME_SERVER}
+  COMMAND xgettext --sort-by-file -d infclass -o ${PO_TEMPlATE} -k_ -k_P:1,2 -k_C:1c,2 -k_CP:1c,2,3 --from-code=UTF-8 ${ENGINE_SERVER} ${GAME_SERVER}
   WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
 )
 
@@ -1077,7 +1077,7 @@ foreach(PO_LANG ${PO_LANGS})
     TARGET dev-update-po-files
     POST_BUILD
     # BYPRODUCTS ${PO_LANG_FILE}
-          COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --sort-by-file --update --backup=off --width=200 ${PO_LANG} ${PO_TEMPlATE}
+    COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --sort-by-file --update --backup=off --width=200 ${PO_LANG} ${PO_TEMPlATE}
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
   )
 endforeach()
@@ -1140,15 +1140,15 @@ target_link_libraries(game-server ICU::i18n)
 target_link_libraries(game-server ICU::uc)
 
 file(GLOB_RECURSE PO_LANG_FILES
-        CONFIGURE_DEPENDS
-        ${PO_LANG_DIR}/*
+  CONFIGURE_DEPENDS
+  ${PO_LANG_DIR}/*
 )
 
 add_custom_target(lang-json
-        COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/translation-python3.py
-        ${PO_LANG_DIR}
-        ${CMAKE_BINARY_DIR}
-        DEPENDS ${PO_LANG_FILES}
+  COMMAND ${Python3_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/translation-python3.py
+  ${PO_LANG_DIR}
+  ${CMAKE_BINARY_DIR}
+  DEPENDS ${PO_LANG_FILES}
 )
 
 add_dependencies(game-server lang-json)
@@ -1226,16 +1226,16 @@ install(
   ${DATA_INSTALL_EXCLUDES}
 )
 install(
-        DIRECTORY
-        "other/3rd-party-licenses/"
-        DESTINATION
-        "3rd-party-licenses"
+  DIRECTORY
+  "other/3rd-party-licenses/"
+  DESTINATION
+  "3rd-party-licenses"
 )
 install(
-        FILES
-        "license.txt"
-        DESTINATION
-        "."
+  FILES
+  "license.txt"
+  DESTINATION
+  "."
 )
 install(
   DIRECTORY
