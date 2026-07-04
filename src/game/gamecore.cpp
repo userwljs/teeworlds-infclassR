@@ -153,6 +153,12 @@ void CCharacterCore::Reset()
 	m_Input.m_TargetY = -1;
 }
 
+bool CCharacterCore::IsGrounded() const
+{
+	return m_pCollision->CheckPoint(m_Pos.x + PhysicalSize() / 2, m_Pos.y + PhysicalSize() / 2 + 5) || m_pCollision->
+		CheckPoint(m_Pos.x - PhysicalSize() / 2, m_Pos.y + PhysicalSize() / 2 + 5);
+}
+
 void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 {
 	bool DoDeferredTick = true;
@@ -162,11 +168,7 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 	m_TriggeredEvents = 0;
 
 	// get ground state
-	bool Grounded = false;
-	if(m_pCollision->CheckPoint(m_Pos.x + PhysicalSize() / 2, m_Pos.y + PhysicalSize() / 2 + 5))
-		Grounded = true;
-	if(m_pCollision->CheckPoint(m_Pos.x - PhysicalSize() / 2, m_Pos.y + PhysicalSize() / 2 + 5))
-		Grounded = true;
+	const bool Grounded = IsGrounded();
 
 	// InfClassR taxi mode
 	if(m_ProbablyStucked)

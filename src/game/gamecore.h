@@ -224,6 +224,7 @@ public:
 
 	void Init(CWorldCore *pWorld, CCollision *pCollision, CTeamsCore *pTeams = nullptr);
 	void Reset();
+	bool IsGrounded() const;
 	void TickDeferred(const CParams *pParams);
 	void Tick(bool UseInput, const CParams *pParams);
 	void Move(const CParams *pParams);
