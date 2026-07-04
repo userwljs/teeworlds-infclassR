@@ -937,31 +937,36 @@ int CCharacter::GetEffectiveHookMode() const
 
 void CCharacter::PostCoreTick()
 {
-	// following jump rules can be overridden by tiles, like Refill Jumps, Stopper and Wall Jump
-	if(m_Core.m_Jumps == -1)
-	{
-		// The player has only one ground jump, so his feet are always dark
-		m_Core.m_Jumped |= 2;
-	}
-	else if(m_Core.m_Jumps == 0)
-	{
-		// The player has no jumps at all, so his feet are always dark
-		m_Core.m_Jumped |= 2;
-	}
-	else if(m_Core.m_Jumps == 1 && m_Core.m_Jumped > 0)
-	{
-		// If the player has only one jump, each jump is the last one
-		m_Core.m_Jumped |= 2;
-	}
-	else if(m_Core.m_JumpedTotal < m_Core.m_Jumps - 1 && m_Core.m_Jumped > 1)
-	{
-		// The player has not yet used up all his jumps, so his feet remain light
-		m_Core.m_Jumped = 1;
-	}
+	HandleCoreJump(&m_Core);
 
 	int CurrentIndex = GameServer()->Collision()->GetMapIndex(m_Pos);
 	HandleSkippableTiles(CurrentIndex, GameServer()->Collision(), &m_Core, m_MoveRestrictions);
 	HandleTiles(CurrentIndex);
+}
+
+void CCharacter::HandleCoreJump(CCharacterCore *pCore)
+{
+	// following jump rules can be overridden by tiles, like Refill Jumps, Stopper and Wall Jump
+	if(pCore->m_Jumps == -1)
+	{
+		// The player has only one ground jump, so his feet are always dark
+		pCore->m_Jumped |= 2;
+	}
+	else if(pCore->m_Jumps == 0)
+	{
+		// The player has no jumps at all, so his feet are always dark
+		pCore->m_Jumped |= 2;
+	}
+	else if(pCore->m_Jumps == 1 && pCore->m_Jumped > 0)
+	{
+		// If the player has only one jump, each jump is the last one
+		pCore->m_Jumped |= 2;
+	}
+	else if(pCore->m_JumpedTotal < pCore->m_Jumps - 1 && pCore->m_Jumped > 1)
+	{
+		// The player has not yet used up all his jumps, so his feet remain light
+		pCore->m_Jumped = 1;
+	}
 }
 
 void CCharacter::SetTeams(CGameTeams *pTeams)

@@ -272,6 +272,7 @@ public:
 
 	virtual void PreCoreTick() {}
 	virtual void PostCoreTick();
+	static void HandleCoreJump(CCharacterCore *pCore);
 };
 
 #endif
