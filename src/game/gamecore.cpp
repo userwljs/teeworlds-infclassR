@@ -381,7 +381,7 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 	{
 		if(m_HookedPlayer != -1)
 		{
-			CCharacterCore *pCharCore = m_pWorld->m_apCharacters[m_HookedPlayer];
+			CCharacterCore *pCharCore = m_pWorld ? m_pWorld->m_apCharacters[m_HookedPlayer] : nullptr;
 			if(pCharCore && m_pTeams->CanKeepHook(m_Id, pCharCore->m_Id))
 				m_HookPos = pCharCore->m_Pos;
 			else
@@ -420,7 +420,7 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 
 		// release hook (max hook time is 1.25)
 		m_HookTick++;
-		if(m_HookedPlayer != -1 && (m_HookTick > pParams->m_HookGrabTime || !m_pWorld->m_apCharacters[m_HookedPlayer]))
+		if(m_HookedPlayer != -1 && (m_HookTick > pParams->m_HookGrabTime || !m_pWorld || !m_pWorld->m_apCharacters[m_HookedPlayer]))
 		{
 			SetHookedPlayer(-1);
 			m_HookState = HOOK_RETRACTED;
