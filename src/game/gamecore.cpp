@@ -109,7 +109,7 @@ float VelocityRamp(float Value, float Start, float Range, float Curvature)
 
 const float CCharacterCore::PassengerYOffset = 50;
 
-void CCharacterCore::Init(CWorldCore *pWorld, CCollision *pCollision, CTeamsCore *pTeams)
+void CCharacterCore::Init(CWorldCore *pWorld, const CCollision *pCollision, CTeamsCore *pTeams)
 {
 	m_pWorld = pWorld;
 	m_pCollision = pCollision;

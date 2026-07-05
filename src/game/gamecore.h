@@ -183,7 +183,7 @@ public:
 
 private:
 	CWorldCore *m_pWorld;
-	CCollision *m_pCollision;
+	const CCollision *m_pCollision;
 
 public:
 	static constexpr float PhysicalSize() { return 28.0f; };
@@ -222,7 +222,7 @@ public:
 
 	int m_TriggeredEvents;
 
-	void Init(CWorldCore *pWorld, CCollision *pCollision, CTeamsCore *pTeams = nullptr);
+	void Init(CWorldCore *pWorld, const CCollision *pCollision, CTeamsCore *pTeams = nullptr);
 	void Reset();
 	bool IsGrounded() const;
 	void TickDeferred(const CParams *pParams);

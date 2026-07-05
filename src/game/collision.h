@@ -60,8 +60,8 @@ public:
 	void MoveBox(vec2 *pInoutPos, vec2 *pInoutVel, vec2 Size, vec2 Elasticity, bool *pGrounded = nullptr) const;
 	bool TestBox(vec2 Pos, vec2 Size) const;
 
-	int GetMoveRestrictions(CALLBACK_SWITCHACTIVE pfnSwitchActive, void *pUser, vec2 Pos, float Distance = 18.0f, int OverrideCenterTileIndex = -1);
-	int GetMoveRestrictions(vec2 Pos, float Distance = 18.0f)
+	int GetMoveRestrictions(CALLBACK_SWITCHACTIVE pfnSwitchActive, void *pUser, vec2 Pos, float Distance = 18.0f, int OverrideCenterTileIndex = -1) const;
+	int GetMoveRestrictions(vec2 Pos, float Distance = 18.0f) const
 	{
 		return GetMoveRestrictions(nullptr, nullptr, Pos, Distance);
 	}
@@ -99,6 +99,8 @@ public:
 
 	CTeleTile *TeleLayer() { return m_pTele; }
 	CLayers *Layers() { return m_pLayers; }
+	const CTeleTile *TeleLayer() const { return m_pTele; }
+	const CLayers *Layers() const { return m_pLayers; }
 
 	const std::vector<vec2> &TeleOuts(int Number) const;
 	const std::vector<vec2> &TeleCheckOuts(int Number) const;
