@@ -1,5 +1,11 @@
 # Changelog
 
+## InfclassR v1.9.1 - 2026-07-12
+
+- Removed the broken auto map scanning feature introduced in v1.9.0
+- Fixed map cfg not being executed
+- Fixed the map rotation list being reset when changing maps (regression from 609fa969875dd65e1427ddbc714e7361f3fdd1ef)
+
 ## InfclassR v1.9.0 - 2026-07-03
 
 ### BREAKING CHANGE
