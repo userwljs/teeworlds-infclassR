@@ -1417,15 +1417,18 @@ void CGameContext::OnTick()
 
 			if(!Server()->IsSixup(i))
 			{
+				const auto IsCharANum = [](char c) -> bool { return c >= '0' && c <= '9'; };
 				// filter out colored broadcast substring (^rgb) for non-0.7 clients
 				char aBuf[1024] = "";
 				int indexAbuf = 0;
 				int index = 0;
+				const int MessageLen = strlen(m_BroadcastStates[i].m_NextMessage);
 				while(m_BroadcastStates[i].m_NextMessage[index] != '\0')
 				{
-					if(m_BroadcastStates[i].m_NextMessage[index] == '^' && m_BroadcastStates[i].m_NextMessage[index + 1]
-						!= '\0' && m_BroadcastStates[i].m_NextMessage[index + 2] != '\0' && m_BroadcastStates[i].
-						m_NextMessage[index + 3] != '\0')
+					if(m_BroadcastStates[i].m_NextMessage[index] == '^' && index + 3 < MessageLen &&
+						IsCharANum(m_BroadcastStates[i].m_NextMessage[index + 1]) && IsCharANum(
+							m_BroadcastStates[i].m_NextMessage[index + 2]) && IsCharANum(
+							m_BroadcastStates[i].m_NextMessage[index + 3]))
 					{
 						index++;
 						index++;
