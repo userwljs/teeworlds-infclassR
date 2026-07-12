@@ -1,5 +1,9 @@
 # Changelog
 
+## InfclassR v1.9.2 - 2026-07-12
+
+- Fixed broadcast suppression being broken for 0.6 clients
+
 ## InfclassR v1.9.1 - 2026-07-12
 
 - Removed the broken auto map scanning feature introduced in v1.9.0
