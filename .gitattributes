@@ -3,3 +3,7 @@
 
 [attr]POFILE merge=merge-po-files
 *.po POFILE
+
+*.map binary
+*.png binary
+*.mmdb binary
