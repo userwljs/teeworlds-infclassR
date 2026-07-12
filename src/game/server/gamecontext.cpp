@@ -1415,37 +1415,40 @@ void CGameContext::OnTick()
 				str_copy(m_BroadcastStates[i].m_NextMessage, m_BroadcastStates[i].m_TimedMessage);
 			}
 
+			if(!Server()->IsSixup(i))
+			{
+				// filter out colored broadcast substring (^rgb) for non-0.7 clients
+				char aBuf[1024] = "";
+				int indexAbuf = 0;
+				int index = 0;
+				while(m_BroadcastStates[i].m_NextMessage[index] != '\0')
+				{
+					if(m_BroadcastStates[i].m_NextMessage[index] == '^' && m_BroadcastStates[i].m_NextMessage[index + 1]
+						!= '\0' && m_BroadcastStates[i].m_NextMessage[index + 2] != '\0' && m_BroadcastStates[i].
+						m_NextMessage[index + 3] != '\0')
+					{
+						index++;
+						index++;
+						index++;
+						index++;
+					}
+					else
+					{
+						aBuf[indexAbuf] = m_BroadcastStates[i].m_NextMessage[index];
+						indexAbuf++;
+						index++;
+					}
+				}
+				aBuf[indexAbuf] = '\0';
+				str_copy(m_BroadcastStates[i].m_NextMessage, aBuf, sizeof(m_BroadcastStates[i].m_NextMessage));
+			}
+
 			// Send broadcast only if the message is different, or to fight auto-fading
 			if(
 				str_comp(m_BroadcastStates[i].m_PrevMessage, m_BroadcastStates[i].m_NextMessage) != 0 ||
 				m_BroadcastStates[i].m_NoChangeTick > Server()->TickSpeed())
 			{
 				CNetMsg_Sv_Broadcast Msg;
-				if(!Server()->IsSixup(i))
-				{
-					// filter out colored broacast substring (^rgb) for non-0.7 clients
-					char aBuf[1024] = "";
-					int indexAbuf = 0;
-					int index = 0;
-					while(m_BroadcastStates[i].m_NextMessage[index] != '\0')
-					{
-						if(m_BroadcastStates[i].m_NextMessage[index] == '^' && m_BroadcastStates[i].m_NextMessage[index + 1] != '\0' && m_BroadcastStates[i].m_NextMessage[index + 2] != '\0' && m_BroadcastStates[i].m_NextMessage[index + 3] != '\0')
-						{
-							index++;
-							index++;
-							index++;
-							index++;
-						}
-						else
-						{
-							aBuf[indexAbuf] = m_BroadcastStates[i].m_NextMessage[index];
-							indexAbuf++;
-							index++;
-						}
-					}
-					aBuf[indexAbuf] = '\0';
-					str_copy(m_BroadcastStates[i].m_NextMessage, aBuf, sizeof(m_BroadcastStates[i].m_NextMessage));
-				}
 				Msg.m_pMessage = m_BroadcastStates[i].m_NextMessage;
 				Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, i);
 				str_copy(m_BroadcastStates[i].m_PrevMessage, m_BroadcastStates[i].m_NextMessage);
