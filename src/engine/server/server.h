@@ -516,6 +516,8 @@ public:
 public:
 	int GetClientInfclassVersion(int ClientId) const override;
 
+	void ResetDefaultMaps();
+
 	const char *GetClientLanguage(int ClientId) override;
 	void SetClientLanguage(int ClientId, const char *pLanguage) override;
 

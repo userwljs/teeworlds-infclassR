@@ -6,7 +6,9 @@
 #include <array>
 #include <memory>
 #include <optional>
+#include <string>
 #include <type_traits>
+#include <vector>
 
 #include <base/hash.h>
 #include <base/math.h>
@@ -383,6 +385,8 @@ public:
 
 	virtual const char *GetPreviousMapName() const = 0;
 	virtual uint32_t GetActivePlayerCount() = 0;
+
+	std::vector<std::string> m_vMapRotationList;
 	/* INFECTION MODIFICATION END *****************************************/
 };
 

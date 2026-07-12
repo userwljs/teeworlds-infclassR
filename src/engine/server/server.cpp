@@ -850,6 +850,7 @@ int CServer::Init()
 	/* INFECTION MODIFICATION START ***************************************/
 	m_aPreviousMap[0] = 0;
 	m_aCurrentMap[0] = 0;
+	ResetDefaultMaps();
 	/* INFECTION MODIFICATION END *****************************************/
 
 	return 0;
@@ -4791,6 +4792,27 @@ void CServer::ResetMapVotes()
 		delete[] m_MapVotes[i].m_pReason;
 	}
 	m_MapVotesCounter = 0;
+}
+
+void CServer::ResetDefaultMaps()
+{
+	if(!m_vMapRotationList.empty())
+		return;
+
+	m_vMapRotationList.emplace_back("infc_lunaroutpost");
+	m_vMapRotationList.emplace_back("infc_skull");
+	m_vMapRotationList.emplace_back("infc_warehouse");
+	m_vMapRotationList.emplace_back("infc_damascus");
+	m_vMapRotationList.emplace_back("infc_eidalfitr");
+	m_vMapRotationList.emplace_back("infc_newdust");
+	m_vMapRotationList.emplace_back("infc_hardcorepit");
+	m_vMapRotationList.emplace_back("infc_normandie");
+	m_vMapRotationList.emplace_back("infc_deathdealer");
+	m_vMapRotationList.emplace_back("infc_bamboo3");
+	m_vMapRotationList.emplace_back("infc_halfdust");
+	m_vMapRotationList.emplace_back("infc_warehouse2");
+	m_vMapRotationList.emplace_back("infc_malinalli_k9f");
+	m_vMapRotationList.emplace_back("infc_canyon");
 }
 /* INFECTION MODIFICATION END *****************************************/
 

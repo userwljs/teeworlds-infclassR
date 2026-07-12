@@ -332,7 +332,6 @@ public:
 	bool RateLimitPlayerMapVote(int ClientId);
 
 	void OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int Id) override;
-	std::vector<std::string> m_MapRotationList;
 
 	/* INFECTION MODIFICATION START ***************************************/
 private:
@@ -473,7 +472,6 @@ private:
 	array<LoveDotState> m_LoveDots;
 
 	int m_aHitSoundState[MAX_CLIENTS]; // 1 for hit, 2 for kill (no sounds must be sent)
-	void ResetDefaultMaps();
 
 public:
 	void SendRecord(int ClientId);

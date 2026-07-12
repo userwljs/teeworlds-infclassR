@@ -6835,7 +6835,7 @@ void CIcGameController::Snap(int SnappingClient)
 		pGameInfoObj->m_RoundStartTick -= (1 - FractionalPart) * 60 * Server()->TickSpeed();
 	}
 
-	pGameInfoObj->m_RoundNum = (GameServer()->m_MapRotationList.size() && Config()->m_SvRoundsPerMap) ? Config()->m_SvRoundsPerMap : 0;
+	pGameInfoObj->m_RoundNum = (Server()->m_vMapRotationList.size() && Config()->m_SvRoundsPerMap) ? Config()->m_SvRoundsPerMap : 0;
 	pGameInfoObj->m_RoundCurrent = m_RoundCount + 1;
 
 	SnapMapMenu(SnappingClient, pGameInfoObj);
