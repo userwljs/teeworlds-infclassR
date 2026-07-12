@@ -113,7 +113,6 @@ void CGameContext::Construct(int Resetting)
 	m_NumVoteOptions = 0;
 	m_LastMapVote = 0;
 	m_VoteBanClientId = -1;
-	ResetDefaultMaps();
 
 	if(Resetting == NO_RESET)
 	{
@@ -3275,11 +3274,11 @@ void CGameContext::ConClearMaps(IConsole::IResult *pResult, void *pUserData)
 
 	if(pSelf->m_pController)
 	{
-		for(auto &MapName : pSelf->m_MapRotationList)
+		for(auto &MapName : pSelf->Server()->m_vMapRotationList)
 			pSelf->m_pController->OnMapRemoved(MapName.c_str());
 	}
 
-	pSelf->m_MapRotationList.clear();
+	pSelf->Server()->m_vMapRotationList.clear();
 
 	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "All maps in the rotation list have been removed");
 }
@@ -3311,7 +3310,7 @@ void CGameContext::AddMap(const std::string_view MapName)
 		return;
 	}
 
-	if(std::ranges::find(m_MapRotationList, StringMapName) != m_MapRotationList.end())
+	if(std::ranges::find(Server()->m_vMapRotationList, StringMapName) != Server()->m_vMapRotationList.end())
 	{
 		const auto Msg = std::format("The map {} is already in the rotation list", StringMapName);
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
@@ -3325,7 +3324,7 @@ void CGameContext::AddMap(const std::string_view MapName)
 		return;
 	}
 
-	m_MapRotationList.push_back(StringMapName);
+	Server()->m_vMapRotationList.push_back(StringMapName);
 
 	{
 		const auto Msg = std::format("Map {} added to the rotation list", StringMapName);
@@ -3355,14 +3354,14 @@ void CGameContext::RemoveMap(const std::string_view MapName)
 		return;
 	}
 
-	if(std::ranges::find(m_MapRotationList, StringMapName) == m_MapRotationList.end())
+	if(std::ranges::find(Server()->m_vMapRotationList, StringMapName) == Server()->m_vMapRotationList.end())
 	{
 		const auto Msg = std::format("The map {} is not in the rotation list", StringMapName);
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", Msg.c_str());
 		return;
 	}
 
-	std::erase(m_MapRotationList, StringMapName);
+	std::erase(Server()->m_vMapRotationList, StringMapName);
 
 	{
 		const auto Msg = std::format("Map {} has been removed from the rotation list", StringMapName);
@@ -3375,9 +3374,9 @@ void CGameContext::RemoveMap(const std::string_view MapName)
 
 const std::string *CGameContext::GetRandomMap() const
 {
-	if(m_MapRotationList.size() == 0)
+	if(Server()->m_vMapRotationList.size() == 0)
 		return nullptr;
-	return &m_MapRotationList[random_int(0, m_MapRotationList.size() - 1)];
+	return &Server()->m_vMapRotationList[random_int(0, Server()->m_vMapRotationList.size() - 1)];
 }
 
 void CGameContext::ConFilterChat(IConsole::IResult *pResult, void *pUserData)
@@ -5395,23 +5394,4 @@ void CGameContext::OnUpdatePlayerServerInfo(char *aBuf, int BufSize, int Id)
 		aJsonSkin,
 		JsonBool(m_apPlayers[Id]->IsAfk()),
 		m_apPlayers[Id]->GetTeam());
-}
-
-void CGameContext::ResetDefaultMaps()
-{
-	m_MapRotationList.clear();
-	m_MapRotationList.emplace_back("infc_lunaroutpost");
-	m_MapRotationList.emplace_back("infc_skull");
-	m_MapRotationList.emplace_back("infc_warehouse");
-	m_MapRotationList.emplace_back("infc_damascus");
-	m_MapRotationList.emplace_back("infc_eidalfitr");
-	m_MapRotationList.emplace_back("infc_newdust");
-	m_MapRotationList.emplace_back("infc_hardcorepit");
-	m_MapRotationList.emplace_back("infc_normandie");
-	m_MapRotationList.emplace_back("infc_deathdealer");
-	m_MapRotationList.emplace_back("infc_bamboo3");
-	m_MapRotationList.emplace_back("infc_halfdust");
-	m_MapRotationList.emplace_back("infc_warehouse2");
-	m_MapRotationList.emplace_back("infc_malinalli_k9f");
-	m_MapRotationList.emplace_back("infc_canyon");
 }
