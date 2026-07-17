@@ -1854,7 +1854,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	Console()->Register("rflag", "", CFGFLAG_CHAT, ConRefreshHeroFlag, this, "Refresh the position of hero flag");
 
 	Console()->Register("revive", "s[player name]", CFGFLAG_CHAT, ChatHeroRevive, this, "Revive a dead teammate near you (a hero) in survival mode");
-	Console()->Register("respawn", "s[player name]", CFGFLAG_CHAT, ConChatSurvivalRespawn, this, "Respawn near an alive player in survival mode");
+	Console()->Register("respawn", "s[alive player]", CFGFLAG_CHAT, ConChatSurvivalRespawn, this, "Respawn near an alive player in survival mode");
 	Console()->Register("prefer_class", "s[classname]", CFGFLAG_CHAT, ConPreferClass, this, "Set the preferred human class to <classname>");
 	Console()->Register("alwaysrandom", "i['0'|'1']", CFGFLAG_CHAT, ConAlwaysRandom, this, "Set the preferred class to Random");
 	Console()->Register("antiping", "i['0'|'1']", CFGFLAG_CHAT, ConAntiPing, this, "Try to improve your ping (reduce the traffic)");
@@ -5430,7 +5430,7 @@ void CIcGameController::Tick()
 					GameServer()->SendBroadcast_Localization(pPlayer->GetCid(),
 						EBroadcastPriority::GAMEANNOUNCE,
 						BROADCAST_DURATION_GAMEANNOUNCE,
-						_("You can respawn via '/respawn <player name>' now"), nullptr);
+						_("You can respawn via '/respawn <alive player>' now"), nullptr);
 				}
 				else
 				{
