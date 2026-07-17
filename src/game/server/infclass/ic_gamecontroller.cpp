@@ -5429,7 +5429,7 @@ void CIcGameController::Tick()
 				{
 					GameServer()->SendBroadcast_Localization(pPlayer->GetCid(),
 						EBroadcastPriority::GAMEANNOUNCE,
-						BROADCAST_DURATION_GAMEANNOUNCE,
+						BROADCAST_DURATION_REALTIME,
 						_("You can respawn via '/respawn <alive player>' now"), nullptr);
 				}
 				else
@@ -5437,7 +5437,7 @@ void CIcGameController::Tick()
 					int Seconds = (pPlayer->GetSurvivalRespawnTick() - Server()->Tick()) / Server()->TickSpeed();
 					GameServer()->SendBroadcast_Localization(pPlayer->GetCid(),
 						EBroadcastPriority::GAMEANNOUNCE,
-						BROADCAST_DURATION_GAMEANNOUNCE,
+						BROADCAST_DURATION_REALTIME,
 						_("You can respawn after {sec:Time}"), "Time", &Seconds);
 				}
 			}
