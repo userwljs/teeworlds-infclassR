@@ -25,6 +25,7 @@
 #include <mutex>
 #include <optional>
 #include <string>
+#include <string_view>
 
 #ifdef __MINGW32__
 #undef PRId64
@@ -2867,5 +2868,13 @@ void shell_update();
 #endif
 
 void string_strip(std::string &s);
+
+struct StringTransparentHasher
+{
+	using is_transparent = void;
+	size_t operator()(const std::string &Key) const { return std::hash<std::string>{}(Key); };
+	size_t operator()(const std::string_view Key) const { return std::hash<std::string_view>{}(Key); };
+	size_t operator()(const char *Key) const { return std::hash<std::string_view>{}(Key); };
+};
 
 #endif

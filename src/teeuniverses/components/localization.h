@@ -5,19 +5,12 @@
 
 #include "teeuniverses/system/string.h"
 
+#include <base/system.h>
 #include <string>
 #include <string_view>
 #include <unicode/tmutfmt.h>
 #include <unicode/upluralrules.h>
 #include <unordered_map>
-
-struct StringTransparentHasher
-{
-	using is_transparent = void;
-	size_t operator()(const std::string &Key) const { return std::hash<std::string>{}(Key); };
-	size_t operator()(const std::string_view Key) const { return std::hash<std::string_view>{}(Key); };
-	size_t operator()(const char *Key) const { return std::hash<std::string_view>{}(Key); };
-};
 
 template<typename T>
 using StringHashMap = std::unordered_map<

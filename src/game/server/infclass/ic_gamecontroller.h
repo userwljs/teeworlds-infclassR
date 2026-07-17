@@ -12,6 +12,8 @@
 
 #include <base/tl/ic_array.h>
 
+#include <unordered_set>
+
 class CBaseBotPlayer;
 class CBotUtils;
 class CBotUtilsSharedData;
@@ -553,6 +555,7 @@ private:
 		icArray<PlayerScore, MAX_CLIENTS> Scores;
 		icArray<int, MAX_CLIENTS> SurvivedPlayers;
 		icArray<int, MAX_CLIENTS> KilledPlayers;
+		std::unordered_set<std::string, StringTransparentHasher, std::equal_to<>> PlayersParticipated;
 	} m_SurvivalState;
 	int m_BestSurvivalScore = 0;
 	const char *m_LastUsedKillMessage = nullptr;
