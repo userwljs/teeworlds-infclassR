@@ -792,6 +792,48 @@ void CBotPlayer::UpdateControls()
 		NewInput.m_PrevWeapon = 0;
 	}
 
+	if(m_PathState == EPathState::FOLLOWING)
+	{
+		const int TickOffset = Server()->Tick() - m_PathBeginTick - 1;
+		while(m_PathState == EPathState::FOLLOWING)
+		{
+			const auto &[WaypointTick, WaypointPos, Input] = m_vPath[m_PathCurrentIndex];
+
+			if(TickOffset < WaypointTick)
+			{
+				NewInput = Input;
+				const int SegmentStartTick =
+					(m_PathCurrentIndex > 0) ? std::get<0>(m_vPath[m_PathCurrentIndex - 1]) : 0;
+				if(TickOffset != SegmentStartTick)
+				{
+					NewInput.m_Jump = 0;
+				}
+				if(NewInput.m_Hook == 0)
+				{
+					// make it less dumb
+					NewInput.m_TargetY = -1;
+					NewInput.m_TargetX = NewInput.m_Direction * 5 * TileSize;
+				}
+				break;
+			}
+
+			if(GetCharacter()->GetPos() != WaypointPos)
+			{
+				dbg_msg("bot", "drift!!! expected=(%.2f, %.2f) real=(%.2f, %.2f)", WaypointPos.x, WaypointPos.y,
+				        GetCharacter()->GetPos().x, GetCharacter()->GetPos().y);
+				ClearPath();
+				break;
+			}
+
+			++m_PathCurrentIndex;
+			if(m_PathCurrentIndex >= m_vPath.size())
+			{
+				ClearPath();
+				break;
+			}
+		}
+	}
+
 	ScheduleRandomFire();
 
 	m_pCharacter->OnPredictedInput(&NewInput);
@@ -3377,6 +3419,21 @@ void CBotPlayer::PushIgnoredPosition(const STilePosition &ShortPos)
 		ma_IgnorePoints.RemoveAt(0);
 
 	ma_IgnorePoints.Add({ShortPos, Server()->Tick()});
+}
+
+void CBotPlayer::ClearPath()
+{
+	m_PathState = EPathState::NO_PATH;
+	m_vPath.clear();
+	m_PathCurrentIndex = 0;
+}
+
+void CBotPlayer::SetPath(const std::vector<std::tuple<int, vec2, CNetObj_PlayerInput>> &vPath)
+{
+	ClearPath();
+	m_vPath = vPath;
+	m_PathState = EPathState::FOLLOWING;
+	m_PathBeginTick = Server()->Tick();
 }
 
 CGameWorld *CBotPlayer::GameWorld() const

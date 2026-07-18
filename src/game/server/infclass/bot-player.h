@@ -308,6 +308,9 @@ public:
 
 	STilePosition m_DecisionPos{};
 
+	void ClearPath();
+	void SetPath(const std::vector<std::tuple<int, vec2, CNetObj_PlayerInput>> &vPath);
+
 protected:
 	CGameWorld *GameWorld() const;
 	void UpdateCharacterState();
@@ -388,6 +391,16 @@ protected:
 
 	bool m_CachedSameGroundTarget = false;
 	int m_CachedSameGroundTargetUntilTick = 0;
+
+	enum class EPathState
+	{
+		NO_PATH,
+		FOLLOWING
+	};
+	int m_PathBeginTick = 0;
+	size_t m_PathCurrentIndex = 0;
+	EPathState m_PathState = EPathState::NO_PATH;
+	std::vector<std::tuple<int, vec2, CNetObj_PlayerInput>> m_vPath;
 
 	char m_Name[16];
 };
