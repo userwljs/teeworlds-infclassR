@@ -588,11 +588,6 @@ void CIcGameController::OnPlayerConnect(CPlayer *pPlayer)
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL | MSGFLAG_NORECORD, ClientId);
 		}
 	}
-
-	if(GetRoundType() == ERoundType::Survival && !IsInfectionStarted() && !pPlayer->IsBot())
-	{
-		m_SurvivalState.PlayersParticipated.emplace(Server()->ClientAddrString(ClientId, false));
-	}
 }
 
 void CIcGameController::OnPlayerDisconnect(CPlayer *pBasePlayer, EClientDropType Type, const char *pReason)
@@ -2670,7 +2665,6 @@ bool CIcGameController::ReviveNear(const int RevivedPlayerId, const int TargetPl
 		pRevivedPlayer->SetClass(Class);
 		if(m_SurvivalState.KilledPlayers.Contains(pRevivedPlayer->GetCid()))
 			m_SurvivalState.KilledPlayers.RemoveOne(pRevivedPlayer->GetCid());
-		m_SurvivalState.PlayersParticipated.emplace(Server()->ClientAddrString(RevivedPlayerId, false));
 	}
 
 	return Ok;
@@ -3104,10 +3098,6 @@ void CIcGameController::PrepareSurvival(int Wave)
 		{
 			pPlayer->KillCharacter();
 			pPlayer->SetClass(EPlayerClass::None);
-			if(!pPlayer->IsBot() && pPlayer->GetTeam() == TEAM_RED)
-			{
-				m_SurvivalState.PlayersParticipated.emplace(Server()->ClientAddrString(i, false));
-			}
 		}
 	}
 }
@@ -7724,6 +7714,11 @@ void CIcGameController::OnIcCharacterSpawned(CIcCharacter *pCharacter, const Spa
 		}
 
 		ApplyHideAndSeekAttributes(pPlayer);
+	}
+
+	if(GetRoundType() == ERoundType::Survival && !pPlayer->IsBot())
+	{
+		m_SurvivalState.PlayersParticipated.emplace(Server()->ClientAddrString(pPlayer->GetCid(), false));
 	}
 }
 
