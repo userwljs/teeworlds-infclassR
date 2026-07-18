@@ -950,6 +950,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/ic_lua.cpp
   infclass/ic_player.cpp
   infclass/ic_player.h
+  infclass/pathfinding/motion_planner.cpp
+  infclass/pathfinding/motion_planner.h
   infclass/snap_filter.cpp
   infclass/snap_filter.h
   infclass/survival.h

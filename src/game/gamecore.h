@@ -180,12 +180,9 @@ public:
 			m_HookGrabTime = SERVER_TICK_SPEED + SERVER_TICK_SPEED / 5;
 		}
 	};
-
-private:
 	CWorldCore *m_pWorld;
 	const CCollision *m_pCollision;
 
-public:
 	static constexpr float PhysicalSize() { return 28.0f; };
 	static constexpr vec2 PhysicalSizeVec2() { return vec2(28.0f, 28.0f); };
 	vec2 m_Pos;

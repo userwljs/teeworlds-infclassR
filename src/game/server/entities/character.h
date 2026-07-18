@@ -115,6 +115,8 @@ public:
 	void SetVelocity(vec2 NewVelocity);
 	void AddVelocity(vec2 Addition);
 
+	CCharacterCore GetCore() const { return m_Core; }
+
 protected:
 	// player controlling this character
 	class CPlayer *m_pPlayer;

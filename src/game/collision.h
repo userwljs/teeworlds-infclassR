@@ -105,9 +105,9 @@ public:
 	const std::vector<vec2> &TeleOuts(int Number) const;
 	const std::vector<vec2> &TeleCheckOuts(int Number) const;
 
-private:
 	bool IsSolid(int x, int y) const;
 
+private:
 	CLayers *m_pLayers{};
 
 	int m_Width{};
