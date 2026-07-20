@@ -199,6 +199,12 @@ public:
 	bool m_HookProtected;
 	bool m_Infected;
 	bool m_InLove;
+	// When true, the core ignores Tick/Move/TickDeferred/Quantize so the
+	// physical state (pos/vel/hook) stays put. Used to anchor a bot while
+	// an asynchronous path is being computed by CPathFinder.
+	bool m_Frozen = false;
+	bool IsFrozen() const { return m_Frozen; }
+	void SetFrozen(bool Frozen) { m_Frozen = Frozen; }
 	// InfClassR
 	int m_PassengerNumber = 0;
 	static const float PassengerYOffset;

@@ -53,6 +53,7 @@ using UPlayerClass = CIcPlayer;
 
 #include "bot_config_parser.h"
 #include "bot_utils.h"
+#include "pathfinding/pathfinder.h"
 
 constexpr int InfClassModeSpecialSkip = 0x100;
 
@@ -380,6 +381,8 @@ CIcGameController::CIcGameController(class CGameContext *pGameServer) : IGameCon
 	RegisterBotsContext();
 
 	ResetPlayerClassesEnablement();
+
+	m_pPathFinder = std::make_unique<CPathfinder>(GameServer()->Collision());
 }
 
 CIcGameController::~CIcGameController()
@@ -1875,6 +1878,8 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("ai_objection", "s[command] ?s[argument]", CFGFLAG_SERVER, ConAiObjection, this, "Setup AI objections");
 	pConsole->Register("ai_trace_path", "i[ClientId] f[x] f[y]", CFGFLAG_SERVER, ConAiTracePath, this, "Debug bot AI from the caller PoV");
 
+	pConsole->Register("inf_test", "f[x] f[y]", CFGFLAG_SERVER, ConTest, this, "Move the specified bot to the given tile position using the path finder");
+
 	pConsole->Register("survival_clear_conf", "", CFGFLAG_SERVER, ConSurvivalClearConf, this, "");
 	pConsole->Register("survival_conf", "s[option] ?i[value]", CFGFLAG_SERVER, ConSurvivalConf, this, "Adjust survival configuration");
 	pConsole->Register("survival_add_wave", "i[wave] ?s[name]", CFGFLAG_SERVER, ConSurvivalAddWave, this, "");
@@ -2507,6 +2512,120 @@ void CIcGameController::ConAiTracePath(IConsole::IResult *pResult)
 	const CBotPlayer *pBotPlayer = static_cast<const CBotPlayer *>(pPlayer);
 	pBotPlayer->GetBotUtils().IsReachableByGroundTraced(pBotPlayer->GetCharacter()->GetPos(), vec2(X, Y), pBotPlayer->GetMaxJumps(), 1000);
 	Config()->m_InfBotDebugLevel = DebugLevel;
+}
+
+void CIcGameController::ConTest(IConsole::IResult *pResult, void *pUserData)
+{
+	CIcGameController *pSelf = (CIcGameController *)pUserData;
+	vec2 Goal(pResult->GetFloat(0) * 32.f, pResult->GetFloat(1) * 32.f);
+	for(int i = 0; i < MAX_CLIENTS; i++)
+	{
+		pSelf->ConTest(i, Goal);
+	}
+}
+
+void CIcGameController::ConTest(int TargetId, vec2 Goal)
+{
+	if(TargetId < 0 || TargetId >= MAX_CLIENTS)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Invalid client id");
+		return;
+	}
+
+	CIcPlayer *pPlayer = GetPlayer(TargetId);
+	if(!pPlayer)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "No such player");
+		return;
+	}
+	if(!pPlayer->IsBot())
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Target is not a bot");
+		return;
+	}
+
+	CIcCharacter *pCharacter = pPlayer->GetCharacter();
+	if(!pCharacter || !pCharacter->IsAlive())
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Bot has no alive character");
+		return;
+	}
+
+	if(!m_pPathFinder)
+	{
+		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Path finder is not available");
+		return;
+	}
+
+	// Cancel any previously in-flight task for this bot, then freeze its
+	// physics state so the start position used by the planner stays valid
+	// until the path has been computed and applied.
+	m_pPathFinder->CancelTask(TargetId);
+	m_aPendingPathTask[TargetId] = false;
+
+	const CTuningParams *pTuning = GameServer()->Tuning();
+	const auto Fn = CPathfinder::GetFnIsStateValid(pPlayer->GetClass(), m_ZoneHandle_icDamage, m_VanillaMapLoaded);
+	m_pPathFinder->SubmitTask(TargetId, pTuning, pCharacter->GetCore(), Goal, g_Config.m_InfPathfindingMaxIters, Fn);
+	pCharacter->SetPhysicsFrozen(true);
+	m_aPendingPathTask[TargetId] = true;
+
+	char aBuf[128];
+	str_format(aBuf, sizeof(aBuf), "Pathfinding queued for bot %d -> (%.1f, %.1f)", TargetId, Goal.x, Goal.y);
+	Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+}
+
+void CIcGameController::TickPendingPathTasks()
+{
+	if(!m_pPathFinder)
+		return;
+
+	for(int SlotId = 0; SlotId < MAX_CLIENTS; ++SlotId)
+	{
+		if(!m_aPendingPathTask[SlotId])
+			continue;
+
+		if(!m_pPathFinder->IsTaskFinished(SlotId))
+			continue;
+
+		m_aPendingPathTask[SlotId] = false;
+
+		CIcPlayer *pPlayer = GetPlayer(SlotId);
+		if(!pPlayer || !pPlayer->IsBot())
+		{
+			m_pPathFinder->CancelTask(SlotId);
+			continue;
+		}
+
+		CIcCharacter *pCharacter = pPlayer->GetCharacter();
+		if(!pCharacter || !pCharacter->IsAlive())
+		{
+			m_pPathFinder->CancelTask(SlotId);
+			continue;
+		}
+
+		auto pBot = static_cast<CBotPlayer *>(pPlayer);
+
+		auto Result = m_pPathFinder->GetTaskResult(SlotId);
+		m_pPathFinder->CancelTask(SlotId);
+
+		// Unfreeze first so SetPath can be consumed by UpdateControls
+		pCharacter->SetPhysicsFrozen(false);
+
+		if(Result.has_value())
+		{
+			pBot->SetPath(Result.value());
+			char aBuf[128];
+			const vec2 &Pos = pCharacter->GetPos();
+			str_format(aBuf, sizeof(aBuf), "Path applied for bot %d from (%.1f, %.1f), %zu waypoints",
+				SlotId, Pos.x, Pos.y, Result->size());
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
+		}
+		else
+		{
+			pBot->ClearPath();
+			Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Pathfinding: no path found");
+		}
+	}
 }
 
 void CIcGameController::ConAiObjection(IConsole::IResult *pResult, void *pUserData)
@@ -5292,6 +5411,8 @@ void CIcGameController::TickBeforeWorld()
 void CIcGameController::Tick()
 {
 	IGameController::Tick();
+
+	TickPendingPathTasks();
 
 	// Check session
 	{

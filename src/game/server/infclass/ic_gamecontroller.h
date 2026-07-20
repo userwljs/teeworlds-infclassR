@@ -13,6 +13,7 @@
 #include <base/tl/ic_array.h>
 
 #include <unordered_set>
+#include <memory>
 
 class CBaseBotPlayer;
 class CBotUtils;
@@ -96,6 +97,7 @@ struct FunRoundConfiguration
 class SurvivalBotConfiguration;
 class SurvivalWaveConfiguration;
 class SurvivalGameConfiguration;
+class CPathfinder;
 
 enum SURVIVAL_MODE
 {
@@ -449,6 +451,9 @@ public:
 	static void ConCheckAI(IConsole::IResult *pResult, void *pUserData);
 	void ConCheckAI(IConsole::IResult *pResult);
 
+	static void ConTest(IConsole::IResult *pResult, void *pUserData);
+	void ConTest(int TargetId, vec2 Goal);
+
 	static void ConAiTracePath(IConsole::IResult *pResult, void *pUserData);
 	void ConAiTracePath(IConsole::IResult *pResult);
 
@@ -534,6 +539,10 @@ private:
 
 	icArray<CBaseBotPlayer *, MaxBots> m_Bots;
 	CBotUtilsSharedData *m_pBotUtilsData{};
+
+	std::unique_ptr<CPathfinder> m_pPathFinder;
+	bool m_aPendingPathTask[MAX_CLIENTS]{};
+	void TickPendingPathTasks();
 
 	struct PlayerScore
 	{

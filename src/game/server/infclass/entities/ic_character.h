@@ -193,6 +193,10 @@ public:
 	void Freeze(float Time, int Player, FREEZEREASON Reason);
 	bool IsFrozen() const;
 	void Unfreeze();
+	// Physics freeze: while true, the underlying CCharacterCore ignores
+	// Tick/Move/TickDeferred/Quantize, so the position stays anchored.
+	bool IsPhysicsFrozen() const { return m_Core.IsFrozen(); }
+	void SetPhysicsFrozen(bool Frozen) { m_Core.SetFrozen(Frozen); }
 	void TryUnfreeze(int UnfreezerCid = -1);
 	FREEZEREASON GetFreezeReason() const { return m_FreezeReason; }
 	int GetFreezer() const;
