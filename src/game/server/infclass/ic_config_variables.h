@@ -229,6 +229,12 @@ MACRO_CONFIG_INT(InfSurvivalHeroRevive, inf_survival_hero_revive, 1, 0, 1, CFGFL
 MACRO_CONFIG_INT(InfHeroReviveMaxCharges, inf_hero_revive_max_charges, 2, 1, 1000, CFGFLAG_SERVER, "Maximum number of revival charges that can be held")
 MACRO_CONFIG_INT(InfUpgradeAutoPickupTime, inf_upgrade_auto_pickup_time, 60, 0, 1000, CFGFLAG_SERVER, "Time (in seconds) to wait for auto-pickup for an upgrade")
 
+// Pathfinding
+MACRO_CONFIG_INT(InfPathfindingMaxIters, inf_pathfinding_max_iters, 5000, 100, 100000, CFGFLAG_SERVER, "Maximum number of iterations per task")
+MACRO_CONFIG_INT(InfPathfindingHookDirections, inf_pathfinding_hook_directions, 18, 1, 36, CFGFLAG_SERVER, "Number of hook directions that pathfinding tries")
+MACRO_CONFIG_INT(InfPathfindingSimulateStep, inf_pathfinding_simulate_step, 10, 10, 50, CFGFLAG_SERVER, "Number of ticks that pathfinding simulates in a row")
+MACRO_CONFIG_FLOAT(InfPathfindingGoalEpsilon, inf_pathfinding_goal_epsilon, 1, 1, 10, CFGFLAG_SERVER, "Pathfinding goal epsilon (in tiles)")
+
 // Deprecated variables
 MACRO_CONFIG_INT(InfStunGrenadeMinimalKills, inf_stun_grenade_minimal_kills, 2, 0, 30, CFGFLAG_SERVER, "Deprecated (has no effect now)")
 MACRO_CONFIG_INT(InfStunGrenadeProbability, inf_stun_grenade_probability, 30, 0, 100, CFGFLAG_SERVER, "Deprecated (has no effect now)")
