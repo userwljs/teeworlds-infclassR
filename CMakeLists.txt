@@ -952,6 +952,8 @@ set_glob(GAME_SERVER GLOB_RECURSE src/game/server
   infclass/ic_player.h
   infclass/pathfinding/motion_planner.cpp
   infclass/pathfinding/motion_planner.h
+  infclass/pathfinding/pathfinder.cpp
+  infclass/pathfinding/pathfinder.h
   infclass/snap_filter.cpp
   infclass/snap_filter.h
   infclass/survival.h
