@@ -235,7 +235,7 @@ void CBotPlayer::Tick()
 		}
 
 		const CIcCharacter *pCharacter = GetCharacter();
-		bool Controllable = pCharacter && pCharacter->IsAlive() && !pCharacter->IsFrozen() && !pCharacter->IsSleeping();
+		bool Controllable = pCharacter && pCharacter->IsAlive() && !pCharacter->IsFrozen() && !pCharacter->IsSleeping() && !pCharacter->IsPhysicsFrozen();
 		if(Controllable)
 		{
 			if(m_JumpTargetingTicks > 0)
@@ -755,7 +755,7 @@ void CBotPlayer::UpdateControls()
 	NewInput.m_PrevWeapon = 0;
 
 	const CIcCharacter *pCharacter = GetCharacter();
-	bool Controllable = pCharacter && !pCharacter->IsFrozen() && !pCharacter->IsSleeping();
+	bool Controllable = pCharacter && !pCharacter->IsFrozen() && !pCharacter->IsSleeping() && !pCharacter->IsPhysicsFrozen();
 	if(Controllable)
 	{
 		UpdateActiveWeapon();
@@ -792,7 +792,7 @@ void CBotPlayer::UpdateControls()
 		NewInput.m_PrevWeapon = 0;
 	}
 
-	if(m_PathState == EPathState::FOLLOWING)
+	if(m_PathState == EPathState::FOLLOWING && pCharacter && !pCharacter->IsPhysicsFrozen())
 	{
 		const int TickOffset = Server()->Tick() - m_PathBeginTick - 1;
 		while(m_PathState == EPathState::FOLLOWING)

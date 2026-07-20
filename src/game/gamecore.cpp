@@ -147,6 +147,7 @@ void CCharacterCore::Reset()
 	m_Passenger = nullptr;
 	m_IsPassenger = false;
 	m_ProbablyStucked = false;
+	m_Frozen = false;
 
 	// never initialize both to 0
 	m_Input.m_TargetX = 0;
@@ -161,6 +162,10 @@ bool CCharacterCore::IsGrounded() const
 
 void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 {
+	m_TriggeredEvents = 0;
+	if(m_Frozen)
+		return;
+
 	bool DoDeferredTick = true;
 	m_MoveRestrictions = m_pCollision->GetMoveRestrictions(m_Pos);
 
@@ -443,6 +448,9 @@ void CCharacterCore::Tick(bool UseInput, const CParams *pParams)
 
 void CCharacterCore::TickDeferred(const CParams *pParams)
 {
+	if(m_Frozen)
+		return;
+
 	const CTuningParams *pTuningParams = pParams->m_pTuningParams;
 
 	if(m_pWorld)
@@ -514,6 +522,9 @@ void CCharacterCore::TickDeferred(const CParams *pParams)
 
 void CCharacterCore::Move(const CParams *pParams)
 {
+	if(m_Frozen)
+		return;
+
 	const CTuningParams *pTuningParams = pParams->m_pTuningParams;
 
 	float RampValue = VelocityRamp(length(m_Vel) * 50, pTuningParams->m_VelrampStart, pTuningParams->m_VelrampRange, pTuningParams->m_VelrampCurvature);
@@ -625,6 +636,8 @@ void CCharacterCore::Read(const CNetObj_CharacterCore *pObjCore)
 
 void CCharacterCore::Quantize()
 {
+	if(m_Frozen)
+		return;
 	CNetObj_CharacterCore Core;
 	Write(&Core);
 	Read(&Core);
