@@ -477,6 +477,7 @@ namespace MotionPlanning
         {
             auto ModInput = Input;
             auto State = pNode->m_State;
+            bool Accept = true;
             for(int i = 0; i < m_Params.SimulateStep; i++)
             {
                 State.Tick(ModInput, TuningParams());
@@ -498,8 +499,13 @@ namespace MotionPlanning
                 {
                     ModInput.m_Jump = false;
                 }
+                if(m_fnIsStateValid && !m_fnIsStateValid(State))
+                {
+                    Accept = false;
+                    break;
+                }
             }
-            if(!m_fnIsStateValid || m_fnIsStateValid(State))
+            if(Accept)
             {
                 vCandidates.emplace_back(
                     normalize(State.m_Core.m_Pos - pNode->m_State.m_Core.m_Pos),
