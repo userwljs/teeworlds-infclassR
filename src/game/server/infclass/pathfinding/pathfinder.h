@@ -15,6 +15,7 @@
 #include "motion_planner.h"
 
 struct CNetObj_PlayerInput;
+class CCollision;
 
 using CMotionPlanner = MotionPlanning::CMotionPlanner;
 
@@ -68,12 +69,15 @@ public:
     explicit CPathfinder(const CCollision *pCollision);
     ~CPathfinder();
 
-    void SubmitTask(int SlotId, const CTuningParams *pTuningParams, const CCharacter *pCharacter, vec2 Goal);
+    void SubmitTask(int SlotId, const CTuningParams *pTuningParams, const CCharacter *pCharacter, vec2 Goal,
+                    std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> fnIsStateValid = nullptr);
     void CancelTask(int SlotId);
     void CancelAll();
     bool IsTaskFinished(int SlotId) const;
     void SetCollision(const CCollision *pCollision);
     std::optional<std::vector<std::tuple<int, vec2, CNetObj_PlayerInput>>> GetTaskResult(int SlotId) const;
+    static std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> GetFnIsStateValid(
+        EPlayerClass Class, int ZoneHandleIcDamage, bool VanillaMapLoaded, bool Survival);
 
 private:
     static constexpr int Quantum = 10;

@@ -3,8 +3,10 @@
 #include <algorithm>
 
 #include <base/system.h>
+#include <base/tl/ic_array.h>
 #include <engine/shared/config.h>
 #include <game/collision.h>
+#include <game/infclass/ic_classes.h>
 #include <game/server/infclass/entities/ic_entity.h>
 
 std::shared_ptr<CTask> CChannel::Consume()
@@ -89,8 +91,21 @@ CPathfinder::~CPathfinder()
     m_WorkerThreads.clear();
 }
 
-void CPathfinder::SubmitTask(int SlotId, const CTuningParams *pTuningParams, const CCharacter *pCharacter, vec2 Goal)
+void CPathfinder::SubmitTask(int SlotId, const CTuningParams *pTuningParams, const CCharacter *pCharacter, vec2 Goal,
+                             std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> fnIsStateValid)
 {
+    std::function<bool(const MotionPlanning::CMotionState &)> Fn;
+    if(fnIsStateValid)
+    {
+        Fn = [pRawColl = m_pCollision.get(), fnIsStateValid](const MotionPlanning::CMotionState &State) -> bool
+        {
+            return fnIsStateValid(pRawColl, State);
+        };
+    }
+    else
+    {
+        Fn = nullptr;
+    }
     CancelTask(SlotId);
     m_Tasks[SlotId] = std::make_shared<CTask>(CTask::EState::READY, m_pCollision, 0,
                                               CMotionPlanner(CMotionPlanner::Params{
@@ -99,7 +114,7 @@ void CPathfinder::SubmitTask(int SlotId, const CTuningParams *pTuningParams, con
                                                                  0.3, g_Config.m_InfPathfindingGoalEpsilon * TileSizeF,
                                                                  1.5, 0.15
                                                              }, m_pCollision.get(), pTuningParams,
-                                                             pCharacter->GetCore(), Goal, nullptr),
+                                                             pCharacter->GetCore(), Goal, Fn),
                                               g_Config.m_InfPathfindingMaxIters);
     m_ReadyQueue.Push(m_Tasks[SlotId]);
 }
@@ -201,4 +216,58 @@ void CPathfinder::WorkerThread()
             m_ReadyQueue.Push(std::move(pTask));
         }
     }
+}
+
+std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> CPathfinder::GetFnIsStateValid(
+    EPlayerClass Class, int ZoneHandleIcDamage, bool VanillaMapLoaded, bool Survival)
+{
+    // Does not support animated death zones
+    const auto fnGetDamageZoneValueAt = [ZoneHandleIcDamage, VanillaMapLoaded](const CCollision *pCollision, vec2 Pos)
+    {
+        int DamageIndex = pCollision->GetZoneValueAt(ZoneHandleIcDamage, Pos);
+        if(!DamageIndex && VanillaMapLoaded)
+        {
+            if(pCollision->GetCollisionAt(Pos.x, Pos.y) == TILE_DEATH)
+            {
+                DamageIndex = ZONE_DAMAGE_DEATH;
+            }
+        }
+        return DamageIndex;
+    };
+    const auto fnGetDamageZoneValuesAt = [fnGetDamageZoneValueAt](const CCollision *pCollision, vec2 Pos) -> icArray<int, 4>
+    {
+        icArray<int, 4> Result;
+        constexpr float ProximityRadius = CCharacterCore::PhysicalSize();
+        Result.Add(fnGetDamageZoneValueAt(
+            pCollision, vec2(Pos.x + ProximityRadius / 3.f, Pos.y - ProximityRadius / 3.f)));
+        Result.Add(fnGetDamageZoneValueAt(
+            pCollision, vec2(Pos.x + ProximityRadius / 3.f, Pos.y + ProximityRadius / 3.f)));
+        Result.Add(fnGetDamageZoneValueAt(
+            pCollision, vec2(Pos.x - ProximityRadius / 3.f, Pos.y - ProximityRadius / 3.f)));
+        Result.Add(fnGetDamageZoneValueAt(
+            pCollision, vec2(Pos.x - ProximityRadius / 3.f, Pos.y + ProximityRadius / 3.f)));
+        return Result;
+    };
+    return [fnGetDamageZoneValuesAt, Class, Survival](const CCollision *pCollision,
+                                                      const MotionPlanning::CMotionState &State) -> bool
+    {
+        const auto Indices = fnGetDamageZoneValuesAt(pCollision, State.m_Core.m_Pos);
+        if(Indices.Contains(ZONE_DAMAGE_DEATH))
+        {
+            return false;
+        }
+        if(Class != EPlayerClass::Undead && Indices.Contains(ZONE_DAMAGE_DEATH_NOUNDEAD))
+        {
+            return false;
+        }
+        if(IsInfectedClass(Class) && Indices.Contains(ZONE_DAMAGE_DEATH_INFECTED))
+        {
+            return false;
+        }
+        if(IsHumanClass(Class) && Indices.Contains(ZONE_DAMAGE_INFECTION) && !Survival)
+        {
+            return false;
+        }
+        return true;
+    };
 }
