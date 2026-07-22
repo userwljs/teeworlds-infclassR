@@ -69,7 +69,7 @@ public:
     explicit CPathfinder(const CCollision *pCollision);
     ~CPathfinder();
 
-    void SubmitTask(int SlotId, const CTuningParams *pTuningParams, const CCharacter *pCharacter, vec2 Goal,
+    void SubmitTask(int SlotId, const CTuningParams *pTuningParams, const CCharacterCore &CharacterCore, vec2 Goal,
                     int MaxIters,
                     std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> fnIsStateValid = nullptr);
     void CancelTask(int SlotId);

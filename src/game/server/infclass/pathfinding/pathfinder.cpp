@@ -91,7 +91,7 @@ CPathfinder::~CPathfinder()
     m_WorkerThreads.clear();
 }
 
-void CPathfinder::SubmitTask(int SlotId, const CTuningParams *pTuningParams, const CCharacter *pCharacter, vec2 Goal,
+void CPathfinder::SubmitTask(int SlotId, const CTuningParams *pTuningParams, const CCharacterCore &CharacterCore, vec2 Goal,
                              int MaxIters,
                              std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> fnIsStateValid)
 {
@@ -115,7 +115,7 @@ void CPathfinder::SubmitTask(int SlotId, const CTuningParams *pTuningParams, con
                                                                  0.3, g_Config.m_InfPathfindingGoalEpsilon * TileSizeF,
                                                                  1.5, 0.15
                                                              }, m_pCollision.get(), pTuningParams,
-                                                             pCharacter->GetCore(), Goal, Fn),
+                                                             CharacterCore, Goal, Fn),
                                               MaxIters);
     m_ReadyQueue.Push(m_Tasks[SlotId]);
 }
