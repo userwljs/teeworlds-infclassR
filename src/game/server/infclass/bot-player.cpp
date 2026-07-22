@@ -379,30 +379,6 @@ void CBotPlayer::OnCharacterDamage(const SDamageContext &Context)
 
 void CBotPlayer::OnTuningChanged()
 {
-#if 0
-	CTuningParams *pTuningParams = &m_NextTuningParams;
-	if(GetClass() == EPlayerClass::Hunter)
-	{
-		float Factor = 1.3f;
-		pTuningParams->m_GroundControlSpeed = pTuningParams->m_GroundControlSpeed * Factor;
-		pTuningParams->m_GroundControlAccel = pTuningParams->m_GroundControlAccel * Factor;
-		pTuningParams->m_AirControlSpeed = pTuningParams->m_AirControlSpeed * Factor;
-		pTuningParams->m_AirControlAccel = pTuningParams->m_AirControlAccel * Factor;
-		pTuningParams->m_Gravity = pTuningParams->m_Gravity * Factor;
-		pTuningParams->m_AirJumpImpulse = pTuningParams->m_AirJumpImpulse * Factor;
-		pTuningParams->m_GroundJumpImpulse = pTuningParams->m_GroundJumpImpulse * Factor;
-	}
-
-	if (GetClass() == EPlayerClass::Ghost)
-	{
-		// if (m_BotState == EBotState::Roaming)
-		// {
-			float GravityFactor = 0.6;
-			pTuningParams->m_Gravity = pTuningParams->m_Gravity * GravityFactor;
-		// }
-	}
-#endif
-
 	m_BotUtils.UpdateTuning(m_NextTuningParams);
 }
 
