@@ -79,8 +79,8 @@ public:
 
 	// This function return an Handle to access all zone layers with the name "pName"
 	int GetZoneHandle(const char *pName);
-	int GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData = nullptr);
-	int GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData = nullptr) { return GetZoneValueAt(ZoneHandle, {x, y}, pData); }
+	int GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData = nullptr) const;
+	int GetZoneValueAt(int ZoneHandle, float x, float y, ZoneData *pData = nullptr) const { return GetZoneValueAt(ZoneHandle, {x, y}, pData); }
 
 	bool AreConnected(vec2 Pos1, vec2 Pos2, float Radius) const;
 
@@ -128,6 +128,8 @@ private:
 	double m_Time;
 
 	array<array<CMapItemLayer *>> m_Zones;
+
+	void LoadZoneData(const array<CMapItemLayer *> &Zone);
 };
 
 #endif

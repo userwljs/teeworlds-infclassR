@@ -18,6 +18,7 @@ public:
 	void *GetData(int Index) override;
 	int GetDataSize(int Index) const override;
 	void *GetDataSwapped(int Index) override;
+	void *GetDataNoLoad(int Index) const override;
 	void UnloadData(int Index) override;
 	int NumData() const override;
 

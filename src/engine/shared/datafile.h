@@ -48,6 +48,7 @@ public:
 	int GetDataSize(int Index) const;
 	void *GetData(int Index);
 	void *GetDataSwapped(int Index); // makes sure that the data is 32bit LE ints when saved
+	void *GetDataNoLoad(int Index) const;
 	const char *GetDataString(int Index);
 	void ReplaceData(int Index, char *pData, size_t Size); // memory for data must have been allocated with malloc
 	void UnloadData(int Index);

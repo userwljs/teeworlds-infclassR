@@ -19,6 +19,7 @@ public:
 	virtual void *GetData(int Index) = 0;
 	virtual int GetDataSize(int Index) const = 0;
 	virtual void *GetDataSwapped(int Index) = 0;
+	virtual void *GetDataNoLoad(int Index) const = 0;
 	virtual void UnloadData(int Index) = 0;
 	virtual int NumData() const = 0;
 

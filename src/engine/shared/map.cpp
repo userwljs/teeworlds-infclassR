@@ -20,6 +20,13 @@ void *CMap::GetDataSwapped(int Index)
 	return m_DataFile.GetDataSwapped(Index);
 }
 
+void *CMap::GetDataNoLoad(int Index) const
+{
+	void *pResult = m_DataFile.GetDataNoLoad(Index);
+	dbg_assert(pResult, "could not get data");
+	return pResult;
+}
+
 void CMap::UnloadData(int Index)
 {
 	m_DataFile.UnloadData(Index);

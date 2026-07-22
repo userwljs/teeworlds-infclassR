@@ -411,6 +411,19 @@ void *CDataFileReader::GetDataSwapped(int Index)
 	return GetDataImpl(Index, true);
 }
 
+void *CDataFileReader::GetDataNoLoad(int Index) const
+{
+	if(!m_pDataFile)
+	{
+		return nullptr;
+	}
+
+	if(Index < 0 || Index >= m_pDataFile->m_Header.m_NumRawData)
+		return nullptr;
+
+	return m_pDataFile->m_ppDataPtrs[Index];
+}
+
 const char *CDataFileReader::GetDataString(int Index)
 {
 	if(Index == -1)

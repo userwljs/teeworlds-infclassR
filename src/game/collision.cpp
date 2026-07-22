@@ -548,6 +548,24 @@ bool CCollision::IsSolid(int x, int y) const
 	return GetPhysicsTile(x, y) != EZonePhysics::Null;
 }
 
+void CCollision::LoadZoneData(const array<CMapItemLayer *> &Zone)
+{
+	for(int i = 0; i < Zone.size(); i++)
+	{
+		const CMapItemLayer *pLayer = Zone[i];
+		if(pLayer->m_Type == LAYERTYPE_TILES)
+		{
+			const auto pTLayer = reinterpret_cast<const CMapItemLayerTilemap*>(pLayer);
+			m_pLayers->Map()->GetData(pTLayer->m_Data);
+		}
+		else if(pLayer->m_Type == LAYERTYPE_QUADS)
+		{
+			const auto pQLayer = reinterpret_cast<const CMapItemLayerQuads*>(pLayer);
+			m_pLayers->Map()->GetDataSwapped(pQLayer->m_Data);
+		}
+	}
+}
+
 std::optional<int> CCollision::GetTeleCheckpoint(int Index) const
 {
 	if(Index < 0)
@@ -691,6 +709,8 @@ int CCollision::GetZoneHandle(const char *pName)
 		}
 	}
 
+	LoadZoneData(LayerList);
+
 	return Handle;
 }
 
@@ -820,7 +840,7 @@ struct SAnimationTransformCache
 	int PosEnv = -1;
 };
 
-int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
+int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData) const
 {
 	if(!m_pLayers->ZoneGroup())
 		return 0;
@@ -840,7 +860,7 @@ int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
 		if(pLayer->m_Type == LAYERTYPE_TILES)
 		{
 			const CMapItemLayerTilemap *pTLayer = (const CMapItemLayerTilemap *)pLayer;
-			const CTile *pTiles = (const CTile *)m_pLayers->Map()->GetData(pTLayer->m_Data);
+			const CTile *pTiles = (const CTile *)m_pLayers->Map()->GetDataNoLoad(pTLayer->m_Data);
 
 			int Nx = clamp(static_cast<int>(Pos.x) / 32, 0, pTLayer->m_Width - 1);
 			int Ny = clamp(static_cast<int>(Pos.y) / 32, 0, pTLayer->m_Height - 1);
@@ -855,7 +875,7 @@ int CCollision::GetZoneValueAt(int ZoneHandle, vec2 Pos, ZoneData *pData)
 		else if(pLayer->m_Type == LAYERTYPE_QUADS)
 		{
 			const CMapItemLayerQuads *pQLayer = (const CMapItemLayerQuads *)pLayer;
-			const CQuad *pQuads = (const CQuad *)m_pLayers->Map()->GetDataSwapped(pQLayer->m_Data);
+			const CQuad *pQuads = (const CQuad *)m_pLayers->Map()->GetDataNoLoad(pQLayer->m_Data);
 
 			for(int q = 0; q < pQLayer->m_NumQuads; q++)
 			{
