@@ -220,7 +220,7 @@ void CPathfinder::WorkerThread()
 }
 
 std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> CPathfinder::GetFnIsStateValid(
-    EPlayerClass Class, int ZoneHandleIcDamage, bool VanillaMapLoaded, bool Survival)
+    EPlayerClass Class, int ZoneHandleIcDamage, bool VanillaMapLoaded)
 {
     // Does not support animated death zones
     const auto fnGetDamageZoneValueAt = [ZoneHandleIcDamage, VanillaMapLoaded](const CCollision *pCollision, vec2 Pos)
@@ -249,8 +249,8 @@ std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> CP
             pCollision, vec2(Pos.x - ProximityRadius / 3.f, Pos.y + ProximityRadius / 3.f)));
         return Result;
     };
-    return [fnGetDamageZoneValuesAt, Class, Survival](const CCollision *pCollision,
-                                                      const MotionPlanning::CMotionState &State) -> bool
+    return [fnGetDamageZoneValuesAt, Class](const CCollision *pCollision,
+                                            const MotionPlanning::CMotionState &State) -> bool
     {
         const auto Indices = fnGetDamageZoneValuesAt(pCollision, State.m_Core.m_Pos);
         if(Indices.Contains(ZONE_DAMAGE_DEATH))
@@ -265,7 +265,7 @@ std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> CP
         {
             return false;
         }
-        if(IsHumanClass(Class) && Indices.Contains(ZONE_DAMAGE_INFECTION) && !Survival)
+        if(IsHumanClass(Class) && Indices.Contains(ZONE_DAMAGE_INFECTION))
         {
             return false;
         }

@@ -78,7 +78,7 @@ public:
     void SetCollision(const CCollision *pCollision);
     std::optional<std::vector<std::tuple<int, vec2, CNetObj_PlayerInput>>> GetTaskResult(int SlotId) const;
     static std::function<bool(const CCollision *, const MotionPlanning::CMotionState &)> GetFnIsStateValid(
-        EPlayerClass Class, int ZoneHandleIcDamage, bool VanillaMapLoaded, bool Survival);
+        EPlayerClass Class, int ZoneHandleIcDamage, bool VanillaMapLoaded);
 
 private:
     static constexpr int Quantum = 10;
