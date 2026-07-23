@@ -18,11 +18,9 @@ ETweaks.ThreatAware = "threat-aware"
 
 Survival = {}
 Survival.hard_max = 8
-Survival.allowed_extra_players = 0
 Survival.hp_multiplier = 1
 Survival.difficulty_level = 1
 Survival.default_tweaks = nil
-Survival.max_players = 0
 Survival.current_wave = 0
 
 ---@param bot_conf SurvivalBotConfiguration
@@ -51,24 +49,6 @@ function Survival:add_boss_infected(wave, player_class)
     return bot_conf
 end
 
----@param base_difficulty number
----@param hp_multiplier number
-function Survival:get_max_players_for_difficulty(base_difficulty, hp_multiplier)
-    local max_players = base_difficulty + 2 * hp_multiplier
-    if max_players > Survival.hard_max then
-        max_players = Survival.hard_max
-    end
-
-    return max_players + Survival.allowed_extra_players
-end
-
-function Survival:update_max_players()
-    Survival.max_players = Survival:get_max_players_for_difficulty(Survival.difficulty_level, Survival.hp_multiplier)
-
-    local game_conf = Game.Controller:SurvivalGetGameConfiguration()
-    game_conf.MaxPlayers = survival_max_players
-end
-
 function Survival:apply_difficulty()
     Survival.default_tweaks = nil
     if Survival.difficulty_level <= 4 then
@@ -94,8 +74,6 @@ function Survival:apply_difficulty()
     else
         game_conf.Hardmode = false
     end
-
-    Survival:update_max_players()
 end
 
 ---@param base_difficulty number
@@ -105,7 +83,6 @@ function Survival:set_difficulty(base_difficulty, hp_multiplier)
     Survival.hp_multiplier = hp_multiplier
 
     Survival:apply_difficulty()
-    update_max_players()
 end
 
 SurvivalBats = {}
@@ -182,16 +159,14 @@ function Survival:start_round(base_difficulty, hp_multiplier)
     Game.Controller:QueueRound("survival")
     Game.Controller:DoWarmup(3)
     Game.Context:SendChatTarget(-1,
-        string.format("Starting survival round (difficulty %d, max players %d)", Survival.difficulty_level,
-            Survival.max_players))
+        string.format("Starting survival round (difficulty %d)", Survival.difficulty_level))
 end
 
 function Survival:setup_votes()
     local vote_index = 0
     local hp_multiplier = 1
     for i = 1, 6 do
-        local vote_name = string.format("Start survival (level %d, %d players max)", i,
-            Survival:get_max_players_for_difficulty(i, hp_multiplier))
+        local vote_name = string.format("Start survival (level %d)", i)
         local vote_command = string.format("lua Survival:start_round(%d, %d)", i, hp_multiplier)
         Game.Context:RemoveVote(vote_command)
         Game.Context:InsertVote(vote_index, vote_name, vote_command)

@@ -251,14 +251,12 @@ struct InfclassPlayerPersistantData : public CGameContext::CPersistentClientData
 
 enum class ESurvivalConfigOption
 {
-	MaxPlayers,
 	Hardmode,
 	Count,
 	Invalid = Count
 };
 
 static const char *gs_aSurvivalOptionNames[] = {
-	"max-players",
 	"hardmode",
 	"invalid",
 };
@@ -2790,16 +2788,6 @@ void CIcGameController::ConSurvivalConf(IConsole::IResult *pResult)
 	int Value = pResult->GetInteger(1);
 	switch(Option)
 	{
-	case ESurvivalConfigOption::MaxPlayers:
-		if(pResult->NumArguments() > 1)
-		{
-			SurvivalGetMutableGameConfiguration()->MaxPlayers = Value;
-		}
-		else
-		{
-			Value = SurvivalGetGameConfiguration()->MaxPlayers;
-		}
-		break;
 	case ESurvivalConfigOption::Hardmode:
 		if(pResult->NumArguments() > 1)
 		{
@@ -4068,20 +4056,6 @@ void CIcGameController::OnInfectionTriggered()
 
 	if(GetRoundType() == ERoundType::Survival)
 	{
-		int MaxPlayers = SurvivalGetGameConfiguration()->MaxPlayers;
-		if(Config()->m_InfSurvivalPlayerLimit && MaxPlayers && NumPlayers > MaxPlayers)
-		{
-			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("Unable to start the game: too many players!"), nullptr);
-			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
-				_P("The team has {int:ActivePlayers} active players but only {int:MaxPlayers} player allowed.",
-					"The team has {int:ActivePlayers} active players but only {int:MaxPlayers} players allowed.", NumPlayers),
-				"ActivePlayers", &NumPlayers,
-				"MaxPlayers", &MaxPlayers,
-				nullptr);
-			EndRound();
-			return;
-		}
-
 		m_SurvivalState.Scores.Clear();
 		for(int i = 0; i < MAX_CLIENTS; ++i)
 		{
@@ -6108,24 +6082,6 @@ bool CIcGameController::CanJoinTeam(int Team, int ClientId)
 					EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE,
 					_("You have to wait until the survival is over"));
 				return false;
-			}
-
-			int MaxPlayers = SurvivalGetGameConfiguration()->MaxPlayers;
-			if(Config()->m_InfSurvivalPlayerLimit && MaxPlayers)
-			{
-				int NumHumans = 0;
-				int NumInfected = 0;
-				GetPlayerCounter(-1, NumHumans, NumInfected);
-
-				if(NumHumans >= MaxPlayers)
-				{
-					GameServer()->SendBroadcast_Localization_P(ClientId,
-						EBroadcastPriority::GAMEANNOUNCE, BROADCAST_DURATION_GAMEANNOUNCE, MaxPlayers,
-						_("Only {int:MaxPlayers} active players are allowed"),
-						"MaxPlayers", &MaxPlayers,
-						nullptr);
-					return false;
-				}
 			}
 		}
 

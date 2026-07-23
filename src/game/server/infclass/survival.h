@@ -57,13 +57,11 @@ class SurvivalGameConfiguration
 {
 public:
 	icArray<SurvivalWaveConfiguration, MaxWaves> SurvivalWaves;
-	int MaxPlayers{};
 	bool HardMode{};
 
 	void Reset()
 	{
 		SurvivalWaves.Clear();
-		MaxPlayers = 0;
 		HardMode = false;
 	}
 

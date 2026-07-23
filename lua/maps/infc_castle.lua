@@ -30,11 +30,6 @@ Castle_cp2_pos = vec2(164.5 * 32, 63 * 32)
 EBroadcastPriority = {}
 EBroadcastPriority.GAMEANNOUNCE = 3
 
-Player_limit = Config.inf_survival_player_limit ~= 0 and Config.inf_survival_player_limit ~= nil
-if Config.inf_survival_player_limit == nil then
-    print("Warning: 'Config.inf_survival_player_limit' is a nil value")
-end
-
 function dbg_msg(level, text)
     if debug_messages_target ~= nil then
         Game.Context:SendChatTarget(debug_messages_target, string.format("Lua: %s", text))
@@ -64,8 +59,6 @@ if Survival_map_initialized == nil then
     Survival_map_initialized = true
 
     survival_difficulty_level = 0
-    survival_allow_extra_players = 0
-    survival_max_players = 0
     survival_players = 0
     Survival_current_wave = 1 -- Always '1' for Castle
     survival_hp_multiplier = 1
@@ -837,26 +830,6 @@ function on_control_point_effect(control_point)
     for_each_human_character(give_bonus)
 end
 
-function get_max_players_for_difficulty(difficulty, hp_multiplier)
-    if not Player_limit then
-        return 64
-    end
-
-    local max_players = difficulty + 1
-    if max_players > 6 then
-        max_players = 6
-    end
-
-    return max_players + survival_allow_extra_players
-end
-
-function update_max_players()
-    survival_max_players = get_max_players_for_difficulty(survival_difficulty_level, survival_hp_multiplier)
-
-    local game_conf = Game.Controller:SurvivalGetGameConfiguration()
-    game_conf.MaxPlayers = survival_max_players
-end
-
 function update_difficulty()
     survival_default_tweaks = nil
     if survival_difficulty_level <= 4 then
@@ -889,8 +862,6 @@ function update_difficulty()
 
     local game_conf = Game.Controller:SurvivalGetGameConfiguration()
     game_conf.Hardmode = castle_hardmode
-
-    update_max_players()
 end
 
 function start_survival_game(base_difficulty)
@@ -906,14 +877,8 @@ function start_survival_game(base_difficulty)
     Game.Controller:PrepareSurvival()
     Game.Controller:QueueRound("survival")
     Game.Controller:DoWarmup(3)
-    if Player_limit then
-        Game.Context:SendChatTarget(-1,
-            string.format("Starting survival game (difficulty %d, max players %d)", survival_difficulty_level,
-                survival_max_players))
-    else
-        Game.Context:SendChatTarget(-1,
-            string.format("Starting survival game (difficulty %d)", survival_difficulty_level))
-    end
+    Game.Context:SendChatTarget(-1,
+        string.format("Starting survival game (difficulty %d)", survival_difficulty_level))
 end
 
 function start_survival_auto()
@@ -998,19 +963,9 @@ end
 ---@return string
 function Get_vote_name(difficulty, multiplier)
     if multiplier == 1 then
-        if Player_limit then
-            return string.format("Start survival (%d, %d players max)", difficulty,
-                get_max_players_for_difficulty(difficulty, multiplier))
-        else
-            return string.format("Start survival (difficulty %d)", difficulty)
-        end
+        return string.format("Start survival (difficulty %d)", difficulty)
     else
-        if Player_limit then
-            return string.format("Start survival (%d, %dx HP, %d players max)", difficulty, multiplier,
-                get_max_players_for_difficulty(difficulty, multiplier))
-        else
-            return string.format("Start survival (difficulty %d, %dx HP)", difficulty, multiplier)
-        end
+        return string.format("Start survival (difficulty %d, %dx HP)", difficulty, multiplier)
     end
 end
 
@@ -1022,12 +977,6 @@ function survival_setup_votes()
         Game.Context:InsertVote(i - 1, vote_name, vote_command)
     end
     -- Game.Context:RemoveVote("lua start_survival_game(6)")
-end
-
-function set_extra_players(num)
-    survival_allow_extra_players = num
-    survival_setup_votes()
-    update_max_players()
 end
 
 print("Castle runtime loaded")

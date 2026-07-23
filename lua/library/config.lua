@@ -187,7 +187,6 @@
 ---@field inf_survival_hero_revive number Enable hero reviving in survival mode
 ---@field inf_hero_revive_max_charges number Maximum number of revival charges that can be held
 ---@field inf_upgrade_auto_pickup_time number Time (in seconds) to wait for auto-pickup for an upgrade
----@field inf_survival_player_limit number Enable max players limit in survival mode
 ---@field inf_stun_grenade_minimal_kills number Deprecated (has no effect now)
 ---@field inf_stun_grenade_probability number Deprecated (has no effect now)
 ---@field inf_slime_poison_duration number Deprecated (has no effect now, use inf_slime_poison_damage instead)

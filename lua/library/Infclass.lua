@@ -650,7 +650,6 @@ local SurvivalBotConfiguration = {}
 function SurvivalBotConfiguration:GetTweaks() end
 
 ---@class SurvivalGameConfiguration
----@field MaxPlayers number
 ---@field Hardmode boolean
 local SurvivalGameConfiguration = {}
 
