@@ -8,6 +8,7 @@ bam
 /objs
 src/game/generated
 /*.dll
+/data/languages
 
 /crapnet*
 /dilate*
