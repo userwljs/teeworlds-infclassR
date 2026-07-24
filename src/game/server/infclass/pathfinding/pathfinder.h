@@ -81,9 +81,9 @@ public:
         EPlayerClass Class, int ZoneHandleIcDamage, bool VanillaMapLoaded);
 
 private:
-    std::vector<std::thread> m_WorkerThreads;
+    std::vector<std::thread> m_vWorkerThreads;
     CChannel m_ReadyQueue;
-    std::array<std::shared_ptr<CTask>, MAX_CLIENTS> m_Tasks;
+    std::array<std::shared_ptr<CTask>, MAX_CLIENTS> m_aTasks;
     std::shared_ptr<const CCollision> m_pCollision;
     void WorkerThread();
 };
