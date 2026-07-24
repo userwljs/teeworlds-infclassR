@@ -53,6 +53,7 @@ using UPlayerClass = CIcPlayer;
 
 #include "bot_config_parser.h"
 #include "bot_utils.h"
+#include "pathfinding/pathfinder.h"
 
 constexpr int InfClassModeSpecialSkip = 0x100;
 
@@ -4869,6 +4870,31 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 			pMessage,
 			"PlayerName", GameServer()->Server()->ClientName(Victim),
 			nullptr);
+	}
+}
+
+void CIcGameController::MaybeInitPathfinder()
+{
+	if(!m_pPathfinder)
+	{
+		m_pPathfinder = std::make_unique<CPathfinder>(GameServer()->Collision());
+	}
+}
+
+void CIcGameController::PathfinderSubmitTask(int SlotId, const CTuningParams *pTuningParams,
+                                             const CCharacterCore &CharacterCore, vec2 Goal, int MaxIters,
+                                             EPlayerClass PlayerClass)
+{
+	MaybeInitPathfinder();
+	m_pPathfinder->SubmitTask(SlotId, pTuningParams, CharacterCore, Goal, MaxIters,
+	                          CPathfinder::GetFnIsStateValid(PlayerClass, m_ZoneHandle_icDamage, m_VanillaMapLoaded));
+}
+
+void CIcGameController::PathfinderUpdateCollision()
+{
+	if(m_pPathfinder)
+	{
+		m_pPathfinder->SetCollision(GameServer()->Collision());
 	}
 }
 

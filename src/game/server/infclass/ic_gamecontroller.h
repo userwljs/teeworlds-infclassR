@@ -12,6 +12,7 @@
 
 #include <base/tl/ic_array.h>
 
+#include <memory>
 #include <unordered_set>
 
 class CBaseBotPlayer;
@@ -23,6 +24,7 @@ class CGameWorld;
 class CHintMessage;
 class CIcCharacter;
 class CIcPlayer;
+class CPathfinder;
 class IDebugSink;
 struct CNetObj_GameInfo;
 struct DeathContext;
@@ -476,6 +478,12 @@ public:
 	std::optional<int> GetClientIdByName(const char *pName) const;
 	void OnKillOrInfection(int Victim, const DeathContext &Context);
 
+	void MaybeInitPathfinder();
+	void PathfinderSubmitTask(int SlotId, const CTuningParams *pTuningParams, const CCharacterCore &CharacterCore,
+	                          vec2 Goal,
+	                          int MaxIters, EPlayerClass PlayerClass);
+	void PathfinderUpdateCollision();
+
 protected:
 	void RoundTickBeforeInitialInfection();
 	void RoundTickAfterInitialInfection();
@@ -619,6 +627,8 @@ private:
 	int m_InfMaxAmmo[NB_INFWEAPON]{};
 	float m_aInfWeaponForce[NB_INFWEAPON]{};
 	static int64_t m_LastTipTime;
+
+	std::unique_ptr<CPathfinder> m_pPathfinder;
 };
 
 #endif

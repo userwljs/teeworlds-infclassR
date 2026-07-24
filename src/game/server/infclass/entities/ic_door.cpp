@@ -2,6 +2,7 @@
 
 #include <engine/shared/config.h>
 #include <game/server/gamecontext.h>
+#include <game/server/infclass/ic_gamecontroller.h>
 
 int CDoor::EntityId{};
 
@@ -123,4 +124,5 @@ void CDoor::SetOpen(bool Open)
 
 	m_Open = Open;
 	SetCollisions(!Open);
+	GameController()->PathfinderUpdateCollision();
 }
