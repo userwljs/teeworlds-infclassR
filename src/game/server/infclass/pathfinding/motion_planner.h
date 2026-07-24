@@ -19,8 +19,8 @@ namespace MotionPlanning
         CAabb(vec2 Min, vec2 Max);
 
         static CAabb FromSegment(vec2 Start, vec2 End);
-        static CAabb FromSegments(const std::vector<struct SSegment> &Segments, const std::vector<int> &Indices);
-        static CAabb FromSegmentsRange(const std::vector<struct SSegment> &Segments, const std::vector<int> &Sorted,
+        static CAabb FromSegments(const std::vector<struct CSegment> &Segments, const std::vector<int> &Indices);
+        static CAabb FromSegmentsRange(const std::vector<struct CSegment> &Segments, const std::vector<int> &Sorted,
                                        int Begin, int End);
 
         void Expand(const CAabb &Other);
@@ -44,7 +44,7 @@ namespace MotionPlanning
         const CCollision *Collision() const { return m_pCollision; }
     };
 
-    struct SInput
+    struct CInput
     {
         int8_t m_Direction;
         int m_TargetX;
@@ -55,22 +55,22 @@ namespace MotionPlanning
         operator CNetObj_PlayerInput() const;
     };
 
-    struct SNode
+    struct CNode
     {
-        std::shared_ptr<SNode> m_pParent;
+        std::shared_ptr<CNode> m_pParent;
         CMotionState m_State;
         int m_Tick;
         int m_Depth;
-        SInput m_Input; // transition to this state, must be dealt specially when m_Tick == 0
+        CInput m_Input; // transition to this state, must be dealt specially when m_Tick == 0
     };
 
-    struct SSegment
+    struct CSegment
     {
         vec2 m_Direction;
         float m_Displacement;
-        std::shared_ptr<SNode> m_pParent;
+        std::shared_ptr<CNode> m_pParent;
         CMotionState m_State;
-        SInput m_Input;
+        CInput m_Input;
     };
 
     class CSegmentTree
@@ -86,9 +86,9 @@ namespace MotionPlanning
 
         void InitSpatial(float CellSize);
 
-        int Add(const SSegment &Seg);
+        int Add(const CSegment &Seg);
         void Remove(int Index);
-        const SSegment &GetSegment(int Index) const;
+        const CSegment &GetSegment(int Index) const;
 
         int DedupQuery(vec2 Pos, float Radius) const;
         int QueryNearest(vec2 Point);
@@ -98,17 +98,17 @@ namespace MotionPlanning
         static constexpr int MaxLeaf = 8;
         static constexpr int SAHBuckets = 8;
 
-        struct SBvhNode
+        struct CBvhNode
         {
             enum EType : uint8_t { Leaf, Internal } m_Type;
 
             CAabb m_Aabb;
-            std::vector<int> m_SegIndices;
+            std::vector<int> m_vSegIndices;
             int m_Left = -1;
             int m_Right = -1;
         };
 
-        struct SQueryResult
+        struct CQueryResult
         {
             int m_Index;
             float m_Score;
@@ -120,23 +120,23 @@ namespace MotionPlanning
         void RebuildBVH();
         void MarkBVHDirty();
 
-        int QueryNearestWithScore(vec2 Point, SQueryResult &OutResult);
+        int QueryNearestWithScore(vec2 Point, CQueryResult &OutResult);
 
-        static void BuildBVH(std::vector<SBvhNode> &Nodes, const std::vector<SSegment> &Segments,
+        static void BuildBVH(std::vector<CBvhNode> &Nodes, const std::vector<CSegment> &Segments,
                              const std::vector<int> &Indices,
                              int &OutRoot, int &OutNodeCount, int &OutMaxDepth);
-        static void QueryBVH(const std::vector<SBvhNode> &Nodes, const std::vector<SSegment> &Segments,
+        static void QueryBVH(const std::vector<CBvhNode> &Nodes, const std::vector<CSegment> &Segments,
                              int Root, vec2 Point, int &BestIndex, float &BestScore);
         static float PointToSegmentDistance(vec2 Point, vec2 A, vec2 B);
         static bool IsBehindSegment(vec2 Point, vec2 Start, vec2 Direction);
-        static float SegmentScore(const SSegment &Seg, vec2 Point);
+        static float SegmentScore(const CSegment &Seg, vec2 Point);
 
-        std::vector<SSegment> m_Segments;
-        std::vector<int> m_FreeSlots;
+        std::vector<CSegment> m_vSegments;
+        std::vector<int> m_vFreeSlots;
         std::unordered_set<int> m_Active;
         std::unique_ptr<CSpatialHash> m_pSpatial;
 
-        std::vector<SBvhNode> m_BVHNodes;
+        std::vector<CBvhNode> m_vBVHNodes;
         int m_BVHRoot = -1;
         int m_BVHDirtyCount = 0;
         int m_BVHNodeCount = 0;
@@ -186,9 +186,9 @@ namespace MotionPlanning
 
         std::optional<std::vector<std::tuple<int, vec2, CNetObj_PlayerInput>>> m_Path;
 
-        std::vector<SInput> GenerateInputs(const CMotionState &MotionState) const;
+        std::vector<CInput> GenerateInputs(const CMotionState &MotionState) const;
         vec2 DoSample() const;
-        bool ExpandNode(std::shared_ptr<SNode> pNode);
+        bool ExpandNode(std::shared_ptr<CNode> pNode);
         void ExpandExploredBox(const vec2 Pos);
     };
 } // namespace MotionPlanning

@@ -175,7 +175,7 @@ std::optional<std::vector<std::tuple<int, vec2, CNetObj_PlayerInput>>> CPathfind
     // IsTaskFinished (acquire) establishes visibility of m_Planner writes for
     // both FINISHED and CANCELED states; a path found before cancellation is
     // still returned.
-    if(IsTaskFinished(SlotId) && m_aTasks[SlotId]->m_Planner.HasPath())
+    if(m_aTasks[SlotId]->m_State.load(std::memory_order_acquire) == CTask::EState::FINISHED && m_aTasks[SlotId]->m_Planner.HasPath())
     {
         return m_aTasks[SlotId]->m_Planner.GetPath();
     }

@@ -22,7 +22,7 @@ namespace MotionPlanning
             vec2(std::max(Start.x, End.x), std::max(Start.y, End.y)));
     }
 
-    CAabb CAabb::FromSegments(const std::vector<SSegment> &Segments, const std::vector<int> &Indices)
+    CAabb CAabb::FromSegments(const std::vector<CSegment> &Segments, const std::vector<int> &Indices)
     {
         vec2 Min = Segments[Indices[0]].m_pParent->m_State.m_Core.m_Pos;
         vec2 Max = Segments[Indices[0]].m_State.m_Core.m_Pos;
@@ -38,7 +38,7 @@ namespace MotionPlanning
         return CAabb(Min, Max);
     }
 
-    CAabb CAabb::FromSegmentsRange(const std::vector<SSegment> &Segments, const std::vector<int> &Sorted, int Begin,
+    CAabb CAabb::FromSegmentsRange(const std::vector<CSegment> &Segments, const std::vector<int> &Sorted, int Begin,
                                    int End)
     {
         vec2 Min = Segments[Sorted[Begin]].m_pParent->m_State.m_Core.m_Pos;
@@ -156,7 +156,7 @@ namespace MotionPlanning
 
     CSegmentTree::CSegmentTree()
     {
-        m_Segments.reserve(4096);
+        m_vSegments.reserve(4096);
         m_Active.reserve(1024);
     }
 
@@ -165,19 +165,19 @@ namespace MotionPlanning
     CSegmentTree::CSegmentTree(CSegmentTree &&) noexcept = default;
     CSegmentTree &CSegmentTree::operator=(CSegmentTree &&) noexcept = default;
 
-    int CSegmentTree::Add(const SSegment &Seg)
+    int CSegmentTree::Add(const CSegment &Seg)
     {
         int Idx;
-        if(!m_FreeSlots.empty())
+        if(!m_vFreeSlots.empty())
         {
-            Idx = m_FreeSlots.back();
-            m_FreeSlots.pop_back();
-            m_Segments[Idx] = Seg;
+            Idx = m_vFreeSlots.back();
+            m_vFreeSlots.pop_back();
+            m_vSegments[Idx] = Seg;
         }
         else
         {
-            Idx = static_cast<int>(m_Segments.size());
-            m_Segments.push_back(Seg);
+            Idx = static_cast<int>(m_vSegments.size());
+            m_vSegments.push_back(Seg);
         }
         m_Active.insert(Idx);
         if(m_pSpatial)
@@ -189,22 +189,22 @@ namespace MotionPlanning
     void CSegmentTree::Remove(int Index)
     {
         m_Active.erase(Index);
-        if(m_pSpatial && Index < static_cast<int>(m_Segments.size()))
-            m_pSpatial->Remove(Index, m_Segments[Index].m_State.m_Core.m_Pos);
-        m_FreeSlots.push_back(Index);
+        if(m_pSpatial && Index < static_cast<int>(m_vSegments.size()))
+            m_pSpatial->Remove(Index, m_vSegments[Index].m_State.m_Core.m_Pos);
+        m_vFreeSlots.push_back(Index);
         m_BVHDirtyCount++;
     }
 
-    const SSegment &CSegmentTree::GetSegment(int Index) const
+    const CSegment &CSegmentTree::GetSegment(int Index) const
     {
-        return m_Segments[Index];
+        return m_vSegments[Index];
     }
 
     void CSegmentTree::InitSpatial(float CellSize)
     {
         m_pSpatial = std::make_unique<CSpatialHash>(CellSize);
         for(const int Idx : m_Active)
-            m_pSpatial->Insert(Idx, m_Segments[Idx].m_State.m_Core.m_Pos);
+            m_pSpatial->Insert(Idx, m_vSegments[Idx].m_State.m_Core.m_Pos);
     }
 
     int CSegmentTree::DedupQuery(vec2 Pos, float Radius) const
@@ -221,7 +221,7 @@ namespace MotionPlanning
 
     void CSegmentTree::RebuildBVH()
     {
-        m_BVHNodes.clear();
+        m_vBVHNodes.clear();
         m_BVHRoot = -1;
         m_BVHNodeCount = 0;
         m_BVHMaxDepth = 0;
@@ -230,7 +230,7 @@ namespace MotionPlanning
         if(ActiveIndices.empty())
             return;
 
-        BuildBVH(m_BVHNodes, m_Segments, ActiveIndices, m_BVHRoot, m_BVHNodeCount, m_BVHMaxDepth);
+        BuildBVH(m_vBVHNodes, m_vSegments, ActiveIndices, m_BVHRoot, m_BVHNodeCount, m_BVHMaxDepth);
         m_BVHDirtyCount = 0;
     }
 
@@ -247,20 +247,20 @@ namespace MotionPlanning
 
     int CSegmentTree::QueryNearest(vec2 Point)
     {
-        SQueryResult Result;
+        CQueryResult Result;
         if(!QueryNearestWithScore(Point, Result))
             return -1;
         return Result.m_Index;
     }
 
-    int CSegmentTree::QueryNearestWithScore(vec2 Point, SQueryResult &OutResult)
+    int CSegmentTree::QueryNearestWithScore(vec2 Point, CQueryResult &OutResult)
     {
         EnsureBVH();
         if(m_BVHRoot < 0)
             return 0;
 
         OutResult = {-1, std::numeric_limits<float>::infinity()};
-        QueryBVH(m_BVHNodes, m_Segments, m_BVHRoot, Point, OutResult.m_Index, OutResult.m_Score);
+        QueryBVH(m_vBVHNodes, m_vSegments, m_BVHRoot, Point, OutResult.m_Index, OutResult.m_Score);
         return 1;
     }
 
@@ -281,7 +281,7 @@ namespace MotionPlanning
         return (Point.x - Start.x) * Direction.x + (Point.y - Start.y) * Direction.y <= 0.0f;
     }
 
-    float CSegmentTree::SegmentScore(const SSegment &Seg, vec2 Point)
+    float CSegmentTree::SegmentScore(const CSegment &Seg, vec2 Point)
     {
         if(IsBehindSegment(Point, Seg.m_pParent->m_State.m_Core.m_Pos, Seg.m_Direction))
             return std::numeric_limits<float>::infinity();
@@ -289,7 +289,7 @@ namespace MotionPlanning
             PointToSegmentDistance(Point, Seg.m_pParent->m_State.m_Core.m_Pos, Seg.m_State.m_Core.m_Pos);
     }
 
-    void CSegmentTree::BuildBVH(std::vector<SBvhNode> &Nodes, const std::vector<SSegment> &Segments,
+    void CSegmentTree::BuildBVH(std::vector<CBvhNode> &Nodes, const std::vector<CSegment> &Segments,
                                 const std::vector<int> &Indices,
                                 int &OutRoot, int &OutNodeCount, int &OutMaxDepth)
     {
@@ -319,7 +319,7 @@ namespace MotionPlanning
             {
                 CAabb Aabb = CAabb::FromSegments(Segments, Job.Indices);
                 int Idx = static_cast<int>(Nodes.size());
-                Nodes.push_back({SBvhNode::Leaf, Aabb, Job.Indices, -1, -1});
+                Nodes.push_back({CBvhNode::Leaf, Aabb, Job.Indices, -1, -1});
 
                 if(Job.ParentIdx >= 0)
                 {
@@ -380,7 +380,7 @@ namespace MotionPlanning
                 }
 
                 int Idx = static_cast<int>(Nodes.size());
-                Nodes.push_back({SBvhNode::Internal, Aabb, {}, -1, -1});
+                Nodes.push_back({CBvhNode::Internal, Aabb, {}, -1, -1});
 
                 if(Job.ParentIdx >= 0)
                 {
@@ -403,7 +403,7 @@ namespace MotionPlanning
         }
     }
 
-    void CSegmentTree::QueryBVH(const std::vector<SBvhNode> &Nodes, const std::vector<SSegment> &Segments,
+    void CSegmentTree::QueryBVH(const std::vector<CBvhNode> &Nodes, const std::vector<CSegment> &Segments,
                                 int Root, vec2 Point, int &BestIndex, float &BestScore)
     {
         std::vector<int> Stack;
@@ -414,14 +414,14 @@ namespace MotionPlanning
             int NodeIdx = Stack.back();
             Stack.pop_back();
 
-            const SBvhNode &Node = Nodes[NodeIdx];
+            const CBvhNode &Node = Nodes[NodeIdx];
             float BestScoreSq = BestScore * BestScore;
             if(Node.m_Aabb.DistanceToPointSq(Point) >= BestScoreSq)
                 continue;
 
-            if(Node.m_Type == SBvhNode::Leaf)
+            if(Node.m_Type == CBvhNode::Leaf)
             {
-                for(int SegIdx : Node.m_SegIndices)
+                for(int SegIdx : Node.m_vSegIndices)
                 {
                     float Score = SegmentScore(Segments[SegIdx], Point);
                     if(Score < BestScore)
@@ -465,14 +465,14 @@ namespace MotionPlanning
         m_fnIsStateValid(fnIsStateValid)
     {
         m_SegmentTree.InitSpatial(Params.DedupRadius);
-        const auto InitNode = std::make_shared<SNode>(nullptr, CMotionState(Core, pCollision), 0, 0, SInput{});
+        const auto InitNode = std::make_shared<CNode>(nullptr, CMotionState(Core, pCollision), 0, 0, CInput{});
         ExpandNode(InitNode);
     }
 
-    bool CMotionPlanner::ExpandNode(std::shared_ptr<SNode> pNode)
+    bool CMotionPlanner::ExpandNode(std::shared_ptr<CNode> pNode)
     {
         const auto Inputs = GenerateInputs(pNode->m_State);
-        std::vector<SSegment> vCandidates;
+        std::vector<CSegment> vCandidates;
         for(const auto &Input : Inputs)
         {
             auto ModInput = Input;
@@ -516,7 +516,7 @@ namespace MotionPlanning
         }
 
         // Prune
-        std::ranges::sort(vCandidates, [](const SSegment &Val1, const SSegment &Val2) -> bool
+        std::ranges::sort(vCandidates, [](const CSegment &Val1, const CSegment &Val2) -> bool
         {
             return Val1.m_Displacement > Val2.m_Displacement;
         }); // desc order
@@ -560,13 +560,13 @@ namespace MotionPlanning
 
         // Take a full copy of the segment, then remove it from the tree
         // to avoid dangling references and argument-evaluation-order UB.
-        SSegment Seg = m_SegmentTree.GetSegment(NearestIndex);
+        CSegment Seg = m_SegmentTree.GetSegment(NearestIndex);
         m_SegmentTree.Remove(NearestIndex);
 
         auto pParent = Seg.m_pParent;
         int NewTick = pParent->m_Tick + m_Params.SimulateStep;
         int NewDepth = pParent->m_Depth + 1;
-        const auto pNode = std::make_shared<SNode>(
+        const auto pNode = std::make_shared<CNode>(
             pParent,
             std::move(Seg.m_State),
             NewTick,
@@ -604,7 +604,7 @@ namespace MotionPlanning
         return m_Path.value();
     }
 
-    std::vector<SInput> CMotionPlanner::GenerateInputs(const CMotionState &MotionState) const
+    std::vector<CInput> CMotionPlanner::GenerateInputs(const CMotionState &MotionState) const
     {
         // This function is executed before tick, so MotionState.m_Core.m_Input is the previous input
         struct HookInput
@@ -651,7 +651,7 @@ namespace MotionPlanning
             }
         }
 
-        std::vector<SInput> Result;
+        std::vector<CInput> Result;
         Result.reserve(3 * (CanJump + 1) * HookInputs.size());
         for(int Direction = -1; Direction <= 1; Direction++)
         {
@@ -699,7 +699,7 @@ namespace MotionPlanning
         m_pCollision = pCollision;
     }
 
-    SInput::operator CNetObj_PlayerInput() const
+    CInput::operator CNetObj_PlayerInput() const
     {
         return CNetObj_PlayerInput{
             m_Direction, m_TargetX, m_TargetY, m_Jump, 0, m_Hook, 0, 0, 0, 0
