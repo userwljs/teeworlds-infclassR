@@ -6678,6 +6678,7 @@ void CIcGameController::StartFinalExplosion()
 		}
 	}
 
+	m_FinalExplosionStartTick = Server()->Tick();
 	m_FinalExplosionState = EFinalExplosionState::Started;
 }
 
@@ -6748,8 +6749,16 @@ void CIcGameController::ProgressFinalExplosion()
 		}
 	}
 
-	if(!NewExplosion)
+	if(!NewExplosion || Server()->Tick() - m_FinalExplosionStartTick >= 30 * Server()->TickSpeed())
 	{
+		for(int i = 0; i < MAX_CLIENTS; i++)
+		{
+			auto *pChar = GetCharacter(i);
+			if(pChar && !pChar->IsHuman())
+			{
+				pChar->Die(i, EDamageType::GAME_FINAL_EXPLOSION);
+			}
+		}
 		m_FinalExplosionState = EFinalExplosionState::Finished;
 	}
 }

@@ -580,6 +580,7 @@ private:
 	int m_MapHeight;
 	int *m_GrowingMap;
 	EFinalExplosionState m_FinalExplosionState{};
+	int m_FinalExplosionStartTick = 0;
 
 	std::optional<std::string> m_GameType;
 	std::optional<bool> m_WinCheckEnabled;
