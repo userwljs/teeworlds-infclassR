@@ -578,7 +578,10 @@ private:
 
 	int m_MapWidth;
 	int m_MapHeight;
-	int *m_GrowingMap;
+	std::vector<bool> m_vFinalExplosionSolidMap;
+	std::vector<bool> m_vFinalExplosionMap;
+	std::vector<std::tuple<int, int>> m_vFinalExplosionFrontier;
+	std::vector<std::tuple<int, int>> m_vInfectedSpawnPoints;
 	EFinalExplosionState m_FinalExplosionState{};
 	int m_FinalExplosionStartTick = 0;
 

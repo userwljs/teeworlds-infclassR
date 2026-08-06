@@ -338,8 +338,6 @@ CIcGameController::CIcGameController(class CGameContext *pGameServer) : IGameCon
 		vTeamSpawnPoints.reserve(32);
 	}
 
-	m_GrowingMap = nullptr;
-
 	// Get zones
 	m_ZoneHandle_icDamage = GameServer()->Collision()->GetZoneHandle("icDamage");
 	m_ZoneHandle_icTeleport = GameServer()->Collision()->GetZoneHandle("icTele");
@@ -347,13 +345,15 @@ CIcGameController::CIcGameController(class CGameContext *pGameServer) : IGameCon
 
 	m_MapWidth = GameServer()->Collision()->GetWidth();
 	m_MapHeight = GameServer()->Collision()->GetHeight();
-	m_GrowingMap = new int[m_MapWidth * m_MapHeight];
+	m_vFinalExplosionMap.resize(m_MapWidth * m_MapHeight);
+	std::fill(m_vFinalExplosionMap.begin(), m_vFinalExplosionMap.end(), false);
 
 	m_RoundType = GetDefaultRoundType();
 	m_QueuedRoundType = ERoundType::Invalid;
 	m_InfectedStarted = false;
 	m_VanillaMapLoaded = !str_startswith(Config()->m_SvMap, "infc_");
 
+	m_vFinalExplosionSolidMap.resize(m_MapWidth * m_MapHeight);
 	for(int j = 0; j < m_MapHeight; j++)
 	{
 		for(int i = 0; i < m_MapWidth; i++)
@@ -361,11 +361,7 @@ CIcGameController::CIcGameController(class CGameContext *pGameServer) : IGameCon
 			const vec2 TilePos = vec2(16.0f, 16.0f) + vec2(i * 32.0f, j * 32.0f);
 			if(GameServer()->Collision()->CheckPoint(TilePos))
 			{
-				m_GrowingMap[j * m_MapWidth + i] = 4;
-			}
-			else
-			{
-				m_GrowingMap[j * m_MapWidth + i] = 1;
+				m_vFinalExplosionSolidMap[j * m_MapWidth + i] = true;
 			}
 		}
 	}
@@ -387,9 +383,6 @@ CIcGameController::~CIcGameController()
 	RemoveBots();
 
 	FreePlayerOwnSnapItems();
-
-	if(m_GrowingMap)
-		delete[] m_GrowingMap;
 }
 
 const char *CIcGameController::GameType() const
@@ -847,10 +840,12 @@ bool CIcGameController::OnEntity(const char *pName, vec2 Pivot, vec2 P0, vec2 P1
 	{
 		const int SpawnX = static_cast<int>(Pos.x) / 32.0f;
 		const int SpawnY = static_cast<int>(Pos.y) / 32.0f;
+		const std::tuple<int, int> SpawnPos(SpawnX, SpawnY);
 
-		if(SpawnX >= 0 && SpawnX < m_MapWidth && SpawnY >= 0 && SpawnY < m_MapHeight)
+		if(SpawnX >= 0 && SpawnX < m_MapWidth && SpawnY >= 0 && SpawnY < m_MapHeight
+			&& std::ranges::find(m_vInfectedSpawnPoints, SpawnPos) == m_vInfectedSpawnPoints.end())
 		{
-			m_GrowingMap[SpawnY * m_MapWidth + SpawnX] = 6;
+			m_vInfectedSpawnPoints.push_back(SpawnPos);
 		}
 	}
 	else if(str_comp(pName, "icHeroFlag") == 0)
@@ -1322,16 +1317,7 @@ void CIcGameController::ResetFinalExplosion()
 {
 	m_FinalExplosionState = EFinalExplosionState::NotStarted;
 
-	for(int j = 0; j < m_MapHeight; j++)
-	{
-		for(int i = 0; i < m_MapWidth; i++)
-		{
-			if(!(m_GrowingMap[j * m_MapWidth + i] & 4))
-			{
-				m_GrowingMap[j * m_MapWidth + i] = 1;
-			}
-		}
-	}
+	m_vFinalExplosionFrontier.clear();
 }
 
 void CIcGameController::SaveRoundRules()
@@ -6680,6 +6666,12 @@ void CIcGameController::StartFinalExplosion()
 
 	m_FinalExplosionStartTick = Server()->Tick();
 	m_FinalExplosionState = EFinalExplosionState::Started;
+	m_vFinalExplosionFrontier.clear();
+	std::fill(m_vFinalExplosionMap.begin(), m_vFinalExplosionMap.end(), false);
+	for(const auto &[X, Y] : m_vInfectedSpawnPoints)
+	{
+		m_vFinalExplosionMap[Y * m_MapWidth + X] = true;
+	}
 }
 
 void CIcGameController::ProgressFinalExplosion()
@@ -6689,40 +6681,48 @@ void CIcGameController::ProgressFinalExplosion()
 		return;
 	}
 
-	bool NewExplosion = false;
-
-	for(int j = 0; j < m_MapHeight; j++)
+	std::vector<std::tuple<int, int>> vNewFrontier;
+	vNewFrontier.reserve(m_vFinalExplosionFrontier.size() * 4);
+	const auto fnCheckOneNeighbor = [&](int X, int Y)
 	{
-		for(int i = 0; i < m_MapWidth; i++)
+		if(X < 0 || X >= m_MapWidth || Y < 0 || Y >= m_MapHeight)
 		{
-			if((m_GrowingMap[j * m_MapWidth + i] & 1) && ((i > 0 && m_GrowingMap[j * m_MapWidth + i - 1] & 2) ||
-															 (i < m_MapWidth - 1 && m_GrowingMap[j * m_MapWidth + i + 1] & 2) ||
-															 (j > 0 && m_GrowingMap[(j - 1) * m_MapWidth + i] & 2) ||
-															 (j < m_MapHeight - 1 && m_GrowingMap[(j + 1) * m_MapWidth + i] & 2)))
-			{
-				NewExplosion = true;
-				m_GrowingMap[j * m_MapWidth + i] |= 8;
-				m_GrowingMap[j * m_MapWidth + i] &= ~1;
-				if(random_prob(0.1f))
-				{
-					vec2 TilePos = vec2(16.0f, 16.0f) + vec2(i * 32.0f, j * 32.0f);
-					static constexpr int Damage = 0;
-					CreateExplosion(TilePos, -1, EDamageType::NO_DAMAGE, Damage);
-					GameServer()->CreateSound(TilePos, SOUND_GRENADE_EXPLODE);
-				}
-			}
+			return;
+		}
+		int Index = Y * m_MapWidth + X;
+		if(!m_vFinalExplosionMap[Index] && !m_vFinalExplosionSolidMap[Index])
+		{
+			m_vFinalExplosionMap[Index] = true;
+			vNewFrontier.emplace_back(X, Y);
+		}
+	};
+	const auto fnProcessFrontier = [&](int X, int Y)
+	{
+		fnCheckOneNeighbor(X - 1, Y);
+		fnCheckOneNeighbor(X + 1, Y);
+		fnCheckOneNeighbor(X, Y - 1);
+		fnCheckOneNeighbor(X, Y + 1);
+	};
+	if(m_vFinalExplosionFrontier.empty())
+	{
+		for(const auto &[X, Y] : m_vInfectedSpawnPoints)
+		{
+			fnProcessFrontier(X, Y);
 		}
 	}
-
-	for(int j = 0; j < m_MapHeight; j++)
+	for(const auto &[X, Y] : m_vFinalExplosionFrontier)
 	{
-		for(int i = 0; i < m_MapWidth; i++)
+		fnProcessFrontier(X, Y);
+	}
+
+	for(const auto &[X, Y] : vNewFrontier)
+	{
+		if(random_prob(0.1f))
 		{
-			if(m_GrowingMap[j * m_MapWidth + i] & 8)
-			{
-				m_GrowingMap[j * m_MapWidth + i] &= ~8;
-				m_GrowingMap[j * m_MapWidth + i] |= 2;
-			}
+			vec2 TilePos = vec2(16.0f, 16.0f) + vec2(X * 32.0f, Y * 32.0f);
+			static constexpr int Damage = 0;
+			CreateExplosion(TilePos, -1, EDamageType::NO_DAMAGE, Damage);
+			GameServer()->CreateSound(TilePos, SOUND_GRENADE_EXPLODE);
 		}
 	}
 
@@ -6731,25 +6731,18 @@ void CIcGameController::ProgressFinalExplosion()
 		if(p->IsHuman())
 			continue;
 
-		int tileX = static_cast<int>(round(p->m_Pos.x)) / 32;
-		int tileY = static_cast<int>(round(p->m_Pos.y)) / 32;
+		int TileX = static_cast<int>(round(p->m_Pos.x)) / 32;
+		int TileY = static_cast<int>(round(p->m_Pos.y)) / 32;
+		TileX = clamp(TileX, 0, m_MapWidth - 1);
+		TileY = clamp(TileY, 0, m_MapHeight - 1);
 
-		if(tileX < 0)
-			tileX = 0;
-		if(tileX >= m_MapWidth)
-			tileX = m_MapWidth - 1;
-		if(tileY < 0)
-			tileY = 0;
-		if(tileY >= m_MapHeight)
-			tileY = m_MapHeight - 1;
-
-		if(m_GrowingMap[tileY * m_MapWidth + tileX] & 2 && p->GetPlayer())
+		if(m_vFinalExplosionMap[TileY * m_MapWidth + TileX] && p->GetPlayer())
 		{
 			p->Die(p->GetCid(), EDamageType::GAME_FINAL_EXPLOSION);
 		}
 	}
 
-	if(!NewExplosion || Server()->Tick() - m_FinalExplosionStartTick >= 30 * Server()->TickSpeed())
+	if(vNewFrontier.empty() || Server()->Tick() - m_FinalExplosionStartTick >= 30 * Server()->TickSpeed())
 	{
 		for(int i = 0; i < MAX_CLIENTS; i++)
 		{
@@ -6761,6 +6754,8 @@ void CIcGameController::ProgressFinalExplosion()
 		}
 		m_FinalExplosionState = EFinalExplosionState::Finished;
 	}
+
+	m_vFinalExplosionFrontier = std::move(vNewFrontier);
 }
 
 void CIcGameController::Snap(int SnappingClient)
