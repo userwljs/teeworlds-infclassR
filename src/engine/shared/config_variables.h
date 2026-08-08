@@ -96,6 +96,9 @@ MACRO_CONFIG_INT(SvFastDownload, sv_fast_download, 1, 0, 1, CFGFLAG_SERVER, "Ena
 MACRO_CONFIG_STR(SvRegionName, sv_region_name, 5, "UNK", CFGFLAG_SERVER, "Server region. Used for regional bans")
 MACRO_CONFIG_INT(SvUseSql, sv_use_sql, 0, 0, 1, CFGFLAG_SERVER, "Enables MySQL backend instead of SQLite backend (sv_sqlite_file is still used as fallback write server when no MySQL server is reachable)")
 MACRO_CONFIG_INT(SvSqlQueriesDelay, sv_sql_queries_delay, 1, 0, 20, CFGFLAG_SERVER, "Delay in seconds between SQL queries of a single player")
+MACRO_CONFIG_STR(SvSqlSslCa, sv_sql_ssl_ca, 256, "", CFGFLAG_SERVER, "Path to CA certificate for verifying the MySQL/MariaDB server certificate")
+MACRO_CONFIG_STR(SvSqlSslCert, sv_sql_ssl_cert, 256, "", CFGFLAG_SERVER, "Path to client certificate for the MySQL/MariaDB SSL connection")
+MACRO_CONFIG_STR(SvSqlSslKey, sv_sql_ssl_key, 256, "", CFGFLAG_SERVER, "Path to client key for the MySQL/MariaDB SSL connection")
 MACRO_CONFIG_STR(SvSqliteFile, sv_sqlite_file, 64, "infclass-server.sqlite", CFGFLAG_SERVER, "File to store ranks in case sv_use_sql is turned off or used as backup sql server")
 
 MACRO_CONFIG_INT(SvDDRaceRules, sv_ddrace_rules, 1, 0, 1, CFGFLAG_SERVER, "Whether the default mod rules are displayed or not")
