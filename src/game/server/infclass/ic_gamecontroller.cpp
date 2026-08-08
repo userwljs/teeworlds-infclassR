@@ -1827,7 +1827,7 @@ void CIcGameController::RegisterChatCommands(IConsole *pConsole)
 	pConsole->Register("clear_fun_rounds", "", CFGFLAG_SERVER, ConClearFunRounds, this, "Clears added fun rounds");
 	pConsole->Register("add_fun_round", "s[classname] s[classname] ?s[more classes]", CFGFLAG_SERVER, ConAddFunRound, this, "Add a fun round to be played when starting a fun round.");
 
-	pConsole->Register("start_survival", "?is", CFGFLAG_SERVER, ConStartSurvival, this, "Set the class of a player");
+	pConsole->Register("start_survival", "?i[wave index]", CFGFLAG_SERVER, ConStartSurvival, this, "Start the configured survival game from the given wave (wave index starts at 1)");
 	pConsole->Register("start_fast_round", "", CFGFLAG_SERVER, ConStartFastRound, this, "Start a faster gameplay round");
 	pConsole->Register("queue_fast_round", "", CFGFLAG_SERVER, ConQueueFastRound, this, "Queue a faster gameplay round");
 	pConsole->Register("queue_fun_round", "", CFGFLAG_SERVER, ConQueueFunRound, this, "Queue a fun gameplay round");
