@@ -1,6 +1,8 @@
 #ifndef BASE_TL_IC_ARRAY_H
 #define BASE_TL_IC_ARRAY_H
 
+#include <base/system.h>
+
 #include <cstddef>
 #include <initializer_list>
 #include <iterator>
@@ -9,23 +11,53 @@
 template<class T, int StackCapacity>
 class icArray
 {
+	static_assert(StackCapacity > 0, "StackCapacity must be greater than zero");
+
 public:
 	constexpr icArray() = default;
 	constexpr icArray(std::initializer_list<T> list);
 	icArray(T (&Array)[StackCapacity]);
 
-	constexpr const T &At(std::size_t Index) const { return m_Data[Index]; }
-	constexpr const T &operator[](std::size_t Index) const { return m_Data[Index]; }
-	T &operator[](std::size_t Index) { return m_Data[Index]; }
+	constexpr const T &At(std::size_t Index) const
+	{
+		dbg_assert(Index < m_Size, "Index out of bounds: the size is %" PRIzu " but the index is %" PRIzu, m_Size, Index);
+		return m_Data[Index];
+	}
+	constexpr const T &operator[](std::size_t Index) const
+	{
+		dbg_assert(Index < m_Size, "Index out of bounds: the size is %" PRIzu " but the index is %" PRIzu, m_Size, Index);
+		return m_Data[Index];
+	}
+	T &operator[](std::size_t Index)
+	{
+		dbg_assert(Index < m_Size, "Index out of bounds: the size is %" PRIzu " but the index is %" PRIzu, m_Size, Index);
+		return m_Data[Index];
+	}
 
 	T *Data() { return &m_Data[0]; }
 	const T *Data() const { return &m_Data[0]; }
 
-	T &First() { return m_Data[0]; }
-	T &Last() { return m_Data[m_Size - 1]; }
+	T &First()
+	{
+		dbg_assert(m_Size > 0, "Index out of bounds: the size is 0");
+		return m_Data[0];
+	}
+	T &Last()
+	{
+		dbg_assert(m_Size > 0, "Index out of bounds: the size is 0");
+		return m_Data[m_Size - 1];
+	}
 
-	constexpr const T &First() const { return m_Data[0]; }
-	constexpr const T &Last() const { return m_Data[m_Size - 1]; }
+	constexpr const T &First() const
+	{
+		dbg_assert(m_Size > 0, "Index out of bounds: the size is 0");
+		return m_Data[0];
+	}
+	constexpr const T &Last() const
+	{
+		dbg_assert(m_Size > 0, "Index out of bounds: the size is 0");
+		return m_Data[m_Size - 1];
+	}
 
 	void erase(const T *pItem);
 
@@ -110,6 +142,9 @@ inline icArray<T, StackCapacity>::icArray(T (&Array)[StackCapacity])
 template<class T, int StackCapacity>
 void icArray<T, StackCapacity>::erase(const T *pItem)
 {
+	dbg_assert(pItem >= begin() && pItem < end(),
+	           "Addr out of bounds: expected addr >= %p && addr < %p but the addr is %p",
+	           begin(), end(), static_cast<const void *>(pItem));
 	std::ptrdiff_t Offset = pItem - begin();
 	RemoveAt(Offset);
 }
@@ -123,6 +158,9 @@ constexpr std::size_t icArray<T, StackCapacity>::Size() const
 template<class T, int StackCapacity>
 void icArray<T, StackCapacity>::Resize(std::size_t NewSize)
 {
+	dbg_assert(NewSize <= Capacity(),
+	           "New size is greater than capacity: the stack capacity is %" PRIzu " but the new size is %" PRIzu,
+	           Capacity(), NewSize);
 	m_Size = NewSize;
 }
 
@@ -164,8 +202,7 @@ inline constexpr bool icArray<T, StackCapacity>::Contains(const T &Item) const
 template<class T, int StackCapacity>
 inline constexpr void icArray<T, StackCapacity>::Add(const T &Value)
 {
-	if(m_Size >= StackCapacity)
-		abort();
+	dbg_assert(m_Size < Capacity(), "The array is full: capacity is %" PRIzu, Capacity());
 	m_Data[m_Size] = Value;
 	++m_Size;
 }
@@ -199,6 +236,7 @@ inline constexpr void icArray<T, StackCapacity>::InsertAt(std::size_t Index, con
 template<class T, int StackCapacity>
 void icArray<T, StackCapacity>::RemoveLast()
 {
+	dbg_assert(m_Size > 0, "Array is empty");
 	--m_Size;
 }
 
@@ -216,6 +254,8 @@ bool icArray<T, StackCapacity>::RemoveOne(const T &Item)
 template<class T, int StackCapacity>
 void icArray<T, StackCapacity>::RemoveAt(std::size_t Index)
 {
+	dbg_assert(Index < m_Size,
+	           "Index out of bounds: the size is %" PRIzu " but the index is %" PRIzu, m_Size, Index);
 	for(std::size_t i = Index; i < m_Size - 1; ++i)
 	{
 		m_Data[i] = m_Data[i + 1];
