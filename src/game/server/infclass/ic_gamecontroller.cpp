@@ -271,7 +271,7 @@ template ESurvivalConfigOption fromString<ESurvivalConfigOption>(const char *pSt
 int SurvivalWaveConfiguration::GetTotalInfectedLives() const
 {
 	int TotalBotLives = 0;
-	for(const SurvivalBotConfiguration &BotConf : BotConfigurations)
+	for(const SurvivalBotConfiguration &BotConf : vBotConfigurations)
 	{
 		int BotLives = BotConf.Lives ? BotConf.Lives : g_Config.m_InfBotLives;
 		if(BotLives < 0)
@@ -291,10 +291,7 @@ public:
 	void ResetSpawnedBotsTracking()
 	{
 		m_SpawnedWaveBots = 0;
-		for(bool &Spawned : m_SpawnedWaveMap)
-		{
-			Spawned = false;
-		}
+		m_vSpawnedWaveMap.clear();
 	}
 
 	std::size_t GetSpawnedCount() const
@@ -309,18 +306,26 @@ public:
 
 	bool IsBotSpawned(std::size_t BotIndex) const
 	{
-		return m_SpawnedWaveMap[BotIndex];
+		if(BotIndex >= m_vSpawnedWaveMap.size())
+		{
+			return false;
+		}
+		return m_vSpawnedWaveMap[BotIndex];
 	}
 
 	void MarkSpawned(std::size_t BotIndex)
 	{
-		m_SpawnedWaveMap[BotIndex] = true;
+		if(BotIndex + 1 > m_vSpawnedWaveMap.size())
+		{
+			m_vSpawnedWaveMap.resize(BotIndex + 1);
+		}
+		m_vSpawnedWaveMap[BotIndex] = true;
 		m_SpawnedWaveBots++;
 	}
 
 private:
 	std::size_t m_SpawnedWaveBots = 0;
-	bool m_SpawnedWaveMap[MaxBotsPerWave] = {};
+	std::vector<bool> m_vSpawnedWaveMap;
 };
 
 CSpawnedBotsTracker SpawnedBotsTracker;
@@ -1396,7 +1401,7 @@ void CIcGameController::EndSurvivalGame()
 		{
 			QueueRoundType(ERoundType::Survival);
 
-			if(m_SurvivalConfiguration.SurvivalWaves.Size() == m_SurvivalState.Wave + 1)
+			if(m_SurvivalConfiguration.vSurvivalWaves.size() == m_SurvivalState.Wave + 1)
 			{
 				// Humans won the game.
 			}
@@ -2060,7 +2065,7 @@ void CIcGameController::ConStartSurvivalScenario(IConsole::IResult *pResult)
 
 	ExecuteFileEx(pResult->GetString(0));
 
-	if(m_SurvivalConfiguration.SurvivalWaves.IsEmpty())
+	if(m_SurvivalConfiguration.vSurvivalWaves.empty())
 	{
 		int ClientID = pResult->GetClientId();
 		const char *pErrorMessage = "Unable to load the survival configuration";
@@ -2808,7 +2813,7 @@ void CIcGameController::ConSurvivalAddWave(IConsole::IResult *pResult, void *pUs
 
 void CIcGameController::SurvivalAddWave(int Wave, const char *pWaveName)
 {
-	if(static_cast<std::size_t>(Wave) != m_SurvivalConfiguration.SurvivalWaves.Size() + 1)
+	if(static_cast<std::size_t>(Wave) != m_SurvivalConfiguration.vSurvivalWaves.size() + 1)
 	{
 		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "Only incremental setup allowed. Add the previous waves first");
 		return;
@@ -2880,15 +2885,9 @@ SurvivalBotConfiguration *CIcGameController::SurvivalAddBot(int Wave, const char
 		return nullptr;
 	}
 
-	if(pConf->BotConfigurations.Size() >= pConf->BotConfigurations.Capacity())
-	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "SurvivalAddBot: Too many bots");
-		return nullptr;
-	}
+	pConf->vBotConfigurations.emplace_back(SurvivalBotConfiguration{.Class = PlayerClass});
 
-	pConf->BotConfigurations.Add(SurvivalBotConfiguration{.Class = PlayerClass});
-
-	return &pConf->BotConfigurations.Last();
+	return &pConf->vBotConfigurations.back();
 }
 
 void CIcGameController::ConSurvivalConfWaveAddBots(IConsole::IResult *pResult, SurvivalBotConfiguration *pBotConfiguration) const
@@ -3034,7 +3033,7 @@ void CIcGameController::ConStartSurvival(IConsole::IResult *pResult)
 	if(Wave < 0)
 		return;
 
-	const int MaxWave = m_SurvivalConfiguration.SurvivalWaves.Size();
+	const int MaxWave = m_SurvivalConfiguration.vSurvivalWaves.size();
 	if(Wave >= MaxWave)
 		return;
 
@@ -3051,7 +3050,7 @@ void CIcGameController::PrepareSurvival(int Wave)
 	{
 		// Survival is a whole new game, reset the counter!
 		m_RoundCount = Wave;
-		const int MaxWave = m_SurvivalConfiguration.SurvivalWaves.Size();
+		const int MaxWave = m_SurvivalConfiguration.vSurvivalWaves.size();
 		Config()->m_SvRoundsPerMap = MaxWave;
 	}
 
@@ -3093,7 +3092,7 @@ bool CIcGameController::SurvivalHumansWinConditionsMet() const
 	const SurvivalWaveConfiguration *WaveConf = GetCurrentSurvivalWaveConfiguration();
 	if(WaveConf)
 	{
-		if(SpawnedBotsTracker.GetSpawnedCount() < WaveConf->BotConfigurations.Size())
+		if(SpawnedBotsTracker.GetSpawnedCount() < WaveConf->vBotConfigurations.size())
 		{
 			return false;
 		}
@@ -4220,7 +4219,7 @@ void CIcGameController::StartRound()
 		break;
 	case ERoundType::Survival:
 	{
-		if(m_SurvivalConfiguration.SurvivalWaves.IsEmpty())
+		if(m_SurvivalConfiguration.vSurvivalWaves.empty())
 		{
 			m_RoundType = ERoundType::Normal;
 			GameServer()->SendChatTarget(-1, "Failed to start survival round: the round is not configured");
@@ -4655,7 +4654,7 @@ void CIcGameController::OnKillOrInfection(int Victim, const DeathContext &Contex
 				const auto KillerClassCounter = [KillerClass](const SurvivalBotConfiguration &BotConfig) {
 					return BotConfig.Class == KillerClass;
 				};
-				int Count = std::count_if(pCurrentWave->BotConfigurations.begin(), pCurrentWave->BotConfigurations.end(), KillerClassCounter);
+				int Count = std::ranges::count_if(pCurrentWave->vBotConfigurations, KillerClassCounter);
 				if(Count == 1)
 				{
 					Article = ETextArticle::Definite;
@@ -5176,12 +5175,12 @@ void CIcGameController::AddMoreBotsAccordingToConfiguration()
 	const SurvivalWaveConfiguration *WaveConf = GetCurrentSurvivalWaveConfiguration();
 	const int InfectionTick = GetInfectionTick();
 	int SpawnAheadTicks = Server()->TickSpeed() * 3;
-	for(std::size_t BotIndex = SpawnedBotsTracker.GetFirstBotIndex(); BotIndex < WaveConf->BotConfigurations.Size(); ++BotIndex)
+	for(std::size_t BotIndex = SpawnedBotsTracker.GetFirstBotIndex(); BotIndex < WaveConf->vBotConfigurations.size(); ++BotIndex)
 	{
 		if(SpawnedBotsTracker.IsBotSpawned(BotIndex))
 			continue;
 
-		const SurvivalBotConfiguration &BotConf = WaveConf->BotConfigurations[BotIndex];
+		const SurvivalBotConfiguration &BotConf = WaveConf->vBotConfigurations[BotIndex];
 		if(BotConf.SpawnMinTick < InfectionTick + SpawnAheadTicks)
 		{
 			CBaseBotPlayer *pBot = AddBot(BotConf);
@@ -5222,13 +5221,13 @@ CIcGameController::PlayerScore *CIcGameController::EnsureSurvivalPlayerScore(int
 
 const SurvivalWaveConfiguration *CIcGameController::GetCurrentSurvivalWaveConfiguration() const
 {
-	if(m_SurvivalConfiguration.SurvivalWaves.Size() <= m_SurvivalState.Wave)
+	if(m_SurvivalConfiguration.vSurvivalWaves.size() <= m_SurvivalState.Wave)
 	{
 		static const SurvivalWaveConfiguration EmptyConfig;
 		return &EmptyConfig;
 	}
 
-	const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.SurvivalWaves.At(m_SurvivalState.Wave);
+	const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.vSurvivalWaves.at(m_SurvivalState.Wave);
 	return &WaveConf;
 }
 
@@ -5244,10 +5243,10 @@ SurvivalWaveConfiguration *CIcGameController::SurvivalGetWaveConfiguration(int W
 
 	SurvivalGameConfiguration *pGameConfig = SurvivalGetMutableGameConfiguration();
 	const auto Index = static_cast<std::size_t>(WaveIndex);
-	if(Index >= pGameConfig->SurvivalWaves.Size())
+	if(Index >= pGameConfig->vSurvivalWaves.size())
 		return nullptr;
 
-	return &pGameConfig->SurvivalWaves[Index];
+	return &pGameConfig->vSurvivalWaves[Index];
 }
 
 SurvivalGameConfiguration *CIcGameController::SurvivalGetMutableGameConfiguration()
@@ -5730,7 +5729,7 @@ void CIcGameController::AnnounceTheWinner(int NumHumans)
 	}
 	else if(GetRoundType() == ERoundType::Survival && HumansWon)
 	{
-		if(m_SurvivalConfiguration.SurvivalWaves.Size() > m_SurvivalState.Wave + 1)
+		if(m_SurvivalConfiguration.vSurvivalWaves.size() > m_SurvivalState.Wave + 1)
 		{
 			m_InfectedStarted = false;
 			ResetFinalExplosion();
@@ -6493,7 +6492,7 @@ void CIcGameController::EndSurvivalRound(ERoundEndReason Reason)
 
 	if((NumHumans == 0) && (NumInfected > 0))
 	{
-		if(m_SurvivalConfiguration.SurvivalWaves.Size() == 1)
+		if(m_SurvivalConfiguration.vSurvivalWaves.size() == 1)
 		{
 			GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE,
 				_("The survival is over. You have failed to survive."));
@@ -6542,11 +6541,11 @@ void CIcGameController::EndSurvivalRound(ERoundEndReason Reason)
 		}
 	}
 
-	if(m_SurvivalConfiguration.SurvivalWaves.Size() == m_SurvivalState.Wave + 1)
+	if(m_SurvivalConfiguration.vSurvivalWaves.size() == m_SurvivalState.Wave + 1)
 	{
 		if(NumHumans)
 		{
-			if(m_SurvivalConfiguration.SurvivalWaves.Size() > 2)
+			if(m_SurvivalConfiguration.vSurvivalWaves.size() > 2)
 			{
 				GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_SCORE,
 					_("The survival is over. You have survived!"));
@@ -6586,7 +6585,7 @@ bool CIcGameController::StartSurvivalWave()
 	char aBuf[256];
 
 	int WaveDisplayNumber = m_SurvivalState.Wave + 1;
-	if(m_SurvivalConfiguration.SurvivalWaves.Size() <= m_SurvivalState.Wave)
+	if(m_SurvivalConfiguration.vSurvivalWaves.size() <= m_SurvivalState.Wave)
 	{
 		str_format(aBuf, sizeof(aBuf), "Unable to start a survival round: wave %d is not configured", WaveDisplayNumber);
 		GameServer()->SendChatTarget(-1, aBuf);
@@ -6597,13 +6596,13 @@ bool CIcGameController::StartSurvivalWave()
 
 	m_WaveStartTick = Server()->Tick();
 
-	if(m_SurvivalConfiguration.SurvivalWaves.Size() == 1)
+	if(m_SurvivalConfiguration.vSurvivalWaves.size() == 1)
 	{
 		str_format(aBuf, sizeof(aBuf), "The survival begins. Enjoy!");
 	}
 	else
 	{
-		const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.SurvivalWaves.At(m_SurvivalState.Wave);
+		const SurvivalWaveConfiguration &WaveConf = m_SurvivalConfiguration.vSurvivalWaves[m_SurvivalState.Wave];
 
 		if(WaveConf.aName[0])
 		{
@@ -7954,9 +7953,9 @@ bool CIcGameController::TryRespawn(CIcPlayer *pPlayer, SpawnContext *pContext)
 		const SurvivalWaveConfiguration *pWaveConf = GetCurrentSurvivalWaveConfiguration();
 		const CBaseBotPlayer *pBot = static_cast<CBaseBotPlayer *>(pPlayer);
 		const std::optional<std::size_t> ConfigId = pBot->GetBotConfigId();
-		if(ConfigId.has_value() && ConfigId.value() < pWaveConf->BotConfigurations.Size())
+		if(ConfigId.has_value() && ConfigId.value() < pWaveConf->vBotConfigurations.size())
 		{
-			const SurvivalBotConfiguration &BotConf = pWaveConf->BotConfigurations[ConfigId.value()];
+			const SurvivalBotConfiguration &BotConf = pWaveConf->vBotConfigurations[ConfigId.value()];
 
 			if(BotConf.ScriptedSpawn)
 			{

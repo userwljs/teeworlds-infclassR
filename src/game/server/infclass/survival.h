@@ -1,12 +1,10 @@
 #pragma once
 
 #include <base/system.h>
-#include <base/tl/ic_array.h>
 
 #include <game/server/infclass/bot-player.h>
 
-static constexpr int MaxWaves = 20;
-static constexpr int MaxBotsPerWave = 128;
+#include <vector>
 
 class SurvivalBotConfiguration
 {
@@ -44,31 +42,31 @@ public:
 		aName[0] = '\0';
 		aCommandOnWon[0] = '\0';
 		aCommandOnLost[0] = '\0';
-		BotConfigurations.Clear();
+		vBotConfigurations.clear();
 	}
 
 	char aName[64]{};
 	char aCommandOnWon[MaxCommandLength]{};
 	char aCommandOnLost[MaxCommandLength]{};
-	icArray<SurvivalBotConfiguration, MaxBotsPerWave> BotConfigurations;
+	std::vector<SurvivalBotConfiguration> vBotConfigurations;
 };
 
 class SurvivalGameConfiguration
 {
 public:
-	icArray<SurvivalWaveConfiguration, MaxWaves> SurvivalWaves;
+	std::vector<SurvivalWaveConfiguration> vSurvivalWaves;
 	bool HardMode{};
 
 	void Reset()
 	{
-		SurvivalWaves.Clear();
+		vSurvivalWaves.clear();
 		HardMode = false;
 	}
 
 	SurvivalWaveConfiguration *AddWave(const char *pWaveName)
 	{
-		SurvivalWaves.Resize(SurvivalWaves.Size() + 1);
-		SurvivalWaveConfiguration *pConfig = &SurvivalWaves.Last();
+		vSurvivalWaves.resize(vSurvivalWaves.size() + 1);
+		SurvivalWaveConfiguration *pConfig = &vSurvivalWaves.back();
 		pConfig->Reset();
 		if(pWaveName && pWaveName[0])
 		{
