@@ -48,7 +48,7 @@ int toNetValue(EPlayerClass C)
 {
 	constexpr int HumanClassOffset = PLAYERCLASS_MERCENARY - static_cast<int>(EPlayerClass::Mercenary);
 	static_assert(static_cast<int>(*(std::end(AllHumanClasses) - 1)) + HumanClassOffset < END_HUMANCLASS,
-		"Added human class requires extra code to preserve network compatibilty");
+		"Added human class requires extra code to preserve network compatibility");
 
 	if(C == EPlayerClass::None)
 		return PLAYERCLASS_NONE;
