@@ -26,8 +26,7 @@ apt install -y \
     libmaxminddb-dev \
     git \
     ca-certificates \
-    pkg-config \
-    python3-polib
+    pkg-config
 ```
 
 ### Mandatory
@@ -39,7 +38,6 @@ apt install -y \
 - sqlite (needed for accounts)
 - zlib (needed to read the map files)
 - LuaJIT
-- python3-polib (needed for building)
 
 You also need a build toolchain, such as GCC and Ninja, or MSVC. The compiler must support C++20.
 

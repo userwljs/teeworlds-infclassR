@@ -6,13 +6,7 @@ import sys
 from dataclasses import dataclass
 from typing import List
 
-try:
-    import polib
-except ModuleNotFoundError:
-    print(
-        "The Python library 'polib' is required and can be installed via the 'python3-polib' or 'python-polib' package."
-    )
-    sys.exit(1)
+import polib
 
 if len(sys.argv) != 3:
     print(f"Expected 2 arguments, got {len(sys.argv) - 1}")
