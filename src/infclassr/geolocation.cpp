@@ -2,43 +2,43 @@
 
 #include <base/log.h>
 
-static Geolocation *Instance = nullptr;
+static CGeolocation *Instance = nullptr;
 
-Geolocation::Geolocation(const char *path_to_mmdb)
+CGeolocation::CGeolocation(const char *path_to_mmdb)
 {
 	db = new GeoLite2PP::DB(path_to_mmdb);
 }
 
-Geolocation::~Geolocation()
+CGeolocation::~CGeolocation()
 {
 	delete db;
 	db = nullptr;
 }
 
-bool Geolocation::Initialize(const char *pPathToDB)
+bool CGeolocation::Initialize(const char *pPathToDB)
 {
 	if(Instance)
 		return true;
 
 	try
 	{
-		Instance = new Geolocation(pPathToDB);
+		Instance = new CGeolocation(pPathToDB);
 		return true;
 	}
 	catch(const std::system_error &e)
 	{
-		log_error("geolocation", "Geolocation::Initialize() failed: %s", e.what());
+		log_error("geolocation", "CGeolocation::Initialize() failed: %s", e.what());
 		return false;
 	}
 }
 
-void Geolocation::Shutdown()
+void CGeolocation::Shutdown()
 {
 	delete Instance;
 	Instance = nullptr;
 }
 
-int Geolocation::get_country_iso_numeric_code(std::string &ip)
+int CGeolocation::get_country_iso_numeric_code(std::string &ip)
 {
 	if(!Instance)
 	{
@@ -67,7 +67,7 @@ int Geolocation::get_country_iso_numeric_code(std::string &ip)
 	}
 }
 
-int Geolocation::get_iso_numeric_code(GeoLite2PP::MStr &m)
+int CGeolocation::get_iso_numeric_code(GeoLite2PP::MStr &m)
 {
 	std::map<std::string, int> iso_numeric = {
 		{"AF", 4},

@@ -139,7 +139,7 @@ void CGameContext::Destruct(int Resetting)
 #ifdef CONF_GEOLOCATION
 	if(Resetting == NO_RESET)
 	{
-		Geolocation::Shutdown();
+		CGeolocation::Shutdown();
 	}
 #endif
 }
@@ -2964,7 +2964,7 @@ void CGameContext::OnStartInfoNetMessage(const CNetMsg_Cl_StartInfo *pMsg, int C
 #ifdef CONF_GEOLOCATION
 		std::string ip(Server()->ClientAddrString(ClientId, false));
 
-		int LocatedCountry = Geolocation::get_country_iso_numeric_code(ip);
+		int LocatedCountry = CGeolocation::get_country_iso_numeric_code(ip);
 #ifdef CONF_FORCE_COUNTRY_BY_IP
 		Server()->SetClientCountry(ClientId, LocatedCountry);
 #endif // CONF_FORCE_COUNTRY_BY_IP
@@ -4346,7 +4346,7 @@ void CGameContext::InitGeolocation()
 	Storage()->GetDataPath(aGeoDBFileName, aBuf, sizeof(aBuf));
 	if(aBuf[0])
 	{
-		Geolocation::Initialize(aBuf);
+		CGeolocation::Initialize(aBuf);
 	}
 	else
 	{

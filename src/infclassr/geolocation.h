@@ -3,13 +3,13 @@
 
 #include <infclassr/GeoLite2PP/GeoLite2PP.hpp>
 
-class Geolocation
+class CGeolocation
 {
 private:
 	GeoLite2PP::DB *db;
 	int get_iso_numeric_code(GeoLite2PP::MStr &m);
-	Geolocation(const char *path_to_mmdb);
-	~Geolocation();
+	CGeolocation(const char *path_to_mmdb);
+	~CGeolocation();
 
 public:
 	static bool Initialize(const char *pPathToDB);
