@@ -1,6 +1,6 @@
 #include "geolocation.h"
 
-#include <iostream>
+#include <base/log.h>
 
 static Geolocation *Instance = nullptr;
 
@@ -27,7 +27,7 @@ bool Geolocation::Initialize(const char *pPathToDB)
 	}
 	catch(const std::system_error &e)
 	{
-		std::cout << "Geolocation::Initialize() failed: " << e.what() << std::endl;
+		log_error("geolocation", "Geolocation::Initialize() failed: %s", e.what());
 		return false;
 	}
 }
@@ -52,17 +52,17 @@ int Geolocation::get_country_iso_numeric_code(std::string &ip)
 	}
 	catch(const std::invalid_argument &)
 	{
-		std::cout << "This ip is not valid! " << ip << std::endl;
+		log_warn("geolocation", "This ip is not valid! %s", ip.c_str());
 		return -1;
 	}
 	catch(const std::length_error &)
 	{
-		std::cout << "This ip was not found in database: " << ip << std::endl;
+		log_warn("geolocation", "This ip was not found in database: %s", ip.c_str());
 		return -1;
 	}
 	catch(...)
 	{
-		std::cout << "Geolocation: Something went wrong." << ip << std::endl;
+		log_error("geolocation", "Something went wrong. %s", ip.c_str());
 		return -1;
 	}
 }
