@@ -347,6 +347,7 @@ show_dependency_status("PNG" PNG)
 show_dependency_status("Python3" Python3)
 show_dependency_status("SQLite3" SQLite3)
 show_dependency_status("Zlib" ZLIB)
+show_dependency_status("MaxMindDB" MaxMindDB)
 
 if(USE_LUA)
   show_dependency_status("LuaJIT" LuaJIT)
