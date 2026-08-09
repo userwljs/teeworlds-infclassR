@@ -364,6 +364,11 @@ endif()
 if(NOT(PNG_FOUND))
   message(SEND_ERROR "You must install libpng to compile ${CMAKE_PROJECT_NAME}")
 endif()
+
+if(MYSQL AND NOT(MYSQL_FOUND))
+  message(SEND_ERROR "You must install MySQL to compile the ${CMAKE_PROJECT_NAME} server with MySQL support")
+endif()
+
 if(NOT(GTEST_FOUND))
   if(DOWNLOAD_GTEST)
     if(GIT_FOUND)
@@ -1339,6 +1344,11 @@ foreach(target ${TARGETS_OWN})
   endif()
 
   target_compile_definitions(${target} PRIVATE $<$<CONFIG:Debug>:CONF_DEBUG>)
+
+  if(MYSQL)
+    target_compile_definitions(${target} PRIVATE CONF_MYSQL)
+    target_include_directories(${target} SYSTEM PRIVATE ${MYSQL_INCLUDE_DIRS})
+  endif()
 endforeach()
 
 foreach(target ${TARGETS_DEP})
