@@ -4757,6 +4757,10 @@ bool CServer::SetTimedOut(int ClientId, int OrigId)
 	m_aClients[ClientId].m_Sixup = m_aClients[OrigId].m_Sixup;
 
 	DelClientCallback(OrigId, EClientDropType::TimeoutProtectionUsed, "Timeout Protection used", this);
+	// This slot keeps playing with the resumed connection, which can use the other
+	// protocol version, so its snapshots must not be used as delta base anymore.
+	m_aClients[ClientId].m_Snapshots.PurgeAll();
+	m_aClients[ClientId].m_LastAckedSnapshot = -1;
 	m_aClients[ClientId].m_Authed = AUTHED_NO;
 	m_aClients[ClientId].m_Flags = m_aClients[OrigId].m_Flags;
 	m_aClients[ClientId].m_DDNetVersion = m_aClients[OrigId].m_DDNetVersion;
