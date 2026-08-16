@@ -4,8 +4,6 @@
 
 #include <unordered_map>
 
-class IConsole;
-
 class CChatFilter
 {
 public:
@@ -19,9 +17,9 @@ public:
 		INVALID = COUNT,
 	};
 
-	void SetChatFilter(const char *Word, HitBehavior Behavior, int BanSeconds, IConsole *pConsole = nullptr);
+	void SetChatFilter(const char *Word, HitBehavior Behavior, int BanSeconds);
 	std::tuple<HitBehavior, int, std::vector<std::string>> CheckMessage(const char *pMessage);
-	void ListChatFilters(IConsole *pConsole);
+	void ListChatFilters();
 
 private:
 	std::unordered_map<std::u32string, std::tuple<HitBehavior, int, std::string>> m_Filters;

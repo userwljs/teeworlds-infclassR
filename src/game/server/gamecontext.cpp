@@ -3446,13 +3446,13 @@ void CGameContext::ConFilterChat(IConsole::IResult *pResult, void *pUserData)
 		}
 		BanSeconds = pResult->GetInteger(2) * 60;
 	}
-	pSelf->Server()->m_pChatFilter->SetChatFilter(pResult->GetString(0), Behavior, BanSeconds, pSelf->Console());
+	pSelf->Server()->m_pChatFilter->SetChatFilter(pResult->GetString(0), Behavior, BanSeconds);
 }
 
 void CGameContext::ConChatFilters(IConsole::IResult *pResult, void *pUserData)
 {
 	auto *pSelf = static_cast<CGameContext *>(pUserData);
-	pSelf->Server()->m_pChatFilter->ListChatFilters(pSelf->Console());
+	pSelf->Server()->m_pChatFilter->ListChatFilters();
 }
 
 void CGameContext::ConRestart(IConsole::IResult *pResult, void *pUserData)

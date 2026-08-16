@@ -1,8 +1,9 @@
 #include "chat_filter.h"
 
-#include "base/system.h"
-#include "base/tl/ic_enum.h"
-#include "engine/console.h"
+#include <base/log.h>
+#include <base/math.h>
+#include <base/system.h>
+#include <base/tl/ic_enum.h>
 
 #include <ranges>
 
@@ -43,12 +44,11 @@ std::u32string CStringToU32SkeletonString(const char *String)
 	return Skeleton;
 }
 
-void CChatFilter::SetChatFilter(const char *pWord, HitBehavior Behavior, int BanSeconds, IConsole *pConsole)
+void CChatFilter::SetChatFilter(const char *pWord, HitBehavior Behavior, int BanSeconds)
 {
 	if(!str_utf8_check(pWord))
 	{
-		if(pConsole)
-			pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "filter_chat", "Not a valid utf-8 string");
+		log_error("filter_chat", "Not a valid utf-8 string");
 		return;
 	}
 	if(str_length(pWord) > 256)
@@ -61,28 +61,33 @@ void CChatFilter::SetChatFilter(const char *pWord, HitBehavior Behavior, int Ban
 
 	if(Skeleton.size() == 0)
 	{
-		if(pConsole)
-			pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "filter_chat", "String is empty");
+		log_error("filter_chat", "String is empty");
 		return;
 	}
 
 	if(const auto Found = m_Filters.find(Skeleton); Found != m_Filters.end())
 	{
 		Found->second = std::make_tuple(Behavior, BanSeconds, aTrimmed);
-		if(pConsole)
+		if(Behavior == HitBehavior::BAN)
 		{
-			const auto Msg = Behavior == HitBehavior::BAN ? std::format("changed word='{}' behavior={} ban_seconds={}", pWord, toString(Behavior), BanSeconds) : std::format("changed word='{}' behavior={}", pWord, toString(Behavior));
-			pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "filter_chat", Msg.c_str());
+			log_info("filter_chat", "changed word='%s' behavior=%s ban_seconds=%d", pWord, toString(Behavior), BanSeconds);
+		}
+		else
+		{
+			log_info("filter_chat", "changed word='%s' behavior=%s", pWord, toString(Behavior));
 		}
 		return;
 	}
 	m_Filters.emplace(Skeleton, std::make_tuple(Behavior, BanSeconds, aTrimmed));
 	m_FilterTrie.insert(Skeleton);
 
-	if(pConsole)
+	if(Behavior == HitBehavior::BAN)
 	{
-		const auto Msg = Behavior == HitBehavior::BAN ? std::format("added word='{}' behavior={} ban_seconds={}", pWord, toString(Behavior), BanSeconds) : std::format("added word='{}' behavior={}", pWord, toString(Behavior));
-		pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "filter_chat", Msg.c_str());
+		log_info("filter_chat", "added word='%s' behavior=%s ban_seconds=%d", pWord, toString(Behavior), BanSeconds);
+	}
+	else
+	{
+		log_info("filter_chat", "added word='%s' behavior=%s", pWord, toString(Behavior));
 	}
 }
 
@@ -124,11 +129,17 @@ std::tuple<CChatFilter::HitBehavior, int, std::vector<std::string>> CChatFilter:
 	return std::make_tuple(Behavior, BanSeconds, vWordsHit);
 }
 
-void CChatFilter::ListChatFilters(IConsole *pConsole)
+void CChatFilter::ListChatFilters()
 {
 	for(const auto &[Behavior, BanSeconds, Word] : m_Filters | std::views::values)
 	{
-		const auto Msg = Behavior == HitBehavior::BAN ? std::format("word='{}' behavior={} ban_seconds={}", Word, toString(Behavior), BanSeconds) : std::format("word='{}' behavior={}", Word, toString(Behavior));
-		pConsole->Print(IConsole::OUTPUT_LEVEL_STANDARD, "chat_filters", Msg.c_str());
+		if(Behavior == HitBehavior::BAN)
+		{
+			log_info("chat_filters", "word='%s' behavior=%s ban_seconds=%d", Word.c_str(), toString(Behavior), BanSeconds);
+		}
+		else
+		{
+			log_info("chat_filters", "word='%s' behavior=%s", Word.c_str(), toString(Behavior));
+		}
 	}
 }
