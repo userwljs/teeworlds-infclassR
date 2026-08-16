@@ -853,6 +853,8 @@ set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
   server.h
   server_logger.cpp
   server_logger.h
+  snap_id_pool.cpp
+  snap_id_pool.h
 )
 
 set_glob(GAME_SERVER GLOB_RECURSE src/game/server
