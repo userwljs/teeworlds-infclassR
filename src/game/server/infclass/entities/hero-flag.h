@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_HEROFLAG_H
 #define GAME_SERVER_ENTITIES_HEROFLAG_H
 
+#include <optional>
+
 #include "ic_entity.h"
 
 class CIcCharacter;
@@ -32,7 +34,7 @@ public:
 
 private:
 	int m_SpawnTick = 0;
-	int m_Ids[ms_SHIELD_COUNT];
+	std::optional<int> m_Ids[ms_SHIELD_COUNT];
 	bool m_HasSpawnPosition = false;
 };
 

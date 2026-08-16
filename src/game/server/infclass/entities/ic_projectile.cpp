@@ -175,18 +175,18 @@ void CIcProjectile::Snap(int SnappingClient)
 	float Ct = (Server()->Tick() - m_StartTick) / (float)Server()->TickSpeed();
 	vec2 Pos = GetPos(Ct);
 
-	if(NetworkClipped(SnappingClient, Pos))
+	if(NetworkClipped(SnappingClient, Pos) || !GetId().has_value())
 		return;
 
 	if(m_DamageType == EDamageType::BIOLOGIST_MINE)
 	{
 		int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 		int Subtype = 0;
-		GameServer()->SnapLaserObject(CSnapContext(SnappingClientVersion), GetId(),
+		GameServer()->SnapLaserObject(CSnapContext(SnappingClientVersion), GetId().value(),
 			Pos, Pos, m_StartTick, GetOwner(), LASERTYPE_PLASMA, Subtype);
 	}
 
-	CNetObj_Projectile *pProj = Server()->SnapNewItem<CNetObj_Projectile>(GetId());
+	CNetObj_Projectile *pProj = Server()->SnapNewItem<CNetObj_Projectile>(GetId().value());
 	if(pProj)
 		FillInfo(pProj);
 }

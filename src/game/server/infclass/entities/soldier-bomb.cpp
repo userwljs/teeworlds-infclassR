@@ -53,7 +53,8 @@ CSoldierBomb::CSoldierBomb(CGameContext *pGameContext, vec2 Pos, int Owner) :
 CSoldierBomb::~CSoldierBomb()
 {
 	for(int i = 0; i < m_IdBomb.size(); i++)
-		Server()->SnapFreeId(m_IdBomb[i]);
+		if(m_IdBomb[i].has_value())
+			Server()->SnapFreeId(m_IdBomb[i].value());
 }
 
 void CSoldierBomb::Explode()
@@ -142,9 +143,13 @@ void CSoldierBomb::Snap(int SnappingClient)
 
 	for(int i = 0; i < m_nbBomb; i++)
 	{
+		if(!m_IdBomb[i].has_value())
+			continue;
 		float shiftedAngle = m_Angle + 2.0 * pi * static_cast<float>(i) / static_cast<float>(m_IdBomb.size());
 
-		CNetObj_Projectile *pProj = Server()->SnapNewItem<CNetObj_Projectile>(m_IdBomb[i]);
+		CNetObj_Projectile *pProj = Server()->SnapNewItem<CNetObj_Projectile>(m_IdBomb[i].value());
+		if(!pProj)
+			continue;
 		pProj->m_X = m_Pos.x + SoldierBombRadius * std::cos(shiftedAngle);
 		pProj->m_Y = m_Pos.y + SoldierBombRadius * std::sin(shiftedAngle);
 		pProj->m_VelX = 0;

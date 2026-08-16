@@ -12,7 +12,10 @@ CPlacedObject::CPlacedObject(CGameContext *pGameContext, int ObjectType, vec2 Po
 
 CPlacedObject::~CPlacedObject()
 {
-	Server()->SnapFreeId(m_InfClassObjectId);
+	if(m_InfClassObjectId.has_value())
+	{
+		Server()->SnapFreeId(m_InfClassObjectId.value());
+	}
 }
 
 void CPlacedObject::MoveTo(const vec2 &Position)
@@ -63,6 +66,9 @@ void CPlacedObject::Tick()
 
 bool CPlacedObject::DoSnapForClient(int SnappingClient)
 {
+	if(!GetId().has_value())
+		return false;
+
 	if(IsMarkedForDestroy())
 		return false;
 
@@ -78,7 +84,9 @@ bool CPlacedObject::DoSnapForClient(int SnappingClient)
 
 CNetObj_InfClassObject *CPlacedObject::SnapInfClassObject()
 {
-	CNetObj_InfClassObject *pInfClassObject = Server()->SnapNewItem<CNetObj_InfClassObject>(m_InfClassObjectId);
+	if(!m_InfClassObjectId.has_value())
+		return nullptr;
+	CNetObj_InfClassObject *pInfClassObject = Server()->SnapNewItem<CNetObj_InfClassObject>(m_InfClassObjectId.value());
 	if(!pInfClassObject)
 		return nullptr;
 

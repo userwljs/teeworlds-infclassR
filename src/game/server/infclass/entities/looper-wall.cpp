@@ -27,15 +27,15 @@ CLooperWall::CLooperWall(CGameContext *pGameContext, vec2 Pos1, int Owner) :
 	m_InfClassObjectType = INFCLASS_OBJECT_TYPE_LOOPER_WALL;
 	m_MaxLength = g_BarrierMaxLength;
 
-	for(int &Id : m_Ids)
+	for(auto &Id : m_Ids)
 	{
 		Id = Server()->SnapNewId();
 	}
-	for(int &Id : m_EndPointIds)
+	for(auto &Id : m_EndPointIds)
 	{
 		Id = Server()->SnapNewId();
 	}
-	for(int &Id : m_ParticleIds)
+	for(auto &Id : m_ParticleIds)
 	{
 		Id = Server()->SnapNewId();
 	}
@@ -45,17 +45,20 @@ CLooperWall::CLooperWall(CGameContext *pGameContext, vec2 Pos1, int Owner) :
 
 CLooperWall::~CLooperWall()
 {
-	for(int Id : m_ParticleIds)
+	for(auto &Id : m_ParticleIds)
 	{
-		Server()->SnapFreeId(Id);
+		if(Id.has_value())
+			Server()->SnapFreeId(Id.value());
 	}
-	for(int Id : m_EndPointIds)
+	for(auto &Id : m_EndPointIds)
 	{
-		Server()->SnapFreeId(Id);
+		if(Id.has_value())
+			Server()->SnapFreeId(Id.value());
 	}
-	for(int Id : m_Ids)
+	for(auto &Id : m_Ids)
 	{
-		Server()->SnapFreeId(Id);
+		if(Id.has_value())
+			Server()->SnapFreeId(Id.value());
 	}
 }
 
@@ -133,10 +136,12 @@ void CLooperWall::Snap(int SnappingClient)
 	{
 		for(int i = 0; i < 2; i++)
 		{
+			if(!m_Ids[i].has_value())
+				continue;
 			// draws the first two dots + the lasers
 			vec2 Pos = m_Pos;
 			Pos.x += g_Thickness * 0.5 - g_Thickness * i;
-			GameServer()->SnapLaserObject(Context, m_Ids[i], Pos, Pos, m_SnapStartTick);
+			GameServer()->SnapLaserObject(Context, m_Ids[i].value(), Pos, Pos, m_SnapStartTick);
 		}
 		return;
 	}
@@ -155,13 +160,16 @@ void CLooperWall::Snap(int SnappingClient)
 			dirVecT.y = -dirVecT.y;
 		}
 
-		// draws the first two dots + the lasers
-		GameServer()->SnapLaserObject(Context, m_Ids[i], m_Pos + dirVecT, Pos2 + dirVecT, m_SnapStartTick);
+		if(m_Ids[i].has_value())
+		{
+			// draws the first two dots + the lasers
+			GameServer()->SnapLaserObject(Context, m_Ids[i].value(), m_Pos + dirVecT, Pos2 + dirVecT, m_SnapStartTick);
+		}
 
 		// draws one dot at the end of each laser
-		if(!AntiPing)
+		if(!AntiPing && m_EndPointIds[i].has_value())
 		{
-			GameServer()->SnapLaserObject(Context, m_EndPointIds[i], Pos2 + dirVecT, Pos2 + dirVecT, Server()->Tick());
+			GameServer()->SnapLaserObject(Context, m_EndPointIds[i].value(), Pos2 + dirVecT, Pos2 + dirVecT, Server()->Tick());
 		}
 	}
 
@@ -175,9 +183,11 @@ void CLooperWall::Snap(int SnappingClient)
 		int particleCount = length(dirVec) / g_BarrierMaxLength * static_cast<float>(NUM_PARTICLES);
 		for(int i = 0; i < particleCount; i++)
 		{
+			if(!m_ParticleIds[i].has_value())
+				continue;
 			float fRandom1 = random_float();
 			float fRandom2 = random_float();
-			GameController()->SendHammerDot(startPos + dirVec * fRandom1 + dirVecT * fRandom2, m_ParticleIds[i]);
+			GameController()->SendHammerDot(startPos + dirVec * fRandom1 + dirVecT * fRandom2, m_ParticleIds[i].value());
 		}
 	}
 }

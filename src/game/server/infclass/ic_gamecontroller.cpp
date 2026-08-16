@@ -3832,7 +3832,7 @@ CIcCharacter *CIcGameController::GetCharacter(int ClientId) const
 	return pPlayer ? pPlayer->GetCharacter() : nullptr;
 }
 
-int CIcGameController::GetPlayerOwnCursorId(int ClientId) const
+std::optional<int> CIcGameController::GetPlayerOwnCursorId(int ClientId) const
 {
 	return m_PlayerOwnCursorId;
 }
@@ -3944,7 +3944,11 @@ void CIcGameController::ReservePlayerOwnSnapItems()
 
 void CIcGameController::FreePlayerOwnSnapItems()
 {
-	Server()->SnapFreeId(m_PlayerOwnCursorId);
+	if(m_PlayerOwnCursorId.has_value())
+	{
+		Server()->SnapFreeId(m_PlayerOwnCursorId.value());
+		m_PlayerOwnCursorId = std::nullopt;
+	}
 }
 
 void CIcGameController::SendHintMessage()

@@ -43,7 +43,7 @@ CTurret::CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, CTurret::Type 
 		break;
 	}
 
-	for(int &Id : m_Ids)
+	for(auto &Id : m_Ids)
 	{
 		Id = Server()->SnapNewId();
 	}
@@ -54,9 +54,10 @@ CTurret::CTurret(CGameContext *pGameContext, vec2 Pos, int Owner, CTurret::Type 
 
 CTurret::~CTurret()
 {
-	for(int SnapId : m_Ids)
+	for(auto &SnapId : m_Ids)
 	{
-		Server()->SnapFreeId(SnapId);
+		if(SnapId.has_value())
+			Server()->SnapFreeId(SnapId.value());
 	}
 }
 
@@ -219,14 +220,16 @@ void CTurret::Snap(int SnappingClient)
 
 	float time = (Server()->Tick() - m_StartTick) / (float)Server()->TickSpeed();
 	float angle = fmodf(time * pi / 2, 2.0f * pi);
-	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_Pos, Server()->Tick(), GetOwner(), m_SnapLaserType);
+	GameServer()->SnapLaserObject(Context, GetId().value(), m_Pos, m_Pos, Server()->Tick(), GetOwner(), m_SnapLaserType);
 
 	int Dots = AntiPing ? 2 : std::size(m_Ids);
 	for(int i = 0; i < Dots; i++)
 	{
+		if(!m_Ids[i].has_value())
+			continue;
 		float shiftedAngle = angle + 2.0 * pi * i / static_cast<float>(Dots);
 		vec2 Direction = vec2(cos(shiftedAngle), sin(shiftedAngle));
-		GameController()->SendHammerDot(m_Pos + Direction * m_Radius, m_Ids[i]);
+		GameController()->SendHammerDot(m_Pos + Direction * m_Radius, m_Ids[i].value());
 	}
 }
 

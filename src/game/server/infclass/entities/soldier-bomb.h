@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_SOLDIER_BOMB_H
 #define GAME_SERVER_ENTITIES_SOLDIER_BOMB_H
 
+#include <optional>
+
 #include <game/server/infclass/entities/ic_placed_object.h>
 
 #include <base/tl/array.h>
@@ -30,7 +32,7 @@ private:
 
 	int m_StartTick;
 	float m_Angle = 0;
-	array<int> m_IdBomb;
+	array<std::optional<int>> m_IdBomb;
 	int m_nbBomb;
 	int m_ChargedBomb;
 };

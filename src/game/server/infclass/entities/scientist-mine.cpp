@@ -32,7 +32,8 @@ CScientistMine::~CScientistMine()
 {
 	for(int i = 0; i < NUM_IDS; i++)
 	{
-		Server()->SnapFreeId(m_Ids[i]);
+		if(m_Ids[i].has_value())
+			Server()->SnapFreeId(m_Ids[i].value());
 	}
 }
 
@@ -99,18 +100,22 @@ void CScientistMine::Snap(int SnappingClient)
 
 	for(int i = 0; i < NumSide; i++)
 	{
+		if(!m_Ids[i].has_value())
+			continue;
 		vec2 PartPosStart = m_Pos + direction(AngleStep * i) * Radius;
 		vec2 PartPosEnd = m_Pos + direction(AngleStep * (i + 1)) * Radius;
-		GameServer()->SnapLaserObject(Context, m_Ids[i], PartPosStart, PartPosEnd, Server()->Tick(), GetOwner());
+		GameServer()->SnapLaserObject(Context, m_Ids[i].value(), PartPosStart, PartPosEnd, Server()->Tick(), GetOwner());
 	}
 
 	if(!AntiPing)
 	{
 		for(int i = 0; i < CScientistMine::NUM_PARTICLES; i++)
 		{
+			if(!m_Ids[CScientistMine::NUM_SIDE + i].has_value())
+				continue;
 			float RandomRadius = random_float() * (Radius - 4.0f);
 			vec2 ParticlePos = m_Pos + random_direction() * RandomRadius;
-			GameController()->SendHammerDot(ParticlePos, m_Ids[CScientistMine::NUM_SIDE + i]);
+			GameController()->SendHammerDot(ParticlePos, m_Ids[CScientistMine::NUM_SIDE + i].value());
 		}
 	}
 }

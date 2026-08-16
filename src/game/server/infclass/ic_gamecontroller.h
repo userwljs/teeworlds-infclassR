@@ -464,7 +464,7 @@ public:
 	IDebugSink *GetDebugSink() const;
 	CIcPlayer *GetPlayer(int ClientId) const;
 	CIcCharacter *GetCharacter(int ClientId) const;
-	int GetPlayerOwnCursorId(int ClientId) const;
+	std::optional<int> GetPlayerOwnCursorId(int ClientId) const;
 
 	void SortCharactersByDistance(ClientsArray *pCharacterIds, const vec2 &Center, const float MaxDistance = 0);
 	void SortCharactersByDistance(const ClientsArray &Input, ClientsArray *pOutput, const vec2 &Center, const float MaxDistance = 0);
@@ -599,7 +599,7 @@ private:
 	int m_HeroGiftTick = 0;
 
 	ClientsArray m_NinjaTargets;
-	int m_PlayerOwnCursorId = -1;
+	std::optional<int> m_PlayerOwnCursorId;
 
 	ERoundType m_RoundType = ERoundType::Normal;
 	ERoundType m_QueuedRoundType = ERoundType::Normal;

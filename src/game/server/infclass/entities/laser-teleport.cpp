@@ -94,10 +94,10 @@ void CLaserTeleport::Snap(int SnappingClient)
 	const CIcPlayer *pPlayer = GameController()->GetPlayer(SnappingClient);
 	const bool AntiPing = pPlayer && pPlayer->GetAntiPingEnabled();
 
-	if(AntiPing)
+	if(AntiPing || !GetId().has_value())
 		return;
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 	CSnapContext Context(SnappingClientVersion);
-	GameServer()->SnapLaserObject(Context, GetId(), m_EndPos, m_StartPos, Server()->Tick(), GetOwner());
+	GameServer()->SnapLaserObject(Context, GetId().value(), m_EndPos, m_StartPos, Server()->Tick(), GetOwner());
 }

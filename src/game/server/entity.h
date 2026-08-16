@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITY_H
 #define GAME_SERVER_ENTITY_H
 
+#include <optional>
+
 #include <base/vmath.h>
 #include <game/server/gameworld.h>
 #include <new>
@@ -31,14 +33,14 @@ class CEntity
 
 protected:
 	bool m_MarkedForDestroy;
-	int m_Id;
+	std::optional<int> m_Id;
 	int m_ObjType;
 
 public:
-	int GetId() const { return m_Id; }
+	std::optional<int> GetId() const { return m_Id; }
 
 	/* Constructor */
-	CEntity(CGameWorld *pGameWorld, int Objtype, const vec2 &Pos = vec2(0, 0), int ProximityRadius = 0);
+	CEntity(CGameWorld *pGameWorld, int Objtype, bool SnapFreeId, const vec2 &Pos = vec2(0, 0), int ProximityRadius = 0);
 
 	/* Destructor */
 	virtual ~CEntity();

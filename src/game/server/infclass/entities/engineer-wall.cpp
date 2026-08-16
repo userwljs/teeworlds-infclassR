@@ -34,7 +34,8 @@ CEngineerWall::CEngineerWall(CGameContext *pGameContext, vec2 Pos1, int Owner) :
 
 CEngineerWall::~CEngineerWall()
 {
-	Server()->SnapFreeId(m_EndPointId);
+	if(m_EndPointId.has_value())
+		Server()->SnapFreeId(m_EndPointId.value());
 }
 
 void CEngineerWall::Tick()
@@ -121,11 +122,12 @@ void CEngineerWall::Snap(int SnappingClient)
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 	CSnapContext Context(SnappingClientVersion);
 
-	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_Pos2.value_or(m_Pos), m_SnapStartTick, GetOwner());
+	GameServer()->SnapLaserObject(Context, GetId().value(), m_Pos, m_Pos2.value_or(m_Pos), m_SnapStartTick, GetOwner());
 
 	if(HasSecondPosition())
 	{
-		GameServer()->SnapLaserObject(Context, m_EndPointId, m_Pos2.value(), m_Pos2.value(), Server()->Tick(), GetOwner());
+		if(m_EndPointId.has_value())
+			GameServer()->SnapLaserObject(Context, m_EndPointId.value(), m_Pos2.value(), m_Pos2.value(), Server()->Tick(), GetOwner());
 	}
 }
 

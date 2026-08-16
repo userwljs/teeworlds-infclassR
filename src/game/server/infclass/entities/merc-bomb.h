@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_MERCENARY_BOMB_H
 #define GAME_SERVER_ENTITIES_MERCENARY_BOMB_H
 
+#include <optional>
+
 #include <game/server/infclass/entities/ic_placed_object.h>
 
 class CMercenaryBomb : public CPlacedObject
@@ -32,7 +34,7 @@ public:
 	float GetLaserHitRadius() const;
 
 private:
-	int m_Ids[NUM_IDS];
+	std::optional<int> m_Ids[NUM_IDS];
 
 	int m_LoadingTick;
 	float m_Load;

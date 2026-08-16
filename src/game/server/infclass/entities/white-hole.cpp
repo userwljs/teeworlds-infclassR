@@ -20,7 +20,7 @@ CWhiteHole::CWhiteHole(CGameContext *pGameContext, vec2 CenterPos, int Owner) : 
 	GameWorld()->InsertEntity(this);
 
 	m_NumParticles = Config()->m_InfWhiteHoleNumParticles;
-	m_Ids = new int[m_NumParticles];
+	m_Ids = new std::optional<int>[m_NumParticles];
 	m_ParticlePos = new vec2[m_NumParticles];
 	m_ParticleVec = new vec2[m_NumParticles];
 	for(int i = 0; i < m_NumParticles; i++)
@@ -42,7 +42,8 @@ CWhiteHole::~CWhiteHole()
 {
 	for(int i = 0; i < m_NumParticles; i++)
 	{
-		Server()->SnapFreeId(m_Ids[i]);
+		if(m_Ids[i].has_value())
+			Server()->SnapFreeId(m_Ids[i].value());
 	}
 	delete[] m_Ids;
 	delete[] m_ParticlePos;
@@ -105,9 +106,11 @@ void CWhiteHole::Snap(int SnappingClient)
 		float Radius = Config()->m_InfWhiteHoleRadius;
 		for(int i = 0; i < NumSide; i++)
 		{
+			if(!m_Ids[i].has_value())
+				continue;
 			vec2 PartPosStart = m_Pos + vec2(Radius * cos(AngleStep * i), Radius * sin(AngleStep * i));
 			vec2 PartPosEnd = m_Pos + vec2(Radius * cos(AngleStep * (i + 1)), Radius * sin(AngleStep * (i + 1)));
-			GameServer()->SnapLaserObject(Context, m_Ids[i], PartPosStart, PartPosEnd, Server()->Tick());
+			GameServer()->SnapLaserObject(Context, m_Ids[i].value(), PartPosStart, PartPosEnd, Server()->Tick());
 		}
 		return;
 	}
@@ -115,10 +118,12 @@ void CWhiteHole::Snap(int SnappingClient)
 	// Draw full particle effect - if anti ping is not set to true
 	for(int i = 0; i < m_NumParticles; i++)
 	{
+		if(!m_Ids[i].has_value())
+			continue;
 		if(!m_IsDieing && distance(m_ParticlePos[i], m_Pos) > m_Radius)
 			continue; // start animation
 
-		GameController()->SendHammerDot(m_ParticlePos[i], m_Ids[i]);
+		GameController()->SendHammerDot(m_ParticlePos[i], m_Ids[i].value());
 	}
 }
 

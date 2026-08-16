@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_PORTAL_H
 #define GAME_SERVER_ENTITIES_PORTAL_H
 
+#include <optional>
+
 #include "ic_entity.h"
 
 #include <base/tl/ic_array.h>
@@ -59,7 +61,7 @@ protected:
 	const float m_ParticleAcceleration = 1.01f;
 	int m_ParticleStopTickTime; // when X time is left stop creating particles - close animation
 
-	int m_Ids[NUM_IDS];
+	std::optional<int> m_Ids[NUM_IDS];
 	vec2 m_ParticlePos[NUM_IDS];
 	vec2 m_ParticleVec[NUM_HINT];
 	float m_Radius = 0;

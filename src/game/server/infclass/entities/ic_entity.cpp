@@ -8,7 +8,7 @@
 
 CIcEntity::CIcEntity(CGameContext *pGameContext, int ObjectType, vec2 Pos, std::optional<int> Owner,
 	int ProximityRadius) :
-	CEntity(pGameContext->GameWorld(), ObjectType, Pos, ProximityRadius)
+	CEntity(pGameContext->GameWorld(), ObjectType, true, Pos, ProximityRadius)
 {
 	dbg_assert(ObjectType != 0, "Invalid ObjectType. Ensure that the type is registered via RegisterEntityType().");
 	SetOwner(Owner.value_or(-1));
@@ -145,7 +145,7 @@ void CIcEntity::ResetLifespan()
 
 bool CIcEntity::DoSnapForClient(int SnappingClient)
 {
-	if(NetworkClipped(SnappingClient))
+	if(NetworkClipped(SnappingClient) || !GetId().has_value())
 		return false;
 
 	return true;

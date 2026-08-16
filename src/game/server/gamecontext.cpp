@@ -245,31 +245,40 @@ void CGameContext::CreateHammerHit(vec2 Pos, CClientMask Mask)
 
 void CGameContext::CreateLaserDotEvent(vec2 Pos0, vec2 Pos1, int LifeSpan)
 {
+	auto Id = Server()->SnapNewId();
+	if(!Id.has_value())
+		return;
 	CGameContext::LaserDotState State;
 	State.m_Pos0 = Pos0;
 	State.m_Pos1 = Pos1;
 	State.m_LifeSpan = LifeSpan;
-	State.m_SnapId = Server()->SnapNewId();
+	State.m_SnapId = Id.value();
 
 	m_LaserDots.add(State);
 }
 
 void CGameContext::CreateHammerDotEvent(vec2 Pos, int LifeSpan)
 {
+	auto Id = Server()->SnapNewId();
+	if(!Id.has_value())
+		return;
 	CGameContext::HammerDotState State;
 	State.m_Pos = Pos;
 	State.m_LifeSpan = LifeSpan;
-	State.m_SnapId = Server()->SnapNewId();
+	State.m_SnapId = Id.value();
 
 	m_HammerDots.add(State);
 }
 
 void CGameContext::CreateLoveEvent(vec2 Pos)
 {
+	auto Id = Server()->SnapNewId();
+	if(!Id.has_value())
+		return;
 	CGameContext::LoveDotState State;
 	State.m_Pos = Pos;
 	State.m_LifeSpan = Server()->TickSpeed();
-	State.m_SnapId = Server()->SnapNewId();
+	State.m_SnapId = Id.value();
 
 	m_LoveDots.add(State);
 }

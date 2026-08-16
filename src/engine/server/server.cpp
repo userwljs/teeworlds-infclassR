@@ -4148,7 +4148,7 @@ void CServer::RegisterCommands()
 	m_pGameServer->OnConsoleInit();
 }
 
-int CServer::SnapNewId()
+std::optional<int> CServer::SnapNewId()
 {
 	return m_IdPool.NewId();
 }

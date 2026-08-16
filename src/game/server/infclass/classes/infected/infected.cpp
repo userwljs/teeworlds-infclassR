@@ -373,7 +373,9 @@ void CInfClassInfected::OnCharacterSnap(int SnappingClient)
 
 	if(GetPlayerClass() == EPlayerClass::Witch)
 	{
-		CNetObj_Flag *pFlag = Server()->SnapNewItem<CNetObj_Flag>(m_pCharacter->GetFlagId());
+		if(!m_pCharacter->GetFlagId().has_value())
+			return;
+		CNetObj_Flag *pFlag = Server()->SnapNewItem<CNetObj_Flag>(m_pCharacter->GetFlagId().value());
 		if(!pFlag)
 			return;
 
@@ -393,8 +395,9 @@ void CInfClassInfected::OnCharacterSnap(int SnappingClient)
 				vec2 SpawnPos;
 				if(FindWitchSpawnPosition(SpawnPos))
 				{
-					const int CursorId = GameController()->GetPlayerOwnCursorId(GetCid());
-					GameController()->SendHammerDot(SpawnPos, CursorId);
+					const auto CursorId = GameController()->GetPlayerOwnCursorId(GetCid());
+					if(CursorId.has_value())
+						GameController()->SendHammerDot(SpawnPos, CursorId.value());
 				}
 			}
 			break;
@@ -408,12 +411,12 @@ void CInfClassInfected::OnCharacterSnap(int SnappingClient)
 		const CIcPlayer *pDestClient = GameController()->GetPlayer(SnappingClient);
 		if(pDestClient && pDestClient->IsInGame() && pDestClient->IsInfected())
 		{
-			if(m_pCharacter->GetHealthArmorSum() < 10)
+			if(m_pCharacter->GetHealthArmorSum() < 10 && m_pCharacter->GetHeartId().has_value())
 			{
 				int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 				CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 
-				GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId(), {Pos.x, Pos.y - 60.0}, POWERUP_HEALTH, 0);
+				GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId().value(), {Pos.x, Pos.y - 60.0}, POWERUP_HEALTH, 0);
 			}
 		}
 	}

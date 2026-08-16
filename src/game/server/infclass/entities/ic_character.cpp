@@ -2929,20 +2929,20 @@ void CIcCharacter::DestroyChildEntities()
 
 void CIcCharacter::FreeChildSnapIds()
 {
-	if(m_FlagId >= 0)
+	if(m_FlagId.has_value())
 	{
-		Server()->SnapFreeId(m_FlagId);
-		m_FlagId = -1;
+		Server()->SnapFreeId(m_FlagId.value());
+		m_FlagId = std::nullopt;
 	}
-	if(m_HeartId >= 0)
+	if(m_HeartId.has_value())
 	{
-		Server()->SnapFreeId(m_HeartId);
-		m_HeartId = -1;
+		Server()->SnapFreeId(m_HeartId.value());
+		m_HeartId = std::nullopt;
 	}
-	if(m_CursorId >= 0)
+	if(m_CursorId.has_value())
 	{
-		Server()->SnapFreeId(m_CursorId);
-		m_CursorId = -1;
+		Server()->SnapFreeId(m_CursorId.value());
+		m_CursorId = std::nullopt;
 	}
 }
 

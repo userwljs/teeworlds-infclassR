@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_WHITE_HOLE_H
 #define GAME_SERVER_ENTITIES_WHITE_HOLE_H
 
+#include <optional>
+
 #include "ic_entity.h"
 
 class CWhiteHole : public CIcEntity
@@ -31,7 +33,7 @@ private:
 	int m_ParticleStopTickTime; // when X time is left stop creating particles - close animation
 
 	int m_NumParticles; // will be set with a config var
-	int *m_Ids;
+	std::optional<int> *m_Ids;
 	vec2 *m_ParticlePos;
 	vec2 *m_ParticleVec;
 

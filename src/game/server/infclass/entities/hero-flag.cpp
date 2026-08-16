@@ -16,7 +16,7 @@ int CHeroFlag::EntityId{};
 
 CHeroFlag::CHeroFlag(CGameContext *pGameContext, int Owner) : CIcEntity(pGameContext, EntityId, vec2(), Owner, ms_PhysSize)
 {
-	for(int &Id : m_Ids)
+	for(auto &Id : m_Ids)
 	{
 		Id = Server()->SnapNewId();
 	}
@@ -27,9 +27,10 @@ CHeroFlag::CHeroFlag(CGameContext *pGameContext, int Owner) : CIcEntity(pGameCon
 
 CHeroFlag::~CHeroFlag()
 {
-	for(int Id : m_Ids)
+	for(auto &Id : m_Ids)
 	{
-		Server()->SnapFreeId(Id);
+		if(Id.has_value())
+			Server()->SnapFreeId(Id.value());
 	}
 }
 
@@ -144,14 +145,16 @@ void CHeroFlag::Snap(int SnappingClient)
 		CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 		for(int i = 0; i < ms_SHIELD_COUNT; i++)
 		{
+			if(!m_Ids[i].has_value())
+				continue;
 			vec2 PosStart = DecorationsPivot + vec2(cos(AngleStart + AngleStep * i), sin(AngleStart + AngleStep * i)) * Radius;
 			int Type = i % 2 == 0 ? POWERUP_ARMOR : POWERUP_HEALTH;
 			int Subtype = 0;
-			GameServer()->SnapPickup(Context, m_Ids[i], PosStart, Type, Subtype);
+			GameServer()->SnapPickup(Context, m_Ids[i].value(), PosStart, Type, Subtype);
 		}
 	}
 
-	CNetObj_Flag *pFlag = Server()->SnapNewItem<CNetObj_Flag>(m_Id);
+	CNetObj_Flag *pFlag = Server()->SnapNewItem<CNetObj_Flag>(m_Id.value());
 	if(!pFlag)
 		return;
 

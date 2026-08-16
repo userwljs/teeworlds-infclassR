@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "ic_entity.h"
 
 class CPlacedObject : public CIcEntity
@@ -27,7 +29,7 @@ protected:
 protected:
 	std::optional<vec2> m_Pos2;
 	std::optional<float> m_MaxLength;
-	int m_InfClassObjectId = -1;
+	std::optional<int> m_InfClassObjectId;
 	int m_InfClassObjectType = -1;
 	int m_InfClassObjectFlags = 0;
 };

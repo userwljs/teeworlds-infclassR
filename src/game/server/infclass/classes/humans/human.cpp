@@ -704,22 +704,26 @@ void CInfClassHuman::OnCharacterSnap(int SnappingClient)
 						}
 					}
 
+					if(!m_pCharacter->GetHeartId().has_value())
+						return;
 					int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 					CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 
 					const vec2 Pos = m_pCharacter->GetPos();
-					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId(), {Pos.x, Pos.y - 60.0},
+					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId().value(), {Pos.x, Pos.y - 60.0},
 						(m_pCharacter->GetHealth() < 10 && m_pCharacter->GetArmor() == 0) ? POWERUP_HEALTH : POWERUP_ARMOR, 0);
 				}
 				break;
 			case EPlayerClass::Biologist:
 				if(m_pCharacter->IsPoisoned())
 				{
+					if(!m_pCharacter->GetHeartId().has_value())
+						return;
 					int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 					CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 
 					const vec2 Pos = m_pCharacter->GetPos();
-					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId(), {Pos.x, Pos.y - 60.0}, POWERUP_HEALTH, 0);
+					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId().value(), {Pos.x, Pos.y - 60.0}, POWERUP_HEALTH, 0);
 				}
 				break;
 			default:
@@ -1952,7 +1956,9 @@ void CInfClassHuman::SnapHero(int SnappingClient)
 
 		if(CurrentTick > TickLimit)
 		{
-			CNetObj_Laser *pObj = Server()->SnapNewItem<CNetObj_Laser>(m_pCharacter->GetCursorId());
+			if(!m_pCharacter->GetCursorId().has_value())
+				return;
+			CNetObj_Laser *pObj = Server()->SnapNewItem<CNetObj_Laser>(m_pCharacter->GetCursorId().value());
 			if(!pObj)
 				return;
 
@@ -2004,8 +2010,9 @@ void CInfClassHuman::SnapScientist(int SnappingClient)
 
 		if(PortalPos.has_value())
 		{
-			const int CursorId = GameController()->GetPlayerOwnCursorId(GetCid());
-			GameController()->SendHammerDot(PortalPos.value(), CursorId);
+			const auto CursorId = GameController()->GetPlayerOwnCursorId(GetCid());
+			if(CursorId.has_value())
+				GameController()->SendHammerDot(PortalPos.value(), CursorId.value());
 		}
 	}
 }

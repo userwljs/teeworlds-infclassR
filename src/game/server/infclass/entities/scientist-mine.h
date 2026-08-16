@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_SCIENTIST_MINE_H
 #define GAME_SERVER_ENTITIES_SCIENTIST_MINE_H
 
+#include <optional>
+
 #include <game/server/infclass/entities/ic_placed_object.h>
 
 class CScientistMine : public CPlacedObject
@@ -30,7 +32,7 @@ public:
 	void Explode(int DetonatedBy, vec2 Direction);
 
 private:
-	int m_Ids[NUM_IDS];
+	std::optional<int> m_Ids[NUM_IDS];
 	int m_ExplosionRadius{};
 
 public:

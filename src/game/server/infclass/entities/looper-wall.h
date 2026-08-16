@@ -1,6 +1,8 @@
 #ifndef GAME_SERVER_ENTITIES_LOOPER_WALL_H
 #define GAME_SERVER_ENTITIES_LOOPER_WALL_H
 
+#include <optional>
+
 #include <game/server/infclass/entities/ic_placed_object.h>
 
 class CLooperWall : public CPlacedObject
@@ -22,9 +24,9 @@ private:
 
 	void PrepareSnapData();
 
-	int m_Ids[2]{};
-	int m_EndPointIds[2]{};
-	int m_ParticleIds[NUM_PARTICLES]{};
+	std::optional<int> m_Ids[2]{};
+	std::optional<int> m_EndPointIds[2]{};
+	std::optional<int> m_ParticleIds[NUM_PARTICLES]{};
 	int m_SnapStartTick{};
 };
 

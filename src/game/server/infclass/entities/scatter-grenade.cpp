@@ -136,10 +136,10 @@ void CScatterGrenade::Snap(int SnappingClient)
 {
 	float Ct = (Server()->Tick() - m_StartTick) / (float)Server()->TickSpeed();
 
-	if(NetworkClipped(SnappingClient, GetPos(Ct)))
+	if(NetworkClipped(SnappingClient, GetPos(Ct)) || !GetId().has_value())
 		return;
 
-	CNetObj_Projectile *pProj = Server()->SnapNewItem<CNetObj_Projectile>(GetId());
+	CNetObj_Projectile *pProj = Server()->SnapNewItem<CNetObj_Projectile>(GetId().value());
 	if(pProj)
 		FillInfo(pProj);
 }

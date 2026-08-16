@@ -285,7 +285,7 @@ void CIcPickup::TickPaused()
 
 void CIcPickup::Snap(int SnappingClient)
 {
-	if(m_SpawnTick != -1 || NetworkClipped(SnappingClient))
+	if(m_SpawnTick != -1 || NetworkClipped(SnappingClient) || !GetId().has_value())
 		return;
 
 	if(m_Type == EICPickupType::Invalid)
@@ -319,12 +319,14 @@ void CIcPickup::Snap(int SnappingClient)
 		return;
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
-	GameServer()->SnapPickup(CSnapContext(SnappingClientVersion, Server()->IsSixup(SnappingClient)), GetId(), m_Pos, NetworkType, Subtype);
+	GameServer()->SnapPickup(CSnapContext(SnappingClientVersion, Server()->IsSixup(SnappingClient)), GetId().value(), m_Pos, NetworkType, Subtype);
 }
 
 void CIcPickup::SnapAsFlag()
 {
-	CNetObj_Flag *pFlag = Server()->SnapNewItem<CNetObj_Flag>(GetId());
+	if(!GetId().has_value())
+		return;
+	CNetObj_Flag *pFlag = Server()->SnapNewItem<CNetObj_Flag>(GetId().value());
 	if(!pFlag)
 		return;
 

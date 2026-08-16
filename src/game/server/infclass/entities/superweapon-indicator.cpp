@@ -30,7 +30,10 @@ CSuperWeaponIndicator::CSuperWeaponIndicator(CGameContext *pGameContext, vec2 Po
 CSuperWeaponIndicator::~CSuperWeaponIndicator()
 {
 	for(int i = 0; i < m_Ids.size(); i++)
-		Server()->SnapFreeId(m_Ids[i]);
+	{
+		if(m_Ids[i].has_value())
+			Server()->SnapFreeId(m_Ids[i].value());
+	}
 }
 
 void CSuperWeaponIndicator::Snap(int SnappingClient)
@@ -49,10 +52,12 @@ void CSuperWeaponIndicator::Snap(int SnappingClient)
 
 	for(int i = 0; i < m_Ids.size(); i++)
 	{
+		if(!m_Ids[i].has_value())
+			continue;
 		float shiftedAngle = angle + 2.0 * pi * static_cast<float>(i) / static_cast<float>(m_Ids.size());
 		vec2 ParticlePos = m_Pos + vec2(cos(shiftedAngle), sin(shiftedAngle)) * m_Radius;
 
-		GameController()->SendHammerDot(ParticlePos, m_Ids[i]);
+		GameController()->SendHammerDot(ParticlePos, m_Ids[i].value());
 	}
 }
 

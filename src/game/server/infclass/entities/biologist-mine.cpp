@@ -66,7 +66,8 @@ CBiologistMine::~CBiologistMine()
 {
 	for(int i = 0; i < NUM_IDS; i++)
 	{
-		Server()->SnapFreeId(m_Ids[i]);
+		if(m_Ids[i].has_value())
+			Server()->SnapFreeId(m_Ids[i].value());
 	}
 }
 
@@ -102,11 +103,14 @@ void CBiologistMine::Snap(int SnappingClient)
 
 	for(int i = 0; i < m_Vertices; i++)
 	{
+		if(!m_Ids[i].has_value())
+			continue;
 		vec2 VertexPos = m_Pos + direction(AngleStep * i) * Radius;
-		GameServer()->SnapLaserObject(Context, m_Ids[i], VertexPos, m_Pos, Server()->Tick() - 4, GetOwner());
+		GameServer()->SnapLaserObject(Context, m_Ids[i].value(), VertexPos, m_Pos, Server()->Tick() - 4, GetOwner());
 	}
 
-	GameServer()->SnapLaserObject(Context, m_Ids[m_Vertices], m_EndPos, m_Pos, Server()->Tick() - 4, GetOwner());
+	if(m_Ids[m_Vertices].has_value())
+		GameServer()->SnapLaserObject(Context, m_Ids[m_Vertices].value(), m_EndPos, m_Pos, Server()->Tick() - 4, GetOwner());
 }
 
 void CBiologistMine::Tick()

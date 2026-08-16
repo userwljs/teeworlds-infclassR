@@ -167,12 +167,14 @@ void CIcLaser::TickPaused()
 
 void CIcLaser::Snap(int SnappingClient)
 {
+	if(!GetId().has_value())
+		return;
 	if(NetworkClipped(SnappingClient) && NetworkClipped(SnappingClient, m_From))
 		return;
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 	CSnapContext Context(SnappingClientVersion);
-	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_From, m_EvalTick, GetOwner(), m_SnapLaserType);
+	GameServer()->SnapLaserObject(Context, GetId().value(), m_Pos, m_From, m_EvalTick, GetOwner(), m_SnapLaserType);
 }
 
 void CIcLaser::SetExplosive(bool Explosive)

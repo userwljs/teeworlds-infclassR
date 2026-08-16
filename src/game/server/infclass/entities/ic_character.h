@@ -1,6 +1,8 @@
 #ifndef GAME_SERVER_INFCLASS_ENTITIES_CHARACTER_H
 #define GAME_SERVER_INFCLASS_ENTITIES_CHARACTER_H
 
+#include <optional>
+
 #include <game/infclass/ic_classes.h>
 #include <game/server/entities/character.h>
 #include <game/server/entities_filter.h>
@@ -240,9 +242,9 @@ public:
 	void ResetMovementsInput();
 	void ResetHookInput();
 
-	int GetCursorId() const { return m_CursorId; }
-	int GetFlagId() const { return m_FlagId; }
-	int GetHeartId() const { return m_HeartId; }
+	std::optional<int> GetCursorId() const { return m_CursorId; }
+	std::optional<int> GetFlagId() const { return m_FlagId; }
+	std::optional<int> GetHeartId() const { return m_HeartId; }
 
 	bool IsInfected() const;
 	bool IsHuman() const;
@@ -313,9 +315,9 @@ protected:
 
 	CNetObj_PlayerInput m_InputBackup;
 
-	int m_FlagId;
-	int m_HeartId;
-	int m_CursorId;
+	std::optional<int> m_FlagId;
+	std::optional<int> m_HeartId;
+	std::optional<int> m_CursorId;
 	int m_DropLevel = 0;
 
 	CHelperInfo m_LastHelper;

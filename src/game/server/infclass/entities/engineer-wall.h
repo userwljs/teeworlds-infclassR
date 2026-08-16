@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_ENGINEER_WALL_H
 #define GAME_SERVER_ENTITIES_ENGINEER_WALL_H
 
+#include <optional>
+
 #include <game/server/infclass/entities/ic_placed_object.h>
 
 class CIcCharacter;
@@ -24,7 +26,7 @@ public:
 private:
 	void PrepareSnapData();
 
-	int m_EndPointId{};
+	std::optional<int> m_EndPointId{};
 	int m_WallFlashTicks{};
 	int m_SnapStartTick{};
 	int m_PlayerNextDamageTick[MAX_CLIENTS] = {0};

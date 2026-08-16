@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_TURRET_H
 #define GAME_SERVER_ENTITIES_TURRET_H
 
+#include <optional>
+
 #include <game/server/infclass/entities/ic_placed_object.h>
 
 class CTurret : public CPlacedObject
@@ -53,7 +55,7 @@ private:
 	bool m_foundTarget;
 	bool m_Destructable{};
 
-	int m_Ids[8];
+	std::optional<int> m_Ids[8];
 };
 
 #endif

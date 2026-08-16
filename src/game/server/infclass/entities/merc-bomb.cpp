@@ -21,7 +21,7 @@ CMercenaryBomb::CMercenaryBomb(CGameContext *pGameContext, vec2 Pos, int Owner) 
 	m_LoadingTick = Server()->TickSpeed();
 	m_Load = 0;
 
-	for(int &Id : m_Ids)
+	for(auto &Id : m_Ids)
 	{
 		Id = Server()->SnapNewId();
 	}
@@ -31,9 +31,10 @@ CMercenaryBomb::CMercenaryBomb(CGameContext *pGameContext, vec2 Pos, int Owner) 
 
 CMercenaryBomb::~CMercenaryBomb()
 {
-	for(int SnapId : m_Ids)
+	for(auto &SnapId : m_Ids)
 	{
-		Server()->SnapFreeId(SnapId);
+		if(SnapId.has_value())
+			Server()->SnapFreeId(SnapId.value());
 	}
 }
 
@@ -129,8 +130,10 @@ void CMercenaryBomb::Snap(int SnappingClient)
 	CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 	for(int i = 0; i < CMercenaryBomb::NUM_SIDE; i++)
 	{
+		if(!m_Ids[i].has_value())
+			continue;
 		vec2 PosStart = m_Pos + vec2(R * cos(AngleStart + AngleStep * i), R * sin(AngleStart + AngleStep * i));
-		GameServer()->SnapPickup(Context, m_Ids[i], PosStart, POWERUP_HEALTH, 0);
+		GameServer()->SnapPickup(Context, m_Ids[i].value(), PosStart, POWERUP_HEALTH, 0);
 	}
 
 	if(SnappingClient == GetOwner() && m_LoadingTick > 0)
@@ -139,8 +142,10 @@ void CMercenaryBomb::Snap(int SnappingClient)
 		AngleStart = AngleStart * 2.0f;
 		for(int i = 0; i < CMercenaryBomb::NUM_SIDE; i++)
 		{
+			if(!m_Ids[CMercenaryBomb::NUM_SIDE + i].has_value())
+				continue;
 			vec2 PosStart = m_Pos + vec2(R * cos(AngleStart + AngleStep * i), R * sin(AngleStart + AngleStep * i));
-			GameController()->SendHammerDot(PosStart, m_Ids[CMercenaryBomb::NUM_SIDE + i]);
+			GameController()->SendHammerDot(PosStart, m_Ids[CMercenaryBomb::NUM_SIDE + i].value());
 		}
 	}
 }

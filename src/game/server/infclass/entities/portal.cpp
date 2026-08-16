@@ -64,7 +64,8 @@ CPortal::~CPortal()
 {
 	for(int i = 0; i < NUM_IDS; i++)
 	{
-		Server()->SnapFreeId(m_Ids[i]);
+		if(m_Ids[i].has_value())
+			Server()->SnapFreeId(m_Ids[i].value());
 	}
 
 	Disconnect();
@@ -194,7 +195,9 @@ void CPortal::Snap(int SnappingClient)
 
 	for(int i = 0; i < NUM_IDS; i++)
 	{
-		CNetObj_Projectile *pObj = static_cast<CNetObj_Projectile *>(Server()->SnapNewItem(NETOBJTYPE_PROJECTILE, m_Ids[i], sizeof(CNetObj_Projectile)));
+		if(!m_Ids[i].has_value())
+			continue;
+		CNetObj_Projectile *pObj = static_cast<CNetObj_Projectile *>(Server()->SnapNewItem(NETOBJTYPE_PROJECTILE, m_Ids[i].value(), sizeof(CNetObj_Projectile)));
 		if(pObj)
 		{
 			pObj->m_X = ParticlePos[i].x;

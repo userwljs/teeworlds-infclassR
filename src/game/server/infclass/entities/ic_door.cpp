@@ -60,6 +60,8 @@ void CDoor::Reset()
 
 void CDoor::Snap(int SnappingClientId)
 {
+	if(!GetId().has_value())
+		return;
 	const std::optional<CViewParams> ViewParams = GameServer()->GetClientViewParams(SnappingClientId);
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClientId);
@@ -113,7 +115,7 @@ void CDoor::Snap(int SnappingClientId)
 		}
 	}
 
-	GameServer()->SnapLaserObject(CSnapContext(SnappingClientVersion), GetId(), To, From, StartTick, -1, ForcedShowOpen ? LASERTYPE_FREEZE : LASERTYPE_DOOR);
+	GameServer()->SnapLaserObject(CSnapContext(SnappingClientVersion), GetId().value(), To, From, StartTick, -1, ForcedShowOpen ? LASERTYPE_FREEZE : LASERTYPE_DOOR);
 }
 
 void CDoor::SetOpen(bool Open)

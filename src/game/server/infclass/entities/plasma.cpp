@@ -87,10 +87,10 @@ void CPlasma::Explode()
 
 void CPlasma::Snap(int SnappingClient)
 {
-	if(NetworkClipped(SnappingClient))
+	if(NetworkClipped(SnappingClient) || !GetId().has_value())
 		return;
 
 	int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 	CSnapContext Context(SnappingClientVersion);
-	GameServer()->SnapLaserObject(Context, GetId(), m_Pos, m_Pos, m_StartTick, GetOwner());
+	GameServer()->SnapLaserObject(Context, GetId().value(), m_Pos, m_Pos, m_StartTick, GetOwner());
 }

@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_SUPERWEAPON_INDICATOR_H
 #define GAME_SERVER_ENTITIES_SUPERWEAPON_INDICATOR_H
 
+#include <optional>
+
 #include "ic_entity.h"
 
 #include <base/tl/array.h>
@@ -22,7 +24,7 @@ private:
 	int m_StartTick;
 	int m_warmUpCounter;
 	bool m_IsWarmingUp;
-	array<int> m_Ids;
+	array<std::optional<int>> m_Ids;
 	;
 
 public:

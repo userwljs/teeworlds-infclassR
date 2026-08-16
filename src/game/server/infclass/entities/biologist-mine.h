@@ -3,6 +3,8 @@
 #ifndef GAME_SERVER_ENTITIES_BIOLOGIST_MINE_H
 #define GAME_SERVER_ENTITIES_BIOLOGIST_MINE_H
 
+#include <optional>
+
 #include <game/server/infclass/entities/ic_placed_object.h>
 
 struct WeaponFireContext;
@@ -31,7 +33,7 @@ public:
 	void Explode();
 
 private:
-	int m_Ids[NUM_IDS];
+	std::optional<int> m_Ids[NUM_IDS];
 	int m_Vertices = 0;
 	int m_Lasers = 0;
 	int m_PerLaserDamage = 0;
