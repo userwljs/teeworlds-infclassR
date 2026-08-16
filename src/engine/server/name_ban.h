@@ -15,7 +15,7 @@ enum
 class CNameBan
 {
 public:
-	CNameBan() {}
+	CNameBan() = default;
 	CNameBan(const char *pName, int Distance, int IsSubstring, const char *pReason = "") :
 		m_Distance(Distance), m_IsSubstring(IsSubstring)
 	{

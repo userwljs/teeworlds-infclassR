@@ -2449,11 +2449,11 @@ void CIcGameController::ConCheckAI(IConsole::IResult *pResult)
 
 	else if(str_comp(pCommand, "enable") == 0)
 	{
-		CBotPlayer::SetAiEnabled(1);
+		CBotPlayer::SetAiEnabled(true);
 	}
 	else if(str_comp(pCommand, "disable") == 0)
 	{
-		CBotPlayer::SetAiEnabled(0);
+		CBotPlayer::SetAiEnabled(false);
 	}
 
 	Config()->m_InfBotDebugLevel = DebugLevel;

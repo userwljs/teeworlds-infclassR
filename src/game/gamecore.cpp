@@ -466,7 +466,7 @@ void CCharacterCore::TickDeferred(const CParams *pParams)
 			{
 				vec2 Dir = normalize(m_Pos - pCharCore->m_Pos);
 
-				bool CanCollide = (m_Super || pCharCore->m_Super) || (!m_CollisionDisabled && !pCharCore->m_CollisionDisabled && 1); // m_Tuning.m_PlayerCollision);
+				bool CanCollide = (m_Super || pCharCore->m_Super) || (!m_CollisionDisabled && !pCharCore->m_CollisionDisabled); // m_Tuning.m_PlayerCollision);
 
 				if(CanCollide && (m_Id == -1 || m_pTeams->CanCollide(m_Id, i)) && Distance < PhysicalSize() * 1.25f && Distance > 0.0f)
 				{

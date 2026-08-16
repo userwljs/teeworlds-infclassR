@@ -396,10 +396,10 @@ void CPlayer::SetTeam(int Team, bool DoChatMsg)
 	if(Team == TEAM_SPECTATORS)
 	{
 		// update spectator modes
-		for(int i = 0; i < MAX_CLIENTS; ++i)
+		for(auto &pPlayer : GameServer()->m_apPlayers)
 		{
-			if(GameServer()->m_apPlayers[i] && GameServer()->m_apPlayers[i]->m_SpectatorId == m_ClientId)
-				GameServer()->m_apPlayers[i]->m_SpectatorId = SPEC_FREEVIEW;
+			if(pPlayer && pPlayer->m_SpectatorId == m_ClientId)
+				pPlayer->m_SpectatorId = SPEC_FREEVIEW;
 		}
 	}
 

@@ -56,18 +56,18 @@ CBiologistMine::CBiologistMine(CGameContext *pGameContext, vec2 Pos, vec2 EndPos
 	m_EndPos = EndPos;
 	GameWorld()->InsertEntity(this);
 
-	for(int i = 0; i < NUM_IDS; i++)
+	for(auto &Id : m_Ids)
 	{
-		m_Ids[i] = Server()->SnapNewId();
+		Id = Server()->SnapNewId();
 	}
 }
 
 CBiologistMine::~CBiologistMine()
 {
-	for(int i = 0; i < NUM_IDS; i++)
+	for(auto &Id : m_Ids)
 	{
-		if(m_Ids[i].has_value())
-			Server()->SnapFreeId(m_Ids[i].value());
+		if(Id.has_value())
+			Server()->SnapFreeId(Id.value());
 	}
 }
 

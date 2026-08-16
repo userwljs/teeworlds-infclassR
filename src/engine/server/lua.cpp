@@ -284,7 +284,7 @@ int CLua::HandleException(const char *pError)
 {
 	dbg_msg("lua", "ERROR: %s", pError);
 
-	CLua::ms_pStaticLua->m_lErrors.push_back(std::string(pError));
+	CLua::ms_pStaticLua->m_lErrors.emplace_back(pError);
 
 	// todo something more versatile
 

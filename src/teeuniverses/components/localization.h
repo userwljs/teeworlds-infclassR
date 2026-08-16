@@ -69,8 +69,8 @@ public:
 
 			CEntry()
 			{
-				for(int i = 0; i < NUM_PLURALTYPES; i++)
-					m_apVersions[i] = std::nullopt;
+				for(auto &pVersion : m_apVersions)
+					pVersion = std::nullopt;
 			}
 		};
 

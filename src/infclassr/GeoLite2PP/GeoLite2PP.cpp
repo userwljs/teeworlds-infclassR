@@ -6,7 +6,7 @@
 #include "GeoLite2PP_error_category.hpp"
 #include "GeoLite2PP_version.hpp"
 
-GeoLite2PP::DB::~DB(void)
+GeoLite2PP::DB::~DB()
 {
 	MMDB_close(&mmdb);
 
@@ -33,22 +33,22 @@ GeoLite2PP::DB::DB(const std::string &database_filename)
 	return;
 }
 
-std::string GeoLite2PP::DB::get_lib_version_mmdb(void) const
+std::string GeoLite2PP::DB::get_lib_version_mmdb() const
 {
 	return MMDB_lib_version();
 }
 
-std::string GeoLite2PP::DB::get_lib_version_geolite2pp(void) const
+std::string GeoLite2PP::DB::get_lib_version_geolite2pp() const
 {
 	return GEOLITE2PP_VERSION;
 }
 
-MMDB_metadata_s GeoLite2PP::DB::get_metadata_raw(void)
+MMDB_metadata_s GeoLite2PP::DB::get_metadata_raw()
 {
 	return mmdb.metadata;
 }
 
-std::string GeoLite2PP::DB::get_metadata(void)
+std::string GeoLite2PP::DB::get_metadata()
 {
 	MMDB_entry_data_list_s *node = nullptr;
 	const int status = MMDB_get_metadata_as_entry_data_list(&mmdb, &node);

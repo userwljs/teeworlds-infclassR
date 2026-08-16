@@ -1613,7 +1613,7 @@ static inline int MsgFromSixup(int Msg, bool System)
 bool CServer::GenerateClientMap(const char *pMapFilePath, const char *pMapName)
 {
 	if(!m_pMap->Load(pMapFilePath))
-		return 0;
+		return false;
 
 	// The map format of InfectionClass is different from the vanilla format.
 	// We need to convert the map to something that the client can use

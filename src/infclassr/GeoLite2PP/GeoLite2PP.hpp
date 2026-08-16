@@ -33,7 +33,7 @@ class DB final
 {
 public:
 	/// Destructor.
-	~DB(void);
+	~DB();
 
 	/** Constructor.
 	 * @param [in] database_filename The database filename is the @p .mmdb file typically downloaded from
@@ -70,7 +70,7 @@ public:
 	 * 1.2.0
 	 * ~~~~
 	 */
-	std::string get_lib_version_mmdb(void) const;
+	std::string get_lib_version_mmdb() const;
 
 	/** Get the GeoLite2++ library version number.
 	 *
@@ -84,13 +84,13 @@ public:
 	 * 0.0.1-1992
 	 * ~~~~
 	 */
-	std::string get_lib_version_geolite2pp(void) const;
+	std::string get_lib_version_geolite2pp() const;
 
 	/** Get the database metadata.  This returns a raw @p MMDB_metadata_s structure.  This call is intended
 	 * mostly for internal purposes, or to call directly into the original C MMDB API.
 	 * @see @ref get_metadata()
 	 */
-	MMDB_metadata_s get_metadata_raw(void);
+	MMDB_metadata_s get_metadata_raw();
 
 	/** Get the database metadata as a JSON string.
 	 *
@@ -115,7 +115,7 @@ public:
 	 * ~~~~
 	 * @see @ref get_metadata_raw()
 	 */
-	std::string get_metadata(void);
+	std::string get_metadata();
 
 	/** Look up an IP address.  This returns a raw @p MMDB_lookup_result_s structure.  This call is intended
 	 * mostly for internal purposes, or to call directly into the original C MMDB API.

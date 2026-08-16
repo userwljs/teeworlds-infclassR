@@ -83,7 +83,7 @@ inline float distance2(const vec2 &from, const vec2 &to)
 	return x * x + y * y;
 }
 
-static bool AiEnabled = 1;
+static bool AiEnabled = true;
 static icArray<EObjection, static_cast<int>(EObjection::Count)> AiBannedObjections;
 
 static int c_JumpsHardLimit = 10;

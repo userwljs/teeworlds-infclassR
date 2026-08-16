@@ -1252,7 +1252,7 @@ bool CIcCharacter::IsPoisoned() const
 void CIcCharacter::Poison(int Count, int From, EDamageType DamageType, float Interval)
 {
 	bool JustPoisoned = m_PoisonTick > Server()->Tick();
-	if(Count > m_Poison + JustPoisoned ? 1 : 0)
+	if(Count > m_Poison + JustPoisoned)
 	{
 		m_Poison = Count;
 		m_PoisonEffectInterval = Interval;

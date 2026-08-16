@@ -153,7 +153,7 @@ protected:
 	int m_PosEnv;
 
 protected:
-	virtual void Tick();
+	void Tick() override;
 
 public:
 	CAnimatedEntity(CGameWorld *pGameWorld, int Objtype, vec2 Pivot);

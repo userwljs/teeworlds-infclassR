@@ -66,7 +66,7 @@ class CMysqlConnection : public IDbConnection
 {
 public:
 	explicit CMysqlConnection(CMysqlConfig m_Config);
-	~CMysqlConnection();
+	~CMysqlConnection() override;
 	void Print(IConsole *pConsole, const char *pMode) override;
 
 	const char *BinaryCollate() const override { return "utf8mb4_bin"; }

@@ -18,7 +18,7 @@ class CCubicBezier
 	}
 
 public:
-	CCubicBezier() {}
+	CCubicBezier() = default;
 	float Evaluate(float t) const;
 	float Derivative(float t) const;
 	static CCubicBezier With(float Start, float StartDerivative, float EndDerivative, float End);

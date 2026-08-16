@@ -204,10 +204,10 @@ void CLua::RegisterLuaBindings()
 		"loadfile",
 		"loadstring",
 	};
-	for(unsigned i = 0; i < sizeof(s_aBlacklist) / sizeof(s_aBlacklist[0]); i++)
+	for(const auto &BlacklistItem : s_aBlacklist)
 	{
 		char aCmd[128];
-		str_format(aCmd, sizeof(aCmd), "%s=nil", s_aBlacklist[i]);
+		str_format(aCmd, sizeof(aCmd), "%s=nil", BlacklistItem);
 		luaL_dostring(L, aCmd);
 		if(g_Config.m_Debug)
 			dbg_msg("lua", "disable: '%s'", aCmd);

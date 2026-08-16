@@ -5,7 +5,7 @@
 #include "GeoLite2PP_error_category.hpp"
 #include <maxminddb.h>
 
-const char *GeoLite2PP::ErrorCategory::name(void) const noexcept
+const char *GeoLite2PP::ErrorCategory::name() const noexcept
 {
 	return "GeoLite2PP";
 }
@@ -21,7 +21,7 @@ std::string GeoLite2PP::ErrorCategory::message(int code) const
 	return msg;
 }
 
-const GeoLite2PP::ErrorCategory &GeoLite2PP::get_error_category(void) noexcept
+const GeoLite2PP::ErrorCategory &GeoLite2PP::get_error_category() noexcept
 {
 	static ErrorCategory ecat;
 	return ecat;

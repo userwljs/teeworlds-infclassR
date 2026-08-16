@@ -50,9 +50,9 @@ CPortal::CPortal(CGameContext *pGameContext, vec2 CenterPos, int Owner, PortalTy
 	m_Radius = s_PortalRadius;
 	m_PortalType = Type;
 
-	for(int i = 0; i < NUM_IDS; i++)
+	for(auto &Id : m_Ids)
 	{
-		m_Ids[i] = Server()->SnapNewId();
+		Id = Server()->SnapNewId();
 	}
 
 	StartMeridiansVisualEffect();
@@ -62,10 +62,10 @@ CPortal::CPortal(CGameContext *pGameContext, vec2 CenterPos, int Owner, PortalTy
 
 CPortal::~CPortal()
 {
-	for(int i = 0; i < NUM_IDS; i++)
+	for(auto &Id : m_Ids)
 	{
-		if(m_Ids[i].has_value())
-			Server()->SnapFreeId(m_Ids[i].value());
+		if(Id.has_value())
+			Server()->SnapFreeId(Id.value());
 	}
 
 	Disconnect();

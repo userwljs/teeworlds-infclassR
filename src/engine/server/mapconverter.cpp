@@ -380,10 +380,10 @@ bool CMapConverter::Load()
 
 void CMapConverter::InitQuad(CQuad *pQuad)
 {
-	for(int i = 0; i < 5; i++)
+	for(auto &Point : pQuad->m_aPoints)
 	{
-		pQuad->m_aPoints[i].x = 0;
-		pQuad->m_aPoints[i].y = 0;
+		Point.x = 0;
+		Point.y = 0;
 	}
 	pQuad->m_aColors[0].r = pQuad->m_aColors[1].r = 255;
 	pQuad->m_aColors[0].g = pQuad->m_aColors[1].g = 255;

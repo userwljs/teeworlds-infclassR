@@ -17,9 +17,9 @@ CControlPoint::CControlPoint(CGameContext *pGameContext, const vec2 &Pos) :
 	m_Radius = Config()->m_InfControlPointCaptionRadius;
 	m_ProximityRadius = m_Radius;
 
-	for(int i = 0; i < NUM_IDS; i++)
+	for(auto &Id : m_Ids)
 	{
-		m_Ids[i] = Server()->SnapNewId();
+		Id = Server()->SnapNewId();
 	}
 
 	StartMeridiansVisualEffect();
@@ -27,11 +27,11 @@ CControlPoint::CControlPoint(CGameContext *pGameContext, const vec2 &Pos) :
 
 CControlPoint::~CControlPoint()
 {
-	for(int i = 0; i < NUM_IDS; i++)
+	for(auto &Id : m_Ids)
 	{
-		if(m_Ids[i].has_value())
+		if(Id.has_value())
 		{
-			Server()->SnapFreeId(m_Ids[i].value());
+			Server()->SnapFreeId(Id.value());
 		}
 	}
 }

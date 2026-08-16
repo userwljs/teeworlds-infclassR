@@ -501,7 +501,7 @@ public:
 	class CGameServerCmd
 	{
 	public:
-		virtual ~CGameServerCmd() {};
+		virtual ~CGameServerCmd() = default;
 		virtual void Execute(IGameServer *pGameServer) = 0;
 	};
 

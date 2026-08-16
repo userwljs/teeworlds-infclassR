@@ -430,7 +430,7 @@ bool CCollision::TestBox(vec2 Pos, vec2 Size) const
 	if(Size.y > 16)
 	{
 		int Y = 0;
-		while(1)
+		while(true)
 		{
 			Y += 30;
 			if(Y / 2 > Size.y)

@@ -22,18 +22,18 @@ CScientistMine::CScientistMine(CGameContext *pGameContext, vec2 Pos, int Owner) 
 	GameWorld()->InsertEntity(this);
 	m_StartTick = Server()->Tick();
 
-	for(int i = 0; i < NUM_IDS; i++)
+	for(auto &Id : m_Ids)
 	{
-		m_Ids[i] = Server()->SnapNewId();
+		Id = Server()->SnapNewId();
 	}
 }
 
 CScientistMine::~CScientistMine()
 {
-	for(int i = 0; i < NUM_IDS; i++)
+	for(auto &Id : m_Ids)
 	{
-		if(m_Ids[i].has_value())
-			Server()->SnapFreeId(m_Ids[i].value());
+		if(Id.has_value())
+			Server()->SnapFreeId(Id.value());
 	}
 }
 

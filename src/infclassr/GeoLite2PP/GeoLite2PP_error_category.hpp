@@ -33,14 +33,14 @@ class ErrorCategory : public std::error_category
 {
 public:
 	/// Returns a unique name.
-	const char *name(void) const noexcept override;
+	const char *name() const noexcept override;
 
 	/// Convert a MaxMindDB error/status code into a readable text string message.
 	std::string message(int code) const override;
 };
 
 /// All error category objects should actually be references to the exact same object, which is provided by this function.
-const ErrorCategory &get_error_category(void) noexcept;
+const ErrorCategory &get_error_category() noexcept;
 
 /// Associate an error value with the category.
 std::error_code make_error_code(MMDBStatus s);

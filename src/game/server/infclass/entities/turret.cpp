@@ -171,7 +171,7 @@ void CTurret::AttackTargets()
 			}
 			case PLASMA:
 			{
-				CPlasma *pPlasma = new CPlasma(GameServer(), m_Pos, GetOwner(), pChr->GetCid(), Direction, 0, 1);
+				CPlasma *pPlasma = new CPlasma(GameServer(), m_Pos, GetOwner(), pChr->GetCid(), Direction, false, true);
 				pPlasma->SetDamageType(EDamageType::TURRET_PLASMA);
 				m_ammunition--;
 				break;

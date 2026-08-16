@@ -1587,7 +1587,7 @@ void CGameContext::OnTick()
 				for(int i = 0; i < MAX_CLIENTS; i++)
 					if(m_apPlayers[i])
 						apAddresses[i] = Server()->ClientAddr(i);
-				bool aVoteChecked[MAX_CLIENTS] = {0};
+				bool aVoteChecked[MAX_CLIENTS] = {false};
 				for(int i = 0; i < MAX_CLIENTS; i++)
 				{
 					if(!m_apPlayers[i] || aVoteChecked[i])

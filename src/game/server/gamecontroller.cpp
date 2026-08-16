@@ -120,9 +120,7 @@ IGameController::IGameController(CGameContext *pGameServer) :
 	m_RoundId = -1;
 }
 
-IGameController::~IGameController()
-{
-}
+IGameController::~IGameController() = default;
 
 void IGameController::DoActivityCheck()
 {

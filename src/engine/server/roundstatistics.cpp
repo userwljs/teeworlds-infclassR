@@ -122,9 +122,9 @@ void CRoundStatistics::SetPlayerScore(int ClientId, int Score)
 int CRoundStatistics::NumWinners() const
 {
 	int NumWinner = 0;
-	for(int i = 0; i < MAX_CLIENTS; i++)
+	for(const auto &Player : m_aPlayers)
 	{
-		if(m_aPlayers[i].m_Won)
+		if(Player.m_Won)
 			NumWinner++;
 	}
 	return NumWinner;
