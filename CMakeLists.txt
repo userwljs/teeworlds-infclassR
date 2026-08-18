@@ -41,8 +41,17 @@ endif()
 
 set(AUTO_DEPENDENCIES_DEFAULT OFF)
 
-find_package(MaxMindDB QUIET)
-set(GEOLOCATION_DEFAULT ${MaxMindDB_FOUND})
+# TODO: Refine this
+if(_USING_CONAN)
+  set(MAXMINDDB_NAME "maxminddb")
+  set(LUAJIT_NAME "luajit")
+else()
+  set(MAXMINDDB_NAME "MaxMindDB")
+  set(LUAJIT_NAME "LuaJIT")
+endif()
+
+find_package(${MAXMINDDB_NAME} QUIET)
+set(GEOLOCATION_DEFAULT ${${MAXMINDDB_NAME}_FOUND})
 
 option(USE_LUA "Use Lua scripting engine" ON)
 option(GEOLOCATION "Enable geolocation support" ${GEOLOCATION_DEFAULT})
@@ -62,7 +71,11 @@ else()
   set(DBG TRUE)
 endif()
 
-if(MSVC)
+if(NOT DEFINED _MSVC_STATIC_CRT)
+  set(_MSVC_STATIC_CRT TRUE)
+endif()
+
+if(MSVC AND _MSVC_STATIC_CRT)
    # Use static CRT
   if(DBG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /MTd")
@@ -282,7 +295,7 @@ find_package(SQLite3)
 find_package(Threads)
 
 if(USE_LUA)
-  find_package(LuaJIT REQUIRED)
+  find_package(${LUAJIT_NAME} REQUIRED)
 
   FetchContent_Declare(
     LuaBridge
@@ -293,7 +306,7 @@ if(USE_LUA)
 endif()
 
 if(GEOLOCATION)
-  find_package(MaxMindDB REQUIRED)
+  find_package(${MAXMINDDB_NAME} REQUIRED)
 endif()
 
 if(TARGET_OS AND TARGET_OS STREQUAL "mac")
@@ -347,10 +360,10 @@ show_dependency_status("PNG" PNG)
 show_dependency_status("Python3" Python3)
 show_dependency_status("SQLite3" SQLite3)
 show_dependency_status("Zlib" ZLIB)
-show_dependency_status("MaxMindDB" MaxMindDB)
+show_dependency_status("MaxMindDB" ${MAXMINDDB_NAME})
 
 if(USE_LUA)
-  show_dependency_status("LuaJIT" LuaJIT)
+  show_dependency_status("LuaJIT" ${LUAJIT_NAME})
 endif()
 
 if(NOT(CURL_FOUND))
@@ -1000,7 +1013,7 @@ set(LIBS_SERVER
 )
 
 if(USE_LUA)
-  list(APPEND LIBS_SERVER LuaJIT::LuaJIT LuaBridge)
+  list(APPEND LIBS_SERVER ${LUAJIT_NAME}::${LUAJIT_NAME} LuaBridge)
 endif()
 
 ########################################################################
@@ -1125,10 +1138,8 @@ if(GEOLOCATION)
   )
 
   target_compile_definitions(game-server PRIVATE CONF_GEOLOCATION)
-  target_link_libraries(game-server
-    GeoLite2PP::GeoLite2PP
-    MaxMindDB::MaxMindDB
-  )
+  target_link_libraries(GeoLite2PP ${MAXMINDDB_NAME}::${MAXMINDDB_NAME})
+  target_link_libraries(game-server GeoLite2PP::GeoLite2PP)
 endif()
 
 if(USE_LUA)

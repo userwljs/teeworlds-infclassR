@@ -27,3 +27,4 @@ src/game/generated
 /bin/GeoLite2-Country.mmdb
 build
 __pycache__
+CMakeUserPresets.json

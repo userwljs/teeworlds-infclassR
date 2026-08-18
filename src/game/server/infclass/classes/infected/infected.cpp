@@ -416,7 +416,7 @@ void CInfClassInfected::OnCharacterSnap(int SnappingClient)
 				int SnappingClientVersion = GameServer()->GetClientVersion(SnappingClient);
 				CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 
-				GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId().value(), {Pos.x, Pos.y - 60.0}, POWERUP_HEALTH, 0);
+				GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId().value(), {Pos.x, Pos.y - 60.0f}, POWERUP_HEALTH, 0);
 			}
 		}
 	}

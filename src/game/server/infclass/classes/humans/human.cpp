@@ -710,7 +710,7 @@ void CInfClassHuman::OnCharacterSnap(int SnappingClient)
 					CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 
 					const vec2 Pos = m_pCharacter->GetPos();
-					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId().value(), {Pos.x, Pos.y - 60.0},
+					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId().value(), {Pos.x, Pos.y - 60.0f},
 						(m_pCharacter->GetHealth() < 10 && m_pCharacter->GetArmor() == 0) ? POWERUP_HEALTH : POWERUP_ARMOR, 0);
 				}
 				break;
@@ -723,7 +723,7 @@ void CInfClassHuman::OnCharacterSnap(int SnappingClient)
 					CSnapContext Context(SnappingClientVersion, Server()->IsSixup(SnappingClient));
 
 					const vec2 Pos = m_pCharacter->GetPos();
-					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId().value(), {Pos.x, Pos.y - 60.0}, POWERUP_HEALTH, 0);
+					GameServer()->SnapPickup(Context, m_pCharacter->GetHeartId().value(), {Pos.x, Pos.y - 60.0f}, POWERUP_HEALTH, 0);
 				}
 				break;
 			default:

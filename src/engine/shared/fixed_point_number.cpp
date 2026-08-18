@@ -1,6 +1,7 @@
 #include "fixed_point_number.h"
 
 #include <charconv>
+#include <limits>
 
 static constexpr size_t c_FixedPointStrBufferSize = []() {
 	int Decimals = 0;

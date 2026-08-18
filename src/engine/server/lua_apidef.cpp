@@ -386,7 +386,7 @@ void CLua::RegisterLuaBindings()
 
 		.endClass()
 		.beginClass<CGameContext>("CGameServer")
-		.addProperty("Collision", &CGameContext::Collision)
+		.addProperty("Collision", &CGameContext::Lua_Collision)
 		.addProperty("Paused", &CGameContext::IsPaused, &CGameContext::SetPaused)
 
 		.addFunction("InsertVote", &CGameContext::InsertVote)
