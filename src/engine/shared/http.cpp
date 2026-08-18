@@ -178,6 +178,12 @@ bool CHttpRequest::ConfigureHandle(void *pHandle)
 		curl_easy_setopt(pH, CURLOPT_FORBID_REUSE, 1L);
 	}
 
+	long CurlSslOpt = 0; // Option CURLOPT_SSL_OPTIONS defaults to 0
+#ifdef CURLSSLOPT_NATIVE_CA // 7.71.0+
+	CurlSslOpt |= CURLSSLOPT_NATIVE_CA;
+#endif
+	curl_easy_setopt(pH, CURLOPT_SSL_OPTIONS, CurlSslOpt);
+
 #ifdef CONF_PLATFORM_ANDROID
 	curl_easy_setopt(pH, CURLOPT_CAINFO, "data/cacert.pem");
 #endif

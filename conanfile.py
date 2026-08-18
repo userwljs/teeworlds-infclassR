@@ -26,8 +26,6 @@ class InfClassRecipe(ConanFile):
 
     def requirements(self):
         self.requires("zlib/1.3.2")
-        # TODO: Load system CA store on Windows
-        # https://stackoverflow.com/a/37553616
         self.requires("libcurl/8.21.0")
         self.requires("libpng/1.6.58")
         self.requires("sqlite3/3.53.4")
