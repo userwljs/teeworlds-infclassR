@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+      - classical
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        name: [ windows-latest, macos-latest, ubuntu-latest ]
+        include:
+          - name: windows-latest
+            os: windows-latest
+            conan-args: -s compiler.runtime=static
+          - name: macos-latest
+            os: macos-latest
+            conan-args: -s os.version=14.0
+          - name: ubuntu-latest
+            os: ubuntu-latest
+            conan-args: ''
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+
+      - name: Setup Python
+        uses: actions/setup-python@v7.0.0
+        with:
+          python-version: '3.11'
+
+      - name: Setup Conan
+        uses: conan-io/setup-conan@v1.4.0
+        with:
+          version: '2.31.2'
+          cache_packages: true
+
+      - name: Setup CMake
+        uses: lukka/get-cmake@v4.4.2
+
+      - name: Conan Install
+        run: |
+          conan install . --build=missing -s compiler.cppstd=20 -s build_type=Debug ${{ matrix.conan-args }}
+
+      - name: Build
+        run: |
+          conan build . --build=missing -s compiler.cppstd=20 -s build_type=Debug ${{ matrix.conan-args }}
+
+      - name: Package
+        run: |
+          cd build-debug
+          cpack -V -C Debug
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          path: build-debug/*.zip
+          archive: false
