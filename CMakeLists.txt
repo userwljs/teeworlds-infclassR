@@ -132,7 +132,7 @@ if(NOT MSVC)
 
   if(TARGET_OS STREQUAL "mac")
     add_c_compiler_flag_if_supported(OUR_FLAGS -stdlib=libc++)
-    add_c_compiler_flag_if_supported(OUR_FLAGS -mmacosx-version-min=10.7)
+    add_c_compiler_flag_if_supported(OUR_FLAGS -mmacosx-version-min=13.3)
   endif()
 
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wall)
@@ -1173,7 +1173,7 @@ add_custom_target(lang-json
 add_dependencies(game-server lang-json)
 
 if(TARGET_OS AND TARGET_OS STREQUAL "mac")
-  set(SERVER_LAUNCHER_SRC src/osxlaunch/server.mm)
+  set(SERVER_LAUNCHER_SRC src/macos/server.mm)
   set(TARGET_SERVER_LAUNCHER Server-Launcher)
   add_executable(${TARGET_SERVER_LAUNCHER} ${SERVER_LAUNCHER_SRC})
   target_link_libraries(${TARGET_SERVER_LAUNCHER} ${COCOA})
