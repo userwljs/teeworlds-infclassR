@@ -3,7 +3,8 @@ import os
 from conan import ConanFile
 from conan.api.conan_api import ConanAPI
 from conan.tools.build import check_min_cppstd
-from conan.tools.cmake import CMake, CMakeToolchain, cmake_layout
+from conan.tools.cmake import CMake, CMakeToolchain
+from conan.tools.layout import basic_layout
 from conan.tools.microsoft import is_msvc
 
 LUAJIT_REF = "1edc3e52b67eaf6ce5f809be8e17d6862594b8bc"  # From Aug 3, 2026, v2.1 branch
@@ -83,7 +84,8 @@ class InfClassRecipe(ConanFile):
         tc.generate()
 
     def layout(self):
-        cmake_layout(self)
+        # Don't use cmake_layout because its behavior depends on platform
+        basic_layout(self)
 
     def configure(self):
         # https://github.com/conan-io/conan-center-index/issues/25032
