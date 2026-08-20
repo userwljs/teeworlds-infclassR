@@ -66,12 +66,6 @@ enum
 	NET_MAX_SEQUENCE = 1 << 10,
 	NET_SEQUENCE_MASK = NET_MAX_SEQUENCE - 1,
 
-	NET_CONNSTATE_OFFLINE = 0,
-	NET_CONNSTATE_CONNECT = 1,
-	NET_CONNSTATE_PENDING = 2,
-	NET_CONNSTATE_ONLINE = 3,
-	NET_CONNSTATE_ERROR = 4,
-
 	NET_PACKETFLAG_UNUSED = 1 << 0,
 	NET_PACKETFLAG_TOKEN = 1 << 1,
 	NET_PACKETFLAG_CONTROL = 1 << 2,
@@ -226,11 +220,21 @@ class CNetConnection
 	// that. this should be fixed.
 	friend class CNetRecvUnpacker;
 
+public:
+	enum class EState
+	{
+		OFFLINE,
+		CONNECT,
+		PENDING,
+		ONLINE,
+		ERROR,
+	};
+
 private:
 	unsigned short m_Sequence;
 	unsigned short m_Ack;
 	unsigned short m_PeerAck;
-	unsigned m_State;
+	EState m_State;
 
 	SECURITY_TOKEN m_SecurityToken;
 	int m_RemoteClosed;
@@ -286,7 +290,7 @@ public:
 
 	const char *ErrorString();
 	void SignalResend();
-	int State() const { return m_State; }
+	EState State() const { return m_State; }
 	const NETADDR *PeerAddress() const { return &m_PeerAddr; }
 	const std::array<char, NETADDR_MAXSTRSIZE> &PeerAddressString(bool IncludePort) const
 	{
@@ -323,8 +327,16 @@ public:
 
 class CConsoleNetConnection
 {
+public:
+	enum class EState
+	{
+		OFFLINE,
+		ONLINE,
+		ERROR,
+	};
+
 private:
-	int m_State;
+	EState m_State;
 
 	NETADDR m_PeerAddr;
 	NETSOCKET m_Socket;
@@ -341,7 +353,7 @@ public:
 	void Init(NETSOCKET Socket, const NETADDR *pAddr);
 	void Disconnect(const char *pReason);
 
-	int State() const { return m_State; }
+	EState State() const { return m_State; }
 	const NETADDR *PeerAddress() const { return &m_PeerAddr; }
 	const char *ErrorString() const { return m_aErrorString; }
 

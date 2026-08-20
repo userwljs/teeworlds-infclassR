@@ -60,9 +60,9 @@ int CNetConsole::AcceptClient(NETSOCKET Socket, const NETADDR *pAddr)
 	// look for free slot or multiple client
 	for(int i = 0; i < NET_MAX_CONSOLE_CLIENTS; i++)
 	{
-		if(FreeSlot == -1 && m_aSlots[i].m_Connection.State() == NET_CONNSTATE_OFFLINE)
+		if(FreeSlot == -1 && m_aSlots[i].m_Connection.State() == CConsoleNetConnection::EState::OFFLINE)
 			FreeSlot = i;
-		if(m_aSlots[i].m_Connection.State() != NET_CONNSTATE_OFFLINE)
+		if(m_aSlots[i].m_Connection.State() != CConsoleNetConnection::EState::OFFLINE)
 		{
 			if(net_addr_comp(pAddr, m_aSlots[i].m_Connection.PeerAddress()) == 0)
 			{
@@ -112,9 +112,9 @@ int CNetConsole::Update()
 
 	for(int i = 0; i < NET_MAX_CONSOLE_CLIENTS; i++)
 	{
-		if(m_aSlots[i].m_Connection.State() == NET_CONNSTATE_ONLINE)
+		if(m_aSlots[i].m_Connection.State() == CConsoleNetConnection::EState::ONLINE)
 			m_aSlots[i].m_Connection.Update();
-		if(m_aSlots[i].m_Connection.State() == NET_CONNSTATE_ERROR)
+		if(m_aSlots[i].m_Connection.State() == CConsoleNetConnection::EState::ERROR)
 			Drop(i, EClientDropType::Error, m_aSlots[i].m_Connection.ErrorString());
 	}
 
@@ -125,7 +125,7 @@ int CNetConsole::Recv(char *pLine, int MaxLength, int *pClientId)
 {
 	for(int i = 0; i < NET_MAX_CONSOLE_CLIENTS; i++)
 	{
-		if(m_aSlots[i].m_Connection.State() == NET_CONNSTATE_ONLINE && m_aSlots[i].m_Connection.Recv(pLine, MaxLength))
+		if(m_aSlots[i].m_Connection.State() == CConsoleNetConnection::EState::ONLINE && m_aSlots[i].m_Connection.Recv(pLine, MaxLength))
 		{
 			if(pClientId)
 				*pClientId = i;
@@ -137,7 +137,7 @@ int CNetConsole::Recv(char *pLine, int MaxLength, int *pClientId)
 
 int CNetConsole::Send(int ClientId, const char *pLine)
 {
-	if(m_aSlots[ClientId].m_Connection.State() == NET_CONNSTATE_ONLINE)
+	if(m_aSlots[ClientId].m_Connection.State() == CConsoleNetConnection::EState::ONLINE)
 		return m_aSlots[ClientId].m_Connection.Send(pLine);
 	else
 		return -1;
