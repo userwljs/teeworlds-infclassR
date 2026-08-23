@@ -1,4 +1,5 @@
 #include <base/os.h>
+#include <base/windows.h>
 
 #include <engine/server/server.h>
 #include <engine/server/server_logger.h>
