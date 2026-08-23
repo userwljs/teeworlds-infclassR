@@ -2,6 +2,9 @@
 #define ENGINE_SHARED_HTTP_H
 
 #include <base/hash_ctxt.h>
+#include <base/io.h>
+#include <base/mem.h>
+#include <base/str.h>
 
 #include <engine/shared/jobs.h>
 

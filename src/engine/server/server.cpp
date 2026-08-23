@@ -5,7 +5,10 @@
 
 #include <base/logger.h>
 #include <base/math.h>
-#include <base/system.h>
+#include <base/bytes.h>
+#include <base/fs.h>
+#include <base/io.h>
+#include <base/secure.h>
 
 #include <engine/config.h>
 #include <engine/console.h>
@@ -3306,7 +3309,7 @@ int CServer::Run()
 				if(Config()->m_SvShutdownWhenEmpty)
 					m_RunServer = STOPPING;
 				else
-					PacketWaiting = net_socket_read_wait(m_NetServer.Socket(), 1000000);
+					PacketWaiting = net_socket_read_wait(m_NetServer.Socket(), std::chrono::nanoseconds(1000000));
 			}
 			else
 			{
@@ -3316,7 +3319,7 @@ int CServer::Run()
 				t = time_get();
 				int x = (TickStartTime(m_CurrentGameTick + 1) - t) * 1000000 / time_freq() + 1;
 
-				PacketWaiting = x > 0 ? net_socket_read_wait(m_NetServer.Socket(), x) : true;
+				PacketWaiting = x > 0 ? net_socket_read_wait(m_NetServer.Socket(), std::chrono::nanoseconds(x)) : true;
 			}
 		}
 	}

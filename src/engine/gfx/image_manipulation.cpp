@@ -1,6 +1,8 @@
 #include "image_manipulation.h"
 #include <base/math.h>
-#include <base/system.h>
+#include <base/color.h>
+#include <base/dbg.h>
+#include <base/mem.h>
 
 #define TW_DILATE_ALPHA_THRESHOLD 10
 

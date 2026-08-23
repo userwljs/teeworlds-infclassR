@@ -1,5 +1,8 @@
 #include "localization.h"
 
+#include <base/dbg.h>
+#include <base/io.h>
+#include <base/mem.h>
 #include <engine/external/json-parser/json.h>
 #include <engine/storage.h>
 #include <unicode/ubidi.h>

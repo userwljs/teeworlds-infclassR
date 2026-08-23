@@ -1,6 +1,6 @@
 #include "roundstatistics.h"
 
-#include <base/system.h>
+#include <base/str.h>
 
 int CRoundStatistics::CPlayerStats::OnScoreEvent(EScoreEvent EventType, EPlayerClass Class, std::optional<int> Param)
 {

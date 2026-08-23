@@ -6,7 +6,12 @@
 #include <base/hash_ctxt.h>
 #include <base/log.h>
 #include <base/math.h>
-#include <base/system.h>
+#include <base/bytes.h>
+#include <base/dbg.h>
+#include <base/fs.h>
+#include <base/io.h>
+#include <base/mem.h>
+#include <base/str.h>
 #include <engine/storage.h>
 
 #include "uuid_manager.h"
@@ -134,7 +139,7 @@ bool CDataFileReader::Open(class IStorage *pStorage, const char *pFilename, int 
 		}
 		Sha256 = sha256_finish(&Sha256Ctxt);
 
-		io_seek(File, 0, IOSEEK_START);
+		io_seek(File, 0, EIoSeekOrigin::START);
 	}
 
 	// TODO: change this header
@@ -344,7 +349,7 @@ void *CDataFileReader::GetDataImpl(int Index, bool Swap)
 			// read the compressed data
 			void *pCompressedData = malloc(DataSize);
 			unsigned ActualDataSize = 0;
-			if(io_seek(m_pDataFile->m_File, m_pDataFile->m_DataStartOffset + m_pDataFile->m_Info.m_pDataOffsets[Index], IOSEEK_START) == 0)
+			if(io_seek(m_pDataFile->m_File, m_pDataFile->m_DataStartOffset + m_pDataFile->m_Info.m_pDataOffsets[Index], EIoSeekOrigin::START) == 0)
 				ActualDataSize = io_read(m_pDataFile->m_File, pCompressedData, DataSize);
 			if(DataSize != ActualDataSize)
 			{
@@ -380,7 +385,7 @@ void *CDataFileReader::GetDataImpl(int Index, bool Swap)
 			m_pDataFile->m_ppDataPtrs[Index] = static_cast<char *>(malloc(DataSize));
 			m_pDataFile->m_pDataSizes[Index] = DataSize;
 			unsigned ActualDataSize = 0;
-			if(io_seek(m_pDataFile->m_File, m_pDataFile->m_DataStartOffset + m_pDataFile->m_Info.m_pDataOffsets[Index], IOSEEK_START) == 0)
+			if(io_seek(m_pDataFile->m_File, m_pDataFile->m_DataStartOffset + m_pDataFile->m_Info.m_pDataOffsets[Index], EIoSeekOrigin::START) == 0)
 				ActualDataSize = io_read(m_pDataFile->m_File, m_pDataFile->m_ppDataPtrs[Index], DataSize);
 			if(DataSize != ActualDataSize)
 			{

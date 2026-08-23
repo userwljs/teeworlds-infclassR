@@ -6,6 +6,7 @@
 
 #include <atomic>
 #include <memory>
+#include <string>
 #include <vector>
 
 typedef void *IOHANDLE;
@@ -69,7 +70,7 @@ protected:
 	CLogFilter m_Filter;
 
 public:
-	virtual ~ILogger() {}
+	virtual ~ILogger() = default;
 
 	/**
 	 * Set a new filter. It's up to the logger implementation to actually
@@ -130,9 +131,10 @@ void log_set_global_logger(ILogger *logger);
  * threads.
  *
  * This is logging to stdout on most platforms and to the system log on
- * Android.
+ * Android. Discards log messages if stdout is not available.
  *
  * @see log_set_global_logger
+ * @see log_logger_default
  */
 void log_set_global_logger_default();
 
@@ -188,6 +190,14 @@ std::unique_ptr<ILogger> log_logger_collection(std::vector<std::shared_ptr<ILogg
 /**
  * @ingroup Log
  *
+ * Sane default logger. This is logging to stdout on most platforms and to the
+ * system log on Android. Discards log messages if stdout is not available.
+ */
+std::unique_ptr<ILogger> log_logger_default();
+
+/**
+ * @ingroup Log
+ *
  * Logger for writing logs to the given file.
  *
  * @param file File to write to, must be opened for writing.
@@ -198,6 +208,8 @@ std::unique_ptr<ILogger> log_logger_file(IOHANDLE file);
  * @ingroup Log
  *
  * Logger for writing logs to the standard output (stdout).
+ *
+ * @remark This function can return `nullptr` if the standard output is not available.
  */
 std::unique_ptr<ILogger> log_logger_stdout();
 
@@ -209,6 +221,13 @@ std::unique_ptr<ILogger> log_logger_stdout();
  * Should only be called when targeting the Windows platform.
  */
 std::unique_ptr<ILogger> log_logger_windows_debugger();
+
+/**
+ * @ingroup Log
+ *
+ * Logger which discards all logs.
+ */
+std::unique_ptr<ILogger> log_logger_noop();
 
 /**
  * @ingroup Log
@@ -243,6 +262,30 @@ public:
 /**
  * @ingroup Log
  *
+ * Logger that collects messages in memory. This is useful to collect the log
+ * messages for a particular operation and show them in a user interface when
+ * the operation failed. Use only temporarily with @link CLogScope @endlink
+ * or it will result in excessive memory usage.
+ *
+ * Messages are also forwarded to the parent logger if it's set, regardless
+ * of this logger's filter.
+ */
+class CMemoryLogger : public ILogger
+{
+	ILogger *m_pParentLogger = nullptr;
+	std::vector<CLogMessage> m_vMessages GUARDED_BY(m_MessagesMutex);
+	CLock m_MessagesMutex;
+
+public:
+	void SetParent(ILogger *pParentLogger) { m_pParentLogger = pParentLogger; }
+	void Log(const CLogMessage *pMessage) override REQUIRES(!m_MessagesMutex);
+	std::vector<CLogMessage> Lines() REQUIRES(!m_MessagesMutex);
+	std::string ConcatenatedLines() REQUIRES(!m_MessagesMutex);
+};
+
+/**
+ * @ingroup Log
+ *
  * RAII guard for temporarily changing the logger via `log_set_scope_logger`.
  *
  * @see log_set_scope_logger
@@ -261,8 +304,8 @@ public:
 	}
 	~CLogScope()
 	{
-		// dbg_assert(log_get_scope_logger() == new_scope_logger, "loggers weren't properly scoped");
 		log_set_scope_logger(old_scope_logger);
 	}
+	CLogScope(const CLogScope &) = delete;
 };
 #endif // BASE_LOGGER_H

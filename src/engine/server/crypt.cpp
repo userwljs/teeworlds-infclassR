@@ -1,6 +1,6 @@
 #include "crypt.h"
 
-#include <base/system.h>
+#include <base/str.h>
 
 #include <openssl/crypto.h>
 #include <openssl/evp.h>

@@ -5,6 +5,9 @@
 #if defined(CONF_MYSQL)
 #include <mysql.h>
 
+#include <base/dbg.h>
+#include <base/mem.h>
+#include <base/str.h>
 #include <base/tl/threading.h>
 #include <engine/console.h>
 

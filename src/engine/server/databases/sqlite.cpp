@@ -2,7 +2,10 @@
 
 #include <sqlite3.h>
 
+#include <base/dbg.h>
 #include <base/math.h>
+#include <base/mem.h>
+#include <base/str.h>
 #include <engine/console.h>
 
 #include <atomic>

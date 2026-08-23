@@ -1,7 +1,11 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include <base/logger.h>
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/fs.h>
+#include <base/os.h>
+#include <base/str.h>
+#include <base/types.h>
 
 #include <engine/console.h>
 #include <engine/server/mapconverter.h>

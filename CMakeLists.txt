@@ -593,28 +593,57 @@ add_custom_command(OUTPUT "src/game/generated/wordlist.h"
 
 # Sources
 set(BASE
+  src/base/aio.cpp
+  src/base/aio.h
   src/base/bezier.cpp
   src/base/bezier.h
+  src/base/bytes.cpp
+  src/base/bytes.h
   src/base/color.cpp
   src/base/color.h
+  src/base/crashdump.cpp
+  src/base/crashdump.h
+  src/base/dbg.cpp
+  src/base/dbg.h
   src/base/detect.h
   src/base/dynamic.h
   src/base/flags.cpp
   src/base/flags.h
+  src/base/fs.cpp
+  src/base/fs.h
   src/base/hash.cpp
   src/base/hash.h
   src/base/hash_bundled.cpp
   src/base/hash_ctxt.h
   src/base/hash_libtomcrypt.cpp
   src/base/hash_openssl.cpp
+  src/base/io.cpp
+  src/base/io.h
   src/base/lock.h
   src/base/log.cpp
   src/base/log.h
+  src/base/log_color.h
   src/base/logger.h
   src/base/math.cpp
   src/base/math.h
-  src/base/system.cpp
-  src/base/system.h
+  src/base/mem.cpp
+  src/base/mem.h
+  src/base/net.cpp
+  src/base/net.h
+  src/base/os.cpp
+  src/base/os.h
+  src/base/process.cpp
+  src/base/process.h
+  src/base/secure.cpp
+  src/base/secure.h
+  src/base/sphore.cpp
+  src/base/sphore.h
+  src/base/str.cpp
+  src/base/str.h
+  src/base/thread.cpp
+  src/base/thread.h
+  src/base/time.cpp
+  src/base/time.h
   src/base/tl/allocator.h
   src/base/tl/array.h
   src/base/tl/base.h
@@ -631,6 +660,8 @@ set(BASE
   src/base/unicode/tolower_data.cpp
   src/base/unicode/tolower_data.h
   src/base/vmath.h
+  src/base/windows.cpp
+  src/base/windows.h
 )
 
 set(teeuniverses_SOURCES

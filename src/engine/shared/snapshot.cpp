@@ -8,7 +8,10 @@
 #include <limits>
 
 #include <base/math.h>
-#include <base/system.h>
+#include <base/bytes.h>
+#include <base/dbg.h>
+#include <base/mem.h>
+#include <base/str.h>
 
 #include <game/generated/protocol7.h>
 #include <game/generated/protocolglue.h>

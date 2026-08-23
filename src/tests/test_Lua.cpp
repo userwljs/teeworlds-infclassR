@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 
 #include <base/logger.h>
-#include <base/system.h>
 #include <base/types.h>
 #include <engine/engine.h>
 #include <engine/kernel.h>

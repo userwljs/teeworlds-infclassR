@@ -20,7 +20,7 @@
 /* BEGIN EDIT *********************************************************/
 #include <base/math.h>
 /* END EDIT ***********************************************************/
-#include <base/system.h>
+#include <base/str.h>
 
 void str_append_num(char *dst, const char *src, int dst_size, int num);
 

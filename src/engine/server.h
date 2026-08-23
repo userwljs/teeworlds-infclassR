@@ -12,7 +12,10 @@
 
 #include <base/hash.h>
 #include <base/math.h>
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/mem.h>
+#include <base/net.h>
+#include <base/str.h>
 
 #include "kernel.h"
 #include "message.h"

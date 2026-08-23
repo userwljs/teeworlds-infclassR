@@ -1,6 +1,6 @@
 #include "map_info.h"
 
-#include <base/system.h>
+#include <base/str.h>
 
 void CMapInfoEx::SetName(const char *pMapName)
 {

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <base/hash_ctxt.h>
-#include <base/system.h>
+#include <base/str.h>
 
 static void Expect(SHA256_DIGEST Actual, const char *pWanted)
 {

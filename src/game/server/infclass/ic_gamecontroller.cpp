@@ -33,6 +33,7 @@
 #include <engine/shared/network.h>
 #include <engine/shared/protocolglue.h>
 
+#include <base/time.h>
 #include <base/tl/ic_array.h>
 #include <base/tl/ic_enum.h>
 

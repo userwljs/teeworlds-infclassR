@@ -4,7 +4,7 @@
 #define GAME_GAMECORE_H
 
 #include <base/math.h>
-#include <base/system.h>
+#include <base/mem.h>
 #include <base/vmath.h>
 
 #include <set>

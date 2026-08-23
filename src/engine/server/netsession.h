@@ -1,7 +1,8 @@
 #ifndef ENGINE_SHARED_NETSESSION_H
 #define ENGINE_SHARED_NETSESSION_H
 
-#include <base/system.h>
+#include <base/net.h>
+#include <base/time.h>
 #include <engine/shared/netdatabase.h>
 
 template<typename SESSIONDATA>

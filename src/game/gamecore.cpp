@@ -5,6 +5,7 @@
 #include "collision.h"
 #include "teamscore.h"
 
+#include <base/str.h>
 #include <engine/shared/config.h>
 
 const char *CTuningParams::ms_apNames[] =

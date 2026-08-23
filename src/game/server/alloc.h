@@ -5,7 +5,8 @@
 
 #include <new>
 
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/mem.h>
 
 #define MACRO_ALLOC_HEAP() \
 public: \

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <base/system.h>
+#include <base/str.h>
 
 #include <game/server/infclass/bot-player.h>
 

@@ -5,6 +5,8 @@
 #include "gamecore.h"
 #include "mapitems.h"
 
+#include <base/dbg.h>
+#include <base/str.h>
 #include <engine/map.h>
 
 CLayers::CLayers()

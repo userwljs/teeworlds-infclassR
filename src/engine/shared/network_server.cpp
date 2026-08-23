@@ -1,7 +1,11 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include <base/hash_ctxt.h>
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/math.h>
+#include <base/net.h>
+#include <base/secure.h>
+#include <base/time.h>
 
 #include "config.h"
 #include "netban.h"
@@ -94,7 +98,8 @@ int CNetServer::Close()
 {
 	if(!m_Socket)
 		return 0;
-	return net_udp_close(m_Socket);
+	net_udp_close(m_Socket);
+	return 0;
 }
 
 int CNetServer::Drop(int ClientId, EClientDropType Type, const char *pReason)

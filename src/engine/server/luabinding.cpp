@@ -1,5 +1,7 @@
 #if CONF_LUA
 
+#include <base/net.h>
+
 #include <engine/console.h>
 #include <engine/server.h>
 #include <engine/storage.h>

@@ -1,3 +1,4 @@
+#include <base/dbg.h>
 #include <engine/console.h>
 #include <engine/shared/config.h>
 

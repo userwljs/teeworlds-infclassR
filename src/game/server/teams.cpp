@@ -2,6 +2,7 @@
 #include "teams.h"
 #include "player.h"
 
+#include <base/time.h>
 #include <game/race_state.h>
 #include <game/server/entities/character.h>
 #include <game/server/gamecontroller.h>
@@ -43,7 +44,7 @@ void CGameTeams::OnCharacterFinish(int ClientId)
 		if(TimeTicks <= 0)
 			return;
 		char aTimestamp[TIMESTAMP_STR_LENGTH];
-		str_timestamp_format(aTimestamp, sizeof(aTimestamp), FORMAT_SPACE); // 2019-04-02 19:41:58
+		str_timestamp_format(aTimestamp, sizeof(aTimestamp), TimestampFormat::SPACE); // 2019-04-02 19:41:58
 
 		OnFinish(pPlayer, TimeTicks, aTimestamp);
 	}

@@ -1,7 +1,7 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include "memheap.h"
-#include <base/system.h>
+#include <base/str.h>
 #include <cstdint>
 
 // allocates a new chunk to be used

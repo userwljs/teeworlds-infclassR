@@ -2,7 +2,8 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include "huffman.h"
 #include <algorithm>
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/mem.h>
 #include <cstdint>
 
 const unsigned CHuffman::ms_aFreqTable[HUFFMAN_MAX_SYMBOLS] = {

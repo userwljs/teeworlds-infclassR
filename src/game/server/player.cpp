@@ -4,6 +4,7 @@
 #include "engine/server.h"
 #include "entities/character.h"
 
+#include <base/time.h>
 #include <engine/server/roundstatistics.h>
 #include <engine/shared/config.h>
 

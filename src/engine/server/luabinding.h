@@ -1,7 +1,8 @@
 #ifndef ENGINE_CLIENT_LUABINDING_H
 #define ENGINE_CLIENT_LUABINDING_H
 
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/str.h>
 #include <base/vmath.h>
 
 #include <engine/shared/config.h>

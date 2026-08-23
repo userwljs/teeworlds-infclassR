@@ -2,7 +2,11 @@
 #include "connection.h"
 #include <engine/shared/config.h>
 
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/log.h>
+#include <base/mem.h>
+#include <base/str.h>
+#include <base/thread.h>
 #include <cstring>
 #include <engine/console.h>
 

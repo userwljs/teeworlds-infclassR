@@ -4,8 +4,10 @@
 
 #include "base/tl/ic_enum.h"
 
+#include <base/io.h>
 #include <base/logger.h>
 #include <base/math.h>
+#include <base/time.h>
 #include <engine/console.h>
 #include <engine/map.h>
 #include <engine/server/lua.h>

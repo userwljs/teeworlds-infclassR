@@ -1,6 +1,5 @@
 #include "ic_playerclass.h"
 
-#include <base/system.h>
 #include <engine/shared/config.h>
 #include <game/gamecore.h>
 #include <game/server/gamecontext.h>

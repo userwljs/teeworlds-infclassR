@@ -3,7 +3,10 @@
 
 #include <engine/console.h>
 
-#include <base/system.h>
+#include <base/mem.h>
+#include <base/net.h>
+#include <base/str.h>
+#include <base/time.h>
 
 inline int NetComp(const NETADDR *pAddr1, const NETADDR *pAddr2)
 {

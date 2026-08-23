@@ -1,6 +1,6 @@
 #include "tolower_data.h"
 
-#include <base/system.h>
+#include <base/str.h>
 
 int str_utf8_tolower_codepoint(int code)
 {

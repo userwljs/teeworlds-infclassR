@@ -2,7 +2,12 @@
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include "config.h"
 #include "network.h"
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/log.h>
+#include <base/mem.h>
+#include <base/secure.h>
+#include <base/str.h>
+#include <base/time.h>
 
 SECURITY_TOKEN ToSecurityToken(unsigned char *pData)
 {

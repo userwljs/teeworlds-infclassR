@@ -1,4 +1,5 @@
 #include <base/math.h>
+#include <base/io.h>
 
 #include <engine/console.h>
 #include <engine/shared/config.h>

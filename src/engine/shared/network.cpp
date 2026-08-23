@@ -1,6 +1,13 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
-#include <base/system.h>
+#include <base/bytes.h>
+#include <base/dbg.h>
+#include <base/io.h>
+#include <base/mem.h>
+#include <base/net.h>
+#include <base/secure.h>
+#include <base/time.h>
+#include <base/types.h>
 
 #include "config.h"
 #include "huffman.h"

@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <base/math.h>
+#include <base/time.h>
 
 #include <engine/storage.h>
 
@@ -35,7 +36,7 @@ void CFileCollection::Init(IStorage *pStorage, const char *pPath, const char *pF
 		else
 		{
 			char aTimestring[TIMESTAMP_LENGTH];
-			str_timestamp_ex(FileEntry.m_Timestamp, aTimestring, sizeof(aBuf), FORMAT_NOSPACE);
+			str_timestamp_ex(FileEntry.m_Timestamp, aTimestring, sizeof(aBuf), TimestampFormat::NOSPACE);
 			str_format(aBuf, sizeof(aBuf), "%s/%s_%s%s", m_aPath, m_aFileDesc, aTimestring, m_aFileExt);
 		}
 
@@ -49,7 +50,7 @@ bool CFileCollection::ExtractTimestamp(const char *pTimestring, time_t *pTimesta
 	// Discard anything after timestamp length from pTimestring (most likely the extension)
 	char aStrippedTimestring[TIMESTAMP_LENGTH];
 	str_copy(aStrippedTimestring, pTimestring);
-	return timestamp_from_str(aStrippedTimestring, FORMAT_NOSPACE, pTimestamp);
+	return timestamp_from_str(aStrippedTimestring, TimestampFormat::NOSPACE, pTimestamp);
 }
 
 bool CFileCollection::ParseFilename(const char *pFilename, time_t *pTimestamp)

@@ -1,7 +1,9 @@
 #ifndef ENGINE_SHARED_NETDATABASE_H
 #define ENGINE_SHARED_NETDATABASE_H
 
-#include <base/system.h>
+#include <base/mem.h>
+#include <base/net.h>
+#include <base/str.h>
 
 //~ inline int NetComp(const NETADDR *pAddr1, const NETADDR *pAddr2)
 //~ {

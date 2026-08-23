@@ -1,4 +1,5 @@
 #include "connection.h"
+#include <base/str.h>
 
 IDbConnection::IDbConnection(const char *pPrefix)
 {

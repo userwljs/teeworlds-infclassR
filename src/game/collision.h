@@ -7,6 +7,7 @@
 #include <base/vmath.h>
 
 #include <map>
+#include <optional>
 #include <vector>
 
 class CTile;

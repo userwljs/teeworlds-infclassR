@@ -1,7 +1,7 @@
 #ifndef ENGINE_SERVER_NAME_BAN_H
 #define ENGINE_SERVER_NAME_BAN_H
 
-#include <base/system.h>
+#include <base/str.h>
 #include <engine/shared/protocol.h>
 
 #include <vector>

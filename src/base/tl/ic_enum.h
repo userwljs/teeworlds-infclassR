@@ -1,7 +1,8 @@
 #ifndef BASE_TL_IC_ENUM_H
 #define BASE_TL_IC_ENUM_H
 
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/str.h>
 
 template<typename T>
 concept EnumHasCount = requires { T::Count; } || requires { T::COUNT; };

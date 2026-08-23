@@ -5,7 +5,7 @@
 
 #include "teeuniverses/system/string.h"
 
-#include <base/system.h>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <unicode/tmutfmt.h>

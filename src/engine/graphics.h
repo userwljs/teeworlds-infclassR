@@ -7,6 +7,7 @@
 #include "warning.h"
 
 #include <base/color.h>
+#include <base/vmath.h>
 #include <stddef.h>
 #include <stdint.h>
 

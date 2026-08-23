@@ -1,6 +1,8 @@
 #include "image_loader.h"
 #include <base/log.h>
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/io.h>
+#include <base/mem.h>
 #include <csetjmp>
 #include <cstdlib>
 

@@ -1,7 +1,8 @@
 #ifndef BASE_TL_IC_ARRAY_H
 #define BASE_TL_IC_ARRAY_H
 
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/str.h>
 
 #include <cstddef>
 #include <initializer_list>

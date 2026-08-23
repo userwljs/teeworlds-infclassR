@@ -1,7 +1,14 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include <base/math.h>
-#include <base/system.h>
+#include <base/bytes.h>
+#include <base/dbg.h>
+#include <base/fs.h>
+#include <base/io.h>
+#include <base/log.h>
+#include <base/mem.h>
+#include <base/str.h>
+#include <base/time.h>
 
 #include <engine/console.h>
 #include <engine/storage.h>
@@ -74,7 +81,7 @@ int CDemoRecorder::Start(class IStorage *pStorage, class IConsole *pConsole, con
 	bool CloseMapFile = false;
 
 	if(MapFile)
-		io_seek(MapFile, 0, IOSEEK_START);
+		io_seek(MapFile, 0, EIoSeekOrigin::START);
 
 	char aSha256[SHA256_MAXSTRSIZE];
 	if(pSha256)
@@ -171,7 +178,7 @@ int CDemoRecorder::Start(class IStorage *pStorage, class IConsole *pConsole, con
 		if(CloseMapFile)
 			io_close(MapFile);
 		else
-			io_seek(MapFile, 0, IOSEEK_START);
+			io_seek(MapFile, 0, EIoSeekOrigin::START);
 	}
 
 	m_LastKeyFrame = -1;
@@ -348,13 +355,13 @@ int CDemoRecorder::Stop()
 		return -1;
 
 	// add the demo length to the header
-	io_seek(m_File, gs_LengthOffset, IOSEEK_START);
+	io_seek(m_File, gs_LengthOffset, EIoSeekOrigin::START);
 	unsigned char aLength[sizeof(int32_t)];
 	uint_to_bytes_be(aLength, Length());
 	io_write(m_File, aLength, sizeof(aLength));
 
 	// add the timeline markers to the header
-	io_seek(m_File, gs_NumMarkersOffset, IOSEEK_START);
+	io_seek(m_File, gs_NumMarkersOffset, EIoSeekOrigin::START);
 	unsigned char aNumMarkers[sizeof(int32_t)];
 	uint_to_bytes_be(aNumMarkers, m_NumTimelineMarkers);
 	io_write(m_File, aNumMarkers, sizeof(aNumMarkers));
@@ -540,7 +547,7 @@ void CDemoPlayer::ScanFile()
 		m_pKeyFrames[i] = pCurrentKey->m_Frame;
 
 	// destroy the temporary heap and seek back to the start
-	io_seek(m_File, StartPos, IOSEEK_START);
+	io_seek(m_File, StartPos, EIoSeekOrigin::START);
 }
 
 void CDemoPlayer::DoTick()
@@ -794,7 +801,7 @@ int CDemoPlayer::Load(class IStorage *pStorage, class IConsole *pConsole, const 
 		{
 			// This hopes whatever happened during the version increment didn't add something here
 			dbg_msg("demo", "demo version incremented, but not by ddnet");
-			io_seek(m_File, -(int)sizeof(ExtensionUuid.m_aData), IOSEEK_CUR);
+			io_seek(m_File, -(int)sizeof(ExtensionUuid.m_aData), EIoSeekOrigin::CURRENT);
 		}
 	}
 
@@ -854,10 +861,10 @@ unsigned char *CDemoPlayer::GetMapData(class IStorage *pStorage)
 	long CurSeek = io_tell(m_File);
 
 	// get map data
-	io_seek(m_File, m_MapOffset, IOSEEK_START);
+	io_seek(m_File, m_MapOffset, EIoSeekOrigin::START);
 	unsigned char *pMapData = (unsigned char *)malloc(m_MapInfo.m_Size);
 	io_read(m_File, pMapData, m_MapInfo.m_Size);
-	io_seek(m_File, CurSeek, IOSEEK_START);
+	io_seek(m_File, CurSeek, EIoSeekOrigin::START);
 	return pMapData;
 }
 
@@ -989,7 +996,7 @@ int CDemoPlayer::SetPos(int WantedTick)
 		KeyFrame--;
 
 	// seek to the correct key frame
-	io_seek(m_File, m_pKeyFrames[KeyFrame].m_Filepos, IOSEEK_START);
+	io_seek(m_File, m_pKeyFrames[KeyFrame].m_Filepos, EIoSeekOrigin::START);
 
 	m_Info.m_NextTick = -1;
 	m_Info.m_Info.m_CurrentTick = -1;
@@ -1136,7 +1143,7 @@ bool CDemoPlayer::GetDemoInfo(class IStorage *pStorage, const char *pFilename, i
 		{
 			// This hopes whatever happened during the version increment didn't add something here
 			dbg_msg("demo", "demo version incremented, but not by ddnet");
-			io_seek(File, -(int)sizeof(ExtensionUuid.m_aData), IOSEEK_CUR);
+			io_seek(File, -(int)sizeof(ExtensionUuid.m_aData), EIoSeekOrigin::CURRENT);
 		}
 	}
 	pMapInfo->m_Sha256 = Sha256;

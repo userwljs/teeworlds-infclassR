@@ -1,4 +1,3 @@
-
 #include <exception>
 #include <string>
 
@@ -6,6 +5,10 @@
 #include <engine/server.h>
 #include <engine/shared/config.h>
 #include <engine/storage.h>
+
+#include <base/dbg.h>
+#include <base/io.h>
+#include <base/str.h>
 
 #include "lua.h"
 

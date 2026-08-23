@@ -1,7 +1,10 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
 #include <base/logger.h>
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/io.h>
+#include <base/os.h>
+#include <base/str.h>
 #include <engine/gfx/image_loader.h>
 #include <engine/gfx/image_manipulation.h>
 #include <engine/graphics.h>
@@ -11,9 +14,9 @@ int DilateFile(const char *pFilename)
 	IOHANDLE File = io_open(pFilename, IOFLAG_READ);
 	if(File)
 	{
-		io_seek(File, 0, IOSEEK_END);
+		io_seek(File, 0, EIoSeekOrigin::END);
 		unsigned int FileSize = io_tell(File);
-		io_seek(File, 0, IOSEEK_START);
+		io_seek(File, 0, EIoSeekOrigin::START);
 		TImageByteBuffer ByteBuffer;
 		SImageByteBuffer ImageByteBuffer(&ByteBuffer);
 

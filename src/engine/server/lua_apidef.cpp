@@ -2,7 +2,8 @@
 
 #include "lua.h"
 
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/str.h>
 #include <base/vmath.h>
 
 #include <engine/server.h>

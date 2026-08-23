@@ -4,7 +4,12 @@
 #include <base/color.h>
 #include <base/log.h>
 #include <base/math.h>
-#include <base/system.h>
+#include <base/dbg.h>
+#include <base/io.h>
+#include <base/log_color.h>
+#include <base/mem.h>
+#include <base/str.h>
+#include <base/time.h>
 #include <base/tl/ic_enum.h>
 
 #include <engine/shared/protocol.h>
@@ -331,7 +336,7 @@ void CConsole::SetPrintOutputLevel(int Index, int OutputLevel)
 char *CConsole::Format(char *pBuf, int Size, const char *pFrom, const char *pStr)
 {
 	char aTimeBuf[80];
-	str_timestamp_format(aTimeBuf, sizeof(aTimeBuf), FORMAT_TIME);
+	str_timestamp_format(aTimeBuf, sizeof(aTimeBuf), TimestampFormat::TIME);
 
 	str_format(pBuf, Size, "[%s][%s]: %s", aTimeBuf, pFrom, pStr);
 	return pBuf;
