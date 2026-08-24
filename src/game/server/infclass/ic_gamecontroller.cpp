@@ -2318,10 +2318,7 @@ void CIcGameController::ConAddBot(IConsole::IResult *pResult)
 		pBot->SetTweaks(Tweaks);
 	}
 
-	char aBuf[256];
-
-	str_format(aBuf, sizeof(aBuf), "Artificial players joined the game");
-	GameServer()->SendChat(-1, CGameContext::CHAT_ALL, aBuf);
+	GameServer()->SendChat(-1, CGameContext::CHAT_ALL, "Artificial players joined the game");
 }
 
 void CIcGameController::ConRemoveBot(IConsole::IResult *pResult, void *pUserData)
@@ -6603,7 +6600,7 @@ bool CIcGameController::StartSurvivalWave()
 
 	if(m_SurvivalConfiguration.vSurvivalWaves.size() == 1)
 	{
-		str_format(aBuf, sizeof(aBuf), "The survival begins. Enjoy!");
+		str_copy(aBuf, "The survival begins. Enjoy!");
 	}
 	else
 	{

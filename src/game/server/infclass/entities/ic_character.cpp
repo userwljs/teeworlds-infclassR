@@ -2034,17 +2034,17 @@ void CIcCharacter::HandleMapMenu()
 				case CLASS_AVAILABILITY::AVAILABLE:
 					break;
 				case CLASS_AVAILABILITY::PICKED_PREVIOUSLY:
-					str_format(Reason, sizeof(Reason), "You can't pick the same class again");
+					str_copy(Reason, "You can't pick the same class again");
 					break;
 				case CLASS_AVAILABILITY::DISABLED:
-					str_format(Reason, sizeof(Reason), "The class is disabled");
+					str_copy(Reason, "The class is disabled");
 					break;
 				case CLASS_AVAILABILITY::NEED_MORE_PLAYERS:
 					// int MinPlayers = GameController()->GetMinPlayersForClass(NewClass);
-					str_format(Reason, sizeof(Reason), "Needs more players");
+					str_copy(Reason, "Needs more players");
 					break;
 				case CLASS_AVAILABILITY::LIMIT_EXCEEDED:
-					str_format(Reason, sizeof(Reason), "The class limit exceeded");
+					str_copy(Reason, "The class limit exceeded");
 					break;
 				}
 
