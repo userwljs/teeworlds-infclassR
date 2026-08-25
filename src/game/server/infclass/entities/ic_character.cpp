@@ -2022,8 +2022,6 @@ void CIcCharacter::HandleMapMenu()
 
 		if(pPlayer->m_MapMenuItem != previousSelected)
 		{
-			char aBuf[512];
-			char bBuf[512];
 			char Reason[128] = "";
 			EPlayerClass NewClass = CIcGameController::MenuClassToPlayerClass(HoveredMenuItem);
 			CLASS_AVAILABILITY Availability = GameController()->GetPlayerClassAvailability(NewClass, pPlayer);
