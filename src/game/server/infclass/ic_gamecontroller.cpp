@@ -6803,10 +6803,13 @@ void CIcGameController::Snap(int SnappingClient)
 	SnapMapMenu(SnappingClient, pGameInfoObj);
 
 	CNetObj_InfClassGameInfo *pInfclassGameInfoObj = Server()->SnapNewItem<CNetObj_InfClassGameInfo>(0);
-	pInfclassGameInfoObj->m_Version = 2;
-	pInfclassGameInfoObj->m_Flags = 0;
-	pInfclassGameInfoObj->m_TimeLimitInSeconds = GetTimeLimitSeconds();
-	pInfclassGameInfoObj->m_HeroGiftTick = m_HeroGiftTick;
+	if(pInfclassGameInfoObj)
+	{
+		pInfclassGameInfoObj->m_Version = 2;
+		pInfclassGameInfoObj->m_Flags = 0;
+		pInfclassGameInfoObj->m_TimeLimitInSeconds = GetTimeLimitSeconds();
+		pInfclassGameInfoObj->m_HeroGiftTick = m_HeroGiftTick;
+	}
 
 	const int InfClassVersion = Server()->GetClientInfclassVersion(SnappingClient);
 	if((InfClassVersion == 0) || (InfClassVersion > VERSION_INFC_160))
