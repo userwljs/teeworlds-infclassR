@@ -51,9 +51,12 @@ jobs:
           conan build . --build=missing -s compiler.cppstd=20 -s build_type=Debug ${{ matrix.conan-args }}
 
       - name: Package
+        shell: bash
         run: |
           cd build-debug
           cpack -V -C Debug
+          VERSION="$(git describe --tags --always | sed 's/[^A-Za-z0-9._-]/_/g')"
+          mv *.zip "InfClassR-${VERSION}-${{ runner.os }}-${{ runner.arch }}.zip"
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7.0.1
