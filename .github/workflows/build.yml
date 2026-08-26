@@ -28,7 +28,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7.0.1
         with:
-          fetch-tags: true
+          fetch-depth: 0
 
       - name: Setup Python
         uses: actions/setup-python@v7.0.0
