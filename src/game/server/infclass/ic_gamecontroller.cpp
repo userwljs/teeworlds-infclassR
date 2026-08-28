@@ -5444,11 +5444,6 @@ void CIcGameController::Tick()
 		if(GetRoundType() == ERoundType::Survival)
 		{
 			m_WaveStartTick = Server()->Tick();
-
-			if(m_RoundStarted && (m_GameOverTick == -1) && (!m_SurvivalState.PlayersParticipated.empty() || (m_SurvivalState.Wave > 0)))
-			{
-				EndRound(ERoundEndReason::FINISHED);
-			}
 		}
 	}
 
@@ -6497,7 +6492,7 @@ void CIcGameController::EndSurvivalRound(ERoundEndReason Reason)
 	int NumInfected = 0;
 	GetPlayerCounter(-1, NumHumans, NumInfected);
 
-	if(NumHumans == 0)
+	if((NumHumans == 0) && (NumInfected > 0))
 	{
 		if(m_SurvivalConfiguration.vSurvivalWaves.size() == 1)
 		{
