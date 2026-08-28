@@ -887,7 +887,7 @@ std::string CLocalization::GetLangaugeNameByCode(const std::string_view Language
 		if(pLanguage->GetName()[0])
 			return std::string(pLanguage->GetName());
 	}
-	return std::string("Unknown");
+	return std::string(LanguageCode);
 }
 
 /**
