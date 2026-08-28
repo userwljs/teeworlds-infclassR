@@ -880,7 +880,7 @@ void CLocalization::ArabicShaping(std::string &Buffer)
 	delete[] paResult;
 }
 
-std::string CLocalization::GetLangaugeNameByCode(const std::string_view LanguageCode)
+std::string CLocalization::GetLanguageNameByCode(const std::string_view LanguageCode)
 {
 	if(const auto *pLanguage = GetLanguageByCode(LanguageCode); pLanguage)
 	{

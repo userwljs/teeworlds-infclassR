@@ -150,7 +150,7 @@ public:
 
 	static void ArabicShaping(std::string &Buffer);
 
-	[[nodiscard]] std::string GetLangaugeNameByCode(std::string_view LanguageCode);
+	[[nodiscard]] std::string GetLanguageNameByCode(std::string_view LanguageCode);
 	[[nodiscard]] CLanguage *GetLanguageByCode(std::string_view LanguageCode);
 };
 

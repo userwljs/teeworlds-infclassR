@@ -3004,7 +3004,7 @@ void CGameContext::OnStartInfoNetMessage(const CNetMsg_Cl_StartInfo *pMsg, int C
 			Msg.m_Timeout = 10;
 			Msg.m_pReason = "";
 			str_copy(m_VoteLanguage[ClientId], LangForVote.c_str());
-			const auto LangName = Server()->Localization()->GetLangaugeNameByCode(LangForVote);
+			const auto LangName = Server()->Localization()->GetLanguageNameByCode(LangForVote);
 			const auto Buffer = Server()->Localization()->Format_L(m_VoteLanguage[ClientId], _("Switch language to {str:LangName}?"), "LangName", LangName.c_str());
 			Msg.m_pDescription = Buffer.c_str();
 			Server()->SendPackMsg(&Msg, MSGFLAG_VITAL, ClientId);
