@@ -574,7 +574,7 @@ void CIcGameController::OnPlayerConnect(CPlayer *pPlayer)
 			MsgSettings.m_SpecVote = g_Config.m_SvVoteSpectate;
 			MsgSettings.m_TeamLock = 0;
 			MsgSettings.m_TeamBalance = 0;
-			MsgSettings.m_PlayerSlots = MAX_CLIENTS - maximum(g_Config.m_SvSpectatorSlots, g_Config.m_SvReservedSlots);
+			MsgSettings.m_PlayerSlots = Server()->MaxClients() - maximum(g_Config.m_SvSpectatorSlots, g_Config.m_SvReservedSlots);
 			Server()->SendPackMsg(&MsgSettings, MSGFLAG_VITAL | MSGFLAG_NORECORD, ClientId);
 		}
 
