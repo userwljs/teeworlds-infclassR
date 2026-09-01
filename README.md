@@ -37,13 +37,13 @@ apt install -y \
 - libcurl (needed to register the server in DDNet)
 - sqlite (needed for accounts)
 - zlib (needed to read the map files)
+- OpenSSL (needed for accounts)
 - LuaJIT
 
 You also need a build toolchain, such as GCC and Ninja, or MSVC. The compiler must support C++20.
 
 ### Optional
 - [GeoLite2++](https://www.ccoderun.ca/GeoLite2++/api/) is used for IP geolocation
-- OpenSSL (can be used instead of bundled crypto)
 - Google Test (needed for internal tests)
 
 ## Configuration options

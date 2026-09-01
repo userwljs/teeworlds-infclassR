@@ -4,25 +4,11 @@
 #include "hash.h"
 #include <cstdint>
 
-#if defined(CONF_OPENSSL)
+// OpenSSL is required in this project, so the non-OpenSSL branch was removed
 #include <openssl/md5.h>
 #include <openssl/sha.h>
-#else
-#include <engine/external/md5/md5.h>
-#endif
 
-#if defined(CONF_OPENSSL)
 // SHA256_CTX is defined in <openssl/sha.h>
-#else
-struct SHA256_CTX
-{
-	uint64_t length;
-	uint32_t state[8];
-	uint32_t curlen;
-	unsigned char buf[64];
-};
-typedef md5_state_t MD5_CTX;
-#endif
 
 void sha256_init(SHA256_CTX *ctxt);
 void sha256_update(SHA256_CTX *ctxt, const void *data, size_t data_len);

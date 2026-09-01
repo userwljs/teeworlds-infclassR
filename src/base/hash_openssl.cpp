@@ -1,4 +1,3 @@
-#if defined(CONF_OPENSSL)
 #include "hash_ctxt.h"
 
 #ifdef __GNUC__
@@ -39,4 +38,3 @@ MD5_DIGEST md5_finish(MD5_CTX *ctxt)
 	MD5_Final(result.data, ctxt);
 	return result;
 }
-#endif

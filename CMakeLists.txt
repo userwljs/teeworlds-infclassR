@@ -378,6 +378,9 @@ endif()
 if(NOT(PNG_FOUND))
   message(SEND_ERROR "You must install libpng to compile ${CMAKE_PROJECT_NAME}")
 endif()
+if(NOT(CRYPTO_FOUND))
+  message(SEND_ERROR "You must install OpenSSL to compile ${CMAKE_PROJECT_NAME}")
+endif()
 
 if(MYSQL AND NOT(MYSQL_FOUND))
   message(SEND_ERROR "You must install MySQL to compile the ${CMAKE_PROJECT_NAME} server with MySQL support")
@@ -471,19 +474,12 @@ endif()
 set_glob(DEP_JSON_SRC GLOB src/engine/external/json-parser json.c json.h)
 add_library(json EXCLUDE_FROM_ALL OBJECT ${DEP_JSON_SRC})
 
-set_glob(DEP_MD5_SRC GLOB src/engine/external/md5 md5.c md5.h)
-add_library(md5 EXCLUDE_FROM_ALL OBJECT ${DEP_MD5_SRC})
-
 set_glob(DEP_AHO_CORASICK_SRC GLOB src/engine/external/aho_corasick aho_corasick.hpp)
 add_library(aho_corasick INTERFACE)
 target_sources(aho_corasick INTERFACE ${DEP_AHO_CORASICK_SRC})
 
-list(APPEND TARGETS_DEP json md5)
+list(APPEND TARGETS_DEP json)
 set(DEP_JSON $<TARGET_OBJECTS:json>)
-set(DEP_MD5)
-if(NOT CRYPTO_FOUND)
-  set(DEP_MD5 $<TARGET_OBJECTS:md5>)
-endif()
 
 ########################################################################
 # COPY DATA AND DLLS
@@ -613,9 +609,7 @@ set(BASE
   src/base/fs.h
   src/base/hash.cpp
   src/base/hash.h
-  src/base/hash_bundled.cpp
   src/base/hash_ctxt.h
-  src/base/hash_libtomcrypt.cpp
   src/base/hash_openssl.cpp
   src/base/io.cpp
   src/base/io.h
@@ -805,7 +799,7 @@ set(GAME_GENERATED_SHARED
   ${CMAKE_CURRENT_BINARY_DIR}/src/game/generated/protocolglue.h
 )
 
-set(DEPS ${DEP_JSON} ${DEP_MD5} ${ZLIB_DEP})
+set(DEPS ${DEP_JSON} ${ZLIB_DEP})
 
 find_package(ICU REQUIRED COMPONENTS uc i18n)
 
@@ -833,16 +827,10 @@ target_link_libraries(engine-shared PUBLIC
   ${PLATFORM_LIBS}
 )
 
-if(CRYPTO_FOUND)
-  target_link_libraries(engine-shared PUBLIC
-    OpenSSL::Crypto
-  )
-  target_compile_definitions(engine-shared PUBLIC CONF_OPENSSL)
-else()
-  target_link_libraries(engine-shared PUBLIC
-    md5
-  )
-endif()
+target_link_libraries(engine-shared PUBLIC
+  OpenSSL::Crypto
+)
+target_compile_definitions(engine-shared PUBLIC CONF_OPENSSL) # Kept for easier porting from DDNet
 
 target_link_libraries(game-shared PUBLIC
   ZLIB::ZLIB
