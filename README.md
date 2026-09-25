@@ -25,6 +25,7 @@ apt install -y \
     ninja-build \
     libmaxminddb-dev \
     libluajit-5.1-dev \
+    libsodium-dev \
     git \
     ca-certificates \
     pkg-config
@@ -38,6 +39,7 @@ apt install -y \
 - libcurl (needed to register the server in DDNet)
 - sqlite (needed for accounts)
 - zlib (needed to read the map files)
+- libsodium
 - OpenSSL (needed for accounts)
 - LuaJIT
 

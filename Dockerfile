@@ -19,6 +19,7 @@ RUN apt update && apt install -y \
     ninja-build \
     libmaxminddb-dev \
     libluajit-5.1-dev \
+    libsodium-dev \
     git \
     ca-certificates
 
@@ -47,6 +48,7 @@ RUN apt update && apt install -y \
     zlib1g \
     libmaxminddb0 \
     libluajit-5.1-2 \
+    libsodium23 \
     ca-certificates
 
 COPY --from=build-stage /build-stage/dist /dist

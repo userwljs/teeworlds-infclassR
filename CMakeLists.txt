@@ -293,6 +293,7 @@ find_package(PNG)
 find_package(Python3)
 find_package(SQLite3)
 find_package(Threads)
+find_package(Sodium)
 
 if(USE_LUA)
   find_package(${LUAJIT_NAME} REQUIRED)
@@ -359,6 +360,7 @@ show_dependency_status("Python3" Python3)
 show_dependency_status("SQLite3" SQLite3)
 show_dependency_status("Zlib" ZLIB)
 show_dependency_status("MaxMindDB" ${MAXMINDDB_NAME})
+show_dependency_status("Sodium" Sodium)
 
 if(USE_LUA)
   show_dependency_status("LuaJIT" ${LUAJIT_NAME})
@@ -378,6 +380,9 @@ if(NOT(PNG_FOUND))
 endif()
 if(NOT(CRYPTO_FOUND))
   message(SEND_ERROR "You must install OpenSSL to compile ${CMAKE_PROJECT_NAME}")
+endif()
+if(NOT(Sodium_FOUND))
+  message(SEND_ERROR "You must install Sodium to compile ${CMAKE_PROJECT_NAME}")
 endif()
 
 if(MYSQL AND NOT(MYSQL_FOUND))
@@ -821,6 +826,7 @@ list(APPEND TARGETS_OWN engine-gfx engine-shared game-shared)
 target_link_libraries(engine-shared PUBLIC
   CURL::libcurl
   ZLIB::ZLIB
+  sodium
   ${CMAKE_THREAD_LIBS_INIT}
   ${PLATFORM_LIBS}
 )
@@ -854,13 +860,13 @@ target_link_libraries(engine-gfx PUBLIC
 set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
   accounts.cpp
   accounts.h
-  crypt.cpp
-  crypt.h
   databases/connection.cpp
   databases/connection.h
   databases/connection_pool.cpp
   databases/connection_pool.h
   databases/mysql.cpp
+  databases/schema.cpp
+  databases/schema.h
   databases/sqlite.cpp
   lua.cpp
   lua.h
@@ -1202,7 +1208,9 @@ if(BUILD_TESTS)
   )
   enable_testing()
   set(TESTS
+    "test_Accounts"
     "test_CGameWorld"
+    "test_DbSchema"
     "test_bot_config_parser"
     "test_bot_utils"
     "test_icArray"

@@ -105,6 +105,9 @@ public:
 	void GetString(int Col, char *pBuffer, int BufferSize) override;
 	int GetBlob(int Col, unsigned char *pBuffer, int BufferSize) override;
 
+	bool TableExists(const char *pTable, bool *pExists, char *pError, int ErrorSize) override;
+	bool BackupDatabase(const char *pBackupPath, char *pError, int ErrorSize) override;
+
 	bool AddPoints(const char *pPlayer, int Points, char *pError, int ErrorSize) override;
 
 private:
@@ -732,6 +735,29 @@ const char *CMysqlConnection::MedianMapTime(char *pBuffer, int BufferSize) const
 		"LIMIT 1",
 		GetPrefix());
 	return pBuffer;
+}
+
+bool CMysqlConnection::TableExists(const char *pTable, bool *pExists, char *pError, int ErrorSize)
+{
+	if(PrepareStatement("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name=?", pError, ErrorSize))
+		return true;
+	BindString(1, pTable);
+
+	bool End = false;
+	if(Step(&End, pError, ErrorSize) || End)
+	{
+		str_format(pError, ErrorSize, "Can't check whether the table '%s' exists", pTable);
+		return true;
+	}
+
+	*pExists = GetInt(1) > 0;
+	return false;
+}
+
+bool CMysqlConnection::BackupDatabase(const char *pBackupPath, char *pError, int ErrorSize)
+{
+	str_format(pError, ErrorSize, "Automatic MySQL backups are not supported, back up the database manually");
+	return true;
 }
 
 bool CMysqlConnection::AddPoints(const char *pPlayer, int Points, char *pError, int ErrorSize)

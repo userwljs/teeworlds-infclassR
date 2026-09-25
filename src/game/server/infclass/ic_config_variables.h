@@ -26,6 +26,7 @@ MACRO_CONFIG_INT(InfConverterForceRegeneration, inf_converter_force_regeneration
 
 MACRO_CONFIG_STR(SvAccounts, sv_accounts, 16, "disabled", CFGFLAG_SERVER, "Accounts: disabled, enabled, mandatory")
 MACRO_CONFIG_INT(SvAccountsRegistration, sv_accounts_registration, 0, 0, 1, CFGFLAG_SERVER, "Accounts registration toggle")
+MACRO_CONFIG_INT(SvAccountsHashConcurrency, sv_accounts_hash_concurrency, 2, 1, 4, CFGFLAG_SERVER, "Max concurrent password hashing operations (each needs about 64 MiB)")
 
 MACRO_CONFIG_STR(SvMapsBaseUrl, sv_maps_base_url, 128, "", CFGFLAG_SERVER, "Client maps base URL (HTTPS)")
 MACRO_CONFIG_INT(SvShowOpenDoors, sv_show_open_doors, 0, 0, 1, CFGFLAG_SERVER, "Show open doors (0 = no, 1 = yes)")

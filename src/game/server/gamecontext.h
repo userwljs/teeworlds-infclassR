@@ -355,6 +355,7 @@ private:
 	static void ConVersion(IConsole::IResult *pResult, void *pUserData);
 	static void ConRegister(IConsole::IResult *pResult, void *pUserData);
 	static void ConLogin(IConsole::IResult *pResult, void *pUserData);
+	static void ConChangePassword(IConsole::IResult *pResult, void *pUserData);
 	static void ConLogout(IConsole::IResult *pResult, void *pUserData);
 	void ChatHelp(int ClientId, const char *pHelpPage);
 	static void ConLanguage(IConsole::IResult *pResult, void *pUserData);

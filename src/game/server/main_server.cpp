@@ -17,7 +17,17 @@
 #include <windows.h>
 #endif
 
+#if defined(CONF_PLATFORM_LINUX)
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+#include <linux/random.h>
+#endif
+
 #include <csignal>
+#include <iostream>
+
+#include <sodium.h>
 
 int main(int argc, const char **argv) // ignore_convention
 {
@@ -67,6 +77,31 @@ int main(int argc, const char **argv) // ignore_convention
 	// handlers and instead ignore SIGPIPE from OpenSSL ourselves.
 	signal(SIGPIPE, SIG_IGN);
 #endif
+
+#if defined(CONF_PLATFORM_LINUX) && defined(RNDGETENTCNT)
+	int fd;
+	int c;
+
+	if((fd = open("/dev/random", O_RDONLY)) != -1)
+	{
+		if(ioctl(fd, RNDGETENTCNT, &c) == 0 && c < 160)
+		{
+			log_warn("engine",
+			         "this system doesn't provide enough entropy to quickly generate high-quality random numbers");
+			log_warn("engine",
+			         "upgrading the kernel, installing the rng-utils/rng-tools, jitterentropy-rngd or haveged packages may help");
+			log_warn("engine", "on virtualized Linux environments, also consider using virtio-rng");
+			log_warn("engine", "the service will not start until enough entropy has been collected");
+		}
+		static_cast<void>(close(fd));
+	}
+#endif
+	log_info("engine", "initializing Sodium");
+	if(sodium_init() == -1)
+	{
+		log_error("engine", "Sodium initialization failed");
+		return -1;
+	}
 
 	CServer *pServer = CreateServer();
 	pServer->SetLoggers(pFutureFileLogger, std::move(pStdoutLogger));

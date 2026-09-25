@@ -2491,8 +2491,19 @@ void CGameContext::OnSayNetMessage(const CNetMsg_Cl_Say *pMsg, int ClientId, con
 				Console()->ExecuteLineFlag(pMsg->m_pMessage + 1, CFGFLAG_CHAT, ClientId, (Team != CGameContext::CHAT_ALL));
 			}
 
+			const char *pCommand = str_skip_whitespaces_const(pMsg->m_pMessage + 1);
+			const auto IsCommand = [pCommand](const char *pName) {
+				const int NameLength = str_length(pName);
+				return str_comp_nocase_num(pCommand, pName, NameLength) == 0 &&
+					(pCommand[NameLength] == '\0' || str_isspace(pCommand[NameLength]));
+			};
+			const bool SensitiveCommand = IsCommand("login") || IsCommand("register") || IsCommand("passwd");
+
 			char aBuf[256];
-			str_format(aBuf, sizeof(aBuf), "%d used %s", ClientId, pMsg->m_pMessage);
+			if(SensitiveCommand)
+				str_format(aBuf, sizeof(aBuf), "%d used a sensitive account command", ClientId);
+			else
+				str_format(aBuf, sizeof(aBuf), "%d used %s", ClientId, pMsg->m_pMessage);
 			Console()->Print(IConsole::OUTPUT_LEVEL_DEBUG, "chat-command", aBuf);
 
 			Console()->SetAccessLevel(EAccessLevel::ADMIN);
@@ -4390,6 +4401,16 @@ void CGameContext::ConLogin(IConsole::IResult *pResult, void *pUserData)
 	pSelf->Server()->Login(ClientId, pLogin, pPassword);
 }
 
+void CGameContext::ConChangePassword(IConsole::IResult *pResult, void *pUserData)
+{
+	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
+	int ClientId = pResult->GetClientId();
+	const char *pOldPassword = pResult->GetString(0);
+	const char *pNewPassword = pResult->GetString(1);
+
+	pSelf->Server()->ChangePassword(ClientId, pOldPassword, pNewPassword);
+}
+
 void CGameContext::ConLogout(IConsole::IResult *pResult, void *pUserData)
 {
 	CGameContext *pSelf = static_cast<CGameContext *>(pUserData);
@@ -4442,6 +4463,8 @@ void CGameContext::ChatHelp(int ClientId, const char *pHelpPage)
 			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "Use `/register <username> <password>` to register via chat commands."), nullptr).c_str());
 			Buffer.append("\n\n");
 			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "Use RCON or `/login <username> <password>` to login into an existing account."), nullptr).c_str());
+			Buffer.append("\n\n");
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, _C("Accounts", "Use `/passwd <old password> <new password>` to change the password of the logged in account."), nullptr).c_str());
 		}
 	}
 	else
@@ -4571,7 +4594,7 @@ void CGameContext::ConCmdList(IConsole::IResult *pResult, void *pUserData)
 	Buffer.append("\n\n");
 	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/changelog", nullptr).c_str());
 	Buffer.append("\n\n");
-	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/register, /login, /logout", nullptr).c_str());
+	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "/register, /login, /passwd, /logout", nullptr).c_str());
 	Buffer.append("\n\n");
 	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "Press <F3> or <F4> to enable or disable hook protection", nullptr).c_str());
 
@@ -4685,6 +4708,7 @@ void CGameContext::OnConsoleInit()
 
 	Console()->Register("register", "?s[name] ?s[password]", CFGFLAG_CHAT, ConRegister, this, "Start creating an account");
 	Console()->Register("login", "s[username] s[password]", CFGFLAG_CHAT, ConLogin, this, "Login to an account");
+	Console()->Register("passwd", "s[old password] s[new password]", CFGFLAG_CHAT | CFGFLAG_NONTEEHISTORIC, ConChangePassword, this, "Change the password of the logged in account");
 	Console()->Register("logout", "", CFGFLAG_CHAT, ConLogout, this, "Logout");
 
 	Console()->Register("reload_changelog", "?i[page]", CFGFLAG_SERVER, ConReloadChangeLog, this, "Reload the changelog file");

@@ -54,6 +54,9 @@ public:
 	// passing a negative buffer size is undefined behavior
 	int GetBlob(int Col, unsigned char *pBuffer, int BufferSize) override;
 
+	bool TableExists(const char *pTable, bool *pExists, char *pError, int ErrorSize) override;
+	bool BackupDatabase(const char *pBackupPath, char *pError, int ErrorSize) override;
+
 	bool AddPoints(const char *pPlayer, int Points, char *pError, int ErrorSize) override;
 
 	// fail safe
@@ -156,6 +159,12 @@ bool CSqliteConnection::ConnectImpl(char *pError, int ErrorSize)
 		FormatCreatePasswords(aBuf, sizeof(aBuf), /* Backup */ false);
 		if(Execute(aBuf, pError, ErrorSize))
 			return true;
+		FormatCreatePasswordsIndex(aBuf, sizeof(aBuf));
+		if(Execute(aBuf, pError, ErrorSize))
+			return true;
+		FormatCreateAccountAccess(aBuf, sizeof(aBuf), /* Backup */ false);
+		if(Execute(aBuf, pError, ErrorSize))
+			return true;
 		// FormatCreateRace(aBuf, sizeof(aBuf), /* Backup */ false);
 		// if(Execute(aBuf, pError, ErrorSize))
 		// 	return true;
@@ -173,6 +182,9 @@ bool CSqliteConnection::ConnectImpl(char *pError, int ErrorSize)
 		// 	return true;
 
 		FormatCreatePasswords(aBuf, sizeof(aBuf), /* Backup */ true);
+		if(Execute(aBuf, pError, ErrorSize))
+			return true;
+		FormatCreateAccountAccess(aBuf, sizeof(aBuf), /* Backup */ true);
 		if(Execute(aBuf, pError, ErrorSize))
 			return true;
 		// FormatCreateRace(aBuf, sizeof(aBuf), /* Backup */ true);
@@ -400,6 +412,58 @@ void CSqliteConnection::AssertNoError(int Result)
 		dbg_msg("sqlite", "unexpected sqlite error: %s", aBuf);
 		dbg_assert_failed("sqlite error");
 	}
+}
+
+bool CSqliteConnection::TableExists(const char *pTable, bool *pExists, char *pError, int ErrorSize)
+{
+	if(PrepareStatement("SELECT name FROM sqlite_master WHERE type='table' AND name=?", pError, ErrorSize))
+		return true;
+	BindString(1, pTable);
+
+	bool End = false;
+	if(Step(&End, pError, ErrorSize))
+		return true;
+
+	*pExists = !End;
+	return false;
+}
+
+bool CSqliteConnection::BackupDatabase(const char *pBackupPath, char *pError, int ErrorSize)
+{
+	sqlite3 *pDest = nullptr;
+	if(sqlite3_open(pBackupPath, &pDest) != SQLITE_OK)
+	{
+		str_format(pError, ErrorSize, "Can't open backup database: '%s'", sqlite3_errmsg(pDest));
+		sqlite3_close(pDest);
+		return true;
+	}
+
+	sqlite3_backup *pBackup = sqlite3_backup_init(pDest, "main", m_pDb, "main");
+	if(pBackup == nullptr)
+	{
+		str_format(pError, ErrorSize, "Can't start backup: '%s'", sqlite3_errmsg(pDest));
+		sqlite3_close(pDest);
+		return true;
+	}
+
+	auto Result = sqlite3_backup_step(pBackup, -1);
+	if(Result != SQLITE_DONE)
+	{
+		str_format(pError, ErrorSize, "Backup failed: '%s'", sqlite3_errmsg(pDest));
+		sqlite3_backup_finish(pBackup);
+		sqlite3_close(pDest);
+		return true;
+	}
+
+	if(sqlite3_backup_finish(pBackup) != SQLITE_OK)
+	{
+		str_format(pError, ErrorSize, "Backup finish failed: '%s'", sqlite3_errmsg(pDest));
+		sqlite3_close(pDest);
+		return true;
+	}
+
+	sqlite3_close(pDest);
+	return false;
 }
 
 bool CSqliteConnection::AddPoints(const char *pPlayer, int Points, char *pError, int ErrorSize)

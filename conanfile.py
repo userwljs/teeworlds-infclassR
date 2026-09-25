@@ -35,6 +35,7 @@ class InfClassRecipe(ConanFile):
             del icu_options["data_packaging"]
         self.requires("icu/79.1", options=icu_options)
         self.requires("openssl/3.6.5")
+        self.requires("libsodium/1.0.22")
 
         if self.options.with_geolocation:
             self.requires("libmaxminddb/1.12.2")

@@ -175,6 +175,12 @@ public:
 		int m_LogInstance;
 		std::optional<int> m_UserId{};
 		char m_aUsername[MAX_NAME_LENGTH];
+		int m_ConnectionGeneration{};
+		bool m_IsSuperAdmin{};
+		bool m_AuthedByRconPassword{};
+		int m_AuthedBeforeAccount{};
+		const IConsole::CCommandInfo *m_pRconCmdToSendBeforeAccount{};
+		bool m_LoggedInWithAccount{};
 
 		// DDRace
 
@@ -486,16 +492,27 @@ public:
 	bool IsClientLogged(int ClientId) override;
 	void Register(int ClientId, const char *pUsername = nullptr, const char *pPassword = nullptr) override;
 	void Login(int ClientId, const char *pUsername, const char *pPassword) override;
+	void ChangePassword(int ClientId, const char *pOldPassword, const char *pNewPassword) override;
 	void Logout(int ClientId) override;
 
 private:
 	void OnAuthFailed(int ClientId);
 	void AuthTick();
+	void AuthTickClient(int ClientId);
+	void ResetAccountRequests(int ClientId);
+	void SendAccountMessage(int ClientId, bool UsingRcon, const char *pText);
+	void FinishAccountLogin(int ClientId, int UserId, const char *pUsername, bool UsingRcon, bool IsPasswordSuitable);
+	void SaveAccountAccessLevel(int UserId, EAccessLevel AccessLevel, bool SuperAdmin);
+	void DeleteAccountAccessLevel(int UserId);
+	void LoadAccountAccess(const char *pDbPath);
 	bool GenerateClientMap(const char *pMapFilePath, const char *pMapName);
 	std::optional<int> GetClientIdByUserId(int UserId) const;
 	void TakeUserName(int ClientId);
+	// Trims, length-checks and name-ban-checks an account name from client input.
+	bool IsAccountNameAllowed(const char *pUsername, std::string &Trimmed);
 
 	void SetClientAccessLevel(int ClientId, EAccessLevel AccessLevel, bool SendRconCmds);
+	void RevokeClientRconAuth(int ClientId);
 
 public:
 	class CGameServerCmd
@@ -516,12 +533,14 @@ private:
 	int m_SnapsPerSecond = 0;
 
 	CClientAccountRequests m_AccountsRequests[MAX_CLIENTS];
-	char m_aServerSalt[ServerSaltMaxLength]{};
+	CAbandonedFutures m_AbandonedAccountFutures;
+	char m_aServerPepper[ServerSaltMaxLength]{};
 
 	struct SAccountAccessInfo
 	{
 		int UserId{};
 		EAccessLevel AccessLevel{};
+		bool SuperAdmin{};
 	};
 
 	std::vector<SAccountAccessInfo> m_vAccountsAccessInfo;

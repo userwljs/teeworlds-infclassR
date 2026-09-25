@@ -12,12 +12,35 @@ void IDbConnection::FormatCreatePasswords(char *aBuf, unsigned int BufferSize, b
 		"CREATE TABLE IF NOT EXISTS %s_passwords%s ("
 		"  UserId INTEGER PRIMARY KEY AUTOINCREMENT, "
 		"  Username VARCHAR(%d) COLLATE %s UNIQUE NOT NULL, "
-		"  PasswordHash VARCHAR(64) COLLATE %s NOT NULL,"
+		"  PasswordHash VARCHAR(%d) COLLATE %s NOT NULL,"
 		"  RegisterDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 		"  RegisterIp VARCHAR(64) NOT NULL" // The IP is kept in order to prevent registration flooding
 		")",
 		GetPrefix(), Backup ? "_backup" : "",
-		MAX_NAME_LENGTH_SQL, BinaryCollate(), BinaryCollate());
+		MAX_NAME_LENGTH_SQL, BinaryCollate(), crypto_pwhash_STRBYTES, BinaryCollate());
+}
+
+void IDbConnection::FormatCreateAccountAccess(char *aBuf, unsigned int BufferSize, bool Backup) const
+{
+	str_format(aBuf, BufferSize,
+		"CREATE TABLE IF NOT EXISTS %s_account_access%s ("
+		"  UserId INTEGER PRIMARY KEY, "
+		"  AccessLevel INTEGER NOT NULL, "
+		"  SuperAdmin INTEGER NOT NULL DEFAULT 0"
+		")",
+		GetPrefix(), Backup ? "_backup" : "");
+}
+
+void IDbConnection::FormatCreatePasswordsIndex(char *aBuf, unsigned int BufferSize) const
+{
+	// The registration flood protection looks the passwords table up by
+	// RegisterIp on every registration attempt; without this index that is a
+	// full table scan on the single database worker thread. RegisterDate is part
+	// of the index so that the query is answered from the index alone.
+	str_format(aBuf, BufferSize,
+		"CREATE INDEX IF NOT EXISTS %s_passwords_registerip "
+		"ON %s_passwords(RegisterIp, RegisterDate)",
+		GetPrefix(), GetPrefix());
 }
 
 void IDbConnection::FormatCreateRace(char *aBuf, unsigned int BufferSize, bool Backup) const

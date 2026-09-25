@@ -364,6 +364,7 @@ public:
 	virtual bool IsClientLogged(int ClientId) = 0;
 	virtual void Register(int ClientId, const char *pUsername = nullptr, const char *pPassword = nullptr) = 0;
 	virtual void Login(int ClientId, const char *pUsername, const char *pPassword) = 0;
+	virtual void ChangePassword(int ClientId, const char *pOldPassword, const char *pNewPassword) = 0;
 	virtual void Logout(int ClientId) = 0;
 
 public:

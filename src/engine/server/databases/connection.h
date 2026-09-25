@@ -4,7 +4,13 @@
 #include "connection_pool.h"
 
 #include <engine/shared/protocol.h>
+
+#include <sodium/crypto_pwhash.h>
+
 #include <memory>
+
+static_assert(crypto_pwhash_STRBYTES == 128,
+	"schema version 1 assumes a 128-byte password hash column");
 
 enum
 {
@@ -85,6 +91,13 @@ public:
 	// returns number of bytes read into the buffer
 	virtual int GetBlob(int Col, unsigned char *pBuffer, int BufferSize) = 0;
 
+	// Checks whether a table with the given unprefixed name exists.
+	// Returns true on failure.
+	virtual bool TableExists(const char *pTable, bool *pExists, char *pError, int ErrorSize) = 0;
+	// Copies the whole database into a new file at pBackupPath.
+	// Returns true on failure.
+	virtual bool BackupDatabase(const char *pBackupPath, char *pError, int ErrorSize) = 0;
+
 	// SQL statements, that can't be abstracted, has side effects to the result
 	virtual bool AddPoints(const char *pPlayer, int Points, char *pError, int ErrorSize) = 0;
 
@@ -93,11 +106,18 @@ private:
 
 protected:
 	void FormatCreatePasswords(char *aBuf, unsigned int BufferSize, bool Backup) const;
+	void FormatCreateAccountAccess(char *aBuf, unsigned int BufferSize, bool Backup) const;
 	void FormatCreateRace(char *aBuf, unsigned int BufferSize, bool Backup) const;
 	void FormatCreateTeamrace(char *aBuf, unsigned int BufferSize, const char *pIdType, bool Backup) const;
 	void FormatCreateMaps(char *aBuf, unsigned int BufferSize) const;
 	void FormatCreateSaves(char *aBuf, unsigned int BufferSize, bool Backup) const;
 	void FormatCreatePoints(char *aBuf, unsigned int BufferSize) const;
+
+public:
+	// SQLite has no way to declare an index together with the table, so the
+	// index of the passwords table is a separate statement. It is part of the
+	// schema version 1 and the v0 -> v1 migration has to recreate it as well.
+	void FormatCreatePasswordsIndex(char *aBuf, unsigned int BufferSize) const;
 };
 
 bool MysqlAvailable();
