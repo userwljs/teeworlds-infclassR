@@ -208,7 +208,7 @@ bool CMysqlConnection::Connect(char *pError, int ErrorSize)
 {
 	if(m_InUse.exchange(true))
 	{
-		dbg_assert(0, "Tried connecting while the connection is in use");
+		dbg_assert_failed("Tried connecting while the connection is in use");
 	}
 
 	m_NewQuery = true;
@@ -562,7 +562,7 @@ bool CMysqlConnection::IsNull(int Col)
 	{
 		StoreErrorStmt("fetch_column:null");
 		dbg_msg("mysql", "error fetching column %s", m_aErrorDetail);
-		dbg_assert(0, "error in IsNull");
+		dbg_assert_failed("error in IsNull");
 	}
 	return IsNull;
 }
@@ -586,11 +586,11 @@ float CMysqlConnection::GetFloat(int Col)
 	{
 		StoreErrorStmt("fetch_column:float");
 		dbg_msg("mysql", "error fetching column %s", m_aErrorDetail);
-		dbg_assert(0, "error in GetFloat");
+		dbg_assert_failed("error in GetFloat");
 	}
 	if(IsNull)
 	{
-		dbg_assert(0, "error getting float: NULL");
+		dbg_assert_failed("error getting float: NULL");
 	}
 	return Value;
 }
@@ -614,11 +614,11 @@ int CMysqlConnection::GetInt(int Col)
 	{
 		StoreErrorStmt("fetch_column:int");
 		dbg_msg("mysql", "error fetching column %s", m_aErrorDetail);
-		dbg_assert(0, "error in GetInt");
+		dbg_assert_failed("error in GetInt");
 	}
 	if(IsNull)
 	{
-		dbg_assert(0, "error getting int: NULL");
+		dbg_assert_failed("error getting int: NULL");
 	}
 	return Value;
 }
@@ -642,11 +642,11 @@ int64_t CMysqlConnection::GetInt64(int Col)
 	{
 		StoreErrorStmt("fetch_column:int64");
 		dbg_msg("mysql", "error fetching column %s", m_aErrorDetail);
-		dbg_assert(0, "error in GetInt64");
+		dbg_assert_failed("error in GetInt64");
 	}
 	if(IsNull)
 	{
-		dbg_assert(0, "error getting int: NULL");
+		dbg_assert_failed("error getting int: NULL");
 	}
 	return Value;
 }
@@ -677,15 +677,15 @@ void CMysqlConnection::GetString(int Col, char *pBuffer, int BufferSize)
 	{
 		StoreErrorStmt("fetch_column:string");
 		dbg_msg("mysql", "error fetching column %s", m_aErrorDetail);
-		dbg_assert(0, "error in GetString");
+		dbg_assert_failed("error in GetString");
 	}
 	if(IsNull)
 	{
-		dbg_assert(0, "error getting string: NULL");
+		dbg_assert_failed("error getting string: NULL");
 	}
 	if(Error)
 	{
-		dbg_assert(0, "error getting string: truncation occurred");
+		dbg_assert_failed("error getting string: truncation occurred");
 	}
 }
 
@@ -709,15 +709,15 @@ int CMysqlConnection::GetBlob(int Col, unsigned char *pBuffer, int BufferSize)
 	{
 		StoreErrorStmt("fetch_column:blob");
 		dbg_msg("mysql", "error fetching column %s", m_aErrorDetail);
-		dbg_assert(0, "error in GetBlob");
+		dbg_assert_failed("error in GetBlob");
 	}
 	if(IsNull)
 	{
-		dbg_assert(0, "error getting blob: NULL");
+		dbg_assert_failed("error getting blob: NULL");
 	}
 	if(Error)
 	{
-		dbg_assert(0, "error getting blob: truncation occurred");
+		dbg_assert_failed("error getting blob: truncation occurred");
 	}
 	return Length;
 }
