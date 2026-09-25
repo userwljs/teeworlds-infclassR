@@ -3970,7 +3970,7 @@ void CGameContext::ConCredits(IConsole::IResult *pResult, void *pUserData)
 								 ", bretonium, duralakun, FluffyTee, ResamVi"
 								 ", Kaffeine"
 								 ", Pointer"
-								 ", userwljs";
+								 ", userwljs (aka Gaozimu)";
 
 	Buffer.append(pSelf->Server()->Localization()->Format_L(pLanguage, "InfectionClass, by necropotame (version {str:VersionCode})", "VersionCode", "InfectionDust", nullptr));
 	Buffer.append("\n\n");
