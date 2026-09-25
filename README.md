@@ -24,6 +24,7 @@ apt install -y \
     zlib1g-dev \
     ninja-build \
     libmaxminddb-dev \
+    libluajit-5.1-dev \
     git \
     ca-certificates \
     pkg-config
