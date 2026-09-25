@@ -3963,7 +3963,10 @@ void CGameContext::ConCredits(IConsole::IResult *pResult, void *pUserData)
 	std::string Buffer;
 
 	const char aThanks[] = "guenstig werben, Defeater, Orangus, BlinderHeld, Warpaint, Serena, FakeDeath, tee_to_F_U_UP!, Denis, NanoSlime_, tria, pinkieval…";
-	const char aContributors[] = "necropotame, Stitch626, yavl, Socialdarwinist"
+	const char aContributors[] = "necropotame"
+								 ", Teeworlds contributors"
+								 ", DDNet contributors"
+								 ", Stitch626, yavl, Socialdarwinist"
 								 ", bretonium, duralakun, FluffyTee, ResamVi"
 								 ", Kaffeine"
 								 ", Pointer"
