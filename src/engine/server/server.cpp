@@ -2233,18 +2233,18 @@ void CServer::CacheServerInfo(CCache *pCache, int Type, bool SendClients)
 
 	if(Type != SERVERINFO_VANILLA)
 	{
-		p.AddString(aBuf, 256);
+		p.AddString(Config()->m_SvName, 256);
 	}
 	else
 	{
 		if(m_NetServer.MaxClients() <= VANILLA_MAX_CLIENTS)
 		{
-			p.AddString(aBuf, 64);
+			p.AddString(Config()->m_SvName, 64);
 		}
 		else
 		{
-			const int MaxClients = maximum(ClientCount, m_NetServer.MaxClients());
-			str_format(aBuf, sizeof(aBuf), "%s [%d/%d]", aBuf, ClientCount, MaxClients);
+			const int MaxClients = maximum(ClientCount, m_NetServer.MaxClients() - Config()->m_SvReservedSlots);
+			str_format(aBuf, sizeof(aBuf), "%s [%d/%d]", Config()->m_SvName, ClientCount, MaxClients);
 			p.AddString(aBuf, 64);
 		}
 	}
