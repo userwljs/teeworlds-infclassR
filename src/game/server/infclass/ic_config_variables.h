@@ -21,7 +21,7 @@ MACRO_CONFIG_STR(AboutContactsMatrix, about_contacts_matrix, 128, "https://infcl
 MACRO_CONFIG_INT(SvLua, sv_lua, 3, 0, 3, CFGFLAG_SERVER, "Enable LUA scripts (0 = disabled, 1 = enabled, 2 = map scripts autoload)")
 MACRO_CONFIG_STR(SvLuaRuntime, sv_lua_runtime, 64, "base.lua", CFGFLAG_SERVER, "Lua runtime file")
 
-MACRO_CONFIG_STR(InfConverterId, inf_converter_id, 16, "v2.1", CFGFLAG_SERVER, "Map converter version id")
+MACRO_CONFIG_STR(InfConverterId, inf_converter_id, 16, "v2.2", CFGFLAG_SERVER, "Map converter version id")
 MACRO_CONFIG_INT(InfConverterForceRegeneration, inf_converter_force_regeneration, 0, 0, 1, CFGFLAG_SERVER, "Always (re)generate client map (regardless of cache)")
 
 MACRO_CONFIG_STR(SvAccounts, sv_accounts, 16, "disabled", CFGFLAG_SERVER, "Accounts: disabled, enabled, mandatory")
