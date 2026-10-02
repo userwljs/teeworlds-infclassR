@@ -1,0 +1,96 @@
+# Open Source Compliance Notice
+# This file uses the Python Packaging User Guide from pypa/packaging.python.org.
+# The Python Packaging User Guide is licensed under a Creative Commons Attribution-ShareAlike license: http://creativecommons.org/licenses/by-sa/3.0 .
+# Attribution: Python Packaging Authority (PyPA) and contributors.
+# Source: https://github.com/pypa/packaging.python.org
+# SPDX-License-Identifier: CC-BY-SA-3.0
+
+name: Translation
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  I18N_BRANCH: translation/source
+  POT: other/po/infclass.pot
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    if: github.repository_owner == 'userwljs'
+
+    permissions:
+      contents: write # to push to I18N_BRANCH
+
+    steps:
+    - name: Grab the repo src
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      with:
+        fetch-depth: 0  # To reach the common commit
+        persist-credentials: true # For `git push`
+    - name: Set up git user as [bot]
+      # Refs:
+      # * https://github.community/t/github-actions-bot-email-address/17204/6
+      # * https://github.com/actions/checkout/issues/13#issuecomment-724415212
+      uses: fregante/setup-git-user@024bc0b8e177d7e77203b48dab6fb45666854b35 # v2.0.2
+
+    - name: Set up Gettext
+      run: sudo apt-get update && sudo apt-get install -y gettext
+
+    - name: Generate a fresh POT file
+      run: |
+        shopt -s globstar
+        xgettext --sort-by-file -d infclass -o "${{ env.POT }}" -k_ -k_P:1,2 -k_C:1c,2 -k_CP:1c,2,3 --from-code=UTF-8 src/{engine,game}/server/**/*.{cpp,h}
+        sed -i 's/^"POT-Creation-Date:.*\\n"$/"POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\\n"/' "${{ env.POT }}"
+
+    - name: Switch to the translation source branch
+      id: i18n
+      run: |
+        sh -x
+        # Backup the freshly generated POT
+        rm -rf /tmp/i18n-seed
+        mkdir -p /tmp/i18n-seed
+        cp --parents "${{ env.POT }}" /tmp/i18n-seed/
+        git restore "${{ env.POT }}"
+
+        if git ls-remote --exit-code --heads origin "${{ env.I18N_BRANCH }}" >/dev/null 2>&1; then
+          # Branch exists: switch to it
+          git fetch origin \
+            "+refs/heads/${{ env.I18N_BRANCH }}:refs/remotes/origin/${{ env.I18N_BRANCH }}"
+          git checkout -B "${{ env.I18N_BRANCH }}" "origin/${{ env.I18N_BRANCH }}"
+          cp -r /tmp/i18n-seed/. .
+          echo "orphan=false" >> "$GITHUB_OUTPUT"
+        else
+          # Branch does not exist: create an orphan branch
+          # Backup the existing PO files as well
+          shopt -s nullglob
+          for f in other/po/*/infclass.po; do
+            cp --parents "$f" /tmp/i18n-seed/
+          done
+          git checkout --orphan "${{ env.I18N_BRANCH }}"
+          git rm -rf . >/dev/null 2>&1 || true
+          cp -r /tmp/i18n-seed/. .
+          echo "orphan=true" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Commit the POT file to Git
+      env:
+        ORPHAN: ${{ steps.i18n.outputs.orphan }}
+      run: |
+        git_hash=$(git rev-parse --short "${GITHUB_SHA}")
+        git add --force "${{ env.POT }}"
+        if [ "${ORPHAN}" = "true" ]; then
+          shopt -s nullglob
+          git add --force other/po/*/infclass.po
+        fi
+        git diff-index --quiet HEAD || \
+        git commit -m "Update POT as of version ${git_hash}"
+
+    - name: >-
+        Push the updated POT file back to '${{ env.I18N_BRANCH }}'
+        branch on GitHub
+      if: always()
+      run: |
+        git push --atomic origin 'HEAD:${{ env.I18N_BRANCH }}'
