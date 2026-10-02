@@ -322,8 +322,6 @@ if(TARGET_OS AND TARGET_OS STREQUAL "mac")
   find_program(HDIUTIL hdiutil)
 endif()
 
-find_package(Gettext)
-
 message(STATUS "******** ${CMAKE_PROJECT_NAME} ********")
 message(STATUS "Target OS: ${TARGET_OS} ${TARGET_BITS}bit")
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER}")
@@ -1098,30 +1096,6 @@ if(TOOLS)
   add_custom_target(tools DEPENDS ${TARGETS_TOOLS})
 endif()
 
-# Translation dev targets
-set(PO_LANG_DIR "${CMAKE_SOURCE_DIR}/other/po")
-set(PO_TEMPlATE "${PO_LANG_DIR}/infclass.pot")
-add_custom_target(dev-generate-pot
-  COMMAND xgettext --sort-by-file -d infclass -o ${PO_TEMPlATE} -k_ -k_P:1,2 -k_C:1c,2 -k_CP:1c,2,3 --from-code=UTF-8 ${ENGINE_SERVER} ${GAME_SERVER}
-  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-)
-
-add_custom_target(dev-update-po-files)
-
-file(GLOB_RECURSE PO_LANGS
-  CONFIGURE_DEPENDS
-  "${PO_LANG_DIR}/*/infclass.po")
-
-foreach(PO_LANG ${PO_LANGS})
-  add_custom_command(
-    TARGET dev-update-po-files
-    POST_BUILD
-    # BYPRODUCTS ${PO_LANG_FILE}
-    COMMAND ${GETTEXT_MSGMERGE_EXECUTABLE} --sort-by-file --update --backup=off --width=200 ${PO_LANG} ${PO_TEMPlATE}
-    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
-  )
-endforeach()
-
 #add_library(server-shared STATIC ${SERVER_SRC})
 
 # Target
@@ -1177,6 +1151,7 @@ target_link_libraries(game-server game-shared)
 target_link_libraries(game-server ICU::i18n)
 target_link_libraries(game-server ICU::uc)
 
+set(PO_LANG_DIR "${CMAKE_SOURCE_DIR}/other/po")
 file(GLOB_RECURSE PO_LANG_FILES
   CONFIGURE_DEPENDS
   ${PO_LANG_DIR}/*
