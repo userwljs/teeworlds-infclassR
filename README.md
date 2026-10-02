@@ -80,6 +80,11 @@ command reply is generated using the follow config variables:
 - `about_contacts_telegram` - Telegram URL or ID. Empty by default.
 - `about_contacts_matrix` - Matrix room URL. Links to some Infclass matrix server by default.
 
+# Translations
+Translation is done [on Weblate](https://hosted.weblate.org/projects/infclassr/). Please read carefully [project instructions](https://hosted.weblate.org/projects/infclassr/infclassr/#information) if you want to help.
+
+[![Translation Stats](https://hosted.weblate.org/widget/infclassr/multi-auto.svg)](https://hosted.weblate.org/engage/infclassr/)
+
 ## Notes
 
 This product includes GeoLite2 data created by MaxMind, available from

@@ -6944,7 +6944,7 @@ void CIcGameController::GetHelpText(dynamic_string *pBuffer, int ClientId, const
 		Buffer.append("~~ ");
 		Buffer.append(Server()->Localization()->Format_L(pLanguage, "How to translate the mod", nullptr).c_str());
 		Buffer.append(" ~~\n\n");
-		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Create an account on Crowdin and join the translation team:", nullptr).c_str());
+		Buffer.append(Server()->Localization()->Format_L(pLanguage, "Create an account, carefully read instructions and start translating:", nullptr).c_str());
 		Buffer.append("\n\n");
 		Buffer.append(Server()->Localization()->Format_L(pLanguage, Config()->m_AboutTranslationUrl, nullptr).c_str());
 	}
