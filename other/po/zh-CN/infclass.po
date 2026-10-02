@@ -3,10 +3,11 @@ msgstr ""
 "Project-Id-Version: infectiondust\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2026-04-04 15:20+0800\n"
-"Last-Translator: Gao Zimu <gaozimu_0502@163.com>\n"
-"Language-Team: Chinese Simplified\n"
-"Language: zh_CN\n"
+"PO-Revision-Date: 2026-10-02 21:38+0000\n"
+"Last-Translator: 忘了叫啥 <me@l4.nz>\n"
+"Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
+"projects/infclassr/infclassr/zh_Hans/>\n"
+"Language: zh-CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -16,7 +17,7 @@ msgstr ""
 "X-Crowdin-Language: zh-CN\n"
 "X-Crowdin-File: infclass.pot\n"
 "X-Crowdin-File-ID: 3\n"
-"X-Generator: Poedit 3.8\n"
+"X-Generator: Weblate 2026.10\n"
 
 #: src/engine/server/server.cpp:260
 msgid "Account {str:Username} is already used by ClientId {int:ClientId})"
@@ -172,7 +173,7 @@ msgstr "服务器的地图已经是 {str:MapName} 了"
 msgid ""
 "Each map must be played at least {int:Rounds} rounds before calling a map "
 "vote"
-msgstr "每个地图必需玩至少  {int:Rounds} 回合才能投票换图"
+msgstr "每个地图必需玩至少 {int:Rounds} 回合才能投票换图"
 
 #: src/game/server/gamecontext.cpp:2622 src/game/server/gamecontext.cpp:2641
 msgid ""
@@ -261,7 +262,7 @@ msgstr "已认证的玩家强制更改了服务器选项 “{str:VoteName}”（
 
 #: src/game/server/gamecontext.cpp:3830
 msgid "'{str:PlayerName}' was moved to spectator ({str:Reason})"
-msgstr "“{str:PlayerName}”  被移动到了旁观位（{str:Reason}）"
+msgstr "“{str:PlayerName}” 被移动到了旁观位（{str:Reason}）"
 
 #: src/game/server/gamecontext.cpp:3902
 msgid "admin forced vote {str:VoteName}"
@@ -364,7 +365,7 @@ msgstr ""
 
 #: src/game/server/gamecontext.cpp:5210
 msgid "This message contains prohibited content."
-msgstr ""
+msgstr "该消息包含被禁止的内容。"
 
 #: src/game/server/gamecontext.cpp:5243
 msgid "You are muted for {sec:Duration}"
@@ -393,7 +394,7 @@ msgstr "当前投票结束才能开始新投票。"
 
 #: src/game/server/gamecontext.cpp:5428
 msgid "You must wait {int:TimeLeftSeconds} seconds before making another vote."
-msgstr "你需要等 {int:TimeLeftSeconds}  秒才能开始另一个投票。"
+msgstr "你需要等 {int:TimeLeftSeconds} 秒才能开始另一个投票。"
 
 #: src/game/server/gamecontext.cpp:5442
 msgid ""
@@ -468,7 +469,9 @@ msgctxt "Mercenary"
 msgid ""
 "Use the hammer to place a bomb and\n"
 "then use the laser to upgrade it"
-msgstr "使用锤子放置炸弹, 可用激光升级它"
+msgstr ""
+"使用锤子放置炸弹\n"
+"用激光升级它"
 
 #: src/game/server/infclass/classes/humans/human.cpp:1602
 msgid "The turrets are not allowed by the game rules (at least right now)."
@@ -670,7 +673,7 @@ msgstr "闪光弹的有效区域现在增加到了 150%"
 
 #: src/game/server/infclass/classes/humans/human.cpp:2691
 msgid "Now you can accumulate two more combo slashes!"
-msgstr ""
+msgstr "现在你能多累积两次连斩！"
 
 #: src/game/server/infclass/classes/humans/human.cpp:2695
 msgid "The laser rifle reload and ammo regeneration speed increased by 20%"
@@ -1654,10 +1657,8 @@ msgid "Waiting for players to choose a class"
 msgstr "等待玩家选择职业"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:5395
-#, fuzzy
-#| msgid "You can respawn via '/respawn <player name>' now"
 msgid "You can respawn via '/respawn <alive player>' now"
-msgstr "你现在能通过  “/respawn <玩家名>” 复活"
+msgstr "你现在能通过 “/respawn <活着的玩家>” 复活"
 
 #: src/game/server/infclass/ic_gamecontroller.cpp:5403
 msgid "You can respawn after {sec:Time}"
