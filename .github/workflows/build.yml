@@ -2,8 +2,9 @@ name: Build
 
 on:
   push:
-    branches:
-      - "**"
+    # Must match I18N_BRANCH in translation.yml
+    branches-ignore:
+      - translation/source
   pull_request:
 
 jobs:
