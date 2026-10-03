@@ -146,6 +146,7 @@ bool CDataFileReader::Open(class IStorage *pStorage, const char *pFilename, int 
 	CDatafileHeader Header;
 	if(sizeof(Header) != io_read(File, &Header, sizeof(Header)))
 	{
+		io_close(File);
 		dbg_msg("datafile", "couldn't load header");
 		return false;
 	}
@@ -153,6 +154,7 @@ bool CDataFileReader::Open(class IStorage *pStorage, const char *pFilename, int 
 	{
 		if(Header.m_aId[0] != 'D' || Header.m_aId[1] != 'A' || Header.m_aId[2] != 'T' || Header.m_aId[3] != 'A')
 		{
+			io_close(File);
 			dbg_msg("datafile", "wrong signature. %x %x %x %x", Header.m_aId[0], Header.m_aId[1], Header.m_aId[2], Header.m_aId[3]);
 			return false;
 		}
@@ -163,6 +165,7 @@ bool CDataFileReader::Open(class IStorage *pStorage, const char *pFilename, int 
 #endif
 	if(Header.m_Version != 3 && Header.m_Version != 4)
 	{
+		io_close(File);
 		dbg_msg("datafile", "wrong version. version=%x", Header.m_Version);
 		return false;
 	}
