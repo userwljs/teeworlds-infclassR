@@ -4908,9 +4908,12 @@ void CGameContext::OnShutdown(void *pPersistentData)
 	// reset votes.
 	EndVote();
 
+	// Clear() frees all the players and the destruction of GameController removes bots.
+	// Remove bots in CIcGameController::OnShutdown to avoid UAF
+	auto *pController = m_pController;
 	m_pController = nullptr;
 	Clear();
-	delete m_pController;
+	delete pController;
 }
 
 void CGameContext::OnSnap(int ClientId)

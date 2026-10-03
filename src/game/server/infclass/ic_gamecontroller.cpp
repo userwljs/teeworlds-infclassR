@@ -682,6 +682,8 @@ void CIcGameController::OnReset()
 void CIcGameController::OnShutdown()
 {
 	RunCallback(Lua()->GetLuaState(), "on_shutdown");
+
+	RemoveBots();
 }
 
 void CIcGameController::DoPlayerInfection(CIcPlayer *pPlayer, CIcPlayer *pInfectiousPlayer, EPlayerClass PreviousClass)
