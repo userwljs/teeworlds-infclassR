@@ -140,7 +140,10 @@ public:
 	int AddData(size_t Size, const void *pData, ECompressionLevel CompressionLevel = COMPRESSION_DEFAULT);
 	int AddDataSwapped(size_t Size, const void *pData);
 	int AddDataString(const char *pStr);
-	void Finish();
+	// Writes the whole file and closes it. Returns false if any write failed.
+	bool Finish();
+	// Closes the file without writing anything. Safe to call multiple times.
+	void Close();
 };
 
 #endif

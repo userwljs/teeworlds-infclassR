@@ -2,7 +2,6 @@
 #define ENGINE_SERVER_MAPCONVERTER_H
 
 #include <base/tl/array.h>
-#include <engine/console.h>
 #include <engine/map.h>
 #include <engine/shared/datafile.h>
 #include <engine/storage.h>
@@ -45,7 +44,9 @@ public:
 		TIMESHIFT_MENUCLASS_MASK = NUM_MENUCLASS + 1,
 	};
 
-	CMapConverter(IStorage *pStorage, IEngineMap *pMap, IConsole *pConsole);
+	static constexpr int TIMESHIFT_MULTIPLIER = 1 + TIMESHIFT_MENUCLASS + 3 * ((MASK_ALL + 1) * TIMESHIFT_MENUCLASS_MASK);
+
+	CMapConverter(IStorage *pStorage, IEngineMap *pMap);
 	~CMapConverter();
 
 	bool Load();
@@ -56,7 +57,21 @@ public:
 protected:
 	IEngineMap *Map() { return m_pMap; }
 	IStorage *Storage() { return m_pStorage; }
-	IConsole *Console() { return m_pConsole; }
+
+	// Checks that the item range [Start, Start + Num) is inside the map item array.
+	bool CheckItemRange(int Start, int Num, const char *pWhat);
+	// Resolves a map item type and checks that the resulting item range is inside the item array.
+	bool GetItemRange(int Type, const char *pWhat, int *pStart, int *pNum);
+	// Checks that the data item is at least RequiredSize bytes long.
+	bool CheckDataSize(int DataIndex, int64_t RequiredSize, const char *pWhat);
+	// Resolves a string stored in the map data section and adds it to the output file.
+	int AddMapDataString(int DataIndex);
+	// Resolves the env points item and its size in bytes. If the source map has no env points,
+	// 'ppPoints' is set to nullptr and 'pSize' to 0.
+	bool GetEnvPoints(CEnvPoint **ppPoints, int64_t *pSize);
+	// Checks that an envelope references only points inside the env points item (byte based, so
+	// it does not depend on how many records fit into the item).
+	bool CheckEnvPointRange(const CMapItemEnvelope *pItem, int64_t EnvPointsSize, const char *pWhat);
 
 	void InitQuad(CQuad *pQuad);
 	void InitQuad(CQuad *pQuad, vec2 Pos, vec2 Size);
@@ -68,11 +83,11 @@ protected:
 
 	void CopyVersion();
 	void CopyMapInfo();
-	void CopyImages();
-	void CopySounds();
-	void CopyGameLayer();
-	void CopyLayers();
-	void CopyAnimations();
+	bool CopyImages();
+	bool CopySounds();
+	bool CopyGameLayer();
+	bool CopyLayers();
+	bool CopyAnimations();
 
 	void AddImageQuad(const char *pName, int ImageId, int GridX, int GridY, int X, int Y, int Width, int Height, vec2 Pos, vec2 Size, vec4 Color, int Env);
 	void AddTeeLayer(const char *pName, int ImageId, vec2 Pos, float Size, int Env, bool Black, const CWeakSkinInfo &SkinInfo);
@@ -84,7 +99,6 @@ protected:
 protected:
 	IStorage *m_pStorage;
 	IEngineMap *m_pMap;
-	IConsole *m_pConsole;
 	CDataFileWriter m_DataFile;
 
 	CTile *m_pTiles;

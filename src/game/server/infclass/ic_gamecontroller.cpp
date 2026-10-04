@@ -7270,6 +7270,9 @@ void CIcGameController::SnapMapMenu(int SnappingClient, CNetObj_GameInfo *pGameI
 	if(pPlayer->MapMenu() != 1)
 		return;
 
+	if(Server()->GetTimeShiftUnit() <= 0)
+		return;
+
 	// Generate class mask
 	int ClassMask = 0;
 	{
@@ -7321,12 +7324,15 @@ void CIcGameController::SnapMapMenu(int SnappingClient, CNetObj_GameInfo *pGameI
 	const int Item = pPlayer->m_MapMenuItem;
 	const int Page = CMapConverter::TIMESHIFT_MENUCLASS + 3 * ((Item + 1) + ClassMask * CMapConverter::TIMESHIFT_MENUCLASS_MASK) + 1;
 
-	const double PageShift = static_cast<double>(Page * Server()->GetTimeShiftUnit()) / 1000.0f;
+	// PageShift, TimeShift overflows at times if using int mul
+	const double PageShift = static_cast<double>(Page) * static_cast<double>(Server()->GetTimeShiftUnit()) / 1000.0;
 	const double SecondsPassed = static_cast<double>(GetRoundTick()) / Server()->TickSpeed();
 	const double CycleShift = fmod(SecondsPassed, Server()->GetTimeShiftUnit() / 1000.0);
-	const int TimeShift = (PageShift + CycleShift) * Server()->TickSpeed();
+	const double TimeShift = (PageShift + CycleShift) * Server()->TickSpeed();
 
-	pGameInfoObj->m_RoundStartTick = Server()->Tick() - TimeShift;
+	pGameInfoObj->m_RoundStartTick = clamp(static_cast<double>(Server()->Tick()) - TimeShift,
+	                                       static_cast<double>(std::numeric_limits<int>::min()),
+	                                       static_cast<double>(std::numeric_limits<int>::max()));
 	pGameInfoObj->m_TimeLimit += (TimeShift / Server()->TickSpeed()) / 60;
 }
 

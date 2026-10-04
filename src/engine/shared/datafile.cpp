@@ -3,13 +3,13 @@
 
 #include "datafile.h"
 
-#include <base/hash_ctxt.h>
-#include <base/log.h>
-#include <base/math.h>
 #include <base/bytes.h>
 #include <base/dbg.h>
 #include <base/fs.h>
+#include <base/hash_ctxt.h>
 #include <base/io.h>
+#include <base/log.h>
+#include <base/math.h>
 #include <base/mem.h>
 #include <base/str.h>
 #include <engine/storage.h>
@@ -634,11 +634,7 @@ CDataFileWriter::CDataFileWriter()
 
 CDataFileWriter::~CDataFileWriter()
 {
-	if(m_File)
-	{
-		io_close(m_File);
-		m_File = nullptr;
-	}
+	Close();
 
 	for(CItemInfo &ItemInfo : m_vItems)
 	{
@@ -649,6 +645,15 @@ CDataFileWriter::~CDataFileWriter()
 	{
 		free(DataInfo.m_pUncompressedData);
 		free(DataInfo.m_pCompressedData);
+	}
+}
+
+void CDataFileWriter::Close()
+{
+	if(m_File)
+	{
+		io_close(m_File);
+		m_File = nullptr;
 	}
 }
 
@@ -800,9 +805,15 @@ static int CompressionLevelToZlib(CDataFileWriter::ECompressionLevel Compression
 	}
 }
 
-void CDataFileWriter::Finish()
+bool CDataFileWriter::Finish()
 {
 	dbg_assert((bool)m_File, "File not open");
+
+	bool Success = true;
+	const auto Write = [&](const void *pData, size_t Size) {
+		if(io_write(m_File, pData, static_cast<unsigned>(Size)) != Size)
+			Success = false;
+	};
 
 	// Compress data. This takes the majority of the time when saving a datafile,
 	// so it's delayed until the end so it can be off-loaded to another thread.
@@ -814,7 +825,12 @@ void CDataFileWriter::Finish()
 		DataInfo.m_CompressedSize = CompressedSize;
 		free(DataInfo.m_pUncompressedData);
 		DataInfo.m_pUncompressedData = nullptr;
-		dbg_assert(Result == Z_OK, "zlib compression error %d", Result);
+		if(Result != Z_OK)
+		{
+			log_error("datafile", "compression error %d", Result);
+			Close();
+			return false;
+		}
 	}
 
 	// Calculate total size of items
@@ -870,7 +886,7 @@ void CDataFileWriter::Finish()
 #if defined(CONF_ARCH_ENDIAN_BIG)
 		swap_endian(&Header, sizeof(int), sizeof(Header) / sizeof(int));
 #endif
-		io_write(m_File, &Header, sizeof(Header));
+		Write(&Header, sizeof(Header));
 	}
 
 	// Write item types
@@ -890,7 +906,7 @@ void CDataFileWriter::Finish()
 #if defined(CONF_ARCH_ENDIAN_BIG)
 		swap_endian(&Info, sizeof(int), sizeof(CDatafileItemType) / sizeof(int));
 #endif
-		io_write(m_File, &Info, sizeof(Info));
+		Write(&Info, sizeof(Info));
 		Count += m_aItemTypes[Type].m_Num;
 	}
 
@@ -907,7 +923,7 @@ void CDataFileWriter::Finish()
 #if defined(CONF_ARCH_ENDIAN_BIG)
 			swap_endian(&Temp, sizeof(int), sizeof(Temp) / sizeof(int));
 #endif
-			io_write(m_File, &Temp, sizeof(Temp));
+			Write(&Temp, sizeof(Temp));
 			Offset += m_vItems[ItemIndex].m_Size + sizeof(CDatafileItem);
 		}
 	}
@@ -923,7 +939,7 @@ void CDataFileWriter::Finish()
 #if defined(CONF_ARCH_ENDIAN_BIG)
 		swap_endian(&Temp, sizeof(int), sizeof(Temp) / sizeof(int));
 #endif
-		io_write(m_File, &Temp, sizeof(Temp));
+		Write(&Temp, sizeof(Temp));
 		Offset += DataInfo.m_CompressedSize;
 		++DataIndex;
 	}
@@ -939,7 +955,7 @@ void CDataFileWriter::Finish()
 #if defined(CONF_ARCH_ENDIAN_BIG)
 		swap_endian(&UncompressedSize, sizeof(int), sizeof(UncompressedSize) / sizeof(int));
 #endif
-		io_write(m_File, &UncompressedSize, sizeof(UncompressedSize));
+		Write(&UncompressedSize, sizeof(UncompressedSize));
 		++DataIndex;
 	}
 
@@ -961,10 +977,10 @@ void CDataFileWriter::Finish()
 			if(m_vItems[ItemIndex].m_pData != nullptr)
 				swap_endian(m_vItems[ItemIndex].m_pData, sizeof(int), m_vItems[ItemIndex].m_Size / sizeof(int));
 #endif
-			io_write(m_File, &Item, sizeof(Item));
+			Write(&Item, sizeof(Item));
 			if(m_vItems[ItemIndex].m_pData != nullptr)
 			{
-				io_write(m_File, m_vItems[ItemIndex].m_pData, m_vItems[ItemIndex].m_Size);
+				Write(m_vItems[ItemIndex].m_pData, m_vItems[ItemIndex].m_Size);
 				free(m_vItems[ItemIndex].m_pData);
 				m_vItems[ItemIndex].m_pData = nullptr;
 			}
@@ -978,12 +994,14 @@ void CDataFileWriter::Finish()
 		if(DEBUG)
 			dbg_msg("datafile", "writing data. DataIndex=%d CompressedSize=%d", DataIndex, DataInfo.m_CompressedSize);
 
-		io_write(m_File, DataInfo.m_pCompressedData, DataInfo.m_CompressedSize);
+		Write(DataInfo.m_pCompressedData, DataInfo.m_CompressedSize);
 		free(DataInfo.m_pCompressedData);
 		DataInfo.m_pCompressedData = nullptr;
 		++DataIndex;
 	}
 
-	io_close(m_File);
+	if(io_close(m_File) != 0)
+		Success = false;
 	m_File = nullptr;
+	return Success;
 }

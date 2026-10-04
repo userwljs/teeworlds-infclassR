@@ -1897,7 +1897,7 @@ bool CServer::GenerateClientMap(const char *pMapFilePath, const char *pMapName)
 	str_format(aClientMapFileName, sizeof(aClientMapFileName), "%s_%08x.map", pMapName, ServerMapCrc);
 	str_format(aClientMapName, sizeof(aClientMapName), "%s/%s", aClientMapDir, aClientMapFileName);
 
-	CMapConverter MapConverter(Storage(), &TmpServerMap, Console());
+	CMapConverter MapConverter(Storage(), &TmpServerMap);
 	if(!MapConverter.Load())
 		return false;
 

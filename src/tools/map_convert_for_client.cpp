@@ -1,8 +1,8 @@
 /* (c) Magnus Auvinen. See licence.txt in the root of the distribution for more information. */
 /* If you are missing that file, acquire a complete release at teeworlds.com.                */
-#include <base/logger.h>
 #include <base/dbg.h>
 #include <base/fs.h>
+#include <base/logger.h>
 #include <base/os.h>
 #include <base/str.h>
 #include <base/types.h>
@@ -11,6 +11,8 @@
 #include <engine/server/mapconverter.h>
 #include <engine/shared/datafile.h>
 #include <engine/storage.h>
+
+#include <memory>
 
 int main(int argc, const char **argv)
 {
@@ -34,8 +36,8 @@ int main(int argc, const char **argv)
 		return -1;
 	}
 
-	IKernel *pKernel = IKernel::Create();
-	pKernel->RegisterInterface(pStorage.get());
+	std::unique_ptr<IKernel> pKernel(IKernel::Create());
+	pKernel->RegisterInterface(pStorage.get(), false);
 	pKernel->RegisterInterface(static_cast<IEngineMap *>(pMap)); // register as both
 	pKernel->RegisterInterface(static_cast<IMap *>(pMap), false);
 	pKernel->RegisterInterface(pConsole);
@@ -76,14 +78,12 @@ int main(int argc, const char **argv)
 		}
 	}
 
-	CMapConverter MapConverter(pStorage.get(), pMap, pConsole);
+	CMapConverter MapConverter(pStorage.get(), pMap);
 	if(!MapConverter.Load())
 		return -2;
 
 	if(!MapConverter.CreateMap(pDestFileName))
 		return -3;
-
-	delete pKernel;
 
 	return 0;
 }

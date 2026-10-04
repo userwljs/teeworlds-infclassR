@@ -2,6 +2,9 @@
 
 #include <base/color.h>
 #include <base/io.h>
+#include <base/log.h>
+#include <base/mem.h>
+#include <base/str.h>
 
 #include <engine/gfx/image_loader.h>
 #include <engine/graphics.h>
@@ -17,7 +20,19 @@
 #include <game/server/infclass/ic_gamecontroller.h>
 #include <game/server/teeinfo.h>
 
+#include <cstddef>
 #include <limits>
+
+// Copies a map item into an output struct. Older maps contain shorter item versions, so only the
+// bytes that are present in the source are copied and the remaining fields stay zeroed. The
+// destination does not have to be pre-initialized.
+template<typename T>
+static void CopyMapItemPrefix(T *pDst, const void *pSrc, int SrcSize)
+{
+	mem_zero(pDst, sizeof(T));
+	if(SrcSize > 0)
+		mem_copy(pDst, pSrc, minimum(SrcSize, static_cast<int>(sizeof(T))));
+}
 
 class CClientGameTileGetter
 {
@@ -152,7 +167,7 @@ void MakeGrayScale(CImageInfo *pImg)
 	static const int BodySize = 96;
 	// From CSkins::LoadSkin()
 	// game/client/components/skins.cpp:216
-	unsigned char *d = (unsigned char *)pImg->m_pData;
+	unsigned char *d = static_cast<unsigned char *>(pImg->m_pData);
 	int Pitch = pImg->m_Width * 4;
 
 	// create colorless version
@@ -170,6 +185,11 @@ void MakeGrayScale(CImageInfo *pImg)
 	int Freq[256] = {0};
 	int OrgWeight = 0;
 	int NewWeight = 192;
+
+	// The body analysis only looks at the top left corner of the skin. Images smaller
+	// than that (or non-RGBA data) must not be read out of bounds.
+	if(pImg->m_Format != CImageInfo::FORMAT_RGBA || pImg->m_Width < BodySize || pImg->m_Height < BodySize)
+		return;
 
 	// find most common frequence
 	for(int y = 0; y < BodySize; y++)
@@ -196,11 +216,11 @@ void MakeGrayScale(CImageInfo *pImg)
 			if(v <= OrgWeight && OrgWeight == 0)
 				v = 0;
 			else if(v <= OrgWeight)
-				v = (int)(((v / (float)OrgWeight) * NewWeight));
+				v = static_cast<int>((v / static_cast<float>(OrgWeight)) * NewWeight);
 			else if(InvOrgWeight == 0)
 				v = NewWeight;
 			else
-				v = (int)(((v - OrgWeight) / (float)InvOrgWeight) * InvNewWeight + NewWeight);
+				v = static_cast<int>(((v - OrgWeight) / static_cast<float>(InvOrgWeight)) * InvNewWeight + NewWeight);
 			d[y * Pitch + x * 4] = v;
 			d[y * Pitch + x * 4 + 1] = v;
 			d[y * Pitch + x * 4 + 2] = v;
@@ -222,10 +242,9 @@ void SetQuadColor(CQuad *Quad, int Color)
 	Quad->m_aColors[3] = TypedColor;
 }
 
-CMapConverter::CMapConverter(IStorage *pStorage, IEngineMap *pMap, IConsole *pConsole) :
+CMapConverter::CMapConverter(IStorage *pStorage, IEngineMap *pMap) :
 	m_pStorage(pStorage),
 	m_pMap(pMap),
-	m_pConsole(pConsole),
 	m_pTiles(nullptr)
 {
 }
@@ -248,10 +267,129 @@ static inline long long gcd_long(long long a, long long b)
 	return a;
 }
 
-// Function to return LCM of two numbers
-static inline long long lcm(long long a, long long b)
+// Sizes of the fields the converter reads from map items. Map item layouts have changed over
+// time and older maps contain shorter items, so every field access is checked against these.
+static constexpr int GROUP_LAYERS_SIZE = sizeof(CMapItemGroup_v1);
+static constexpr int TILEMAP_FLAGS_SIZE = offsetof(CMapItemLayerTilemap, m_Flags) + sizeof(int);
+static constexpr int TILEMAP_DATA_SIZE = offsetof(CMapItemLayerTilemap, m_Data) + sizeof(int);
+static constexpr int TILEMAP_TELE_SIZE = offsetof(CMapItemLayerTilemap, m_Tele) + sizeof(int);
+static constexpr int QUADS_DATA_SIZE = offsetof(CMapItemLayerQuads, m_Data) + sizeof(int);
+static constexpr int SOUNDS_DATA_SIZE = offsetof(CMapItemLayerSounds, m_Data) + sizeof(int);
+
+// The map format stores an envelope point as 6 ints (m_Time, m_Curvetype and 4 values).
+static constexpr int ENV_POINT_SIZE = 6 * static_cast<int>(sizeof(int));
+static_assert(sizeof(CEnvPoint) == ENV_POINT_SIZE, "the map format stores CEnvPoint as 6 ints");
+
+// Checks that an item is at least MinSize bytes long
+static bool CheckItemSize(IMap *pMap, int Index, int MinSize, const char *pWhat)
 {
-	return (a / gcd_long(a, b)) * b;
+	const int ItemSize = pMap->GetItemSize(Index);
+	if(ItemSize < MinSize)
+	{
+		log_error("MapConverter", "%s has an invalid item size: %d bytes (at least %d expected)", pWhat, ItemSize, MinSize);
+		return false;
+	}
+	return true;
+}
+
+// Returns the item at Index after checking its size. The index must have been validated against
+// the item array before, e.g. by GetItemRange().
+template<typename T>
+static T *GetCheckedItem(IMap *pMap, int Index, int MinSize, const char *pWhat)
+{
+	if(!CheckItemSize(pMap, Index, MinSize, pWhat))
+		return nullptr;
+
+	T *pItem = static_cast<T *>(pMap->GetItem(Index, nullptr, nullptr));
+	if(!pItem)
+		log_error("MapConverter", "failed to read %s", pWhat);
+	return pItem;
+}
+
+bool CMapConverter::CheckItemRange(int Start, int Num, const char *pWhat)
+{
+	const int NumItems = Map()->NumItems();
+	if(Start < 0 || Num < 0 || Start > NumItems || Num > NumItems - Start)
+	{
+		log_error("MapConverter", "invalid %s item range: start=%d num=%d (map has %d items)", pWhat, Start, Num, NumItems);
+		return false;
+	}
+	return true;
+}
+
+bool CMapConverter::GetItemRange(int Type, const char *pWhat, int *pStart, int *pNum)
+{
+	Map()->GetType(Type, pStart, pNum);
+	return CheckItemRange(*pStart, *pNum, pWhat);
+}
+
+bool CMapConverter::CheckDataSize(int DataIndex, int64_t RequiredSize, const char *pWhat)
+{
+	if(RequiredSize < 0 || RequiredSize > std::numeric_limits<int>::max())
+	{
+		log_error("MapConverter", "%s is too large: %lld bytes", pWhat, static_cast<long long>(RequiredSize));
+		return false;
+	}
+
+	const int DataSize = Map()->GetDataSize(DataIndex);
+	if(DataSize < 0 || static_cast<int64_t>(DataSize) < RequiredSize)
+	{
+		log_error("MapConverter", "%s is truncated: data index=%d has %d bytes, %lld required", pWhat, DataIndex, DataSize, static_cast<long long>(RequiredSize));
+		return false;
+	}
+	return true;
+}
+
+int CMapConverter::AddMapDataString(int DataIndex)
+{
+	if(DataIndex < 0)
+		return -1;
+
+	const int Size = Map()->GetDataSize(DataIndex);
+	if(Size <= 0)
+		return -1;
+
+	const char *pData = static_cast<const char *>(Map()->GetData(DataIndex));
+	if(pData == nullptr || pData[Size - 1] != '\0' || mem_has_null(pData, Size - 1) || !str_utf8_check(pData))
+		return -1;
+
+	return m_DataFile.AddDataString(pData);
+}
+
+bool CMapConverter::GetEnvPoints(CEnvPoint **ppPoints, int64_t *pSize)
+{
+	*ppPoints = nullptr;
+	*pSize = 0;
+
+	int Start, Num;
+	if(!GetItemRange(MAPITEMTYPE_ENVPOINTS, "env points", &Start, &Num))
+		return false;
+
+	if(Num <= 0)
+		return true;
+
+	const int Size = Map()->GetItemSize(Start);
+	if(Size <= 0)
+		return true;
+
+	*ppPoints = GetCheckedItem<CEnvPoint>(Map(), Start, 0, "env points");
+	if(!*ppPoints)
+		return false;
+
+	*pSize = Size;
+	return true;
+}
+
+bool CMapConverter::CheckEnvPointRange(const CMapItemEnvelope *pItem, int64_t EnvPointsSize, const char *pWhat)
+{
+	const int64_t RequiredSize = (static_cast<int64_t>(pItem->m_StartPoint) + pItem->m_NumPoints) * ENV_POINT_SIZE;
+	if(pItem->m_NumPoints < 0 || pItem->m_StartPoint < 0 || RequiredSize > EnvPointsSize)
+	{
+		log_error("MapConverter", "%s references envelope points outside of the map data: start=%d num=%d (%lld/%lld bytes)",
+			pWhat, pItem->m_StartPoint, pItem->m_NumPoints, static_cast<long long>(RequiredSize), static_cast<long long>(EnvPointsSize));
+		return false;
+	}
+	return true;
 }
 
 bool CMapConverter::Load()
@@ -260,32 +398,55 @@ bool CMapConverter::Load()
 	m_MenuPosition = vec2(0.0f, 0.0f);
 
 	// Find GameLayer
-	int LayersStart;
-	int LayersNum;
-	int GroupsStart;
-	int GroupsNum;
-	Map()->GetType(MAPITEMTYPE_GROUP, &GroupsStart, &GroupsNum);
-	Map()->GetType(MAPITEMTYPE_LAYER, &LayersStart, &LayersNum);
+	int LayersStart, LayersNum, GroupsStart, GroupsNum;
+	if(!GetItemRange(MAPITEMTYPE_GROUP, "groups", &GroupsStart, &GroupsNum) ||
+		!GetItemRange(MAPITEMTYPE_LAYER, "layers", &LayersStart, &LayersNum))
+		return false;
 
 	CMapItemLayerTilemap *pPhysicsLayer = nullptr;
 
 	// Find the gamelayer
 	for(int g = 0; g < GroupsNum; g++)
 	{
-		CMapItemGroup *pGroup = (CMapItemGroup *)Map()->GetItem(GroupsStart + g, nullptr, nullptr);
+		char aGroup[64];
+		str_format(aGroup, sizeof(aGroup), "group %d", g);
+
+		CMapItemGroup *pGroup = GetCheckedItem<CMapItemGroup>(Map(), GroupsStart + g, GROUP_LAYERS_SIZE, aGroup);
+		if(!pGroup)
+			return false;
+		if(pGroup->m_NumLayers < 0 || pGroup->m_StartLayer < 0 ||
+			static_cast<int64_t>(pGroup->m_StartLayer) + pGroup->m_NumLayers > LayersNum)
+		{
+			log_error("MapConverter", "%s references an invalid layer range: start=%d num=%d (map has %d layers)",
+				aGroup, pGroup->m_StartLayer, pGroup->m_NumLayers, LayersNum);
+			return false;
+		}
+
 		for(int l = 0; l < pGroup->m_NumLayers; l++)
 		{
-			CMapItemLayer *pLayer = (CMapItemLayer *)Map()->GetItem(LayersStart + pGroup->m_StartLayer + l, nullptr, nullptr);
+			const int LayerIndex = LayersStart + pGroup->m_StartLayer + l;
 
-			if(pLayer->m_Type == LAYERTYPE_TILES)
+			char aLayer[64];
+			str_format(aLayer, sizeof(aLayer), "layer %d of group %d", l, g);
+
+			CMapItemLayer *pLayer = GetCheckedItem<CMapItemLayer>(Map(), LayerIndex, sizeof(CMapItemLayer), aLayer);
+			if(!pLayer)
+				return false;
+
+			if(pLayer->m_Type != LAYERTYPE_TILES)
+				continue;
+
+			CMapItemLayerTilemap *pTileLayer = reinterpret_cast<CMapItemLayerTilemap *>(pLayer);
+			if(!CheckItemSize(Map(), LayerIndex, TILEMAP_FLAGS_SIZE, aLayer))
+				return false;
+
+			if(pTileLayer->m_Flags & TILESLAYERFLAG_GAME)
 			{
-				CMapItemLayerTilemap *pTileLayer = reinterpret_cast<CMapItemLayerTilemap *>(pLayer);
+				if(!CheckItemSize(Map(), LayerIndex, TILEMAP_DATA_SIZE, "the game layer"))
+					return false;
 
-				if(pTileLayer->m_Flags & TILESLAYERFLAG_GAME)
-				{
-					pPhysicsLayer = pTileLayer;
-					break;
-				}
+				pPhysicsLayer = pTileLayer;
+				break;
 			}
 		}
 		if(pPhysicsLayer)
@@ -294,18 +455,40 @@ bool CMapConverter::Load()
 
 	if(!pPhysicsLayer)
 	{
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "infclass", "no physics layer in loaded map");
+		log_error("MapConverter", "no physics layer in loaded map");
 		return false;
 	}
 
 	m_Width = pPhysicsLayer->m_Width;
 	m_Height = pPhysicsLayer->m_Height;
-	m_pPhysicsLayerTiles = (CTile *)m_pMap->GetData(pPhysicsLayer->m_Data);
+
+	if(m_Width <= 0 || m_Height <= 0)
+	{
+		log_error("MapConverter", "invalid game layer size: %dx%d", m_Width, m_Height);
+		return false;
+	}
+
+	const int64_t TileCount = static_cast<int64_t>(m_Width) * m_Height;
+	if(TileCount > static_cast<int64_t>(std::numeric_limits<int>::max()) / static_cast<int64_t>(sizeof(CTile)))
+	{
+		log_error("MapConverter", "game layer is too large: %dx%d", m_Width, m_Height);
+		return false;
+	}
+
+	if(!CheckDataSize(pPhysicsLayer->m_Data, TileCount * static_cast<int64_t>(sizeof(CTile)), "game layer tiles"))
+		return false;
+
+	m_pPhysicsLayerTiles = static_cast<CTile *>(m_pMap->GetData(pPhysicsLayer->m_Data));
+	if(!m_pPhysicsLayerTiles)
+	{
+		log_error("MapConverter", "failed to read the game layer tiles");
+		return false;
+	}
 
 	if(m_pTiles)
 		delete[] m_pTiles;
 
-	m_pTiles = new CTile[m_Width * m_Height];
+	m_pTiles = new CTile[static_cast<size_t>(TileCount)]();
 
 	for(int j = 0; j < m_Height; j++)
 	{
@@ -322,59 +505,96 @@ bool CMapConverter::Load()
 
 	// Get the animation cycle
 	CEnvPoint *pEnvPoints = nullptr;
-	{
-		int Start, Num;
-		Map()->GetType(MAPITEMTYPE_ENVPOINTS, &Start, &Num);
-		pEnvPoints = (CEnvPoint *)Map()->GetItem(Start, nullptr, nullptr);
-	}
+	int64_t EnvPointsSize = 0;
+	if(!GetEnvPoints(&pEnvPoints, &EnvPointsSize))
+		return false;
 
 	const int MenuItemSyncMagic = TIMESHIFT_MENUCLASS * 1000;
 	long long AnimationCircle = m_AnimationCycle;
 	long long TimeShiftUnit = 0;
+	bool TimeShiftError = false;
+
 	if(pEnvPoints)
 	{
 		static const int Quant = 100;
 		QuantizeAnimation(Quant);
+	}
 
+	// Scan the envelopes even without env points: maps without any envelope keep the default
+	// animation circle, which is what the menu time shift unit is derived from.
+	{
 		int Start, Num;
-		Map()->GetType(MAPITEMTYPE_ENVELOPE, &Start, &Num);
+		if(!GetItemRange(MAPITEMTYPE_ENVELOPE, "envelopes", &Start, &Num))
+			return false;
+
 		for(int i = 0; i < Num; i++)
 		{
-			CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, nullptr, nullptr);
-			if(pItem->m_NumPoints > 0)
+			char aEnvelope[64];
+			str_format(aEnvelope, sizeof(aEnvelope), "envelope %d", i);
+
+			CMapItemEnvelope *pItem = GetCheckedItem<CMapItemEnvelope>(Map(), Start + i, sizeof(CMapItemEnvelope_v1), aEnvelope);
+			if(!pItem)
+				return false;
+			if(!CheckEnvPointRange(pItem, EnvPointsSize, aEnvelope))
+				return false;
+
+			if(pItem->m_NumPoints > 0 && pEnvPoints)
 			{
-				int Duration = pEnvPoints[pItem->m_StartPoint + pItem->m_NumPoints - 1].m_Time - pEnvPoints[pItem->m_StartPoint].m_Time;
-				if(Duration)
+				// Read the ends as 64 bit: subtracting two malformed 'int' times may overflow.
+				const long long FirstTime = pEnvPoints[pItem->m_StartPoint].m_Time;
+				const long long LastTime = pEnvPoints[pItem->m_StartPoint + pItem->m_NumPoints - 1].m_Time;
+				const long long Duration = LastTime - FirstTime;
+				if(Duration < 0)
 				{
-					dbg_msg("MapConverter", "Duration found: %d", Duration);
-					AnimationCircle = lcm(AnimationCircle, Duration);
+					log_warn("MapConverter", "%s has unsorted envelope points (duration %lld ms), ignoring it",
+						aEnvelope, Duration);
+				}
+				else if(Duration > 0)
+				{
+					dbg_msg("MapConverter", "Duration found: %lld", Duration);
+
+					// lcm(a, b) = (a / gcd) * b. Compare to avoid overflowing.
+					const long long Gcd = gcd_long(AnimationCircle, Duration);
+					if(AnimationCircle / Gcd > std::numeric_limits<int>::max() / TIMESHIFT_MULTIPLIER / Duration)
+					{
+						log_warn("MapConverter", "%s: the animation cycle is too long for the class menu (%lld ms and %lld ms)",
+							aEnvelope, AnimationCircle, Duration);
+						TimeShiftError = true;
+						break;
+					}
+
+					AnimationCircle = (AnimationCircle / Gcd) * Duration;
 					dbg_msg("MapConverter", "New AnimationCycle: %lld", AnimationCircle);
 				}
 			}
 		}
+	}
 
-		dbg_msg("MapConverter", "Final AnimationCycle: %lld", AnimationCircle);
+	dbg_msg("MapConverter", "Final AnimationCycle: %lld", AnimationCircle);
+	if(TimeShiftUnit == 0)
+	{
 		if(AnimationCircle)
 			TimeShiftUnit = AnimationCircle * ((MenuItemSyncMagic / AnimationCircle) + 1);
 		else
 			TimeShiftUnit = MenuItemSyncMagic;
 	}
 
-	int Multiplier = 1 + TIMESHIFT_MENUCLASS + 3 * ((MASK_ALL + 1) * TIMESHIFT_MENUCLASS_MASK);
-	long long MaxUsedAnimationTime = Multiplier * TimeShiftUnit;
+	long long MaxUsedAnimationTime = TIMESHIFT_MULTIPLIER * TimeShiftUnit;
 	long long MaxAvailable = std::numeric_limits<int>::max();
 
-	if(MaxUsedAnimationTime > MaxAvailable)
+	if(!TimeShiftError)
 	{
-		char aBuf[128];
-		str_format(aBuf, sizeof(aBuf), "WARNING! The animation duration is off the limit: %lld/%lld", MaxUsedAnimationTime, MaxAvailable);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "MapConverter", aBuf);
+		if(MaxUsedAnimationTime > MaxAvailable)
+		{
+			log_warn("MapConverter", "The animation duration is off the limit: %lld/%lld", MaxUsedAnimationTime, MaxAvailable);
+			TimeShiftUnit = 0;
+		}
+		else
+		{
+			log_info("MapConverter", "The animation duration is within the limits: %lld/%lld", MaxUsedAnimationTime, MaxAvailable);
+		}
 	}
-	else
-	{
-		dbg_msg("MapConverter", "The animation duration is within the limits: %lld/%lld", MaxUsedAnimationTime, MaxAvailable);
-	}
-	m_TimeShiftUnit = TimeShiftUnit;
+	m_TimeShiftUnit = TimeShiftError ? 0 : static_cast<int>(TimeShiftUnit);
 
 	return true;
 }
@@ -485,7 +705,7 @@ void CMapConverter::AddImageQuad(const char *pName, int ImageId, int GridX, int 
 	Quad.m_aColors[0].a = Quad.m_aColors[1].a = Quad.m_aColors[2].a = Quad.m_aColors[3].a = Color.a * 255.0f;
 	aQuads.add(Quad);
 
-	CMapItemLayerQuads Item;
+	CMapItemLayerQuads Item{};
 	Item.m_Version = 2;
 	Item.m_Layer.m_Flags = 0;
 	Item.m_Layer.m_Type = LAYERTYPE_QUADS;
@@ -590,7 +810,7 @@ void CMapConverter::AddTeeLayer(const char *pName, int ImageId, vec2 Pos, float 
 		aQuads.add(Quad);
 	}
 
-	CMapItemLayerQuads Item;
+	CMapItemLayerQuads Item{};
 	Item.m_Version = Item.m_Layer.m_Version = 2;
 	Item.m_Layer.m_Flags = 0;
 	Item.m_Layer.m_Type = LAYERTYPE_QUADS;
@@ -616,20 +836,25 @@ void CMapConverter::QuantizeAnimation(int Quant)
 {
 	// Get the animation cycle
 	CEnvPoint *pEnvPoints = nullptr;
-	{
-		int Start, Num;
-		Map()->GetType(MAPITEMTYPE_ENVPOINTS, &Start, &Num);
-		pEnvPoints = (CEnvPoint *)Map()->GetItem(Start, nullptr, nullptr);
-	}
-
-	if(!pEnvPoints)
+	int64_t EnvPointsSize = 0;
+	if(!GetEnvPoints(&pEnvPoints, &EnvPointsSize) || !pEnvPoints)
 		return;
 
 	int Start, Num;
-	Map()->GetType(MAPITEMTYPE_ENVELOPE, &Start, &Num);
+	if(!GetItemRange(MAPITEMTYPE_ENVELOPE, "envelopes", &Start, &Num))
+		return;
+
 	for(int i = 0; i < Num; i++)
 	{
-		CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, nullptr, nullptr);
+		char aEnvelope[64];
+		str_format(aEnvelope, sizeof(aEnvelope), "envelope %d", i);
+
+		CMapItemEnvelope *pItem = GetCheckedItem<CMapItemEnvelope>(Map(), Start + i, sizeof(CMapItemEnvelope_v1), aEnvelope);
+		if(!pItem)
+			return;
+		if(!CheckEnvPointRange(pItem, EnvPointsSize, aEnvelope))
+			return;
+
 		if(pItem->m_NumPoints > 0)
 		{
 			// Quant the points:
@@ -654,53 +879,81 @@ void CMapConverter::QuantizeAnimation(int Quant)
 
 void CMapConverter::CopyVersion()
 {
-	CMapItemVersion *pItem = (CMapItemVersion *)Map()->FindItem(MAPITEMTYPE_VERSION, 0);
+	CMapItemVersion *pItem = static_cast<CMapItemVersion *>(Map()->FindItem(MAPITEMTYPE_VERSION, 0));
+	if(!pItem)
+	{
+		CMapItemVersion Version{};
+		Version.m_Version = 1;
+		m_DataFile.AddItem(MAPITEMTYPE_VERSION, 0, sizeof(Version), &Version);
+		return;
+	}
+
 	m_DataFile.AddItem(MAPITEMTYPE_VERSION, 0, sizeof(CMapItemVersion), pItem);
 }
 
 void CMapConverter::CopyMapInfo()
 {
-	CMapItemInfo *pSourceItem = (CMapItemInfo *)Map()->FindItem(MAPITEMTYPE_INFO, 0);
+	CMapItemInfo *pSourceItem = static_cast<CMapItemInfo *>(Map()->FindItem(MAPITEMTYPE_INFO, 0));
+	if(!pSourceItem)
+	{
+		// The source map has no info item, keep the generated map consistent with it.
+		return;
+	}
 
-	CMapItemInfo Item;
+	CMapItemInfo Item{};
 	Item.m_Version = 1;
-	const char *pData{};
-	pData = (const char *)Map()->GetData(pSourceItem->m_Author);
-	Item.m_Author = m_DataFile.AddDataString(pData ? pData : "");
-
-	pData = (const char *)Map()->GetData(pSourceItem->m_Version);
-	Item.m_MapVersion = m_DataFile.AddDataString(pData ? pData : "");
-
-	pData = (const char *)Map()->GetData(pSourceItem->m_Credits);
-	Item.m_Credits = m_DataFile.AddDataString(pData ? pData : "");
-
-	pData = (const char *)Map()->GetData(pSourceItem->m_License);
-	Item.m_License = m_DataFile.AddDataString(pData ? pData : "");
+	Item.m_Author = AddMapDataString(pSourceItem->m_Author);
+	Item.m_MapVersion = AddMapDataString(pSourceItem->m_MapVersion);
+	Item.m_Credits = AddMapDataString(pSourceItem->m_Credits);
+	Item.m_License = AddMapDataString(pSourceItem->m_License);
 
 	m_DataFile.AddItem(MAPITEMTYPE_INFO, 0, sizeof(Item), &Item);
 }
 
-void CMapConverter::CopyImages()
+bool CMapConverter::CopyImages()
 {
 	int Start, Num;
-	Map()->GetType(MAPITEMTYPE_IMAGE, &Start, &Num);
+	if(!GetItemRange(MAPITEMTYPE_IMAGE, "images", &Start, &Num))
+		return false;
+
 	for(int i = 0; i < Num; i++)
 	{
-		CMapItemImage *pItem = (CMapItemImage *)Map()->GetItem(Start + i, nullptr, nullptr);
-		char *pName = (char *)Map()->GetData(pItem->m_ImageName);
+		char aImage[64];
+		str_format(aImage, sizeof(aImage), "image %d", i);
 
-		CMapItemImage ImageItem;
+		CMapItemImage *pItem = GetCheckedItem<CMapItemImage>(Map(), Start + i, sizeof(CMapItemImage), aImage);
+		if(!pItem)
+			return false;
+
+		CMapItemImage ImageItem{};
 		ImageItem.m_Version = 1;
 		ImageItem.m_Width = pItem->m_Width;
 		ImageItem.m_Height = pItem->m_Height;
 		ImageItem.m_External = pItem->m_External;
-		ImageItem.m_ImageName = m_DataFile.AddData(str_length(pName) + 1, pName);
+		ImageItem.m_ImageName = AddMapDataString(pItem->m_ImageName);
 		if(pItem->m_External)
+		{
 			ImageItem.m_ImageData = -1;
+		}
 		else
 		{
-			char *pData = (char *)Map()->GetData(pItem->m_ImageData);
-			ImageItem.m_ImageData = m_DataFile.AddData(ImageItem.m_Width * ImageItem.m_Height * 4, pData);
+			if(ImageItem.m_Width <= 0 || ImageItem.m_Height <= 0)
+			{
+				log_error("MapConverter", "%s has an invalid size: %dx%d", aImage, ImageItem.m_Width, ImageItem.m_Height);
+				return false;
+			}
+
+			const int64_t ImageDataSize = static_cast<int64_t>(ImageItem.m_Width) * ImageItem.m_Height * 4;
+			if(!CheckDataSize(pItem->m_ImageData, ImageDataSize, "image data"))
+				return false;
+
+			void *pData = Map()->GetData(pItem->m_ImageData);
+			if(!pData)
+			{
+				log_error("MapConverter", "failed to read the data of %s", aImage);
+				return false;
+			}
+			ImageItem.m_ImageData = m_DataFile.AddData(static_cast<size_t>(ImageDataSize), pData);
 		}
 		m_DataFile.AddItem(MAPITEMTYPE_IMAGE, m_NumImages++, sizeof(ImageItem), &ImageItem);
 
@@ -708,26 +961,49 @@ void CMapConverter::CopyImages()
 		Map()->UnloadData(pItem->m_ImageData);
 		Map()->UnloadData(pItem->m_ImageName);
 	}
+	return true;
 }
 
-void CMapConverter::CopySounds()
+bool CMapConverter::CopySounds()
 {
 	int Start, Num;
-	Map()->GetType(MAPITEMTYPE_SOUND, &Start, &Num);
+	if(!GetItemRange(MAPITEMTYPE_SOUND, "sounds", &Start, &Num))
+		return false;
+
 	for(int i = 0; i < Num; i++)
 	{
-		CMapItemSound *pItem = (CMapItemSound *)Map()->GetItem(Start + i, nullptr, nullptr);
-		char *pName = (char *)Map()->GetData(pItem->m_SoundName);
+		char aSound[64];
+		str_format(aSound, sizeof(aSound), "sound %d", i);
 
-		CMapItemSound SoundItem;
+		CMapItemSound *pItem = GetCheckedItem<CMapItemSound>(Map(), Start + i, sizeof(CMapItemSound), aSound);
+		if(!pItem)
+			return false;
+
+		CMapItemSound SoundItem{};
 		SoundItem.m_Version = 1;
-		SoundItem.m_SoundName = m_DataFile.AddData(str_length(pName) + 1, pName);
+		SoundItem.m_SoundName = AddMapDataString(pItem->m_SoundName);
 		SoundItem.m_External = pItem->m_External;
 		if(pItem->m_External)
+		{
 			SoundItem.m_SoundData = -1;
+		}
 		else
 		{
-			char *pData = (char *)Map()->GetData(pItem->m_SoundData);
+			if(pItem->m_SoundDataSize < 0)
+			{
+				log_error("MapConverter", "%s has an invalid size: %d", aSound, pItem->m_SoundDataSize);
+				return false;
+			}
+
+			if(!CheckDataSize(pItem->m_SoundData, pItem->m_SoundDataSize, "sound data"))
+				return false;
+
+			void *pData = Map()->GetData(pItem->m_SoundData);
+			if(!pData)
+			{
+				log_error("MapConverter", "failed to read the data of %s", aSound);
+				return false;
+			}
 			SoundItem.m_SoundData = m_DataFile.AddData(pItem->m_SoundDataSize, pData);
 			SoundItem.m_SoundDataSize = pItem->m_SoundDataSize;
 		}
@@ -738,42 +1014,52 @@ void CMapConverter::CopySounds()
 		Map()->UnloadData(pItem->m_SoundData);
 		Map()->UnloadData(pItem->m_SoundName);
 	}
+	return true;
 }
 
-void CMapConverter::CopyAnimations()
+bool CMapConverter::CopyAnimations()
 {
-	int NumEnvPoints = 0;
 	CEnvPoint *pEnvPoints = nullptr;
+	int64_t EnvPointsSize = 0;
+	if(!GetEnvPoints(&pEnvPoints, &EnvPointsSize))
+		return false;
+
+	int Start, Num;
+	if(!GetItemRange(MAPITEMTYPE_ENVELOPE, "envelopes", &Start, &Num))
+		return false;
+
+	int NumUsedEnvPoints = 0;
+	for(int i = 0; i < Num; i++)
 	{
-		int Start, Num;
-		Map()->GetType(MAPITEMTYPE_ENVPOINTS, &Start, &Num);
-		pEnvPoints = (CEnvPoint *)Map()->GetItem(Start, nullptr, nullptr);
+		char aEnvelope[64];
+		str_format(aEnvelope, sizeof(aEnvelope), "envelope %d", i);
+
+		CMapItemEnvelope *pItem = GetCheckedItem<CMapItemEnvelope>(Map(), Start + i, sizeof(CMapItemEnvelope_v1), aEnvelope);
+		if(!pItem)
+			return false;
+		if(!CheckEnvPointRange(pItem, EnvPointsSize, aEnvelope))
+			return false;
+
+		CMapItemEnvelope Item;
+		CopyMapItemPrefix(&Item, pItem, Map()->GetItemSize(Start + i));
+		m_DataFile.AddItem(MAPITEMTYPE_ENVELOPE, m_NumEnvs++, sizeof(Item), &Item);
+
+		if(pItem->m_NumPoints > 0)
+			NumUsedEnvPoints = maximum(NumUsedEnvPoints, pItem->m_StartPoint + pItem->m_NumPoints);
 	}
 
-	if(pEnvPoints)
+	// NumUsedEnvPoints > 0 implies that the envelopes were checked against a non-empty env
+	// points item above.
+	for(int i = 0; i < NumUsedEnvPoints; i++)
 	{
-		int Start, Num;
-		Map()->GetType(MAPITEMTYPE_ENVELOPE, &Start, &Num);
-		for(int i = 0; i < Num; i++)
-		{
-			CMapItemEnvelope *pItem = (CMapItemEnvelope *)Map()->GetItem(Start + i, nullptr, nullptr);
-			CMapItemEnvelope Item = *pItem;
-			m_DataFile.AddItem(MAPITEMTYPE_ENVELOPE, m_NumEnvs++, sizeof(Item), &Item);
-
-			if(pItem->m_NumPoints > 0)
-				NumEnvPoints = maximum(NumEnvPoints, pItem->m_StartPoint + pItem->m_NumPoints);
-		}
-
-		for(int i = 0; i < NumEnvPoints; i++)
-		{
-			m_lEnvPoints.add(pEnvPoints[i]);
-		}
+		m_lEnvPoints.add(pEnvPoints[i]);
 	}
+	return true;
 }
 
-void CMapConverter::CopyGameLayer()
+bool CMapConverter::CopyGameLayer()
 {
-	CMapItemLayerTilemap Item;
+	CMapItemLayerTilemap Item{};
 	Item.m_Version = Item.m_Layer.m_Version = 3;
 	Item.m_Layer.m_Flags = 0;
 	Item.m_Layer.m_Type = LAYERTYPE_TILES;
@@ -790,6 +1076,11 @@ void CMapConverter::CopyGameLayer()
 
 	CLayers Layers;
 	Layers.Init(Map());
+	if(!Layers.GameLayer())
+	{
+		log_error("MapConverter", "the source map has no game layer");
+		return false;
+	}
 
 	CCollision Collision;
 	Collision.Init(&Layers);
@@ -806,28 +1097,45 @@ void CMapConverter::CopyGameLayer()
 		}
 	}
 
-	Item.m_Data = m_DataFile.AddData(m_Width * m_Height * sizeof(CTile), m_pTiles);
+	Item.m_Data = m_DataFile.AddData(static_cast<size_t>(m_Width) * m_Height * sizeof(CTile), m_pTiles);
 	StrToInts(Item.m_aName, sizeof(Item.m_aName) / sizeof(int), "Game");
 	m_DataFile.AddItem(MAPITEMTYPE_LAYER, m_NumLayers++, sizeof(Item), &Item);
+	return true;
 }
 
-void CMapConverter::CopyLayers()
+bool CMapConverter::CopyLayers()
 {
-	int LayersStart, LayersNum;
-	Map()->GetType(MAPITEMTYPE_LAYER, &LayersStart, &LayersNum);
-
-	int Start, Num;
-	Map()->GetType(MAPITEMTYPE_GROUP, &Start, &Num);
+	int LayersStart, LayersNum, Start, Num;
+	if(!GetItemRange(MAPITEMTYPE_LAYER, "layers", &LayersStart, &LayersNum) ||
+		!GetItemRange(MAPITEMTYPE_GROUP, "groups", &Start, &Num))
+		return false;
 
 	// Groups
 	for(int g = 0; g < Num; g++)
 	{
-		CMapItemGroup *pGItem = (CMapItemGroup *)Map()->GetItem(Start + g, nullptr, nullptr);
+		char aGroup[64];
+		str_format(aGroup, sizeof(aGroup), "group %d", g);
+
+		CMapItemGroup *pGItem = GetCheckedItem<CMapItemGroup>(Map(), Start + g, GROUP_LAYERS_SIZE, aGroup);
+		if(!pGItem)
+			return false;
 
 		if(pGItem->m_Version != CMapItemGroup::CURRENT_VERSION)
-			continue;
+		{
+			log_error("MapConverter", "%s has an unsupported version %d (expected %d)", aGroup, pGItem->m_Version, CMapItemGroup::CURRENT_VERSION);
+			return false;
+		}
 
-		CMapItemGroup GroupItem = *pGItem;
+		if(pGItem->m_NumLayers < 0 || pGItem->m_StartLayer < 0 ||
+			static_cast<int64_t>(pGItem->m_StartLayer) + pGItem->m_NumLayers > LayersNum)
+		{
+			log_error("MapConverter", "%s references an invalid layer range: start=%d num=%d (map has %d layers)",
+				aGroup, pGItem->m_StartLayer, pGItem->m_NumLayers, LayersNum);
+			return false;
+		}
+
+		CMapItemGroup GroupItem;
+		CopyMapItemPrefix(&GroupItem, pGItem, Map()->GetItemSize(Start + g));
 		GroupItem.m_StartLayer = m_NumLayers;
 
 		int GroupLayers = 0;
@@ -835,31 +1143,71 @@ void CMapConverter::CopyLayers()
 		// Layers
 		for(int l = 0; l < pGItem->m_NumLayers; l++)
 		{
-			const CMapItemLayer *pLayerItem = (const CMapItemLayer *)Map()->GetItem(LayersStart + pGItem->m_StartLayer + l, nullptr, nullptr);
+			const int LayerIndex = LayersStart + pGItem->m_StartLayer + l;
+
+			char aLayer[64];
+			str_format(aLayer, sizeof(aLayer), "layer %d of group %d", l, g);
+
+			const CMapItemLayer *pLayerItem = GetCheckedItem<CMapItemLayer>(Map(), LayerIndex, sizeof(CMapItemLayer), aLayer);
 			if(!pLayerItem)
-				continue;
+				return false;
+
+			const int LayerItemSize = Map()->GetItemSize(LayerIndex);
 
 			if(pLayerItem->m_Type == LAYERTYPE_TILES)
 			{
-				const CMapItemLayerTilemap *pTilemapItem = (const CMapItemLayerTilemap *)pLayerItem;
+				const CMapItemLayerTilemap *pTilemapItem = reinterpret_cast<const CMapItemLayerTilemap *>(pLayerItem);
+
+				// The fields used below live in the common part of every tilemap item version.
+				if(!CheckItemSize(Map(), LayerIndex, TILEMAP_DATA_SIZE, aLayer))
+					return false;
 
 				if(pTilemapItem->m_Flags & TILESLAYERFLAG_GAME)
 				{
-					CopyGameLayer();
+					if(!CopyGameLayer())
+						return false;
 					GroupLayers++;
 				}
 				else
 				{
+					if(pTilemapItem->m_Width <= 0 || pTilemapItem->m_Height <= 0)
+					{
+						log_error("MapConverter", "%s has an invalid size: %dx%d", aLayer, pTilemapItem->m_Width, pTilemapItem->m_Height);
+						return false;
+					}
+
+					const int64_t TilesSize = static_cast<int64_t>(pTilemapItem->m_Width) * pTilemapItem->m_Height * static_cast<int64_t>(sizeof(CTile));
+					if(!CheckDataSize(pTilemapItem->m_Data, TilesSize, "layer tiles"))
+						return false;
+
 					void *pData = Map()->GetData(pTilemapItem->m_Data);
+					if(!pData)
+					{
+						log_error("MapConverter", "failed to read the tiles of %s", aLayer);
+						return false;
+					}
 
 					CMapItemLayerTilemap LayerItem;
-					LayerItem = *pTilemapItem;
+					CopyMapItemPrefix(&LayerItem, pTilemapItem, LayerItemSize);
 
-					LayerItem.m_Data = m_DataFile.AddData(LayerItem.m_Width * LayerItem.m_Height * sizeof(CTile), pData);
+					LayerItem.m_Data = m_DataFile.AddData(static_cast<size_t>(TilesSize), pData);
 					if(pTilemapItem->m_Flags & TILESLAYERFLAG_TELE)
 					{
+						// Older tilemap item versions have no tele data field.
+						if(!CheckItemSize(Map(), LayerIndex, TILEMAP_TELE_SIZE, aLayer))
+							return false;
+
+						const int64_t TeleTilesSize = static_cast<int64_t>(pTilemapItem->m_Width) * pTilemapItem->m_Height * static_cast<int64_t>(sizeof(CTeleTile));
+						if(!CheckDataSize(pTilemapItem->m_Tele, TeleTilesSize, "layer tele tiles"))
+							return false;
+
 						pData = Map()->GetData(pTilemapItem->m_Tele);
-						LayerItem.m_Tele = m_DataFile.AddData(LayerItem.m_Width * LayerItem.m_Height * sizeof(CTeleTile), pData);
+						if(!pData)
+						{
+							log_error("MapConverter", "failed to read the tele tiles of %s", aLayer);
+							return false;
+						}
+						LayerItem.m_Tele = m_DataFile.AddData(static_cast<size_t>(TeleTilesSize), pData);
 					}
 
 					m_DataFile.AddItem(MAPITEMTYPE_LAYER, m_NumLayers++, sizeof(LayerItem), &LayerItem);
@@ -871,14 +1219,31 @@ void CMapConverter::CopyLayers()
 			}
 			else if(pLayerItem->m_Type == LAYERTYPE_QUADS)
 			{
-				const CMapItemLayerQuads *pQuadsItem = (const CMapItemLayerQuads *)pLayerItem;
+				const CMapItemLayerQuads *pQuadsItem = reinterpret_cast<const CMapItemLayerQuads *>(pLayerItem);
+				if(!CheckItemSize(Map(), LayerIndex, QUADS_DATA_SIZE, aLayer))
+					return false;
 
 				CMapItemLayerQuads LayerItem;
-				LayerItem = *pQuadsItem;
+				CopyMapItemPrefix(&LayerItem, pQuadsItem, LayerItemSize);
 				if(LayerItem.m_NumQuads != 0)
 				{
+					if(LayerItem.m_NumQuads < 0)
+					{
+						log_error("MapConverter", "%s has an invalid number of quads: %d", aLayer, LayerItem.m_NumQuads);
+						return false;
+					}
+
+					const int64_t QuadsSize = static_cast<int64_t>(LayerItem.m_NumQuads) * static_cast<int64_t>(sizeof(CQuad));
+					if(!CheckDataSize(pQuadsItem->m_Data, QuadsSize, "layer quads"))
+						return false;
+
 					void *pData = Map()->GetData(pQuadsItem->m_Data);
-					LayerItem.m_Data = m_DataFile.AddData(LayerItem.m_NumQuads * sizeof(CQuad), pData);
+					if(!pData)
+					{
+						log_error("MapConverter", "failed to read the quads of %s", aLayer);
+						return false;
+					}
+					LayerItem.m_Data = m_DataFile.AddData(static_cast<size_t>(QuadsSize), pData);
 				}
 				else
 				{
@@ -895,13 +1260,30 @@ void CMapConverter::CopyLayers()
 			}
 			else if(pLayerItem->m_Type == LAYERTYPE_SOUNDS)
 			{
-				const CMapItemLayerSounds *pSoundsItem = (const CMapItemLayerSounds *)pLayerItem;
+				const CMapItemLayerSounds *pSoundsItem = reinterpret_cast<const CMapItemLayerSounds *>(pLayerItem);
+				if(!CheckItemSize(Map(), LayerIndex, SOUNDS_DATA_SIZE, aLayer))
+					return false;
+
+				if(pSoundsItem->m_NumSources < 0)
+				{
+					log_error("MapConverter", "%s has an invalid number of sound sources: %d", aLayer, pSoundsItem->m_NumSources);
+					return false;
+				}
+
+				const int64_t SourcesSize = static_cast<int64_t>(pSoundsItem->m_NumSources) * static_cast<int64_t>(sizeof(CSoundSource));
+				if(!CheckDataSize(pSoundsItem->m_Data, SourcesSize, "layer sound sources"))
+					return false;
 
 				void *pData = Map()->GetData(pSoundsItem->m_Data);
+				if(!pData)
+				{
+					log_error("MapConverter", "failed to read the sound sources of %s", aLayer);
+					return false;
+				}
 
 				CMapItemLayerSounds LayerItem;
-				LayerItem = *pSoundsItem;
-				LayerItem.m_Data = m_DataFile.AddData(LayerItem.m_NumSources * sizeof(CSoundSource), pData);
+				CopyMapItemPrefix(&LayerItem, pSoundsItem, LayerItemSize);
+				LayerItem.m_Data = m_DataFile.AddData(static_cast<size_t>(SourcesSize), pData);
 
 				m_DataFile.AddItem(MAPITEMTYPE_LAYER, m_NumLayers++, sizeof(LayerItem), &LayerItem);
 
@@ -915,15 +1297,16 @@ void CMapConverter::CopyLayers()
 
 		m_DataFile.AddItem(MAPITEMTYPE_GROUP, m_NumGroups++, sizeof(GroupItem), &GroupItem);
 	}
+	return true;
 }
 
 int CMapConverter::AddExternalImage(const char *pImageName, int Width, int Height)
 {
-	CMapItemImage Item;
+	CMapItemImage Item{};
 	Item.m_Version = 1;
 	Item.m_External = 1;
 	Item.m_ImageData = -1;
-	Item.m_ImageName = m_DataFile.AddData(str_length((char *)pImageName) + 1, (char *)pImageName);
+	Item.m_ImageName = m_DataFile.AddData(str_length(pImageName) + 1, pImageName);
 	Item.m_Width = Width;
 	Item.m_Height = Height;
 	m_DataFile.AddItem(MAPITEMTYPE_IMAGE, m_NumImages++, sizeof(Item), &Item);
@@ -933,8 +1316,8 @@ int CMapConverter::AddExternalImage(const char *pImageName, int Width, int Heigh
 
 int CMapConverter::AddEmbeddedImage(const char *pImageName, int Width, int Height, bool GrayScale)
 {
-	CImageInfo img;
-	CImageInfo *pImg = &img;
+	CImageInfo Img;
+	CImageInfo *pImg = &Img;
 
 	char aBuf[256];
 	str_format(aBuf, sizeof(aBuf), "mapres/%s.png", pImageName);
@@ -947,41 +1330,50 @@ int CMapConverter::AddEmbeddedImage(const char *pImageName, int Width, int Heigh
 		return -1;
 	}
 
-	if(GrayScale)
+	if(pImg->m_Width <= 0 || pImg->m_Height <= 0 ||
+		static_cast<int64_t>(pImg->m_Width) * pImg->m_Height * 4 > static_cast<int64_t>(std::numeric_limits<int>::max()))
 	{
-		MakeGrayScale(pImg);
+		dbg_msg("MapConverter", "image '%s' has an invalid or too large size: %dx%d", pImageName, pImg->m_Width, pImg->m_Height);
+		FreePNG(pImg);
+		return -1;
 	}
 
-	CMapItemImage Item;
-	Item.m_Version = 1;
-
-	Item.m_External = 0;
-	Item.m_Width = Width;
-	Item.m_Height = Height;
-	Item.m_ImageName = m_DataFile.AddData(str_length((char *)pImageName) + 1, (char *)pImageName);
-
-	Item.m_Width = pImg->m_Width;
-	Item.m_Height = pImg->m_Height;
-
+	// Normalize the pixel format to RGBA: the map format and MakeGrayScale() both expect 4 bytes per pixel.
 	if(pImg->m_Format == CImageInfo::FORMAT_RGB)
 	{
-		// Convert to RGBA
-		unsigned char *pDataRGBA = (unsigned char *)malloc((size_t)Item.m_Width * Item.m_Height * 4);
-		unsigned char *pDataRGB = (unsigned char *)pImg->m_pData;
-		for(int i = 0; i < Item.m_Width * Item.m_Height; i++)
+		unsigned char *pDataRGBA = (unsigned char *)malloc(static_cast<size_t>(pImg->m_Width) * pImg->m_Height * 4);
+		if(!pDataRGBA)
+		{
+			FreePNG(pImg);
+			return -1;
+		}
+
+		const unsigned char *pDataRGB = static_cast<const unsigned char *>(pImg->m_pData);
+		for(int i = 0; i < pImg->m_Width * pImg->m_Height; i++)
 		{
 			pDataRGBA[i * 4] = pDataRGB[i * 3];
 			pDataRGBA[i * 4 + 1] = pDataRGB[i * 3 + 1];
 			pDataRGBA[i * 4 + 2] = pDataRGB[i * 3 + 2];
 			pDataRGBA[i * 4 + 3] = 255;
 		}
-		Item.m_ImageData = m_DataFile.AddData(Item.m_Width * Item.m_Height * 4, pDataRGBA);
-		free(pDataRGBA);
+
+		free(pImg->m_pData);
+		pImg->m_pData = pDataRGBA;
+		pImg->m_Format = CImageInfo::FORMAT_RGBA;
 	}
-	else
+
+	if(GrayScale)
 	{
-		Item.m_ImageData = m_DataFile.AddData(Item.m_Width * Item.m_Height * 4, pImg->m_pData);
+		MakeGrayScale(pImg);
 	}
+
+	CMapItemImage Item{};
+	Item.m_Version = 1;
+	Item.m_External = 0;
+	Item.m_Width = pImg->m_Width;
+	Item.m_Height = pImg->m_Height;
+	Item.m_ImageName = m_DataFile.AddData(str_length(pImageName) + 1, pImageName);
+	Item.m_ImageData = m_DataFile.AddData(static_cast<size_t>(Item.m_Width) * Item.m_Height * 4, pImg->m_pData);
 	m_DataFile.AddItem(MAPITEMTYPE_IMAGE, m_NumImages++, sizeof(Item), &Item);
 
 	FreePNG(pImg);
@@ -991,7 +1383,7 @@ int CMapConverter::AddEmbeddedImage(const char *pImageName, int Width, int Heigh
 
 int CMapConverter::Finalize()
 {
-	int ClassImageId[NUM_MENUCLASS];
+	int ClassImageId[NUM_MENUCLASS] = {};
 
 	int DDNetVersion = 14000;
 	int InfClassVersion = 0;
@@ -1017,6 +1409,12 @@ int CMapConverter::Finalize()
 		}
 
 		EventsDirector::SetupSkin(SkinContext, &ClassTeeInfo, DDNetVersion, InfClassVersion);
+
+		if(!ClassTeeInfo.pSkinName)
+		{
+			dbg_msg("MapConverter", "no skin name for menu class %d, falling back to 'default'", ClassIndex);
+			ClassTeeInfo.pSkinName = "default";
+		}
 
 		char SkinPath[96];
 		str_format(SkinPath, sizeof(SkinPath), "../skins/%s", ClassTeeInfo.pSkinName);
@@ -1046,12 +1444,19 @@ int CMapConverter::Finalize()
 	const float MenuRadius = 196.0f;
 	const float MenuAngleStart = -90.0;
 
+	// Menu envelope times are stored as 32 bit milliseconds. The multiplication with the time
+	// shift unit can exceed that range, so it is computed in 64 bit and truncated explicitly to
+	// keep the result well defined (the historical behavior is a truncation to 'int').
+	const auto MenuTime = [this](long long Multiplier) {
+		return static_cast<int>(static_cast<uint32_t>(Multiplier * static_cast<long long>(m_TimeShiftUnit)));
+	};
+
 	{
 		const float MenuAngleStep = 360.0f / static_cast<float>(NUM_MENUCLASS);
 
 		// Menu Group
 		{
-			CMapItemGroup Item;
+			CMapItemGroup Item{};
 			Item.m_Version = CMapItemGroup::CURRENT_VERSION;
 			Item.m_ParallaxX = 0;
 			Item.m_ParallaxY = 0;
@@ -1143,7 +1548,7 @@ int CMapConverter::Finalize()
 						}
 						{
 							CEnvPoint Point;
-							Point.m_Time = TIMESHIFT_MENUCLASS * m_TimeShiftUnit;
+							Point.m_Time = MenuTime(TIMESHIFT_MENUCLASS);
 							Point.m_Curvetype = 0;
 							Point.m_aValues[0] = NormalValues[0];
 							Point.m_aValues[1] = NormalValues[1];
@@ -1160,7 +1565,7 @@ int CMapConverter::Finalize()
 							{
 								{
 									CEnvPoint Point;
-									Point.m_Time = (TIMESHIFT_MENUCLASS + 3 * ((i + 1) + j * TIMESHIFT_MENUCLASS_MASK)) * m_TimeShiftUnit;
+									Point.m_Time = MenuTime(TIMESHIFT_MENUCLASS + 3 * ((i + 1) + j * TIMESHIFT_MENUCLASS_MASK));
 									Point.m_Curvetype = 0;
 									Point.m_aValues[0] = HighlightValues[0];
 									Point.m_aValues[1] = HighlightValues[1];
@@ -1171,7 +1576,7 @@ int CMapConverter::Finalize()
 								}
 								{
 									CEnvPoint Point;
-									Point.m_Time = (TIMESHIFT_MENUCLASS + 3 * ((i + 2) + j * TIMESHIFT_MENUCLASS_MASK)) * m_TimeShiftUnit;
+									Point.m_Time = MenuTime(TIMESHIFT_MENUCLASS + 3 * ((i + 2) + j * TIMESHIFT_MENUCLASS_MASK));
 									Point.m_Curvetype = 0;
 									Point.m_aValues[0] = NormalValues[0];
 									Point.m_aValues[1] = NormalValues[1];
@@ -1185,7 +1590,7 @@ int CMapConverter::Finalize()
 							{
 								{
 									CEnvPoint Point;
-									Point.m_Time = (TIMESHIFT_MENUCLASS + 3 * (j * TIMESHIFT_MENUCLASS_MASK)) * m_TimeShiftUnit;
+									Point.m_Time = MenuTime(TIMESHIFT_MENUCLASS + 3 * (j * TIMESHIFT_MENUCLASS_MASK));
 									Point.m_Curvetype = 0;
 									Point.m_aValues[0] = HiddenValues[0];
 									Point.m_aValues[1] = HiddenValues[1];
@@ -1196,7 +1601,7 @@ int CMapConverter::Finalize()
 								}
 								{
 									CEnvPoint Point;
-									Point.m_Time = (TIMESHIFT_MENUCLASS + 3 * ((j + 1) * TIMESHIFT_MENUCLASS_MASK)) * m_TimeShiftUnit;
+									Point.m_Time = MenuTime(TIMESHIFT_MENUCLASS + 3 * ((j + 1) * TIMESHIFT_MENUCLASS_MASK));
 									Point.m_Curvetype = 0;
 									Point.m_aValues[0] = NormalValues[0];
 									Point.m_aValues[1] = NormalValues[1];
@@ -1209,7 +1614,7 @@ int CMapConverter::Finalize()
 						}
 						{
 							CEnvPoint Point;
-							Point.m_Time = (TIMESHIFT_MENUCLASS + 3 * ((MASK_ALL + 1) * TIMESHIFT_MENUCLASS_MASK)) * m_TimeShiftUnit;
+							Point.m_Time = MenuTime(TIMESHIFT_MULTIPLIER - 1);
 							Point.m_Curvetype = 0;
 							Point.m_aValues[0] = NormalValues[0];
 							Point.m_aValues[1] = NormalValues[1];
@@ -1220,7 +1625,7 @@ int CMapConverter::Finalize()
 						}
 						{
 							CEnvPoint Point;
-							Point.m_Time = (1 + TIMESHIFT_MENUCLASS + 3 * ((MASK_ALL + 1) * TIMESHIFT_MENUCLASS_MASK)) * m_TimeShiftUnit;
+							Point.m_Time = MenuTime(TIMESHIFT_MULTIPLIER);
 							Point.m_Curvetype = 0;
 							Point.m_aValues[0] = HiddenValues[0];
 							Point.m_aValues[1] = HiddenValues[1];
@@ -1230,7 +1635,7 @@ int CMapConverter::Finalize()
 							NbPoints++;
 						}
 
-						CMapItemEnvelope Item;
+						CMapItemEnvelope Item{};
 						Item.m_Version = CMapItemEnvelope::CURRENT_VERSION;
 						Item.m_Channels = 4;
 						Item.m_StartPoint = StartPoint;
@@ -1268,8 +1673,9 @@ int CMapConverter::Finalize()
 
 				if(pass == 0)
 				{
-					CMapItemLayerQuads Item;
+					CMapItemLayerQuads Item{};
 					Item.m_Version = 2;
+					Item.m_Layer.m_Version = 2;
 					Item.m_Layer.m_Flags = 0;
 					Item.m_Layer.m_Type = LAYERTYPE_QUADS;
 					Item.m_Image = -1;
@@ -1288,11 +1694,14 @@ int CMapConverter::Finalize()
 
 bool CMapConverter::CreateMap(const char *pFilename)
 {
-	char aBuf[512];
-	if(!m_DataFile.Open(Storage(), pFilename))
+	// Write to a temporary file first and rename it into place afterwards, so that a failed or
+	// interrupted conversion can neither leave a partial map behind nor destroy an existing one.
+	char aTmpFilename[IO_MAX_PATH_LENGTH];
+	IStorage::FormatTmpPath(aTmpFilename, sizeof(aTmpFilename), pFilename);
+
+	if(!m_DataFile.Open(Storage(), aTmpFilename))
 	{
-		str_format(aBuf, sizeof(aBuf), "failed to open file '%s'...", pFilename);
-		Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "infclass", aBuf);
+		log_error("MapConverter", "failed to open file '%s'", aTmpFilename);
 		return false;
 	}
 
@@ -1300,20 +1709,34 @@ bool CMapConverter::CreateMap(const char *pFilename)
 
 	CopyVersion();
 	CopyMapInfo();
-	CopySounds();
-	CopyImages();
-	CopyAnimations();
 
-	CopyLayers();
+	bool Success = CopySounds() && CopyImages() && CopyAnimations() && CopyLayers();
 
-	if(Finalize() < 0)
+	if(Success && Finalize() < 0)
+		Success = false;
+
+	if(Success)
 	{
+		m_DataFile.AddItem(MAPITEMTYPE_ENVPOINTS, 0, m_lEnvPoints.size() * sizeof(CEnvPoint), m_lEnvPoints.base_ptr());
+		Success = m_DataFile.Finish();
+	}
+
+	if(!Success)
+	{
+		// Close and remove the temporary file, the previously cached map (if any) stays intact.
+		m_DataFile.Close();
+		Storage()->RemoveFile(aTmpFilename, IStorage::TYPE_SAVE);
+		log_error("MapConverter", "failed to create '%s'", pFilename);
 		return false;
 	}
 
-	m_DataFile.AddItem(MAPITEMTYPE_ENVPOINTS, 0, m_lEnvPoints.size() * sizeof(CEnvPoint), m_lEnvPoints.base_ptr());
-	m_DataFile.Finish();
+	if(!Storage()->RenameFile(aTmpFilename, pFilename, IStorage::TYPE_SAVE))
+	{
+		Storage()->RemoveFile(aTmpFilename, IStorage::TYPE_SAVE);
+		log_error("MapConverter", "failed to rename '%s' to '%s'", aTmpFilename, pFilename);
+		return false;
+	}
 
-	Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, "infclass", "highres map created");
+	log_info("MapConverter", "highres map created");
 	return true;
 }
