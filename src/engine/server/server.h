@@ -528,7 +528,7 @@ private:
 
 	int m_LastRegistrationRequestId = 0;
 
-	int m_TimeShiftUnit;
+	int m_TimeShiftUnit = 0;
 
 public:
 	void AddGameServerCmd(CGameServerCmd *pCmd);

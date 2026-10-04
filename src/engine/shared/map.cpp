@@ -57,7 +57,11 @@ int CMap::NumItems() const
 
 bool CMap::Load(const char *pMapName)
 {
-	IStorage *pStorage = Kernel()->RequestInterface<IStorage>();
+	return Load(Kernel()->RequestInterface<IStorage>(), pMapName);
+}
+
+bool CMap::Load(IStorage *pStorage, const char *pMapName)
+{
 	if(!pStorage)
 		return false;
 	return m_DataFile.Open(pStorage, pMapName, IStorage::TYPE_ALL);

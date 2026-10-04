@@ -25,6 +25,7 @@
 #include <engine/shared/filecollection.h>
 #include <engine/shared/http.h>
 #include <engine/shared/json.h>
+#include <engine/shared/map.h>
 #include <engine/shared/masterserver.h>
 #include <engine/shared/netban.h>
 #include <engine/shared/network.h>
@@ -1615,17 +1616,17 @@ static inline int MsgFromSixup(int Msg, bool System)
 
 bool CServer::GenerateClientMap(const char *pMapFilePath, const char *pMapName)
 {
-	if(!m_pMap->Load(pMapFilePath))
+	// Convert the map using a temp map instance. CMap::Load() replaces (and thus
+	// frees) the using datafile, causing UAF without the temp instance
+	CMap TmpServerMap;
+	if(!TmpServerMap.Load(Storage(), pMapFilePath))
 		return false;
 
 	// The map format of InfectionClass is different from the vanilla format.
 	// We need to convert the map to something that the client can use
 	// First, try to find if the client map is already generated
 
-	CDataFileReader dfServerMap;
-	dfServerMap.Open(Storage(), pMapFilePath, IStorage::TYPE_ALL);
-	unsigned ServerMapCrc = dfServerMap.Crc();
-	dfServerMap.Close();
+	unsigned ServerMapCrc = TmpServerMap.Crc();
 
 	EventsDirector::SetPreloadedMapName(pMapName);
 
@@ -1638,18 +1639,18 @@ bool CServer::GenerateClientMap(const char *pMapFilePath, const char *pMapName)
 	str_format(aClientMapFileName, sizeof(aClientMapFileName), "%s_%08x.map", pMapName, ServerMapCrc);
 	str_format(aClientMapName, sizeof(aClientMapName), "%s/%s", aClientMapDir, aClientMapFileName);
 
-	CMapConverter MapConverter(Storage(), m_pMap, Console());
+	CMapConverter MapConverter(Storage(), &TmpServerMap, Console());
 	if(!MapConverter.Load())
 		return false;
 
-	m_TimeShiftUnit = MapConverter.GetTimeShiftUnit();
-
+	unsigned ClientMapCrc = 0;
+	SHA256_DIGEST ClientMapSha256{};
 	CDataFileReader dfClientMap;
 	// The map is already converted
 	if(!Config()->m_InfConverterForceRegeneration && dfClientMap.Open(Storage(), aClientMapName, IStorage::TYPE_ALL))
 	{
-		m_aCurrentMapCrc[MAP_TYPE_SIX] = dfClientMap.Crc();
-		m_aCurrentMapSha256[MAP_TYPE_SIX] = dfClientMap.Sha256();
+		ClientMapCrc = dfClientMap.Crc();
+		ClientMapSha256 = dfClientMap.Sha256();
 		dfClientMap.Close();
 	}
 	// The map must be converted
@@ -1666,11 +1667,20 @@ bool CServer::GenerateClientMap(const char *pMapFilePath, const char *pMapName)
 			return false;
 
 		CDataFileReader dfGeneratedMap;
-		dfGeneratedMap.Open(Storage(), aClientMapName, IStorage::TYPE_ALL);
-		m_aCurrentMapCrc[MAP_TYPE_SIX] = dfGeneratedMap.Crc();
-		m_aCurrentMapSha256[MAP_TYPE_SIX] = dfGeneratedMap.Sha256();
+		if(!dfGeneratedMap.Open(Storage(), aClientMapName, IStorage::TYPE_ALL))
+			return false;
+		ClientMapCrc = dfGeneratedMap.Crc();
+		ClientMapSha256 = dfGeneratedMap.Sha256();
 		dfGeneratedMap.Close();
 	}
+
+	// Every fallible step is done, so the server map can be replaced now
+	if(!m_pMap->Load(pMapFilePath))
+		return false;
+
+	m_TimeShiftUnit = MapConverter.GetTimeShiftUnit();
+	m_aCurrentMapCrc[MAP_TYPE_SIX] = ClientMapCrc;
+	m_aCurrentMapSha256[MAP_TYPE_SIX] = ClientMapSha256;
 
 	char aBufMsg[128];
 	char aSha256[SHA256_MAXSTRSIZE];

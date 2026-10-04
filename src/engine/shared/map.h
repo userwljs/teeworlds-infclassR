@@ -8,6 +8,8 @@
 #include "datafile.h"
 #include <engine/map.h>
 
+class IStorage;
+
 class CMap : public IEngineMap
 {
 	CDataFileReader m_DataFile;
@@ -28,6 +30,8 @@ public:
 	int NumItems() const override;
 
 	bool Load(const char *pMapName) override;
+	// Loads a map from an explicit storage, so that a map can be parsed without the kernel
+	bool Load(IStorage *pStorage, const char *pMapName);
 	void Unload() override;
 	bool IsLoaded() const override;
 	IOHANDLE File() const override;
