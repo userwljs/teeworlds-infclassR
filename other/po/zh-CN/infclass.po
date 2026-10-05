@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: infectiondust\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"PO-Revision-Date: 2026-10-04 02:51+0000\n"
+"PO-Revision-Date: 2026-10-05 11:51+0000\n"
 "Last-Translator: 忘了叫啥 <me@l4.nz>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/infclassr/infclassr/zh_Hans/>\n"
@@ -242,7 +242,7 @@ msgstr "你可以使用命令 /language 切换此 mod 的语言。"
 msgid ""
 "If your language is not available, you can help with translation (/help "
 "translate)."
-msgstr "如果你的语言还不可用，您可以帮助翻译（详见 /help translate）。"
+msgstr "如果你的语言还不可用，你可以帮助翻译（详见 /help translate）。"
 
 #: src/game/server/gamecontext.cpp:3106
 msgid "You will now see all tees on this server, no matter the distance"
@@ -653,7 +653,7 @@ msgstr "并且，你现在可以再多携带 2 个炮塔，轻而易举"
 
 #: src/game/server/infclass/classes/humans/human.cpp:2660
 msgid "Fire rate and ammo regeneration speed of all weapons increased by 20%"
-msgstr "所有武器的弹药装填速度和弹药恢复速度增加了 20%"
+msgstr "所有武器的射速和弹药恢复速度增加了 20%"
 
 #: src/game/server/infclass/classes/humans/human.cpp:2673
 msgid "You have found an armor upgrade"
@@ -677,7 +677,7 @@ msgstr "现在你能多累积两次连斩！"
 
 #: src/game/server/infclass/classes/humans/human.cpp:2695
 msgid "The laser rifle reload and ammo regeneration speed increased by 20%"
-msgstr "激光枪的弹药装填速度和弹药恢复速度增加了 20%"
+msgstr "激光枪的射速和弹药恢复速度增加了 20%"
 
 #: src/game/server/infclass/classes/humans/human.cpp:2701
 msgid "The laser rifle range increased by 40%"
@@ -693,7 +693,7 @@ msgstr "位置锁定时的伤害增加到了 40 点血"
 
 #: src/game/server/infclass/classes/humans/human.cpp:2711
 msgid "The laser rifle reload and ammo regeneration speed increased by 30%"
-msgstr "激光枪的弹药装填速度和弹药恢复速度增加了 30%"
+msgstr "激光枪的射速和弹药恢复速度增加了 30%"
 
 #: src/game/server/infclass/classes/humans/human.cpp:2717
 msgid "The teleport gun does not hurt you anymore"
