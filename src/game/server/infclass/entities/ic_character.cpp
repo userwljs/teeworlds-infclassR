@@ -2046,9 +2046,9 @@ void CIcCharacter::HandleMapMenu()
 					break;
 				}
 
-			Buffer.append(Server()->Localization()->Format_L(pLanguage, _("Choose your class"), NULL).c_str());
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, _("Choose your class"), nullptr).c_str());
 			Buffer.append("\n");
-			Buffer.append(Server()->Localization()->Format_L(pLanguage, pReason, NULL).c_str());
+			Buffer.append(Server()->Localization()->Format_L(pLanguage, pReason, nullptr).c_str());
 			Buffer.append("\n\n");
 
 			for(int i = 0; i < CMapConverter::NUM_MENUCLASS; i++) {
@@ -2060,23 +2060,23 @@ void CIcCharacter::HandleMapMenu()
 					if (Availability == CLASS_AVAILABILITY::AVAILABLE || i == CMapConverter::MENUCLASS_RANDOM)
 					{
 						Buffer.append("> ");
-						Buffer.append(Server()->Localization()->Format_L(pLanguage, pClassName, NULL).c_str());
+						Buffer.append(Server()->Localization()->Format_L(pLanguage, pClassName, nullptr).c_str());
 						Buffer.append(" <");
 					}
 					else
 					{
 						Buffer.append("⊗> ");
-						Buffer.append(Server()->Localization()->Format_L(pLanguage, pClassName, NULL).c_str());
+						Buffer.append(Server()->Localization()->Format_L(pLanguage, pClassName, nullptr).c_str());
 						Buffer.append(" <");
 					}
 				else if (Availability == CLASS_AVAILABILITY::AVAILABLE || i == CMapConverter::MENUCLASS_RANDOM)
 				{
-					Buffer.append(Server()->Localization()->Format_L(pLanguage, pClassName, NULL).c_str());
+					Buffer.append(Server()->Localization()->Format_L(pLanguage, pClassName, nullptr).c_str());
 				}
 				else
 				{
 					Buffer.append("⊗ ");
-					Buffer.append(Server()->Localization()->Format_L(pLanguage, pClassName, NULL).c_str());
+					Buffer.append(Server()->Localization()->Format_L(pLanguage, pClassName, nullptr).c_str());
 				}
 
 				if(i < CMapConverter::NUM_MENUCLASS - 1)
