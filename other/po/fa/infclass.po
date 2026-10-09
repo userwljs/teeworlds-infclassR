@@ -809,19 +809,23 @@ msgid "You are blinded: {sec:EffectDuration}"
 msgstr "شما در حالت یخ زده هستید: {str:VictimName}"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1938
+#: src/game/server/infclass/entities/ic_character.cpp:2049
 msgid "Choose your class"
 msgstr "کلاس خود را انتخاب کن"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1949
+#: src/game/server/infclass/entities/ic_character.cpp:2057
 msgid "Random choice"
 msgstr "انتخاب تصادفی"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1971
+#: src/game/server/infclass/entities/ic_character.cpp:2035
 #, fuzzy
 msgid "You can't pick the same class again"
 msgstr "شما در این زمان نمیتوانید به تماشاچیان ملحق شوید"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1977
+#: src/game/server/infclass/entities/ic_character.cpp:2038
 #, fuzzy
 msgid "The class is disabled"
 msgstr "جادوگر مرد"
@@ -833,14 +837,13 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/game/server/infclass/entities/ic_character.cpp:1994
+#: src/game/server/infclass/entities/ic_character.cpp:2045
 msgid "The class limit exceeded"
 msgstr ""
 
-#: src/game/server/infclass/entities/ic_character.cpp:2049
-#, fuzzy
-msgctxt "mapmenu"
-msgid "Choose your class"
-msgstr "کلاس خود را انتخاب کن"
+#: src/game/server/infclass/entities/ic_character.cpp:2042
+msgid "Needs more players"
+msgstr ""
 
 #: src/game/server/infclass/entities/ic_character.cpp:2687
 msgid "You are frozen: {sec:EffectDuration}"
@@ -2532,6 +2535,11 @@ msgstr "شما یک فرد ویروسی در نقش {str:ClassName} هستید"
 #: src/game/server/infclass/ic_player.cpp:873
 msgid "Type “/help {str:ClassName}” for more information about your class"
 msgstr "تایپ کنید «help {str:ClassName}/» برای اطلاعات بیشتر درمورد نقشتان"
+
+#, fuzzy
+#~ msgctxt "mapmenu"
+#~ msgid "Choose your class"
+#~ msgstr "کلاس خود را انتخاب کن"
 
 #, fuzzy
 #~ msgid "10 seconds later, a few players become infected."

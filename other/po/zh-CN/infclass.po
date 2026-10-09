@@ -778,18 +778,22 @@ msgid "You are blinded: {sec:EffectDuration}"
 msgstr "你失明了：{sec:EffectDuration}"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1938
+#: src/game/server/infclass/entities/ic_character.cpp:2049
 msgid "Choose your class"
 msgstr "选择你的职业"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1949
+#: src/game/server/infclass/entities/ic_character.cpp:2057
 msgid "Random choice"
 msgstr "随机选择"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1971
+#: src/game/server/infclass/entities/ic_character.cpp:2035
 msgid "You can't pick the same class again"
 msgstr "你不能重复选择相同的职业"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1977
+#: src/game/server/infclass/entities/ic_character.cpp:2038
 msgid "The class is disabled"
 msgstr "此职业被禁用"
 
@@ -799,13 +803,13 @@ msgid_plural "Need at least {int:MinPlayers} players"
 msgstr[0] "至少需要 {int:MinPlayers} 名玩家"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1994
+#: src/game/server/infclass/entities/ic_character.cpp:2045
 msgid "The class limit exceeded"
 msgstr "已超出职业限制"
 
-#: src/game/server/infclass/entities/ic_character.cpp:2049
-msgctxt "mapmenu"
-msgid "Choose your class"
-msgstr "选择你的职业"
+#: src/game/server/infclass/entities/ic_character.cpp:2042
+msgid "Needs more players"
+msgstr ""
 
 #: src/game/server/infclass/entities/ic_character.cpp:2687
 msgid "You are frozen: {sec:EffectDuration}"
@@ -2288,6 +2292,10 @@ msgstr "你被感染了：{str:ClassName}"
 #: src/game/server/infclass/ic_player.cpp:873
 msgid "Type “/help {str:ClassName}” for more information about your class"
 msgstr "键入“/help {str:ClassName}”获取当前职业的更多信息"
+
+#~ msgctxt "mapmenu"
+#~ msgid "Choose your class"
+#~ msgstr "选择你的职业"
 
 #~ msgid "Now you can do two slashes in a combo!"
 #~ msgstr "现在你可以连续进行两次斩击！"

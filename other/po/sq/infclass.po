@@ -787,18 +787,22 @@ msgid "You are blinded: {sec:EffectDuration}"
 msgstr ""
 
 #: src/game/server/infclass/entities/ic_character.cpp:1938
+#: src/game/server/infclass/entities/ic_character.cpp:2049
 msgid "Choose your class"
 msgstr "Zgjidhni kategorinë tuaj"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1949
+#: src/game/server/infclass/entities/ic_character.cpp:2057
 msgid "Random choice"
 msgstr "Zgjedhje të rastit"
 
 #: src/game/server/infclass/entities/ic_character.cpp:1971
+#: src/game/server/infclass/entities/ic_character.cpp:2035
 msgid "You can't pick the same class again"
 msgstr ""
 
 #: src/game/server/infclass/entities/ic_character.cpp:1977
+#: src/game/server/infclass/entities/ic_character.cpp:2038
 #, fuzzy
 msgid "The class is disabled"
 msgstr "Shtriga është e vdekur "
@@ -810,14 +814,13 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: src/game/server/infclass/entities/ic_character.cpp:1994
+#: src/game/server/infclass/entities/ic_character.cpp:2045
 msgid "The class limit exceeded"
 msgstr ""
 
-#: src/game/server/infclass/entities/ic_character.cpp:2049
-#, fuzzy
-msgctxt "mapmenu"
-msgid "Choose your class"
-msgstr "Zgjidhni kategorinë tuaj"
+#: src/game/server/infclass/entities/ic_character.cpp:2042
+msgid "Needs more players"
+msgstr ""
 
 #: src/game/server/infclass/entities/ic_character.cpp:2687
 msgid "You are frozen: {sec:EffectDuration}"
@@ -2373,6 +2376,11 @@ msgstr ""
 #: src/game/server/infclass/ic_player.cpp:873
 msgid "Type “/help {str:ClassName}” for more information about your class"
 msgstr ""
+
+#, fuzzy
+#~ msgctxt "mapmenu"
+#~ msgid "Choose your class"
+#~ msgstr "Zgjidhni kategorinë tuaj"
 
 #, fuzzy
 #~ msgctxt "Soldier"
