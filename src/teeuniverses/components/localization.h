@@ -30,10 +30,11 @@ struct CLocalizableString
 };
 
 /* BEGIN EDIT *********************************************************/
+#define LOCALIZE_CONTEXT_SEPARATOR "\004"
 #define _(TEXT) TEXT
 #define _P(TEXT_SINGULAR, TEXT_PLURAL, NUMBER) (NUMBER == 1 ? TEXT_SINGULAR : TEXT_PLURAL)
-#define _C(CONTEXT, TEXT) TEXT
-#define _CP(CONTEXT, TEXT_SINGULAR, TEXT_PLURAL, NUMBER) (NUMBER == 1 ? TEXT_SINGULAR : TEXT_PLURAL)
+#define _C(CONTEXT, TEXT) CONTEXT LOCALIZE_CONTEXT_SEPARATOR TEXT
+#define _CP(CONTEXT, TEXT_SINGULAR, TEXT_PLURAL, NUMBER) (NUMBER == 1 ? CONTEXT LOCALIZE_CONTEXT_SEPARATOR TEXT_SINGULAR : CONTEXT LOCALIZE_CONTEXT_SEPARATOR TEXT_PLURAL)
 /* END EDIT ***********************************************************/
 
 /* BEGIN EDIT *********************************************************/

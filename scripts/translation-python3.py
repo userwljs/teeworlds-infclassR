@@ -15,6 +15,8 @@ if len(sys.argv) != 3:
 PO_LANG_DIR = sys.argv[1]
 TARGET_DIR = os.path.join(sys.argv[2], "data/languages")
 
+CONTEXT_SEPARATOR = "\004"
+
 if not os.path.exists(TARGET_DIR):
     os.makedirs(TARGET_DIR)
 
@@ -36,10 +38,13 @@ def convert_po_to_json(language: "Language"):
             for entry in po:
                 if entry.fuzzy or entry.obsolete:
                     continue
+                key_prefix = ""
+                if entry.msgctxt:
+                    key_prefix = entry.msgctxt + CONTEXT_SEPARATOR
                 if entry.msgstr:
-                    target_entry = {"key": entry.msgid, "value": entry.msgstr}
+                    target_entry = {"key": key_prefix + entry.msgid, "value": entry.msgstr}
                 elif entry.msgstr_plural.keys():
-                    target_entry = {"key": entry.msgid_plural}
+                    target_entry = {"key": key_prefix + entry.msgid_plural}
                     for i in sorted(entry.msgstr_plural.keys()):
                         if entry.msgstr_plural[i]:
                             target_entry[plurals[i]] = entry.msgstr_plural[i]
@@ -47,7 +52,7 @@ def convert_po_to_json(language: "Language"):
                         continue
                     if entry.msgid:
                         one_entry = target_entry.copy()
-                        one_entry["key"] = entry.msgid
+                        one_entry["key"] = key_prefix + entry.msgid
                         translations.append(one_entry)
                 else:
                     continue

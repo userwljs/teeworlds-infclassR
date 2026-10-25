@@ -195,10 +195,18 @@ bool CLocalization::CLanguage::Load(CStorage *pStorage)
 	return true;
 }
 
+static const char *SkipContextPrefix(const char *pText)
+{
+	if(const char *pSeparator = str_find(pText, LOCALIZE_CONTEXT_SEPARATOR); pSeparator)
+		return pSeparator + str_length(LOCALIZE_CONTEXT_SEPARATOR);
+	else
+		return pText;
+}
+
 const char *CLocalization::CLanguage::Localize(const char *pText) const
 {
 	if(GetFilename() == MainLanguage)
-		return pText;
+		return SkipContextPrefix(pText);
 
 	const auto &Entry = m_Translations.find(pText);
 	if(Entry == m_Translations.end())
@@ -211,7 +219,7 @@ const char *CLocalization::CLanguage::Localize(const char *pText) const
 const char *CLocalization::CLanguage::Localize_P(int Number, const char *pText) const
 {
 	if(GetFilename() == MainLanguage)
-		return pText;
+		return SkipContextPrefix(pText);
 
 	const auto &Entry = m_Translations.find(pText);
 	if(Entry == m_Translations.end())
@@ -495,7 +503,7 @@ const char *CLocalization::LocalizeWithDepth(const char *pLanguageCode, const ch
 		pLanguage = pFoundLanguage;
 
 	if(!pLanguage)
-		return pText;
+		return SkipContextPrefix(pText);
 
 	if(!pLanguage->IsLoaded())
 		pLanguage->Load(Storage());
@@ -505,7 +513,7 @@ const char *CLocalization::LocalizeWithDepth(const char *pLanguageCode, const ch
 	else if(pLanguage->GetParentFilename()[0] && Depth < 4)
 		return LocalizeWithDepth(pLanguage->GetParentFilename(), pText, Depth + 1);
 	else
-		return pText;
+		return SkipContextPrefix(pText);
 }
 
 /**
@@ -529,7 +537,7 @@ const char *CLocalization::LocalizeWithDepth_P(const char *pLanguageCode, const 
 		pLanguage = pFoundLanguage;
 
 	if(!pLanguage)
-		return pText;
+		return SkipContextPrefix(pText);
 
 	if(!pLanguage->IsLoaded())
 		pLanguage->Load(Storage());
@@ -539,7 +547,7 @@ const char *CLocalization::LocalizeWithDepth_P(const char *pLanguageCode, const 
 	else if(pLanguage->GetParentFilename()[0] && Depth < 4)
 		return LocalizeWithDepth_P(pLanguage->GetParentFilename(), Number, pText, Depth + 1);
 	else
-		return pText;
+		return SkipContextPrefix(pText);
 }
 
 const char *CLocalization::Localize_P(const char *pLanguageCode, int Number, const char *pText)
@@ -641,6 +649,8 @@ std::string CLocalization::Format_V(const char *pLanguageCode, const char *pText
 	const CLanguage *pLanguage = GetLanguageByCode(MainLanguageCode);
 	if(const auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
 		pLanguage = pFoundLanguage;
+
+	pText = SkipContextPrefix(pText);
 
 	if(!pLanguage)
 	{
