@@ -2216,7 +2216,7 @@ void CIcGameController::SetPreferredClass(int ClientId, EPlayerClass Class)
 		const auto Translated = Server()->Localization()->Localize(pPlayer->GetLanguage(), pClassDisplayName);
 		GameServer()->SendChatTarget_Localization(ClientId, CHATCATEGORY_PLAYER,
 			_("Class {str:ClassName} will be automatically attributed to you when round starts"),
-			"ClassName", Translated.data(),
+			"ClassName", Translated,
 			nullptr);
 		break;
 	}

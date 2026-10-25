@@ -100,8 +100,8 @@ public:
 		inline void SetWritingDirection(int Direction) { m_Direction = Direction; }
 		inline bool IsLoaded() const { return m_Loaded; }
 		bool Load(CStorage *pStorage);
-		[[nodiscard]] std::optional<std::string_view> Localize(std::string_view Text) const;
-		std::optional<std::string_view> Localize_P(int Number, std::string_view Text) const;
+		[[nodiscard]] const char *Localize(const char *pText) const;
+		const char *Localize_P(int Number, const char *pText) const;
 	};
 
 	enum
@@ -113,8 +113,8 @@ public:
 	StringHashMap<CLanguage> m_pLanguages;
 
 protected:
-	std::string_view LocalizeWithDepth(std::string_view LanguageCode, std::string_view Text, int Depth);
-	[[nodiscard]] std::string_view LocalizeWithDepth_P(std::string_view LanguageCode, int Number, std::string_view Text, int Depth);
+	const char *LocalizeWithDepth(const char *pLanguageCode, const char *pText, int Depth);
+	[[nodiscard]] const char *LocalizeWithDepth_P(const char *pLanguageCode, int Number, const char *pText, int Depth);
 
 	static void AppendNumber(std::string &Buffer, const CLanguage *pLanguage, int Number);
 	static void AppendPercent(std::string &Buffer, const CLanguage *pLanguage, double Number);
@@ -134,24 +134,24 @@ public:
 	static bool GetWritingDirection() { return DIRECTION_LTR; }
 
 	// localize
-	[[nodiscard]] std::string_view Localize(std::string_view LanguageCode, std::string_view Text);
+	[[nodiscard]] const char *Localize(const char *pLanguageCode, const char *pText);
 	// localize and find the appropriate plural form based on Number
-	[[nodiscard]] std::string_view Localize_P(std::string_view LanguageCode, int Number, std::string_view Text);
+	[[nodiscard]] const char *Localize_P(const char *pLanguageCode, int Number, const char *pText);
 
 	// format
-	[[nodiscard]] std::string Format_V(std::string_view LanguageCode, std::string_view Text, va_list VarArgs);
-	[[nodiscard]] std::string Format(std::string_view LanguageCode, const char *Text, ...);
+	[[nodiscard]] std::string Format_V(const char *pLanguageCode, const char *pText, va_list VarArgs);
+	[[nodiscard]] std::string Format(const char *pLanguageCode, const char *pText, ...);
 	// localize, format
-	[[nodiscard]] std::string Format_VL(std::string_view LanguageCode, std::string_view Text, va_list VarArgs);
-	[[nodiscard]] std::string Format_L(std::string_view LanguageCode, std::string_view Text, ...);
+	[[nodiscard]] std::string Format_VL(const char *pLanguageCode, const char *pText, va_list VarArgs);
+	[[nodiscard]] std::string Format_L(const char *pLanguageCode, const char *pText, ...);
 	// localize, find the appropriate plural form based on Number and format
-	[[nodiscard]] std::string Format_VLP(std::string_view LanguageCode, int Number, std::string_view Text, va_list VarArgs);
-	[[nodiscard]] std::string Format_LP(std::string_view LanguageCode, int Number, std::string_view Text, ...);
+	[[nodiscard]] std::string Format_VLP(const char *pLanguageCode, int Number, const char *pText, va_list VarArgs);
+	[[nodiscard]] std::string Format_LP(const char *pLanguageCode, int Number, const char *pText, ...);
 
 	static void ArabicShaping(std::string &Buffer);
 
-	[[nodiscard]] std::string GetLanguageNameByCode(std::string_view LanguageCode);
-	[[nodiscard]] CLanguage *GetLanguageByCode(std::string_view LanguageCode);
+	[[nodiscard]] std::string GetLanguageNameByCode(const char *pLanguageCode);
+	[[nodiscard]] CLanguage *GetLanguageByCode(const char *pLanguageCode);
 };
 
 #endif

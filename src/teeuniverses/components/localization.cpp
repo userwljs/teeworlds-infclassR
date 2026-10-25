@@ -11,7 +11,8 @@
 
 /* LANGUAGE ***********************************************************/
 
-constexpr std::string_view MainLanguage = "en";
+constexpr const char *MainLanguageCode = "en";
+constexpr std::string_view MainLanguage = MainLanguageCode;
 constexpr int MaxUtf8BytesPerUCharFull = 4;
 
 CLocalization::CLanguage::CLanguage() :
@@ -194,33 +195,34 @@ bool CLocalization::CLanguage::Load(CStorage *pStorage)
 	return true;
 }
 
-std::optional<std::string_view> CLocalization::CLanguage::Localize(const std::string_view Text) const
+const char *CLocalization::CLanguage::Localize(const char *pText) const
 {
 	if(GetFilename() == MainLanguage)
-		return Text;
+		return pText;
 
-	const auto &Entry = m_Translations.find(Text);
+	const auto &Entry = m_Translations.find(pText);
 	if(Entry == m_Translations.end())
-		return std::nullopt;
+		return nullptr;
 
-	return Entry->second.m_apVersions[PLURALTYPE_NONE];
+	const auto &Version = Entry->second.m_apVersions[PLURALTYPE_NONE];
+	return Version.has_value() ? Version->c_str() : nullptr;
 }
 
-std::optional<std::string_view> CLocalization::CLanguage::Localize_P(int Number, const std::string_view Text) const
+const char *CLocalization::CLanguage::Localize_P(int Number, const char *pText) const
 {
 	if(GetFilename() == MainLanguage)
-		return Text;
+		return pText;
 
-	const auto &Entry = m_Translations.find(Text);
+	const auto &Entry = m_Translations.find(pText);
 	if(Entry == m_Translations.end())
-		return std::nullopt;
+		return nullptr;
 
 	UChar aPluralKeyWord[6];
 	UErrorCode Status = U_ZERO_ERROR;
 	uplrules_select(m_pPluralRules, static_cast<double>(Number), aPluralKeyWord, 6, &Status);
 
 	if(U_FAILURE(Status))
-		return std::nullopt;
+		return nullptr;
 
 	int PluralCode = PLURALTYPE_NONE;
 
@@ -240,7 +242,8 @@ std::optional<std::string_view> CLocalization::CLanguage::Localize_P(int Number,
 			PluralCode = PLURALTYPE_ONE;
 	}
 
-	return Entry->second.m_apVersions[PluralCode];
+	const auto &Version = Entry->second.m_apVersions[PluralCode];
+	return Version.has_value() ? Version->c_str() : nullptr;
 }
 
 CLocalization::CLocalization(class CStorage *pStorage) :
@@ -485,67 +488,63 @@ std::string_view CLocalization::FallbackLanguageForIpCountryCode(const int Count
 	}
 }
 
-std::string_view CLocalization::LocalizeWithDepth(const std::string_view LanguageCode, const std::string_view Text, const int Depth)
+const char *CLocalization::LocalizeWithDepth(const char *pLanguageCode, const char *pText, const int Depth)
 {
-	CLanguage *pLanguage = GetLanguageByCode(MainLanguage);
-	if(auto *pFoundLanguage = GetLanguageByCode(LanguageCode); pFoundLanguage)
+	CLanguage *pLanguage = GetLanguageByCode(MainLanguageCode);
+	if(auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
 		pLanguage = pFoundLanguage;
 
 	if(!pLanguage)
-		// ReSharper disable once CppDFALocalValueEscapesFunction
-		return Text;
+		return pText;
 
 	if(!pLanguage->IsLoaded())
 		pLanguage->Load(Storage());
 
-	if(const auto optResult = pLanguage->Localize(Text); optResult.has_value())
-		return optResult.value();
+	if(const char *pResult = pLanguage->Localize(pText))
+		return pResult;
 	else if(pLanguage->GetParentFilename()[0] && Depth < 4)
-		return LocalizeWithDepth(pLanguage->GetParentFilename(), Text, Depth + 1);
+		return LocalizeWithDepth(pLanguage->GetParentFilename(), pText, Depth + 1);
 	else
-		// ReSharper disable once CppDFALocalValueEscapesFunction
-		return Text;
+		return pText;
 }
 
 /**
  *
- * @param LanguageCode language code
- * @param Text source string
- * @return View to the translated string.
- * The returned view should not be held for a long time,
+ * @param pLanguageCode language code
+ * @param pText source string
+ * @return Ptr to the translated string.
+ * The returned ptr should not be held for a long time,
  * nor should items be inserted into 'm_pLanguages' while holding it,
  * as this may lead to a dangling pointer.
  */
-std::string_view CLocalization::Localize(const std::string_view LanguageCode, const std::string_view Text)
+const char *CLocalization::Localize(const char *pLanguageCode, const char *pText)
 {
-	return LocalizeWithDepth(LanguageCode, Text, 0);
+	return LocalizeWithDepth(pLanguageCode, pText, 0);
 }
 
-std::string_view CLocalization::LocalizeWithDepth_P(const std::string_view LanguageCode, const int Number, const std::string_view Text, const int Depth)
+const char *CLocalization::LocalizeWithDepth_P(const char *pLanguageCode, const int Number, const char *pText, const int Depth)
 {
-	CLanguage *pLanguage = GetLanguageByCode(MainLanguage);
-	if(auto *pFoundLanguage = GetLanguageByCode(LanguageCode); pFoundLanguage)
+	CLanguage *pLanguage = GetLanguageByCode(MainLanguageCode);
+	if(auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
 		pLanguage = pFoundLanguage;
 
 	if(!pLanguage)
-		// ReSharper disable once CppDFALocalValueEscapesFunction
-		return Text;
+		return pText;
 
 	if(!pLanguage->IsLoaded())
 		pLanguage->Load(Storage());
 
-	if(const auto optResult = pLanguage->Localize_P(Number, Text); optResult.has_value())
-		return optResult.value();
+	if(const char *pResult = pLanguage->Localize_P(Number, pText))
+		return pResult;
 	else if(pLanguage->GetParentFilename()[0] && Depth < 4)
-		return LocalizeWithDepth_P(pLanguage->GetParentFilename(), Number, Text, Depth + 1);
+		return LocalizeWithDepth_P(pLanguage->GetParentFilename(), Number, pText, Depth + 1);
 	else
-		// ReSharper disable once CppDFALocalValueEscapesFunction
-		return Text;
+		return pText;
 }
 
-std::string_view CLocalization::Localize_P(const std::string_view LanguageCode, int Number, const std::string_view Text)
+const char *CLocalization::Localize_P(const char *pLanguageCode, int Number, const char *pText)
 {
-	return LocalizeWithDepth_P(LanguageCode, Number, Text, 0);
+	return LocalizeWithDepth_P(pLanguageCode, Number, pText, 0);
 }
 
 void CLocalization::AppendNumber(std::string &Buffer, const CLanguage *pLanguage, const int Number)
@@ -635,36 +634,38 @@ void CLocalization::AppendDuration(std::string &Buffer, const CLanguage *pLangua
 	}
 }
 
-std::string CLocalization::Format_V(const std::string_view LanguageCode, const std::string_view Text, va_list VarArgs)
+std::string CLocalization::Format_V(const char *pLanguageCode, const char *pText, va_list VarArgs)
 {
 	std::string Buffer;
 
-	const CLanguage *pLanguage = GetLanguageByCode(MainLanguage);
-	if(const auto *pFoundLanguage = GetLanguageByCode(LanguageCode); pFoundLanguage)
+	const CLanguage *pLanguage = GetLanguageByCode(MainLanguageCode);
+	if(const auto *pFoundLanguage = GetLanguageByCode(pLanguageCode); pFoundLanguage)
 		pLanguage = pFoundLanguage;
 
 	if(!pLanguage)
 	{
-		Buffer.append(Text);
+		Buffer.append(pText);
 		return Buffer;
 	}
 
 	const char *pVarArgName = nullptr;
 	const void *pVarArgValue = nullptr;
 
-	size_t Iter = 0;
+	int Iter = 0;
 	int Start = Iter;
-	size_t ParamTypeStart = 0;
+	int ParamTypeStart = 0;
 	bool ParamTypeStarted = false;
-	size_t ParamNameStart = 0;
+	int ParamNameStart = 0;
 	bool ParamNameStarted = false;
 	int ParamNameLength = 0;
 
-	while(Iter < Text.size())
+	const int TextLength = str_length(pText);
+
+	while(pText[Iter])
 	{
 		if(ParamNameStarted)
 		{
-			if(Text[Iter] == '}') // End of the macro, try to apply it
+			if(pText[Iter] == '}') // End of the macro, try to apply it
 			{
 				// Try to find an argument with this name
 				va_list VarArgsIter;
@@ -679,14 +680,14 @@ std::string CLocalization::Format_V(const std::string_view LanguageCode, const s
 				while(pVarArgName)
 				{
 					pVarArgValue = va_arg(VarArgsIter, const void *);
-					if(Text.substr(ParamNameStart, ParamNameLength) == pVarArgName)
+					if(str_comp_num(pText + ParamNameStart, pVarArgName, ParamNameLength) == 0 && pVarArgName[ParamNameLength] == '\0')
 					{
 						// Get argument type
-						if(Text.length() >= ParamTypeStart + 4 && Text.substr(ParamTypeStart, 4) == "str:")
+						if(TextLength >= ParamTypeStart + 4 && str_comp_num("str:", pText + ParamTypeStart, 4) == 0)
 						{
 							Buffer.append(static_cast<const char *>(pVarArgValue));
 						}
-						else if(Text.length() >= ParamTypeStart + 4 && Text.substr(ParamTypeStart, 4) == "int:")
+						else if(TextLength >= ParamTypeStart + 4 && str_comp_num("int:", pText + ParamTypeStart, 4) == 0)
 						{
 							const int Number = *static_cast<const int *>(pVarArgValue);
 							if(m_ArgNumberColor[0])
@@ -695,7 +696,7 @@ std::string CLocalization::Format_V(const std::string_view LanguageCode, const s
 							if(m_ArgNumberColor[0])
 								Buffer.append("^999"); // 0.7 broadcast coloring (white)
 						}
-						else if(Text.length() >= ParamTypeStart + 8 && Text.substr(ParamTypeStart, 8) == "percent:")
+						else if(TextLength >= ParamTypeStart + 8 && str_comp_num("percent:", pText + ParamTypeStart, 8) == 0)
 						{
 							if(m_ArgNumberColor[0])
 								Buffer.append(m_ArgNumberColor); // 0.7 broadcast coloring
@@ -704,7 +705,7 @@ std::string CLocalization::Format_V(const std::string_view LanguageCode, const s
 							if(m_ArgNumberColor[0])
 								Buffer.append("^999"); // 0.7 broadcast coloring (white)
 						}
-						else if(Text.length() >= ParamTypeStart + 4 && Text.substr(ParamTypeStart, 4) == "sec:")
+						else if(TextLength >= ParamTypeStart + 4 && str_comp_num("sec:", pText + ParamTypeStart, 4) == 0)
 						{
 							if(m_ArgNumberColor[0])
 								Buffer.append(m_ArgNumberColor); // 0.7 broadcast coloring
@@ -742,13 +743,13 @@ std::string CLocalization::Format_V(const std::string_view LanguageCode, const s
 		}
 		else if(ParamTypeStarted)
 		{
-			if(Text[Iter] == ':') // End of the type, start of the name
+			if(pText[Iter] == ':') // End of the type, start of the name
 			{
 				ParamNameStart = Iter + 1;
 				ParamNameStarted = true;
 				ParamNameLength = 0;
 			}
-			else if(Text[Iter] == '}') // Invalid: no name found
+			else if(pText[Iter] == '}') // Invalid: no name found
 			{
 				// Close the macro
 				Start = Iter + 1;
@@ -758,22 +759,22 @@ std::string CLocalization::Format_V(const std::string_view LanguageCode, const s
 		}
 		else
 		{
-			if(Text[Iter] == '{')
+			if(pText[Iter] == '{')
 			{
-				// Flush the content of Text in the buffer
-				Buffer.append(Text.substr(Start, Iter - Start));
+				// Flush the content of pText in the buffer
+				Buffer.append(pText + Start, Iter - Start);
 				Iter++;
 				ParamTypeStart = Iter;
 				ParamTypeStarted = true;
 			}
 		}
 
-		Iter = str_utf8_forward(Text.data(), Iter);
+		Iter = str_utf8_forward(pText, Iter);
 	}
 
 	if(Iter > 0 && !ParamTypeStarted && !ParamNameStarted)
 	{
-		Buffer.append(Text.substr(Start, Iter - Start));
+		Buffer.append(pText + Start, Iter - Start);
 	}
 
 	if(pLanguage->GetWritingDirection() == DIRECTION_RTL)
@@ -782,48 +783,54 @@ std::string CLocalization::Format_V(const std::string_view LanguageCode, const s
 	return Buffer;
 }
 
-std::string CLocalization::Format(const std::string_view LanguageCode, const char *Text, ...)
+std::string CLocalization::Format(const char *pLanguageCode, const char *pText, ...)
 {
 	va_list VarArgs;
-	va_start(VarArgs, Text);
+	va_start(VarArgs, pText);
 
-	return Format_V(LanguageCode, Text, VarArgs);
+	const std::string Result = Format_V(pLanguageCode, pText, VarArgs);
 
 	va_end(VarArgs);
+
+	return Result;
 }
 
-std::string CLocalization::Format_VL(const std::string_view LanguageCode, const std::string_view Text, va_list VarArgs)
+std::string CLocalization::Format_VL(const char *pLanguageCode, const char *pText, va_list VarArgs)
 {
-	const auto LocalText = Localize(LanguageCode, Text);
+	const char *pLocalText = Localize(pLanguageCode, pText);
 
-	return Format_V(LanguageCode, LocalText, VarArgs);
+	return Format_V(pLanguageCode, pLocalText, VarArgs);
 }
 
-std::string CLocalization::Format_L(const std::string_view LanguageCode, const std::string_view Text, ...)
+std::string CLocalization::Format_L(const char *pLanguageCode, const char *pText, ...)
 {
 	va_list VarArgs;
-	va_start(VarArgs, Text);
+	va_start(VarArgs, pText);
 
-	return Format_VL(LanguageCode, Text, VarArgs);
+	const std::string Result = Format_VL(pLanguageCode, pText, VarArgs);
 
 	va_end(VarArgs);
+
+	return Result;
 }
 
-std::string CLocalization::Format_VLP(const std::string_view LanguageCode, int Number, const std::string_view Text, va_list VarArgs)
+std::string CLocalization::Format_VLP(const char *pLanguageCode, int Number, const char *pText, va_list VarArgs)
 {
-	const auto LocalText = Localize_P(LanguageCode, Number, Text);
+	const char *pLocalText = Localize_P(pLanguageCode, Number, pText);
 
-	return Format_V(LanguageCode, LocalText, VarArgs);
+	return Format_V(pLanguageCode, pLocalText, VarArgs);
 }
 
-std::string CLocalization::Format_LP(const std::string_view LanguageCode, int Number, const std::string_view Text, ...)
+std::string CLocalization::Format_LP(const char *pLanguageCode, int Number, const char *pText, ...)
 {
 	va_list VarArgs;
-	va_start(VarArgs, Text);
+	va_start(VarArgs, pText);
 
-	return Format_VLP(LanguageCode, Number, Text, VarArgs);
+	const std::string Result = Format_VLP(pLanguageCode, Number, pText, VarArgs);
 
 	va_end(VarArgs);
+
+	return Result;
 }
 
 void CLocalization::ArabicShaping(std::string &Buffer)
@@ -880,26 +887,26 @@ void CLocalization::ArabicShaping(std::string &Buffer)
 	delete[] paResult;
 }
 
-std::string CLocalization::GetLanguageNameByCode(const std::string_view LanguageCode)
+std::string CLocalization::GetLanguageNameByCode(const char *pLanguageCode)
 {
-	if(const auto *pLanguage = GetLanguageByCode(LanguageCode); pLanguage)
+	if(const auto *pLanguage = GetLanguageByCode(pLanguageCode); pLanguage)
 	{
 		if(pLanguage->GetName()[0])
 			return std::string(pLanguage->GetName());
 	}
-	return std::string(LanguageCode);
+	return std::string(pLanguageCode);
 }
 
 /**
- * @param LanguageCode language code
+ * @param pLanguageCode language code
  * @return Ptr to the CLanguage obj.
  * The returned ptr should not be held for a long time,
  * nor should items be inserted into 'm_pLanguages' while holding it,
  * as this may lead to a dangling pointer.
  */
-CLocalization::CLanguage *CLocalization::GetLanguageByCode(const std::string_view LanguageCode)
+CLocalization::CLanguage *CLocalization::GetLanguageByCode(const char *pLanguageCode)
 {
-	if(const auto LanguageIter = m_pLanguages.find(LanguageCode); LanguageIter != m_pLanguages.end())
+	if(const auto LanguageIter = m_pLanguages.find(pLanguageCode); LanguageIter != m_pLanguages.end())
 		return &LanguageIter->second;
 	return nullptr;
 }
