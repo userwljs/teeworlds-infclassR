@@ -19,103 +19,177 @@ msgstr ""
 "X-Crowdin-File-ID: 3\n"
 "X-Generator: Weblate 2026.10.1.dev0\n"
 
-#: src/engine/server/server.cpp:261
-msgid "Account {str:Username} is already used by ClientId {int:ClientId})"
+#: src/engine/server/server.cpp:259
+#, fuzzy
+#| msgid "Account {str:Username} is already used by ClientId {int:ClientId})"
+msgid "Account {str:Username} is already used by ClientId {int:ClientId}"
 msgstr "账户 {str:Username} 已经被客户端 ID 为 {int:ClientId} 的玩家使用了"
 
-#: src/engine/server/server.cpp:292
+#: src/engine/server/server.cpp:291
+msgid ""
+"Your password is weak, please consider changing it via /passwd <old "
+"password> <new password>"
+msgstr ""
+
+#: src/engine/server/server.cpp:300
 msgid "{str:PlayerName} logged in (id: {int:UserId})"
 msgstr "{str:PlayerName} 已登录（ID：{int:UserId}）"
 
-#: src/engine/server/server.cpp:324
-msgid "Wrong username or password."
-msgstr "用户名或密码错误。"
+#: src/engine/server/server.cpp:356
+msgid "The operation timed out. Please try again."
+msgstr ""
 
-#: src/engine/server/server.cpp:330
-msgid "An error occurred during the logging in."
-msgstr "登录时发生错误。"
-
-#: src/engine/server/server.cpp:349
-msgid "Unable to register an account"
-msgstr "无法注册账户"
-
-#: src/engine/server/server.cpp:357
-msgid "The account successfully registered. Time to log in."
-msgstr "账户注册完成。是时候登录了。"
-
-#: src/engine/server/server.cpp:360
-msgid "The username is already taken."
-msgstr "用户名已被占用。"
-
-#: src/engine/server/server.cpp:364
-msgid "Please wait 5 minutes before creating another account"
-msgstr "在创建另一个账号前请等待 5 分钟"
-
-#: src/engine/server/server.cpp:370
+#: src/engine/server/server.cpp:387 src/engine/server/server.cpp:419
+#: src/engine/server/server.cpp:448 src/engine/server/server.cpp:474
 msgid "An error occurred during the creation of your account."
 msgstr "创建帐户时发生错误。"
 
-#: src/engine/server/server.cpp:665
+#: src/engine/server/server.cpp:393 src/engine/server/server.cpp:468
+#, fuzzy
+#| msgid "Please wait 5 minutes before creating another account"
+msgid "Please wait 5 minutes before creating another account."
+msgstr "在创建另一个账号前请等待 5 分钟"
+
+#: src/engine/server/server.cpp:399 src/engine/server/server.cpp:465
+msgid "The username is already taken."
+msgstr "用户名已被占用。"
+
+#: src/engine/server/server.cpp:454
+msgid "Unable to register an account"
+msgstr "无法注册账户"
+
+#: src/engine/server/server.cpp:462
+#, fuzzy
+#| msgid "The account successfully registered. Time to log in."
+msgid "The account was registered successfully. You can log in now."
+msgstr "账户注册完成。是时候登录了。"
+
+#: src/engine/server/server.cpp:494 src/engine/server/server.cpp:501
+msgid "An error occurred during the logging in."
+msgstr "登录时发生错误。"
+
+#: src/engine/server/server.cpp:535
+#, fuzzy
+#| msgid "An error occured during the operation."
+msgid "An error occurred while processing the password."
+msgstr "在操作过程中发生错误。"
+
+#: src/engine/server/server.cpp:541
+msgid "The current password is wrong."
+msgstr ""
+
+#: src/engine/server/server.cpp:541
+msgid "Wrong username or password."
+msgstr "用户名或密码错误。"
+
+#: src/engine/server/server.cpp:582 src/engine/server/server.cpp:603
+msgid "The password could not be changed. Please try again later."
+msgstr ""
+
+#: src/engine/server/server.cpp:603
+msgid "The password has been changed."
+msgstr ""
+
+#: src/engine/server/server.cpp:890
 msgid "{str:Victim} has been muted for {sec:Duration} ({str:Reason})"
 msgstr "{str:Victim} 被禁言了 {sec:Duration} ({str:Reason})"
 
-#: src/engine/server/server.cpp:4278
+#: src/engine/server/server.cpp:4521
 msgid "The registration is currently disabled on the server"
 msgstr "账户注册在当前服务器上被禁用"
 
-#: src/engine/server/server.cpp:4290 src/engine/server/server.cpp:4352
+#: src/engine/server/server.cpp:4528 src/engine/server/server.cpp:4608
 msgid "You are already logged in."
 msgstr "你已经登录了。"
 
-#: src/engine/server/server.cpp:4297
-msgid "The registration is already in process"
+#: src/engine/server/server.cpp:4534
+#, fuzzy
+#| msgid "The registration is already in process"
+msgid "A registration is already in progress."
 msgstr "注册已经在处理了"
 
-#: src/engine/server/server.cpp:4314 src/engine/server/server.cpp:4389
+#: src/engine/server/server.cpp:4548 src/engine/server/server.cpp:4637
 msgid "The submitted credentials are not valid"
 msgstr "提交的凭据无效"
 
-#: src/engine/server/server.cpp:4337 src/engine/server/server.cpp:4410
+#: src/engine/server/server.cpp:4554 src/engine/server/server.cpp:4700
+msgid ""
+"The password is not valid. \n"
+"Requirements: at least 8 characters and at least three of the following: "
+"digits, lowercase letters, uppercase letters, and basic symbols."
+msgstr ""
+
+#: src/engine/server/server.cpp:4566
+#, fuzzy
+#| msgid "Too many failed auth attempts. Please wait for a minute."
+msgid "Too many registration attempts. Please wait for a minute."
+msgstr "太多次失败的认证尝试。请等一会。"
+
+#: src/engine/server/server.cpp:4590
+msgid "Creating the account, please wait..."
+msgstr ""
+
+#: src/engine/server/server.cpp:4598 src/engine/server/server.cpp:4662
 msgid "Use RCON (F2) to submit the username and password"
 msgstr "使用远程控制台（F2）来提交用户名和密码"
 
-#: src/engine/server/server.cpp:4359
-msgid "The logging in is already in process"
+#: src/engine/server/server.cpp:4614
+#, fuzzy
+#| msgid "The logging in is already in process"
+msgid "A login is already in progress."
 msgstr "登录已经在处理了"
 
-#: src/engine/server/server.cpp:4373
+#: src/engine/server/server.cpp:4623 src/engine/server/server.cpp:4689
 msgid "Too many failed auth attempts. Please wait for a minute."
 msgstr "太多次失败的认证尝试。请等一会。"
 
-#: src/engine/server/server.cpp:4434 src/game/server/gamecontext.cpp:2883
-msgid "{str:PlayerName} changed their name to {str:NewName}"
-msgstr "{str:PlayerName} 已改名为 {str:NewName}"
+#: src/engine/server/server.cpp:4657
+msgid "Logging in, please wait..."
+msgstr ""
 
-#: src/engine/server/server.cpp:4447
-msgid "You've logged out."
-msgstr "你已登出。"
-
-#: src/engine/server/server.cpp:4452
+#: src/engine/server/server.cpp:4674 src/engine/server/server.cpp:4851
 msgid "You are not logged in."
 msgstr "你未登录。"
 
-#: src/engine/server/server.cpp:4557
+#: src/engine/server/server.cpp:4680
+#, fuzzy
+#| msgid "The registration is already in process"
+msgid "Another account request is already in progress."
+msgstr "注册已经在处理了"
+
+#: src/engine/server/server.cpp:4706
+msgid "The new password must differ from the current one."
+msgstr ""
+
+#: src/engine/server/server.cpp:4727
+msgid "Changing the password, please wait..."
+msgstr ""
+
+#: src/engine/server/server.cpp:4833 src/game/server/gamecontext.cpp:2894
+msgid "{str:PlayerName} changed their name to {str:NewName}"
+msgstr "{str:PlayerName} 已改名为 {str:NewName}"
+
+#: src/engine/server/server.cpp:4846
+msgid "You've logged out."
+msgstr "你已登出。"
+
+#: src/engine/server/server.cpp:4956
 msgid "You have already notified that {str:PlayerName} ought to be banned"
 msgstr "你已提议封禁 {str:PlayerName}"
 
-#: src/engine/server/server.cpp:4572
+#: src/engine/server/server.cpp:4971
 msgid "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})"
 msgstr "{str:PlayerName} 提议封禁 {str:VictimName} ({str:Reason})"
 
-#: src/engine/server/server.cpp:4638
+#: src/engine/server/server.cpp:5037
 msgid "You have already voted to change this map"
 msgstr "你已投票跳过此地图"
 
-#: src/engine/server/server.cpp:4650
+#: src/engine/server/server.cpp:5049
 msgid "{str:PlayerName} wants to start the vote '{str:VoteName}'"
 msgstr "{str:PlayerName} 提议开始投票 '{str:VoteName}'"
 
-#: src/engine/server/server.cpp:4815
+#: src/engine/server/server.cpp:5223
 msgid "Name of player {str:PlayerName} changed to {str:NewName}"
 msgstr "{str:PlayerName} 已改名为 {str:NewName}"
 
@@ -137,80 +211,80 @@ msgid ""
 "seconds before talking."
 msgstr "此服务器设置了初始聊天延迟，你在 {int:Sec} 秒后才能进行聊天。"
 
-#: src/game/server/gamecontext.cpp:2540
+#: src/game/server/gamecontext.cpp:2551
 msgid "Invalid client id to kick"
 msgstr "被踢出的客户端 ID 无效"
 
-#: src/game/server/gamecontext.cpp:2546
+#: src/game/server/gamecontext.cpp:2557
 msgid "You can't kick yourself"
 msgstr "你不能踢出你自己"
 
-#: src/game/server/gamecontext.cpp:2552
+#: src/game/server/gamecontext.cpp:2563
 msgid "Unable to kick a server-side bot"
 msgstr "无法踢出服务端机器人"
 
-#: src/game/server/gamecontext.cpp:2558
+#: src/game/server/gamecontext.cpp:2569
 msgid "You can't kick admins"
 msgstr "你不能踢出管理员"
 
-#: src/game/server/gamecontext.cpp:2560
+#: src/game/server/gamecontext.cpp:2571
 msgid "'{str:CallerName}' called for vote to kick you"
 msgstr "“{str:CallerName}” 想要发起投票踢出你"
 
-#: src/game/server/gamecontext.cpp:2573
+#: src/game/server/gamecontext.cpp:2584
 msgid "Spectators aren't allowed to start a vote."
 msgstr "旁观者不被允许开始投票。"
 
-#: src/game/server/gamecontext.cpp:2588
+#: src/game/server/gamecontext.cpp:2599
 msgid "Invalid option"
 msgstr "无效的选项"
 
-#: src/game/server/gamecontext.cpp:2602
+#: src/game/server/gamecontext.cpp:2613
 msgid "Server is already on map {str:MapName}"
 msgstr "服务器的地图已经是 {str:MapName} 了"
 
-#: src/game/server/gamecontext.cpp:2613
+#: src/game/server/gamecontext.cpp:2624
 msgid ""
 "Each map must be played at least {int:Rounds} rounds before calling a map "
 "vote"
 msgstr "每个地图必需玩至少 {int:Rounds} 回合才能投票换图"
 
-#: src/game/server/gamecontext.cpp:2622 src/game/server/gamecontext.cpp:2641
+#: src/game/server/gamecontext.cpp:2633 src/game/server/gamecontext.cpp:2652
 msgid ""
 "'{str:CallerName}' called vote to change server option '{str:VoteName}' "
 "({str:Reason})"
 msgstr ""
 "“{str:CallerName}” 发起投票更改服务器选项 “{str:VoteName}”（{str:Reason}）"
 
-#: src/game/server/gamecontext.cpp:2635
+#: src/game/server/gamecontext.cpp:2646
 msgid "Votes are only allowed when the round start."
 msgstr "投票只在回合开始前允许。"
 
-#: src/game/server/gamecontext.cpp:2667
+#: src/game/server/gamecontext.cpp:2678
 msgid "'{str:VoteName}' isn't an option on this server"
 msgstr "“{str:VoteName}” 不是服务器选项"
 
-#: src/game/server/gamecontext.cpp:2673
+#: src/game/server/gamecontext.cpp:2684
 msgid "'{str:CallerName}' called vote to change server option '{str:VoteName}'"
 msgstr "“{str:CallerName}” 发起投票更改服务器选项 “{str:VoteName}”"
 
-#: src/game/server/gamecontext.cpp:2687
+#: src/game/server/gamecontext.cpp:2698
 msgid "Server does not allow voting to move players to spectators"
 msgstr "服务器不允许移动玩家到旁观位"
 
-#: src/game/server/gamecontext.cpp:2695
+#: src/game/server/gamecontext.cpp:2706
 msgid "Invalid client id to move"
 msgstr "无效的客户端 ID"
 
-#: src/game/server/gamecontext.cpp:2701
+#: src/game/server/gamecontext.cpp:2712
 msgid "You can't move yourself"
 msgstr "你不能将你自己移动到旁观位"
 
-#: src/game/server/gamecontext.cpp:2707
+#: src/game/server/gamecontext.cpp:2718
 msgid "Unable to move a server-side bot to spectators"
 msgstr "无法将服务端机器人移动到旁观位"
 
-#: src/game/server/gamecontext.cpp:2716
+#: src/game/server/gamecontext.cpp:2727
 msgid ""
 "'{str:CallerName}' called for vote to move '{str:SpectateName}' to "
 "spectators ({str:Reason})"
@@ -218,185 +292,192 @@ msgstr ""
 "“{str:CallerName}” 发起投票将 “{str:SpectateName}” 移动到旁观位"
 "（{str:Reason}）"
 
-#: src/game/server/gamecontext.cpp:2801
+#: src/game/server/gamecontext.cpp:2812
 msgid "You can't join the spectators right now"
 msgstr "你现在还不能进入旁观模式"
 
-#: src/game/server/gamecontext.cpp:2812 src/game/server/gamecontroller.cpp:1273
+#: src/game/server/gamecontext.cpp:2823 src/game/server/gamecontroller.cpp:1273
 msgid "You have to log in to join the game"
 msgstr "你必须登录才能加入游戏"
 
-#: src/game/server/gamecontext.cpp:2858
+#: src/game/server/gamecontext.cpp:2869
 msgid "Invalid spectator id used"
 msgstr "无效的旁观者 ID"
 
-#: src/game/server/gamecontext.cpp:3008
+#: src/game/server/gamecontext.cpp:3019
 msgid "Switch language to {str:LangName}?"
 msgstr "切换语言到{str:LangName}吗？"
 
-#: src/game/server/gamecontext.cpp:3015
+#: src/game/server/gamecontext.cpp:3026
 msgid "You can change the language of this mod using the command /language."
 msgstr "你可以使用命令 /language 切换此 mod 的语言。"
 
-#: src/game/server/gamecontext.cpp:3016
+#: src/game/server/gamecontext.cpp:3027
 msgid ""
 "If your language is not available, you can help with translation (/help "
 "translate)."
 msgstr "如果你的语言还不可用，你可以帮助翻译（详见 /help translate）。"
 
-#: src/game/server/gamecontext.cpp:3106
+#: src/game/server/gamecontext.cpp:3117
 msgid "You will now see all tees on this server, no matter the distance"
 msgstr "你现在能看到服务器上的所有 Tee，无论距离"
 
-#: src/game/server/gamecontext.cpp:3109
+#: src/game/server/gamecontext.cpp:3120
 msgid "You will no longer see all tees on this server"
 msgstr "你不再能看到服务器上的所有 Tee"
 
-#: src/game/server/gamecontext.cpp:3532
+#: src/game/server/gamecontext.cpp:3543
 msgid "All players were moved to the {str:TeamName}"
 msgstr "所有玩家被移动到了 {str:TeamName}"
 
-#: src/game/server/gamecontext.cpp:3785
+#: src/game/server/gamecontext.cpp:3796
 msgid "authorized player forced server option '{str:VoteName}' ({str:Reason})"
 msgstr "已认证的玩家强制更改了服务器选项 “{str:VoteName}”（{str:Reason}）"
 
-#: src/game/server/gamecontext.cpp:3830
+#: src/game/server/gamecontext.cpp:3841
 msgid "'{str:PlayerName}' was moved to spectator ({str:Reason})"
 msgstr "“{str:PlayerName}” 被移动到了旁观位（{str:Reason}）"
 
-#: src/game/server/gamecontext.cpp:3902
+#: src/game/server/gamecontext.cpp:3913
 msgid "admin forced vote {str:VoteName}"
 msgstr "管理员进行了强制投票 {str:VoteName}"
 
-#: src/game/server/gamecontext.cpp:4075
+#: src/game/server/gamecontext.cpp:4086
 msgid "Usage: /msg <username or group> <message>"
 msgstr "使用方法：/msg <玩家或群组名> <内容>"
 
-#: src/game/server/gamecontext.cpp:4077
+#: src/game/server/gamecontext.cpp:4088
 msgid "Send a private message to a player or a group of players"
 msgstr "向一名玩家或玩家群组发送私信"
 
-#: src/game/server/gamecontext.cpp:4079
+#: src/game/server/gamecontext.cpp:4090
 msgid "Available groups: !near, !engineer, !soldier, ..."
 msgstr "可用的群组：!near、!engineer、!soldier……"
 
-#: src/game/server/gamecontext.cpp:4249
+#: src/game/server/gamecontext.cpp:4260
 msgid "No player was found with this name"
 msgstr "没有找到这个名字的玩家"
 
-#: src/game/server/gamecontext.cpp:4327
+#: src/game/server/gamecontext.cpp:4338
 msgid "Invalid player name"
 msgstr "无效的玩家名"
 
-#: src/game/server/gamecontext.cpp:4336 src/game/server/gamecontext.cpp:5271
+#: src/game/server/gamecontext.cpp:4347 src/game/server/gamecontext.cpp:5295
 msgid "No player with name \"{str:PlayerName}\" found"
 msgstr "没有找到叫 “{str:PlayerName}” 的玩家"
 
-#: src/game/server/gamecontext.cpp:4346
+#: src/game/server/gamecontext.cpp:4357
 msgid ""
 "Player muted. Mute will persist until you or the muted player disconnects."
 msgstr "已屏蔽玩家。屏蔽将持续到你或者被屏蔽的玩家断开连接。"
 
-#: src/game/server/gamecontext.cpp:4351
+#: src/game/server/gamecontext.cpp:4362
 msgid "Player unmuted. You can see their messages again."
 msgstr "已解除屏蔽玩家。你能看到他们的消息了。"
 
-#: src/game/server/gamecontext.cpp:4419
+#: src/game/server/gamecontext.cpp:4440
 msgid "Accounts"
 msgstr "账户"
 
-#: src/game/server/gamecontext.cpp:4424
+#: src/game/server/gamecontext.cpp:4445
 msgctxt "Accounts"
 msgid "You have to use an account to play on this server."
 msgstr "你需要账户才能在这个服务器上玩。"
 
-#: src/game/server/gamecontext.cpp:4428
+#: src/game/server/gamecontext.cpp:4449
 msgctxt "Accounts"
 msgid "You can use an account to unlock some features on this server."
 msgstr "你能使用账户来解锁服务器上的一些功能。"
 
-#: src/game/server/gamecontext.cpp:4433
+#: src/game/server/gamecontext.cpp:4454
 msgctxt "Accounts"
 msgid "Account system is currently disabled."
 msgstr "账户系统当前被禁用。"
 
-#: src/game/server/gamecontext.cpp:4438
+#: src/game/server/gamecontext.cpp:4459
 msgctxt "Accounts"
 msgid "You can use RCON interface or chat commands to register and log in."
 msgstr "你能使用远程控制台界面或者聊天框指令来注册和登录。"
 
-#: src/game/server/gamecontext.cpp:4440
+#: src/game/server/gamecontext.cpp:4461
 msgctxt "Accounts"
 msgid "Use `/register` without arguments to start registration via RCON."
 msgstr "使用 `/register`（不带参数）来通过远程控制台开始注册。"
 
-#: src/game/server/gamecontext.cpp:4442
+#: src/game/server/gamecontext.cpp:4463
 msgctxt "Accounts"
 msgid "Use `/register <username> <password>` to register via chat commands."
 msgstr "使用 `/register <用户名> <密码>` 来通过聊天框指令注册。"
 
-#: src/game/server/gamecontext.cpp:4444
+#: src/game/server/gamecontext.cpp:4465
 msgctxt "Accounts"
 msgid ""
 "Use RCON or `/login <username> <password>` to login into an existing account."
 msgstr "使用远程控制台或 `/login <用户名> <密码>` 来登录已经存在的账户。"
 
-#: src/game/server/gamecontext.cpp:4454
+#: src/game/server/gamecontext.cpp:4467
+msgctxt "Accounts"
+msgid ""
+"Use `/passwd <old password> <new password>` to change the password of the "
+"logged in account."
+msgstr ""
+
+#: src/game/server/gamecontext.cpp:4477
 msgid "Choose a help page with /help <page>"
 msgstr "使用 /help <page> 查看帮助页"
 
-#: src/game/server/gamecontext.cpp:4537
+#: src/game/server/gamecontext.cpp:4560
 msgid "Unknown language"
 msgstr "未知语言"
 
-#: src/game/server/gamecontext.cpp:4593
+#: src/game/server/gamecontext.cpp:4616
 msgid "ChangeLog is not provided"
 msgstr "无更改日志"
 
-#: src/game/server/gamecontext.cpp:4605
+#: src/game/server/gamecontext.cpp:4628
 msgid "ChangeLog page {int:PageNumber} is not available"
 msgstr "不能查看第 {int:PageNumber} 页更改日志"
 
-#: src/game/server/gamecontext.cpp:4626
+#: src/game/server/gamecontext.cpp:4649
 msgid ""
 "(page {int:PageNumber}/{int:PagesInTotal}, see /changelog {int:NextPage})"
 msgstr ""
 "({int:PageNumber}/{int:PagesInTotal}， 下一页查看 /changelog {int:NextPage})"
 
-#: src/game/server/gamecontext.cpp:5213
+#: src/game/server/gamecontext.cpp:5237
 msgid "This message contains prohibited content."
 msgstr "该消息包含被禁止的内容。"
 
-#: src/game/server/gamecontext.cpp:5246
+#: src/game/server/gamecontext.cpp:5270
 msgid "You are muted for {sec:Duration}"
 msgstr "你被禁言了 {sec:Duration}"
 
-#: src/game/server/gamecontext.cpp:5262
+#: src/game/server/gamecontext.cpp:5286
 msgid "Invalid whisper"
 msgstr "无效的私信"
 
-#: src/game/server/gamecontext.cpp:5298
+#: src/game/server/gamecontext.cpp:5322
 msgid "You have to log in to chat or join the game"
 msgstr "你必须登录才能聊天或者加入游戏"
 
-#: src/game/server/gamecontext.cpp:5378
+#: src/game/server/gamecontext.cpp:5402
 msgid ""
 "You do not have an ongoing conversation. Whisper to someone to start one"
 msgstr "你没有正在进行的对话。向某人发送私信来开始一个"
 
-#: src/game/server/gamecontext.cpp:5408
+#: src/game/server/gamecontext.cpp:5432
 msgid "You can only vote after logging in."
 msgstr "你需要登录才能投票。"
 
-#: src/game/server/gamecontext.cpp:5419
+#: src/game/server/gamecontext.cpp:5443
 msgid "Wait for current vote to end before calling a new one."
 msgstr "当前投票结束才能开始新投票。"
 
-#: src/game/server/gamecontext.cpp:5431
+#: src/game/server/gamecontext.cpp:5455
 msgid "You must wait {int:TimeLeftSeconds} seconds before making another vote."
 msgstr "你需要等 {int:TimeLeftSeconds} 秒才能开始另一个投票。"
 
-#: src/game/server/gamecontext.cpp:5445
+#: src/game/server/gamecontext.cpp:5469
 msgid ""
 "There's a {int:Delay} second delay between map-votes, please wait "
 "{int:WaitTime} seconds."
@@ -2245,23 +2326,23 @@ msgctxt "Spitter"
 msgid "The slime heals the infected and deals damage to humans."
 msgstr "粘液会治疗感染者并对人类造成伤害。"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:7402
+#: src/game/server/infclass/ic_gamecontroller.cpp:7408
 msgid "You have killed a witch, +5 points"
 msgstr "你杀了一个女巫，+5 分"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:7406
+#: src/game/server/infclass/ic_gamecontroller.cpp:7412
 msgid "You have killed an undead! +5 points"
 msgstr "你杀了一个不死族，+5 分"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:7529
+#: src/game/server/infclass/ic_gamecontroller.cpp:7535
 msgid "The witch is dead"
 msgstr "女巫已死"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:7534
+#: src/game/server/infclass/ic_gamecontroller.cpp:7540
 msgid "The undead is finally dead"
 msgstr "不死族最终还是死了"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:8939
+#: src/game/server/infclass/ic_gamecontroller.cpp:8945
 msgid "Hook protection is always disabled in this round type"
 msgstr "钩子保护在这个回合类型中总是关闭"
 
@@ -2323,9 +2404,6 @@ msgstr "键入“/help {str:ClassName}”获取当前职业的更多信息"
 
 #~ msgid "An error occured during the creation of your account."
 #~ msgstr "创建帐户时发生错误。"
-
-#~ msgid "An error occured during the operation."
-#~ msgstr "在操作过程中发生错误。"
 
 #~ msgid "Available help pages: {str:PageList}"
 #~ msgstr "可用的帮助页面︰{str:PageList}"

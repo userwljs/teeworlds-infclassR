@@ -17,110 +17,172 @@ msgstr ""
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: infclasspot.po\n"
 
-#: src/engine/server/server.cpp:261
-msgid "Account {str:Username} is already used by ClientId {int:ClientId})"
+#: src/engine/server/server.cpp:259
+msgid "Account {str:Username} is already used by ClientId {int:ClientId}"
 msgstr ""
 
-#: src/engine/server/server.cpp:292
+#: src/engine/server/server.cpp:291
+msgid ""
+"Your password is weak, please consider changing it via /passwd <old "
+"password> <new password>"
+msgstr ""
+
+#: src/engine/server/server.cpp:300
 #, fuzzy
 msgid "{str:PlayerName} logged in (id: {int:UserId})"
 msgstr "{str:PlayerName} Був забанений за ({str:Reason})"
 
-#: src/engine/server/server.cpp:324
-#, fuzzy
-msgid "Wrong username or password."
-msgstr "Неправильне ім'я користувача/пароль."
-
-#: src/engine/server/server.cpp:330
-#, fuzzy
-msgid "An error occurred during the logging in."
-msgstr "Помилка під час дії."
-
-#: src/engine/server/server.cpp:349
-msgid "Unable to register an account"
+#: src/engine/server/server.cpp:356
+msgid "The operation timed out. Please try again."
 msgstr ""
 
-#: src/engine/server/server.cpp:357
-msgid "The account successfully registered. Time to log in."
-msgstr ""
-
-#: src/engine/server/server.cpp:360
-#, fuzzy
-msgid "The username is already taken."
-msgstr "Це ім'я вже зайнято існуючим акантом"
-
-#: src/engine/server/server.cpp:364
-msgid "Please wait 5 minutes before creating another account"
-msgstr "Будь ласка заждіть 5 хвилин перед створенням нового акканту"
-
-#: src/engine/server/server.cpp:370
+#: src/engine/server/server.cpp:387 src/engine/server/server.cpp:419
+#: src/engine/server/server.cpp:448 src/engine/server/server.cpp:474
 #, fuzzy
 msgid "An error occurred during the creation of your account."
 msgstr "З'явилась помилка при створені вашого аканту."
 
-#: src/engine/server/server.cpp:665
+#: src/engine/server/server.cpp:393 src/engine/server/server.cpp:468
+#, fuzzy
+#| msgid "Please wait 5 minutes before creating another account"
+msgid "Please wait 5 minutes before creating another account."
+msgstr "Будь ласка заждіть 5 хвилин перед створенням нового акканту"
+
+#: src/engine/server/server.cpp:399 src/engine/server/server.cpp:465
+#, fuzzy
+msgid "The username is already taken."
+msgstr "Це ім'я вже зайнято існуючим акантом"
+
+#: src/engine/server/server.cpp:454
+msgid "Unable to register an account"
+msgstr ""
+
+#: src/engine/server/server.cpp:462
+msgid "The account was registered successfully. You can log in now."
+msgstr ""
+
+#: src/engine/server/server.cpp:494 src/engine/server/server.cpp:501
+#, fuzzy
+msgid "An error occurred during the logging in."
+msgstr "Помилка під час дії."
+
+#: src/engine/server/server.cpp:535
+#, fuzzy
+#| msgid "An error occured during the operation."
+msgid "An error occurred while processing the password."
+msgstr "Помилка під час дії."
+
+#: src/engine/server/server.cpp:541
+msgid "The current password is wrong."
+msgstr ""
+
+#: src/engine/server/server.cpp:541
+#, fuzzy
+msgid "Wrong username or password."
+msgstr "Неправильне ім'я користувача/пароль."
+
+#: src/engine/server/server.cpp:582 src/engine/server/server.cpp:603
+msgid "The password could not be changed. Please try again later."
+msgstr ""
+
+#: src/engine/server/server.cpp:603
+msgid "The password has been changed."
+msgstr ""
+
+#: src/engine/server/server.cpp:890
 msgid "{str:Victim} has been muted for {sec:Duration} ({str:Reason})"
 msgstr "{str:Victim} був приглушений на {sec:Duration} ({str:Reason})"
 
-#: src/engine/server/server.cpp:4278
+#: src/engine/server/server.cpp:4521
 msgid "The registration is currently disabled on the server"
 msgstr ""
 
-#: src/engine/server/server.cpp:4290 src/engine/server/server.cpp:4352
+#: src/engine/server/server.cpp:4528 src/engine/server/server.cpp:4608
 msgid "You are already logged in."
 msgstr ""
 
-#: src/engine/server/server.cpp:4297
-msgid "The registration is already in process"
+#: src/engine/server/server.cpp:4534
+msgid "A registration is already in progress."
 msgstr ""
 
-#: src/engine/server/server.cpp:4314 src/engine/server/server.cpp:4389
+#: src/engine/server/server.cpp:4548 src/engine/server/server.cpp:4637
 msgid "The submitted credentials are not valid"
 msgstr ""
 
-#: src/engine/server/server.cpp:4337 src/engine/server/server.cpp:4410
+#: src/engine/server/server.cpp:4554 src/engine/server/server.cpp:4700
+msgid ""
+"The password is not valid. \n"
+"Requirements: at least 8 characters and at least three of the following: "
+"digits, lowercase letters, uppercase letters, and basic symbols."
+msgstr ""
+
+#: src/engine/server/server.cpp:4566
+msgid "Too many registration attempts. Please wait for a minute."
+msgstr ""
+
+#: src/engine/server/server.cpp:4590
+msgid "Creating the account, please wait..."
+msgstr ""
+
+#: src/engine/server/server.cpp:4598 src/engine/server/server.cpp:4662
 msgid "Use RCON (F2) to submit the username and password"
 msgstr ""
 
-#: src/engine/server/server.cpp:4359
-msgid "The logging in is already in process"
+#: src/engine/server/server.cpp:4614
+msgid "A login is already in progress."
 msgstr ""
 
-#: src/engine/server/server.cpp:4373
+#: src/engine/server/server.cpp:4623 src/engine/server/server.cpp:4689
 msgid "Too many failed auth attempts. Please wait for a minute."
 msgstr ""
 
-#: src/engine/server/server.cpp:4434 src/game/server/gamecontext.cpp:2883
-msgid "{str:PlayerName} changed their name to {str:NewName}"
-msgstr "{str:PlayerName} змінив своє ім'я на {str:NewName}"
-
-#: src/engine/server/server.cpp:4447
-msgid "You've logged out."
+#: src/engine/server/server.cpp:4657
+msgid "Logging in, please wait..."
 msgstr ""
 
-#: src/engine/server/server.cpp:4452
+#: src/engine/server/server.cpp:4674 src/engine/server/server.cpp:4851
 #, fuzzy
 msgid "You are not logged in."
 msgstr "Ви увійшли."
 
-#: src/engine/server/server.cpp:4557
+#: src/engine/server/server.cpp:4680
+msgid "Another account request is already in progress."
+msgstr ""
+
+#: src/engine/server/server.cpp:4706
+msgid "The new password must differ from the current one."
+msgstr ""
+
+#: src/engine/server/server.cpp:4727
+msgid "Changing the password, please wait..."
+msgstr ""
+
+#: src/engine/server/server.cpp:4833 src/game/server/gamecontext.cpp:2894
+msgid "{str:PlayerName} changed their name to {str:NewName}"
+msgstr "{str:PlayerName} змінив своє ім'я на {str:NewName}"
+
+#: src/engine/server/server.cpp:4846
+msgid "You've logged out."
+msgstr ""
+
+#: src/engine/server/server.cpp:4956
 msgid "You have already notified that {str:PlayerName} ought to be banned"
 msgstr "Ви вже повідомляли, що {str:PlayerName} має бути забанений"
 
-#: src/engine/server/server.cpp:4572
+#: src/engine/server/server.cpp:4971
 msgid "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})"
 msgstr "{str:PlayerName} хоче {str:VictimName} забанити ({str:Reason})"
 
-#: src/engine/server/server.cpp:4638
+#: src/engine/server/server.cpp:5037
 msgid "You have already voted to change this map"
 msgstr ""
 
-#: src/engine/server/server.cpp:4650
+#: src/engine/server/server.cpp:5049
 #, fuzzy
 msgid "{str:PlayerName} wants to start the vote '{str:VoteName}'"
 msgstr "{str:PlayerName} змінив своє ім'я на {str:NewName}"
 
-#: src/engine/server/server.cpp:4815
+#: src/engine/server/server.cpp:5223
 #, fuzzy
 msgid "Name of player {str:PlayerName} changed to {str:NewName}"
 msgstr "{str:PlayerName} змінив своє ім'я на {str:NewName}"
@@ -143,270 +205,277 @@ msgid ""
 "seconds before talking."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2540
+#: src/game/server/gamecontext.cpp:2551
 msgid "Invalid client id to kick"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2546
+#: src/game/server/gamecontext.cpp:2557
 msgid "You can't kick yourself"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2552
+#: src/game/server/gamecontext.cpp:2563
 msgid "Unable to kick a server-side bot"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2558
+#: src/game/server/gamecontext.cpp:2569
 msgid "You can't kick admins"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2560
+#: src/game/server/gamecontext.cpp:2571
 msgid "'{str:CallerName}' called for vote to kick you"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2573
+#: src/game/server/gamecontext.cpp:2584
 msgid "Spectators aren't allowed to start a vote."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2588
+#: src/game/server/gamecontext.cpp:2599
 msgid "Invalid option"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2602
+#: src/game/server/gamecontext.cpp:2613
 msgid "Server is already on map {str:MapName}"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2613
+#: src/game/server/gamecontext.cpp:2624
 msgid ""
 "Each map must be played at least {int:Rounds} rounds before calling a map "
 "vote"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2622 src/game/server/gamecontext.cpp:2641
+#: src/game/server/gamecontext.cpp:2633 src/game/server/gamecontext.cpp:2652
 #, fuzzy
 msgid ""
 "'{str:CallerName}' called vote to change server option '{str:VoteName}' "
 "({str:Reason})"
 msgstr "{str:PlayerName} Покинув гру через ({str:Reason})"
 
-#: src/game/server/gamecontext.cpp:2635
+#: src/game/server/gamecontext.cpp:2646
 msgid "Votes are only allowed when the round start."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2667
+#: src/game/server/gamecontext.cpp:2678
 msgid "'{str:VoteName}' isn't an option on this server"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2673
+#: src/game/server/gamecontext.cpp:2684
 #, fuzzy
 msgid "'{str:CallerName}' called vote to change server option '{str:VoteName}'"
 msgstr "{str:PlayerName} змінив своє ім'я на {str:NewName}"
 
-#: src/game/server/gamecontext.cpp:2687
+#: src/game/server/gamecontext.cpp:2698
 msgid "Server does not allow voting to move players to spectators"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2695
+#: src/game/server/gamecontext.cpp:2706
 msgid "Invalid client id to move"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2701
+#: src/game/server/gamecontext.cpp:2712
 msgid "You can't move yourself"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2707
+#: src/game/server/gamecontext.cpp:2718
 msgid "Unable to move a server-side bot to spectators"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2716
+#: src/game/server/gamecontext.cpp:2727
 #, fuzzy
 msgid ""
 "'{str:CallerName}' called for vote to move '{str:SpectateName}' to "
 "spectators ({str:Reason})"
 msgstr "{str:PlayerName} хоче {str:VictimName} забанити ({str:Reason})"
 
-#: src/game/server/gamecontext.cpp:2801
+#: src/game/server/gamecontext.cpp:2812
 msgid "You can't join the spectators right now"
 msgstr "Ви не можете приєднатися до спостерігачів зараз"
 
-#: src/game/server/gamecontext.cpp:2812 src/game/server/gamecontroller.cpp:1273
+#: src/game/server/gamecontext.cpp:2823 src/game/server/gamecontroller.cpp:1273
 msgid "You have to log in to join the game"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:2858
+#: src/game/server/gamecontext.cpp:2869
 msgid "Invalid spectator id used"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3008
+#: src/game/server/gamecontext.cpp:3019
 #, fuzzy
 msgid "Switch language to {str:LangName}?"
 msgstr "Змінити мову на українську?"
 
-#: src/game/server/gamecontext.cpp:3015
+#: src/game/server/gamecontext.cpp:3026
 msgid "You can change the language of this mod using the command /language."
 msgstr "Ви можете змінити мову використовуючи команду  /language"
 
-#: src/game/server/gamecontext.cpp:3016
+#: src/game/server/gamecontext.cpp:3027
 msgid ""
 "If your language is not available, you can help with translation (/help "
 "translate)."
 msgstr ""
 "Якщо мова не доступна, ви можете допомогти з перекладом (/help translate)."
 
-#: src/game/server/gamecontext.cpp:3106
+#: src/game/server/gamecontext.cpp:3117
 msgid "You will now see all tees on this server, no matter the distance"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3109
+#: src/game/server/gamecontext.cpp:3120
 msgid "You will no longer see all tees on this server"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3532
+#: src/game/server/gamecontext.cpp:3543
 msgid "All players were moved to the {str:TeamName}"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3785
+#: src/game/server/gamecontext.cpp:3796
 msgid "authorized player forced server option '{str:VoteName}' ({str:Reason})"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:3830
+#: src/game/server/gamecontext.cpp:3841
 #, fuzzy
 msgid "'{str:PlayerName}' was moved to spectator ({str:Reason})"
 msgstr "{str:PlayerName} Покинув гру через ({str:Reason})"
 
-#: src/game/server/gamecontext.cpp:3902
+#: src/game/server/gamecontext.cpp:3913
 #, fuzzy
 msgid "admin forced vote {str:VoteName}"
 msgstr "{str:PlayerName} змінив своє ім'я на {str:NewName}"
 
-#: src/game/server/gamecontext.cpp:4075
+#: src/game/server/gamecontext.cpp:4086
 msgid "Usage: /msg <username or group> <message>"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4077
+#: src/game/server/gamecontext.cpp:4088
 msgid "Send a private message to a player or a group of players"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4079
+#: src/game/server/gamecontext.cpp:4090
 msgid "Available groups: !near, !engineer, !soldier, ..."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4249
+#: src/game/server/gamecontext.cpp:4260
 msgid "No player was found with this name"
 msgstr "Жодного гравця не знайдено з таким ім'ям"
 
-#: src/game/server/gamecontext.cpp:4327
+#: src/game/server/gamecontext.cpp:4338
 msgid "Invalid player name"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4336 src/game/server/gamecontext.cpp:5271
+#: src/game/server/gamecontext.cpp:4347 src/game/server/gamecontext.cpp:5295
 #, fuzzy
 msgid "No player with name \"{str:PlayerName}\" found"
 msgstr "Ціль для винищення: {str:PlayerName}"
 
-#: src/game/server/gamecontext.cpp:4346
+#: src/game/server/gamecontext.cpp:4357
 msgid ""
 "Player muted. Mute will persist until you or the muted player disconnects."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4351
+#: src/game/server/gamecontext.cpp:4362
 msgid "Player unmuted. You can see their messages again."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4419
+#: src/game/server/gamecontext.cpp:4440
 msgid "Accounts"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4424
+#: src/game/server/gamecontext.cpp:4445
 msgctxt "Accounts"
 msgid "You have to use an account to play on this server."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4428
+#: src/game/server/gamecontext.cpp:4449
 msgctxt "Accounts"
 msgid "You can use an account to unlock some features on this server."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4433
+#: src/game/server/gamecontext.cpp:4454
 msgctxt "Accounts"
 msgid "Account system is currently disabled."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4438
+#: src/game/server/gamecontext.cpp:4459
 msgctxt "Accounts"
 msgid "You can use RCON interface or chat commands to register and log in."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4440
+#: src/game/server/gamecontext.cpp:4461
 msgctxt "Accounts"
 msgid "Use `/register` without arguments to start registration via RCON."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4442
+#: src/game/server/gamecontext.cpp:4463
 msgctxt "Accounts"
 msgid "Use `/register <username> <password>` to register via chat commands."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4444
+#: src/game/server/gamecontext.cpp:4465
 msgctxt "Accounts"
 msgid ""
 "Use RCON or `/login <username> <password>` to login into an existing account."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4454
+#: src/game/server/gamecontext.cpp:4467
+msgctxt "Accounts"
+msgid ""
+"Use `/passwd <old password> <new password>` to change the password of the "
+"logged in account."
+msgstr ""
+
+#: src/game/server/gamecontext.cpp:4477
 msgid "Choose a help page with /help <page>"
 msgstr "Виберіть свою сторінку завдяки /help <page>"
 
-#: src/game/server/gamecontext.cpp:4537
+#: src/game/server/gamecontext.cpp:4560
 msgid "Unknown language"
 msgstr "Невідома мова"
 
-#: src/game/server/gamecontext.cpp:4593
+#: src/game/server/gamecontext.cpp:4616
 msgid "ChangeLog is not provided"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4605
+#: src/game/server/gamecontext.cpp:4628
 msgid "ChangeLog page {int:PageNumber} is not available"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:4626
+#: src/game/server/gamecontext.cpp:4649
 msgid ""
 "(page {int:PageNumber}/{int:PagesInTotal}, see /changelog {int:NextPage})"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:5213
+#: src/game/server/gamecontext.cpp:5237
 msgid "This message contains prohibited content."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:5246
+#: src/game/server/gamecontext.cpp:5270
 msgid "You are muted for {sec:Duration}"
 msgstr "Ви приглушені на {sec:Duration}"
 
-#: src/game/server/gamecontext.cpp:5262
+#: src/game/server/gamecontext.cpp:5286
 msgid "Invalid whisper"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:5298
+#: src/game/server/gamecontext.cpp:5322
 msgid "You have to log in to chat or join the game"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:5378
+#: src/game/server/gamecontext.cpp:5402
 msgid ""
 "You do not have an ongoing conversation. Whisper to someone to start one"
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:5408
+#: src/game/server/gamecontext.cpp:5432
 msgid "You can only vote after logging in."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:5419
+#: src/game/server/gamecontext.cpp:5443
 msgid "Wait for current vote to end before calling a new one."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:5431
+#: src/game/server/gamecontext.cpp:5455
 msgid "You must wait {int:TimeLeftSeconds} seconds before making another vote."
 msgstr ""
 
-#: src/game/server/gamecontext.cpp:5445
+#: src/game/server/gamecontext.cpp:5469
 msgid ""
 "There's a {int:Delay} second delay between map-votes, please wait "
 "{int:WaitTime} seconds."
@@ -2470,24 +2539,24 @@ msgctxt "Spitter"
 msgid "The slime heals the infected and deals damage to humans."
 msgstr "Ціль заражених, інфікувати всіх людей."
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:7402
+#: src/game/server/infclass/ic_gamecontroller.cpp:7408
 msgid "You have killed a witch, +5 points"
 msgstr "Ти вбив відьму, +5 очок"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:7406
+#: src/game/server/infclass/ic_gamecontroller.cpp:7412
 #, fuzzy
 msgid "You have killed an undead! +5 points"
 msgstr "Ти вбив відьму, +5 очок"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:7529
+#: src/game/server/infclass/ic_gamecontroller.cpp:7535
 msgid "The witch is dead"
 msgstr "Відьма загинула"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:7534
+#: src/game/server/infclass/ic_gamecontroller.cpp:7540
 msgid "The undead is finally dead"
 msgstr "Невмирущий нарешті загинув"
 
-#: src/game/server/infclass/ic_gamecontroller.cpp:8939
+#: src/game/server/infclass/ic_gamecontroller.cpp:8945
 #, fuzzy
 msgid "Hook protection is always disabled in this round type"
 msgstr "Захист від гака виключений"
@@ -2536,9 +2605,6 @@ msgstr "Напишіть «/help {str:ClassName}» для інформації �
 
 #~ msgid "An error occured during the creation of your account."
 #~ msgstr "З'явилась помилка при створені вашого аканту."
-
-#~ msgid "An error occured during the operation."
-#~ msgstr "Помилка під час дії."
 
 #~ msgid "Any human that touch a hook in web mode is automatically grabbed."
 #~ msgstr ""
