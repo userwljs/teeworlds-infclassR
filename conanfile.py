@@ -80,6 +80,7 @@ class InfClassRecipe(ConanFile):
 
         tc.cache_variables["USE_LUA"] = self.options.with_lua
         tc.cache_variables["GEOLOCATION"] = self.options.with_geolocation
+        tc.cache_variables["sodium_USE_STATIC_LIBS"] = not self.dependencies["libsodium"].options.shared
 
         tc.generate()
 
