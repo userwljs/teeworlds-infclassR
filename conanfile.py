@@ -7,7 +7,7 @@ from conan.tools.cmake import CMake, CMakeToolchain
 from conan.tools.layout import basic_layout
 from conan.tools.microsoft import is_msvc
 
-LUAJIT_REF = "1edc3e52b67eaf6ce5f809be8e17d6862594b8bc"  # From Aug 3, 2026, v2.1 branch
+LUAJIT_REF = "63c8f1a9b479ba5518cf6a170ff7729178bc3cfd"  # From Nov 11, 2026, v2.1 branch
 
 
 class InfClassRecipe(ConanFile):
@@ -26,15 +26,15 @@ class InfClassRecipe(ConanFile):
     }
 
     def requirements(self):
-        self.requires("zlib/1.3.2")
-        self.requires("libcurl/8.21.0")
-        self.requires("libpng/1.6.58")
-        self.requires("sqlite3/3.53.4")
+        self.requires("zlib/1.4")
+        self.requires("libcurl/8.23.0")
+        self.requires("libpng/1.6.59")
+        self.requires("sqlite3/3.54.1")
         icu_options = {"data_packaging": "static"}
         if self.settings.os == "Windows":
             del icu_options["data_packaging"]
-        self.requires("icu/78.2", options=icu_options)
-        self.requires("openssl/3.6.3")
+        self.requires("icu/79.1", options=icu_options)
+        self.requires("openssl/3.6.5")
 
         if self.options.with_geolocation:
             self.requires("libmaxminddb/1.12.2")
@@ -90,7 +90,7 @@ class InfClassRecipe(ConanFile):
     def configure(self):
         # https://github.com/conan-io/conan-center-index/issues/25032
         # https://github.com/conan-io/conan-center-index/issues/30024
-        # The Conan Center version doesn't build on Windows and is extremely outdated
+        # Don’t use the rolling release package in Conan Center whose maintenance is still unclear
         # TODO: Find a better solution
         ConanAPI().export.export(
             os.path.join(self.recipe_folder, "other/luajit-recipe.py"),
