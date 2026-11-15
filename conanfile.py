@@ -70,7 +70,7 @@ class InfClassRecipe(ConanFile):
         self.tool_requires("ninja/1.13.2")
 
     def generate(self):
-        tc = CMakeToolchain(self)
+        tc = CMakeToolchain(self, generator="Ninja")
 
         tc.variables["_USING_CONAN"] = True
         if is_msvc(self):
