@@ -128,30 +128,11 @@ bool CAccountsAuthWorker::CheckRegistration(IDbConnection *pSqlServer, const ISq
 	return false;
 }
 
-bool CAccountsAuthWorker::RegisterAccount(IDbConnection *pSqlServer, const ISqlData *pGameData, Write w, char *pError, int ErrorSize)
+bool CAccountsAuthWorker::RegisterAccount(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize)
 {
 	const auto *pData = dynamic_cast<const CSqlRegisterDataRequest *>(pGameData);
 	auto *pResult = dynamic_cast<CAccountCreationResult *>(pGameData->m_pResult.get());
 	char aBuf[512];
-
-	// The write succeeded on the actual database, drop the staging row.
-	if(w == Write::NORMAL_SUCCEEDED)
-	{
-		str_format(aBuf, sizeof(aBuf), "DELETE FROM %s_passwords_backup WHERE Username=?", pSqlServer->GetPrefix());
-		if(pSqlServer->PrepareStatement(aBuf, pError, ErrorSize))
-		{
-			return true;
-		}
-		pSqlServer->BindString(1, pData->m_aUsername);
-		int NumDeleted = 0;
-		return pSqlServer->ExecuteUpdate(&NumDeleted, pError, ErrorSize);
-	}
-
-	// The write failed, keep the staging row so the registration is not lost.
-	if(w == Write::NORMAL_FAILED)
-	{
-		return false;
-	}
 
 	// Check for registration flooding
 	bool Flooded = false;
@@ -176,10 +157,10 @@ bool CAccountsAuthWorker::RegisterAccount(IDbConnection *pSqlServer, const ISqlD
 	// Add the registration record
 	{
 		str_format(aBuf, sizeof(aBuf),
-			"INSERT INTO %s_passwords%s("
+			"INSERT INTO %s_passwords("
 			"	Username, PasswordHash, RegisterIp) "
 			"VALUES (?, ?, ?)",
-			pSqlServer->GetPrefix(), w == Write::NORMAL ? "" : "_backup");
+			pSqlServer->GetPrefix());
 		if(pSqlServer->PrepareStatement(aBuf, pError, ErrorSize))
 		{
 			return true;
@@ -257,31 +238,15 @@ bool CAccountsAuthWorker::LoadAccountAuthData(IDbConnection *pSqlServer, const I
 	return false;
 }
 
-bool CAccountsAuthWorker::UpdatePasswordHash(IDbConnection *pSqlServer, const ISqlData *pGameData, Write w, char *pError, int ErrorSize)
+bool CAccountsAuthWorker::UpdatePasswordHash(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize)
 {
 	const auto *pData = dynamic_cast<const CSqlUpdatePasswordHashRequest *>(pGameData);
 	char aBuf[512];
 	int NumUpdated = 0;
 
-	if(w == Write::NORMAL_SUCCEEDED)
-	{
-		str_format(aBuf, sizeof(aBuf), "DELETE FROM %s_passwords_backup WHERE UserId=?", pSqlServer->GetPrefix());
-		if(pSqlServer->PrepareStatement(aBuf, pError, ErrorSize))
-		{
-			return true;
-		}
-		pSqlServer->BindInt(1, pData->m_UserId);
-		return pSqlServer->ExecuteUpdate(&NumUpdated, pError, ErrorSize);
-	}
-
-	if(w == Write::NORMAL_FAILED)
-	{
-		return false;
-	}
-
 	str_format(aBuf, sizeof(aBuf),
-		"UPDATE %s_passwords%s SET PasswordHash=? WHERE UserId=?",
-		pSqlServer->GetPrefix(), w == Write::NORMAL ? "" : "_backup");
+		"UPDATE %s_passwords SET PasswordHash=? WHERE UserId=?",
+		pSqlServer->GetPrefix());
 	if(pSqlServer->PrepareStatement(aBuf, pError, ErrorSize))
 	{
 		if(pData->m_RehashAfterLogin)
@@ -301,32 +266,16 @@ bool CAccountsAuthWorker::UpdatePasswordHash(IDbConnection *pSqlServer, const IS
 	return false;
 }
 
-bool CAccountsAuthWorker::SetAccountAccessLevel(IDbConnection *pSqlServer, const ISqlData *pGameData, Write w, char *pError, int ErrorSize)
+bool CAccountsAuthWorker::SetAccountAccessLevel(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize)
 {
 	const auto *pData = dynamic_cast<const CSqlAccountAccessRequest *>(pGameData);
 	char aBuf[512];
 	int NumUpdated = 0;
 
-	if(w == Write::NORMAL_SUCCEEDED)
-	{
-		str_format(aBuf, sizeof(aBuf), "DELETE FROM %s_account_access_backup WHERE UserId=?", pSqlServer->GetPrefix());
-		if(pSqlServer->PrepareStatement(aBuf, pError, ErrorSize))
-		{
-			return true;
-		}
-		pSqlServer->BindInt(1, pData->m_UserId);
-		return pSqlServer->ExecuteUpdate(&NumUpdated, pError, ErrorSize);
-	}
-
-	if(w == Write::NORMAL_FAILED)
-	{
-		return false;
-	}
-
 	str_format(aBuf, sizeof(aBuf),
-		"INSERT INTO %s_account_access%s(UserId, AccessLevel, SuperAdmin) VALUES(?, ?, ?) "
+		"INSERT INTO %s_account_access(UserId, AccessLevel, SuperAdmin) VALUES(?, ?, ?) "
 		"ON CONFLICT(UserId) DO UPDATE SET AccessLevel=excluded.AccessLevel, SuperAdmin=excluded.SuperAdmin",
-		pSqlServer->GetPrefix(), w == Write::NORMAL ? "" : "_backup");
+		pSqlServer->GetPrefix());
 	if(pSqlServer->PrepareStatement(aBuf, pError, ErrorSize))
 	{
 		return true;
@@ -337,18 +286,13 @@ bool CAccountsAuthWorker::SetAccountAccessLevel(IDbConnection *pSqlServer, const
 	return pSqlServer->ExecuteUpdate(&NumUpdated, pError, ErrorSize);
 }
 
-bool CAccountsAuthWorker::ResetAccountAccessLevel(IDbConnection *pSqlServer, const ISqlData *pGameData, Write w, char *pError, int ErrorSize)
+bool CAccountsAuthWorker::ResetAccountAccessLevel(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize)
 {
 	const auto *pData = dynamic_cast<const CSqlAccountAccessRequest *>(pGameData);
 	char aBuf[512];
 	int NumDeleted = 0;
 
-	if(w == Write::NORMAL_SUCCEEDED || w == Write::NORMAL_FAILED)
-	{
-		return false;
-	}
-
-	str_format(aBuf, sizeof(aBuf), "DELETE FROM %s_account_access%s WHERE UserId=?", pSqlServer->GetPrefix(), w == Write::NORMAL ? "" : "_backup");
+	str_format(aBuf, sizeof(aBuf), "DELETE FROM %s_account_access WHERE UserId=?", pSqlServer->GetPrefix());
 	if(pSqlServer->PrepareStatement(aBuf, pError, ErrorSize))
 	{
 		return true;

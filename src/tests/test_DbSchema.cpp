@@ -199,10 +199,7 @@ TEST_F(CTestDbSchema, LegacyDatabaseIsBackedUpAndMigrated)
 	char aCreateSql[512];
 	str_format(aCreateSql, sizeof(aCreateSql), "CREATE TABLE accounts_passwords (%s)", pLegacyTable);
 	ASSERT_TRUE(Exec(Path.c_str(), aCreateSql));
-	str_format(aCreateSql, sizeof(aCreateSql), "CREATE TABLE accounts_passwords_backup (%s)", pLegacyTable);
-	ASSERT_TRUE(Exec(Path.c_str(), aCreateSql));
 	ASSERT_TRUE(Exec(Path.c_str(), "INSERT INTO accounts_passwords(Username, PasswordHash, RegisterIp) VALUES('alice', 'main-hash', '127.0.0.1')"));
-	ASSERT_TRUE(Exec(Path.c_str(), "INSERT INTO accounts_passwords_backup(Username, PasswordHash, RegisterIp) VALUES('bob', 'backup-hash', '127.0.0.2')"));
 
 	char aError[256];
 	ASSERT_FALSE(DbSchema::EnsureCurrent(m_pStorage.get(), Path.c_str(), aError, sizeof(aError))) << aError;
@@ -211,9 +208,9 @@ TEST_F(CTestDbSchema, LegacyDatabaseIsBackedUpAndMigrated)
 	ASSERT_FALSE(pConn->Connect(aError, sizeof(aError)));
 	EXPECT_EQ(ReadVersion(pConn.get()), DbSchema::CurrentVersion);
 
-	const auto ReadPasswordHashType = [&](const char *pTable) {
+	const auto ReadPasswordHashType = [&]() {
 		char aSql[256];
-		str_format(aSql, sizeof(aSql), "SELECT type FROM pragma_table_info('%s_%s') WHERE name='PasswordHash'", pConn->GetPrefix(), pTable);
+		str_format(aSql, sizeof(aSql), "SELECT type FROM pragma_table_info('%s_passwords') WHERE name='PasswordHash'", pConn->GetPrefix());
 		if(pConn->PrepareStatement(aSql, aError, sizeof(aError)))
 			return std::string();
 		bool End = false;
@@ -223,9 +220,9 @@ TEST_F(CTestDbSchema, LegacyDatabaseIsBackedUpAndMigrated)
 		pConn->GetString(1, aType, sizeof(aType));
 		return std::string(aType);
 	};
-	const auto ReadCount = [&](const char *pTable) {
+	const auto ReadCount = [&]() {
 		char aCountSql[256];
-		str_format(aCountSql, sizeof(aCountSql), "SELECT COUNT(*) FROM %s_%s", pConn->GetPrefix(), pTable);
+		str_format(aCountSql, sizeof(aCountSql), "SELECT COUNT(*) FROM %s_passwords", pConn->GetPrefix());
 		if(pConn->PrepareStatement(aCountSql, aError, sizeof(aError)))
 			return -1;
 		bool End = false;
@@ -234,10 +231,8 @@ TEST_F(CTestDbSchema, LegacyDatabaseIsBackedUpAndMigrated)
 		return pConn->GetInt(1);
 	};
 
-	EXPECT_EQ(ReadPasswordHashType("passwords"), "VARCHAR(128)");
-	EXPECT_EQ(ReadPasswordHashType("passwords_backup"), "VARCHAR(128)");
-	EXPECT_EQ(ReadCount("passwords"), 1);
-	EXPECT_EQ(ReadCount("passwords_backup"), 1);
+	EXPECT_EQ(ReadPasswordHashType(), "VARCHAR(128)");
+	EXPECT_EQ(ReadCount(), 1);
 	// The table rebuild in the migration drops the indexes, they have to be
 	// recreated as part of the v1 schema.
 	EXPECT_TRUE(HasPasswordsRegisterIpIndex(pConn.get()));
@@ -298,7 +293,7 @@ TEST_F(CTestDbSchema, VersionTableWithoutPasswordsTableIsRepaired)
 	CSqlRegisterDataRequest Data(pResult);
 	str_copy(Data.m_aUsername, "alice");
 	str_copy(Data.m_aPasswordHash, "$argon2id$v=19$m=65536,t=2,p=1$c2FsdA$aGFzaA");
-	ASSERT_FALSE(CAccountsAuthWorker::RegisterAccount(pConn.get(), &Data, Write::NORMAL, aError, sizeof(aError)));
+	ASSERT_FALSE(CAccountsAuthWorker::RegisterAccount(pConn.get(), &Data, aError, sizeof(aError)));
 	EXPECT_EQ(pResult->m_Result, CAccountCreationResult::Result::Success);
 
 	pConn->Disconnect();
@@ -339,48 +334,6 @@ TEST_F(CTestDbSchema, StaleMigrationTableIsReplaced)
 	char aType[64] = "";
 	pConn->GetString(1, aType, sizeof(aType));
 	EXPECT_STREQ(aType, "VARCHAR(128)");
-
-	pConn->Disconnect();
-}
-
-TEST_F(CTestDbSchema, RegisterAccountKeepsAndCleansStagingRow)
-{
-	const std::string Path = DbPath("register.sqlite");
-
-	auto pConn = CreateSqliteConnection(Path.c_str(), true);
-	char aError[256];
-	ASSERT_FALSE(pConn->Connect(aError, sizeof(aError)));
-
-	char aSql[256];
-	str_format(aSql, sizeof(aSql), "INSERT INTO %s_passwords_backup(Username, PasswordHash, RegisterIp) VALUES('alice', 'hash', '127.0.0.1')", pConn->GetPrefix());
-
-	auto CountStagingRows = [&]() {
-		char aCountSql[256];
-		str_format(aCountSql, sizeof(aCountSql), "SELECT COUNT(*) FROM %s_passwords_backup", pConn->GetPrefix());
-		EXPECT_FALSE(pConn->PrepareStatement(aCountSql, aError, sizeof(aError)));
-		bool End = false;
-		EXPECT_FALSE(pConn->Step(&End, aError, sizeof(aError)));
-		EXPECT_FALSE(End);
-		return pConn->GetInt(1);
-	};
-
-	int NumUpdated = 0;
-	ASSERT_FALSE(pConn->PrepareStatement(aSql, aError, sizeof(aError)));
-	ASSERT_FALSE(pConn->ExecuteUpdate(&NumUpdated, aError, sizeof(aError)));
-
-	auto pResult = std::make_shared<CAccountCreationResult>();
-	CSqlRegisterDataRequest Data(pResult);
-	str_copy(Data.m_aUsername, "alice");
-	str_copy(Data.m_aPasswordHash, "$argon2id$v=19$m=65536,t=2,p=1$c2FsdA$aGFzaA");
-
-	// A failed write to the actual database keeps the staging row.
-	ASSERT_FALSE(CAccountsAuthWorker::RegisterAccount(pConn.get(), &Data, Write::NORMAL_FAILED, aError, sizeof(aError)));
-	EXPECT_EQ(CountStagingRows(), 1);
-
-	// A successful write removes it.
-	ASSERT_FALSE(CAccountsAuthWorker::RegisterAccount(pConn.get(), &Data, Write::NORMAL_SUCCEEDED, aError, sizeof(aError)));
-	EXPECT_EQ(CountStagingRows(), 0);
-	EXPECT_EQ(pResult->m_Result, CAccountCreationResult::Result::Unknown);
 
 	pConn->Disconnect();
 }

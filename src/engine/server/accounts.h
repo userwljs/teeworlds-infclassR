@@ -128,11 +128,11 @@ struct CSqlAccountAccessRequest : ISqlData
 struct CAccountsAuthWorker
 {
 	static bool CheckRegistration(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize);
-	static bool RegisterAccount(IDbConnection *pSqlServer, const ISqlData *pGameData, Write w, char *pError, int ErrorSize);
+	static bool RegisterAccount(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize);
 	static bool LoadAccountAuthData(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize);
-	static bool UpdatePasswordHash(IDbConnection *pSqlServer, const ISqlData *pGameData, Write w, char *pError, int ErrorSize);
-	static bool SetAccountAccessLevel(IDbConnection *pSqlServer, const ISqlData *pGameData, Write w, char *pError, int ErrorSize);
-	static bool ResetAccountAccessLevel(IDbConnection *pSqlServer, const ISqlData *pGameData, Write w, char *pError, int ErrorSize);
+	static bool UpdatePasswordHash(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize);
+	static bool SetAccountAccessLevel(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize);
+	static bool ResetAccountAccessLevel(IDbConnection *pSqlServer, const ISqlData *pGameData, char *pError, int ErrorSize);
 };
 
 // Legacy PBKDF2-HMAC-SHA512 password hash. New passwords use argon2id instead.

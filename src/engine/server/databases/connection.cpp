@@ -6,29 +6,29 @@ IDbConnection::IDbConnection(const char *pPrefix)
 	str_copy(m_aPrefix, pPrefix);
 }
 
-void IDbConnection::FormatCreatePasswords(char *aBuf, unsigned int BufferSize, bool Backup) const
+void IDbConnection::FormatCreatePasswords(char *aBuf, unsigned int BufferSize) const
 {
 	str_format(aBuf, BufferSize,
-		"CREATE TABLE IF NOT EXISTS %s_passwords%s ("
+		"CREATE TABLE IF NOT EXISTS %s_passwords ("
 		"  UserId INTEGER PRIMARY KEY AUTOINCREMENT, "
 		"  Username VARCHAR(%d) COLLATE %s UNIQUE NOT NULL, "
 		"  PasswordHash VARCHAR(%d) COLLATE %s NOT NULL,"
 		"  RegisterDate TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 		"  RegisterIp VARCHAR(64) NOT NULL" // The IP is kept in order to prevent registration flooding
 		")",
-		GetPrefix(), Backup ? "_backup" : "",
+		GetPrefix(),
 		MAX_NAME_LENGTH_SQL, BinaryCollate(), crypto_pwhash_STRBYTES, BinaryCollate());
 }
 
-void IDbConnection::FormatCreateAccountAccess(char *aBuf, unsigned int BufferSize, bool Backup) const
+void IDbConnection::FormatCreateAccountAccess(char *aBuf, unsigned int BufferSize) const
 {
 	str_format(aBuf, BufferSize,
-		"CREATE TABLE IF NOT EXISTS %s_account_access%s ("
+		"CREATE TABLE IF NOT EXISTS %s_account_access ("
 		"  UserId INTEGER PRIMARY KEY, "
 		"  AccessLevel INTEGER NOT NULL, "
 		"  SuperAdmin INTEGER NOT NULL DEFAULT 0"
 		")",
-		GetPrefix(), Backup ? "_backup" : "");
+		GetPrefix());
 }
 
 void IDbConnection::FormatCreatePasswordsIndex(char *aBuf, unsigned int BufferSize) const
@@ -43,10 +43,10 @@ void IDbConnection::FormatCreatePasswordsIndex(char *aBuf, unsigned int BufferSi
 		GetPrefix(), GetPrefix());
 }
 
-void IDbConnection::FormatCreateRace(char *aBuf, unsigned int BufferSize, bool Backup) const
+void IDbConnection::FormatCreateRace(char *aBuf, unsigned int BufferSize) const
 {
 	str_format(aBuf, BufferSize,
-		"CREATE TABLE IF NOT EXISTS %s_race%s ("
+		"CREATE TABLE IF NOT EXISTS %s_race ("
 		"  Map VARCHAR(128) COLLATE %s NOT NULL, "
 		"  Name VARCHAR(%d) COLLATE %s NOT NULL, "
 		"  Timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
@@ -65,14 +65,14 @@ void IDbConnection::FormatCreateRace(char *aBuf, unsigned int BufferSize, bool B
 		"  DDNet7 BOOL DEFAULT FALSE, "
 		"  PRIMARY KEY (Map, Name, Time, Timestamp, Server)"
 		")",
-		GetPrefix(), Backup ? "_backup" : "",
+		GetPrefix(),
 		BinaryCollate(), MAX_NAME_LENGTH_SQL, BinaryCollate());
 }
 
-void IDbConnection::FormatCreateTeamrace(char *aBuf, unsigned int BufferSize, const char *pIdType, bool Backup) const
+void IDbConnection::FormatCreateTeamrace(char *aBuf, unsigned int BufferSize, const char *pIdType) const
 {
 	str_format(aBuf, BufferSize,
-		"CREATE TABLE IF NOT EXISTS %s_teamrace%s ("
+		"CREATE TABLE IF NOT EXISTS %s_teamrace ("
 		"  Map VARCHAR(128) COLLATE %s NOT NULL, "
 		"  Name VARCHAR(%d) COLLATE %s NOT NULL, "
 		"  Timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
@@ -82,7 +82,7 @@ void IDbConnection::FormatCreateTeamrace(char *aBuf, unsigned int BufferSize, co
 		"  DDNet7 BOOL DEFAULT FALSE, "
 		"  PRIMARY KEY (Id, Name)"
 		")",
-		GetPrefix(), Backup ? "_backup" : "",
+		GetPrefix(),
 		BinaryCollate(), MAX_NAME_LENGTH_SQL, BinaryCollate(), pIdType);
 }
 
@@ -101,10 +101,10 @@ void IDbConnection::FormatCreateMaps(char *aBuf, unsigned int BufferSize) const
 		GetPrefix(), BinaryCollate(), BinaryCollate(), BinaryCollate());
 }
 
-void IDbConnection::FormatCreateSaves(char *aBuf, unsigned int BufferSize, bool Backup) const
+void IDbConnection::FormatCreateSaves(char *aBuf, unsigned int BufferSize) const
 {
 	str_format(aBuf, BufferSize,
-		"CREATE TABLE IF NOT EXISTS %s_saves%s ("
+		"CREATE TABLE IF NOT EXISTS %s_saves ("
 		"  Savegame TEXT COLLATE %s NOT NULL, "
 		"  Map VARCHAR(128) COLLATE %s NOT NULL, "
 		"  Code VARCHAR(128) COLLATE %s NOT NULL, "
@@ -114,7 +114,7 @@ void IDbConnection::FormatCreateSaves(char *aBuf, unsigned int BufferSize, bool 
 		"  SaveId VARCHAR(36) DEFAULT NULL, "
 		"  PRIMARY KEY (Map, Code)"
 		")",
-		GetPrefix(), Backup ? "_backup" : "",
+		GetPrefix(),
 		BinaryCollate(), BinaryCollate(), BinaryCollate());
 }
 

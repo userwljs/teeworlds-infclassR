@@ -104,12 +104,12 @@ private:
 	char m_aPrefix[64];
 
 protected:
-	void FormatCreatePasswords(char *aBuf, unsigned int BufferSize, bool Backup) const;
-	void FormatCreateAccountAccess(char *aBuf, unsigned int BufferSize, bool Backup) const;
-	void FormatCreateRace(char *aBuf, unsigned int BufferSize, bool Backup) const;
-	void FormatCreateTeamrace(char *aBuf, unsigned int BufferSize, const char *pIdType, bool Backup) const;
+	void FormatCreatePasswords(char *aBuf, unsigned int BufferSize) const;
+	void FormatCreateAccountAccess(char *aBuf, unsigned int BufferSize) const;
+	void FormatCreateRace(char *aBuf, unsigned int BufferSize) const;
+	void FormatCreateTeamrace(char *aBuf, unsigned int BufferSize, const char *pIdType) const;
 	void FormatCreateMaps(char *aBuf, unsigned int BufferSize) const;
-	void FormatCreateSaves(char *aBuf, unsigned int BufferSize, bool Backup) const;
+	void FormatCreateSaves(char *aBuf, unsigned int BufferSize) const;
 	void FormatCreatePoints(char *aBuf, unsigned int BufferSize) const;
 
 public:

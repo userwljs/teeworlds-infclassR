@@ -77,17 +77,16 @@ namespace DbSchema
 		}
 
 		// SQLite has no ALTER COLUMN, the table is rebuilt from an explicit v1 schema
-		// instead. Each table (main and backup) is rebuilt from its own rows so that
-		// writes staged in the backup table are not lost during the migration.
-		bool RebuildPasswordsTable(IDbConnection *pConn, bool Backup, char *pError, int ErrorSize)
+		// instead. Any leftover *_backup table from the old write-staging design is
+		// not touched.
+		bool RebuildPasswordsTable(IDbConnection *pConn, char *pError, int ErrorSize)
 		{
-			const char *pSuffix = Backup ? "_backup" : "";
 			const char *pCollate = pConn->BinaryCollate();
 
 			char aOldTable[128];
 			char aNewTable[128];
-			str_format(aOldTable, sizeof(aOldTable), "%s_passwords%s", pConn->GetPrefix(), pSuffix);
-			str_format(aNewTable, sizeof(aNewTable), "%s_passwords%s_new", pConn->GetPrefix(), pSuffix);
+			str_format(aOldTable, sizeof(aOldTable), "%s_passwords", pConn->GetPrefix());
+			str_format(aNewTable, sizeof(aNewTable), "%s_passwords_new", pConn->GetPrefix());
 
 			// A previous migration may have been interrupted after creating this table.
 			char aSql[1024];
@@ -126,7 +125,7 @@ namespace DbSchema
 		// Upgrades exactly one version step and is idempotent.
 		// Version 1 widens PasswordHash to crypto_pwhash_STRBYTES and adds the
 		// RegisterIp index used by the registration flood protection.
-		// The passwords tables are guaranteed to exist here: the migration connection is
+		// The passwords table is guaranteed to exist here: the migration connection is
 		// opened with Setup enabled, which creates any missing table before this runs.
 		bool MigrateToV1(IDbConnection *pConn, char *pError, int ErrorSize)
 		{
@@ -134,8 +133,7 @@ namespace DbSchema
 				return true;
 
 			char aError[256] = "";
-			if(RebuildPasswordsTable(pConn, /* Backup */ false, aError, sizeof(aError)) ||
-				RebuildPasswordsTable(pConn, /* Backup */ true, aError, sizeof(aError)))
+			if(RebuildPasswordsTable(pConn, aError, sizeof(aError)))
 			{
 				Exec(pConn, "ROLLBACK", pError, ErrorSize);
 				str_copy(pError, aError, ErrorSize);

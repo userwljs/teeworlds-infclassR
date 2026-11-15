@@ -156,46 +156,31 @@ bool CSqliteConnection::ConnectImpl(char *pError, int ErrorSize)
 		if(Execute("PRAGMA journal_mode=WAL", pError, ErrorSize))
 			return true;
 		char aBuf[1024];
-		FormatCreatePasswords(aBuf, sizeof(aBuf), /* Backup */ false);
+		FormatCreatePasswords(aBuf, sizeof(aBuf));
 		if(Execute(aBuf, pError, ErrorSize))
 			return true;
 		FormatCreatePasswordsIndex(aBuf, sizeof(aBuf));
 		if(Execute(aBuf, pError, ErrorSize))
 			return true;
-		FormatCreateAccountAccess(aBuf, sizeof(aBuf), /* Backup */ false);
+		FormatCreateAccountAccess(aBuf, sizeof(aBuf));
 		if(Execute(aBuf, pError, ErrorSize))
 			return true;
-		// FormatCreateRace(aBuf, sizeof(aBuf), /* Backup */ false);
+		// FormatCreateRace(aBuf, sizeof(aBuf));
 		// if(Execute(aBuf, pError, ErrorSize))
 		// 	return true;
-		// FormatCreateTeamrace(aBuf, sizeof(aBuf), "BLOB", /* Backup */ false);
+		// FormatCreateTeamrace(aBuf, sizeof(aBuf), "BLOB");
 		// if(Execute(aBuf, pError, ErrorSize))
 		// 	return true;
 		// FormatCreateMaps(aBuf, sizeof(aBuf));
 		// if(Execute(aBuf, pError, ErrorSize))
 		// 	return true;
-		// FormatCreateSaves(aBuf, sizeof(aBuf), /* Backup */ false);
+		// FormatCreateSaves(aBuf, sizeof(aBuf));
 		// if(Execute(aBuf, pError, ErrorSize))
 		// 	return true;
 		// FormatCreatePoints(aBuf, sizeof(aBuf));
 		// if(Execute(aBuf, pError, ErrorSize))
 		// 	return true;
 
-		FormatCreatePasswords(aBuf, sizeof(aBuf), /* Backup */ true);
-		if(Execute(aBuf, pError, ErrorSize))
-			return true;
-		FormatCreateAccountAccess(aBuf, sizeof(aBuf), /* Backup */ true);
-		if(Execute(aBuf, pError, ErrorSize))
-			return true;
-		// FormatCreateRace(aBuf, sizeof(aBuf), /* Backup */ true);
-		// if(Execute(aBuf, pError, ErrorSize))
-		// 	return true;
-		// FormatCreateTeamrace(aBuf, sizeof(aBuf), "BLOB", /* Backup */ true);
-		// if(Execute(aBuf, pError, ErrorSize))
-		// 	return true;
-		// FormatCreateSaves(aBuf, sizeof(aBuf), /* Backup */ true);
-		// if(Execute(aBuf, pError, ErrorSize))
-		// 	return true;
 		m_Setup = false;
 	}
 	return false;
