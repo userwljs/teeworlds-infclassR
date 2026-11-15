@@ -34,9 +34,8 @@ public:
 	virtual const char *BinaryCollate() const = 0;
 	// can be inserted into queries to convert a timestamp variable to the unix timestamp
 	virtual void ToUnixTimestamp(const char *pTimestamp, char *aBuf, unsigned int BufferSize) = 0;
-	// since MySQL automatically converts timestamps to utc, meanwhile sqlite code has to
-	// explicitly convert before inserting timestamps, NOTE: CURRENT_TIMESTAMP in SQLite is UTC by
-	// default and doesn't have to be converted
+	// SQLite has to explicitly convert before inserting timestamps, NOTE: CURRENT_TIMESTAMP in SQLite
+	// is UTC by default and doesn't have to be converted
 	virtual const char *InsertTimestampAsUtc() const = 0;
 	// can be used in the context of `LIKE Map`, adds `? COLLATE`
 	virtual const char *CollateNocase() const = 0;
@@ -120,12 +119,6 @@ public:
 	void FormatCreatePasswordsIndex(char *aBuf, unsigned int BufferSize) const;
 };
 
-bool MysqlAvailable();
-int MysqlInit();
-void MysqlUninit();
-
 std::unique_ptr<IDbConnection> CreateSqliteConnection(const char *pFilename, bool Setup);
-// Returns nullptr if MySQL support is not compiled in.
-std::unique_ptr<IDbConnection> CreateMysqlConnection(CMysqlConfig Config);
 
 #endif // ENGINE_SERVER_DATABASES_CONNECTION_H

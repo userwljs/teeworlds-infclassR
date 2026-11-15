@@ -55,7 +55,6 @@ set(GEOLOCATION_DEFAULT ${${MAXMINDDB_NAME}_FOUND})
 
 option(USE_LUA "Use Lua scripting engine" ON)
 option(GEOLOCATION "Enable geolocation support" ${GEOLOCATION_DEFAULT})
-option(MYSQL "Enable mysql support" OFF)
 option(TOOLS "Compile tools" ON)
 option(DOWNLOAD_GTEST "Download and compile GTest" ${AUTO_DEPENDENCIES_DEFAULT})
 option(BUILD_TESTS "Build tests" OFF)
@@ -284,11 +283,6 @@ if(DOWNLOAD_GTEST)
   find_package(Git)
 endif()
 find_package(GTest)
-if(MYSQL)
-  find_package(MySQL)
-else()
-  set(MYSQL_LIBRARIES)
-endif()
 find_package(PNG)
 find_package(Python3)
 find_package(SQLite3)
@@ -351,9 +345,6 @@ endif()
 if(DOWNLOAD_GTEST)
   show_dependency_status("Git" GIT)
 endif()
-if(MYSQL)
-  show_dependency_status("MySQL" MYSQL)
-endif()
 show_dependency_status("OpenSSL Crypto" CRYPTO)
 show_dependency_status("PNG" PNG)
 show_dependency_status("Python3" Python3)
@@ -383,10 +374,6 @@ if(NOT(CRYPTO_FOUND))
 endif()
 if(NOT(Sodium_FOUND))
   message(SEND_ERROR "You must install Sodium to compile ${CMAKE_PROJECT_NAME}")
-endif()
-
-if(MYSQL AND NOT(MYSQL_FOUND))
-  message(SEND_ERROR "You must install MySQL to compile the ${CMAKE_PROJECT_NAME} server with MySQL support")
 endif()
 
 if(NOT(GTEST_FOUND))
@@ -864,7 +851,6 @@ set_src(ENGINE_SERVER GLOB_RECURSE src/engine/server
   databases/connection.h
   databases/connection_pool.cpp
   databases/connection_pool.h
-  databases/mysql.cpp
   databases/schema.cpp
   databases/schema.h
   databases/sqlite.cpp
@@ -1029,7 +1015,6 @@ set(SERVER_ICON)
 set(LIBS_SERVER
   ${LIBS}
   SQLite::SQLite3
-  ${MYSQL_LIBRARIES}
   # Add pthreads (on non-Windows) at the end, so that other libraries can depend
   # on it.
   ${CMAKE_THREAD_LIBS_INIT}
@@ -1361,10 +1346,6 @@ foreach(target ${TARGETS_OWN})
 
   target_compile_definitions(${target} PRIVATE $<$<CONFIG:Debug>:CONF_DEBUG>)
 
-  if(MYSQL)
-    target_compile_definitions(${target} PRIVATE CONF_MYSQL)
-    target_include_directories(${target} SYSTEM PRIVATE ${MYSQL_INCLUDE_DIRS})
-  endif()
 endforeach()
 
 foreach(target ${TARGETS_DEP})

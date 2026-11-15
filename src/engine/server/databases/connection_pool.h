@@ -47,22 +47,6 @@ enum Write
 
 class IConsole;
 
-struct CMysqlConfig
-{
-	char m_aDatabase[64];
-	char m_aPrefix[64];
-	char m_aUser[64];
-	char m_aPass[64];
-	char m_aIp[64];
-	char m_aBindaddr[128];
-	int m_Port;
-	bool m_Setup;
-	bool m_UseSsl;
-	char m_aSslCa[IO_MAX_PATH_LENGTH];
-	char m_aSslCert[IO_MAX_PATH_LENGTH];
-	char m_aSslKey[IO_MAX_PATH_LENGTH];
-};
-
 class CDbConnectionPool
 {
 public:
@@ -85,7 +69,6 @@ public:
 	void Print(IConsole *pConsole, Mode DatabaseMode);
 
 	void RegisterSqliteDatabase(Mode DatabaseMode, const char FileName[64]);
-	void RegisterMysqlDatabase(Mode DatabaseMode, const CMysqlConfig *pMysqlConfig);
 
 	void Execute(
 		FRead pFunc,

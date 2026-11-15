@@ -421,10 +421,6 @@ public:
 	static void ConNameUnban(IConsole::IResult *pResult, void *pUser);
 	static void ConNameBans(IConsole::IResult *pResult, void *pUser);
 
-	// console commands for sqlmasters
-	static void ConAddSqlServer(IConsole::IResult *pResult, void *pUserData);
-	static void ConDumpSqlServers(IConsole::IResult *pResult, void *pUserData);
-
 	void LogoutClient(int ClientId, const char *pReason);
 
 	void ConchainRconPasswordChangeGeneric(int Level, const char *pCurrent, IConsole::IResult *pResult);

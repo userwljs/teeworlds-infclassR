@@ -32,9 +32,6 @@ struct CSqlExecData
 	CSqlExecData(
 		CDbConnectionPool::Mode m,
 		const char aFileName[64]);
-	CSqlExecData(
-		CDbConnectionPool::Mode m,
-		const CMysqlConfig *pMysqlConfig);
 	CSqlExecData(IConsole *pConsole, CDbConnectionPool::Mode m);
 	~CSqlExecData() = default;
 
@@ -42,7 +39,6 @@ struct CSqlExecData
 	{
 		READ_ACCESS,
 		WRITE_ACCESS,
-		ADD_MYSQL,
 		ADD_SQLITE,
 		PRINT,
 	} m_Mode;
@@ -50,11 +46,6 @@ struct CSqlExecData
 	{
 		CDbConnectionPool::FRead m_pReadFunc;
 		CDbConnectionPool::FWrite m_pWriteFunc;
-		struct
-		{
-			CDbConnectionPool::Mode m_Mode;
-			CMysqlConfig m_Config;
-		} m_Mysql;
 		struct
 		{
 			CDbConnectionPool::Mode m_Mode;
@@ -103,16 +94,6 @@ CSqlExecData::CSqlExecData(
 	m_Ptr.m_Sqlite.m_Mode = m;
 	str_copy(m_Ptr.m_Sqlite.m_FileName, aFileName);
 }
-CSqlExecData::CSqlExecData(CDbConnectionPool::Mode m,
-	const CMysqlConfig *pMysqlConfig) :
-	m_Mode(ADD_MYSQL),
-	m_pThreadData(nullptr),
-	m_pName("add mysql server")
-{
-	m_Ptr.m_Mysql.m_Mode = m;
-	mem_copy(&m_Ptr.m_Mysql.m_Config, pMysqlConfig, sizeof(m_Ptr.m_Mysql.m_Config));
-}
-
 CSqlExecData::CSqlExecData(IConsole *pConsole, CDbConnectionPool::Mode m) :
 	m_Mode(PRINT),
 	m_pThreadData(nullptr),
@@ -132,13 +113,6 @@ void CDbConnectionPool::Print(IConsole *pConsole, Mode DatabaseMode)
 void CDbConnectionPool::RegisterSqliteDatabase(Mode DatabaseMode, const char aFileName[64])
 {
 	m_pShared->m_aQueries[m_InsertIdx++] = std::make_unique<CSqlExecData>(DatabaseMode, aFileName);
-	m_InsertIdx %= std::size(m_pShared->m_aQueries);
-	m_pShared->m_NumBackup.Signal();
-}
-
-void CDbConnectionPool::RegisterMysqlDatabase(Mode DatabaseMode, const CMysqlConfig *pMysqlConfig)
-{
-	m_pShared->m_aQueries[m_InsertIdx++] = std::make_unique<CSqlExecData>(DatabaseMode, pMysqlConfig);
 	m_InsertIdx %= std::size(m_pShared->m_aQueries);
 	m_pShared->m_NumBackup.Signal();
 }
@@ -363,26 +337,6 @@ void CWorker::ProcessQueries()
 			}
 		}
 		break;
-		case CSqlExecData::ADD_MYSQL:
-		{
-			auto pMysql = CreateMysqlConnection(pThreadData->m_Ptr.m_Mysql.m_Config);
-			switch(pThreadData->m_Ptr.m_Mysql.m_Mode)
-			{
-			case CDbConnectionPool::Mode::READ:
-				m_vpReadConnections.push_back(std::move(pMysql));
-				break;
-			case CDbConnectionPool::Mode::WRITE:
-				m_pWriteConnection = std::move(pMysql);
-				break;
-			case CDbConnectionPool::Mode::WRITE_BACKUP:
-				m_pWriteBackup = std::move(pMysql);
-				break;
-			case CDbConnectionPool::Mode::NUM_MODES:
-				break;
-			}
-			Success = true;
-			break;
-		}
 		case CSqlExecData::ADD_SQLITE:
 		{
 			auto pSqlite = CreateSqliteConnection(pThreadData->m_Ptr.m_Sqlite.m_FileName, true);

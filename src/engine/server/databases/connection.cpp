@@ -77,7 +77,7 @@ void IDbConnection::FormatCreateTeamrace(char *aBuf, unsigned int BufferSize, co
 		"  Name VARCHAR(%d) COLLATE %s NOT NULL, "
 		"  Timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP, "
 		"  Time FLOAT DEFAULT 0, "
-		"  ID %s NOT NULL, " // VARBINARY(16) for MySQL and BLOB for SQLite
+		"  ID %s NOT NULL, " // BLOB for SQLite
 		"  GameId VARCHAR(64), "
 		"  DDNet7 BOOL DEFAULT FALSE, "
 		"  PRIMARY KEY (Id, Name)"

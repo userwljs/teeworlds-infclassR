@@ -80,7 +80,6 @@ class InfClassRecipe(ConanFile):
 
         tc.cache_variables["USE_LUA"] = self.options.with_lua
         tc.cache_variables["GEOLOCATION"] = self.options.with_geolocation
-        tc.cache_variables["MYSQL"] = False
 
         tc.generate()
 

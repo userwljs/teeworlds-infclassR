@@ -3282,15 +3282,8 @@ int CServer::Run()
 
 		LoadAccountAccess(aFullPath);
 
-		if(Config()->m_SvUseSql)
-		{
-			DbPool()->RegisterSqliteDatabase(CDbConnectionPool::WRITE_BACKUP, aFullPath);
-		}
-		else
-		{
-			DbPool()->RegisterSqliteDatabase(CDbConnectionPool::READ, aFullPath);
-			DbPool()->RegisterSqliteDatabase(CDbConnectionPool::WRITE, aFullPath);
-		}
+		DbPool()->RegisterSqliteDatabase(CDbConnectionPool::READ, aFullPath);
+		DbPool()->RegisterSqliteDatabase(CDbConnectionPool::WRITE, aFullPath);
 	}
 
 	// start server
@@ -4222,79 +4215,6 @@ void CServer::ConchainModCommandUpdate(IConsole::IResult *pResult, void *pUserDa
 	}
 }
 
-void CServer::ConAddSqlServer(IConsole::IResult *pResult, void *pUserData)
-{
-	CServer *pSelf = (CServer *)pUserData;
-
-	if(!MysqlAvailable())
-	{
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "can't add MySQL server: compiled without MySQL support");
-		return;
-	}
-
-	if(!pSelf->Config()->m_SvUseSql)
-		return;
-
-	if(pResult->NumArguments() < 7 || pResult->NumArguments() > 9)
-	{
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "7 to 9 arguments are required");
-		return;
-	}
-
-	CMysqlConfig Config;
-	bool Write;
-	if(str_comp_nocase(pResult->GetString(0), "w") == 0)
-		Write = false;
-	else if(str_comp_nocase(pResult->GetString(0), "r") == 0)
-		Write = true;
-	else
-	{
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "choose either 'r' for SqlReadServer or 'w' for SqlWriteServer");
-		return;
-	}
-
-	str_copy(Config.m_aDatabase, pResult->GetString(1), sizeof(Config.m_aDatabase));
-	str_copy(Config.m_aPrefix, pResult->GetString(2), sizeof(Config.m_aPrefix));
-	str_copy(Config.m_aUser, pResult->GetString(3), sizeof(Config.m_aUser));
-	str_copy(Config.m_aPass, pResult->GetString(4), sizeof(Config.m_aPass));
-	str_copy(Config.m_aIp, pResult->GetString(5), sizeof(Config.m_aIp));
-	Config.m_aBindaddr[0] = '\0';
-	Config.m_Port = pResult->GetInteger(6);
-	Config.m_Setup = pResult->NumArguments() >= 8 ? pResult->GetInteger(7) : true;
-	Config.m_UseSsl = pResult->NumArguments() >= 9 ? pResult->GetInteger(8) != 0 : false;
-	str_copy(Config.m_aSslCa, g_Config.m_SvSqlSslCa);
-	str_copy(Config.m_aSslCert, g_Config.m_SvSqlSslCert);
-	str_copy(Config.m_aSslKey, g_Config.m_SvSqlSslKey);
-
-	char aBuf[512];
-	str_format(aBuf, sizeof(aBuf),
-		"Adding new Sql%sServer: DB: '%s' Prefix: '%s' User: '%s' IP: <{%s}> Port: %d",
-		Write ? "Write" : "Read",
-		Config.m_aDatabase, Config.m_aPrefix, Config.m_aUser, Config.m_aIp, Config.m_Port);
-	pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
-	pSelf->DbPool()->RegisterMysqlDatabase(Write ? CDbConnectionPool::WRITE : CDbConnectionPool::READ, &Config);
-}
-
-void CServer::ConDumpSqlServers(IConsole::IResult *pResult, void *pUserData)
-{
-	CServer *pSelf = (CServer *)pUserData;
-
-	if(str_comp_nocase(pResult->GetString(0), "w") == 0)
-	{
-		pSelf->DbPool()->Print(pSelf->Console(), CDbConnectionPool::WRITE);
-		pSelf->DbPool()->Print(pSelf->Console(), CDbConnectionPool::WRITE_BACKUP);
-	}
-	else if(str_comp_nocase(pResult->GetString(0), "r") == 0)
-	{
-		pSelf->DbPool()->Print(pSelf->Console(), CDbConnectionPool::READ);
-	}
-	else
-	{
-		pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", "choose either 'r' for SqlReadServer or 'w' for SqlWriteServer");
-		return;
-	}
-}
-
 void CServer::RevokeClientRconAuth(int ClientId)
 {
 	if(IsSixup(ClientId))
@@ -4452,9 +4372,6 @@ void CServer::RegisterCommands()
 	Console()->Register("stoprecord", "", CFGFLAG_SERVER, ConStopRecord, this, "Stop recording");
 
 	Console()->Register("reload", "", CFGFLAG_SERVER, ConMapReload, this, "Reload the map");
-
-	Console()->Register("add_sqlserver", "s['r'|'w'] s[Database] s[Prefix] s[User] s[Password] s[IP] i[Port] ?i[SetUpDatabase ?] ?i[SSL ?]", CFGFLAG_SERVER | CFGFLAG_NONTEEHISTORIC, ConAddSqlServer, this, "add a sqlserver");
-	Console()->Register("dump_sqlservers", "s['r'|'w']", CFGFLAG_SERVER, ConDumpSqlServers, this, "dumps all sqlservers readservers = r, writeservers = w");
 
 	Console()->Register("name_ban", "s[name] ?i[distance] ?i[is_substring] ?r[reason]", CFGFLAG_SERVER, ConNameBan, this, "Ban a certain nickname");
 	Console()->Register("name_unban", "s[name]", CFGFLAG_SERVER, ConNameUnban, this, "Unban a certain nickname");
