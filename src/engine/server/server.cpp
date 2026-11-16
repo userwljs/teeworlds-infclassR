@@ -3235,10 +3235,21 @@ void CServer::InitPersistentData()
 	m_pPersistentData = malloc(GameServer()->PersistentDataSize());
 }
 
+void CServer::InitRconPasswordIfUnset()
+{
+	if(g_Config.m_SvRconPassword[0])
+		return;
+
+	secure_random_password(g_Config.m_SvRconPassword, sizeof(g_Config.m_SvRconPassword), 6);
+	m_GeneratedRconPassword = true;
+}
+
 int CServer::Run()
 {
 	if(m_RunServer == UNINITIALIZED)
 		m_RunServer = RUNNING;
+
+	InitRconPasswordIfUnset();
 
 	if(Config()->m_Debug)
 	{
@@ -3337,6 +3348,14 @@ int CServer::Run()
 
 	// process pending commands
 	m_pConsole->StoreCommands(false);
+
+	if(m_GeneratedRconPassword)
+	{
+		log_info("server", "+-------------------------+");
+		log_info("server", "| rcon password: '%s' |", Config()->m_SvRconPassword);
+		log_info("server", "+-------------------------+");
+	}
+
 	m_pConsole->ExecuteFile("init.cfg");
 	m_pRegister->OnConfigChange();
 

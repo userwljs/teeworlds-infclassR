@@ -226,6 +226,7 @@ public:
 	bool m_ReloadedWhenEmpty;
 	int m_RconClientId;
 	int m_RconAuthLevel;
+	bool m_GeneratedRconPassword{};
 	char m_aShutdownReason[128];
 	void *m_pPersistentData;
 
@@ -394,6 +395,7 @@ public:
 
 	void InitInterfaces();
 	void InitPersistentData();
+	void InitRconPasswordIfUnset();
 	int Run();
 
 	static void ConKick(IConsole::IResult *pResult, void *pUser);
