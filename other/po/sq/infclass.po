@@ -84,95 +84,95 @@ msgstr ""
 msgid "{str:Victim} has been muted for {sec:Duration} ({str:Reason})"
 msgstr ""
 
-#: src/engine/server/server.cpp:4521
+#: src/engine/server/server.cpp:4540
 msgid "The registration is currently disabled on the server"
 msgstr ""
 
-#: src/engine/server/server.cpp:4528 src/engine/server/server.cpp:4608
+#: src/engine/server/server.cpp:4547 src/engine/server/server.cpp:4627
 msgid "You are already logged in."
 msgstr ""
 
-#: src/engine/server/server.cpp:4534
+#: src/engine/server/server.cpp:4553
 msgid "A registration is already in progress."
 msgstr ""
 
-#: src/engine/server/server.cpp:4548 src/engine/server/server.cpp:4637
+#: src/engine/server/server.cpp:4567 src/engine/server/server.cpp:4656
 msgid "The submitted credentials are not valid"
 msgstr ""
 
-#: src/engine/server/server.cpp:4554 src/engine/server/server.cpp:4700
+#: src/engine/server/server.cpp:4573 src/engine/server/server.cpp:4719
 msgid ""
 "The password is not valid. \n"
 "Requirements: at least 8 characters and at least three of the following: "
 "digits, lowercase letters, uppercase letters, and basic symbols."
 msgstr ""
 
-#: src/engine/server/server.cpp:4566
+#: src/engine/server/server.cpp:4585
 msgid "Too many registration attempts. Please wait for a minute."
 msgstr ""
 
-#: src/engine/server/server.cpp:4590
+#: src/engine/server/server.cpp:4609
 msgid "Creating the account, please wait..."
 msgstr ""
 
-#: src/engine/server/server.cpp:4598 src/engine/server/server.cpp:4662
+#: src/engine/server/server.cpp:4617 src/engine/server/server.cpp:4681
 msgid "Use RCON (F2) to submit the username and password"
 msgstr ""
 
-#: src/engine/server/server.cpp:4614
+#: src/engine/server/server.cpp:4633
 msgid "A login is already in progress."
 msgstr ""
 
-#: src/engine/server/server.cpp:4623 src/engine/server/server.cpp:4689
+#: src/engine/server/server.cpp:4642 src/engine/server/server.cpp:4708
 msgid "Too many failed auth attempts. Please wait for a minute."
 msgstr ""
 
-#: src/engine/server/server.cpp:4657
+#: src/engine/server/server.cpp:4676
 msgid "Logging in, please wait..."
 msgstr ""
 
-#: src/engine/server/server.cpp:4674 src/engine/server/server.cpp:4851
+#: src/engine/server/server.cpp:4693 src/engine/server/server.cpp:4870
 msgid "You are not logged in."
 msgstr ""
 
-#: src/engine/server/server.cpp:4680
+#: src/engine/server/server.cpp:4699
 msgid "Another account request is already in progress."
 msgstr ""
 
-#: src/engine/server/server.cpp:4706
+#: src/engine/server/server.cpp:4725
 msgid "The new password must differ from the current one."
 msgstr ""
 
-#: src/engine/server/server.cpp:4727
+#: src/engine/server/server.cpp:4746
 msgid "Changing the password, please wait..."
 msgstr ""
 
-#: src/engine/server/server.cpp:4833 src/game/server/gamecontext.cpp:2894
+#: src/engine/server/server.cpp:4852 src/game/server/gamecontext.cpp:2894
 msgid "{str:PlayerName} changed their name to {str:NewName}"
 msgstr ""
 
-#: src/engine/server/server.cpp:4846
+#: src/engine/server/server.cpp:4865
 msgid "You've logged out."
 msgstr ""
 
-#: src/engine/server/server.cpp:4956
+#: src/engine/server/server.cpp:4975
 msgid "You have already notified that {str:PlayerName} ought to be banned"
 msgstr ""
 
-#: src/engine/server/server.cpp:4971
+#: src/engine/server/server.cpp:4990
 msgid "{str:PlayerName} wants {str:VictimName} to be banned ({str:Reason})"
 msgstr ""
 
-#: src/engine/server/server.cpp:5037
+#: src/engine/server/server.cpp:5056
 msgid "You have already voted to change this map"
 msgstr ""
 
-#: src/engine/server/server.cpp:5049
+#: src/engine/server/server.cpp:5068
 #, fuzzy
 msgid "{str:PlayerName} wants to start the vote '{str:VoteName}'"
 msgstr "Kanë hequr atë nga loja [ not sure ]"
 
-#: src/engine/server/server.cpp:5223
+#: src/engine/server/server.cpp:5242
 #, fuzzy
 msgid "Name of player {str:PlayerName} changed to {str:NewName}"
 msgstr "Kanë hequr atë nga loja [ not sure ]"
