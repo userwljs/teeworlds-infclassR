@@ -50,7 +50,8 @@ jobs:
 
       - name: Build
         run: |
-          conan build . --build=missing -s compiler.cppstd=20 -s build_type=Debug ${{ matrix.conan-args }}
+          cmake --preset conan-debug
+          cmake --build --preset conan-debug
 
       - name: Package
         shell: bash
