@@ -8,12 +8,72 @@ on:
   pull_request:
 
 jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    container: alpine:latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Prepare Alpine Linux
+        id: alpine
+        shell: sh
+        run: |
+          apk add --no-cache build-base bash git python3 py3-pip cmake perl linux-headers m4 tar
+          rm /usr/lib/python3.*/EXTERNALLY-MANAGED
+          # major.minor only
+          echo "version=$(cut -d. -f1,2 /etc/alpine-release)" >> "$GITHUB_OUTPUT"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Setup Conan
+        uses: conan-io/setup-conan@v1.5.1
+        with:
+          version: '2.34.0'
+          cache_packages: true
+          # Container jobs all report the runner image, so separate the Conan
+          # package cache per Alpine major.minor series instead of mixing musl
+          # builds.
+          cache_key: alpinelinux-v${{ steps.alpine.outputs.version }}
+
+      - name: Conan Install
+        run: |
+          # https://github.com/conan-io/conan-center-index/issues/21150
+          echo -e '\n[platform_tool_requires]\nm4/1.4.19' >> ~/.conan2/profiles/default
+          conan install . --build="*" -s compiler.cppstd=20 -s build_type=Debug \
+                -c tools.build:cflags="['-static']" \
+                -c tools.build:cxxflags="['-static']" \
+                -c tools.build:exelinkflags="['-static']"
+
+      - name: Build
+        run: |
+          cmake --preset conan-debug
+          cmake --build --preset conan-debug
+
+      - name: Package
+        shell: bash
+        run: |
+          cd build-debug
+          VERSION="$(git describe --tags --always | sed 's/[^A-Za-z0-9._-]/_/g')"
+          PACKAGE_NAME="InfClassR-${VERSION}-${{ runner.os }}-${{ runner.arch }}"
+          cpack -V -C Debug -D CPACK_PACKAGE_FILE_NAME="$PACKAGE_NAME"
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          path: build-debug/*.zip
+          archive: false
+
   build:
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
-        name: [ windows-latest, macos-latest, ubuntu-latest ]
+        name: [ windows-latest, macos-latest ]
         include:
           - name: windows-latest
             os: windows-latest
@@ -21,9 +81,6 @@ jobs:
           - name: macos-latest
             os: macos-latest
             conan-args: -s os.version=14.0
-          - name: ubuntu-latest
-            os: ubuntu-latest
-            conan-args: ''
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
