@@ -105,7 +105,16 @@ jobs:
         run: |
           conan install . --build=missing -s compiler.cppstd=20 -s build_type=Debug ${{ matrix.conan-args }}
 
-      - name: Build
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        shell: cmd
+        run: |
+          call build-debug\conan\conanbuild.bat
+          cmake --preset conan-debug
+          cmake --build --preset conan-debug
+
+      - name: Build (Unix)
+        if: runner.os != 'Windows'
         run: |
           cmake --preset conan-debug
           cmake --build --preset conan-debug
