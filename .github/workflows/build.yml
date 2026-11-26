@@ -44,7 +44,9 @@ jobs:
         run: |
           # https://github.com/conan-io/conan-center-index/issues/21150
           echo -e '\n[platform_tool_requires]\nm4/1.4.19' >> ~/.conan2/profiles/default
-          conan install . --build="*" -s compiler.cppstd=20 -s build_type=Debug \
+          # Don't use pre-built binaries which are built with glibc
+          conan remote update conancenter --recipes-only
+          conan install . --build=missing -s compiler.cppstd=20 -s build_type=Debug \
                 -c tools.build:cflags="['-static']" \
                 -c tools.build:cxxflags="['-static']" \
                 -c tools.build:exelinkflags="['-static']"
